@@ -1,0 +1,20419 @@
+import { createRoute, z } from '@hono/zod-openapi'
+
+const ItemSchema = z
+  .strictObject({
+    id: z.string().exactOptional().openapi({ description: 'The value to provide in the result.' }),
+    name: z.string().exactOptional().openapi({ description: 'The display name.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Item')
+
+const SubInputDetailSchema = z
+  .strictObject({
+    configuration: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Configuration parameters for the required input.' }),
+    items: z
+      .array(ItemSchema)
+      .exactOptional()
+      .openapi({ description: 'In case of a select, the items to choose from.' }),
+    key: z.string().exactOptional().openapi({ description: 'The value to provide in the result.' }),
+    optional: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if this input is optional to provide.' }),
+    type: z.string().exactOptional().openapi({ description: 'The type of the required input.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value can be pre-filled, if available.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SubInputDetail')
+
+type InputDetailType = {
+  configuration?: { [key: string]: string }
+  details?: z.infer<typeof SubInputDetailSchema>[]
+  inputDetails?: z.infer<typeof SubInputDetailSchema>[]
+  itemSearchUrl?: string
+  items?: z.infer<typeof ItemSchema>[]
+  key?: string
+  optional?: boolean
+  type?: string
+  value?: string
+}
+
+const AccountInfoSchema = z
+  .strictObject({
+    accountAgeIndicator: z
+      .enum([
+        'notApplicable',
+        'thisTransaction',
+        'lessThan30Days',
+        'from30To60Days',
+        'moreThan60Days',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicator for the length of time since this shopper account was created in the merchant's environment.\nAllowed values:\n* notApplicable\n* thisTransaction\n* lessThan30Days\n* from30To60Days\n* moreThan60Days",
+      }),
+    accountChangeDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: "Date when the shopper's account was last changed." }),
+    accountChangeIndicator: z
+      .enum(['thisTransaction', 'lessThan30Days', 'from30To60Days', 'moreThan60Days'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicator for the length of time since the shopper's account was last updated.\nAllowed values:\n* thisTransaction\n* lessThan30Days\n* from30To60Days\n* moreThan60Days",
+      }),
+    accountCreationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: "Date when the shopper's account was created." }),
+    accountType: z
+      .enum(['notApplicable', 'credit', 'debit'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the type of account. For example, for a multi-account card product.\nAllowed values:\n* notApplicable\n* credit\n* debit',
+        'x-addedInVersion': '50',
+      }),
+    addCardAttemptsDay: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of attempts the shopper tried to add a card to their account in the last day.',
+      }),
+    deliveryAddressUsageDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Date the selected delivery address was first used.' }),
+    deliveryAddressUsageIndicator: z
+      .enum(['thisTransaction', 'lessThan30Days', 'from30To60Days', 'moreThan60Days'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicator for the length of time since this delivery address was first used.\nAllowed values:\n* thisTransaction\n* lessThan30Days\n* from30To60Days\n* moreThan60Days',
+      }),
+    homePhone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: "Shopper's home phone number (including the country code).",
+        'x-deprecatedInVersion': '68',
+        'x-deprecatedMessage': 'Use `ThreeDS2RequestData.homePhone` instead.',
+      }),
+    mobilePhone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: "Shopper's mobile phone number (including the country code).",
+        'x-deprecatedInVersion': '68',
+        'x-deprecatedMessage': 'Use `ThreeDS2RequestData.mobilePhone` instead.',
+      }),
+    passwordChangeDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Date when the shopper last changed their password.' }),
+    passwordChangeIndicator: z
+      .enum([
+        'notApplicable',
+        'thisTransaction',
+        'lessThan30Days',
+        'from30To60Days',
+        'moreThan60Days',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicator when the shopper has changed their password.\nAllowed values:\n* notApplicable\n* thisTransaction\n* lessThan30Days\n* from30To60Days\n* moreThan60Days',
+      }),
+    pastTransactionsDay: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of all transactions (successful and abandoned) from this shopper in the past 24 hours.',
+      }),
+    pastTransactionsYear: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of all transactions (successful and abandoned) from this shopper in the past year.',
+      }),
+    paymentAccountAge: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: "Date this payment method was added to the shopper's account." }),
+    paymentAccountIndicator: z
+      .enum([
+        'notApplicable',
+        'thisTransaction',
+        'lessThan30Days',
+        'from30To60Days',
+        'moreThan60Days',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicator for the length of time since this payment method was added to this shopper's account.\nAllowed values:\n* notApplicable\n* thisTransaction\n* lessThan30Days\n* from30To60Days\n* moreThan60Days",
+      }),
+    purchasesLast6Months: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of successful purchases in the last six months.' }),
+    suspiciousActivity: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether suspicious activity was recorded on this account.' }),
+    workPhone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: "Shopper's work phone number (including the country code).",
+        'x-deprecatedInVersion': '68',
+        'x-deprecatedMessage': 'Use `ThreeDS2RequestData.workPhone` instead.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountInfo')
+
+const AcctInfoSchema = z
+  .strictObject({
+    chAccAgeInd: z
+      .enum(['01', '02', '03', '04', '05'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Length of time that the cardholder has had the account with the 3DS Requestor. \nAllowed values:\n* **01** — No account\n* **02** — Created during this transaction\n* **03** — Less than 30 days\n* **04** — 30–60 days\n* **05** — More than 60 days',
+      }),
+    chAccChange: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date that the cardholder’s account with the 3DS Requestor was last changed, including Billing or Shipping address, new payment account, or new user(s) added. \nFormat: **YYYYMMDD**',
+      }),
+    chAccChangeInd: z
+      .enum(['01', '02', '03', '04'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Length of time since the cardholder’s account information with the 3DS Requestor was last changed, including Billing or Shipping address, new payment account, or new user(s) added. \nAllowed values:\n* **01** — Changed during this transaction\n* **02** — Less than 30 days\n* **03** — 30–60 days\n* **04** — More than 60 days',
+      }),
+    chAccPwChange: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date that cardholder’s account with the 3DS Requestor had a password change or account reset. \nFormat: **YYYYMMDD**',
+      }),
+    chAccPwChangeInd: z
+      .enum(['01', '02', '03', '04', '05'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the length of time since the cardholder’s account with the 3DS Requestor had a password change or account reset. \nAllowed values:\n* **01** — No change\n* **02** — Changed during this transaction\n* **03** — Less than 30 days\n* **04** — 30–60 days\n* **05** — More than 60 days',
+      }),
+    chAccString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date that the cardholder opened the account with the 3DS Requestor. \nFormat: **YYYYMMDD**',
+      }),
+    nbPurchaseAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of purchases with this cardholder account during the previous six months. Max length: 4 characters.',
+      }),
+    paymentAccAge: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'String that the payment account was enrolled in the cardholder’s account with the 3DS Requestor. \nFormat: **YYYYMMDD**',
+      }),
+    paymentAccInd: z
+      .enum(['01', '02', '03', '04', '05'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the length of time that the payment account was enrolled in the cardholder’s account with the 3DS Requestor. \nAllowed values:\n* **01** — No account (guest checkout)\n* **02** — During this transaction\n* **03** — Less than 30 days\n* **04** — 30–60 days\n* **05** — More than 60 days',
+      }),
+    provisionAttemptsDay: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Number of Add Card attempts in the last 24 hours. Max length: 3 characters.',
+      }),
+    shipAddressUsage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'String when the shipping address used for this transaction was first used with the 3DS Requestor. \nFormat: **YYYYMMDD**',
+      }),
+    shipAddressUsageInd: z
+      .enum(['01', '02', '03', '04'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates when the shipping address used for this transaction was first used with the 3DS Requestor. \nAllowed values:\n* **01** — This transaction\n* **02** — Less than 30 days\n* **03** — 30–60 days\n* **04** — More than 60 days',
+      }),
+    shipNameIndicator: z
+      .enum(['01', '02'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the Cardholder Name on the account is identical to the shipping Name used for this transaction. \nAllowed values:\n* **01** — Account Name identical to shipping Name\n* **02** — Account Name different to shipping Name',
+      }),
+    suspiciousAccActivity: z
+      .enum(['01', '02'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the 3DS Requestor has experienced suspicious activity (including previous fraud) on the cardholder account. \nAllowed values:\n* **01** — No suspicious activity has been observed\n* **02** — Suspicious activity has been observed',
+      }),
+    txnActivityDay: z
+      .string()
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of transactions (successful and abandoned) for this cardholder account with the 3DS Requestor across all payment accounts in the previous 24 hours. Max length: 3 characters.',
+      }),
+    txnActivityYear: z
+      .string()
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of transactions (successful and abandoned) for this cardholder account with the 3DS Requestor across all payment accounts in the previous year. Max length: 3 characters.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AcctInfo')
+
+const AchDetailsSchema = z
+  .strictObject({
+    accountHolderType: z
+      .enum(['business', 'personal'])
+      .exactOptional()
+      .openapi({ description: 'The account holder type (personal or business).' }),
+    bankAccountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank account number (without separators).' }),
+    bankAccountType: z
+      .enum(['balance', 'checking', 'deposit', 'general', 'other', 'payment', 'savings'])
+      .exactOptional()
+      .openapi({ description: 'The bank account type (checking, savings...).' }),
+    bankLocationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The bank routing number of the account. The field value is `nil` in most cases.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    encryptedBankAccountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Encrypted bank account number. The bank account number (without separators).',
+      }),
+    encryptedBankLocationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Encrypted location id. The bank routing number of the account. The field value is `nil` in most cases.',
+      }),
+    ownerName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The name of the bank account holder.\nIf you submit a name with non-Latin characters, we automatically replace some of them with corresponding Latin characters to meet the FATF recommendations. For example:\n* χ12 is converted to ch12.\n* üA is converted to euA.\n* Peter Møller is converted to Peter Mller, because banks don't accept 'ø'.\nAfter replacement, the ownerName must have at least three alphanumeric characters (A-Z, a-z, 0-9), and at least one of them must be a valid Latin character (A-Z, a-z). For example:\n* John17 - allowed.\n* J17 - allowed.\n* 171 - not allowed.\n* John-7 - allowed.\n> If provided details don't match the required format, the response returns the error message: 203 'Invalid bank account holder name'.",
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    transferInstrumentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unique identifier of your user's verified transfer instrument, which you can use to top up their balance accounts.",
+      }),
+    type: z
+      .enum(['ach', 'ach_plaid'])
+      .default('ach')
+      .exactOptional()
+      .openapi({ description: '**ach**' }),
+  })
+  .openapi({ title: 'ACH Direct Debit', required: [] })
+  .openapi('AchDetails')
+
+const AdditionalData3DSecureSchema = z
+  .strictObject({
+    allow3DS2: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "Indicates if you are able to process 3D Secure 2 transactions natively on your payment page. Send this parameter when you are using `/payments` endpoint with any of our [native 3D Secure 2 solutions](https://docs.adyen.com/online-payments/3d-secure/native-3ds2).\n\n > This parameter only indicates readiness to support native 3D Secure 2 authentication. To specify if you _want_ to perform 3D Secure, use [Dynamic 3D Secure](/risk-management/dynamic-3d-secure) or send the `executeThreeD` parameter.\n\nPossible values:\n* **true** - Ready to support native 3D Secure 2 authentication. Setting this to true does not mean always applying 3D Secure 2. Adyen selects redirect or native authentication based on your configuration to optimize authorization rates and improve the shopper's experience.\n* **false** – Not ready to support native 3D Secure 2 authentication. Adyen offers redirect 3D Secure 2 authentication instead, based on your configuration.\n",
+        'x-deprecatedInVersion': '69',
+        'x-deprecatedMessage': 'Use `authenticationData.threeDSRequestData.nativeThreeDS` instead.',
+      }),
+    challengeWindowSize: z
+      .enum(['01', '02', '03', '04', '05'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions of the 3DS2 challenge window to be displayed to the cardholder.\n\nPossible values:\n\n* **01** - size of 250x400 \n* **02** - size of 390x400\n* **03** - size of 500x600\n* **04** - size of 600x400\n* **05** - Fullscreen',
+      }),
+    executeThreeD: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "Indicates if you want to perform 3D Secure authentication on a transaction.\n\n > Alternatively, you can use [Dynamic 3D Secure](/risk-management/dynamic-3d-secure) to configure rules for applying 3D Secure.\n\nPossible values:\n* **true** – Perform 3D Secure authentication.\n* **false** – Don't perform 3D Secure authentication. Note that this setting results in refusals if the issuer mandates 3D Secure because of the PSD2 directive  or other, national regulations. \n",
+        'x-deprecatedInVersion': '69',
+        'x-deprecatedMessage':
+          'Use [`authenticationData.attemptAuthentication`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments?target=_blank#request-authenticationData-attemptAuthentication) instead',
+      }),
+    mpiImplementationType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'In case of Secure+, this field must be set to **CUPSecurePlus**.' }),
+    scaExemption: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the [exemption type](https://docs.adyen.com/payments-fundamentals/psd2-sca-compliance-and-implementation-guide#specifypreferenceinyourapirequest) that you want to request for the transaction.\n\n Possible values:\n* **lowValue** \n* **secureCorporate** \n* **trustedBeneficiary** \n* **transactionRiskAnalysis** ',
+      }),
+    threeDSVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates your preference for the 3D Secure version. \n> If you use this parameter, you override the checks from Adyen's Authentication Engine. We recommend to use this field only if you have an extensive knowledge of 3D Secure.\n\nPossible values:\n* **2.1.0**: Apply 3D Secure version 2.1.0. \n* **2.2.0**: Apply 3D Secure version 2.2.0. If the issuer does not support version 2.2.0, we will fall back to 2.1.0.\n\nThe following rules apply:\n* If you prefer 2.1.0 or 2.2.0 but we receive a negative `transStatus` in the `ARes`, we will apply the fallback policy configured in your account.\n* If you the BIN is not enrolled, you will receive an error.\n\n",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalData3DSecure')
+
+const AdditionalDataAirlineSchema = z
+  .strictObject({
+    'airline.agency_invoice_number': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference number for the invoice, issued by the agency.\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 6 characters',
+      }),
+    'airline.agency_plan_name': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-letter agency plan identifier.\n* Encoding: ASCII\n* minLength: 2 characters\n* maxLength: 2 characters',
+      }),
+    'airline.airline_code': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) 3-digit accounting code (PAX) that identifies the carrier.\n* Format: IATA 3-digit accounting code (PAX)\n* Example: KLM = 074\n* minLength: 3 characters\n* maxLength: 3 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.airline_designator_code': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) 2-letter accounting code (PAX) that identifies the carrier.\n* Encoding: ASCII\n* Example: KLM = KL\n* minLength: 2 characters\n* maxLength: 2 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.boarding_fee': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount charged for boarding the plane, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Encoding: Numeric\n* minLength: 1 character\n* maxLength: 18 characters',
+      }),
+    'airline.computerized_reservation_system': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [CRS](https://en.wikipedia.org/wiki/Computer_reservation_system) used to make the reservation and purchase the ticket.\n* Encoding: ASCII\n* minLength: 4 characters\n* maxLength: 4 characters',
+      }),
+    'airline.customer_reference_number': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The alphanumeric customer reference number.\n* Encoding: ASCII\n* maxLength: 20 characters\n* If you send more than 20 characters, the customer reference number is truncated\n* Must not be all spaces',
+      }),
+    'airline.document_type': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A code that identifies the type of item bought. The description of the code can appear on credit card statements.\n* Encoding: ASCII\n* Example: Passenger ticket = 01\n* minLength: 2 characters\n* maxLength: 2 characters',
+      }),
+    'airline.flight_date': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The flight departure date. Local time `(HH:mm)` is optional.\n* Date format: `yyyy-MM-dd`\n* Date and time format: `yyyy-MM-dd HH:mm`\n* minLength: 10 characters\n* maxLength: 16 characters',
+      }),
+    'airline.issue_date': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date that the ticket was issued to the passenger.\n* minLength: 6 characters\n* maxLength: 6 characters\n* Date format: YYMMDD',
+      }),
+    'airline.leg.carrier_code': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) 2-letter accounting code (PAX) that identifies the carrier.\nThis field is required if the airline data includes leg details.\n* Example: KLM = KL\n* minLength: 2 characters\n* maxLength: 2 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.leg.class_of_travel': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A one-letter travel class identifier.\n The following are common:\n * F: first class\n* J: business class\n* Y: economy class\n* W: premium economy\n\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 1 character\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.leg.date_of_travel': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '\t\nDate and time of travel in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format `yyyy-MM-dd HH:mm`.\n* Encoding: ASCII\n* minLength: 16 characters\n* maxLength: 16 characters',
+      }),
+    'airline.leg.depart_airport': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) three-letter airport code of the departure airport.\nThis field is required if the airline data includes leg details.\n\n* Encoding: ASCII\n* Example: Amsterdam = AMS\n* minLength: 3 characters\n* maxLength: 3 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.leg.depart_tax': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of [departure tax](https://en.wikipedia.org/wiki/Departure_tax) charged, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Encoding: Numeric\n* minLength: 1\n* maxLength: 12\n* Must not be all zeros.',
+      }),
+    'airline.leg.destination_code': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) 3-letter airport code of the destination airport.\nThis field is required if the airline data includes leg details.\n* Example: Amsterdam = AMS\n* Encoding: ASCII\n* minLength: 3 characters\n* maxLength: 3 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.leg.fare_base_code': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [fare basis code](https://en.wikipedia.org/wiki/Fare_basis_code), alphanumeric.\n* minLength: 1 character\n* maxLength: 15 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.leg.flight_number': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The flight identifier.\n* minLength: 1 character\n* maxLength: 5 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.leg.stop_over_code': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A one-letter code that indicates whether the passenger is entitled to make a stopover. Can be a space, O if the passenger is entitled to make a stopover, or X if they are not.\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 1 character',
+      }),
+    'airline.passenger.date_of_birth': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The passenger's date of birth.\n\nDate format: `yyyy-MM-dd`\n* minLength: 10\n* maxLength: 10",
+      }),
+    'airline.passenger.first_name': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The passenger's first name.\n> This field is required if the airline data includes passenger details or leg details.\n* Encoding: ASCII",
+      }),
+    'airline.passenger.last_name': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The passenger's last name.\n> This field is required if the airline data includes passenger details or leg details.\n* Encoding: ASCII",
+      }),
+    'airline.passenger.phone_number': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The passenger's phone number, including country code. This is an alphanumeric field that can include the '+' and '-' signs.\n* Encoding: ASCII\n* minLength: 3 characters\n* maxLength: 30 characters",
+      }),
+    'airline.passenger.traveller_type': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IATA passenger type code (PTC).\n* Encoding: ASCII\n* minLength: 3 characters\n* maxLength: 6 characters',
+      }),
+    'airline.passenger_name': z
+      .string()
+      .openapi({
+        description:
+          "The passenger's name, initials, and title.\n* Format: last name + first name or initials + title\n* Example: *FLYER / MARY MS*\n* minLength: 1 character\n* maxLength: 20 characters\n* If you send more than 20 characters, the name is truncated\n* Must not be all spaces \n* Must not be all zeros.",
+      }),
+    'airline.ticket_issue_address': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The address of the organization that issued the ticket.\n* minLength: 0 characters\n* maxLength: 16 characters',
+      }),
+    'airline.ticket_number': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ticket's unique identifier.\n* minLength: 1 character\n* maxLength: 15 characters\n* Must not be all spaces\n* Must not be all zeros.",
+      }),
+    'airline.travel_agency_code': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier from IATA or ARC for the travel agency that issues the ticket.\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 8 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+    'airline.travel_agency_name': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the travel agency.\n\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 25 characters\n* Must not be all spaces\n* Must not be all zeros.',
+      }),
+  })
+  .openapi({ required: ['airline.passenger_name'] })
+  .openapi('AdditionalDataAirline')
+
+const AdditionalDataCarRentalSchema = z
+  .strictObject({
+    'carRental.checkOutDate': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The pick-up date.\n* Date format: `yyyyMMdd`' }),
+    'carRental.customerServiceTollFreeNumber': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The customer service phone number of the car rental company.\n* Format: Alphanumeric\n* maxLength: 17\n* For US and CA numbers must be 10 characters in length\n* Must not start with a space\n* Must not contain any special characters such as + or -\n*Must not be all zeros.',
+      }),
+    'carRental.daysRented': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of days for which the car is being rented.\n* Format: Numeric\n* maxLength: 4\n* Must not be all spaces',
+      }),
+    'carRental.fuelCharges': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Any fuel charges associated with the rental, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Format: Numeric\n* maxLength: 12',
+      }),
+    'carRental.insuranceCharges': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Any insurance charges associated with the rental, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Format: Numeric\n* maxLength: 12\n* Must not be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.locationCity': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The city where the car is rented.\n* Format: Alphanumeric\n* maxLength: 18\n* Must not start with a space or be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.locationCountry': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country where the car is rented, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.\n* Format: Alphanumeric\n* maxLength: 2',
+      }),
+    'carRental.locationStateProvince': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The state or province where the car is rented.\n* Format: Alphanumeric\n* maxLength: 2\n* Must not start with a space or be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.noShowIndicator': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates if the customer didn't pick up their rental car.\n* Y - Customer did not pick up their car\n* N - Not applicable",
+      }),
+    'carRental.oneWayDropOffCharges': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The charge for not returning a car to the original rental location, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* maxLength: 12',
+      }),
+    'carRental.rate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The daily rental rate, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Format: Alphanumeric\n* maxLength: 12',
+      }),
+    'carRental.rateIndicator': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies whether the given rate is applied daily or weekly.\n* D - Daily rate\n* W - Weekly rate',
+      }),
+    'carRental.rentalAgreementNumber': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rental agreement number for the car rental.\n* Format: Alphanumeric\n* maxLength: 9\n* Must not start with a space or be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.rentalClassId': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The classification of the rental car.\n* Format: Alphanumeric\n* maxLength: 4\n* Must not start with a space or be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.renterName': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the person renting the car.\n* Format: Alphanumeric\n* maxLength: 26\n* If you send more than 26 characters, the name is truncated\n* Must not start with a space or be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.returnCity': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The city where the car must be returned.\n* Format: Alphanumeric\n* maxLength: 18\n* Must not start with a space or be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.returnCountry': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country where the car must be returned, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.\n* Format: Alphanumeric\n* maxLength: 2',
+      }),
+    'carRental.returnDate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last date to return the car by.\n* Date format: `yyyyMMdd`\n* maxLength: 8',
+      }),
+    'carRental.returnLocationId': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The agency code, phone number, or address abbreviation\n* Format: Alphanumeric\n* maxLength: 10\n* Must not start with a space or be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.returnStateProvince': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The state or province where the car must be returned.\n* Format: Alphanumeric\n* maxLength: 3\n* Must not start with a space or be all spaces\n*Must not be all zeros.',
+      }),
+    'carRental.taxExemptIndicator': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the goods or services were tax-exempt, or if tax was not paid on them.\n\nValues:\n* Y - Goods or services were tax exempt\n* N - Tax was not collected',
+      }),
+    'travelEntertainmentAuthData.duration': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of days the car is rented for. This should be included in the auth message.\n* Format: Numeric\n* maxLength: 4',
+      }),
+    'travelEntertainmentAuthData.market': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates what market-specific dataset will be submitted or is being submitted. Value should be 'A' for car rental. This should be included in the auth message.\n* Format: Alphanumeric\n* maxLength: 1",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataCarRental')
+
+const AdditionalDataCommonSchema = z
+  .strictObject({
+    RequestedTestAcquirerResponseCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Triggers test scenarios that allow to replicate certain acquirer response codes. See [Testing result codes and refusal reasons](https://docs.adyen.com/development-resources/testing/result-codes/) to learn about the possible values, and the `refusalReason` values you can trigger. ',
+      }),
+    RequestedTestErrorResponseCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Triggers test scenarios that allow to replicate certain communication errors.\n\nAllowed values:\n* **NO_CONNECTION_AVAILABLE** – There wasn't a connection available to service the outgoing communication.\nThis is a transient, retriable error since no messaging could be initiated to an issuing system (or third-party acquiring system). Therefore, the header Transient-Error: true is returned in the response. A subsequent request using the same idempotency key will be processed as if it was the first request.\n* **IOEXCEPTION_RECEIVED** – Something went wrong during transmission of the message or receiving the response.\nThis is a classified as non-transient because the message could have been received by the issuing party and been acted upon. No transient error header is returned. If using idempotency, the (error) response is stored as the final result for the idempotency key. Subsequent messages with the same idempotency key not be processed beyond returning the stored response.",
+      }),
+    allowPartialAuth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to true to authorise a part of the requested amount in case the cardholder does not have enough funds on their account. \nIf a payment was partially authorised, the response includes resultCode: PartiallyAuthorised and the authorised amount in additionalData.authorisedAmountValue.\nTo enable this functionality, contact our Support Team.',
+      }),
+    authorisationType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flags a card payment request for either pre-authorisation or final authorisation. For more information, refer to [Authorisation types](https://docs.adyen.com/online-payments/adjust-authorisation#authorisation-types).\n\nAllowed values:\n* **PreAuth** – flags the payment request to be handled as a pre-authorisation.\n* **FinalAuth** – flags the payment request to be handled as a final authorisation.',
+      }),
+    autoRescue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to **true** to enable [Auto Rescue](https://docs.adyen.com/online-payments/auto-rescue/) for a transaction. Use the `maxDaysToRescue` to specify a rescue window.',
+      }),
+    customRoutingFlag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Allows you to determine or override the acquirer account that should be used for the transaction.\n\nIf you need to process a payment with an acquirer different from a default one, you can set up a corresponding configuration on the Adyen payments platform. Then you can pass a custom routing flag in a payment request's additional data to target a specific acquirer.\n\nTo enable this functionality, contact [Support](https://www.adyen.help/hc/en-us/requests/new).",
+      }),
+    industryUsage: z
+      .enum(['NoShow', 'DelayedCharge'])
+      .exactOptional()
+      .openapi({
+        description:
+          'In case of [asynchronous authorisation adjustment](https://docs.adyen.com/online-payments/adjust-authorisation#adjust-authorisation), this field denotes why the additional payment is made.\n\nPossible values:\n\n * **NoShow**: An incremental charge is carried out because of a no-show for a guaranteed reservation.\n\n * **DelayedCharge**: An incremental charge is carried out to process an additional payment after the original services have been rendered and the respective payment has been processed.',
+      }),
+    manualCapture: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to **true** to require [manual capture](https://docs.adyen.com/online-payments/capture) for the transaction.',
+      }),
+    maxDaysToRescue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rescue window for a transaction, in days, when `autoRescue` is set to **true**. You can specify a value between 1 and 48.\n\n* For [cards](https://docs.adyen.com/online-payments/auto-rescue/cards/), the default is one calendar month.\n * For [SEPA](https://docs.adyen.com/online-payments/auto-rescue/sepa/), the default is 42 days.',
+      }),
+    networkTxReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Allows you to link the transaction to the original or previous one in a subscription/card-on-file chain. This field is required for token-based transactions where Adyen does not tokenize the card.\n\nTransaction identifier from card schemes, for example, Mastercard Trace ID or the Visa Transaction ID.\n\nSubmit the original transaction ID of the contract in your payment request if you are not tokenizing card details with Adyen and are making a merchant-initiated transaction (MIT) for subsequent charges.\n\nMake sure you are sending `shopperInteraction` **ContAuth** and `recurringProcessingModel` **Subscription** or **UnscheduledCardOnFile** to ensure that the transaction is classified as MIT.',
+      }),
+    overwriteBrand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean indicator that can be optionally used for performing debit transactions on combo cards (for example, combo cards in Brazil). This is not mandatory but we recommend that you set this to true if you want to use the `selectedBrand` value to specify how to process the transaction.',
+      }),
+    subMerchantCity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is required if the transaction is performed by a registered payment facilitator. This field must contain the city of the actual merchant's address.\n* Format: alpha-numeric.\n* Maximum length: 13 characters.",
+      }),
+    subMerchantCountry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is required if the transaction is performed by a registered payment facilitator. This field must contain the three-letter country code of the actual merchant's address.\n* Format: alpha-numeric.\n* Fixed length: 3 characters.",
+      }),
+    subMerchantEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field is required for transactions performed by registered payment facilitators. This field contains the email address of the sub-merchant.\n* Format: Alphanumeric\n* Maximum length: 40 characters',
+      }),
+    subMerchantID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains an identifier of the actual merchant when a transaction is submitted via a payment facilitator. The payment facilitator must send in this unique ID.\n\nA unique identifier per submerchant that is required if the transaction is performed by a registered payment facilitator.\n* Format: alpha-numeric.\n* Fixed length: 15 characters.',
+      }),
+    subMerchantName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field is required if the transaction is performed by a registered payment facilitator. This field must contain the name of the actual merchant.\n* Format: alpha-numeric.\n* Maximum length: 22 characters.',
+      }),
+    subMerchantPhoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field is required for transactions performed by registered payment facilitators. This field contains the phone number of the sub-merchant.* Format: Alphanumeric\n* Maximum length: 20 characters',
+      }),
+    subMerchantPostalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is required if the transaction is performed by a registered payment facilitator. This field must contain the postal code of the actual merchant's address.\n* Format: alpha-numeric.\n* Maximum length: 10 characters.",
+      }),
+    subMerchantState: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is required if the transaction is performed by a registered payment facilitator, and if applicable to the country. This field must contain the state code of the actual merchant's address.\n* Format: alpha-numeric.\n* Maximum length: 3 characters.",
+      }),
+    subMerchantStreet: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is required if the transaction is performed by a registered payment facilitator. This field must contain the street of the actual merchant's address.\n* Format: alpha-numeric.\n* Maximum length: 60 characters.",
+      }),
+    subMerchantTaxId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field is required if the transaction is performed by a registered payment facilitator. This field must contain the tax ID of the actual merchant.\n* Format: alpha-numeric.\n* Fixed length: 11 or 14 characters.',
+      }),
+    transactionLinkId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Allows you to link the transaction to the original or previous one in a subscription/card-on-file chain For Mastercard payments. This field is required for token-based transactions where Adyen does not tokenize the card.\n\nTransaction identifier from Mastercard.\n\nSubmit the original transaction ID of the contract in your payment request if you are not tokenizing card details with Adyen and are making a merchant-initiated transaction (MIT) for subsequent charges.\n\nMake sure you are sending `shopperInteraction` **ContAuth** and `recurringProcessingModel` **Subscription** or **UnscheduledCardOnFile** to ensure that the transaction is classified as MIT.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataCommon')
+
+const AdditionalDataLevel23Schema = z
+  .strictObject({
+    'enhancedSchemeData.customerReference': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference number to identify the customer and their order. \n* Encoding: ASCII\n* Max length: 25 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.',
+      }),
+    'enhancedSchemeData.destinationCountryCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The three-letter [ISO 3166-1 alpha-3 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) for the destination address.\n* Encoding: ASCII\n* Fixed length: 3 characters',
+      }),
+    'enhancedSchemeData.destinationPostalCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code of the destination address.\n* Encoding: ASCII\n* Max length: 10 characters\n* Must not start with a space.\n* For the US, it must be in five or nine digits format. For example, 10001 or 10001-0000.\n* For Canada, it must be in 6 digits format. For example, M4B 1G5.',
+      }),
+    'enhancedSchemeData.destinationStateProvinceCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The state or province code of the destination address.\n* Encoding: ASCII\n* Max length: 3 characters\n* Must not start with a space.',
+      }),
+    'enhancedSchemeData.dutyAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The duty tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max length: 12 characters',
+      }),
+    'enhancedSchemeData.freightAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The shipping amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max length: 12 characters',
+      }),
+    'enhancedSchemeData.itemDetailLine[itemNr].commodityCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The code that identifies the item in a standardized commodity coding scheme. There are different commodity coding schemes:\n* [UNSPSC commodity codes](https://www.ungm.org/public/unspsc)\n* [HS commodity codes](https://www.wcoomd.org/en/topics/nomenclature/overview.aspx)\n* [NAICS commodity codes](https://www.census.gov/naics/)\n* [NAPCS commodity codes](https://www.census.gov/naics/napcs/)\n\n\n* Encoding: ASCII\n* Max length: 12 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.',
+      }),
+    'enhancedSchemeData.itemDetailLine[itemNr].description': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A description of the item, that provides details about the purchase.\n\n For Visa transactions with level 3 ESD, the description must not be the same or very similar to your merchant name, or, consist only of common words like "product", or "service".\n* Encoding: ASCII\n* Max length: 26 characters\n* Must not be a single character.\n* Must not be blank.\n* Must not be all special characters.\n* Must not be blank.\n* Must not start with a space or be all spaces.\n* Must not be all zeros.',
+      }),
+    'enhancedSchemeData.itemDetailLine[itemNr].discountAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The discount amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max length: 12 characters',
+      }),
+    'enhancedSchemeData.itemDetailLine[itemNr].productCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The product code. Must be a unique product code associated with the item or service. This can be your unique code for the item, or the manufacturer's product code. \n* Encoding: ASCII.\n* Max length: 12 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.",
+      }),
+    'enhancedSchemeData.itemDetailLine[itemNr].quantity': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of items. Must be an integer greater than zero.\n* Encoding: Numeric\n* Max length: 12 characters\n* Must not start with a space or be all spaces.',
+      }),
+    'enhancedSchemeData.itemDetailLine[itemNr].totalAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total amount for the line item, in [minor units](https://docs.adyen.com/development-resources/currency-codes). See [Amount requirements for level 2/3 ESD](https://docs.adyen.com//payment-methods/cards/enhanced-scheme-data/l2-l3#amount-requirements) to learn more about how to calculate the line item total.\n* For example, 2000 means USD 20.00.\n* Max length: 12 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.',
+      }),
+    'enhancedSchemeData.itemDetailLine[itemNr].unitOfMeasure': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unit of measurement for an item.\n* Encoding: ASCII\n* Max length: 3 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.',
+      }),
+    'enhancedSchemeData.itemDetailLine[itemNr].unitPrice': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unit price in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max length: 12 characters\n* Must not be all zeros.',
+      }),
+    'enhancedSchemeData.orderDate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The order date.\n* Format: `ddMMyy`\n* Encoding: ASCII\n* Max length: 6 characters',
+      }),
+    'enhancedSchemeData.shipFromPostalCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code of the address where the item is shipped from.\n* Encoding: ASCII\n* Max length: 10 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.For the US, it must be in five or nine digits format. For example, 10001 or 10001-0000.\n* For Canada, it must be in 6 digits format. For example, M4B 1G5.',
+      }),
+    'enhancedSchemeData.totalTaxAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of state or provincial [tax included in the total transaction amount](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/l2-l3#requirements-to-send-level-2-3-esd), in [minor units](https://docs.adyen.com/development-resources/currency-codes). \n* For example, 2000 means USD 20.00.\n* Encoding: Numeric \n* Max length: 12 characters \n* For L2 data: must not be all zeroes. \n* For L3 data: can be zero.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataLevel23')
+
+const AdditionalDataLodgingSchema = z
+  .strictObject({
+    'lodging.SpecialProgramCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A code that corresponds to the category of lodging charges for the payment. Possible values:\n* 1: Lodging\n* 2: No show reservation\n* 3: Advanced deposit',
+      }),
+    'lodging.checkInDate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The arrival date.\n* Date format: **yyyyMmDd**. For example, for 2023 April 22, **20230422**.',
+      }),
+    'lodging.checkOutDate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The departure date.\n* Date format: **yyyyMmDd**. For example, for 2023 April 22, **20230422**.',
+      }),
+    'lodging.customerServiceTollFreeNumber': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The toll-free phone number for the lodging.\n* Format: numeric\n* Max length: 17 characters.\n* For US and CA numbers must be 10 characters in length\n* Must not start with a space\n* Must not contain any special characters such as + or -\n* Must not be all zeros.',
+      }),
+    'lodging.fireSafetyActIndicator': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Identifies that the facility complies with the Hotel and Motel Fire Safety Act of 1990. Must be 'Y' or 'N'.\n* Format: alphabetic\n* Max length: 1 character",
+      }),
+    'lodging.folioCashAdvances': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The folio cash advances, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Format: numeric\n* Max length: 12 characters',
+      }),
+    'lodging.folioNumber': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card acceptor’s internal invoice or billing ID reference number.\n* Max length: 25 characters\n* Must not start with a space\n* Must not contain any special characters\n* Must not be all zeros.',
+      }),
+    'lodging.foodBeverageCharges': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Any charges for food and beverages associated with the booking, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Format: numeric\n* Max length: 12 characters',
+      }),
+    'lodging.noShowIndicator': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates if the customer didn't check in for their booking.\n Possible values: \n* **Y**: the customer didn't check in \n* **N**: the customer checked in",
+      }),
+    'lodging.prepaidExpenses': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The prepaid expenses for the booking.\n* Format: numeric\n* Max length: 12 characters',
+      }),
+    'lodging.propertyPhoneNumber': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The lodging property location's phone number.\n* Format: numeric\n* Min length: 10 characters\n* Max length: 17 characters\n* For US and CA numbers must be 10 characters in length\n* Must not start with a space\n* Must not contain any special characters such as + or -\n* Must not be all zeros.",
+      }),
+    'lodging.room1.numberOfNights': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total number of nights the room is booked for.\n* Format: numeric\n* Must be a number between 0 and 99\n* Max length: 4 characters',
+      }),
+    'lodging.room1.rate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rate for the room, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Format: numeric\n* Max length: 12 characters\n* Must not be a negative number',
+      }),
+    'lodging.totalRoomTax': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total room tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Format: numeric\n* Max length: 12 characters\n* Must not be a negative number',
+      }),
+    'lodging.totalTax': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Format: numeric\n* Max length: 12 characters\n* Must not be a negative number',
+      }),
+    'travelEntertainmentAuthData.duration': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of nights. This should be included in the auth message.\n* Format: numeric\n* Max length: 4 characters',
+      }),
+    'travelEntertainmentAuthData.market': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates what market-specific dataset will be submitted. Must be 'H' for Hotel. This should be included in the auth message.\n\n* Format: alphanumeric\n* Max length: 1 character",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataLodging')
+
+const AdditionalDataOpenInvoiceSchema = z
+  .strictObject({
+    'openinvoicedata.merchantData': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Holds different merchant data points like product, purchase, customer, and so on. It takes data in a Base64 encoded string.\n\nThe `merchantData` parameter needs to be added to the `openinvoicedata` signature at the end.\n\nSince the field is optional, if it's not included it does not impact computing the merchant signature.\n\nApplies only to Klarna.\n\nYou can contact Klarna for the format and structure of the string.",
+      }),
+    'openinvoicedata.numberOfLines': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of invoice lines included in `openinvoicedata`.\n\nThere needs to be at least one line, so `numberOfLines` needs to be at least 1.',
+      }),
+    'openinvoicedata.recipientFirstName': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'First name of the recipient. If the delivery address and the billing address are different, specify the `recipientFirstName` and `recipientLastName` to share the delivery address with Klarna. Otherwise, only the billing address is shared with Klarna.',
+      }),
+    'openinvoicedata.recipientLastName': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Last name of the recipient. If the delivery address and the billing address are different, specify the `recipientFirstName` and `recipientLastName` to share the delivery address with Klarna. Otherwise, only the billing address is shared with Klarna.',
+      }),
+    'openinvoicedataLine[itemNr].currencyCode': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-character ISO currency code.' }),
+    'openinvoicedataLine[itemNr].description': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A text description of the product the invoice line refers to.' }),
+    'openinvoicedataLine[itemNr].itemAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The price for one item in the invoice line, represented in minor units.\n\nThe due amount for the item, VAT excluded.',
+      }),
+    'openinvoicedataLine[itemNr].itemId': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique id for this item. Required for RatePay if the description of each item is not unique.',
+      }),
+    'openinvoicedataLine[itemNr].itemVatAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The VAT due for one item in the invoice line, represented in minor units.',
+      }),
+    'openinvoicedataLine[itemNr].itemVatPercentage': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The VAT percentage for one item in the invoice line, represented in minor units.\n\nFor example, 19% VAT is specified as 1900.',
+      }),
+    'openinvoicedataLine[itemNr].numberOfItems': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of units purchased of a specific product.' }),
+    'openinvoicedataLine[itemNr].returnShippingCompany': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the shipping company handling the the return shipment.' }),
+    'openinvoicedataLine[itemNr].returnTrackingNumber': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tracking number for the return of the shipment.' }),
+    'openinvoicedataLine[itemNr].returnTrackingUri': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URI where the customer can track the return of their shipment.' }),
+    'openinvoicedataLine[itemNr].shippingCompany': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the shipping company handling the delivery.' }),
+    'openinvoicedataLine[itemNr].shippingMethod': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shipping method.' }),
+    'openinvoicedataLine[itemNr].trackingNumber': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tracking number for the shipment.' }),
+    'openinvoicedataLine[itemNr].trackingUri': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URI where the customer can track their shipment.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataOpenInvoice')
+
+const AdditionalDataOpiSchema = z
+  .strictObject({
+    'opi.includeTransToken': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional boolean indicator. Set to **true** if you want an ecommerce transaction to return an `opi.transToken` as additional data in the response.\n\nYou can store this Oracle Payment Interface token in your Oracle Opera database. For more information and required settings, see [Oracle Opera](https://docs.adyen.com/plugins/oracle-opera#opi-token-ecommerce).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataOpi')
+
+const AdditionalDataRatepaySchema = z
+  .strictObject({
+    'ratepay.installmentAmount': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Amount the customer has to pay each month.' }),
+    'ratepay.interestRate': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Interest rate of this installment.' }),
+    'ratepay.lastInstallmentAmount': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Amount of the last installment.' }),
+    'ratepay.paymentFirstday': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Calendar day of the first payment.' }),
+    'ratepaydata.deliveryDate': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date the merchant delivered the goods to the customer.' }),
+    'ratepaydata.dueDate': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date by which the customer must settle the payment.' }),
+    'ratepaydata.invoiceDate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Invoice date, defined by the merchant. If not included, the invoice date is set to the delivery date.',
+      }),
+    'ratepaydata.invoiceId': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Identification name or number for the invoice, defined by the merchant.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataRatepay')
+
+const AdditionalDataRetrySchema = z
+  .strictObject({
+    'retry.chainAttemptNumber': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of times the transaction (not order) has been retried between different payment service providers. For instance, the `chainAttemptNumber` set to 2 means that this transaction has been recently tried on another provider before being sent to Adyen.\n\n> If you submit `retry.chainAttemptNumber`, `retry.orderAttemptNumber`, and `retry.skipRetry` values, we also recommend you provide the `merchantOrderReference` to facilitate linking payment attempts together.',
+      }),
+    'retry.orderAttemptNumber': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The index of the attempt to bill a particular order, which is identified by the `merchantOrderReference` field. For example, if a recurring transaction fails and is retried one day later, then the order number for these attempts would be 1 and 2, respectively.\n\n> If you submit `retry.chainAttemptNumber`, `retry.orderAttemptNumber`, and `retry.skipRetry` values, we also recommend you provide the `merchantOrderReference` to facilitate linking payment attempts together.',
+      }),
+    'retry.skipRetry': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Boolean value indicating whether Adyen should skip or retry this transaction, if possible.\n\n> If you submit `retry.chainAttemptNumber`, `retry.orderAttemptNumber`, and `retry.skipRetry` values, we also recommend you provide the `merchantOrderReference` to facilitate linking payment attempts together.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataRetry')
+
+const AdditionalDataRiskSchema = z
+  .strictObject({
+    'riskdata.[customFieldName]': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The data for your custom risk field. For more information, refer to [Create custom risk fields](https://docs.adyen.com/risk-management/configure-custom-risk-rules#step-1-create-custom-risk-fields).',
+      }),
+    'riskdata.basket.item[itemNr].amountPerItem': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The price of item in the basket, represented in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    'riskdata.basket.item[itemNr].brand': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Brand of the item.' }),
+    'riskdata.basket.item[itemNr].category': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Category of the item.' }),
+    'riskdata.basket.item[itemNr].color': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Color of the item.' }),
+    'riskdata.basket.item[itemNr].currency': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://en.wikipedia.org/wiki/ISO_4217).',
+      }),
+    'riskdata.basket.item[itemNr].itemID': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the item.' }),
+    'riskdata.basket.item[itemNr].manufacturer': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Manufacturer of the item.' }),
+    'riskdata.basket.item[itemNr].productTitle': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A text description of the product the invoice line refers to.' }),
+    'riskdata.basket.item[itemNr].quantity': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Quantity of the item purchased.' }),
+    'riskdata.basket.item[itemNr].receiverEmail': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Email associated with the given product in the basket (usually in electronic gift cards).',
+      }),
+    'riskdata.basket.item[itemNr].size': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Size of the item.' }),
+    'riskdata.basket.item[itemNr].sku': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: '[Stock keeping unit](https://en.wikipedia.org/wiki/Stock_keeping_unit).',
+      }),
+    'riskdata.basket.item[itemNr].upc': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Universal Product Code](https://en.wikipedia.org/wiki/Universal_Product_Code).',
+      }),
+    'riskdata.promotions.promotion[itemNr].promotionCode': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Code of the promotion.' }),
+    'riskdata.promotions.promotion[itemNr].promotionDiscountAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The discount amount of the promotion, represented in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    'riskdata.promotions.promotion[itemNr].promotionDiscountCurrency': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://en.wikipedia.org/wiki/ISO_4217).',
+      }),
+    'riskdata.promotions.promotion[itemNr].promotionDiscountPercentage': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Promotion's percentage discount. It is represented in percentage value and there is no need to include the '%' sign.\n\ne.g. for a promotion discount of 30%, the value of the field should be 30.",
+      }),
+    'riskdata.promotions.promotion[itemNr].promotionName': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the promotion.' }),
+    'riskdata.riskProfileReference': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Reference number of the risk profile that you want to apply to the payment. If not provided or left blank, the merchant-level account's default risk profile will be applied to the payment. For more information, see [dynamically assign a risk profile to a payment](https://docs.adyen.com/risk-management/create-and-use-risk-profiles#dynamically-assign-a-risk-profile-to-a-payment).",
+      }),
+    'riskdata.skipRisk': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If this parameter is provided with the value **true**, risk checks for the payment request are skipped and the transaction will not get a risk score.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataRisk')
+
+const AdditionalDataRiskStandaloneSchema = z
+  .strictObject({
+    'PayPal.CountryCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Shopper's country of residence in the form of ISO standard 3166 2-character country codes.",
+      }),
+    'PayPal.EmailId': z.string().exactOptional().openapi({ description: "Shopper's email." }),
+    'PayPal.FirstName': z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Shopper's first name." }),
+    'PayPal.LastName': z.string().exactOptional().openapi({ description: "Shopper's last name." }),
+    'PayPal.PayerId': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique PayPal Customer Account identification number. Character length and limitations: 13 single-byte alphanumeric characters.',
+      }),
+    'PayPal.Phone': z.string().exactOptional().openapi({ description: "Shopper's phone number." }),
+    'PayPal.ProtectionEligibility': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Allowed values:\n* **Eligible** — Merchant is protected by PayPal's Seller Protection Policy for Unauthorized Payments and Item Not Received.\n\n* **PartiallyEligible** — Merchant is protected by PayPal's Seller Protection Policy for Item Not Received.\n\n* **Ineligible** — Merchant is not protected under the Seller Protection Policy.",
+      }),
+    'PayPal.TransactionId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique transaction ID of the payment.' }),
+    avsResultRaw: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Raw AVS result received from the acquirer, where available. Example: D',
+      }),
+    bin: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Bank Identification Number of a credit card, which is the first six digits of a card number. Required for [tokenized card request](https://docs.adyen.com/online-payments/tokenization).',
+      }),
+    cvcResultRaw: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Raw CVC result received from the acquirer, where available. Example: 1',
+      }),
+    riskToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Unique identifier or token for the shopper's card details." }),
+    threeDAuthenticated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Boolean value indicating whether 3DS authentication was completed on this payment. Example: true',
+      }),
+    threeDOffered: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Boolean value indicating whether 3DS was offered for this payment. Example: true',
+      }),
+    tokenDataType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required for PayPal payments only. The only supported value is: **paypal**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataRiskStandalone')
+
+const AdditionalDataSubMerchantSchema = z
+  .strictObject({
+    'subMerchant.numberOfSubSellers': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. Indicates the number of sub-merchants contained in the request. For example, **3**.',
+      }),
+    'subMerchant.subSeller[subSellerNr].city': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The city of the sub-merchant's address.\n* Format: Alphanumeric\n* Maximum length: 13 characters",
+      }),
+    'subMerchant.subSeller[subSellerNr].country': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The three-letter country code of the sub-merchant's address. For example, **BRA** for Brazil. \n* Format: [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)\n* Fixed length: 3 characters",
+      }),
+    'subMerchant.subSeller[subSellerNr].email': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. The email address of the sub-merchant.\n* Format: Alphanumeric\n* Maximum length: 40 characters',
+      }),
+    'subMerchant.subSeller[subSellerNr].id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. A unique identifier that you create for the sub-merchant, used by schemes to identify the sub-merchant. \n* Format: Alphanumeric\n* Maximum length: 15 characters',
+      }),
+    'subMerchant.subSeller[subSellerNr].mcc': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The sub-merchant's 4-digit Merchant Category Code (MCC). \n* Format: Numeric\n* Fixed length: 4 digits",
+      }),
+    'subMerchant.subSeller[subSellerNr].name': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. The name of the sub-merchant. Based on scheme specifications, this value will overwrite the shopper statement  that will appear in the card statement.\nException: for acquirers in Brazil, this value does not overwrite the shopper statement.\n* Format: Alphanumeric\n* Maximum length: 22 characters',
+      }),
+    'subMerchant.subSeller[subSellerNr].phoneNumber': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. The phone number of the sub-merchant.\n* Format: Alphanumeric and special characters\n* Maximum length: 20 characters',
+      }),
+    'subMerchant.subSeller[subSellerNr].postalCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The postal code of the sub-merchant's address, without dashes.\n* Format: Numeric\n* Fixed length: 8 digits",
+      }),
+    'subMerchant.subSeller[subSellerNr].state': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The state code of the sub-merchant's address, if applicable to the country.\n* Format: Alphanumeric\n* Maximum length: 2 characters",
+      }),
+    'subMerchant.subSeller[subSellerNr].street': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The street name and house number of the sub-merchant's address.\n* Format: Alphanumeric\n* Maximum length: 60 characters",
+      }),
+    'subMerchant.subSeller[subSellerNr].taxId': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. The tax ID of the sub-merchant.\n* Format: Numeric\n* Fixed length: 11 digits for the CPF or 14 digits for the CNPJ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataSubMerchant')
+
+const AdditionalDataTemporaryServicesSchema = z
+  .strictObject({
+    'enhancedSchemeData.customerReference': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The customer code, if supplied by a customer.\n* Encoding: ASCII\n* maxLength: 25',
+      }),
+    'enhancedSchemeData.employeeName': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name or ID of the person working in a temporary capacity.\n* maxLength: 40.  \n* Must not be all spaces. \n*Must not be all zeros.',
+      }),
+    'enhancedSchemeData.jobDescription': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The job description of the person working in a temporary capacity.\n* maxLength: 40 \n* Must not be all spaces. \n*Must not be all zeros.',
+      }),
+    'enhancedSchemeData.regularHoursRate': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount paid for regular hours worked, [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* maxLength: 7\n* Must not be empty\n* Can be all zeros',
+      }),
+    'enhancedSchemeData.regularHoursWorked': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The hours worked.\n* maxLength: 7\n* Must not be empty\n* Can be all zeros',
+      }),
+    'enhancedSchemeData.requestName': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the person requesting temporary services.\n* maxLength: 40\n* Must not be all zeros\n* Must not be all spaces',
+      }),
+    'enhancedSchemeData.tempStartDate': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The billing period start date.\n* Format: ddMMyy\n* maxLength: 6' }),
+    'enhancedSchemeData.tempWeekEnding': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The billing period end date.\n* Format: ddMMyy\n* maxLength: 6' }),
+    'enhancedSchemeData.totalTaxAmount': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes). For example, 2000 means USD 20.00\n* maxLength: 12',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataTemporaryServices')
+
+const AdditionalDataWalletsSchema = z
+  .strictObject({
+    'androidpay.token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Android Pay token retrieved from the SDK.' }),
+    'masterpass.transactionId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Mastercard Masterpass Transaction ID retrieved from the SDK.' }),
+    'payment.token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Apple Pay token retrieved from the SDK.' }),
+    'paywithgoogle.token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Google Pay token retrieved from the SDK.' }),
+    'samsungpay.token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Samsung Pay token retrieved from the SDK.' }),
+    'visacheckout.callId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Visa Checkout Call ID retrieved from the SDK.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalDataWallets')
+
+const AddressSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .max(3000)
+      .openapi({ description: 'The name of the city. Maximum length: 3000 characters.' }),
+    country: z
+      .string()
+      .openapi({
+        description:
+          "The two-character ISO-3166-1 alpha-2 country code. For example, **US**.\n> If you don't know the country or are not collecting the country from the shopper, provide `country` as `ZZ`.",
+      }),
+    houseNumberOrName: z
+      .string()
+      .max(3000)
+      .openapi({
+        description: 'The number or name of the house. Maximum length: 3000 characters.',
+      }),
+    postalCode: z
+      .string()
+      .openapi({
+        description:
+          'A maximum of five digits for an address in the US, or a maximum of ten characters for an address in all other countries.',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-character ISO 3166-2 state or province code. For example, **CA** in the US or **ON** in Canada.\n> Required for the US and Canada.',
+      }),
+    street: z
+      .string()
+      .max(3000)
+      .openapi({
+        description:
+          'The name of the street. Maximum length: 3000 characters.\n> The house number should not be included in this field; it should be separately provided via `houseNumberOrName`.',
+      }),
+  })
+  .openapi({ required: ['city', 'country', 'houseNumberOrName', 'postalCode', 'street'] })
+  .openapi('Address')
+
+const AffirmDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    financingProgram: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Affirm financing program to apply to this transaction.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('affirm')
+      .default('affirm')
+      .exactOptional()
+      .openapi({ description: '**affirm**' }),
+  })
+  .openapi({ title: 'Affirm', required: [] })
+  .openapi('AffirmDetails')
+
+const AfterpayDetailsSchema = z
+  .strictObject({
+    billingAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where to send the invoice.' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    deliveryAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where the goods should be delivered.' }),
+    personalDetails: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shopper name, date of birth, phone number, and email address.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .enum(['afterpay_default', 'afterpaytouch', 'afterpaytouch_US', 'afterpay_b2b', 'clearpay'])
+      .default('afterpay_default')
+      .openapi({ description: '**afterpay_default**' }),
+  })
+  .openapi({ required: ['type'], title: 'Afterpay' })
+  .openapi('AfterpayDetails')
+
+const AgencySchema = z
+  .strictObject({
+    invoiceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference number for the invoice, issued by the agency.\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 6 characters\n* **additionalData key:** `airline.agency_invoice_number`',
+      }),
+    planName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-letter agency plan identifier.\n* Encoding: ASCII\n* minLength: 2 characters\n* maxLength: 2 characters\n* **additionalData key:** `airline.agency_plan_name`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Agency')
+
+const LegSchema = z
+  .strictObject({
+    carrierCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) 2-letter accounting code (PAX) that identifies the carrier.\nThis field is required if the airline data includes leg details.\n* Example: KLM = KL\n* minLength: 2 characters\n* maxLength: 2 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.leg[N].carrier_code`',
+      }),
+    classOfTravel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A one-letter travel class identifier.\n The following are common:\n * F: first class\n* J: business class\n* Y: economy class\n* W: premium economy\n\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 1 character\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.leg[N].class_of_travel`',
+      }),
+    dateOfTravel: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Date and time of travel in format `yyyy-MM-ddTHH:mm`.\n* Use local time of departure airport.\n* minLength: 16 characters\n* maxLength: 16 characters\n* **additionalData key:** `airline.leg[N].date_of_travel`',
+      }),
+    departureAirportCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) three-letter airport code of the departure airport.\nThis field is required if the airline data includes leg details.\n\n* Encoding: ASCII\n* Example: Amsterdam = AMS\n* minLength: 3 characters\n* maxLength: 3 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.leg[N].depart_airport`',
+      }),
+    departureTax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The amount of [departure tax](https://en.wikipedia.org/wiki/Departure_tax) charged, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Encoding: Numeric\n* minLength: 1\n* maxLength: 11\n* Must not be all zeros.\n* **additionalData key:** `airline.leg[N].depart_tax`',
+      }),
+    destinationAirportCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) 3-letter airport code of the destination airport.\nThis field is required if the airline data includes leg details.\n* Example: Amsterdam = AMS\n* Encoding: ASCII\n* minLength: 3 characters\n* maxLength: 3 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.leg[N].destination_code`',
+      }),
+    fareBasisCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [fare basis code](https://en.wikipedia.org/wiki/Fare_basis_code), alphanumeric.\n* minLength: 1 character\n* maxLength: 15 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.leg[N].fare_base_code`',
+      }),
+    flightNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The flight identifier.\n* minLength: 1 character\n* maxLength: 5 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.leg[N].flight_number`',
+      }),
+    stopOverCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A one-letter code that indicates whether the passenger is entitled to make a stopover. Can be a space, O if the passenger is entitled to make a stopover, or X if they are not.\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 1 character\n* **additionalData key:** `airline.leg[N].stop_over_code`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Leg')
+
+const PassengerSchema = z
+  .strictObject({
+    dateOfBirth: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          "The passenger's date of birth.\n* Format `yyyy-MM-dd`\n* minLength: 10\n* maxLength: 10\n* **additionalData key:** `airline.passenger[N].date_of_birth`",
+      }),
+    firstName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The passenger's first name.\n> This field is required if the airline data includes passenger details or leg details.\n* Encoding: ASCII\n* **additionalData key:** `airline.passenger[N].first_name`",
+      }),
+    lastName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The passenger's last name.\n> This field is required if the airline data includes passenger details or leg details.\n* Encoding: ASCII\n* **additionalData key:** `airline.passenger[N].last_name`",
+      }),
+    phoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The passenger's phone number, including country code. This is an alphanumeric field that can include the '+' and '-' signs.\n* Encoding: ASCII\n* minLength: 3 characters\n* maxLength: 30 characters\n* **additionalData key:** `airline.passenger[N].phone_number`",
+      }),
+    travellerType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IATA passenger type code (PTC).\n* Encoding: ASCII\n* minLength: 3 characters\n* maxLength: 6 characters\n* **additionalData key:** `airline.passenger[N].traveller_type`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Passenger')
+
+const TicketSchema = z
+  .strictObject({
+    issueAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The address of the organization that issued the ticket.\n* minLength: 0 characters\n* maxLength: 16 characters\n* **additionalData key:** `airline.ticket_issue_address`',
+      }),
+    issueDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date that the ticket was issued to the passenger.\n* minLength: 10 characters\n* maxLength: 10 characters\n* Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd\n* **additionalData key:** `airline.issue_date`',
+      }),
+    number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ticket's unique identifier.\n* minLength: 1 character\n* maxLength: 15 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.ticket_number`",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Ticket')
+
+const TravelAgencySchema = z
+  .strictObject({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier from IATA or ARC for the travel agency that issues the ticket.\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 8 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.travel_agency_code`',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the travel agency.\n\n* Encoding: ASCII\n* minLength: 1 character\n* maxLength: 25 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.travel_agency_name`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TravelAgency')
+
+const AirlineSchema = z
+  .strictObject({
+    agency: AgencySchema.exactOptional(),
+    boardingFee: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The amount charged for boarding the plane, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* Encoding: Numeric\n* minLength: 1 character\n* maxLength: 11 characters\n* **additionalData key:** `airline.boarding_fee`',
+      }),
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) 3-digit accounting code (PAX) that identifies the carrier.\n* Format: IATA 3-digit accounting code (PAX)\n* Example: KLM = 074\n* minLength: 3 characters\n* maxLength: 3 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.airline_code`',
+      }),
+    computerizedReservationSystem: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          ' The [CRS](https://en.wikipedia.org/wiki/Computer_reservation_system) used to make the reservation and purchase the ticket.\n* Encoding: ASCII\n* minLength: 4 characters\n* maxLength: 4 characters\n* **additionalData key:** `airline.computerized_reservation_system`',
+      }),
+    customerReferenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The alphanumeric customer reference number.\n* Encoding: ASCII\n* maxLength: 20 characters\n* If you send more than 20 characters, the customer reference number is truncated\n* Must not start with a space or be all spaces.\n* **additionalData key:** `airline.customer_reference_number`',
+      }),
+    designatorCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [IATA](https://www.iata.org/services/pages/codes.aspx) 2-letter accounting code (PAX) that identifies the carrier.\n* Encoding: ASCII\n* Example: KLM = KL\n* minLength: 2 characters\n* maxLength: 2 characters\n* Must not start with a space or be all spaces.\n* **additionalData key:** `airline.airline_designator_code`',
+      }),
+    documentType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A code that identifies the type of item bought. The description of the code can appear on credit card statements.\n* Encoding: ASCII\n* Example: Passenger ticket = 01\n* minLength: 2 characters\n* maxLength: 2 characters\n* **additionalData key:** `airline.document_type`',
+      }),
+    flightDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The flight departure date. Time is optional.\n* Format for date only: `yyyy-MM-dd`\n* Format for date and time: `yyyy-MM-ddTHH:mm`\n* Use local time of departure airport.\n* minLength: 10 characters\n* maxLength: 16 characters\n* **additionalData key:** `airline.flight_date`',
+      }),
+    legs: z.array(LegSchema).exactOptional(),
+    passengerName: z
+      .string()
+      .openapi({
+        description:
+          "The passenger's name, initials, and title.\n* Format: last name + first name or initials + title\n* Example: *FLYER / MARY MS*\n* minLength: 1 character\n* maxLength: 20 characters\n* If you send more than 20 characters, the name is truncated\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `airline.passenger_name`",
+      }),
+    passengers: z.array(PassengerSchema).exactOptional(),
+    ticket: TicketSchema.exactOptional(),
+    travelAgency: TravelAgencySchema.exactOptional(),
+  })
+  .openapi({ required: ['passengerName'] })
+  .openapi('Airline')
+
+const AlmaDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    feeType: z
+      .enum(['merchantPays', 'shopperPays'])
+      .exactOptional()
+      .openapi({ description: '**Alma payment request fee type**' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z.literal('alma').exactOptional().openapi({ description: 'The payment method type.' }),
+  })
+  .openapi({ title: 'Alma', required: [] })
+  .openapi('AlmaDetails')
+
+const AmazonPayDetailsSchema = z
+  .strictObject({
+    amazonPayToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `amazonPayToken` that you obtained from the [Get Checkout Session](https://amazon-pay-acquirer-guide.s3-eu-west-1.amazonaws.com/v1/amazon-pay-api-v2/checkout-session.html#get-checkout-session) response. This token is used for API only integration specifically.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    checkoutSessionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `checkoutSessionId` is used to identify the checkout session at the Amazon Pay side. This field is required only for drop-in and components integration, where it replaces the amazonPayToken.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('amazonpay')
+      .default('amazonpay')
+      .exactOptional()
+      .openapi({ description: '**amazonpay**' }),
+  })
+  .openapi({ title: 'Amazon Pay', required: [] })
+  .openapi('AmazonPayDetails')
+
+const AmountSchema = z
+  .strictObject({
+    currency: z
+      .string()
+      .length(3)
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount.',
+      }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).',
+      }),
+  })
+  .openapi({ required: ['currency', 'value'] })
+  .openapi('Amount')
+
+const AmountsSchema = z
+  .strictObject({
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes/).',
+      }),
+    values: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .openapi({
+        description:
+          'The amounts of the donation (in [minor units](https://docs.adyen.com/development-resources/currency-codes/)).',
+      }),
+  })
+  .openapi({ required: ['currency', 'values'] })
+  .openapi('Amounts')
+
+const AncvDetailsSchema = z
+  .strictObject({
+    beneficiaryId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ANCV account identification (email or account number)' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('ancv').exactOptional().openapi({ description: '**ancv**' }),
+  })
+  .openapi({ title: 'ANCV', required: [] })
+  .openapi('AncvDetails')
+
+const AndroidPayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('androidpay')
+      .default('androidpay')
+      .exactOptional()
+      .openapi({ description: '**androidpay**' }),
+  })
+  .openapi({ title: 'Android Pay', required: [] })
+  .openapi('AndroidPayDetails')
+
+const AppIdentifierInfoSchema = z
+  .strictObject({
+    androidPackageId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Android package identifier for this app.' }),
+    iosScheme: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The iOS URL scheme for this app.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppIdentifierInfo')
+
+const ApplePayDetailsSchema = z
+  .strictObject({
+    applePayToken: z
+      .string()
+      .max(10000)
+      .openapi({
+        description:
+          'The stringified and base64 encoded `paymentData` you retrieved from the Apple framework.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('applepay')
+      .default('applepay')
+      .exactOptional()
+      .openapi({ description: '**applepay**' }),
+  })
+  .openapi({ required: ['applePayToken'], title: 'Apple Pay' })
+  .openapi('ApplePayDetails')
+
+const ApplePayDonationsSchema = z
+  .strictObject({
+    applePayToken: z
+      .string()
+      .max(10000)
+      .openapi({
+        description:
+          'The stringified and base64 encoded `paymentData` you retrieved from the Apple framework.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('applepay')
+      .default('applepay')
+      .exactOptional()
+      .openapi({ description: '**applepay**' }),
+  })
+  .openapi({ required: ['applePayToken'], title: 'Apple Pay' })
+  .openapi('ApplePayDonations')
+
+const ApplePaySessionRequestSchema = z
+  .strictObject({
+    displayName: z
+      .string()
+      .max(64)
+      .openapi({
+        description:
+          'This is the name that your shoppers will see in the Apple Pay interface.\n\nThe value returned as `configuration.merchantName` field from the [`/paymentMethods`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/paymentMethods) response.',
+      }),
+    domainName: z
+      .string()
+      .openapi({
+        description:
+          'The domain name you provided when you added Apple Pay in your Customer Area.\n\nThis must match the `window.location.hostname` of the web shop.',
+      }),
+    merchantIdentifier: z
+      .string()
+      .openapi({
+        description:
+          'Your merchant identifier registered with Apple Pay.\n\nUse the value of the `configuration.merchantId` field from the [`/paymentMethods`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/paymentMethods) response.',
+      }),
+  })
+  .openapi({ required: ['displayName', 'domainName', 'merchantIdentifier'] })
+  .openapi('ApplePaySessionRequest')
+
+const ApplePaySessionResponseSchema = z
+  .strictObject({
+    data: z
+      .string()
+      .openapi({
+        description:
+          'Base64 encoded data you need to [complete the Apple Pay merchant validation](https://docs.adyen.com/payment-methods/apple-pay/api-only?tab=adyen-certificate-validation_1#complete-apple-pay-session-validation).',
+      }),
+  })
+  .openapi({ required: ['data'] })
+  .openapi('ApplePaySessionResponse')
+
+const CommonFieldSchema = z
+  .strictObject({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the field. For example, Name of External Platform.' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the field. For example, Version of External Platform.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CommonField')
+
+const ExternalPlatformSchema = z
+  .strictObject({
+    integrator: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'External platform integrator.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the field. For example, Name of External Platform.' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the field. For example, Version of External Platform.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ExternalPlatform')
+
+const MerchantDeviceSchema = z
+  .strictObject({
+    os: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Operating system running on the merchant device.' }),
+    osVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the operating system on the merchant device.' }),
+    reference: z.string().exactOptional().openapi({ description: 'Merchant device reference.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MerchantDevice')
+
+const ShopperInteractionDeviceSchema = z
+  .strictObject({
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Locale on the shopper interaction device.' }),
+    os: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Operating system running on the shopper interaction device.' }),
+    osVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Version of the operating system on the shopper interaction device.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShopperInteractionDevice')
+
+const ApplicationInfoSchema = z
+  .strictObject({
+    adyenLibrary: CommonFieldSchema.exactOptional().openapi({
+      description:
+        'Adyen-developed software, such as libraries and plugins, used to interact with the Adyen API. For example, Magento plugin, Java API library, etc.',
+    }),
+    adyenPaymentSource: CommonFieldSchema.exactOptional().openapi({
+      description:
+        'Adyen-developed software to get payment details. For example, Checkout SDK, Secured Fields SDK, etc.',
+    }),
+    externalPlatform: ExternalPlatformSchema.exactOptional().openapi({
+      description:
+        'Third-party developed platform used to initiate payment requests. For example, Magento, Zuora, etc.',
+    }),
+    merchantApplication: CommonFieldSchema.exactOptional().openapi({
+      description:
+        'Merchant developed software, such as cashier application, used to interact with the Adyen API.',
+    }),
+    merchantDevice: MerchantDeviceSchema.exactOptional().openapi({
+      description: 'Merchant device information.',
+    }),
+    shopperInteractionDevice: ShopperInteractionDeviceSchema.exactOptional().openapi({
+      description:
+        'Shopper interaction device, such as terminal, mobile device or web browser, to initiate payment requests.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApplicationInfo')
+
+const AuPayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('aupay').default('aupay').exactOptional().openapi({ description: '**aupay**' }),
+  })
+  .openapi({ title: 'AuPay', required: [] })
+  .openapi('AuPayDetails')
+
+const ThreeDSRequestDataSchema = z
+  .strictObject({
+    challengeWindowSize: z
+      .enum(['01', '02', '03', '04', '05'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions of the 3DS2 challenge window to be displayed to the cardholder.\n\nPossible values:\n\n* **01** - size of 250x400 \n* **02** - size of 390x400\n* **03** - size of 500x600\n* **04** - size of 600x400\n* **05** - Fullscreen',
+        'x-addedInVersion': '69',
+      }),
+    dataOnly: z
+      .enum(['false', 'true'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required to trigger the [data-only flow](https://docs.adyen.com/online-payments/3d-secure/data-only/). When set to **true**, forces the 3D Secure 2 data-only flow for all transactions where it is possible. ',
+        'x-addedInVersion': '69',
+      }),
+    nativeThreeDS: z
+      .enum(['preferred', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates if [native 3D Secure authentication](https://docs.adyen.com/online-payments/3d-secure/native-3ds2) should be triggered when available. Adyen can still select to fallback to the redirect flow to optimize authorization rates and improve the shopper's experience.\n\nPossible values:\n* **preferred**: Use native 3D Secure authentication when available.\n* **disabled**: Use the redirect 3D Secure authentication flow.",
+        'x-addedInVersion': '69',
+      }),
+    threeDSVersion: z
+      .enum(['2.1.0', '2.2.0'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The version of 3D Secure to use.\n\nPossible values:\n\n* **2.1.0**\n* **2.2.0**',
+        'x-addedInVersion': '69',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ThreeDSRequestData')
+
+const AuthenticationDataSchema = z
+  .strictObject({
+    attemptAuthentication: z
+      .enum(['always', 'never'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates when 3D Secure authentication should be attempted. This overrides all other rules, including [Dynamic 3D Secure settings](https://docs.adyen.com/risk-management/dynamic-3d-secure).\n\nPossible values:\n\n* **always**: Perform 3D Secure authentication.\n* **never**: Don't perform 3D Secure authentication. If PSD2 SCA or other national regulations require authentication, the transaction gets declined.",
+        'x-addedInVersion': '69',
+      }),
+    authenticationOnly: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.\nDefault: **false**.',
+        'x-addedInVersion': '69',
+      }),
+    threeDSRequestData: ThreeDSRequestDataSchema.exactOptional().openapi({
+      description: 'Object with additional parameters for the 3D Secure authentication flow.',
+      'x-addedInVersion': '69',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AuthenticationData')
+
+const BacsDirectDebitDetailsSchema = z
+  .strictObject({
+    bankAccountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The bank account number (without separators).',
+        'x-addedInVersion': '65',
+      }),
+    bankLocationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The bank routing number of the account.',
+        'x-addedInVersion': '65',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    holderName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the bank account holder.', 'x-addedInVersion': '65' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    transferInstrumentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unique identifier of your user's verified transfer instrument, which you can use to top up their balance accounts.",
+      }),
+    type: z
+      .literal('directdebit_GB')
+      .default('directdebit_GB')
+      .exactOptional()
+      .openapi({ description: '**directdebit_GB**' }),
+  })
+  .openapi({ title: 'BACS Direct Debit', required: [] })
+  .openapi('BacsDirectDebitDetails')
+
+const BrowserInfoSchema = z
+  .strictObject({
+    acceptHeader: z
+      .string()
+      .openapi({ description: "The accept header value of the shopper's browser." }),
+    colorDepth: z
+      .int32()
+      .openapi({
+        description:
+          "The color depth of the shopper's browser in bits per pixel. This should be obtained by using the browser's `screen.colorDepth` property. Accepted values: 1, 4, 8, 15, 16, 24, 30, 32 or 48 bit color depth.",
+        'x-addedInVersion': '40',
+      }),
+    javaEnabled: z
+      .boolean()
+      .openapi({
+        description: "Boolean value indicating if the shopper's browser is able to execute Java.",
+        'x-addedInVersion': '40',
+      }),
+    javaScriptEnabled: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          "Boolean value indicating if the shopper's browser is able to execute JavaScript. A default 'true' value is assumed if the field is not present.",
+        'x-addedInVersion': '40',
+      }),
+    language: z
+      .string()
+      .openapi({
+        description:
+          "The `navigator.language` value of the shopper's browser (as defined in IETF BCP 47).",
+        'x-addedInVersion': '40',
+      }),
+    screenHeight: z
+      .int32()
+      .openapi({
+        description: "The total height of the shopper's device screen in pixels.",
+        'x-addedInVersion': '40',
+      }),
+    screenWidth: z
+      .int32()
+      .openapi({
+        description: "The total width of the shopper's device screen in pixels.",
+        'x-addedInVersion': '40',
+      }),
+    timeZoneOffset: z
+      .int32()
+      .openapi({
+        description:
+          "Time difference between UTC time and the shopper's browser local time, in minutes.",
+        'x-addedInVersion': '40',
+      }),
+    userAgent: z
+      .string()
+      .openapi({ description: "The user agent value of the shopper's browser." }),
+  })
+  .openapi({
+    required: [
+      'acceptHeader',
+      'colorDepth',
+      'javaEnabled',
+      'language',
+      'screenHeight',
+      'screenWidth',
+      'timeZoneOffset',
+      'userAgent',
+    ],
+  })
+  .openapi('BrowserInfo')
+
+const ForexQuoteSchema = z
+  .strictObject({
+    account: z.string().exactOptional().openapi({ description: 'The account name.' }),
+    accountType: z.string().exactOptional().openapi({ description: 'The account type.' }),
+    baseAmount: AmountSchema.exactOptional().openapi({ description: 'The base amount.' }),
+    basePoints: z.int32().openapi({ description: 'The base points.' }),
+    buy: AmountSchema.exactOptional().openapi({ description: 'The buy rate.' }),
+    interbank: AmountSchema.exactOptional().openapi({ description: 'The interbank amount.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference assigned to the forex quote request.' }),
+    sell: AmountSchema.exactOptional().openapi({ description: 'The sell rate.' }),
+    signature: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The signature to validate the integrity.' }),
+    source: z.string().exactOptional().openapi({ description: 'The source of the forex quote.' }),
+    type: z.string().exactOptional().openapi({ description: 'The type of forex.' }),
+    validTill: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The date until which the forex quote is valid.' }),
+  })
+  .openapi({ required: ['basePoints', 'validTill'] })
+  .openapi('ForexQuote')
+
+const InstallmentsSchema = z
+  .strictObject({
+    extra: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the bonus percentage, refund percentage or if the transaction is Buy now Pay later.\nUsed for [card installments in Mexico](https://docs.adyen.com/payment-methods/cards/credit-card-installments/#getting-paid-mexico)\n',
+        'x-addedInVersion': '68',
+      }),
+    plan: z
+      .enum([
+        'bonus',
+        'buynow_paylater',
+        'interes_refund_prctg',
+        'interest_bonus',
+        'nointeres_refund_prctg',
+        'nointerest_bonus',
+        'refund_prctg',
+        'regular',
+        'revolving',
+        'with_interest',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The installment plan, used for [card installments in Japan](https://docs.adyen.com/payment-methods/cards/credit-card-installments#make-a-payment-japan).\nand [Mexico](https://docs.adyen.com/payment-methods/cards/credit-card-installments/#getting-paid-mexico).\nBy default, this is set to **regular**.\n',
+        'x-addedInVersion': '64',
+      }),
+    value: z
+      .int32()
+      .openapi({
+        description:
+          'Defines the number of installments.\nUsually, the maximum allowed number of installments is capped. For example, it may not be possible to split a payment in more than 24 installments. The acquirer sets this upper limit, so its value may vary.\nThis value can be zero for Installments processed in Mexico.',
+      }),
+  })
+  .openapi({ required: ['value'] })
+  .openapi('Installments')
+
+const MerchantRiskIndicatorSchema = z
+  .strictObject({
+    addressMatch: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the chosen delivery address is identical to the billing address.',
+      }),
+    deliveryAddressIndicator: z
+      .enum([
+        'shipToBillingAddress',
+        'shipToVerifiedAddress',
+        'shipToNewAddress',
+        'shipToStore',
+        'digitalGoods',
+        'goodsNotShipped',
+        'other',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicator regarding the delivery address.\nAllowed values:\n* `shipToBillingAddress`\n* `shipToVerifiedAddress`\n* `shipToNewAddress`\n* `shipToStore`\n* `digitalGoods`\n* `goodsNotShipped`\n* `other`',
+      }),
+    deliveryEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The delivery email address (for digital goods).',
+        'x-deprecatedInVersion': '68',
+        'x-deprecatedMessage': 'Use `deliveryEmailAddress` instead.',
+      }),
+    deliveryEmailAddress: z
+      .string()
+      .max(254)
+      .exactOptional()
+      .openapi({
+        description:
+          'For Electronic delivery, the email address to which the merchandise was delivered. Maximum length: 254 characters.',
+        'x-addedInVersion': '68',
+      }),
+    deliveryTimeframe: z
+      .enum(['electronicDelivery', 'sameDayShipping', 'overnightShipping', 'twoOrMoreDaysShipping'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The estimated delivery time for the shopper to receive the goods.\nAllowed values:\n* `electronicDelivery`\n* `sameDayShipping`\n* `overnightShipping`\n* `twoOrMoreDaysShipping`',
+      }),
+    giftCardAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'For prepaid or gift card purchase, the purchase amount total of prepaid or gift card(s).',
+    }),
+    giftCardCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'For prepaid or gift card purchase, total count of individual prepaid or gift cards/codes purchased.',
+      }),
+    giftCardCurr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For prepaid or gift card purchase, [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) three-digit currency code of the gift card, other than those listed in Table A.5 of the EMVCo 3D Secure Protocol and Core Functions Specification.',
+        'x-addedInVersion': '68',
+      }),
+    preOrderDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'For pre-order purchases, the expected date this product will be available to the shopper.',
+      }),
+    preOrderPurchase: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicator for whether this transaction is for pre-ordering a product.',
+      }),
+    preOrderPurchaseInd: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether Cardholder is placing an order for merchandise with a future availability or release date.',
+        'x-addedInVersion': '68',
+      }),
+    reorderItems: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicator for whether the shopper has already purchased the same items in the past.',
+      }),
+    reorderItemsInd: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the cardholder is reordering previously purchased merchandise.',
+        'x-addedInVersion': '68',
+      }),
+    shipIndicator: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates shipping method chosen for the transaction.',
+        'x-addedInVersion': '68',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MerchantRiskIndicator')
+
+const RecurringSchema = z
+  .strictObject({
+    contract: z
+      .enum(['ONECLICK', 'ONECLICK,RECURRING', 'RECURRING', 'PAYOUT', 'EXTERNAL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of recurring contract to be used.\nPossible values:\n* `ONECLICK` – Payment details can be used to initiate a one-click payment, where the shopper enters the [card security code (CVC/CVV)](https://docs.adyen.com/payments-fundamentals/payment-glossary#card-security-code-cvc-cvv-cid).\n* `RECURRING` – Payment details can be used without the card security code to initiate [card-not-present transactions](https://docs.adyen.com/payments-fundamentals/payment-glossary#card-not-present-cnp).\n* `ONECLICK,RECURRING` – Payment details can be used regardless of whether the shopper is on your site or not.\n* `PAYOUT` – Payment details can be used to [make a payout](https://docs.adyen.com/online-payments/online-payouts).\n* `EXTERNAL` - Use this when you store payment details and send the raw card number or network token directly in your API request.\n',
+      }),
+    recurringDetailName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A descriptive name for this detail.' }),
+    recurringExpiry: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Date after which no further authorisations shall be performed. Only for 3D Secure 2.',
+        'x-addedInVersion': '40',
+      }),
+    recurringFrequency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Minimum number of days between authorisations. Only for 3D Secure 2.',
+        'x-addedInVersion': '40',
+      }),
+    tokenService: z
+      .enum(['VISATOKENSERVICE', 'MCTOKENSERVICE', 'AMEXTOKENSERVICE', 'TOKEN_SHARING'])
+      .exactOptional()
+      .openapi({ description: 'The name of the token service.', 'x-addedInVersion': '25' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Recurring')
+
+const NameSchema = z
+  .strictObject({
+    firstName: z.string().max(80).openapi({ description: 'The first name.' }),
+    lastName: z.string().max(80).openapi({ description: 'The last name.' }),
+  })
+  .openapi({ required: ['firstName', 'lastName'] })
+  .openapi('Name')
+
+const SplitAmountSchema = z
+  .strictObject({
+    currency: z
+      .string()
+      .length(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). By default, this is the original payment currency.',
+      }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The value of the split amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+  })
+  .openapi({ required: ['value'] })
+  .openapi('SplitAmount')
+
+const SplitSchema = z
+  .strictObject({
+    account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the account to which the split amount is booked. Required if `type` is **MarketPlace** or **BalanceAccount**.\n\n* [Classic Platforms integration](https://docs.adyen.com/classic-platforms): The [`accountCode`](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccount#request-accountCode) of the account to which the split amount is booked.\n* [Balance Platform](https://docs.adyen.com/adyen-for-platforms-model): The [`balanceAccountId`](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/_id_#path-id) of the account to which the split amount is booked.',
+      }),
+    amount: SplitAmountSchema.exactOptional().openapi({
+      description:
+        'The amount of the split item.\n\n* Required for all split types in the [Classic Platforms integration](https://docs.adyen.com/classic-platforms).\n* Required if `type` is **BalanceAccount**, **Commission**, **Surcharge**, **Default**, or **VAT** in your [Balance Platform](https://docs.adyen.com/adyen-for-platforms-model) integration.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Your description for the split item.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your unique reference for the part of the payment booked to the specified `account`.\n\nThis is required if `type` is **MarketPlace** ([Classic Platforms integration](https://docs.adyen.com/classic-platforms)) or **BalanceAccount** ([Balance Platform](https://docs.adyen.com/adyen-for-platforms-model)).\n\nFor the other types, we also recommend providing a **unique** reference so you can reconcile the split and the associated payment in the transaction overview and in the reports.',
+      }),
+    type: z
+      .enum([
+        'AcquiringFees',
+        'AdyenCommission',
+        'AdyenFees',
+        'AdyenMarkup',
+        'BalanceAccount',
+        'Commission',
+        'Default',
+        'Interchange',
+        'MarketPlace',
+        'PaymentFee',
+        'Remainder',
+        'SchemeFee',
+        'Surcharge',
+        'Tip',
+        'TopUp',
+        'VAT',
+      ])
+      .openapi({
+        description:
+          "The part of the payment you want to book to the specified `account`.\n\nPossible values for the [Balance Platform](https://docs.adyen.com/adyen-for-platforms-model):\n* **BalanceAccount**: Books part of the payment (specified in `amount`) to the specified `account`.\n* Transaction fees types that you can book to the specified `account`:\n   * **AcquiringFees**: The aggregated amount of the interchange and scheme fees.\n   * **PaymentFee**: The aggregated amount of all transaction fees.\n   * **AdyenFees**: The aggregated amount of Adyen's commission and markup fees.\n   * **AdyenCommission**: The transaction fees due to Adyen under [blended rates](https://www.adyen.com/knowledge-hub/interchange-fees-explained).\n   * **AdyenMarkup**: The transaction fees due to Adyen under [Interchange ++ pricing](https://www.adyen.com/knowledge-hub/interchange-fees-explained).\n   * **Interchange**: The fees paid to the issuer for each payment made with the card network.\n   * **SchemeFee**: The fees paid to the card scheme for using their network. \n* **Commission**: Your platform's commission on the payment (specified in `amount`), booked to your liable balance account.\n* **Remainder**: The amount left over after a currency conversion, booked to the specified `account`.\n* **Surcharge**: The payment acceptance fee imposed by the card scheme or debit network provider, paid by your user's customer.\n* **TopUp**: Allows you and your users to top up balance accounts using direct debit, card payments, or other payment methods.\n* **VAT**: The value-added tax charged on the payment, booked to your platforms liable balance account.\n* **Default**: In very specific use cases, allows you to book the specified `amount` to the specified `account`. For more information, contact Adyen support.\n\nPossible values for the [Classic Platforms integration](https://docs.adyen.com/classic-platforms): **Commission**, **Default**, **MarketPlace**, **PaymentFee**, **VAT**.",
+      }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('Split')
+
+const DeviceRenderOptionsSchema = z
+  .strictObject({
+    sdkInterface: z
+      .enum(['native', 'html', 'both'])
+      .default('both')
+      .exactOptional()
+      .openapi({
+        description: 'Supported SDK interface types.\nAllowed values:\n* native\n* html\n* both',
+      }),
+    sdkUiType: z
+      .array(z.enum(['multiSelect', 'otherHtml', 'outOfBand', 'singleSelect', 'text']))
+      .exactOptional()
+      .openapi({
+        description:
+          'UI types supported for displaying specific challenges.\nAllowed values:\n* text\n* singleSelect\n* outOfBand\n* otherHtml\n* multiSelect',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeviceRenderOptions')
+
+const PhoneSchema = z
+  .strictObject({
+    cc: z
+      .string()
+      .min(1)
+      .max(3)
+      .exactOptional()
+      .openapi({ description: 'Country code. Length: 1–3 digits.' }),
+    subscriber: z
+      .string()
+      .max(15)
+      .exactOptional()
+      .openapi({ description: 'Subscriber number. Length: 4-15  digits.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Phone')
+
+const SDKEphemPubKeySchema = z
+  .strictObject({
+    crv: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `crv` value as received from the 3D Secure 2 SDK.' }),
+    kty: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `kty` value as received from the 3D Secure 2 SDK.' }),
+    x: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `x` value as received from the 3D Secure 2 SDK.' }),
+    y: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `y` value as received from the 3D Secure 2 SDK.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SDKEphemPubKey')
+
+const ThreeDSRequestorAuthenticationInfoSchema = z
+  .strictObject({
+    threeDSReqAuthData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Data that documents and supports a specific authentication process. Maximum length: 2048 bytes.',
+      }),
+    threeDSReqAuthMethod: z
+      .enum(['01', '02', '03', '04', '05', '06'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Mechanism used by the Cardholder to authenticate to the 3DS Requestor. Allowed values:\n* **01** — No 3DS Requestor authentication occurred (for example, cardholder “logged in” as guest).\n* **02** — Login to the cardholder account at the 3DS Requestor system using 3DS Requestor’s own credentials.\n* **03** — Login to the cardholder account at the 3DS Requestor system using federated ID.\n* **04** — Login to the cardholder account at the 3DS Requestor system using issuer credentials.\n* **05** — Login to the cardholder account at the 3DS Requestor system using third-party authentication.\n* **06** — Login to the cardholder account at the 3DS Requestor system using FIDO Authenticator.',
+      }),
+    threeDSReqAuthTimestamp: z
+      .string()
+      .length(12)
+      .exactOptional()
+      .openapi({
+        description: 'Date and time in UTC of the cardholder authentication. Format: YYYYMMDDHHMM',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ThreeDSRequestorAuthenticationInfo')
+
+const ThreeDSRequestorPriorAuthenticationInfoSchema = z
+  .strictObject({
+    threeDSReqPriorAuthData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Data that documents and supports a specific authentication process. Maximum length: 2048 bytes.',
+      }),
+    threeDSReqPriorAuthMethod: z
+      .enum(['01', '02', '03', '04'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Mechanism used by the Cardholder to previously authenticate to the 3DS Requestor. Allowed values:\n* **01** — Frictionless authentication occurred by ACS.\n* **02** — Cardholder challenge occurred by ACS.\n* **03** — AVS verified.\n* **04** — Other issuer methods.',
+      }),
+    threeDSReqPriorAuthTimestamp: z
+      .string()
+      .length(12)
+      .exactOptional()
+      .openapi({
+        description:
+          'Date and time in UTC of the prior cardholder authentication. Format: YYYYMMDDHHMM',
+      }),
+    threeDSReqPriorRef: z
+      .string()
+      .length(36)
+      .exactOptional()
+      .openapi({
+        description:
+          'This data element provides additional information to the ACS to determine the best approach for handing a request. This data element contains an ACS Transaction ID for a prior authenticated transaction. For example, the first recurring transaction that was authenticated with the cardholder. Length: 30 characters.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ThreeDSRequestorPriorAuthenticationInfo')
+
+const ThreeDS2RequestDataSchema = z
+  .strictObject({
+    acctInfo: AcctInfoSchema.exactOptional().openapi({
+      description:
+        'Additional information about the cardholder’s account provided by the 3DS Requestor.',
+      'x-addedInVersion': '68',
+    }),
+    acctType: z
+      .enum(['01', '02', '03'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the type of account. For example, for a multi-account card product. Length: 2 characters. Allowed values:\n* **01** — Not applicable\n* **02** — Credit\n* **03** — Debit',
+        'x-addedInVersion': '68',
+      }),
+    acquirerBIN: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only). The acquiring BIN enrolled for 3D Secure 2. This string should match the value that you will use in the authorisation. Use 123456 on the Test platform.',
+        'x-addedInVersion': '49',
+      }),
+    acquirerMerchantID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only). The merchantId that is enrolled for 3D Secure 2 by the merchant's acquirer. This string should match the value that you will use in the authorisation. Use 123456 on the Test platform.",
+        'x-addedInVersion': '49',
+      }),
+    addrMatch: z
+      .enum(['Y', 'N'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the cardholder shipping address and cardholder billing address are the same. Allowed values:\n* **Y** — Shipping address matches billing address.\n* **N** — Shipping address does not match billing address.',
+        'x-addedInVersion': '68',
+      }),
+    authenticationOnly: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'If set to true, you will only perform the [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only), and not the payment authorisation.',
+        'x-deprecatedInVersion': '50',
+        'x-deprecatedMessage': 'Use `threeDSAuthenticationOnly` instead.',
+      }),
+    challengeIndicator: z
+      .enum(['noPreference', 'requestNoChallenge', 'requestChallenge', 'requestChallengeAsMandate'])
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Possibility to specify a preference for receiving a challenge from the issuer.\nAllowed values:\n* `noPreference`\n* `requestNoChallenge`\n* `requestChallenge`\n* `requestChallengeAsMandate`\n',
+        'x-deprecatedInVersion': '68',
+        'x-deprecatedMessage': 'Use `threeDSRequestorChallengeInd` instead.',
+      }),
+    deviceChannel: z
+      .string()
+      .openapi({
+        description: 'The environment of the shopper.\nAllowed values:\n* `app`\n* `browser`',
+      }),
+    deviceRenderOptions: DeviceRenderOptionsSchema.exactOptional().openapi({
+      description:
+        'Display options for the 3D Secure 2 SDK.\nOptional and only for `deviceChannel` **app**.',
+    }),
+    homePhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The home phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+      'x-addedInVersion': '68',
+    }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for merchants that have been enrolled for 3D Secure 2 by another party than Adyen, mostly [authentication-only integrations](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only). The `mcc` is a four-digit code with which the previously given `acquirerMerchantID` is registered at the scheme.',
+        'x-addedInVersion': '49',
+      }),
+    merchantName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only). The merchant name that the issuer presents to the shopper if they get a challenge. We recommend to use the same value that you will use in the authorization. Maximum length is 40 characters.\n> Optional for a [full 3D Secure 2 integration](https://docs.adyen.com/online-payments/3d-secure/native-3ds2/api-integration). Use this field if you are enrolled for 3D Secure 2 with us and want to override the merchant name already configured on your account.',
+        'x-addedInVersion': '49',
+      }),
+    messageVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `messageVersion` value indicating the 3D Secure 2 protocol version.',
+      }),
+    mobilePhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The mobile phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+      'x-addedInVersion': '68',
+    }),
+    notificationURL: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL to where the issuer should send the `CRes`. Required if you are not using components for `channel` **Web** or if you are using classic integration `deviceChannel` **browser**.',
+      }),
+    payTokenInd: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value **true** indicates that the transaction was de-tokenised prior to being received by the ACS.',
+        'x-addedInVersion': '68',
+      }),
+    paymentAuthenticationUseCase: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the type of payment for which an authentication is requested (message extension)',
+        'x-addedInVersion': '68',
+      }),
+    purchaseInstalData: z
+      .string()
+      .min(1)
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the maximum number of authorisations permitted for instalment payments. Length: 1–3 characters.',
+        'x-addedInVersion': '68',
+      }),
+    recurringExpiry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date after which no further authorisations shall be performed. Format: YYYYMMDD',
+        'x-addedInVersion': '68',
+      }),
+    recurringFrequency: z
+      .string()
+      .max(4)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the minimum number of days between authorisations. Maximum length: 4 characters.',
+        'x-addedInVersion': '68',
+      }),
+    sdkAppID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `sdkAppID` value as received from the 3D Secure 2 SDK.\nRequired for `deviceChannel` set to **app**.',
+      }),
+    sdkEncData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `sdkEncData` value as received from the 3D Secure 2 SDK.\nRequired for `deviceChannel` set to **app**.',
+      }),
+    sdkEphemPubKey: SDKEphemPubKeySchema.exactOptional().openapi({
+      description:
+        'The `sdkEphemPubKey` value as received from the 3D Secure 2 SDK.\nRequired for `deviceChannel` set to **app**.',
+    }),
+    sdkMaxTimeout: z
+      .int32()
+      .default(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum amount of time in minutes for the 3D Secure 2 authentication process.\nOptional and only for `deviceChannel` set to **app**. Defaults to **60** minutes.',
+      }),
+    sdkReferenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `sdkReferenceNumber` value as received from the 3D Secure 2 SDK.\nOnly for `deviceChannel` set to **app**.',
+      }),
+    sdkTransID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `sdkTransID` value as received from the 3D Secure 2 SDK.\nOnly for `deviceChannel` set to **app**.',
+      }),
+    sdkVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Version of the 3D Secure 2 mobile SDK. \nOnly for `deviceChannel` set to **app**.',
+        'x-addedInVersion': '40',
+      }),
+    threeDSCompInd: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Completion indicator for the device fingerprinting.' }),
+    threeDSRequestorAuthenticationInd: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates the type of Authentication request.',
+        'x-addedInVersion': '68',
+      }),
+    threeDSRequestorAuthenticationInfo:
+      ThreeDSRequestorAuthenticationInfoSchema.exactOptional().openapi({
+        description:
+          'Information about how the 3DS Requestor authenticated the cardholder before or during the transaction',
+        'x-addedInVersion': '68',
+      }),
+    threeDSRequestorChallengeInd: z
+      .enum(['01', '02', '03', '04', '05', '06'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether a challenge is requested for this transaction. Possible values:\n* **01** — No preference\n* **02** — No challenge requested\n* **03** — Challenge requested (3DS Requestor preference)\n* **04** — Challenge requested (Mandate)\n* **05** — No challenge (transactional risk analysis is already performed)\n* **06** — Data Only',
+        'x-addedInVersion': '68',
+      }),
+    threeDSRequestorID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only) for Visa. Unique 3D Secure requestor identifier assigned by the Directory Server when you enrol for 3D Secure 2.',
+      }),
+    threeDSRequestorName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only) for Visa. Unique 3D Secure requestor name assigned by the Directory Server when you enrol for 3D Secure 2.',
+      }),
+    threeDSRequestorPriorAuthenticationInfo:
+      ThreeDSRequestorPriorAuthenticationInfoSchema.exactOptional().openapi({
+        description:
+          'Information about how the 3DS Requestor authenticated the cardholder as part of a previous 3DS transaction.',
+        'x-addedInVersion': '68',
+      }),
+    threeDSRequestorURL: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL of the (customer service) website that will be shown to the shopper in case of technical errors during the 3D Secure 2 process.',
+      }),
+    transType: z
+      .enum(['01', '03', '10', '11', '28'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies the type of transaction being authenticated. Length: 2 characters. Allowed values:\n* **01** — Goods/Service Purchase\n* **03** — Check Acceptance\n* **10** — Account Funding\n* **11** — Quasi-Cash Transaction\n* **28** — Prepaid Activation and Load',
+        'x-addedInVersion': '68',
+      }),
+    transactionType: z
+      .enum([
+        'goodsOrServicePurchase',
+        'checkAcceptance',
+        'accountFunding',
+        'quasiCashTransaction',
+        'prepaidActivationAndLoad',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Identify the type of the transaction being authenticated.',
+        'x-addedInVersion': '50',
+      }),
+    whiteListStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `whiteListStatus` value returned from a previous 3D Secure 2 transaction, only applicable for 3D Secure 2 protocol version 2.2.0.',
+        'x-addedInVersion': '49',
+      }),
+    workPhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The work phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+      'x-addedInVersion': '68',
+    }),
+  })
+  .openapi({ required: ['deviceChannel'] })
+  .openapi('ThreeDS2RequestData')
+
+const BalanceCheckRequestSchema = z
+  .strictObject({
+    accountInfo: AccountInfoSchema.exactOptional().openapi({
+      description:
+        'Shopper account information for 3D Secure 2.\n> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.',
+      'x-addedInVersion': '40',
+    }),
+    additionalAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'If you want a [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) request to use a non-zero value, assign this value to `additionalAmount` (while the amount must be still set to 0 to trigger BIN or card verification).\nRequired to be in the same currency as the `amount`. ',
+    }),
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains additional data, which may be required for a particular payment request.\n\nThe `additionalData` object consists of entries, each of which includes the key and value.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/AdditionalData3DSecure' },
+          { $ref: '#/components/schemas/AdditionalDataAirline' },
+          { $ref: '#/components/schemas/AdditionalDataCarRental' },
+          { $ref: '#/components/schemas/AdditionalDataCommon' },
+          { $ref: '#/components/schemas/AdditionalDataLevel23' },
+          { $ref: '#/components/schemas/AdditionalDataLodging' },
+          { $ref: '#/components/schemas/AdditionalDataOpenInvoice' },
+          { $ref: '#/components/schemas/AdditionalDataOpi' },
+          { $ref: '#/components/schemas/AdditionalDataRatepay' },
+          { $ref: '#/components/schemas/AdditionalDataRetry' },
+          { $ref: '#/components/schemas/AdditionalDataRisk' },
+          { $ref: '#/components/schemas/AdditionalDataRiskStandalone' },
+          { $ref: '#/components/schemas/AdditionalDataSubMerchant' },
+          { $ref: '#/components/schemas/AdditionalDataTemporaryServices' },
+          { $ref: '#/components/schemas/AdditionalDataWallets' },
+        ],
+      }),
+    amount: AmountSchema.openapi({
+      description:
+        'The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero).',
+    }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+      'x-addedInVersion': '40',
+    }),
+    billingAddress: AddressSchema.exactOptional().openapi({
+      description:
+        'The address where to send the invoice.\n> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.\n>* For 3D Secure 2 transactions in all browser-based and mobile implementations.\n>* For cross-border payouts to and from Canada.',
+      'x-addedInVersion': '4',
+    }),
+    browserInfo: BrowserInfoSchema.exactOptional().openapi({
+      description:
+        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.",
+    }),
+    captureDelayHours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The delay between the authorisation and scheduled auto-capture, specified in hours.',
+        'x-addedInVersion': '2',
+      }),
+    dateOfBirth: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's date of birth.\n\nFormat [ISO-8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DD",
+        'x-addedInVersion': '7',
+      }),
+    dccQuote: ForexQuoteSchema.exactOptional().openapi({
+      description: 'The forex quote as returned in the response of the forex service.',
+    }),
+    deliveryAddress: AddressSchema.exactOptional().openapi({
+      description: 'The address where the purchased goods should be delivered.',
+    }),
+    deliveryDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time the purchased goods should be delivered.\n\nFormat [ISO 8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DDThh:mm:ss.sssTZD\n\nExample: 2017-07-17T13:42:40.428+01:00',
+        'x-addedInVersion': '8',
+      }),
+    deviceFingerprint: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          "A string containing the shopper's device fingerprint. For more information, refer to [Device fingerprinting](https://docs.adyen.com/risk-management/device-fingerprinting).",
+        'x-addedInVersion': '2',
+      }),
+    fraudOffset: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'An integer value that is added to the normal fraud score. The value can be either positive or negative.',
+      }),
+    installments: InstallmentsSchema.exactOptional().openapi({
+      description:
+        'Contains installment settings. For more information, refer to [Installments](https://docs.adyen.com/payment-methods/cards/credit-card-installments).',
+      'x-addedInVersion': '4',
+    }),
+    localizedShopperStatement: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The `localizedShopperStatement` field lets you use dynamic values for your shopper statement in a local character set. If this parameter is left empty, not provided, or not applicable (in case of cross-border transactions), then **shopperStatement** is used.\n\nCurrently, `localizedShopperStatement` is only supported for payments with Visa, Mastercard, JCB, Diners, and Discover.\n\n**Supported characters**: Hiragana, Katakana, Kanji, and alphanumeric.',
+        'x-addedInVersion': '68',
+      }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [merchant category code](https://en.wikipedia.org/wiki/Merchant_category_code) (MCC) is a four-digit number, which relates to a particular market segment. This code reflects the predominant activity that is conducted by the merchant.',
+        'x-addedInVersion': '12',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    merchantOrderReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This reference allows linking multiple transactions to each other for reporting purposes (i.e. order auth-rate). The reference should be unique per billing cycle.\nThe same merchant order reference should never be reused after the first authorised attempt. If used, this field should be supplied for all incoming authorisations.\n> We strongly recommend you send the `merchantOrderReference` value to benefit from linking payment requests when authorisation retries take place. In addition, we recommend you provide `retry.orderAttemptNumber`, `retry.chainAttemptNumber`, and `retry.skipRetry` values in `PaymentRequest.additionalData`.',
+        'x-addedInVersion': '9',
+      }),
+    merchantRiskIndicator: MerchantRiskIndicatorSchema.exactOptional().openapi({
+      description:
+        'Additional risk fields for 3D Secure 2.\n> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.',
+      'x-addedInVersion': '40',
+    }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata consists of entries, each of which includes a key and a value.\nLimits:\n* Maximum 20 key-value pairs per request. When exceeding, the "177" error occurs: "Metadata size exceeds limit".\n* Maximum 20 characters per key.\n* Maximum 80 characters per value. ',
+        'x-addedInVersion': '17',
+      }),
+    orderReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'When you are doing multiple partial (gift card) payments, this is the `pspReference` of the first payment. We use this to link the multiple payments to each other. As your own reference for linking multiple payments, use the `merchantOrderReference`instead.',
+      }),
+    paymentMethod: z
+      .record(z.string(), z.string())
+      .openapi({
+        description:
+          'The collection that contains the type of the payment method and its specific information.',
+      }),
+    recurring: RecurringSchema.exactOptional().openapi({
+      description:
+        'The recurring settings for the payment. Use this property when you want to enable [recurring payments](https://docs.adyen.com/classic-integration/recurring-payments).',
+    }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines a recurring payment type. Required when creating a token to store payment details or using stored payment details.\nAllowed values:\n* `Subscription` – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* `CardOnFile` – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* `UnscheduledCardOnFile` – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or have variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.\n",
+        'x-addedInVersion': '30',
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to uniquely identify a payment. This reference is used in all communication with you about the payment status. We recommend using a unique value per payment; however, it is not a requirement.\nIf you need to provide multiple references for a transaction, separate them with hyphens ("-").\nMaximum length: 80 characters.',
+      }),
+    selectedBrand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Some payment methods require defining a value for this field to specify how to process the transaction.\n\nFor the Bancontact payment method, it can be set to:\n* `maestro` (default), to be processed like a Maestro card, or\n* `bcmc`, to be processed like a Bancontact card.',
+      }),
+    selectedRecurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `recurringDetailReference` you want to use for this payment. The value `LATEST` can be used to select the most recently stored recurring detail.',
+      }),
+    sessionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A session ID used to identify a payment session.' }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's email address. We recommend that you provide this data, as it is used in velocity fraud checks. > Required for Visa and JCB transactions that require 3D Secure 2 authentication if you did not include the `telephoneNumber`.",
+      }),
+    shopperIP: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's IP address. We recommend that you provide this data, as it is used in a number of risk checks (for instance, number of payment attempts or location-based checks).\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication for all web and mobile integrations, if you did not include the `shopperEmail`. For native mobile integrations, the field is required to support cases where authentication is routed to the redirect flow. This field is also mandatory for some merchants depending on your business model. For more information, [contact Support](https://www.adyen.help/hc/en-us/requests/new).",
+      }),
+    shopperInteraction: z
+      .enum(['Ecommerce', 'ContAuth', 'Moto', 'POS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the sales channel, through which the shopper gives their card details, and whether the shopper is a returning customer.\nFor the web service API, Adyen assumes Ecommerce shopper interaction by default.\n\nThis field has the following possible values:\n* `Ecommerce` - Online transactions where the cardholder is present (online). For better authorisation rates, we recommend sending the card security code (CSC) along with the request.\n* `ContAuth` - Card on file and/or subscription transactions, where the cardholder is known to the merchant (returning customer). If the shopper is present (online), you can supply also the CSC to improve authorisation (one-click payment).\n* `Moto` - Mail-order and telephone-order transactions where the shopper is in contact with the merchant via email or telephone.\n* `POS` - Point-of-sale transactions where the shopper is physically present to make a payment using a secure payment terminal.',
+      }),
+    shopperLocale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language for the payment. The value combines the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) language code with the [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) country code. For example, **nl-NL**.\n\nWhen using Drop-in/Components, the specified language appears if your front-end global configuration does not set the `locale`.',
+        'x-addedInVersion': '7',
+      }),
+    shopperName: NameSchema.exactOptional().openapi({
+      description: "The shopper's full name.",
+      'x-addedInVersion': '7',
+    }),
+    shopperReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for recurring payments. \nYour reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    shopperStatement: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
+      }),
+    socialSecurityNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's social security number.", 'x-addedInVersion': '4' }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how the payment should be split when using either Adyen for Platforms for [marketplaces](https://docs.adyen.com/marketplaces/split-payments) or [platforms](https://docs.adyen.com/platforms/split-payments), or standalone [Issuing](https://docs.adyen.com/issuing/add-manage-funds#split).',
+        'x-addedInVersion': '37',
+      }),
+    store: z
+      .string()
+      .min(1)
+      .max(16)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.',
+        'x-addedInVersion': '23',
+      }),
+    telephoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's telephone number.\n The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.",
+        'x-addedInVersion': '7',
+      }),
+    threeDS2RequestData: ThreeDS2RequestDataSchema.exactOptional().openapi({
+      description:
+        'Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments) or [Classic integration](https://docs.adyen.com/classic-integration) documentation.',
+      'x-addedInVersion': '40',
+    }),
+    threeDSAuthenticationOnly: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.',
+        'x-addedInVersion': '50',
+        'x-deprecatedInVersion': '69',
+        'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
+      }),
+    totalsGroup: z
+      .string()
+      .min(1)
+      .max(16)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference value to aggregate sales totals in reporting. When not specified, the store field is used (if available).',
+        'x-addedInVersion': '23',
+      }),
+    trustedShopper: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Set to true if the payment should be routed to a trusted MID.',
+        'x-addedInVersion': '37',
+      }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount', 'paymentMethod'] })
+  .openapi('BalanceCheckRequest')
+
+const FraudCheckResultSchema = z
+  .strictObject({
+    accountScore: z
+      .int32()
+      .openapi({ description: 'The fraud score generated by the risk check.' }),
+    checkId: z.int32().openapi({ description: 'The ID of the risk check.' }),
+    name: z.string().openapi({ description: 'The name of the risk check.' }),
+  })
+  .openapi({ required: ['accountScore', 'checkId', 'name'] })
+  .openapi('FraudCheckResult')
+
+const FraudResultSchema = z
+  .strictObject({
+    accountScore: z
+      .int32()
+      .openapi({ description: 'The total fraud score generated by the risk checks.' }),
+    results: z
+      .array(FraudCheckResultSchema)
+      .exactOptional()
+      .openapi({ description: 'The result of the individual risk checks.' }),
+  })
+  .openapi({ required: ['accountScore'] })
+  .openapi('FraudResult')
+
+const BalanceCheckResponseSchema = z
+  .strictObject({
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains additional information about the payment. Some data fields are included only if you select them first: Go to **Customer Area** > **Developers** > **Additional data**.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/ResponseAdditionalData3DSecure' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataBillingAddress' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCard' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCommon' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataDomesticError' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataInstallments' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataNetworkTokens' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataOpi' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSepa' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSwish' },
+        ],
+      }),
+    balance: AmountSchema.openapi({ description: 'The balance for the payment method.' }),
+    fraudResult: FraudResultSchema.exactOptional().openapi({
+      description: 'The fraud result properties of the payment.',
+    }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Adyen's 16-character reference associated with the transaction/request. This value is globally unique; quote it when communicating with us about this request.",
+      }),
+    refusalReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "If the payment's authorisation is refused or an error occurs during authorisation, this field holds Adyen's mapped reason for the refusal or a description of the error. When a transaction fails, the authorisation response includes `resultCode` and `refusalReason` values.\n\nFor more information, see [Refusal reasons](https://docs.adyen.com/development-resources/refusal-reasons).",
+      }),
+    resultCode: z
+      .enum(['Success', 'NotEnoughBalance', 'Failed'])
+      .openapi({
+        description:
+          'The result of the cancellation request.\n\nPossible values:\n\n* **Success** – Indicates that the balance check was successful.\n* **NotEnoughBalance** – Commonly indicates that the card did not have enough balance to pay the amount in the request, or that the currency of the balance on the card did not match the currency of the requested amount.\n* **Failed** – Indicates that the balance check failed.',
+      }),
+    transactionLimit: AmountSchema.exactOptional().openapi({
+      description:
+        'The maximum spendable balance for a single transaction. Applicable to some gift cards.',
+      'x-addedInVersion': '65',
+    }),
+  })
+  .openapi({ required: ['balance', 'resultCode'] })
+  .openapi('BalanceCheckResponse')
+
+const BillDeskDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z.string().openapi({ description: "The issuer id of the shopper's selected bank." }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z.enum(['billdesk_online', 'billdesk_wallet']).openapi({ description: '**billdesk**' }),
+  })
+  .openapi({ required: ['issuer', 'type'], title: 'BillDesk' })
+  .openapi('BillDeskDetails')
+
+const BillingAddressSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .max(3000)
+      .openapi({ description: 'The name of the city. Maximum length: 3000 characters.' }),
+    country: z
+      .string()
+      .openapi({
+        description:
+          "The two-character ISO-3166-1 alpha-2 country code. For example, **US**.\n> If you don't know the country or are not collecting the country from the shopper, provide `country` as `ZZ`.",
+      }),
+    houseNumberOrName: z
+      .string()
+      .max(3000)
+      .openapi({
+        description: 'The number or name of the house. Maximum length: 3000 characters.',
+      }),
+    postalCode: z
+      .string()
+      .max(10)
+      .openapi({
+        description:
+          'A maximum of five digits for an address in the US, or a maximum of ten characters for an address in all other countries.',
+      }),
+    stateOrProvince: z
+      .string()
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-character ISO 3166-2 state or province code. For example, **CA** in the US or **ON** in Canada.\n> Required for the US and Canada.',
+      }),
+    street: z
+      .string()
+      .max(3000)
+      .openapi({
+        description:
+          'The name of the street. Maximum length: 3000 characters.\n> The house number should not be included in this field; it should be separately provided via `houseNumberOrName`.',
+      }),
+  })
+  .openapi({ required: ['city', 'country', 'houseNumberOrName', 'postalCode', 'street'] })
+  .openapi('BillingAddress')
+
+const BlikDetailsSchema = z
+  .strictObject({
+    blikCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'BLIK code consisting of 6 digits.' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('blik').exactOptional().openapi({ description: '**blik**' }),
+  })
+  .openapi({ title: 'BLIK', required: [] })
+  .openapi('BlikDetails')
+
+const EncryptedOrderDataSchema = z
+  .strictObject({
+    orderData: z.string().max(5000).openapi({ description: 'The encrypted order data.' }),
+    pspReference: z
+      .string()
+      .openapi({ description: 'The `pspReference` that belongs to the order.' }),
+  })
+  .openapi({ required: ['orderData', 'pspReference'] })
+  .openapi('EncryptedOrderData')
+
+const CancelOrderRequestSchema = z
+  .strictObject({
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account identifier that orderData belongs to.' }),
+    order: EncryptedOrderDataSchema.openapi({
+      description:
+        'The order request object that contains a pspReference that represents the order and the matching encrypted order data.',
+    }),
+  })
+  .openapi({ required: ['merchantAccount', 'order'] })
+  .openapi('CancelOrderRequest')
+
+const CancelOrderResponseSchema = z
+  .strictObject({
+    pspReference: z
+      .string()
+      .openapi({ description: 'A unique reference of the cancellation request.' }),
+    resultCode: z
+      .literal('Received')
+      .openapi({
+        description:
+          'The result of the cancellation request.\n\nPossible values:\n\n* **Received** – Indicates the cancellation has successfully been received by Adyen, and will be processed.',
+      }),
+  })
+  .openapi({ required: ['pspReference', 'resultCode'] })
+  .openapi('CancelOrderResponse')
+
+const PickupInfoSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The city where the car is rented.\n* Format: ASCII\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.locationCity`',
+      }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country where the car is rented, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.\n* maxLength: 2 characters\n* **additionalData key:** `carRental.locationCountry`',
+      }),
+    date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The pick-up date.\n* minLength: 10 characters\n* maxLength: 10 characters\n* Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd\n* **additionalData key:** `carRental.checkOutDate`',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The state or province where the car is rented.\n* maxLength: 3 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.locationStateProvince`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PickupInfo')
+
+const RentalSurchargesSchema = z
+  .strictObject({
+    fuel: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The fuel charges associated with the rental, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `carRental.fuelCharges`',
+      }),
+    insurance: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Any insurance charges associated with the rental, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `carRental.insuranceCharges`',
+      }),
+    oneWayDropOff: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The charge for not returning a car to the original rental location, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `carRental.oneWayDropOffCharges`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RentalSurcharges')
+
+const ReturnInfoSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The city where the car must be returned.\n* Format: ASCII\n* maxLength: 18 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.returnCity`',
+      }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country where the car must be returned, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.\n* maxLength: 2 characters\n* **additionalData key:** `carRental.returnCountry`',
+      }),
+    date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date by which the car must be returned.\n* minLength: 10 characters\n* maxLength: 10 characters\n* Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd\n* **additionalData key:** `carRental.returnDate`',
+      }),
+    locationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The agency code, phone number, or address abbreviation.\n* Format: ASCII\n* maxLength: 10 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.returnLocationId`',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The state or province where the car must be returned.\n* Format: ASCII\n* maxLength: 3 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.returnStateProvince`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ReturnInfo')
+
+const CarRentalSchema = z
+  .strictObject({
+    customerServicePhoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The customer service phone number of the car rental company.\n* Format: Alphanumeric\n* maxLength: 17\n* For US and CA numbers must be 10 characters in length\n* Must not contain any special characters such as + or -\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.customerServiceTollFreeNumber`',
+      }),
+    noShow: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates if the customer didn't pick up their rental car.\n* **additionalData key:** `carRental.noShowIndicator`",
+      }),
+    pickupInfo: PickupInfoSchema.exactOptional(),
+    rateType: z
+      .enum(['daily', 'weekly'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the rental rate is daily or weekly.\n* **additionalData key:** `carRental.rateIndicator`',
+      }),
+    rentalAgreementNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rental agreement number for the car rental.\n* Format: ASCII\n* maxLength: 9 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.rentalAgreementNumber`',
+      }),
+    rentalClassId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The classification of the rental car.\n* Format: Alphanumeric\n* maxLength: 4 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.rentalClassId`',
+      }),
+    rentalDays: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of days the car is rented for.\n* Format: Numeric\n* Max value: 9999\n* **additionalData key:** `carRental.daysRented`',
+      }),
+    rentalRate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Rental rate, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* Frequency of the rental rate is specified in the rateType field.\n* **additionalData key:** `carRental.rate`',
+      }),
+    rentalSurcharges: RentalSurchargesSchema.exactOptional(),
+    renterName: z
+      .string()
+      .openapi({
+        description:
+          'The name of the person renting the car.\n* Format: ASCII\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `carRental.renterName`',
+      }),
+    returnInfo: ReturnInfoSchema.exactOptional(),
+    taxExempt: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the goods or services were tax-exempt, or if tax was not collected.\n* **additionalData key:** `carRental.taxExemptIndicator`',
+      }),
+  })
+  .openapi({ required: ['renterName'] })
+  .openapi('CarRental')
+
+const CardBrandDetailsSchema = z
+  .strictObject({
+    healthcare: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the card supports FSA/HSA healthcare payments.',
+        'x-addedInVersion': '72',
+      }),
+    supported: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if you support the card brand.' }),
+    type: z.string().exactOptional().openapi({ description: 'The name of the card brand.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CardBrandDetails')
+
+const CardDetailsSchema = z
+  .strictObject({
+    billingSequenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sequence number for the debit. For example, send **2** if this is the second debit for the subscription. The sequence number is included in the notification sent to the shopper.',
+      }),
+    brand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Secondary brand of the card. For example: **plastix**, **hmclub**.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    'cupsecureplus.smscode': z.string().exactOptional().openapi({ deprecated: true }),
+    cvc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card verification code. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    encryptedCard: z
+      .string()
+      .max(40000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Only include this for JSON Web Encryption (JWE) implementations. The JWE-encrypted card details.',
+      }),
+    encryptedCardNumber: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card number.' }),
+    encryptedExpiryMonth: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card expiry month.' }),
+    encryptedExpiryYear: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card expiry year.' }),
+    encryptedPassword: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains an encrypted, one-time password or an authentication code provided by the cardholder.',
+      }),
+    encryptedSecurityCode: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card verification code.' }),
+    expiryMonth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry month. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    expiryYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry year. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    fastlaneData: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The encoded fastlane data blob' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    holderName: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The name of the card holder.' }),
+    networkPaymentReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The transaction identifier from card schemes. This is the [`networkTxReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-additionalData-ResponseAdditionalDataCommon-networkTxReference) from the response to the first payment.',
+      }),
+    number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card number. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperNotificationReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `shopperNotificationReference` returned in the response when you requested to notify the shopper. Used only for recurring payments in India.',
+      }),
+    srcCorrelationId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An identifier used for the Click to Pay transaction.' }),
+    srcDigitalCardId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The SRC reference for the Click to Pay token.' }),
+    srcScheme: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The scheme that is being used for Click to Pay.' }),
+    srcTokenReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference for the Click to Pay token.' }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    threeDS2SdkVersion: z
+      .string()
+      .max(12)
+      .exactOptional()
+      .openapi({
+        description: 'Required for mobile integrations. Version of the 3D Secure 2 mobile SDK.',
+      }),
+    type: z
+      .enum(['bcmc', 'scheme', 'networkToken', 'giftcard', 'card', 'clicktopay'])
+      .default('scheme')
+      .exactOptional()
+      .openapi({
+        description:
+          'Default payment method details. Common for scheme payment methods, and for simple payment method details.',
+      }),
+  })
+  .openapi({ title: 'Card', required: [] })
+  .openapi('CardDetails')
+
+const CardDetailsRequestSchema = z
+  .strictObject({
+    cardNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A minimum of the first six digits of the card number. The full card number gives the best result. \n\nYou must be [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide) to collect raw card data. Alternatively, you can use the `encryptedCardNumber` field.',
+      }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The shopper country code.\n\nFormat: [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)\nExample: NL or DE',
+      }),
+    encryptedCardNumber: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card number.' }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    supportedBrands: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The card brands you support. This is the [`brands`](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods#responses-200-paymentMethods-brands) array from your [`/paymentMethods`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/paymentMethods) response. \n\nIf not included, our API uses the ones configured for your merchant account and, if provided, the country code.',
+      }),
+  })
+  .openapi({ required: ['merchantAccount'] })
+  .openapi('CardDetailsRequest')
+
+const CardDetailsResponseSchema = z
+  .strictObject({
+    brands: z
+      .array(CardBrandDetailsSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of brands identified for the card.' }),
+    fundingSource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source of the card, for example **DEBIT**, **CREDIT**, or **PREPAID**.',
+      }),
+    isCardCommercial: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if this is a commercial card or a consumer card. If **true**, it is a commercial card. If **false**, it is a consumer card.',
+      }),
+    issuingCountryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The two-letter country code  of the country where the card was issued.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CardDetailsResponse')
+
+const CardDonationsSchema = z
+  .strictObject({
+    billingSequenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sequence number for the debit. For example, send **2** if this is the second debit for the subscription. The sequence number is included in the notification sent to the shopper.',
+      }),
+    brand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Secondary brand of the card. For example: **plastix**, **hmclub**.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    'cupsecureplus.smscode': z.string().exactOptional().openapi({ deprecated: true }),
+    cvc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card verification code. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    encryptedCard: z
+      .string()
+      .max(40000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Only include this for JSON Web Encryption (JWE) implementations. The JWE-encrypted card details.',
+      }),
+    encryptedCardNumber: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card number.' }),
+    encryptedExpiryMonth: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card expiry month.' }),
+    encryptedExpiryYear: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card expiry year.' }),
+    encryptedPassword: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains an encrypted, one-time password or an authentication code provided by the cardholder.',
+      }),
+    encryptedSecurityCode: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card verification code.' }),
+    expiryMonth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry month. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    expiryYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry year. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    fastlaneData: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The encoded fastlane data blob' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    holderName: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The name of the card holder.' }),
+    networkPaymentReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The transaction identifier from card schemes. This is the [`networkTxReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-additionalData-ResponseAdditionalDataCommon-networkTxReference) from the response to the first payment.',
+      }),
+    number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card number. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperNotificationReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `shopperNotificationReference` returned in the response when you requested to notify the shopper. Used only for recurring payments in India.',
+      }),
+    srcCorrelationId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An identifier used for the Click to Pay transaction.' }),
+    srcDigitalCardId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The SRC reference for the Click to Pay token.' }),
+    srcScheme: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The scheme that is being used for Click to Pay.' }),
+    srcTokenReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference for the Click to Pay token.' }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    threeDS2SdkVersion: z
+      .string()
+      .max(12)
+      .exactOptional()
+      .openapi({
+        description: 'Required for mobile integrations. Version of the 3D Secure 2 mobile SDK.',
+      }),
+    type: z
+      .enum(['bcmc', 'scheme', 'networkToken', 'giftcard', 'card', 'clicktopay'])
+      .default('scheme')
+      .exactOptional()
+      .openapi({
+        description:
+          'Default payment method details. Common for scheme payment methods, and for simple payment method details.',
+      }),
+  })
+  .openapi({ title: 'Card', required: [] })
+  .openapi('CardDonations')
+
+const CashAppDetailsSchema = z
+  .strictObject({
+    cashtag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cash App issued cashtag for recurring payment' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    customerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cash App issued customerId for recurring payment' }),
+    grantId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cash App issued grantId for one time payment' }),
+    onFileGrantId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cash App issued onFileGrantId for recurring payment' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    requestId: z.string().exactOptional().openapi({ description: 'Cash App request id' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    subtype: z.string().exactOptional().openapi({ description: 'The payment method subtype.' }),
+    type: z
+      .literal('cashapp')
+      .default('cashapp')
+      .exactOptional()
+      .openapi({ description: 'cashapp' }),
+  })
+  .openapi({ title: 'Stored Payment Method', required: [] })
+  .openapi('CashAppDetails')
+
+const CellulantDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z.string().exactOptional().openapi({ description: 'The Cellulant issuer.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('cellulant')
+      .default('cellulant')
+      .exactOptional()
+      .openapi({ description: '**Cellulant**' }),
+  })
+  .openapi({ title: 'Cellulant', required: [] })
+  .openapi('CellulantDetails')
+
+const CheckoutAwaitActionSchema = z
+  .strictObject({
+    paymentData: z.string().exactOptional().openapi({ description: 'Encoded payment data.' }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    type: z.literal('await').openapi({ description: '**await**' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutAwaitAction')
+
+const CheckoutBankAccountSchema = z
+  .strictObject({
+    accountType: z
+      .enum(['balance', 'checking', 'deposit', 'general', 'other', 'payment', 'savings'])
+      .exactOptional()
+      .openapi({ description: 'The type of the bank account.' }),
+    bankAccountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank account number (without separators).' }),
+    bankCity: z.string().exactOptional().openapi({ description: 'The bank city.' }),
+    bankLocationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The location id of the bank. The field value is `nil` in most cases.',
+      }),
+    bankName: z.string().exactOptional().openapi({ description: 'The name of the bank.' }),
+    bic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Business Identifier Code](https://en.wikipedia.org/wiki/ISO_9362) (BIC) is the SWIFT address assigned to a bank. The field value is `nil` in most cases.',
+      }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Country code where the bank is located.\n\nA valid value is an ISO two-character country code (e.g. 'NL').",
+      }),
+    iban: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [International Bank Account Number](https://en.wikipedia.org/wiki/International_Bank_Account_Number) (IBAN).',
+      }),
+    ownerName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The name of the bank account holder.\nIf you submit a name with non-Latin characters, we automatically replace some of them with corresponding Latin characters to meet the FATF recommendations. For example:\n* χ12 is converted to ch12.\n* üA is converted to euA.\n* Peter Møller is converted to Peter Mller, because banks don't accept 'ø'.\nAfter replacement, the ownerName must have at least three alphanumeric characters (A-Z, a-z, 0-9), and at least one of them must be a valid Latin character (A-Z, a-z). For example:\n* John17 - allowed.\n* J17 - allowed.\n* 171 - not allowed.\n* John-7 - allowed.\n> If provided details don't match the required format, the response returns the error message: 203 'Invalid bank account holder name'.",
+      }),
+    taxId: z.string().exactOptional().openapi({ description: "The bank account holder's tax ID." }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutBankAccount')
+
+const CheckoutBankTransferActionSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The account number of the bank transfer.' }),
+    bankCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank code of the bank transfer.' }),
+    beneficiary: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the account holder.' }),
+    bic: z.string().exactOptional().openapi({ description: 'The BIC of the IBAN.' }),
+    branchCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The branch code of the bank transfer.' }),
+    downloadUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The url to download payment details with.' }),
+    iban: z.string().exactOptional().openapi({ description: 'The IBAN of the bank transfer.' }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    reference: z.string().exactOptional().openapi({ description: 'The transfer reference.' }),
+    routingNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The routing number of the bank transfer.' }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The e-mail of the shopper, included if an e-mail was sent to the shopper.',
+      }),
+    sortCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The sort code of the bank transfer.' }),
+    totalAmount: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the bank transfer.',
+    }),
+    type: z.literal('bankTransfer').openapi({ description: 'The type of the action.' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutBankTransferAction')
+
+const CheckoutDelegatedAuthenticationActionSchema = z
+  .strictObject({
+    authorisationToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token needed to authorise a payment.' }),
+    paymentData: z.string().exactOptional().openapi({ description: 'Encoded payment data.' }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token to pass to the delegatedAuthentication component.' }),
+    type: z
+      .literal('delegatedAuthentication')
+      .openapi({ description: '**delegatedAuthentication**' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutDelegatedAuthenticationAction')
+
+const CheckoutForwardAccountUpdateResultSchema = z
+  .strictObject({
+    result: z
+      .enum([
+        'CardChanged',
+        'CardExpiryChanged',
+        'CloseAccount',
+        'ContactCardAccountHolder',
+        'Error',
+        'NoChange',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The result of the [Real Time Account Updater](https://docs.adyen.com/online-payments/account-updater/real-time-account-updater).\nPossible values:\n* NoChange\n* CardChanged\n* CardExpiryChanged\n* CloseAccount\n* ContactCardAccountHolder\n* Error',
+        'x-addedInVersion': '72',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutForwardAccountUpdateResult')
+
+const CheckoutForwardNetworkTokenResultSchema = z
+  .strictObject({
+    swapped: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether a network token was used in the forwarded request. When `true`, the Primary Account Number (PAN) was successfully swapped for a network token. When `false`, the request fell back to the PAN.',
+        'x-addedInVersion': '72',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutForwardNetworkTokenResult')
+
+const CheckoutNetworkTokenOptionSchema = z
+  .strictObject({
+    includeCryptogram: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Set to **true** to enable forwarding network token cryptograms.' }),
+    useNetworkToken: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Set to **true** to forward the network token for a card.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutNetworkTokenOption')
+
+const CheckoutForwardRequestOptionsSchema = z
+  .strictObject({
+    accountUpdate: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Set to **true** to check if the account tied to the card has been updated.',
+      }),
+    dryRun: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to **true** to receive a copy of the request Adyen is making to the third party in the response. Any sensitive information will be masked in the response you receive. This functionality is only available in the test environment.',
+      }),
+    networkToken: CheckoutNetworkTokenOptionSchema.exactOptional().openapi({
+      description: 'The object that contains the details for forwarding a network token.',
+    }),
+    networkTxReferencePaths: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Only include when `tokenize` is set to **true**.<br><br>A list of addresses to possible location(s) of the `networkTxReference` that will be returned in the third party response.',
+      }),
+    tokenize: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to **true** to [tokenize](https://docs.adyen.com/online-payments/tokenization) the payment details.',
+      }),
+    transactionLinkIdPaths: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Only include when `tokenize` is set to **true**.<br><br>A list of addresses to possible location(s) of the `transactionLinkId` that will be returned in the third party response.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutForwardRequestOptions')
+
+const CheckoutForwardRequestCardSchema = z
+  .strictObject({
+    cvc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [card verification code](https://docs.adyen.com/payments-fundamentals/payment-glossary#card-security-code-cvc-cvv-cid) (1-20 characters). Depending on the card brand, it is also known as:\n* CVV2/CVC2 – length: 3 digits\n* CID – length: 4 digits\n',
+      }),
+    encryptedCardNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The encrypted card number.' }),
+    encryptedExpiryMonth: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The encrypted expiryMonth' }),
+    encryptedExpiryYear: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The encrypted card expiry year.' }),
+    encryptedSecurityCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The encrypted security code.' }),
+    expiryMonth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry month.\nFormat: 2 digits, zero-padded for single digits. For example:\n* 03 = March\n* 11 = November',
+      }),
+    expiryYear: z.string().exactOptional().openapi({ description: 'The card expiry year.' }),
+    holderName: z.string().exactOptional().openapi({ description: 'The name of the cardholder.' }),
+    number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card number. Only collect raw card data if you are fully [PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).\nFormat: Do not use separators.',
+      }),
+    type: z
+      .literal('scheme')
+      .default('scheme')
+      .exactOptional()
+      .openapi({
+        description:
+          'Default payment method details. Common for scheme payment methods, and for simple payment method details.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutForwardRequestCard')
+
+const CheckoutOutgoingForwardRequestSchema = z
+  .strictObject({
+    body: z
+      .string()
+      .max(20000)
+      .openapi({
+        description:
+          'The request body that you want Adyen to forward to the third party on your behalf, in string format.\n\nInclude key value pairs to specify the payment details, and use [placeholders](https://docs.adyen.com/online-payments/tokenization/forward-payment-details#placeholders) for the values. Adyen replaces the placeholders with the payment details when making the request to the third party.\n\nWhen forwarding a network token, include a [condition](https://docs.adyen.com/online-payments/tokenization/forward-payment-details#conditional-placeholders) that checks if the network token exists, and informs Adyen of which fields to send depending on the outcome.',
+      }),
+    credentials: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Your credentials that are needed to authenticate with the third party.',
+      }),
+    headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The request headers that will be included in the request Adyen makes to the third party on your behalf. Supports the `{{credentials}}` [placeholder](https://docs.adyen.com/online-payments/tokenization/forward-payment-details#placeholders).',
+      }),
+    httpMethod: z
+      .enum(['post', 'put', 'patch'])
+      .openapi({
+        description:
+          'The HTTP method to use for the request Adyen makes on your behalf to the third party.',
+      }),
+    urlSuffix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The suffix that Adyen needs to append to the `baseUrl` to construct the destination URL that belongs to the third party. This is usually the endpoint name for the request, for example, **/payments**.',
+      }),
+  })
+  .openapi({ required: ['body', 'httpMethod'] })
+  .openapi('CheckoutOutgoingForwardRequest')
+
+const CheckoutForwardRequestSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the forwarded payment.',
+    }),
+    baseUrl: z
+      .string()
+      .openapi({
+        description:
+          'The base URL of the third party API, where Adyen will send the request to forward the payment details.',
+      }),
+    merchantAccount: z.string().openapi({ description: 'Your merchant account.' }),
+    merchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Merchant defined payment reference.' }),
+    options: CheckoutForwardRequestOptionsSchema.exactOptional().openapi({
+      description: 'The customizations that can be applied when making a forward request.',
+    }),
+    paymentMethod: CheckoutForwardRequestCardSchema.exactOptional().openapi({
+      description: 'The card details.',
+    }),
+    request: CheckoutOutgoingForwardRequestSchema.openapi({
+      description:
+        'The [details of the request](https://docs.adyen.com/online-payments/tokenization/forward-payment-details#request-to-adyen-card) that you want to forward to the third-party.',
+    }),
+    shopperReference: z
+      .string()
+      .openapi({
+        description:
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the token that you want to forward to the third party. This is the `storedPaymentMethodId` you received in the webhook after you created the token.',
+      }),
+  })
+  .openapi({ required: ['baseUrl', 'merchantAccount', 'request', 'shopperReference'] })
+  .openapi('CheckoutForwardRequest')
+
+const CheckoutForwardResponseFromUrlSchema = z
+  .strictObject({
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The body of the response Adyen received from the third party, in string format.',
+      }),
+    headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The HTTP headers of the response Adyen received from the third party.',
+      }),
+    status: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The HTTP status of the response Adyen received from the third party.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutForwardResponseFromUrl')
+
+const CheckoutForwardResponseSchema = z
+  .strictObject({
+    accountUpdate: CheckoutForwardAccountUpdateResultSchema.exactOptional().openapi({
+      description:
+        'Account update details for the forwarded request, including the result of the [Real Time Account Updater](https://docs.adyen.com/online-payments/account-updater/real-time-account-updater).\nReturning the result of the Real Time Account Updater is in [pilot phase](https://docs.adyen.com/online-payments/tokenization/forward-payment-details#handle-the-result), and not yet widely available.',
+      'x-addedInVersion': '72',
+    }),
+    merchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Merchant defined payment reference.' }),
+    networkToken: CheckoutForwardNetworkTokenResultSchema.exactOptional().openapi({
+      description:
+        'Network token details for the forwarded request, including whether the Primary Account Number (PAN) was successfully swapped for a network token.',
+      'x-addedInVersion': '72',
+    }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Adyen's 16-character reference associated with the transaction/request. This value is globally unique. Use this reference when you communicate with us about this request.",
+        'x-addedInVersion': '71',
+      }),
+    response: CheckoutForwardResponseFromUrlSchema.openapi({
+      description: 'The details of the response Adyen received from the third party.',
+    }),
+    storedPaymentMethodId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the token.' }),
+  })
+  .openapi({ required: ['response'] })
+  .openapi('CheckoutForwardResponse')
+
+const CheckoutNativeRedirectActionSchema = z
+  .strictObject({
+    data: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'When the redirect URL must be accessed via POST, use this data to post to the redirect URL.',
+      }),
+    method: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the HTTP method, for example GET or POST.' }),
+    nativeRedirectData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Native SDK's redirect data containing the direct issuer link and state data that must be submitted to the /v1/nativeRedirect/redirectResult.",
+      }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    type: z.literal('nativeRedirect').openapi({ description: '**nativeRedirect**' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutNativeRedirectAction')
+
+const CheckoutOrderResponseSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The initial amount of the order.',
+    }),
+    expiresAt: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The expiry date for the order.' }),
+    orderData: z.string().exactOptional().openapi({ description: 'The encrypted order data.' }),
+    pspReference: z
+      .string()
+      .openapi({ description: 'The `pspReference` that belongs to the order.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant reference for the order.' }),
+    remainingAmount: AmountSchema.exactOptional().openapi({
+      description: 'The updated remaining amount.',
+    }),
+  })
+  .openapi({ required: ['pspReference'] })
+  .openapi('CheckoutOrderResponse')
+
+const CheckoutQrCodeActionSchema = z
+  .strictObject({
+    expiresAt: z.string().exactOptional().openapi({ description: 'Expiry time of the QR code.' }),
+    paymentData: z.string().exactOptional().openapi({ description: 'Encoded payment data.' }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    qrCodeData: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The contents of the QR code as a UTF8 string.' }),
+    type: z.literal('qrCode').openapi({ description: '**qrCode**' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutQrCodeAction')
+
+const CheckoutRedirectActionSchema = z
+  .strictObject({
+    data: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'When the redirect URL must be accessed via POST, use this data to post to the redirect URL.',
+      }),
+    method: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the HTTP method, for example GET or POST.' }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    type: z.literal('redirect').openapi({ description: '**redirect**' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutRedirectAction')
+
+const CheckoutSDKActionSchema = z
+  .strictObject({
+    paymentData: z.string().exactOptional().openapi({ description: 'Encoded payment data.' }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    sdkData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The data to pass to the SDK.' }),
+    type: z.enum(['sdk', 'wechatpaySDK']).openapi({ description: 'The type of the action.' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutSDKAction')
+
+const CheckoutSessionInstallmentOptionSchema = z
+  .strictObject({
+    plans: z
+      .array(
+        z.enum([
+          'bonus',
+          'buynow_paylater',
+          'interes_refund_prctg',
+          'interest_bonus',
+          'nointeres_refund_prctg',
+          'nointerest_bonus',
+          'refund_prctg',
+          'regular',
+          'revolving',
+          'with_interest',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the type of installment plan. If not set, defaults to **regular**.\n\nPossible values:\n* **regular**\n* **revolving**\n* **bonus**',
+      }),
+    preselectedValue: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Preselected number of installments offered for this payment method.',
+      }),
+    values: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of the number of installments that the shopper can choose from. For example, **[2,3,5]**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutSessionInstallmentOption')
+
+const CheckoutSessionThreeDS2RequestDataSchema = z
+  .strictObject({
+    homePhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The home phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+    }),
+    mobilePhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The mobile phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+    }),
+    threeDSRequestorChallengeInd: z
+      .enum(['01', '02', '03', '04', '05', '06'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether a challenge is requested for this transaction. Possible values:\n* **01** — No preference\n* **02** — No challenge requested\n* **03** — Challenge requested (3DS Requestor preference)\n* **04** — Challenge requested (Mandate)\n* **05** — No challenge (transactional risk analysis is already performed)\n* **06** — Data Only',
+      }),
+    workPhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The work phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckoutSessionThreeDS2RequestData')
+
+const CheckoutThreeDS2ActionSchema = z
+  .strictObject({
+    authorisationToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token needed to authorise a payment.' }),
+    paymentData: z.string().exactOptional().openapi({ description: 'Encoded payment data.' }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    subtype: z.string().exactOptional().openapi({ description: 'A subtype of the token.' }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token to pass to the 3DS2 Component to get the fingerprint.' }),
+    type: z.literal('threeDS2').openapi({ description: '**threeDS2**' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutThreeDS2Action')
+
+const CheckoutVoucherActionSchema = z
+  .strictObject({
+    alternativeReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The voucher alternative reference code.' }),
+    collectionInstitutionNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A collection institution number (store number) for Econtext Pay-Easy ATM.',
+      }),
+    downloadUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL to download the voucher.' }),
+    entity: z.string().exactOptional().openapi({ description: 'An entity number of Multibanco.' }),
+    expiresAt: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The date time of the voucher expiry.' }),
+    initialAmount: AmountSchema.exactOptional().openapi({ description: 'The initial amount.' }),
+    instructionsUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL to the detailed instructions to make payment using the voucher.',
+      }),
+    issuer: z.string().exactOptional().openapi({ description: 'The issuer of the voucher.' }),
+    maskedTelephoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper telephone number (partially masked).' }),
+    merchantName: z.string().exactOptional().openapi({ description: 'The merchant name.' }),
+    merchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant reference.' }),
+    passCreationToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Base64-encoded token containing all properties of the voucher. For iOS, you can use this to pass a voucher to Apple Wallet.',
+        'x-addedInVersion': '68',
+      }),
+    paymentData: z.string().exactOptional().openapi({ description: 'Encoded payment data.' }),
+    paymentMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the payment method.' }),
+    reference: z.string().exactOptional().openapi({ description: 'The voucher reference code.' }),
+    shopperEmail: z.string().exactOptional().openapi({ description: 'The shopper email.' }),
+    shopperName: z.string().exactOptional().openapi({ description: 'The shopper name.' }),
+    surcharge: AmountSchema.exactOptional().openapi({ description: 'The surcharge amount.' }),
+    totalAmount: AmountSchema.exactOptional().openapi({
+      description: 'The total amount (initial plus surcharge amount).',
+    }),
+    type: z.literal('voucher').openapi({ description: '**voucher**' }),
+    url: z.string().exactOptional().openapi({ description: 'Specifies the URL to redirect to.' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('CheckoutVoucherAction')
+
+const CompanySchema = z
+  .strictObject({
+    homepage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The company website's home page." }),
+    name: z.string().exactOptional().openapi({ description: 'The company name.' }),
+    registrationNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Registration number of the company.' }),
+    registryLocation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Registry location of the company.' }),
+    taxId: z.string().exactOptional().openapi({ description: 'Tax ID of the company.' }),
+    type: z.string().exactOptional().openapi({ description: 'The company type.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Company')
+
+const ConfidenceScoreSchema = z
+  .strictObject({ errors: z.array(z.string()).exactOptional(), score: z.float64().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ConfidenceScore')
+
+const DeliveryAddressSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .max(3000)
+      .openapi({ description: 'The name of the city. Maximum length: 3000 characters.' }),
+    country: z
+      .string()
+      .openapi({
+        description:
+          "The two-character ISO-3166-1 alpha-2 country code. For example, **US**.\n> If you don't know the country or are not collecting the country from the shopper, provide `country` as `ZZ`.",
+      }),
+    firstName: z.string().exactOptional(),
+    houseNumberOrName: z
+      .string()
+      .max(3000)
+      .openapi({
+        description: 'The number or name of the house. Maximum length: 3000 characters.',
+      }),
+    lastName: z.string().exactOptional(),
+    postalCode: z
+      .string()
+      .max(10)
+      .openapi({
+        description:
+          'A maximum of five digits for an address in the US, or a maximum of ten characters for an address in all other countries.',
+      }),
+    stateOrProvince: z
+      .string()
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-character ISO 3166-2 state or province code. For example, **CA** in the US or **ON** in Canada.\n> Required for the US and Canada.',
+      }),
+    street: z
+      .string()
+      .max(3000)
+      .openapi({
+        description:
+          'The name of the street. Maximum length: 3000 characters.\n> The house number should not be included in this field; it should be separately provided via `houseNumberOrName`.',
+      }),
+  })
+  .openapi({ required: ['city', 'country', 'houseNumberOrName', 'postalCode', 'street'] })
+  .openapi('DeliveryAddress')
+
+const HealthcareSchema = z
+  .strictObject({
+    dentalValue: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The dental amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000',
+      }),
+    otherMedicalValue: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The other medical amount not covered by the specific categories, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000',
+      }),
+    prescriptionValue: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The prescription/Rx amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000',
+      }),
+    totalHealthcareValue: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total healthcare amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000',
+      }),
+    visionPrescriptionValue: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The vision/optical prescription amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000',
+      }),
+  })
+  .openapi({ required: ['totalHealthcareValue'] })
+  .openapi('Healthcare')
+
+const DestinationSchema = z
+  .strictObject({
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) or three-letter [ISO 3166-1 alpha-3 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) for the destination address.\n* Encoding: ASCII\n* Min length: 2 characters\n* Max length: 3 characters\n* **additionalData key:** `enhancedSchemeData.destinationCountryCode`',
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code of the destination address.\n* Encoding: ASCII\n* Max length: 10 characters\n* Must not start with a space.\n* For the US, it must be in five or nine digits format. For example, 10001 or 10001-0000.\n* For Canada, it must be in 6 digits format. For example, M4B 1G5.\n* **additionalData key:** `enhancedSchemeData.destinationPostalCode`',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The state or province code of the destination address.\n* Encoding: ASCII\n* Max length: 3 characters\n* Must not start with a space.\n* **additionalData key:** `enhancedSchemeData.destinationStateProvinceCode`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Destination')
+
+const ItemDetailLineSchema = z
+  .strictObject({
+    commodityCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The code that identifies the item in a standardized commodity coding scheme. There are different commodity coding schemes:\n* [UNSPSC commodity codes](https://www.ungm.org/public/unspsc)\n* [HS commodity codes](https://www.wcoomd.org/en/topics/nomenclature/overview.aspx)\n* [NAICS commodity codes](https://www.census.gov/naics/)\n* [NAPCS commodity codes](https://www.census.gov/naics/napcs/)\n\n\n* Encoding: ASCII\n* Max length: 12 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `enhancedSchemeData.itemDetailLine[N].commodityCode`',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A description of the item, that provides details about the purchase.\n\n For Visa transactions with level 3 ESD, the description must not be the same or very similar to your merchant name, or, consist only of common words like "product", or "service".\n* Encoding: ASCII\n* Max length: 26 characters\n* Must not be a single character.\n* Must not be blank.\n* Must not be all special characters.\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `enhancedSchemeData.itemDetailLine[N].description`',
+      }),
+    discountAmount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The discount amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `enhancedSchemeData.itemDetailLine[N].discountAmount`',
+      }),
+    productCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The product code. Must be a unique product code associated with the item or service. This can be your unique code for the item, or the manufacturer's product code. \n* Encoding: ASCII.\n* Max length: 12 characters\n* **additionalData key:** `enhancedSchemeData.itemDetailLine[N].productCode`",
+      }),
+    quantity: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The number of items. Must be an integer greater than zero.\n* Encoding: Numeric\n* Max value: 9999\n* **additionalData key:** `enhancedSchemeData.itemDetailLine[N].quantity`',
+      }),
+    totalAmount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total amount for the line item, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n\nSee [Amount requirements for level 2/3 ESD](https://docs.adyen.com//payment-methods/cards/enhanced-scheme-data/l2-l3#amount-requirements) to learn more about how to calculate the line item total.\n* **additionalData key:** `enhancedSchemeData.itemDetailLine[N].totalAmount`',
+      }),
+    unitOfMeasure: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unit of measurement for an item.\n* Encoding: ASCII\n* Max length: 3 characters\n* **additionalData key:** `enhancedSchemeData.itemDetailLine[N].unitOfMeasure`',
+      }),
+    unitPrice: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The unit price, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `enhancedSchemeData.itemDetailLine[N].unitPrice`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ItemDetailLine')
+
+const LevelTwoThreeSchema = z
+  .strictObject({
+    customerReferenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference number to identify the customer and their order.\n* Format: ASCII\n* Max length: 25 characters\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `enhancedSchemeData.customerReference`',
+      }),
+    destination: DestinationSchema.exactOptional().openapi({
+      description: 'The destination address information.',
+    }),
+    dutyAmount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The duty tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `enhancedSchemeData.dutyAmount`',
+      }),
+    freightAmount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The shipping amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `enhancedSchemeData.freightAmount`',
+      }),
+    itemDetailLines: z
+      .array(ItemDetailLineSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of item detail lines.' }),
+    orderDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date of the order.\n* Min Length: 10 characters\n* Max Length: 10 characters\n* Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd\n* **additionalData key:** `enhancedSchemeData.orderDate`',
+      }),
+    shipFromPostalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code of the address where the item is shipped from.\n* Encoding: ASCII\n* Max length: 10 characters\n* For the US, it must be in five or nine digits format. For example, 10001 or 10001-0000.\n* For Canada, it must be in 6 digits format. For example, M4B 1G5.\n* **additionalData key:** `enhancedSchemeData.shipFromPostalCode`',
+      }),
+    totalTaxAmount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The amount of state or provincial [tax included in the total transaction amount](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/l2-l3#requirements-to-send-level-2-3-esd), in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* For L2 data: must not be all zeroes. \n* For L3 data: can be zero.\n* **additionalData key:** `enhancedSchemeData.totalTaxAmount`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('LevelTwoThree')
+
+const FolioSchema = z
+  .strictObject({
+    cashAdvances: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The folio cash advances, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `lodging.folioCashAdvances`',
+      }),
+    number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The card acceptor's internal invoice or billing ID reference number.\n* Format: Alphanumeric\n* Must not start with a space\n* Must not contain any special characters\n* Must not be all zeros.\n* **additionalData key:** `lodging.folioNumber`",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Folio')
+
+const RoomSchema = z
+  .strictObject({
+    numberOfNights: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total number of nights the room is booked for.\n* Format: Numeric\n* Must be a number between 1 and 99\n* **additionalData key:** `lodging.room[N].numberOfNights`',
+      }),
+    rate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Room rate per night, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `lodging.room[N].rate`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Room')
+
+const LodgingSchema = z
+  .strictObject({
+    checkInDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The check-in date.\n* Min Length: 10 characters\n* Max Length: 10 characters\n* Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd\n* **additionalData key:** `lodging.checkInDate`',
+      }),
+    checkOutDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The check-out date.\n* Min Length: 10 characters\n* Max Length: 10 characters\n* Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd\n* **additionalData key:** `lodging.checkOutDate`',
+      }),
+    customerServicePhoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The toll-free phone number for the lodging customer service.\n* Format: Alphanumeric\n* For US and CA numbers must be 10 characters in length\n* Must not start with a space\n* Must not contain any special characters such as + or -\n* Must not be all zeros.\n* **additionalData key:** `lodging.customerServiceTollFreeNumber`',
+      }),
+    fireSafetyCompliance: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the facility complies with the Hotel and Motel Fire Safety Act of 1990.\n* **additionalData key:** `lodging.fireSafetyActIndicator`',
+      }),
+    folio: FolioSchema.exactOptional().openapi({
+      description: 'The folio information for the booking.',
+    }),
+    foodBeverageCharges: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Any charges for food and beverages associated with the booking, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `lodging.foodBeverageCharges`',
+      }),
+    lodgingChargeType: z
+      .enum(['advanceDeposit', 'noShow', 'stay'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The category of lodging charges for the payment.\n* **additionalData key:** `lodging.specialProgramCode`',
+      }),
+    noShow: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates if the customer didn't check in for their booking.\n* **additionalData key:** `lodging.noShowIndicator`",
+      }),
+    prepaidExpenses: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The prepaid expenses for the booking, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `lodging.prepaidExpenses`',
+      }),
+    propertyPhoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The lodging property location's phone number.\n* Format: Alphanumeric\n* Min length: 10 characters\n* For US and CA numbers must be 10 characters in length\n* Must not start with a space\n* Must not contain any special characters such as + or -\n* Must not be all zeros.\n* **additionalData key:** `lodging.propertyPhoneNumber`",
+      }),
+    renterName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the person renting the room.\n* Format: ASCII\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `lodging.renterName`',
+      }),
+    rooms: z
+      .array(RoomSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of rooms booked.' }),
+    totalRoomTax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total room tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `lodging.totalRoomTax`',
+      }),
+    totalTax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The total tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `lodging.totalTax`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Lodging')
+
+const TemporaryServicesSchema = z
+  .strictObject({
+    employeeName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name or ID of the person working in a temporary capacity.\n* Format: ASCII\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `enhancedSchemeData.employeeName`',
+      }),
+    endDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing period end date.\n* Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd\n* **additionalData key:** `enhancedSchemeData.tempWeekEnding`',
+      }),
+    hourRate: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The hourly rate for the temporary services, in [minor units](https://docs.adyen.com/development-resources/currency-codes).\n* For example, 2000 means USD 20.00.\n* Encoding: Numeric\n* Max value: 10000000000\n* **additionalData key:** `enhancedSchemeData.regularHoursRate`',
+      }),
+    hoursWorked: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of hours worked during the billing period.\n* Format: Numeric\n* **additionalData key:** `enhancedSchemeData.regularHoursWorked`',
+      }),
+    jobDescription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The job description of the person working in a temporary capacity.\n* Format: ASCII\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `enhancedSchemeData.jobDescription`',
+      }),
+    serviceRequestor: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the person requesting the temporary services.\n* Format: ASCII\n* Must not start with a space or be all spaces.\n* Must not be all zeros.\n* **additionalData key:** `enhancedSchemeData.requestName`',
+      }),
+    startDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing period start date.\n* Format [ISO 8601](https://www.w3.org/TR/NOTE-datetime): yyyy-MM-dd\n* **additionalData key:** `enhancedSchemeData.tempStartDate`',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TemporaryServices')
+
+const EnhancedSchemeDataSchema = z
+  .strictObject({
+    airline: AirlineSchema.exactOptional().openapi({
+      description:
+        '[Airline enhanced scheme data](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/airline/) that may be required for processing the transaction and/or for interchange savings.',
+    }),
+    carRental: CarRentalSchema.exactOptional().openapi({
+      description:
+        '[Car rental enhanced scheme data](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/car-rental/) that may be required for processing the transaction and/or for interchange savings.',
+    }),
+    healthcare: HealthcareSchema.exactOptional().openapi({
+      description:
+        'Healthcare auto-substantiation amounts for FSA/HSA card transactions. The amounts are used to qualify for reduced interchange rates on healthcare-eligible cards.',
+      'x-addedInVersion': '72',
+    }),
+    levelTwoThree: LevelTwoThreeSchema.exactOptional().openapi({
+      description:
+        '[Level 2 and Level 3 enhanced scheme data](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/l2-l3/) that may be required for processing the transaction and/or for interchange savings.',
+    }),
+    lodging: LodgingSchema.exactOptional().openapi({
+      description:
+        '[Lodging enhanced scheme data](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/lodging/) that may be required for processing the transaction and/or for interchange savings.',
+    }),
+    temporaryServices: TemporaryServicesSchema.exactOptional().openapi({
+      description:
+        '[Temporary services enhanced scheme data](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/temporary-services/) that may be required for processing the transaction and/or for interchange savings.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnhancedSchemeData')
+
+const FundOriginSchema = z
+  .strictObject({
+    billingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The address where to send the invoice.',
+    }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address of the person funding the money.' }),
+    shopperName: NameSchema.exactOptional().openapi({
+      description: 'The name of the person funding the money.',
+    }),
+    telephoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The phone number of the person funding the money.' }),
+    walletIdentifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the wallet where the funds are coming from.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('FundOrigin')
+
+const SubMerchantSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The city of the sub-merchant's address.\n* Format: Alphanumeric\n* Maximum length: 13 characters",
+      }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The three-letter country code of the sub-merchant's address. For example, **BRA** for Brazil. \n* Format: [ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)\n* Fixed length: 3 characters",
+      }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The sub-merchant's 4-digit Merchant Category Code (MCC). \n* Format: Numeric\n* Fixed length: 4 digits",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the sub-merchant. Based on scheme specifications, this value will overwrite the shopper statement  that will appear in the card statement.\n* Format: Alphanumeric\n* Maximum length: 22 characters',
+      }),
+    taxId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The tax ID of the sub-merchant.\n* Format: Numeric\n* Fixed length: 11 digits for the CPF or 14 digits for the CNPJ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SubMerchant')
+
+const FundRecipientSchema = z
+  .strictObject({
+    IBAN: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The IBAN of the bank account where the funds are being transferred to.',
+      }),
+    billingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The address where to send the invoice.',
+    }),
+    paymentMethod: CardDetailsSchema.exactOptional().openapi({
+      description: 'The payment method used by the shopper.',
+    }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address of the shopper.' }),
+    shopperName: NameSchema.exactOptional().openapi({ description: 'The name of the shopper.' }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for recurring payments. \nYour reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+      }),
+    subMerchant: SubMerchantSchema.exactOptional().openapi({
+      description:
+        "Required for back-to-back/purchase-driven-load transactions, where the funds are taken from the shopper's stored card when the wallet balance is insufficient.\nThe final merchant who will receive the money, also known as a [sub-merchant](https://docs.adyen.com/get-started-with-adyen/payment-glossary/#submerchant).",
+    }),
+    telephoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The telephone number of the shopper.' }),
+    walletIdentifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier for the wallet the funds are being transferred to. You can use the shopper reference or any other identifier.',
+      }),
+    walletOwnerTaxId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tax identifier of the person receiving the funds.' }),
+    walletPurpose: z
+      .enum([
+        'identifiedBoleto',
+        'transferDifferentWallet',
+        'transferOwnWallet',
+        'transferSameWallet',
+        'unidentifiedBoleto',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The purpose of a digital wallet transaction.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FundRecipient')
+
+const LineItemSchema = z
+  .strictObject({
+    amountExcludingTax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Item amount excluding the tax, in [minor units](https://docs.adyen.com/development-resources/currency-codes/#minor-units).',
+      }),
+    amountIncludingTax: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Item amount including the tax, in [minor units](https://docs.adyen.com/development-resources/currency-codes/#minor-units).',
+      }),
+    brand: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Brand of the item.', 'x-addedInVersion': '70' }),
+    color: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Color of the item.', 'x-addedInVersion': '70' }),
+    description: z
+      .string()
+      .max(10000)
+      .exactOptional()
+      .openapi({ description: 'Description of the line item.' }),
+    id: z.string().exactOptional().openapi({ description: 'ID of the line item.' }),
+    imageUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Link to the picture of the purchased item.' }),
+    itemCategory: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Item category, used by the payment methods PayPal and Ratepay.' }),
+    manufacturer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Manufacturer of the item.', 'x-addedInVersion': '70' }),
+    marketplaceSellerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Marketplace seller id.', 'x-addedInVersion': '70' }),
+    productUrl: z.string().exactOptional().openapi({ description: 'Link to the purchased item.' }),
+    quantity: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Number of items.' }),
+    receiverEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Email associated with the given product in the basket (usually in electronic gift cards).',
+        'x-addedInVersion': '70',
+      }),
+    returnShippingCompany: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Shipping company handling the return of the item.',
+        'x-addedInVersion': '72',
+      }),
+    returnTrackingNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Tracking number for the return of the item.',
+        'x-addedInVersion': '72',
+      }),
+    returnTrackingUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Tracking URI for the return of the item.',
+        'x-addedInVersion': '72',
+      }),
+    riskCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An optional, free-text category for the item to be used in the risk evaluation. When provided, Protect uses this value to evaluate custom risk rules.',
+        'x-addedInVersion': '71',
+      }),
+    shippingCompany: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Shipping company handling the delivery of the item.',
+        'x-addedInVersion': '72',
+      }),
+    shippingMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Shipping method used to deliver the item.',
+        'x-addedInVersion': '72',
+      }),
+    size: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Size of the item.', 'x-addedInVersion': '70' }),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Stock keeping unit.', 'x-addedInVersion': '70' }),
+    taxAmount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Tax amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes/#minor-units).',
+      }),
+    taxPercentage: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Tax percentage, represented as a [basis point](https://en.wikipedia.org/wiki/Basis_point) integer. For example:\n - **530** for 5.3% (five point three percent) \n - **2100** for 21% (twenty-one percent)',
+      }),
+    trackingNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Tracking number for the delivery of the item.',
+        'x-addedInVersion': '72',
+      }),
+    trackingUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Tracking URI for the delivery of the item.',
+        'x-addedInVersion': '72',
+      }),
+    upc: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Universal Product Code.', 'x-addedInVersion': '70' }),
+  })
+  .openapi({ required: [] })
+  .openapi('LineItem')
+
+const MandateSchema = z
+  .strictObject({
+    amount: z
+      .string()
+      .openapi({
+        description: 'The billing amount (in minor units) of the recurring transactions.',
+      }),
+    amountRule: z
+      .enum(['max', 'exact'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The limitation rule of the billing amount.\n\nPossible values:\n * **max**: The transaction amount can not exceed the `amount`.\n\n * **exact**: The transaction amount should be the same as the `amount`.\n\n',
+      }),
+    billingAttemptsRule: z
+      .enum(['on', 'before', 'after'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The rule to specify the period, within which the recurring debit can happen, relative to the mandate recurring date.\n\nPossible values:\n\n * **on**: On a specific date.\n\n * **before**:  Before and on a specific date.\n\n * **after**: On and after a specific date.\n\n',
+      }),
+    billingDay: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of the day, on which the recurring debit can happen. Should be within the same calendar month as the mandate recurring date.\n\nPossible values: 1-31 based on the `frequency`.',
+      }),
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The number of transactions that can be performed within the given frequency.',
+      }),
+    endsAt: z
+      .string()
+      .openapi({ description: 'End date of the billing plan, in YYYY-MM-DD format.' }),
+    frequency: z
+      .enum([
+        'adhoc',
+        'daily',
+        'weekly',
+        'biWeekly',
+        'monthly',
+        'quarterly',
+        'halfYearly',
+        'yearly',
+      ])
+      .openapi({
+        description:
+          'The frequency with which a shopper should be charged.\n\nPossible values: **adhoc**, **daily**, **weekly**, **biWeekly**, **monthly**, **quarterly**, **halfYearly**, **yearly**.',
+      }),
+    remarks: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The message shown by UPI to the shopper on the approval screen.' }),
+    startsAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Start date of the billing plan, in YYYY-MM-DD format. By default, the transaction date.',
+      }),
+  })
+  .openapi({ required: ['amount', 'endsAt', 'frequency'] })
+  .openapi('Mandate')
+
+const ThreeDSecureDataSchema = z
+  .strictObject({
+    authenticationResponse: z
+      .enum(['Y', 'N', 'U', 'A'])
+      .exactOptional()
+      .openapi({
+        description:
+          'In 3D Secure 2, this is the `transStatus` from the challenge result. If the transaction was frictionless, omit this parameter.\n\n',
+      }),
+    cavv: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The cardholder authentication value (base64 encoded, 20 bytes in a decoded form).',
+      }),
+    cavvAlgorithm: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The CAVV algorithm used. Include this only for 3D Secure 1.' }),
+    challengeCancel: z
+      .enum(['01', '02', '03', '04', '05', '06', '07'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicator informing the Access Control Server (ACS) and the Directory Server (DS) that the authentication has been cancelled. For possible values, refer to [3D Secure API reference](https://docs.adyen.com/online-payments/3d-secure/api-reference#mpidata).',
+        'x-addedInVersion': '67',
+      }),
+    directoryResponse: z
+      .enum(['A', 'C', 'D', 'I', 'N', 'R', 'U', 'Y'])
+      .exactOptional()
+      .openapi({ description: 'In 3D Secure 2, this is the `transStatus` from the `ARes`.\n\n' }),
+    dsTransID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Supported for 3D Secure 2. The unique transaction identifier assigned by the Directory Server (DS) to identify a single transaction.',
+        'x-addedInVersion': '40',
+      }),
+    eci: z.string().exactOptional().openapi({ description: 'The electronic commerce indicator.' }),
+    riskScore: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Risk score calculated by Directory Server (DS). Required for Cartes Bancaires integrations.',
+        'x-addedInVersion': '67',
+      }),
+    threeDSVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The version of the 3D Secure protocol.', 'x-addedInVersion': '40' }),
+    tokenAuthenticationVerificationValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Network token authentication verification value (TAVV). The network token cryptogram.',
+        'x-addedInVersion': '68',
+      }),
+    transStatusReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Provides information on why the `transStatus` field has the specified value. For possible values, refer to [our docs](https://docs.adyen.com/online-payments/3d-secure/api-reference#possible-transstatusreason-values).',
+        'x-addedInVersion': '67',
+      }),
+    xid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Supported for 3D Secure 1. The transaction identifier (Base64-encoded, 20 bytes in a decoded form).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ThreeDSecureData')
+
+const PlatformChargebackLogicSchema = z
+  .strictObject({
+    behavior: z
+      .enum([
+        'deductFromOneBalanceAccount',
+        'deductAccordingToSplitRatio',
+        'deductFromLiableAccount',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The method of handling the chargeback.\n\nPossible values: **deductFromLiableAccount**, **deductFromOneBalanceAccount**, **deductAccordingToSplitRatio**.',
+      }),
+    costAllocationAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the balance account to which the chargeback fees are booked. By default, the chargeback fees are booked to your liable balance account.',
+      }),
+    targetAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the balance account against which the disputed amount is booked.\n\nRequired if `behavior` is **deductFromOneBalanceAccount**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PlatformChargebackLogic')
+
+const RiskDataSchema = z
+  .strictObject({
+    clientData: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains client-side data, like the device fingerprint, cookies, and specific browser settings.',
+      }),
+    customFields: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Any custom fields used as part of the input to configured risk rules.',
+        'x-addedInVersion': '65',
+      }),
+    fraudOffset: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'An integer value that is added to the normal fraud score. The value can be either positive or negative.',
+        'x-addedInVersion': '65',
+      }),
+    profileReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The risk profile to assign to this payment. When left empty, the merchant-level account's default risk profile will be applied.",
+        'x-addedInVersion': '65',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RiskData')
+
+const ShopperNameSchema = z
+  .strictObject({
+    firstName: z.string().max(80).openapi({ description: 'The first name.' }),
+    lastName: z.string().max(80).openapi({ description: 'The last name.' }),
+  })
+  .openapi({ required: ['firstName', 'lastName'] })
+  .openapi('ShopperName')
+
+const ThirdPartyTokenRedundancyInfoSchema = z
+  .strictObject({
+    requestParameters: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Request-specific parameter values to populate the template placeholders. Each key must match a placeholder defined in the template referenced by `requestTemplateCode`.',
+      }),
+    requestTemplateCode: z
+      .string()
+      .openapi({
+        description:
+          'Identifier for the third-party token request template configured in your Adyen account. This template defines the structure and endpoint for token requests.',
+      }),
+  })
+  .openapi({ required: ['requestTemplateCode'] })
+  .openapi('ThirdPartyTokenRedundancyInfo')
+
+const CreateCheckoutSessionRequestSchema = z
+  .strictObject({
+    accountInfo: AccountInfoSchema.exactOptional().openapi({
+      description:
+        'Shopper account information for 3D Secure 2.\n> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.',
+    }),
+    additionalAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'If you want a [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) request to use a non-zero value, assign this value to `additionalAmount` (while the amount must be still set to 0 to trigger BIN or card verification).\nRequired to be in the same currency as the `amount`. ',
+    }),
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains additional data, which may be required for a particular payment request.\n\nThe `additionalData` object consists of entries, each of which includes the key and value.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/AdditionalData3DSecure' },
+          { $ref: '#/components/schemas/AdditionalDataAirline' },
+          { $ref: '#/components/schemas/AdditionalDataCarRental' },
+          { $ref: '#/components/schemas/AdditionalDataCommon' },
+          { $ref: '#/components/schemas/AdditionalDataLevel23' },
+          { $ref: '#/components/schemas/AdditionalDataLodging' },
+          { $ref: '#/components/schemas/AdditionalDataOpenInvoice' },
+          { $ref: '#/components/schemas/AdditionalDataOpi' },
+          { $ref: '#/components/schemas/AdditionalDataRatepay' },
+          { $ref: '#/components/schemas/AdditionalDataRetry' },
+          { $ref: '#/components/schemas/AdditionalDataRisk' },
+          { $ref: '#/components/schemas/AdditionalDataRiskStandalone' },
+          { $ref: '#/components/schemas/AdditionalDataSubMerchant' },
+          { $ref: '#/components/schemas/AdditionalDataTemporaryServices' },
+          { $ref: '#/components/schemas/AdditionalDataWallets' },
+        ],
+      }),
+    allowedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be presented to the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"allowedPaymentMethods":["ideal","applepay"]`',
+      }),
+    amount: AmountSchema.openapi({ description: 'The amount of the payment.' }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    authenticationData: AuthenticationDataSchema.exactOptional().openapi({
+      description: 'Configuration data for 3DS payments.',
+      'x-addedInVersion': '69',
+    }),
+    billingAddress: BillingAddressSchema.exactOptional().openapi({
+      description: 'The address where to send the invoice.',
+    }),
+    blockedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be hidden from the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"blockedPaymentMethods":["ideal","applepay"]`',
+      }),
+    captureDelayHours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The delay between the authorisation and scheduled auto-capture, specified in hours.',
+      }),
+    channel: z
+      .enum(['iOS', 'Android', 'Web'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The platform where a payment transaction takes place. This field is optional for filtering out payment methods that are only available on specific platforms. If this value is not set, then we will try to infer it from the `sdkVersion` or `token`.\n\nPossible values:\n* **iOS**\n* **Android**\n* **Web**',
+      }),
+    company: CompanySchema.exactOptional().openapi({
+      description: 'Information regarding the company.',
+    }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's two-letter country code." }),
+    dateOfBirth: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's date of birth.\n\nFormat [ISO-8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DD",
+      }),
+    deliverAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the purchased goods should be delivered.\n\n[ISO 8601](https://www.w3.org/TR/NOTE-datetime) format: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.',
+      }),
+    deliveryAddress: DeliveryAddressSchema.exactOptional().openapi({
+      description: 'The address where the purchased goods should be delivered.',
+    }),
+    enableOneClick: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the shopper will be asked if the payment details should be stored for future [one-click payments](https://docs.adyen.com/get-started-with-adyen/payment-glossary/#one-click-payments-definition).',
+      }),
+    enablePayOut: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be tokenized for payouts.',
+      }),
+    enableRecurring: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be stored for [recurring payments](https://docs.adyen.com/online-payments/tokenization/#recurring-payment-types) where the shopper is not present, such as subscription or automatic top-up payments.',
+      }),
+    enhancedSchemeData: EnhancedSchemeDataSchema.exactOptional().openapi({
+      description:
+        '[Enhanced scheme data](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/) that may be required for processing the payment and/or interchange savings can apply.',
+      'x-addedInVersion': '72',
+    }),
+    expiresAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date the session expires in [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. When not specified, the expiry date is set to 1 hour after session creation. You cannot set the session expiry to more than 24 hours after session creation.',
+      }),
+    fundOrigin: FundOriginSchema.exactOptional().openapi({
+      description: 'The person or entity funding the money.',
+    }),
+    fundRecipient: FundRecipientSchema.exactOptional().openapi({
+      description: 'the person or entity receiving the money',
+    }),
+    installmentOptions: z
+      .record(z.string(), CheckoutSessionInstallmentOptionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of key-value pairs that specifies the installment options available per payment method. The key must be a payment method name in lowercase. For example, **card** to specify installment options for all cards, or **visa** or **mc**. The value must be an object containing the installment options.',
+      }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information about the purchased items, to be included on the invoice sent to the shopper.\n> This field is required for 3x 4x Oney, Affirm, Afterpay, Clearpay, Klarna, Ratepay, and Riverty.',
+      }),
+    mandate: MandateSchema.exactOptional().openapi({
+      description: 'The mandate details to initiate recurring transaction.',
+    }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [merchant category code](https://en.wikipedia.org/wiki/Merchant_category_code) (MCC) is a four-digit number, which relates to a particular market segment. This code reflects the predominant activity that is conducted by the merchant.',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    merchantOrderReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This reference allows linking multiple transactions to each other for reporting purposes (i.e. order auth-rate). The reference should be unique per billing cycle.\nThe same merchant order reference should never be reused after the first authorised attempt. If used, this field should be supplied for all incoming authorisations.\n> We strongly recommend you send the `merchantOrderReference` value to benefit from linking payment requests when authorisation retries take place. In addition, we recommend you provide `retry.orderAttemptNumber`, `retry.chainAttemptNumber`, and `retry.skipRetry` values in `PaymentRequest.additionalData`.',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata consists of entries, each of which includes a key and a value.\nLimits:\n* Maximum 20 key-value pairs per request.\n* Maximum 20 characters per key.\n* Maximum 80 characters per value. ',
+      }),
+    mode: z
+      .enum(['embedded', 'hosted'])
+      .default('embedded')
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the type of front end integration. Possible values:\n* **embedded** (default): Drop-in or Components integration\n* **hosted**: Hosted Checkout integration',
+        'x-addedInVersion': '69',
+      }),
+    mpiData: ThreeDSecureDataSchema.exactOptional().openapi({
+      description:
+        'Authentication data produced by an MPI (Mastercard SecureCode, Visa Secure, or Cartes Bancaires).',
+    }),
+    payable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the session is payable. If the payment amount is final, set this to **true** to indicate that the session is payable, so that the shopper can proceed to submit the payment. When you set this to **true**, you can no longer update the session.\n\nIf you set this to **false**, you must make another request to update the session and set this to **true** before the shopper can submit the payment.\n\nIf not specified, this defaults to **true**.\n',
+        'x-addedInVersion': '72',
+      }),
+    platformChargebackLogic: PlatformChargebackLogicSchema.exactOptional().openapi({
+      description:
+        'Defines how to book chargebacks when using [Adyen for Platforms](https://docs.adyen.com/adyen-for-platforms-model).',
+      'x-addedInVersion': '70',
+    }),
+    recurringExpiry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date after which no further authorisations shall be performed. Only for 3D Secure 2.',
+      }),
+    recurringFrequency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Minimum number of days between authorisations. Only for 3D Secure 2.',
+      }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines a recurring payment type. Required when creating a token to store payment details.\nAllowed values:\n* `Subscription` – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* `CardOnFile` – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* `UnscheduledCardOnFile` – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or have variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.\n",
+      }),
+    redirectFromIssuerMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the redirect method (GET or POST) when redirecting back from the issuer.',
+      }),
+    redirectToIssuerMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Specifies the redirect method (GET or POST) when redirecting to the issuer.',
+      }),
+    reference: z.string().openapi({ description: 'The reference to uniquely identify a payment.' }),
+    returnUrl: z
+      .string()
+      .max(1024)
+      .openapi({
+        description:
+          'The URL to return to in case of a redirection.\nThe format depends on the channel. \n* For web, include the protocol `http://` or `https://`. You can also include your own additional query parameters, for example, shopper ID or order reference number.\nExample: `https://your-company.example.com/checkout?shopperOrder=12xy`\n* For iOS, use the custom URL for your app. To know more about setting custom URL schemes, refer to the [Apple Developer documentation](https://developer.apple.com/documentation/uikit/inter-process_communication/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app).\nExample: `my-app://`\n* For Android, use a custom URL handled by an Activity on your app. You can configure it with an [intent filter](https://developer.android.com/guide/components/intents-filters).\nExample: `my-app://your.package.name`\n\nIf the URL to return to includes non-ASCII characters, like spaces or special letters, URL encode the value.\n> The URL must not include personally identifiable information (PII), for example name or email address.',
+      }),
+    riskData: RiskDataSchema.exactOptional().openapi({
+      description: 'Any risk-related settings to apply to the payment.',
+    }),
+    shopperConversionId: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          "Use this if you made a `/paymentMethods` request to get the payment methods for the shopper's checkout session.\n\nA unique ID to [connect the shopper to a single checkout session](https://docs.adyen.com/online-payments/checkout-settings#checkout-shopper-conversion-id) that uses multiple API requests. You can use this to get insights into conversion rates.",
+      }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's email address." }),
+    shopperIP: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's IP address. We recommend that you provide this data, as it is used in a number of risk checks (for instance, number of payment attempts or location-based checks).\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication for all web and mobile integrations, if you did not include the `shopperEmail`. For native mobile integrations, the field is required to support cases where authentication is routed to the redirect flow. This field is also mandatory for some merchants depending on your business model. For more information, [contact Support](https://www.adyen.help/hc/en-us/requests/new).",
+      }),
+    shopperInteraction: z
+      .enum(['Ecommerce', 'ContAuth', 'Moto', 'POS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the sales channel, through which the shopper gives their card details, and whether the shopper is a returning customer.\nFor the web service API, Adyen assumes Ecommerce shopper interaction by default.\n\nThis field has the following possible values:\n* `Ecommerce` - Online transactions where the cardholder is present (online). For better authorisation rates, we recommend sending the card security code (CSC) along with the request.\n* `ContAuth` - Card on file and/or subscription transactions, where the cardholder is known to the merchant (returning customer). If the shopper is present (online), you can supply also the CSC to improve authorisation (one-click payment).\n* `Moto` - Mail-order and telephone-order transactions where the shopper is in contact with the merchant via email or telephone.\n* `POS` - Point-of-sale transactions where the shopper is physically present to make a payment using a secure payment terminal.',
+      }),
+    shopperLocale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language for the payment. The value combines the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) language code with the [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) country code. For example, **nl-NL**.\n\nWhen using Drop-in/Components, the specified language appears if your front-end global configuration does not set the `locale`.',
+      }),
+    shopperName: ShopperNameSchema.exactOptional().openapi({
+      description:
+        "The shopper's full name. This object is required for some payment methods such as AfterPay, Klarna, or if you're enrolled in the PayPal Seller Protection program.",
+    }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    shopperStatement: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
+      }),
+    showInstallmentAmount: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Set to true to show the payment amount per installment.' }),
+    showRemovePaymentMethodButton: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to **true** to show a button that lets the shopper remove a stored payment method.',
+      }),
+    socialSecurityNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's social security number." }),
+    splitCardFundingSources: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean value indicating whether the card payment method should be split into separate debit and credit options.',
+      }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how to split a payment when using [Adyen for Platforms](https://docs.adyen.com/platforms/process-payments#providing-split-information), [Classic Platforms integration](https://docs.adyen.com/classic-platforms/processing-payments#providing-split-information), or [Issuing](https://docs.adyen.com/issuing/manage-funds#split).',
+      }),
+    store: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.',
+      }),
+    storeFiltrationMode: z
+      .enum(['exclusive', 'inclusive', 'skipFilter'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Specifies how payment methods should be filtered based on the 'store' parameter:\n  - 'exclusive': Only payment methods belonging to the specified 'store' are returned.\n  - 'inclusive': Payment methods from the 'store' and those not associated with any other store are returned.",
+      }),
+    storePaymentMethod: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be stored for future [recurring payments](https://docs.adyen.com/online-payments/tokenization/#recurring-payment-types).',
+      }),
+    storePaymentMethodMode: z
+      .enum(['askForConsent', 'disabled', 'enabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the details of the payment method will be stored for the shopper. Possible values:\n* **disabled** – No details will be stored (default).\n* **askForConsent** – If the `shopperReference` is provided, the Drop-in/Component shows a checkbox where the shopper can select to store their payment details for card payments.\n* **enabled** – If the `shopperReference` is provided, the details will be stored without asking the shopper for consent.',
+        'x-addedInVersion': '70',
+      }),
+    telephoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's telephone number.\n The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.",
+      }),
+    themeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sets a custom theme for [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/?platform=Web&integration=Hosted+Checkout). The value can be any of the **Theme ID** values from your Customer Area.',
+        'x-addedInVersion': '69',
+      }),
+    thirdPartyTokenRedundancyInfo: ThirdPartyTokenRedundancyInfoSchema.exactOptional().openapi({
+      description:
+        'Configuration for creating redundant payment tokens with third-party token vaults using the Adyen Forward API. This feature requires Forward API webhook integration and pre-configured templates in your Adyen account. Contact your Adyen account manager for setup and availability.',
+    }),
+    threeDS2RequestData: CheckoutSessionThreeDS2RequestDataSchema.exactOptional().openapi({
+      description:
+        'Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments).',
+    }),
+    threeDSAuthenticationOnly: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.',
+        'x-deprecatedInVersion': '69',
+        'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
+      }),
+    trustedShopper: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Set to true if the payment should be routed to a trusted MID.' }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount', 'reference', 'returnUrl'] })
+  .openapi('CreateCheckoutSessionRequest')
+
+const CreateCheckoutSessionResponseSchema = z
+  .strictObject({
+    accountInfo: AccountInfoSchema.exactOptional().openapi({
+      description:
+        'Shopper account information for 3D Secure 2.\n> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.',
+    }),
+    additionalAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'If you want a [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) request to use a non-zero value, assign this value to `additionalAmount` (while the amount must be still set to 0 to trigger BIN or card verification).\nRequired to be in the same currency as the `amount`. ',
+    }),
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains additional data, which may be required for a particular payment request.\n\nThe `additionalData` object consists of entries, each of which includes the key and value.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/AdditionalData3DSecure' },
+          { $ref: '#/components/schemas/AdditionalDataAirline' },
+          { $ref: '#/components/schemas/AdditionalDataCarRental' },
+          { $ref: '#/components/schemas/AdditionalDataCommon' },
+          { $ref: '#/components/schemas/AdditionalDataLevel23' },
+          { $ref: '#/components/schemas/AdditionalDataLodging' },
+          { $ref: '#/components/schemas/AdditionalDataOpenInvoice' },
+          { $ref: '#/components/schemas/AdditionalDataOpi' },
+          { $ref: '#/components/schemas/AdditionalDataRatepay' },
+          { $ref: '#/components/schemas/AdditionalDataRetry' },
+          { $ref: '#/components/schemas/AdditionalDataRisk' },
+          { $ref: '#/components/schemas/AdditionalDataRiskStandalone' },
+          { $ref: '#/components/schemas/AdditionalDataSubMerchant' },
+          { $ref: '#/components/schemas/AdditionalDataTemporaryServices' },
+          { $ref: '#/components/schemas/AdditionalDataWallets' },
+        ],
+      }),
+    allowedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be presented to the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"allowedPaymentMethods":["ideal","applepay"]`',
+      }),
+    amount: AmountSchema.openapi({ description: 'The amount of the payment.' }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    authenticationData: AuthenticationDataSchema.exactOptional().openapi({
+      description: 'Configuration data for 3DS payments.',
+      'x-addedInVersion': '69',
+    }),
+    billingAddress: BillingAddressSchema.exactOptional().openapi({
+      description: 'The address where to send the invoice.',
+    }),
+    blockedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be hidden from the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"blockedPaymentMethods":["ideal","applepay"]`',
+      }),
+    captureDelayHours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The delay between the authorisation and scheduled auto-capture, specified in hours.',
+      }),
+    channel: z
+      .enum(['iOS', 'Android', 'Web'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The platform where a payment transaction takes place. This field is optional for filtering out payment methods that are only available on specific platforms. If this value is not set, then we will try to infer it from the `sdkVersion` or `token`.\n\nPossible values:\n* **iOS**\n* **Android**\n* **Web**',
+      }),
+    company: CompanySchema.exactOptional().openapi({
+      description: 'Information regarding the company.',
+    }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's two-letter country code." }),
+    dateOfBirth: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's date of birth in [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html) format.",
+      }),
+    deliverAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the purchased goods should be delivered.\n\n[ISO 8601](https://www.w3.org/TR/NOTE-datetime) format: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.',
+      }),
+    deliveryAddress: DeliveryAddressSchema.exactOptional().openapi({
+      description: 'The address where the purchased goods should be delivered.',
+    }),
+    enableOneClick: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the shopper will be asked if the payment details should be stored for future [one-click payments](https://docs.adyen.com/get-started-with-adyen/payment-glossary/#one-click-payments-definition).',
+      }),
+    enablePayOut: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be tokenized for payouts.',
+      }),
+    enableRecurring: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be stored for [recurring payments](https://docs.adyen.com/online-payments/tokenization/#recurring-payment-types) where the shopper is not present, such as subscription or automatic top-up payments.',
+      }),
+    enhancedSchemeData: EnhancedSchemeDataSchema.exactOptional().openapi({
+      description:
+        '[Enhanced scheme data](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/) that may be required for processing the payment and/or interchange savings can apply.',
+      'x-addedInVersion': '72',
+    }),
+    expiresAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date the session expires in [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. When not specified, the expiry date is set to 1 hour after session creation. You cannot set the session expiry to more than 24 hours after session creation.',
+      }),
+    fundOrigin: FundOriginSchema.exactOptional().openapi({
+      description: 'The person or entity funding the money.',
+    }),
+    fundRecipient: FundRecipientSchema.exactOptional().openapi({
+      description: 'the person or entity receiving the money',
+    }),
+    id: z.string().openapi({ description: 'A unique identifier of the session.', readOnly: true }),
+    installmentOptions: z
+      .record(z.string(), CheckoutSessionInstallmentOptionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of key-value pairs that specifies the installment options available per payment method. The key must be a payment method name in lowercase. For example, **card** to specify installment options for all cards, or **visa** or **mc**. The value must be an object containing the installment options.',
+      }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information about the purchased items, to be included on the invoice sent to the shopper.\n> This field is required for 3x 4x Oney, Affirm, Afterpay, Clearpay, Klarna, Ratepay, and Riverty.',
+      }),
+    mandate: MandateSchema.exactOptional().openapi({
+      description: 'The mandate details to initiate recurring transaction.',
+    }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [merchant category code](https://en.wikipedia.org/wiki/Merchant_category_code) (MCC) is a four-digit number, which relates to a particular market segment. This code reflects the predominant activity that is conducted by the merchant.',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    merchantOrderReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This reference allows linking multiple transactions to each other for reporting purposes (i.e. order auth-rate). The reference should be unique per billing cycle.\nThe same merchant order reference should never be reused after the first authorised attempt. If used, this field should be supplied for all incoming authorisations.\n> We strongly recommend you send the `merchantOrderReference` value to benefit from linking payment requests when authorisation retries take place. In addition, we recommend you provide `retry.orderAttemptNumber`, `retry.chainAttemptNumber`, and `retry.skipRetry` values in `PaymentRequest.additionalData`.',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata consists of entries, each of which includes a key and a value.\nLimits:\n* Maximum 20 key-value pairs per request.\n* Maximum 20 characters per key.\n* Maximum 80 characters per value. ',
+      }),
+    mode: z
+      .enum(['embedded', 'hosted'])
+      .default('embedded')
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the type of front end integration. Possible values:\n* **embedded** (default): Drop-in or Components integration\n* **hosted**: Hosted Checkout integration',
+        'x-addedInVersion': '70',
+      }),
+    mpiData: ThreeDSecureDataSchema.exactOptional().openapi({
+      description:
+        'Authentication data produced by an MPI (Mastercard SecureCode, Visa Secure, or Cartes Bancaires).',
+    }),
+    payable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the session is payable. If the payment amount is final, set this to **true** to indicate that the session is payable, so that the shopper can proceed to submit the payment. When you set this to **true**, you can no longer update the session.\n\nIf you set this to **false**, you must make another request to update the session and set this to **true** before the shopper can submit the payment.\n\nIf not specified, this defaults to **true**.\n',
+        'x-addedInVersion': '72',
+      }),
+    platformChargebackLogic: PlatformChargebackLogicSchema.exactOptional().openapi({
+      description:
+        'Defines how to book chargebacks when using [Adyen for Platforms](https://docs.adyen.com/adyen-for-platforms-model).',
+      'x-addedInVersion': '70',
+    }),
+    recurringExpiry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date after which no further authorisations shall be performed. Only for 3D Secure 2.',
+      }),
+    recurringFrequency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Minimum number of days between authorisations. Only for 3D Secure 2.',
+      }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines a recurring payment type. Required when creating a token to store payment details.\nAllowed values:\n* `Subscription` – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* `CardOnFile` – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* `UnscheduledCardOnFile` – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or have variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.\n",
+      }),
+    redirectFromIssuerMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the redirect method (GET or POST) when redirecting back from the issuer.',
+      }),
+    redirectToIssuerMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Specifies the redirect method (GET or POST) when redirecting to the issuer.',
+      }),
+    reference: z.string().openapi({ description: 'The reference to uniquely identify a payment.' }),
+    returnUrl: z
+      .string()
+      .max(1024)
+      .openapi({
+        description:
+          'The URL to return to in case of a redirection.\nThe format depends on the channel. \n* For web, include the protocol `http://` or `https://`. You can also include your own additional query parameters, for example, shopper ID or order reference number.\nExample: `https://your-company.example.com/checkout?shopperOrder=12xy`\n* For iOS, use the custom URL for your app. To know more about setting custom URL schemes, refer to the [Apple Developer documentation](https://developer.apple.com/documentation/uikit/inter-process_communication/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app).\nExample: `my-app://`\n* For Android, use a custom URL handled by an Activity on your app. You can configure it with an [intent filter](https://developer.android.com/guide/components/intents-filters).\nExample: `my-app://your.package.name`\n\nIf the URL to return to includes non-ASCII characters, like spaces or special letters, URL encode the value.\n> The URL must not include personally identifiable information (PII), for example name or email address.',
+      }),
+    riskData: RiskDataSchema.exactOptional().openapi({
+      description: 'Any risk-related settings to apply to the payment.',
+    }),
+    sessionData: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The payment session data you need to pass to your front end.' }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's email address." }),
+    shopperIP: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's IP address. We recommend that you provide this data, as it is used in a number of risk checks (for instance, number of payment attempts or location-based checks).\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication for all web and mobile integrations, if you did not include the `shopperEmail`. For native mobile integrations, the field is required to support cases where authentication is routed to the redirect flow. This field is also mandatory for some merchants depending on your business model. For more information, [contact Support](https://www.adyen.help/hc/en-us/requests/new).",
+      }),
+    shopperInteraction: z
+      .enum(['Ecommerce', 'ContAuth', 'Moto', 'POS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the sales channel, through which the shopper gives their card details, and whether the shopper is a returning customer.\nFor the web service API, Adyen assumes Ecommerce shopper interaction by default.\n\nThis field has the following possible values:\n* `Ecommerce` - Online transactions where the cardholder is present (online). For better authorisation rates, we recommend sending the card security code (CSC) along with the request.\n* `ContAuth` - Card on file and/or subscription transactions, where the cardholder is known to the merchant (returning customer). If the shopper is present (online), you can supply also the CSC to improve authorisation (one-click payment).\n* `Moto` - Mail-order and telephone-order transactions where the shopper is in contact with the merchant via email or telephone.\n* `POS` - Point-of-sale transactions where the shopper is physically present to make a payment using a secure payment terminal.',
+      }),
+    shopperLocale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language for the payment. The value combines the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) language code with the [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) country code. For example, **nl-NL**.\n\nWhen using Drop-in/Components, the specified language appears if your front-end global configuration does not set the `locale`.',
+      }),
+    shopperName: ShopperNameSchema.exactOptional().openapi({
+      description:
+        "The shopper's full name. This object is required for some payment methods such as AfterPay, Klarna, or if you're enrolled in the PayPal Seller Protection program.",
+    }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    shopperStatement: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
+      }),
+    showInstallmentAmount: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Set to true to show the payment amount per installment.' }),
+    showRemovePaymentMethodButton: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to **true** to show a button that lets the shopper remove a stored payment method.',
+      }),
+    socialSecurityNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's social security number." }),
+    splitCardFundingSources: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean value indicating whether the card payment method should be split into separate debit and credit options.',
+      }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how to split a payment when using [Adyen for Platforms](https://docs.adyen.com/platforms/process-payments#providing-split-information), [Classic Platforms integration](https://docs.adyen.com/classic-platforms/processing-payments#providing-split-information), or [Issuing](https://docs.adyen.com/issuing/manage-funds#split).',
+      }),
+    store: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.',
+      }),
+    storeFiltrationMode: z
+      .enum(['exclusive', 'inclusive', 'skipFilter'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Specifies how payment methods should be filtered based on the 'store' parameter:\n  - 'exclusive': Only payment methods belonging to the specified 'store' are returned.\n  - 'inclusive': Payment methods from the 'store' and those not associated with any other store are returned.",
+      }),
+    storePaymentMethod: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be stored for future [recurring payments](https://docs.adyen.com/online-payments/tokenization/#recurring-payment-types).',
+      }),
+    storePaymentMethodMode: z
+      .enum(['askForConsent', 'disabled', 'enabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the details of the payment method will be stored for the shopper. Possible values:\n* **disabled** – No details will be stored (default).\n* **askForConsent** – If the `shopperReference` is provided, the Drop-in/Component shows a checkbox where the shopper can select to store their payment details for card payments.\n* **enabled** – If the `shopperReference` is provided, the details will be stored without asking the shopper for consent.',
+        'x-addedInVersion': '70',
+      }),
+    telephoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's telephone number.\n The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.",
+      }),
+    themeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sets a custom theme for [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/?platform=Web&integration=Hosted+Checkout). The value can be any of the **Theme ID** values from your Customer Area.',
+        'x-addedInVersion': '69',
+      }),
+    thirdPartyTokenRedundancyInfo: ThirdPartyTokenRedundancyInfoSchema.exactOptional().openapi({
+      description:
+        'Configuration for creating redundant payment tokens with third-party token vaults using the Adyen Forward API. This feature requires Forward API webhook integration and pre-configured templates in your Adyen account. Contact your Adyen account manager for setup and availability.',
+    }),
+    threeDS2RequestData: CheckoutSessionThreeDS2RequestDataSchema.exactOptional().openapi({
+      description:
+        'Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments).',
+    }),
+    threeDSAuthenticationOnly: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.',
+        'x-deprecatedInVersion': '69',
+        'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
+      }),
+    trustedShopper: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Set to true if the payment should be routed to a trusted MID.' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL for the Hosted Checkout page. Redirect the shopper to this URL so they can make the payment.',
+        'x-addedInVersion': '69',
+      }),
+  })
+  .openapi({ required: ['amount', 'expiresAt', 'id', 'merchantAccount', 'reference', 'returnUrl'] })
+  .openapi('CreateCheckoutSessionResponse')
+
+const CreateOrderRequestSchema = z
+  .strictObject({
+    amount: AmountSchema.openapi({ description: 'The total amount of the order.' }),
+    expiresAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date when the order should expire. If not provided, the default expiry duration is 1 day.\n\n[ISO 8601](https://www.w3.org/TR/NOTE-datetime) format: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description: 'The merchant account identifier, with which you want to process the order.',
+      }),
+    reference: z.string().openapi({ description: 'A custom reference identifying the order.' }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount', 'reference'] })
+  .openapi('CreateOrderRequest')
+
+const CreateOrderResponseSchema = z
+  .strictObject({
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains additional information about the payment. Some data fields are included only if you select them first: Go to **Customer Area** > **Developers** > **Additional data**.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/ResponseAdditionalData3DSecure' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataBillingAddress' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCard' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCommon' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataDomesticError' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataInstallments' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataNetworkTokens' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataOpi' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSepa' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSwish' },
+        ],
+      }),
+    amount: AmountSchema.openapi({
+      description: 'The initial amount of the order.',
+      'x-addedInVersion': '68',
+    }),
+    expiresAt: z.string().openapi({ description: 'The date that the order will expire.' }),
+    fraudResult: FraudResultSchema.exactOptional().openapi({
+      description: 'The fraud result properties of the payment.',
+    }),
+    orderData: z
+      .string()
+      .openapi({
+        description:
+          'The encrypted data that will be used by merchant for adding payments to the order.',
+      }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Adyen's 16-character reference associated with the transaction/request. This value is globally unique; quote it when communicating with us about this request.",
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference provided by merchant for creating the order.' }),
+    refusalReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "If the payment's authorisation is refused or an error occurs during authorisation, this field holds Adyen's mapped reason for the refusal or a description of the error. When a transaction fails, the authorisation response includes `resultCode` and `refusalReason` values.\n\nFor more information, see [Refusal reasons](https://docs.adyen.com/development-resources/refusal-reasons).",
+      }),
+    remainingAmount: AmountSchema.openapi({ description: 'The remaining amount in the order.' }),
+    resultCode: z
+      .literal('Success')
+      .openapi({
+        description: 'The result of the order creation request.\n The value is always **Success**.',
+      }),
+  })
+  .openapi({ required: ['amount', 'expiresAt', 'orderData', 'remainingAmount', 'resultCode'] })
+  .openapi('CreateOrderResponse')
+
+const DBaraiDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('dbarai')
+      .default('dbarai')
+      .exactOptional()
+      .openapi({ description: '**dbarai**' }),
+  })
+  .openapi({ title: 'DBarai', required: [] })
+  .openapi('DBaraiDetails')
+
+const DeliveryMethodSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The cost of this delivery method.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the delivery method as shown to the shopper.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference of the delivery method.' }),
+    selected: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If you display the PayPal lightbox with delivery methods, set to **true** for the delivery method that is selected. Only one delivery method can be selected at a time.',
+      }),
+    type: z
+      .literal('Shipping')
+      .exactOptional()
+      .openapi({ description: 'The type of the delivery method.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeliveryMethod')
+
+const DetailsRequestAuthenticationDataSchema = z
+  .strictObject({
+    authenticationOnly: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.',
+        'x-addedInVersion': '69',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DetailsRequestAuthenticationData')
+
+const DirectDebitAuDetailsSchema = z
+  .strictObject({
+    bankAccountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's banking account number used to complete payment." }),
+    bankBranchCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's BSB (their bank's branch code) number used to complete payment.",
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    holderName: z.string().openapi({ description: 'The name of the bank account holder.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('directdebit_AU')
+      .default('directdebit_AU')
+      .exactOptional()
+      .openapi({ description: '**directdebit_AU**' }),
+  })
+  .openapi({ required: ['holderName'], title: 'DirectDebitAu' })
+  .openapi('DirectDebitAuDetails')
+
+const DokuDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    firstName: z.string().openapi({ description: "The shopper's first name." }),
+    lastName: z.string().openapi({ description: "The shopper's last name." }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperEmail: z.string().openapi({ description: "The shopper's email." }),
+    type: z
+      .enum([
+        'doku_mandiri_va',
+        'doku_cimb_va',
+        'doku_danamon_va',
+        'doku_bni_va',
+        'doku_permata_lite_atm',
+        'doku_bri_va',
+        'doku_bca_va',
+        'doku_alfamart',
+        'doku_indomaret',
+        'doku_wallet',
+        'doku_ovo',
+      ])
+      .openapi({ description: '**doku**' }),
+  })
+  .openapi({ required: ['firstName', 'lastName', 'shopperEmail', 'type'], title: 'Doku' })
+  .openapi('DokuDetails')
+
+const DonationSchema = z
+  .strictObject({
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes/).',
+      }),
+    donationType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The [type of donation](https://docs.adyen.com/online-payments/donations/#donation-types).\n\nPossible values:\n* **roundup**: a donation where the original transaction amount is rounded up as a donation.\n* **fixedAmounts**: a donation where you show fixed donations amounts that the shopper can select from.',
+        'x-deprecatedInVersion': '72',
+        'x-deprecatedMessage': 'Use `type` instead.',
+      }),
+    maxRoundupAmount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The maximum amount a transaction can be rounded up to make a donation. This field is only present when `donationType` is **roundup**.',
+      }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'The [type of donation](https://docs.adyen.com/online-payments/donations/#donation-types).\n\nPossible values:\n* **roundup**: a donation where the original transaction amount is rounded up as a donation.\n* **fixedAmounts**: a donation where you show fixed donation amounts that the shopper can select from.',
+      }),
+    values: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The fixed donation amounts in [minor units](https://docs.adyen.com/development-resources/currency-codes//#minor-units). This field is only present when `donationType` is **fixedAmounts**.',
+      }),
+  })
+  .openapi({ required: ['currency', 'type'] })
+  .openapi('Donation')
+
+const DonationCampaignSchema = z
+  .strictObject({
+    amounts: AmountsSchema.exactOptional().openapi({
+      description:
+        'The object that contains the fixed donation amounts that the shopper can select from.',
+    }),
+    bannerUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL for the banner of the nonprofit or campaign.' }),
+    campaignName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the donation campaign..' }),
+    causeName: z.string().exactOptional().openapi({ description: 'The cause of the nonprofit.' }),
+    donation: DonationSchema.exactOptional().openapi({
+      description: 'The object that contains the details of the donation.',
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique campaign ID of the donation campaign.' }),
+    logoUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL for the logo of the nonprofit.' }),
+    nonprofitDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the nonprofit.' }),
+    nonprofitName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the nonprofit organization that receives the donation.',
+      }),
+    nonprofitUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The website URL of the nonprofit.' }),
+    termsAndConditionsUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL of the terms and conditions page of the nonprofit and the campaign.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DonationCampaign')
+
+const DonationCampaignsRequestSchema = z
+  .strictObject({
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes/).',
+      }),
+    label: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({ description: 'The label that is assigned to the donation campaign.' }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Locale on the shopper interaction device.' }),
+    merchantAccount: z.string().openapi({ description: 'Your merchant account identifier.' }),
+    store: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.',
+      }),
+  })
+  .openapi({ required: ['currency', 'merchantAccount'] })
+  .openapi('DonationCampaignsRequest')
+
+const DonationCampaignsResponseSchema = z
+  .strictObject({
+    donationCampaigns: z
+      .array(DonationCampaignSchema)
+      .exactOptional()
+      .openapi({ description: 'List of active donation campaigns for your merchant account.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DonationCampaignsResponse')
+
+const GooglePayDonationsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    googlePayCardNetwork: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The selected payment card network. ' }),
+    googlePayToken: z
+      .string()
+      .max(10000)
+      .openapi({
+        description:
+          'The `token` that you obtained from the [Google Pay API](https://developers.google.com/pay/api/web/reference/response-objects#PaymentData) `PaymentData` response.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    threeDS2SdkVersion: z
+      .string()
+      .max(12)
+      .exactOptional()
+      .openapi({
+        description: 'Required for mobile integrations. Version of the 3D Secure 2 mobile SDK.',
+      }),
+    type: z
+      .literal('googlepay')
+      .default('googlepay')
+      .exactOptional()
+      .openapi({ description: '**googlepay**, **paywithgoogle**' }),
+  })
+  .openapi({ required: ['googlePayToken'], title: 'Google Pay' })
+  .openapi('GooglePayDonations')
+
+const IdealDonationsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The iDEAL issuer value of the shopper's selected bank. Set this to an **id** of an iDEAL issuer to preselect it.",
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('ideal').default('ideal').exactOptional().openapi({ description: '**ideal**' }),
+  })
+  .openapi({ title: 'iDEAL', required: [] })
+  .openapi('IdealDonations')
+
+const PayWithGoogleDonationsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    googlePayToken: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'The `token` that you obtained from the [Google Pay API](https://developers.google.com/pay/api/web/reference/response-objects#PaymentData) `PaymentData` response.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    threeDS2SdkVersion: z
+      .string()
+      .max(12)
+      .exactOptional()
+      .openapi({
+        description: 'Required for mobile integrations. Version of the 3D Secure 2 mobile SDK.',
+      }),
+    type: z
+      .literal('paywithgoogle')
+      .default('paywithgoogle')
+      .exactOptional()
+      .openapi({ description: '**paywithgoogle**' }),
+  })
+  .openapi({ required: ['googlePayToken'], title: 'Google Pay' })
+  .openapi('PayWithGoogleDonations')
+
+const SepaDirectDebitDonationsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('sepadirectdebit')
+      .default('sepadirectdebit')
+      .exactOptional()
+      .openapi({ description: '**sepadirectdebit**' }),
+  })
+  .openapi({ title: 'Stored Payment Method', required: [] })
+  .openapi('SepaDirectDebitDonations')
+
+const ThreeDS2RequestFieldsSchema = z
+  .strictObject({
+    acctInfo: AcctInfoSchema.exactOptional().openapi({
+      description:
+        'Additional information about the cardholder’s account provided by the 3DS Requestor.',
+      'x-addedInVersion': '68',
+    }),
+    acctType: z
+      .enum(['01', '02', '03'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the type of account. For example, for a multi-account card product. Length: 2 characters. Allowed values:\n* **01** — Not applicable\n* **02** — Credit\n* **03** — Debit',
+        'x-addedInVersion': '68',
+      }),
+    acquirerBIN: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only). The acquiring BIN enrolled for 3D Secure 2. This string should match the value that you will use in the authorisation. Use 123456 on the Test platform.',
+        'x-addedInVersion': '49',
+      }),
+    acquirerMerchantID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only). The merchantId that is enrolled for 3D Secure 2 by the merchant's acquirer. This string should match the value that you will use in the authorisation. Use 123456 on the Test platform.",
+        'x-addedInVersion': '49',
+      }),
+    addrMatch: z
+      .enum(['Y', 'N'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the cardholder shipping Address and cardholder billing address are the same. Allowed values:\n* **Y** — Shipping Address matches Billing Address.\n* **N** — Shipping Address does not match Billing Address.',
+        'x-addedInVersion': '68',
+      }),
+    authenticationOnly: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'If set to true, you will only perform the [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only), and not the payment authorisation.',
+        'x-deprecatedInVersion': '50',
+        'x-deprecatedMessage':
+          '- If your version is between 50 and 69, use `threeDSAuthenticationOnly` instead.\n- If your version is 70 or later, use `authenticationData.authenticationOnly` instead.',
+      }),
+    challengeIndicator: z
+      .enum(['noPreference', 'requestNoChallenge', 'requestChallenge', 'requestChallengeAsMandate'])
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Possibility to specify a preference for receiving a challenge from the issuer.\nAllowed values:\n* `noPreference`\n* `requestNoChallenge`\n* `requestChallenge`\n* `requestChallengeAsMandate`\n',
+        'x-deprecatedInVersion': '68',
+        'x-deprecatedMessage': 'Use `threeDSRequestorChallengeInd` instead.',
+      }),
+    deviceRenderOptions: DeviceRenderOptionsSchema.exactOptional().openapi({
+      description:
+        'Display options for the 3D Secure 2 SDK.\nOptional and only for `deviceChannel` **app**.',
+    }),
+    homePhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The home phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+      'x-addedInVersion': '68',
+    }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for merchants that have been enrolled for 3D Secure 2 by another party than Adyen, mostly [authentication-only integrations](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only). The `mcc` is a four-digit code with which the previously given `acquirerMerchantID` is registered at the scheme.',
+        'x-addedInVersion': '49',
+      }),
+    merchantName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only). The merchant name that the issuer presents to the shopper if they get a challenge. We recommend to use the same value that you will use in the authorization. Maximum length is 40 characters.\n> Optional for a [full 3D Secure 2 integration](https://docs.adyen.com/online-payments/3d-secure/native-3ds2/api-integration). Use this field if you are enrolled for 3D Secure 2 with us and want to override the merchant name already configured on your account.',
+        'x-addedInVersion': '49',
+      }),
+    messageVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `messageVersion` value indicating the 3D Secure 2 protocol version.',
+      }),
+    mobilePhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The mobile phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+      'x-addedInVersion': '68',
+    }),
+    notificationURL: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL to where the issuer should send the `CRes`. Required if you are not using components for `channel` **Web** or if you are using classic integration `deviceChannel` **browser**.',
+      }),
+    payTokenInd: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value **true** indicates that the transaction was de-tokenised prior to being received by the ACS.',
+        'x-addedInVersion': '68',
+      }),
+    paymentAuthenticationUseCase: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the type of payment for which an authentication is requested (message extension)',
+        'x-addedInVersion': '68',
+      }),
+    purchaseInstalData: z
+      .string()
+      .min(1)
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the maximum number of authorisations permitted for instalment payments. Length: 1–3 characters.',
+        'x-addedInVersion': '68',
+      }),
+    recurringExpiry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date after which no further authorisations shall be performed. Format: YYYYMMDD',
+        'x-addedInVersion': '68',
+      }),
+    recurringFrequency: z
+      .string()
+      .max(4)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the minimum number of days between authorisations. Maximum length: 4 characters.',
+        'x-addedInVersion': '68',
+      }),
+    sdkAppID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `sdkAppID` value as received from the 3D Secure 2 SDK.' }),
+    sdkEphemPubKey: SDKEphemPubKeySchema.exactOptional().openapi({
+      description: 'The `sdkEphemPubKey` value as received from the 3D Secure 2 SDK.',
+    }),
+    sdkMaxTimeout: z
+      .int32()
+      .default(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum amount of time in minutes for the 3D Secure 2 authentication process.\nOptional and only for `deviceChannel` set to **app**. Defaults to **60** minutes.',
+      }),
+    sdkReferenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `sdkReferenceNumber` value as received from the 3D Secure 2 SDK.',
+      }),
+    sdkTransID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `sdkTransID` value as received from the 3D Secure 2 SDK.' }),
+    threeDSCompInd: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Completion indicator for the device fingerprinting.' }),
+    threeDSRequestorAuthenticationInd: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates the type of Authentication request.',
+        'x-addedInVersion': '68',
+      }),
+    threeDSRequestorAuthenticationInfo:
+      ThreeDSRequestorAuthenticationInfoSchema.exactOptional().openapi({
+        description:
+          'Information about how the 3DS Requestor authenticated the cardholder before or during the transaction',
+        'x-addedInVersion': '68',
+      }),
+    threeDSRequestorChallengeInd: z
+      .enum(['01', '02', '03', '04', '05', '06'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether a challenge is requested for this transaction. Possible values:\n* **01** — No preference\n* **02** — No challenge requested\n* **03** — Challenge requested (3DS Requestor preference)\n* **04** — Challenge requested (Mandate)\n* **05** — No challenge (transactional risk analysis is already performed)\n* **06** — Data Only',
+        'x-addedInVersion': '68',
+      }),
+    threeDSRequestorID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only) for Visa. Unique 3D Secure requestor identifier assigned by the Directory Server when you enrol for 3D Secure 2.',
+      }),
+    threeDSRequestorName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for [authentication-only integration](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only) for Visa. Unique 3D Secure requestor name assigned by the Directory Server when you enrol for 3D Secure 2.',
+      }),
+    threeDSRequestorPriorAuthenticationInfo:
+      ThreeDSRequestorPriorAuthenticationInfoSchema.exactOptional().openapi({
+        description:
+          'Information about how the 3DS Requestor authenticated the cardholder as part of a previous 3DS transaction.',
+        'x-addedInVersion': '68',
+      }),
+    threeDSRequestorURL: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL of the (customer service) website that will be shown to the shopper in case of technical errors during the 3D Secure 2 process.',
+      }),
+    transType: z
+      .enum(['01', '03', '10', '11', '28'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies the type of transaction being authenticated. Length: 2 characters. Allowed values:\n* **01** — Goods/Service Purchase\n* **03** — Check Acceptance\n* **10** — Account Funding\n* **11** — Quasi-Cash Transaction\n* **28** — Prepaid Activation and Load',
+        'x-addedInVersion': '68',
+      }),
+    transactionType: z
+      .enum([
+        'goodsOrServicePurchase',
+        'checkAcceptance',
+        'accountFunding',
+        'quasiCashTransaction',
+        'prepaidActivationAndLoad',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Identify the type of the transaction being authenticated.',
+        'x-addedInVersion': '50',
+      }),
+    whiteListStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `whiteListStatus` value returned from a previous 3D Secure 2 transaction, only applicable for 3D Secure 2 protocol version 2.2.0.',
+        'x-addedInVersion': '49',
+      }),
+    workPhone: PhoneSchema.exactOptional().openapi({
+      description:
+        "The work phone number provided by the cardholder. The phone number must consist of a country code, followed by the number. If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`, and did not send the shopper's phone number in `telephoneNumber`.",
+      'x-addedInVersion': '68',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ThreeDS2RequestFields')
+
+const DonationPaymentRequestSchema = z
+  .strictObject({
+    accountInfo: AccountInfoSchema.exactOptional().openapi({
+      description:
+        'Shopper account information for 3D Secure 2.\n> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.',
+      'x-addedInVersion': '40',
+    }),
+    amount: AmountSchema.openapi({
+      description:
+        'The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero).',
+    }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+      'x-addedInVersion': '40',
+    }),
+    authenticationData: AuthenticationDataSchema.exactOptional().openapi({
+      description: 'Data for 3DS authentication.',
+      'x-addedInVersion': '69',
+    }),
+    billingAddress: BillingAddressSchema.exactOptional().openapi({
+      description:
+        'The address where to send the invoice.\n> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.\n>* For 3D Secure 2 transactions in all browser-based and mobile implementations.\n>* For cross-border payouts to and from Canada.',
+    }),
+    browserInfo: BrowserInfoSchema.exactOptional().openapi({
+      description:
+        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.",
+    }),
+    channel: z
+      .enum(['iOS', 'Android', 'Web'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The platform where a payment transaction takes place. This field is optional for filtering out payment methods that are only available on specific platforms. If this value is not set, then we will try to infer it from the `sdkVersion` or `token`.\n\nPossible values:\n* iOS\n* Android\n* Web',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Checkout attempt ID that corresponds to the Id generated by the client SDK for tracking user payment journey.',
+      }),
+    countryCode: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'The shopper country code.\n\nFormat: [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)\nExample: NL or DE',
+      }),
+    dateOfBirth: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's date of birth.\n\nFormat [ISO-8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DD",
+      }),
+    deliveryAddress: DeliveryAddressSchema.exactOptional().openapi({
+      description: 'The address where the purchased goods should be delivered.',
+    }),
+    deviceFingerprint: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          "A string containing the shopper's device fingerprint. For more information, refer to [Device fingerprinting](https://docs.adyen.com/risk-management/device-fingerprinting).",
+      }),
+    donationAccount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Donation account to which the transaction is credited.' }),
+    donationCampaignId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The donation campaign ID received in the `/donationCampaigns` call.',
+        'x-addedInVersion': '67',
+      }),
+    donationOriginalPspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'PSP reference of the transaction from which the donation token is generated. Required when `donationToken` is provided.',
+      }),
+    donationToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Donation token received in the `/payments` call.' }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information about the purchased items, to be included on the invoice sent to the shopper.\n> This field is required for 3x 4x Oney, Affirm, Afterpay, Clearpay, Klarna, Ratepay, and Riverty.',
+        'x-addedInVersion': '32',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    merchantRiskIndicator: MerchantRiskIndicatorSchema.exactOptional().openapi({
+      description:
+        'Additional risk fields for 3D Secure 2.\n> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.',
+      'x-addedInVersion': '40',
+    }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata consists of entries, each of which includes a key and a value.\nLimits:\n* Maximum 20 key-value pairs per request. When exceeding, the "177" error occurs: "Metadata size exceeds limit".\n* Maximum 20 characters per key.\n* Maximum 80 characters per value. ',
+      }),
+    mpiData: ThreeDSecureDataSchema.exactOptional().openapi({
+      description:
+        'Authentication data produced by an MPI (Mastercard SecureCode, Visa Secure, or Cartes Bancaires).',
+    }),
+    origin: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          '> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.',
+        'x-addedInVersion': '40',
+      }),
+    paymentMethod: z
+      .xor([
+        ApplePayDonationsSchema,
+        CardDonationsSchema,
+        GooglePayDonationsSchema,
+        IdealDonationsSchema,
+        PayWithGoogleDonationsSchema,
+        SepaDirectDebitDonationsSchema,
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type and required details of a payment method to use.\n\nWhen `donationToken` is provided, the payment method is derived from the token and this field becomes optional.\n\nIf you are [PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide), and make donations using raw card details, you must explicitly provide the payment method details.',
+        discriminator: {
+          propertyName: 'type',
+          mapping: {
+            applepay: '#/components/schemas/ApplePayDonations',
+            paywithgoogle: '#/components/schemas/PayWithGoogleDonations',
+            googlepay: '#/components/schemas/GooglePayDonations',
+            scheme: '#/components/schemas/CardDonations',
+            networkToken: '#/components/schemas/CardDonations',
+            ideal: '#/components/schemas/IdealDonations',
+            sepadirectdebit: '#/components/schemas/SepaDirectDebitDonations',
+            card: '#/components/schemas/CardDonations',
+          },
+        },
+      }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines a recurring payment type. Required when creating a token to store payment details or using stored payment details.\nAllowed values:\n* `Subscription` – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* `CardOnFile` – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* `UnscheduledCardOnFile` – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or have variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.\n",
+        'x-addedInVersion': '32',
+      }),
+    redirectFromIssuerMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the redirect method (GET or POST) when redirecting back from the issuer.',
+        'x-addedInVersion': '32',
+      }),
+    redirectToIssuerMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Specifies the redirect method (GET or POST) when redirecting to the issuer.',
+        'x-addedInVersion': '32',
+      }),
+    reference: z
+      .string()
+      .openapi({
+        description:
+          'The reference to uniquely identify a payment. This reference is used in all communication with you about the payment status. We recommend using a unique value per payment; however, it is not a requirement.\nIf you need to provide multiple references for a transaction, separate them with hyphens ("-").\nMaximum length: 80 characters.',
+      }),
+    returnUrl: z
+      .string()
+      .max(1024)
+      .openapi({
+        description:
+          'The URL to return to in case of a redirection.\nThe format depends on the channel. \n* For web, include the protocol `http://` or `https://`. You can also include your own additional query parameters, for example, shopper ID or order reference number.\nExample: `https://your-company.example.com/checkout?shopperOrder=12xy`\n* For iOS, use the custom URL for your app. To know more about setting custom URL schemes, refer to the [Apple Developer documentation](https://developer.apple.com/documentation/uikit/inter-process_communication/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app).\nExample: `my-app://`\n* For Android, use a custom URL handled by an Activity on your app. You can configure it with an [intent filter](https://developer.android.com/guide/components/intents-filters).\nExample: `my-app://your.package.name`\n\nIf the URL to return to includes non-ASCII characters, like spaces or special letters, URL encode the value.\n> The URL must not include personally identifiable information (PII), for example name or email address.',
+      }),
+    sessionValidity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time until when the session remains valid, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.\n\nFor example: 2020-07-18T15:42:40.428+01:00',
+      }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's email address. We recommend that you provide this data, as it is used in velocity fraud checks. > Required for Visa and JCB transactions that require 3D Secure 2 authentication if you did not include the `telephoneNumber`.",
+      }),
+    shopperIP: z
+      .string()
+      .max(1000)
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's IP address. We recommend that you provide this data, as it is used in a number of risk checks (for instance, number of payment attempts or location-based checks).\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication for all web and mobile integrations, if you did not include the `shopperEmail`. For native mobile integrations, the field is required to support cases where authentication is routed to the redirect flow. This field is also mandatory for some merchants depending on your business model. For more information, [contact Support](https://www.adyen.help/hc/en-us/requests/new).",
+      }),
+    shopperInteraction: z
+      .enum(['Ecommerce', 'ContAuth', 'Moto', 'POS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the sales channel, through which the shopper gives their card details, and whether the shopper is a returning customer.\nFor the web service API, Adyen assumes Ecommerce shopper interaction by default.\n\nThis field has the following possible values:\n* `Ecommerce` - Online transactions where the cardholder is present (online). For better authorization rates, we recommend sending the card security code (CSC) along with the request.\n* `ContAuth` - Card on file and/or subscription transactions, where the cardholder is known to the merchant (returning customer). If the shopper is present (online), you can supply also the CSC to improve authorization (one-click payment).\n* `Moto` - Mail-order and telephone-order transactions where the shopper is in contact with the merchant via email or telephone.\n* `POS` - Point-of-sale transactions where the shopper is physically present to make a payment using a secure payment terminal.',
+      }),
+    shopperLocale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language for the payment. The value combines the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) language code with the [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) country code. For example, **nl-NL**.\n\nWhen using Drop-in/Components, the specified language appears if your front-end global configuration does not set the `locale`.',
+      }),
+    shopperName: ShopperNameSchema.exactOptional().openapi({
+      description: "The shopper's full name.",
+    }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for recurring payments. \nYour reference to uniquely identify this shopper, for example user ID or account ID. Minimum length: 3 characters.\n> Your reference must not include personally identifiable information (PII), for example name or email address.',
+      }),
+    socialSecurityNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The shopper's social security number." }),
+    store: z
+      .string()
+      .min(1)
+      .max(16)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.',
+      }),
+    telephoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's telephone number.\n The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.",
+      }),
+    threeDS2RequestData: ThreeDS2RequestFieldsSchema.exactOptional().openapi({
+      description:
+        'Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments) or [Classic integration](https://docs.adyen.com/classic-integration) documentation.',
+      'x-addedInVersion': '40',
+    }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount', 'reference', 'returnUrl'] })
+  .openapi('DonationPaymentRequest')
+
+const OpiResponseSchema = z
+  .strictObject({
+    issuerId: z.string().exactOptional().openapi({ description: 'The OPI issuer id.' }),
+    transToken: z.string().exactOptional().openapi({ description: 'The OPI transaction token.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OpiResponse')
+
+const ResponsePaymentMethodSchema = z
+  .strictObject({
+    brand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card brand that the shopper used to pay. Only returned if `paymentMethod.type` is **scheme**.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `paymentMethod.type` value used in the request.' }),
+  })
+  .openapi({ title: 'paymentResponse', required: [] })
+  .openapi('ResponsePaymentMethod')
+
+const PaymentValidationsNameResultRawResponseSchema = z
+  .strictObject({
+    firstName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The raw first name validation result that Adyen received from the scheme. First name validation result is only returned for Visa.',
+      }),
+    fullName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The raw full name validation result that Adyen received from the scheme. Full name is the only field that is validated for Mastercard',
+      }),
+    lastName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The raw last name validation result that Adyen received from the scheme. Last name validation result is only returned for Visa.',
+      }),
+    middleName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The raw middle name validation result that Adyen received from the scheme. Middle name validation result is only returned for Visa.',
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The raw name validation status value that Adyen received from the scheme. Only returned for Visa.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentValidationsNameResultRawResponse')
+
+const PaymentValidationsNameResultResponseSchema = z
+  .strictObject({
+    firstName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Informs you if the first name your shopper provided matches the cardholder first name on file at the issuing bank. The first name is only validated for Visa. Possible values:\n\n**match**, **partialMatch**, **noMatch**',
+      }),
+    fullName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Informs you if the full name your shopper provided matches the cardholder name on file at the issuing bank. The full name is the only field that is validated for Mastercard. Possible values:\n\n**match**, **partialMatch**, **noMatch** ',
+      }),
+    lastName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Informs you if the last name your shopper provided matches the cardholder last name on file at the issuing bank. The last name is only validated for Visa. Possible values:\n\n**match**, **partialMatch**, **noMatch**',
+      }),
+    middleName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Informs you if the middle name your shopper provided matches the cardholder middle name on file at the issuing bank. The middle name is only validated for Visa. Possible values:\n\n**match**, **partialMatch**, **noMatch**',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentValidationsNameResultResponse')
+
+const PaymentValidationsNameResponseSchema = z
+  .strictObject({
+    rawResponse: PaymentValidationsNameResultRawResponseSchema.exactOptional().openapi({
+      description: 'Contains the raw response(s) returned by the scheme for the name validation.',
+    }),
+    result: PaymentValidationsNameResultResponseSchema.exactOptional().openapi({
+      description: 'Contains the scheme-agnostic match values returned by Adyen.',
+    }),
+    status: z
+      .enum(['notPerformed', 'notSupported', 'performed'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Informs you if the name validation was performed. Possible values:\n\n**performed**, **notPerformed**, **notSupported**',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentValidationsNameResponse')
+
+const PaymentValidationsResponseSchema = z
+  .strictObject({
+    name: PaymentValidationsNameResponseSchema.exactOptional().openapi({
+      description:
+        'Object that contains the status and outcomes of the [name validation](https://docs.adyen.com/payment-methods/cards/name-validation).',
+    }),
+  })
+  .openapi({ title: 'paymentResponse', required: [] })
+  .openapi('PaymentValidationsResponse')
+
+const ThreeDS2ResponseDataSchema = z
+  .strictObject({
+    acsChallengeMandated: z.string().exactOptional(),
+    acsOperatorID: z.string().exactOptional(),
+    acsReferenceNumber: z.string().exactOptional(),
+    acsSignedContent: z.string().exactOptional(),
+    acsTransID: z.string().exactOptional(),
+    acsURL: z.string().exactOptional(),
+    authenticationType: z.string().exactOptional(),
+    cardHolderInfo: z.string().exactOptional(),
+    cavvAlgorithm: z.string().exactOptional(),
+    challengeIndicator: z.string().exactOptional(),
+    dsReferenceNumber: z.string().exactOptional(),
+    dsTransID: z.string().exactOptional(),
+    exemptionIndicator: z.string().exactOptional(),
+    messageVersion: z.string().exactOptional(),
+    riskScore: z.string().exactOptional(),
+    sdkEphemPubKey: z.string().exactOptional(),
+    threeDSServerTransID: z.string().exactOptional(),
+    transStatus: z.string().exactOptional(),
+    transStatusReason: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ThreeDS2ResponseData')
+
+const ThreeDS2ResultSchema = z
+  .strictObject({
+    authenticationValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `authenticationValue` value as defined in the 3D Secure 2 specification.',
+      }),
+    cavvAlgorithm: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The algorithm used by the ACS to calculate the authentication value, only for Cartes Bancaires integrations.',
+        'x-addedInVersion': '50',
+      }),
+    challengeCancel: z
+      .enum(['01', '02', '03', '04', '05', '06', '07'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicator informing the Access Control Server (ACS) and the Directory Server (DS) that the authentication has been cancelled. For possible values, refer to [3D Secure API reference](https://docs.adyen.com/online-payments/3d-secure/api-reference#mpidata).',
+        'x-addedInVersion': '67',
+      }),
+    dsTransID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `dsTransID` value as defined in the 3D Secure 2 specification.',
+      }),
+    eci: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `eci` value as defined in the 3D Secure 2 specification.' }),
+    exemptionIndicator: z
+      .enum(['lowValue', 'secureCorporate', 'trustedBeneficiary', 'transactionRiskAnalysis'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the exemption type that was applied by the issuer to the authentication, if exemption applied.\nAllowed values:\n* `lowValue`\n* `secureCorporate`\n* `trustedBeneficiary`\n* `transactionRiskAnalysis`\n',
+        'x-addedInVersion': '67',
+      }),
+    messageVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `messageVersion` value as defined in the 3D Secure 2 specification.',
+        'x-addedInVersion': '49',
+      }),
+    riskScore: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Risk score calculated by Cartes Bancaires Directory Server (DS).',
+        'x-addedInVersion': '67',
+      }),
+    threeDSRequestorChallengeInd: z
+      .enum(['01', '02', '03', '04', '05', '06'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether a challenge is requested for this transaction. Possible values:\n* **01** — No preference\n* **02** — No challenge requested\n* **03** — Challenge requested (3DS Requestor preference)\n* **04** — Challenge requested (Mandate)\n* **05** — No challenge (transactional risk analysis is already performed)\n* **06** — Data Only',
+        'x-addedInVersion': '68',
+      }),
+    threeDSServerTransID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `threeDSServerTransID` value as defined in the 3D Secure 2 specification.',
+      }),
+    timestamp: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `timestamp` value of the 3D Secure 2 authentication.' }),
+    transStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `transStatus` value as defined in the 3D Secure 2 specification.',
+      }),
+    transStatusReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Provides information on why the `transStatus` field has the specified value. For possible values, refer to [our docs](https://docs.adyen.com/online-payments/3d-secure/api-reference#possible-transstatusreason-values).',
+      }),
+    whiteListStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `whiteListStatus` value as defined in the 3D Secure 2 specification.',
+        'x-addedInVersion': '49',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ThreeDS2Result')
+
+const PaymentResponseSchema = z
+  .strictObject({
+    action: z
+      .discriminatedUnion('type', [
+        CheckoutAwaitActionSchema,
+        CheckoutBankTransferActionSchema,
+        CheckoutDelegatedAuthenticationActionSchema,
+        CheckoutNativeRedirectActionSchema,
+        CheckoutQrCodeActionSchema,
+        CheckoutRedirectActionSchema,
+        CheckoutSDKActionSchema,
+        CheckoutThreeDS2ActionSchema,
+        CheckoutVoucherActionSchema,
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Action to be taken for completing the payment.',
+        discriminator: {
+          propertyName: 'type',
+          mapping: {
+            bankTransfer: '#/components/schemas/CheckoutBankTransferAction',
+            qrCode: '#/components/schemas/CheckoutQrCodeAction',
+            nativeRedirect: '#/components/schemas/CheckoutNativeRedirectAction',
+            redirect: '#/components/schemas/CheckoutRedirectAction',
+            sdk: '#/components/schemas/CheckoutSDKAction',
+            wechatpaySDK: '#/components/schemas/CheckoutSDKAction',
+            threeDS2: '#/components/schemas/CheckoutThreeDS2Action',
+            delegatedAuthentication: '#/components/schemas/CheckoutDelegatedAuthenticationAction',
+            await: '#/components/schemas/CheckoutAwaitAction',
+            voucher: '#/components/schemas/CheckoutVoucherAction',
+          },
+        },
+        'x-addedInVersion': '49',
+      }),
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains additional information about the payment. Some data fields are included only if you select them first: Go to **Customer Area** > **Developers** > **Additional data**.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/ResponseAdditionalData3DSecure' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataBillingAddress' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCard' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCommon' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataDomesticError' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataInstallments' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataNetworkTokens' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataOpi' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSepa' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSwish' },
+        ],
+      }),
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'Authorised amount in the transaction.',
+      'x-addedInVersion': '52',
+    }),
+    donationToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Donation Token containing payment details for Adyen Giving.',
+        'x-addedInVersion': '66',
+      }),
+    fraudResult: FraudResultSchema.exactOptional().openapi({
+      description: 'The fraud result properties of the payment.',
+    }),
+    merchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to uniquely identify a payment. This reference is used in all communication with you about the payment status. We recommend using a unique value per payment; however, it is not a requirement.\nIf you need to provide multiple references for a transaction, separate them with hyphens ("-").\nMaximum length: 80 characters.',
+        'x-addedInVersion': '49',
+      }),
+    opi: OpiResponseSchema.exactOptional().openapi({
+      description:
+        'Oracle Payment Interface (OPI) response fields such as `transToken` and `issuerId`.',
+      'x-addedInVersion': '71',
+    }),
+    order: CheckoutOrderResponseSchema.exactOptional().openapi({
+      description:
+        'Contains updated information regarding the order in case order information was provided in the request.',
+    }),
+    paymentMethod: ResponsePaymentMethodSchema.exactOptional().openapi({
+      description:
+        'Details about the payment method used in the transaction. \nOnly returned if `resultCode` is **Authorised**.',
+      'x-addedInVersion': '69',
+    }),
+    paymentValidations: PaymentValidationsResponseSchema.exactOptional().openapi({
+      description:
+        'The object that contains the validation outcomes.\nOnly returned if `resultCode` is **Authorised** and if you have requested a payment validation in the request.',
+      'x-addedInVersion': '69',
+    }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Adyen's 16-character string reference associated with the transaction/request. This value is globally unique; quote it when communicating with us about this request.\n\n> For payment methods that require a redirect or additional action, you will get this value in the `/payments/details` response.",
+      }),
+    refusalReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "If the payment's authorisation is refused or an error occurs during authorisation, this field holds Adyen's mapped reason for the refusal or a description of the error. When a transaction fails, the authorisation response includes `resultCode` and `refusalReason` values.\n\nFor more information, see [Refusal reasons](https://docs.adyen.com/development-resources/refusal-reasons).",
+      }),
+    refusalReasonCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Code that specifies the refusal reason. For more information, see [Authorisation refusal reasons](https://docs.adyen.com/development-resources/refusal-reasons).',
+        'x-addedInVersion': '40',
+      }),
+    resultCode: z
+      .enum([
+        'AuthenticationFinished',
+        'AuthenticationNotRequired',
+        'Authorised',
+        'Cancelled',
+        'ChallengeShopper',
+        'Error',
+        'IdentifyShopper',
+        'PartiallyAuthorised',
+        'Pending',
+        'PresentToShopper',
+        'Received',
+        'RedirectShopper',
+        'Refused',
+        'Success',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "The result of the payment. For more information, see [Result codes](https://docs.adyen.com/online-payments/payment-result-codes).\n\nPossible values:\n\n* **AuthenticationFinished** – The payment has been successfully authenticated with 3D Secure 2. Returned for 3D Secure 2 authentication-only transactions.\n* **AuthenticationNotRequired** – The transaction does not require 3D Secure authentication. Returned for [standalone authentication-only integrations](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only).\n* **Authorised** – The payment was successfully authorised. This state serves as an indicator to proceed with the delivery of goods and services. This is a final state.\n* **Cancelled** – Indicates the payment has been cancelled (either by the shopper or the merchant) before processing was completed. This is a final state.\n* **ChallengeShopper** – The issuer requires further shopper interaction before the payment can be authenticated. Returned for 3D Secure 2 transactions.\n* **Error** – There was an error when the payment was being processed. The reason is given in the `refusalReason` field. This is a final state.\n* **IdentifyShopper** – The issuer requires the shopper's device fingerprint before the payment can be authenticated. Returned for 3D Secure 2 transactions.\n* **PartiallyAuthorised** – The payment has been authorised for a partial amount.\nThis happens for card payments when the merchant supports Partial Authorisations and the cardholder has insufficient funds.\n* **Pending** – Indicates that it is not possible to obtain the final status of the payment. This can happen if the systems providing final status information for the payment are unavailable, or if the shopper needs to take further action to complete the payment.\n* **PresentToShopper** – Indicates that the response contains additional information that you need to present to a shopper, so that they can use it to complete a payment.\n* **Received** – Indicates the payment has successfully been received by Adyen, and will be processed. This is the initial state for all payments.\n* **RedirectShopper** – Indicates the shopper should be redirected to an external web page or app to complete the authorisation.\n* **Refused** – Indicates the payment was refused. The reason is given in the `refusalReason` field. This is a final state.",
+      }),
+    threeDS2ResponseData: ThreeDS2ResponseDataSchema.exactOptional().openapi({
+      description: 'Response of the 3D Secure 2 authentication.',
+      'x-addedInVersion': '67',
+    }),
+    threeDS2Result: ThreeDS2ResultSchema.exactOptional().openapi({
+      description: 'Result of the 3D Secure 2 authentication.',
+      'x-addedInVersion': '41',
+    }),
+    threeDSPaymentData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'When non-empty, contains a value that you must submit to the `/payments/details` endpoint as `paymentData`.',
+        'x-addedInVersion': '67',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentResponse')
+
+const DonationPaymentResponseSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'Authorised amount in the transaction.',
+    }),
+    donationAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Adyen account name of your charity. We will provide you with this account name once your chosen charity has been [onboarded](https://docs.adyen.com/online-payments/donations#onboarding).',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'Your unique resource identifier.' }),
+    merchantAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    payment: PaymentResponseSchema.exactOptional().openapi({
+      description: 'Action to be taken for completing the payment.',
+    }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to uniquely identify a payment. This reference is used in all communication with you about the payment status. We recommend using a unique value per payment; however, it is not a requirement. If you need to provide multiple references for a transaction, separate them with hyphens ("-"). Maximum length: 80 characters.',
+      }),
+    status: z
+      .enum(['completed', 'pending', 'refused'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the donation transaction.\n\nPossible values:\n* **completed**\n* **pending**\n* **refused**',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DonationPaymentResponse')
+
+const DragonpayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z
+      .string()
+      .openapi({
+        description:
+          "The Dragonpay issuer value of the shopper's selected bank. Set this to an **id** of a Dragonpay issuer to preselect it.",
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper’s email address.' }),
+    type: z
+      .enum([
+        'dragonpay_ebanking',
+        'dragonpay_otc_banking',
+        'dragonpay_otc_non_banking',
+        'dragonpay_otc_philippines',
+      ])
+      .openapi({ description: '**dragonpay**' }),
+  })
+  .openapi({ required: ['issuer', 'type'], title: 'Dragonpay' })
+  .openapi('DragonpayDetails')
+
+const EBankingFinlandDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The Ebanking Finland issuer value of the shopper's selected bank.",
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('ebanking_FI')
+      .default('ebanking_FI')
+      .openapi({ description: '**ebanking_FI**' }),
+  })
+  .openapi({ required: ['type'], title: 'E-Banking Finland' })
+  .openapi('EBankingFinlandDetails')
+
+const EcontextVoucherDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    firstName: z.string().openapi({ description: "The shopper's first name." }),
+    lastName: z.string().openapi({ description: "The shopper's last name." }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperEmail: z.string().openapi({ description: "The shopper's email." }),
+    telephoneNumber: z
+      .string()
+      .openapi({
+        description:
+          "The shopper's contact number. It must have an international number format, for example **+31 20 779 1846**. Formats like **+31 (0)20 779 1846** or **0031 20 779 1846** are not accepted.",
+      }),
+    type: z
+      .enum([
+        'econtext_seven_eleven',
+        'econtext_online',
+        'econtext',
+        'econtext_stores',
+        'econtext_atm',
+      ])
+      .openapi({ description: '**econtextvoucher**' }),
+  })
+  .openapi({
+    required: ['firstName', 'lastName', 'shopperEmail', 'telephoneNumber', 'type'],
+    title: 'Voucher',
+  })
+  .openapi('EcontextVoucherDetails')
+
+const EftDetailsSchema = z
+  .strictObject({
+    bankAccountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank account number (without separators).' }),
+    bankCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The financial institution code.' }),
+    bankLocationId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank routing number of the account.' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    ownerName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The name of the bank account holder.\nIf you submit a name with non-Latin characters, we automatically replace some of them with corresponding Latin characters to meet the FATF recommendations. For example:\n* χ12 is converted to ch12.\n* üA is converted to euA.\n* Peter Møller is converted to Peter Mller, because banks don't accept 'ø'.\nAfter replacement, the ownerName must have at least three alphanumeric characters (A-Z, a-z, 0-9), and at least one of them must be a valid Latin character (A-Z, a-z). For example:\n* John17 - allowed.\n* J17 - allowed.\n* 171 - not allowed.\n* John-7 - allowed.\n> If provided details don't match the required format, the response returns the error message: 203 'Invalid bank account holder name'.",
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('eft_directdebit_CA')
+      .default('eft_directdebit_CA')
+      .exactOptional()
+      .openapi({ description: '**eft**' }),
+  })
+  .openapi({ title: 'EFT Direct Debit', required: [] })
+  .openapi('EftDetails')
+
+const ExternalTokenDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    expiryMonth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry month. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    expiryYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry year. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    holderName: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The name of the card holder.' }),
+    number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card number. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .openapi({
+        description: 'Identifier used to fetch the token from the external service',
+        'x-addedInVersion': '49',
+      }),
+    subtype: z
+      .literal('hilton')
+      .openapi({
+        description:
+          'The external service from which to fetch the token. Supported only for specific companies. Contact Adyen if you want to use this feature.',
+      }),
+    type: z
+      .literal('externalToken')
+      .default('externalToken')
+      .openapi({ description: 'The type of token. Allowed value: **externalToken**.' }),
+  })
+  .openapi({
+    required: ['storedPaymentMethodId', 'subtype', 'type'],
+    title: 'Details of tokens that are not stored with Adyen.',
+  })
+  .openapi('ExternalTokenDetails')
+
+const FastlaneDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fastlaneData: z.string().openapi({ description: 'The encoded fastlane data blob' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('fastlane').default('fastlane').openapi({ description: '**fastlane**' }),
+  })
+  .openapi({ required: ['fastlaneData', 'type'], title: 'Fastlane' })
+  .openapi('FastlaneDetails')
+
+const GenericIssuerPaymentMethodDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z.string().openapi({ description: "The issuer id of the shopper's selected bank." }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .enum(['onlineBanking_PL', 'eps', 'onlineBanking_SK', 'onlineBanking_CZ', 'onlinebanking_IN'])
+      .openapi({ description: '**genericissuer**' }),
+  })
+  .openapi({ required: ['issuer', 'type'], title: 'Stored Payment Method' })
+  .openapi('GenericIssuerPaymentMethodDetails')
+
+const GooglePayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    googlePayCardNetwork: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The selected payment card network. ' }),
+    googlePayToken: z
+      .string()
+      .max(10000)
+      .openapi({
+        description:
+          'The `token` that you obtained from the [Google Pay API](https://developers.google.com/pay/api/web/reference/response-objects#PaymentData) `PaymentData` response.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    threeDS2SdkVersion: z
+      .string()
+      .max(12)
+      .exactOptional()
+      .openapi({
+        description: 'Required for mobile integrations. Version of the 3D Secure 2 mobile SDK.',
+      }),
+    type: z
+      .literal('googlepay')
+      .default('googlepay')
+      .exactOptional()
+      .openapi({ description: '**googlepay**, **paywithgoogle**' }),
+  })
+  .openapi({ required: ['googlePayToken'], title: 'Google Pay' })
+  .openapi('GooglePayDetails')
+
+const IdealDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The iDEAL issuer value of the shopper's selected bank. Set this to an **id** of an iDEAL issuer to preselect it.",
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('ideal').default('ideal').exactOptional().openapi({ description: '**ideal**' }),
+  })
+  .openapi({ title: 'iDEAL', required: [] })
+  .openapi('IdealDetails')
+
+const InputDetailSchema: z.ZodType<InputDetailType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        configuration: z
+          .record(z.string(), z.string())
+          .exactOptional()
+          .openapi({ description: 'Configuration parameters for the required input.' }),
+        details: z
+          .array(SubInputDetailSchema)
+          .exactOptional()
+          .openapi({ description: 'Input details can also be provided recursively.' }),
+        inputDetails: z
+          .array(SubInputDetailSchema)
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description: 'Input details can also be provided recursively (deprecated).',
+          }),
+        itemSearchUrl: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'In case of a select, the URL from which to query the items.' }),
+        items: z
+          .array(ItemSchema)
+          .exactOptional()
+          .openapi({ description: 'In case of a select, the items to choose from.' }),
+        key: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The value to provide in the result.' }),
+        optional: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'True if this input value is optional.' }),
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The type of the required input.' }),
+        value: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The value can be pre-filled, if available.' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('InputDetail')
+
+const InstallmentOptionSchema = z
+  .strictObject({
+    maxValue: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The maximum number of installments offered for this payment method.',
+      }),
+    plans: z
+      .array(
+        z.enum([
+          'bonus',
+          'buynow_paylater',
+          'interes_refund_prctg',
+          'interest_bonus',
+          'nointeres_refund_prctg',
+          'nointerest_bonus',
+          'refund_prctg',
+          'regular',
+          'revolving',
+          'with_interest',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the type of installment plan. If not set, defaults to **regular**.\n\nPossible values:\n* **regular**\n* **revolving**',
+        'x-addedInVersion': '64',
+      }),
+    preselectedValue: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Preselected number of installments offered for this payment method.',
+        'x-addedInVersion': '64',
+      }),
+    values: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of the number of installments that the shopper can choose from. For example, **[2,3,5]**. This cannot be specified simultaneously with `maxValue`.',
+        'x-addedInVersion': '64',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InstallmentOption')
+
+const KlarnaDetailsSchema = z
+  .strictObject({
+    billingAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where to send the invoice.' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    deliveryAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where the goods should be delivered.' }),
+    merchantData: z
+      .string()
+      .max(10240)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded merchant metadata (Extra Merchant Data) forwarded to Klarna at authorization.',
+        'x-addedInVersion': '72',
+      }),
+    personalDetails: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shopper name, date of birth, phone number, and email address.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    subtype: z.string().exactOptional().openapi({ description: 'The type of flow to initiate.' }),
+    type: z
+      .enum([
+        'klarna',
+        'klarnapayments',
+        'klarnapayments_account',
+        'klarnapayments_b2b',
+        'klarna_paynow',
+        'klarna_account',
+        'klarna_b2b',
+      ])
+      .default('klarna')
+      .openapi({ description: '**klarna**' }),
+  })
+  .openapi({ required: ['type'], title: 'Klarna' })
+  .openapi('KlarnaDetails')
+
+const KlarnaNetworkDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    klarnaNetworkData: z
+      .string()
+      .max(10240)
+      .exactOptional()
+      .openapi({
+        description:
+          'A string containing a structured JSON object. This is a passthrough field used to enable custom features or data exchange with Klarna.',
+      }),
+    klarnaNetworkPaymentAccountId: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'The Klarna Network Payment Account identifier to use for the transaction. Required when `klarnaNetworkSessionToken` is provided.',
+      }),
+    klarnaNetworkSessionToken: z
+      .string()
+      .max(10240)
+      .exactOptional()
+      .openapi({
+        description: 'The token obtained from the Klarna SDK during an Express Checkout flow.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    subtype: z
+      .enum(['redirect', 'sdk'])
+      .exactOptional()
+      .openapi({ description: 'The type of flow to initiate. Defaults to redirect when omitted.' }),
+    type: z
+      .literal('klarna_network')
+      .default('klarna_network')
+      .openapi({ description: '**klarna_network**' }),
+  })
+  .openapi({ required: ['type'], title: 'KlarnaNetwork' })
+  .openapi('KlarnaNetworkDetails')
+
+const TokenMandateSchema = z
+  .strictObject({
+    accountIdType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of account identifier for the masked account number.' }),
+    amount: z
+      .string()
+      .openapi({
+        description: 'The billing amount (in minor units) of the recurring transactions.',
+      }),
+    amountRule: z
+      .enum(['max', 'exact'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The limitation rule of the billing amount.\n\nPossible values:\n * **max**: The transaction amount can not exceed the `amount`.\n\n * **exact**: The transaction amount should be the same as the `amount`.\n\n',
+      }),
+    billingAttemptsRule: z
+      .enum(['on', 'before', 'after'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The rule to specify the period, within which the recurring debit can happen, relative to the mandate recurring date.\n\nPossible values:\n\n * **on**: On a specific date.\n\n * **before**:  Before and on a specific date.\n\n * **after**: On and after a specific date.\n\n',
+      }),
+    billingDay: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of the day, on which the recurring debit can happen. Should be within the same calendar month as the mandate recurring date.\n\nPossible values: 1-31 based on the `frequency`.',
+      }),
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The number of transactions that can be performed within the given frequency.',
+      }),
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    endsAt: z
+      .string()
+      .openapi({ description: 'End date of the billing plan, in YYYY-MM-DD format.' }),
+    frequency: z
+      .enum([
+        'adhoc',
+        'daily',
+        'weekly',
+        'biWeekly',
+        'monthly',
+        'quarterly',
+        'halfYearly',
+        'yearly',
+      ])
+      .openapi({
+        description:
+          'The frequency with which a shopper should be charged.\n\nPossible values: **adhoc**, **daily**, **weekly**, **biWeekly**, **monthly**, **quarterly**, **halfYearly**, **yearly**.',
+      }),
+    mandateId: z.string().openapi({ description: 'The unique identifier of the mandate.' }),
+    maskedAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The masked account number associated with the mandate.' }),
+    minAmount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For a billing plan where the payment amounts are variable, the minimum amount to charge the shopper for each recurring payment. When a shopper approves the billing plan, they can also specify a maximum amount in their banking app.',
+      }),
+    previousMandateId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The previous value of the `mandateId`, if the scheme has replaced it.\n\nFor UPI mandates, the `mandateId` is the Unique Mandate Number (UMN), which the scheme replaces when the mandate moves to another payment provider. In that case, this field holds the UMN the mandate was registered with before the move.',
+      }),
+    providerId: z
+      .string()
+      .openapi({ description: 'The provider-specific identifier for this mandate.' }),
+    purposeCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The purpose code the mandate is registered with at the scheme.\n\nPossible values for UPI mandates:\n\n * **14**: The mandate can only be debited by the payment provider that registered it.\n\n * **AZ**: The mandate can be debited by any payment provider.\n\n',
+      }),
+    recurringAmount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For a billing plan where the payment amount is fixed, the amount the shopper will be charged for each recurring payment.',
+      }),
+    recurringStatement: z
+      .string()
+      .max(35)
+      .exactOptional()
+      .openapi({
+        description:
+          "The text that will be shown on the shopper's bank statement for the recurring payments. We recommend to add a descriptive text about the subscription to let your shoppers recognize your recurring payments.\nMaximum length: 35 characters.",
+      }),
+    remarks: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Additional remarks or notes about the mandate.' }),
+    retryPolicy: z
+      .enum(['true', 'false'])
+      .exactOptional()
+      .openapi({
+        description:
+          'When set to true, you can retry for failed recurring payments. The default value is true.',
+      }),
+    startsAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Start date of the billing plan, in YYYY-MM-DD format. By default, the transaction date.',
+      }),
+    status: z
+      .string()
+      .openapi({
+        description: 'The status of the mandate. Examples : active, revoked, completed, expired',
+      }),
+    txVariant: z
+      .string()
+      .openapi({ description: 'The transaction variant used for this mandate.' }),
+  })
+  .openapi({
+    required: [
+      'amount',
+      'currency',
+      'endsAt',
+      'frequency',
+      'mandateId',
+      'providerId',
+      'status',
+      'txVariant',
+    ],
+  })
+  .openapi('TokenMandate')
+
+const StoredPaymentMethodResourceSchema = z
+  .strictObject({
+    alias: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The alias of the credit card number.\n\nApplies only to recurring contracts storing credit card details',
+      }),
+    aliasType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The alias type of the credit card number.\n\nApplies only to recurring contracts storing credit card details.',
+      }),
+    billingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The billing address associated with the stored payment method.',
+      'x-addedInVersion': '72',
+    }),
+    brand: z.string().exactOptional().openapi({ description: 'The brand of the card.' }),
+    cardBin: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank identification number (BIN) of the card.' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date when the recurring details were created.',
+        'x-addedInVersion': '72',
+      }),
+    expiryMonth: z.string().exactOptional().openapi({ description: 'The month the card expires.' }),
+    expiryYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last two digits of the year the card expires. For example, **22** for the year 2022.',
+      }),
+    externalResponseCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The response code returned by an external system (for example after a provisioning operation).',
+        'x-addedInVersion': '68',
+      }),
+    externalTokenReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The token reference of a linked token in an external system (for example a network token reference).',
+        'x-addedInVersion': '68',
+      }),
+    firstPspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The PSP reference of the first payment that created this recurring detail.',
+        'x-addedInVersion': '72',
+      }),
+    holderName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique payment method code.' }),
+    iban: z.string().exactOptional().openapi({ description: 'The IBAN of the bank account.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique identifier of this stored payment method.' }),
+    issuerName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the issuer of token or card.',
+        'x-addedInVersion': '68',
+      }),
+    lastFour: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last four digits of the PAN.' }),
+    mandate: TokenMandateSchema.exactOptional().openapi({
+      description: 'Mandate details for the stored payment method.',
+      'x-addedInVersion': '71',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name of the stored payment method.' }),
+    networkTxReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returned in the response if you are not tokenizing with Adyen and are using the Merchant-initiated transactions (MIT) framework from Mastercard or Visa.\n\nThis contains either the Mastercard Trace ID or the Visa Transaction ID.',
+      }),
+    opi: OpiResponseSchema.exactOptional().openapi({
+      description:
+        'Oracle Payment Interface (OPI) response fields such as `transToken` and `issuerId`.',
+      'x-addedInVersion': '71',
+    }),
+    ownerName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the bank account holder.', 'x-addedInVersion': '67' }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper’s email address.' }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    supportedRecurringProcessingModels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines a recurring payment type.\nAllowed values:\n* `Subscription` – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* `CardOnFile` – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* `UnscheduledCardOnFile` – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or have variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.",
+        'x-addedInVersion': '70',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The type of payment method.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('StoredPaymentMethodResource')
+
+const ListStoredPaymentMethodsResponseSchema = z
+  .strictObject({
+    merchantAccount: z.string().exactOptional().openapi({ description: 'Your merchant account.' }),
+    shopperReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. Minimum length: 3 characters.\n> Your reference must not include personally identifiable information (PII), for example name or email address.',
+      }),
+    storedPaymentMethods: z
+      .array(StoredPaymentMethodResourceSchema)
+      .exactOptional()
+      .openapi({ description: 'List of all stored payment methods.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ListStoredPaymentMethodsResponse')
+
+const MasterpassDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    masterpassTransactionId: z.string().openapi({ description: 'The Masterpass transaction ID.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('masterpass')
+      .default('masterpass')
+      .exactOptional()
+      .openapi({ description: '**masterpass**' }),
+  })
+  .openapi({ required: ['masterpassTransactionId'], title: 'Masterpass' })
+  .openapi('MasterpassDetails')
+
+const MbwayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperEmail: z.string().openapi({ description: '' }),
+    telephoneNumber: z.string().openapi({ description: '' }),
+    type: z.literal('mbway').default('mbway').exactOptional().openapi({ description: '**mbway**' }),
+  })
+  .openapi({ required: ['shopperEmail', 'telephoneNumber'], title: 'MBWay' })
+  .openapi('MbwayDetails')
+
+const MobilePayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('mobilepay')
+      .default('mobilepay')
+      .exactOptional()
+      .openapi({ description: '**mobilepay**' }),
+  })
+  .openapi({ title: 'MobilePay', required: [] })
+  .openapi('MobilePayDetails')
+
+const MolPayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z
+      .string()
+      .openapi({
+        description:
+          "The shopper's bank. Specify this with the issuer value that corresponds to this bank.",
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .enum(['molpay_ebanking_fpx_MY', 'molpay_ebanking_TH'])
+      .openapi({ description: '**molpay**' }),
+  })
+  .openapi({ required: ['issuer', 'type'], title: 'MOLPay' })
+  .openapi('MolPayDetails')
+
+const OpenInvoiceDetailsSchema = z
+  .strictObject({
+    billingAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where to send the invoice.' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    deliveryAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where the goods should be delivered.' }),
+    personalDetails: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shopper name, date of birth, phone number, and email address.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .enum(['openinvoice', 'afterpay_directdebit', 'atome_pos'])
+      .default('openinvoice')
+      .exactOptional()
+      .openapi({ description: '**openinvoice**' }),
+  })
+  .openapi({ title: 'Open Invoice', required: [] })
+  .openapi('OpenInvoiceDetails')
+
+const OpiRequestSchema = z
+  .strictObject({
+    includeIssuerId: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'When set to true, includes the OPI issuer ID in the response.' }),
+    includeTransToken: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When set to true, includes an OPI transaction token in the response when the payment creates a stored payment method.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OpiRequest')
+
+const PayByBankAISDirectDebitDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('paybybank_AIS_DD')
+      .default('paybybank_AIS_DD')
+      .openapi({ description: '**paybybank_AIS_DD**' }),
+  })
+  .openapi({ required: ['type'], title: 'Pay By Bank AIS Direct Debit' })
+  .openapi('PayByBankAISDirectDebitDetails')
+
+const PayByBankCADirectDebitDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('paybybank_ca')
+      .default('paybybank_ca')
+      .openapi({ description: 'The type of payment method' }),
+  })
+  .openapi({ required: ['type'], title: 'Pay By Bank CA Direct Debit' })
+  .openapi('PayByBankCADirectDebitDetails')
+
+const PayByBankDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    issuer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The PayByBank issuer value of the shopper's selected bank." }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z.literal('paybybank').default('paybybank').openapi({ description: '**paybybank**' }),
+  })
+  .openapi({ required: ['type'], title: 'PayByBank' })
+  .openapi('PayByBankDetails')
+
+const PayPalDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    orderID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique ID associated with the order.' }),
+    payeePreferred: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'IMMEDIATE_PAYMENT_REQUIRED or UNRESTRICTED' }),
+    payerID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique ID associated with the payer.' }),
+    payerSelected: z.string().exactOptional().openapi({ description: 'PAYPAL or PAYPAL_CREDIT' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    subtype: z
+      .enum(['express', 'redirect', 'sdk'])
+      .exactOptional()
+      .openapi({ description: 'The type of flow to initiate.' }),
+    type: z.literal('paypal').default('paypal').openapi({ description: '**paypal**' }),
+  })
+  .openapi({ required: ['type'], title: 'PayPal' })
+  .openapi('PayPalDetails')
+
+const PayPayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('paypay')
+      .default('paypay')
+      .exactOptional()
+      .openapi({ description: '**paypay**' }),
+  })
+  .openapi({ title: 'PayPay', required: [] })
+  .openapi('PayPayDetails')
+
+const PayToDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperAccountIdentifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The shopper's banking details or payId reference, used to complete payment.",
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('payto').default('payto').exactOptional().openapi({ description: '**payto**' }),
+  })
+  .openapi({ title: 'PayTo', required: [] })
+  .openapi('PayToDetails')
+
+const PayUUpiDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperNotificationReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `shopperNotificationReference` returned in the response when you requested to notify the shopper. Used for recurring payment only.',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('payu_IN_upi')
+      .default('payu_IN_upi')
+      .openapi({ description: '**payu_IN_upi**' }),
+    virtualPaymentAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The virtual payment address for UPI.' }),
+  })
+  .openapi({ required: ['type'], title: 'PayU' })
+  .openapi('PayUUpiDetails')
+
+const PayWithGoogleDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    googlePayToken: z
+      .string()
+      .max(5000)
+      .openapi({
+        description:
+          'The `token` that you obtained from the [Google Pay API](https://developers.google.com/pay/api/web/reference/response-objects#PaymentData) `PaymentData` response.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    threeDS2SdkVersion: z
+      .string()
+      .max(12)
+      .exactOptional()
+      .openapi({
+        description: 'Required for mobile integrations. Version of the 3D Secure 2 mobile SDK.',
+      }),
+    type: z
+      .literal('paywithgoogle')
+      .default('paywithgoogle')
+      .exactOptional()
+      .openapi({ description: '**paywithgoogle**' }),
+  })
+  .openapi({ required: ['googlePayToken'], title: 'Google Pay' })
+  .openapi('PayWithGoogleDetails')
+
+const PaymentSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'Authorised amount in the transaction.',
+    }),
+    paymentMethod: ResponsePaymentMethodSchema.exactOptional().openapi({
+      description:
+        'Only returned for `resultCode`: **Authorised**. \nDetails about the payment method used in the transaction.',
+    }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Adyen's 16-character reference associated with the transaction/request. This value is globally unique. Use this reference when you communicate with us about this request.",
+      }),
+    resultCode: z
+      .enum(['Authorised', 'Received', 'Pending'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The result of the payment. For more information, see [Result codes](https://docs.adyen.com/online-payments/payment-result-codes).\n\nPossible values:\n\n* **Authorised** – The payment was successfully authorised. This state serves as an indicator to proceed with the delivery of goods and services. This is a final state.\n* **Received** – Indicates the payment request was successfully received by Adyen, and will be processed. This is the initial state for all payments.\n* **Pending** – The payment order was successfully received but the final status of the payment is not available yet. This is common for payment methods with an asynchronous flow.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Payment')
+
+const PaymentAmountUpdateRequestSchema = z
+  .strictObject({
+    adjustAuthType: z
+      .enum(['cardholderInitiatedTransaction', 'merchantInitiatedTransaction'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of adjustment. Possible values: \n\n* **cardholderInitiatedTransaction** \n\n* **merchantInitiatedTransaction** \n\n',
+        'x-addedInVersion': '72',
+      }),
+    adjustAuthorisationData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The required data to make a [synchronous authorization adjustment](https://docs.adyen.com/online-payments/adjust-authorisation). Pass the corresponding value from the `/payments` response or webhook message.',
+        'x-addedInVersion': '72',
+      }),
+    amount: AmountSchema.openapi({
+      description:
+        'The updated amount. The `currency` must match the currency used in authorisation.',
+    }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    industryUsage: z
+      .enum(['delayedCharge', 'installment', 'noShow'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for the amount update. Possible values: \n* **delayedCharge** \n* **noShow** \n* **installment**',
+        'x-addedInVersion': '70',
+      }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information of the refunded items, required for [partial refunds](https://docs.adyen.com/online-payments/refund#refund-a-payment).\n> This field is required for partial refunds with 3x 4x Oney, Affirm, Afterpay, Atome, Clearpay, Klarna, Ratepay, Walley, and Zip.',
+        'x-addedInVersion': '70',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    mpiData: ThreeDSecureDataSchema.exactOptional().openapi({
+      description:
+        'Authentication data from a [merchant plug-in (MPI)](https://en.wikipedia.org/wiki/Merchant_plug-in) like Mastercard SecureCode, Visa Secure, or Cartes Bancaires. Required for cardholder-initiated transaction (CIT) adjustments.',
+      'x-addedInVersion': '72',
+    }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Your reference for the amount update request. Maximum length: 80 characters.',
+      }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how the amount should be split between accounts when using Adyen for Platforms. For more information, see how to process payments for [marketplaces](https://docs.adyen.com/marketplaces/process-payments) or [platforms](https://docs.adyen.com/platforms/process-payments).',
+      }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount'] })
+  .openapi('PaymentAmountUpdateRequest')
+
+const PaymentAmountUpdateResponseSchema = z
+  .strictObject({
+    adjustAuthorisationData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The data blob for subsequent synchronous adjust authorisation calls. Returned when the synchronous flow is used.',
+        'x-addedInVersion': '72',
+      }),
+    amount: AmountSchema.openapi({ description: 'The updated amount.' }),
+    industryUsage: z
+      .enum(['delayedCharge', 'installment', 'noShow'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for the amount update. Possible values: \n* **delayedCharge** \n* **noShow** \n* **installment**',
+        'x-addedInVersion': '70',
+      }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information of the refunded items, required for [partial refunds](https://docs.adyen.com/online-payments/refund#refund-a-payment).\n> This field is required for partial refunds with 3x 4x Oney, Affirm, Afterpay, Atome, Clearpay, Klarna, Ratepay, Walley, and Zip.',
+        'x-addedInVersion': '71',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    paymentPspReference: z
+      .string()
+      .openapi({
+        description:
+          'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment to update. ',
+      }),
+    pspReference: z
+      .string()
+      .openapi({
+        description: "Adyen's 16-character reference associated with the amount update request.",
+      }),
+    reference: z
+      .string()
+      .openapi({
+        description: 'Your reference for the amount update request. Maximum length: 80 characters.',
+      }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how the amount should be split between accounts when using Adyen for Platforms. For more information, see how to process payments for [marketplaces](https://docs.adyen.com/marketplaces/process-payments) or [platforms](https://docs.adyen.com/platforms/process-payments).',
+      }),
+    status: z
+      .enum(['authorised', 'received', 'refused'])
+      .openapi({
+        description:
+          'The status of your request. \n\nIf you included `adjustAuthorisationData` in your request, possible values are the following: \n\n* **authorised** \n\n* **refused** \n\nOtherwise, the value is **received**.',
+      }),
+  })
+  .openapi({
+    required: [
+      'amount',
+      'merchantAccount',
+      'paymentPspReference',
+      'pspReference',
+      'reference',
+      'status',
+    ],
+  })
+  .openapi('PaymentAmountUpdateResponse')
+
+const PaymentCancelRequestSchema = z
+  .strictObject({
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Your reference for the cancel request. Maximum length: 80 characters.',
+      }),
+  })
+  .openapi({ required: ['merchantAccount'] })
+  .openapi('PaymentCancelRequest')
+
+const PaymentCancelResponseSchema = z
+  .strictObject({
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    paymentPspReference: z
+      .string()
+      .openapi({
+        description:
+          'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment to cancel. ',
+      }),
+    pspReference: z
+      .string()
+      .openapi({
+        description: "Adyen's 16-character reference associated with the cancel request.",
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Your reference for the cancel request.' }),
+    status: z
+      .literal('received')
+      .openapi({
+        description: 'The status of your request. This will always have the value **received**.',
+      }),
+  })
+  .openapi({ required: ['merchantAccount', 'paymentPspReference', 'pspReference', 'status'] })
+  .openapi('PaymentCancelResponse')
+
+const SubMerchantInfoSchema = z
+  .strictObject({
+    address: BillingAddressSchema.exactOptional().openapi({
+      description:
+        "Required for transactions performed by registered payment facilitators. The sub-merchant's address.\n",
+    }),
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        "Required for transactions performed by registered payment facilitators. The amount of the payment corresponding to each sub-merchant. This value will be different than the request amount if shopper is purchasing items at different sub-merchants' shops.",
+    }),
+    email: z
+      .string()
+      .max(320)
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The email associated with the sub-merchant's account.",
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. A unique identifier that you create for the sub-merchant, used by schemes to identify the sub-merchant. \n* Format: Alphanumeric\n* Maximum length: 15 characters',
+      }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The sub-merchant's 4-digit Merchant Category Code (MCC). \n* Format: Numeric\n* Fixed length: 4 digits",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. The name of the sub-merchant. Based on scheme specifications, this value will overwrite the shopper statement that will appear in the card statement.\nException: for acquirers in Brazil, this value does not overwrite the shopper statement.\n* Format: Alphanumeric\n* Maximum length: 22 characters',
+      }),
+    phoneNumber: z
+      .string()
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The phone number associated with the sub-merchant's account.",
+      }),
+    registeredSince: z.string().exactOptional(),
+    taxId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for transactions performed by registered payment facilitators. The tax ID of the sub-merchant.\n* Format: Numeric\n* Fixed length: 11 digits for the CPF or 14 digits for the CNPJ',
+      }),
+    url: z
+      .string()
+      .max(320)
+      .exactOptional()
+      .openapi({
+        description:
+          "Required for transactions performed by registered payment facilitators. The sub-merchant's URL on the platform, i.e. the sub-merchant's shop.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SubMerchantInfo')
+
+const PaymentCaptureRequestSchema = z
+  .strictObject({
+    amount: AmountSchema.openapi({
+      description:
+        'The amount that you want to capture. The `currency` must match the currency used in authorisation, the `value` must be smaller than or equal to the authorised amount.',
+    }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    enhancedSchemeData: EnhancedSchemeDataSchema.exactOptional().openapi({
+      description:
+        'Enhanced scheme data that may be required for processing the payment. For example, airline information.',
+      'x-addedInVersion': '70',
+    }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information of the refunded items, required for [partial refunds](https://docs.adyen.com/online-payments/refund#refund-a-payment).\n> This field is required for partial refunds with 3x 4x Oney, Affirm, Afterpay, Atome, Clearpay, Klarna, Ratepay, Walley, and Zip.',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    platformChargebackLogic: PlatformChargebackLogicSchema.exactOptional().openapi({
+      description:
+        'Defines how to book chargebacks when using [Adyen for Platforms](https://docs.adyen.com/adyen-for-platforms-model).',
+      'x-addedInVersion': '70',
+    }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Your reference for the capture request. Maximum length: 80 characters.',
+      }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how the amount should be split between accounts when using Adyen for Platforms. For more information, see how to process payments for [marketplaces](https://docs.adyen.com/marketplaces/split-payments) or [platforms](https://docs.adyen.com/platforms/online-payments/split-payments/).',
+      }),
+    subMerchants: z
+      .array(SubMerchantInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'A List of sub-merchants.', 'x-addedInVersion': '70' }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount'] })
+  .openapi('PaymentCaptureRequest')
+
+const PaymentCaptureResponseSchema = z
+  .strictObject({
+    amount: AmountSchema.openapi({ description: 'The captured amount.' }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information of the refunded items, required for [partial refunds](https://docs.adyen.com/online-payments/refund#refund-a-payment).\n> This field is required for partial refunds with 3x 4x Oney, Affirm, Afterpay, Atome, Clearpay, Klarna, Ratepay, Walley, and Zip.',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    paymentPspReference: z
+      .string()
+      .openapi({
+        description:
+          'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment to capture. ',
+      }),
+    platformChargebackLogic: PlatformChargebackLogicSchema.exactOptional().openapi({
+      description:
+        'Defines how to book chargebacks when using [Adyen for Platforms](https://docs.adyen.com/adyen-for-platforms-model).',
+      'x-addedInVersion': '70',
+    }),
+    pspReference: z
+      .string()
+      .openapi({
+        description: "Adyen's 16-character reference associated with the capture request.",
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Your reference for the capture request.' }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how the amount should be split between accounts when using Adyen for Platforms. For more information, see how to process payments for [marketplaces](https://docs.adyen.com/marketplaces/split-payments) or [platforms](https://docs.adyen.com/platforms/online-payments/split-payments/).',
+      }),
+    status: z
+      .literal('received')
+      .openapi({
+        description: 'The status of your request. This will always have the value **received**.',
+      }),
+    subMerchants: z
+      .array(SubMerchantInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'List of sub-merchants.', 'x-addedInVersion': '70' }),
+  })
+  .openapi({
+    required: ['amount', 'merchantAccount', 'paymentPspReference', 'pspReference', 'status'],
+  })
+  .openapi('PaymentCaptureResponse')
+
+const PaymentCompletionDetailsSchema = z
+  .strictObject({
+    MD: z
+      .string()
+      .max(20000)
+      .exactOptional()
+      .openapi({ description: 'A payment session identifier returned by the card issuer.' }),
+    PaReq: z
+      .string()
+      .max(20000)
+      .exactOptional()
+      .openapi({ description: '(3D) Payment Authentication Request data for the card issuer.' }),
+    PaRes: z
+      .string()
+      .max(20000)
+      .exactOptional()
+      .openapi({ description: '(3D) Payment Authentication Response data by the card issuer.' }),
+    authorization_token: z.string().exactOptional(),
+    billingToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PayPal-generated token for recurring payments.' }),
+    'cupsecureplus.smscode': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The SMS verification code collected from the shopper.' }),
+    facilitatorAccessToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PayPal-generated third party access token.' }),
+    oneTimePasscode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A random number sent to the mobile phone number of the shopper to verify the payment.',
+      }),
+    orderID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PayPal-assigned ID for the order.' }),
+    payerID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PayPal-assigned ID for the payer (shopper).' }),
+    payload: z
+      .string()
+      .max(20000)
+      .exactOptional()
+      .openapi({ description: 'Payload appended to the `returnURL` as a result of the redirect.' }),
+    paymentID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PayPal-generated ID for the payment.' }),
+    paymentStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value passed from the WeChat MiniProgram `wx.requestPayment` **complete** callback. Possible values: any value starting with `requestPayment:`.',
+      }),
+    redirectResult: z
+      .string()
+      .max(20000)
+      .exactOptional()
+      .openapi({ description: 'The result of the redirect as appended to the `returnURL`.' }),
+    resultCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Value you received from the WeChat Pay SDK.' }),
+    returnUrlQueryString: z
+      .string()
+      .max(20000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The query string as appended to the `returnURL` when using direct issuer links .',
+      }),
+    threeDSResult: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded string returned by the Component after the challenge flow. It contains the following parameters: `transStatus`, `authorisationToken`.',
+      }),
+    'threeds2.challengeResult': z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded string returned by the Component after the challenge flow. It contains the following parameter: `transStatus`.',
+      }),
+    'threeds2.fingerprint': z
+      .string()
+      .max(100000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded string returned by the Component after the challenge flow. It contains the following parameter: `threeDSCompInd`.',
+      }),
+    vaultToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'PayPalv2-generated token for recurring payments.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentCompletionDetails')
+
+const PaymentDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .enum([
+        'alipay',
+        'multibanco',
+        'bankTransfer',
+        'bankTransfer_IBAN',
+        'paynow',
+        'affirm_pos',
+        'iris',
+        'wero',
+        'trustly',
+        'trustlyvector',
+        'oney',
+        'facilypay',
+        'facilypay_3x',
+        'facilypay_4x',
+        'facilypay_6x',
+        'facilypay_10x',
+        'facilypay_12x',
+        'unionpay',
+        'kcp_banktransfer',
+        'kcp_payco',
+        'kcp_creditcard',
+        'wechatpaySDK',
+        'wechatpayQR',
+        'wechatpayWeb',
+        'molpay_boost',
+        'wallet_IN',
+        'payu_IN_cashcard',
+        'payu_IN_nb',
+        'paytm',
+        'molpay_ebanking_VN',
+        'molpay_ebanking_MY',
+        'molpay_ebanking_direct_MY',
+        'swish',
+        'bizum',
+        'walley',
+        'walley_b2b',
+        'paypo',
+        'satispay',
+        'scalapay',
+        'scalapay_3x',
+        'scalapay_4x',
+        'molpay_fpx',
+        'payme',
+        'payme_pos',
+        'konbini',
+        'directEbanking',
+        'boletobancario',
+        'cashticket',
+        'ikano',
+        'karenmillen',
+        'oasis',
+        'warehouse',
+        'primeiropay_boleto',
+        'mada',
+        'benefit',
+        'knet',
+        'omannet',
+        'kcp_naverpay',
+        'fawry',
+        'atome',
+        'naps',
+        'nordea',
+        'boletobancario_bradesco',
+        'boletobancario_itau',
+        'boletobancario_santander',
+        'boletobancario_bancodobrasil',
+        'boletobancario_hsbc',
+        'molpay_maybank2u',
+        'molpay_cimb',
+        'molpay_rhb',
+        'molpay_amb',
+        'molpay_hlb',
+        'molpay_affin_epg',
+        'molpay_bankislam',
+        'molpay_publicbank',
+        'fpx_agrobank',
+        'touchngo',
+        'maybank2u_mae',
+        'duitnow',
+        'promptpay',
+        'twint_pos',
+        'alipay_hk',
+        'alipay_hk_web',
+        'alipay_hk_wap',
+        'alipay_wap',
+        'balanceplatform',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The payment method type.' }),
+  })
+  .openapi({ title: 'Payment Details', required: [] })
+  .openapi('PaymentDetails')
+
+const PaymentDetailsRequestSchema = z
+  .strictObject({
+    authenticationData: DetailsRequestAuthenticationDataSchema.exactOptional().openapi({
+      description: 'Data for 3DS authentication.',
+      'x-addedInVersion': '69',
+    }),
+    details: PaymentCompletionDetailsSchema.openapi({
+      description:
+        'Use this collection to submit the details that were returned as a result of the `/payments` call.',
+    }),
+    paymentData: z
+      .string()
+      .max(200000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Encoded payment data. For [authorizing a payment after using 3D Secure 2 Authentication-only](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only/#authorise-the-payment-with-adyen):\n\nIf you received `resultCode`: **AuthenticationNotRequired** in the `/payments` response, use the `threeDSPaymentData` from the same response.\n\nIf you received `resultCode`: **AuthenticationFinished** in the `/payments` response, use the `action.paymentData` from the same response.',
+      }),
+    threeDSAuthenticationOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Change the `authenticationOnly` indicator originally set in the `/payments` request. Only needs to be set if you want to modify the value set previously.',
+        'x-addedInVersion': '40',
+        'x-deprecatedInVersion': '69',
+        'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
+      }),
+  })
+  .openapi({ required: ['details'] })
+  .openapi('PaymentDetailsRequest')
+
+const PaymentDetailsResponseSchema = z
+  .strictObject({
+    action: z
+      .xor([CheckoutThreeDS2ActionSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          'Action to be taken for completing the payment. When returned, only the 3D Secure action is needed in most cases.',
+        discriminator: {
+          propertyName: 'type',
+          mapping: { threeDS2: '#/components/schemas/CheckoutThreeDS2Action' },
+        },
+        'x-addedInVersion': '49',
+      }),
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains additional information about the payment. Some data fields are included only if you select them first: Go to **Customer Area** > **Developers** > **Additional data**.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/ResponseAdditionalData3DSecure' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataBillingAddress' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCard' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCommon' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataDomesticError' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataInstallments' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataNetworkTokens' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataOpi' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSepa' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSwish' },
+        ],
+      }),
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'Authorised amount in the transaction.',
+      'x-addedInVersion': '52',
+    }),
+    donationToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Donation Token containing payment details for Adyen Giving.',
+        'x-addedInVersion': '66',
+      }),
+    fraudResult: FraudResultSchema.exactOptional().openapi({
+      description: 'The fraud result properties of the payment.',
+    }),
+    merchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The reference used during the /payments request.',
+        'x-addedInVersion': '49',
+      }),
+    opi: OpiResponseSchema.exactOptional().openapi({
+      description:
+        'Oracle Payment Interface (OPI) response fields such as `transToken` and `issuerId`.',
+      'x-addedInVersion': '71',
+    }),
+    order: CheckoutOrderResponseSchema.exactOptional().openapi({
+      description:
+        'Contains updated information regarding the order in case order information was provided in the request.',
+    }),
+    paymentMethod: ResponsePaymentMethodSchema.exactOptional().openapi({
+      description:
+        'Details about the payment method used in the transaction. \nOnly returned if `resultCode` is **Authorised**.',
+      'x-addedInVersion': '69',
+    }),
+    paymentValidations: PaymentValidationsResponseSchema.exactOptional().openapi({
+      description:
+        'The object that contains the validation outcomes.\nOnly returned if `resultCode` is **Authorised** and if you have requested a payment validation in the request.',
+      'x-addedInVersion': '69',
+    }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Adyen's 16-character string reference associated with the transaction/request. This value is globally unique; quote it when communicating with us about this request.",
+      }),
+    refusalReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "If the payment's authorisation is refused or an error occurs during authorisation, this field holds Adyen's mapped reason for the refusal or a description of the error. When a transaction fails, the authorisation response includes `resultCode` and `refusalReason` values.\n\nFor more information, see [Refusal reasons](https://docs.adyen.com/development-resources/refusal-reasons).",
+      }),
+    refusalReasonCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Code that specifies the refusal reason. For more information, see [Authorisation refusal reasons](https://docs.adyen.com/development-resources/refusal-reasons).',
+        'x-addedInVersion': '40',
+      }),
+    resultCode: z
+      .enum([
+        'AuthenticationFinished',
+        'AuthenticationNotRequired',
+        'Authorised',
+        'Cancelled',
+        'ChallengeShopper',
+        'Error',
+        'IdentifyShopper',
+        'PartiallyAuthorised',
+        'Pending',
+        'PresentToShopper',
+        'Received',
+        'RedirectShopper',
+        'Refused',
+        'Success',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "The result of the payment. For more information, see [Result codes](https://docs.adyen.com/online-payments/payment-result-codes).\n\nPossible values:\n\n* **AuthenticationFinished** – The payment has been successfully authenticated with 3D Secure 2. Returned for 3D Secure 2 authentication-only transactions.\n* **AuthenticationNotRequired** – The transaction does not require 3D Secure authentication. Returned for [standalone authentication-only integrations](https://docs.adyen.com/online-payments/3d-secure/other-3ds-flows/authentication-only).\n* **Authorised** – The payment was successfully authorised. This state serves as an indicator to proceed with the delivery of goods and services. This is a final state.\n* **Cancelled** – Indicates the payment has been cancelled (either by the shopper or the merchant) before processing was completed. This is a final state.\n* **ChallengeShopper** – The issuer requires further shopper interaction before the payment can be authenticated. Returned for 3D Secure 2 transactions.\n* **Error** – There was an error when the payment was being processed. The reason is given in the `refusalReason` field. This is a final state.\n* **IdentifyShopper** – The issuer requires the shopper's device fingerprint before the payment can be authenticated. Returned for 3D Secure 2 transactions.\n* **PartiallyAuthorised** – The payment has been authorised for a partial amount.\nThis happens for card payments when the merchant supports Partial Authorisations and the cardholder has insufficient funds.\n* **Pending** – Indicates that it is not possible to obtain the final status of the payment. This can happen if the systems providing final status information for the payment are unavailable, or if the shopper needs to take further action to complete the payment.\n* **PresentToShopper** – Indicates that the response contains additional information that you need to present to a shopper, so that they can use it to complete a payment.\n* **Received** – Indicates the payment has successfully been received by Adyen, and will be processed. This is the initial state for all payments.\n* **RedirectShopper** – Indicates the shopper should be redirected to an external web page or app to complete the authorisation.\n* **Refused** – Indicates the payment was refused. The reason is given in the `refusalReason` field. This is a final state.",
+      }),
+    shopperLocale: z.string().exactOptional().openapi({ description: 'The shopperLocale.' }),
+    threeDS2ResponseData: ThreeDS2ResponseDataSchema.exactOptional().openapi({
+      description: 'Response of the 3D Secure 2 authentication.',
+      'x-addedInVersion': '67',
+    }),
+    threeDS2Result: ThreeDS2ResultSchema.exactOptional().openapi({
+      description: 'Result of the 3D Secure 2 authentication.',
+      'x-addedInVersion': '41',
+    }),
+    threeDSPaymentData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'When non-empty, contains a value that you must submit to the `/payments/details` endpoint as `paymentData`.',
+        'x-addedInVersion': '67',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentDetailsResponse')
+
+const PaymentLinkRequestSchema = z
+  .strictObject({
+    allowedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be presented to the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"allowedPaymentMethods":["ideal","applepay"]`',
+      }),
+    amount: AmountSchema.openapi({ description: 'The payment amount and currency.' }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    billingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The address where to send the invoice.',
+    }),
+    blockedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be hidden from the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"blockedPaymentMethods":["ideal","applepay"]`',
+      }),
+    captureDelayHours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The delay between the authorisation and scheduled auto-capture, specified in hours.',
+        'x-addedInVersion': '69',
+      }),
+    countryCode: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ description: "The shopper's two-letter country code." }),
+    dateOfBirth: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's date of birth.\n\nFormat [ISO-8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DD",
+        'x-addedInVersion': '69',
+      }),
+    deliverAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the purchased goods should be delivered.\n\n[ISO 8601](https://www.w3.org/TR/NOTE-datetime) format: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.',
+      }),
+    deliveryAddress: AddressSchema.exactOptional().openapi({
+      description: 'The address where the purchased goods should be delivered.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A short description visible on the payment page.\nMaximum length: 280 characters.',
+      }),
+    expiresAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date when the payment link expires.\n\n[ISO 8601](https://www.w3.org/TR/NOTE-datetime) format with time zone offset: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.\n\nThe maximum expiry date is 70 days after the payment link is created.\n\nIf not provided, the payment link expires 24 hours after it was created.',
+        'x-addedInVersion': '71',
+      }),
+    fundOrigin: FundOriginSchema.exactOptional().openapi({
+      description: 'The person or entity funding the money.',
+    }),
+    fundRecipient: FundRecipientSchema.exactOptional().openapi({
+      description: 'the person or entity receiving the money',
+    }),
+    installmentOptions: z
+      .record(z.string(), InstallmentOptionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of key-value pairs that specifies the installment options available per payment method. The key must be a payment method name in lowercase. For example, **card** to specify installment options for all cards, or **visa** or **mc**. The value must be an object containing the installment options.',
+      }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information about the purchased items, to be included on the invoice sent to the shopper.\n> This field is required for 3x 4x Oney, Affirm, Afterpay, Clearpay, Klarna, Ratepay, and Riverty.',
+      }),
+    manualCapture: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the payment must be [captured manually](https://docs.adyen.com/online-payments/capture).',
+      }),
+    mcc: z
+      .string()
+      .max(16)
+      .exactOptional()
+      .openapi({
+        description:
+          'The [merchant category code](https://en.wikipedia.org/wiki/Merchant_category_code) (MCC) is a four-digit number, which relates to a particular market segment. This code reflects the predominant activity that is conducted by the merchant.',
+        'x-addedInVersion': '69',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description: 'The merchant account identifier for which the payment link is created.',
+      }),
+    merchantOrderReference: z
+      .string()
+      .max(1000)
+      .exactOptional()
+      .openapi({
+        description:
+          'This reference allows linking multiple transactions to each other for reporting purposes (for example, order auth-rate). The reference should be unique per billing cycle.',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata consists of entries, each of which includes a key and a value.\nLimitations:\n* Maximum 20 key-value pairs per request. Otherwise, error "177" occurs: "Metadata size exceeds limit"\n* Maximum 20 characters per key. Otherwise, error "178" occurs: "Metadata key size exceeds limit"\n* A key cannot have the name `checkout.linkId`. Any value that you provide with this key is going to be replaced by the real payment link ID.',
+      }),
+    platformChargebackLogic: PlatformChargebackLogicSchema.exactOptional().openapi({
+      description:
+        'Dictates the behavior of how a potential chargeback should be booked when using Adyen Platforms.',
+    }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines a recurring payment type. Required when `storePaymentMethodMode` is set to **askForConsent** or **enabled**.\nPossible values:\n* **Subscription** – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* **CardOnFile** – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* **UnscheduledCardOnFile** – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or has variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.\n",
+      }),
+    reference: z
+      .string()
+      .openapi({
+        description:
+          'A reference that is used to uniquely identify the payment in future communications about the payment status.',
+      }),
+    requiredShopperFields: z
+      .array(
+        z.enum([
+          'billingAddress',
+          'deliveryAddress',
+          'shopperEmail',
+          'shopperName',
+          'telephoneNumber',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "List of fields that the shopper has to provide on the payment page before completing the payment. For more information, refer to [Provide shopper information](https://docs.adyen.com/unified-commerce/pay-by-link/payment-links/api#shopper-information).\n\nPossible values:\n* **billingAddress** – The address where to send the invoice.\n* **deliveryAddress** – The address where the purchased goods should be delivered.\n* **shopperEmail** – The shopper's email address.\n* **shopperName** – The shopper's full name.\n* **telephoneNumber** – The shopper's phone number.\n",
+        'x-addedInVersion': '67',
+      }),
+    returnUrl: z
+      .string()
+      .max(8000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Website URL used for redirection after payment is completed.\nIf provided, a **Continue** button will be shown on the payment page. If shoppers select the button, they are redirected to the specified URL.',
+      }),
+    reusable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the payment link can be reused for multiple payments. If not provided, this defaults to **false** which means the link can be used for one successful payment only.',
+      }),
+    riskData: RiskDataSchema.exactOptional().openapi({
+      description: 'Any risk-related settings to apply to the payment.',
+      'x-addedInVersion': '65',
+    }),
+    shopperEmail: z
+      .string()
+      .max(500)
+      .exactOptional()
+      .openapi({ description: "The shopper's email address." }),
+    shopperLocale: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description:
+          'The language to be used in the payment page, specified by a combination of a language and country code. For example, `en-US`.\n\nFor a list of shopper locales that Pay by Link supports, refer to [Language and localization](https://docs.adyen.com/unified-commerce/pay-by-link/payment-links/api#language).',
+      }),
+    shopperName: NameSchema.exactOptional().openapi({
+      description:
+        "The shopper's full name. This object is required for some payment methods such as AfterPay, Klarna, or if you're enrolled in the PayPal Seller Protection program.",
+    }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    shopperStatement: z
+      .string()
+      .max(10000)
+      .exactOptional()
+      .openapi({
+        description:
+          "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
+        'x-addedInVersion': '69',
+      }),
+    showRemovePaymentMethodButton: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to **false** to hide the button that lets the shopper remove a stored payment method.',
+      }),
+    socialSecurityNumber: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({ description: "The shopper's social security number.", 'x-addedInVersion': '69' }),
+    splitCardFundingSources: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean value indicating whether the card payment method should be split into separate debit and credit options.',
+        'x-addedInVersion': '69',
+      }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how to split a payment when using [Adyen for Platforms](https://docs.adyen.com/platforms/process-payments#providing-split-information), [Classic Platforms integration](https://docs.adyen.com/classic-platforms/processing-payments#providing-split-information), or [Issuing](https://docs.adyen.com/issuing/manage-funds#split).',
+      }),
+    store: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The physical store, for which this payment is processed.' }),
+    storePaymentMethodMode: z
+      .enum(['askForConsent', 'disabled', 'enabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the details of the payment method will be stored for the shopper. Possible values:\n* **disabled** – No details will be stored (default).\n* **askForConsent** – If the `shopperReference` is provided, the Drop-in/Component shows a checkbox where the shopper can select to store their payment details for card payments.\n* **enabled** – If the `shopperReference` is provided, the details will be stored without asking the shopper for consent. \n When set to **askForConsent** or **enabled**, you must also include the `recurringProcessingModel` parameter.',
+        'x-addedInVersion': '68',
+      }),
+    telephoneNumber: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's telephone number.\n The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.",
+        'x-addedInVersion': '68',
+      }),
+    themeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A [theme](https://docs.adyen.com/unified-commerce/pay-by-link/payment-links/api#themes) to customize the appearance of the payment page. If not specified, the payment page is rendered according to the theme set as default in your Customer Area.',
+        'x-addedInVersion': '67',
+      }),
+    threeDS2RequestData: CheckoutSessionThreeDS2RequestDataSchema.exactOptional().openapi({
+      description:
+        'The cardholder phone number need to be part of the authentication message for payment data. It is a requirement for Visa Secure Authentication Data Field Mandate effective August 2024.',
+    }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount', 'reference'] })
+  .openapi('PaymentLinkRequest')
+
+const PaymentLinkResponseSchema = z
+  .strictObject({
+    allowedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be presented to the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"allowedPaymentMethods":["ideal","applepay"]`',
+      }),
+    amount: AmountSchema.openapi({ description: 'The payment amount and currency.' }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    billingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The address where to send the invoice.',
+    }),
+    blockedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be hidden from the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"blockedPaymentMethods":["ideal","applepay"]`',
+      }),
+    captureDelayHours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The delay between the authorisation and scheduled auto-capture, specified in hours.',
+        'x-addedInVersion': '69',
+      }),
+    countryCode: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({ description: "The shopper's two-letter country code." }),
+    dateOfBirth: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's date of birth.\n\nFormat [ISO-8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DD",
+        'x-addedInVersion': '69',
+      }),
+    deliverAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the purchased goods should be delivered.\n\n[ISO 8601](https://www.w3.org/TR/NOTE-datetime) format: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.',
+      }),
+    deliveryAddress: AddressSchema.exactOptional().openapi({
+      description: 'The address where the purchased goods should be delivered.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A short description visible on the payment page.\nMaximum length: 280 characters.',
+      }),
+    expiresAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date when the payment link expires.\n\n[ISO 8601](https://www.w3.org/TR/NOTE-datetime) format with time zone offset: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.\n\nThe maximum expiry date is 70 days after the payment link is created.\n\nIf not provided, the payment link expires 24 hours after it was created.',
+        'x-addedInVersion': '71',
+      }),
+    fundOrigin: FundOriginSchema.exactOptional().openapi({
+      description: 'The person or entity funding the money.',
+    }),
+    fundRecipient: FundRecipientSchema.exactOptional().openapi({
+      description: 'the person or entity receiving the money',
+    }),
+    id: z
+      .string()
+      .openapi({
+        description: 'A unique identifier of the payment link.',
+        readOnly: true,
+        'x-addedInVersion': '51',
+      }),
+    installmentOptions: z
+      .record(z.string(), InstallmentOptionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of key-value pairs that specifies the installment options available per payment method. The key must be a payment method name in lowercase. For example, **card** to specify installment options for all cards, or **visa** or **mc**. The value must be an object containing the installment options.',
+      }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information about the purchased items, to be included on the invoice sent to the shopper.\n> This field is required for 3x 4x Oney, Affirm, Afterpay, Clearpay, Klarna, Ratepay, and Riverty.',
+      }),
+    manualCapture: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the payment must be [captured manually](https://docs.adyen.com/online-payments/capture).',
+      }),
+    mcc: z
+      .string()
+      .max(16)
+      .exactOptional()
+      .openapi({
+        description:
+          'The [merchant category code](https://en.wikipedia.org/wiki/Merchant_category_code) (MCC) is a four-digit number, which relates to a particular market segment. This code reflects the predominant activity that is conducted by the merchant.',
+        'x-addedInVersion': '69',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description: 'The merchant account identifier for which the payment link is created.',
+      }),
+    merchantOrderReference: z
+      .string()
+      .max(1000)
+      .exactOptional()
+      .openapi({
+        description:
+          'This reference allows linking multiple transactions to each other for reporting purposes (for example, order auth-rate). The reference should be unique per billing cycle.',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata consists of entries, each of which includes a key and a value.\nLimitations:\n* Maximum 20 key-value pairs per request. Otherwise, error "177" occurs: "Metadata size exceeds limit"\n* Maximum 20 characters per key. Otherwise, error "178" occurs: "Metadata key size exceeds limit"\n* A key cannot have the name `checkout.linkId`. Any value that you provide with this key is going to be replaced by the real payment link ID.',
+      }),
+    platformChargebackLogic: PlatformChargebackLogicSchema.exactOptional().openapi({
+      description:
+        'Dictates the behavior of how a potential chargeback should be booked when using Adyen Platforms.',
+    }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines a recurring payment type. Required when `storePaymentMethodMode` is set to **askForConsent** or **enabled**.\nPossible values:\n* **Subscription** – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* **CardOnFile** – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* **UnscheduledCardOnFile** – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or has variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.\n",
+      }),
+    reference: z
+      .string()
+      .openapi({
+        description:
+          'A reference that is used to uniquely identify the payment in future communications about the payment status.',
+      }),
+    requiredShopperFields: z
+      .array(
+        z.enum([
+          'billingAddress',
+          'deliveryAddress',
+          'shopperEmail',
+          'shopperName',
+          'telephoneNumber',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "List of fields that the shopper has to provide on the payment page before completing the payment. For more information, refer to [Provide shopper information](https://docs.adyen.com/unified-commerce/pay-by-link/payment-links/api#shopper-information).\n\nPossible values:\n* **billingAddress** – The address where to send the invoice.\n* **deliveryAddress** – The address where the purchased goods should be delivered.\n* **shopperEmail** – The shopper's email address.\n* **shopperName** – The shopper's full name.\n* **telephoneNumber** – The shopper's phone number.\n",
+        'x-addedInVersion': '67',
+      }),
+    returnUrl: z
+      .string()
+      .max(8000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Website URL used for redirection after payment is completed.\nIf provided, a **Continue** button will be shown on the payment page. If shoppers select the button, they are redirected to the specified URL.',
+      }),
+    reusable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the payment link can be reused for multiple payments. If not provided, this defaults to **false** which means the link can be used for one successful payment only.',
+      }),
+    riskData: RiskDataSchema.exactOptional().openapi({
+      description: 'Any risk-related settings to apply to the payment.',
+      'x-addedInVersion': '65',
+    }),
+    shopperEmail: z
+      .string()
+      .max(500)
+      .exactOptional()
+      .openapi({ description: "The shopper's email address." }),
+    shopperLocale: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description:
+          'The language to be used in the payment page, specified by a combination of a language and country code. For example, `en-US`.\n\nFor a list of shopper locales that Pay by Link supports, refer to [Language and localization](https://docs.adyen.com/unified-commerce/pay-by-link/payment-links/api#language).',
+      }),
+    shopperName: NameSchema.exactOptional().openapi({
+      description:
+        "The shopper's full name. This object is required for some payment methods such as AfterPay, Klarna, or if you're enrolled in the PayPal Seller Protection program.",
+    }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    shopperStatement: z
+      .string()
+      .max(10000)
+      .exactOptional()
+      .openapi({
+        description:
+          "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
+        'x-addedInVersion': '69',
+      }),
+    showRemovePaymentMethodButton: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to **false** to hide the button that lets the shopper remove a stored payment method.',
+      }),
+    socialSecurityNumber: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({ description: "The shopper's social security number.", 'x-addedInVersion': '69' }),
+    splitCardFundingSources: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean value indicating whether the card payment method should be split into separate debit and credit options.',
+        'x-addedInVersion': '69',
+      }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how to split a payment when using [Adyen for Platforms](https://docs.adyen.com/platforms/process-payments#providing-split-information), [Classic Platforms integration](https://docs.adyen.com/classic-platforms/processing-payments#providing-split-information), or [Issuing](https://docs.adyen.com/issuing/manage-funds#split).',
+      }),
+    status: z
+      .enum(['active', 'completed', 'expired', 'paid', 'paymentPending'])
+      .openapi({
+        description:
+          'Status of the payment link. Possible values:\n* **active**: The link can be used to make payments.\n* **expired**: The expiry date for the payment link has passed. Shoppers can no longer use the link to make payments.\n* **completed**: The shopper completed the payment.\n* **paymentPending**: The shopper is in the process of making the payment. Applies to payment methods with an asynchronous flow.',
+      }),
+    store: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The physical store, for which this payment is processed.' }),
+    storePaymentMethodMode: z
+      .enum(['askForConsent', 'disabled', 'enabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the details of the payment method will be stored for the shopper. Possible values:\n* **disabled** – No details will be stored (default).\n* **askForConsent** – If the `shopperReference` is provided, the Drop-in/Component shows a checkbox where the shopper can select to store their payment details for card payments.\n* **enabled** – If the `shopperReference` is provided, the details will be stored without asking the shopper for consent. \n When set to **askForConsent** or **enabled**, you must also include the `recurringProcessingModel` parameter.',
+        'x-addedInVersion': '68',
+      }),
+    telephoneNumber: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's telephone number.\n The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.",
+        'x-addedInVersion': '68',
+      }),
+    themeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A [theme](https://docs.adyen.com/unified-commerce/pay-by-link/payment-links/api#themes) to customize the appearance of the payment page. If not specified, the payment page is rendered according to the theme set as default in your Customer Area.',
+        'x-addedInVersion': '67',
+      }),
+    threeDS2RequestData: CheckoutSessionThreeDS2RequestDataSchema.exactOptional().openapi({
+      description:
+        'The cardholder phone number need to be part of the authentication message for payment data. It is a requirement for Visa Secure Authentication Data Field Mandate effective August 2024.',
+    }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date when the payment link status was updated.\n\n[ISO 8601](https://www.w3.org/TR/NOTE-datetime) format: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.',
+      }),
+    url: z
+      .string()
+      .openapi({
+        description: 'The URL at which the shopper can complete the payment.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: ['amount', 'id', 'merchantAccount', 'reference', 'status', 'url'] })
+  .openapi('PaymentLinkResponse')
+
+const PaymentMethodUPIAppsSchema = z
+  .strictObject({
+    appIdentifierInfo: AppIdentifierInfoSchema.exactOptional().openapi({
+      description: 'The app identifier information containing iOS scheme and Android package ID.',
+      'x-addedInVersion': '68',
+    }),
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of this app, to submit in requests to /payments.',
+      }),
+    name: z.string().openapi({ description: 'A localized name of the app.' }),
+  })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('PaymentMethodUPIApps')
+
+const PaymentMethodGroupSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'The name of the group.' }),
+    paymentMethodData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Echo data to be used if the payment method is displayed as part of this group.',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The unique code of the group.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentMethodGroup')
+
+const PaymentMethodIssuerSchema = z
+  .strictObject({
+    disabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'A boolean value indicating whether this issuer is unavailable. Can be `true` whenever the issuer is offline.',
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of this issuer, to submit in requests to /payments.',
+      }),
+    name: z.string().openapi({ description: 'A localized name of the issuer.' }),
+  })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('PaymentMethodIssuer')
+
+const PaymentMethodSchema = z
+  .strictObject({
+    apps: z
+      .array(PaymentMethodUPIAppsSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of apps for this payment method.' }),
+    brand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Brand for the selected gift card. For example: plastix, hmclub.',
+        'x-addedInVersion': '65',
+      }),
+    brands: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'List of possible brands. For example: visa, mc.',
+        'x-addedInVersion': '49',
+      }),
+    configuration: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The configuration of the payment method.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description: 'The funding source of the payment method.',
+        'x-addedInVersion': '53',
+      }),
+    group: PaymentMethodGroupSchema.exactOptional().openapi({
+      description: 'The group where this payment method belongs to.',
+    }),
+    inputDetails: z
+      .array(InputDetailSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'All input details to be provided to complete the payment with this payment method.',
+      }),
+    issuers: z
+      .array(PaymentMethodIssuerSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A list of issuers for this payment method.',
+        'x-addedInVersion': '68',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The displayable name of this payment method.' }),
+    promoted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether this payment method should be promoted or not.' }),
+    type: z.string().exactOptional().openapi({ description: 'The unique payment method code.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentMethod')
+
+const PaymentMethodToStoreSchema = z
+  .strictObject({
+    brand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Secondary brand of the card. For example: **plastix**, **hmclub**.',
+      }),
+    cvc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card verification code. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    encryptedCard: z
+      .string()
+      .max(40000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card.' }),
+    encryptedCardNumber: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card number.' }),
+    encryptedExpiryMonth: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card expiry month.' }),
+    encryptedExpiryYear: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card expiry year.' }),
+    encryptedSecurityCode: z
+      .string()
+      .max(15000)
+      .exactOptional()
+      .openapi({ description: 'The encrypted card verification code.' }),
+    expiryMonth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry month. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    expiryYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card expiry year. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    holderName: z.string().exactOptional().openapi({ description: 'The name of the card holder.' }),
+    number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card number. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'Set to **scheme**.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentMethodToStore')
+
+const PaymentMethodsRequestSchema = z
+  .strictObject({
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains additional data, which may be required for a particular payment request.\n\nThe `additionalData` object consists of entries, each of which includes the key and value.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/AdditionalData3DSecure' },
+          { $ref: '#/components/schemas/AdditionalDataAirline' },
+          { $ref: '#/components/schemas/AdditionalDataCarRental' },
+          { $ref: '#/components/schemas/AdditionalDataCommon' },
+          { $ref: '#/components/schemas/AdditionalDataLevel23' },
+          { $ref: '#/components/schemas/AdditionalDataLodging' },
+          { $ref: '#/components/schemas/AdditionalDataOpenInvoice' },
+          { $ref: '#/components/schemas/AdditionalDataOpi' },
+          { $ref: '#/components/schemas/AdditionalDataRatepay' },
+          { $ref: '#/components/schemas/AdditionalDataRetry' },
+          { $ref: '#/components/schemas/AdditionalDataRisk' },
+          { $ref: '#/components/schemas/AdditionalDataRiskStandalone' },
+          { $ref: '#/components/schemas/AdditionalDataSubMerchant' },
+          { $ref: '#/components/schemas/AdditionalDataTemporaryServices' },
+          { $ref: '#/components/schemas/AdditionalDataWallets' },
+        ],
+      }),
+    allowedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be presented to the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"allowedPaymentMethods":["ideal","applepay"]`',
+        'x-addedInVersion': '40',
+      }),
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        'The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero).',
+    }),
+    blockedPaymentMethods: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of payment methods to be hidden from the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).\n\nExample: `"blockedPaymentMethods":["ideal","applepay"]`',
+        'x-addedInVersion': '40',
+      }),
+    browserInfo: BrowserInfoSchema.exactOptional().openapi({
+      description:
+        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.",
+    }),
+    channel: z
+      .enum(['iOS', 'Android', 'Web'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The platform where a payment transaction takes place. This field can be used for filtering out payment methods that are only available on specific platforms. Possible values:\n* iOS\n* Android\n* Web',
+      }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The shopper country code.\n\nFormat: [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)\nExample: NL or DE',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    order: EncryptedOrderDataSchema.exactOptional().openapi({
+      description: 'The order information required for partial payments.',
+      'x-addedInVersion': '64',
+    }),
+    shopperConversionId: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique ID to [connect the shopper to a single checkout session](https://docs.adyen.com/online-payments/checkout-settings#checkout-shopper-conversion-id) that uses multiple API requests. You can use this to get insights into conversion rates.',
+      }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's email address. We recommend that you provide this data, as it is used in velocity fraud checks. > Required for Visa and JCB transactions that require 3D Secure 2 authentication if you did not include the `telephoneNumber`.",
+      }),
+    shopperIP: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's IP address. We recommend that you provide this data, as it is used in a number of risk checks (for instance, number of payment attempts or location-based checks).\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication for all web and mobile integrations, if you did not include the `shopperEmail`. For native mobile integrations, the field is required to support cases where authentication is routed to the redirect flow. This field is also mandatory for some merchants depending on your business model. For more information, [contact Support](https://www.adyen.help/hc/en-us/requests/new).",
+      }),
+    shopperLocale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language for the payment. The value combines the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) language code with the [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) country code. For example, **nl-NL**.\n\nWhen using Drop-in/Components, the specified language appears if your front-end global configuration does not set the `locale`.',
+        'x-addedInVersion': '7',
+      }),
+    shopperReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for recurring payments. \nYour reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.\n> Your reference must not include personally identifiable information (PII) such as name or email address.',
+      }),
+    splitCardFundingSources: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean value indicating whether the card payment method should be split into separate debit and credit options.',
+        'x-addedInVersion': '53',
+      }),
+    store: z
+      .string()
+      .min(1)
+      .max(16)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.',
+        'x-addedInVersion': '23',
+      }),
+    storeFiltrationMode: z
+      .enum(['exclusive', 'inclusive', 'skipFilter'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies how payment methods should be filtered based on the `store` parameter:\n  - **exclusive**: Only payment methods belonging to the specified `store` are returned.\n  - **inclusive**: Payment methods from the `store` and those not associated with any other store are returned.',
+      }),
+    telephoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's telephone number.\n The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.",
+        'x-addedInVersion': '7',
+      }),
+  })
+  .openapi({ required: ['merchantAccount'] })
+  .openapi('PaymentMethodsRequest')
+
+const StoredPaymentMethodSchema = z
+  .strictObject({
+    bankAccountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank account number (without separators).' }),
+    bankLocationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The location id of the bank. The field value is `nil` in most cases.',
+      }),
+    brand: z.string().exactOptional().openapi({ description: 'The brand of the card.' }),
+    cashtag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper’s Cash App Pay Cashtag.', 'x-addedInVersion': '70' }),
+    expiryMonth: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The two-digit month when the card expires' }),
+    expiryYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last two digits of the year the card expires. For example, **22** for the year 2022.',
+      }),
+    externalToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The token issued by an external tokenization service representing the shopper's payment method",
+        'x-addedInVersion': '72',
+      }),
+    holderName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the payment method holder.' }),
+    iban: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The IBAN of the bank account.', 'x-addedInVersion': '67' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique identifier of this stored payment method.' }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper’s issuer account label', 'x-addedInVersion': '70' }),
+    lastFour: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last four digits of the PAN.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name of the stored payment method.' }),
+    networkTxReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returned in the response if you are not tokenizing with Adyen and are using the Merchant-initiated transactions (MIT) framework from Mastercard or Visa.\n\nThis contains either the Mastercard Trace ID or the Visa Transaction ID.',
+        'x-addedInVersion': '68',
+      }),
+    ownerName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the bank account holder.', 'x-addedInVersion': '67' }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper’s email address.' }),
+    supportedRecurringProcessingModels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The supported recurring processing models for this stored payment method.',
+        'x-addedInVersion': '70',
+      }),
+    supportedShopperInteractions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The supported shopper interactions for this stored payment method.',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The type of payment method.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('StoredPaymentMethod')
+
+const PaymentMethodsResponseSchema = z
+  .strictObject({
+    paymentMethods: z
+      .array(PaymentMethodSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Detailed list of payment methods required to generate payment forms.',
+      }),
+    storedPaymentMethods: z
+      .array(StoredPaymentMethodSchema)
+      .exactOptional()
+      .openapi({ description: 'List of all stored payment methods.', 'x-addedInVersion': '49' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentMethodsResponse')
+
+const PaymentRefundRequestSchema = z
+  .strictObject({
+    amount: AmountSchema.openapi({
+      description:
+        'The amount that you want to refund. The `currency` must match the currency used in authorisation, the `value` must be smaller than or equal to the authorised amount.',
+    }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    capturePspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is only available for PayPal refunds. The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the specific capture to refund.',
+      }),
+    enhancedSchemeData: EnhancedSchemeDataSchema.exactOptional().openapi({
+      description:
+        'Enhanced scheme data that may be required for processing the payment. For example, airline information.',
+      'x-addedInVersion': '70',
+    }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information of the refunded items, required for [partial refunds](https://docs.adyen.com/online-payments/refund#refund-a-payment).\n> This field is required for partial refunds with 3x 4x Oney, Affirm, Afterpay, Atome, Clearpay, Klarna, Ratepay, Walley, and Zip.',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    merchantRefundReason: z
+      .enum(['FRAUD', 'CUSTOMER REQUEST', 'RETURN', 'DUPLICATE', 'OTHER'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for the refund request.\n\nPossible values:\n\n* **FRAUD**\n\n* **CUSTOMER REQUEST**\n\n* **RETURN**\n\n* **DUPLICATE**\n\n* **OTHER**\n\n',
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Your reference for the refund request. Maximum length: 80 characters.',
+      }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how the amount should be split between accounts when using Adyen for Platforms. For more information, see how to process payments for [marketplaces](https://docs.adyen.com/marketplaces/split-payments) or [platforms](https://docs.adyen.com/platforms/online-payments/split-payments/).',
+      }),
+    store: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The online store or [physical store](https://docs.adyen.com/point-of-sale/design-your-integration/determine-account-structure/#create-stores) that is processing the refund. This must be the same as the store name configured in your Customer Area.  Otherwise, you get an error and the refund fails.',
+      }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount'] })
+  .openapi('PaymentRefundRequest')
+
+const PaymentRefundResponseSchema = z
+  .strictObject({
+    amount: AmountSchema.openapi({ description: 'The refund amount.' }),
+    capturePspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is only available for PayPal refunds. The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the specific capture to refund.',
+      }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information of the refunded items, required for [partial refunds](https://docs.adyen.com/online-payments/refund#refund-a-payment).\n> This field is required for partial refunds with 3x 4x Oney, Affirm, Afterpay, Atome, Clearpay, Klarna, Ratepay, Walley, and Zip.',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    merchantRefundReason: z
+      .enum(['FRAUD', 'CUSTOMER REQUEST', 'RETURN', 'DUPLICATE', 'OTHER'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Your reason for the refund request.' }),
+    paymentPspReference: z
+      .string()
+      .openapi({
+        description:
+          'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment to refund. ',
+      }),
+    pspReference: z
+      .string()
+      .openapi({
+        description: "Adyen's 16-character reference associated with the refund request.",
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Your reference for the refund request.' }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how the amount should be split between accounts when using Adyen for Platforms. For more information, see how to process payments for [marketplaces](https://docs.adyen.com/marketplaces/split-payments) or [platforms](https://docs.adyen.com/platforms/online-payments/split-payments/).',
+      }),
+    status: z
+      .literal('received')
+      .openapi({
+        description: 'The status of your request. This will always have the value **received**.',
+      }),
+    store: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The online store or [physical store](https://docs.adyen.com/point-of-sale/design-your-integration/determine-account-structure/#create-stores) that is processing the refund. This must be the same as the store name configured in your Customer Area.  Otherwise, you get an error and the refund fails.',
+      }),
+  })
+  .openapi({
+    required: ['amount', 'merchantAccount', 'paymentPspReference', 'pspReference', 'status'],
+  })
+  .openapi('PaymentRefundResponse')
+
+const PixRecurringSchema = z
+  .strictObject({
+    billingDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The date on which the shopper's payment method will be charged, in YYYY-MM-DD format.",
+      }),
+    businessDayOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Flag used to define whether liquidation can happen only on business days',
+      }),
+    endsAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'End date of the billing plan, in YYYY-MM-DD format. The end date must align with the frequency and the start date of the billing plan. If left blank, the subscription will continue indefinitely unless it is cancelled by the shopper.',
+      }),
+    frequency: z
+      .enum(['weekly', 'monthly', 'quarterly', 'half-yearly', 'yearly'])
+      .exactOptional()
+      .openapi({ description: 'The frequency at which the shopper will be charged.' }),
+    minAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'For a billing plan where the payment amounts are variable, the minimum amount to charge the shopper for each recurring payment. When a shopper approves the billing plan, they can also specify a maximum amount in their banking app.',
+    }),
+    originalPspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The pspReference for the failed recurring payment. Find this in AUTHORISATION webhook you received after the billing date.',
+      }),
+    recurringAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'For a billing plan where the payment amount is fixed, the amount the shopper will be charged for each recurring payment.',
+    }),
+    recurringStatement: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The text that that will be shown on the shopper's bank statement for the recurring payments. We recommend to add a descriptive text about the subscription to let your shoppers recognize your recurring payments.\nMaximum length: 35 characters.",
+      }),
+    retryPolicy: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When set to true, you can retry for failed recurring payments. The default value is true.',
+      }),
+    startsAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Start date of the billing plan, in YYYY-MM-DD format. The default value is the transaction date.',
+      }),
+  })
+  .openapi({ title: 'pixRecurring', required: [] })
+  .openapi('PixRecurring')
+
+const PixDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    pixRecurring: PixRecurringSchema.exactOptional(),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('pix').exactOptional().openapi({ description: 'The payment method type.' }),
+  })
+  .openapi({ title: 'Stored Payment Method', required: [] })
+  .openapi('PixDetails')
+
+const ScreenDimensionsSchema = z
+  .strictObject({ height: z.int32().exactOptional(), width: z.int32().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ScreenDimensions')
+
+const PixPayByBankRiskSignalsSchema = z
+  .strictObject({
+    confidenceScore: ConfidenceScoreSchema.exactOptional(),
+    elapsedTimeSinceBoot: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    isRootedDevice: z.boolean().exactOptional(),
+    language: z.string().exactOptional(),
+    osVersion: z.string().max(32).exactOptional(),
+    screenBrightness: z.int32().exactOptional(),
+    screenDimensions: ScreenDimensionsSchema.exactOptional(),
+    userTimeZoneOffset: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PixPayByBankRiskSignals')
+
+const PixPayByBankDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    deviceId: z.string().max(36).exactOptional(),
+    issuer: z.string().exactOptional(),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    riskSignals: PixPayByBankRiskSignalsSchema.exactOptional(),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('paybybank_pix')
+      .default('paybybank_pix')
+      .exactOptional()
+      .openapi({ description: '**paybybank_pix**' }),
+  })
+  .openapi({ title: 'Stored Payment Method', required: [] })
+  .openapi('PixPayByBankDetails')
+
+const PseDetailsSchema = z
+  .strictObject({
+    bank: z.string().openapi({ description: "The shopper's bank." }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    clientType: z.string().openapi({ description: 'The client type.' }),
+    identification: z.string().openapi({ description: 'The identification code.' }),
+    identificationType: z.string().openapi({ description: 'The identification type.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('pse_payulatam')
+      .exactOptional()
+      .openapi({ description: 'The payment method type.' }),
+  })
+  .openapi({
+    required: ['bank', 'clientType', 'identification', 'identificationType'],
+    title: 'PSE Latam',
+  })
+  .openapi('PseDetails')
+
+const RakutenPayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('rakutenpay')
+      .default('rakutenpay')
+      .exactOptional()
+      .openapi({ description: '**rakutenpay**' }),
+  })
+  .openapi({ title: 'RakutenPay', required: [] })
+  .openapi('RakutenPayDetails')
+
+const RatepayDetailsSchema = z
+  .strictObject({
+    billingAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where to send the invoice.' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    deliveryAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where the goods should be delivered.' }),
+    personalDetails: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shopper name, date of birth, phone number, and email address.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .enum(['ratepay', 'ratepay_directdebit'])
+      .default('ratepay')
+      .openapi({ description: '**ratepay**' }),
+  })
+  .openapi({ required: ['type'], title: 'Ratepay' })
+  .openapi('RatepayDetails')
+
+const RivertyDetailsSchema = z
+  .strictObject({
+    billingAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where to send the invoice.' }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    deliveryAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The address where the goods should be delivered.' }),
+    deviceFingerprint: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          "A string containing the shopper's device fingerprint. For more information, refer to [Device fingerprinting](https://docs.adyen.com/risk-management/device-fingerprinting).",
+      }),
+    iban: z
+      .string()
+      .max(34)
+      .exactOptional()
+      .openapi({ description: 'The iban number of the customer ' }),
+    merchantData: z
+      .string()
+      .max(10240)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded merchant metadata (Extra Merchant Data) forwarded to Riverty at authorization.',
+        'x-addedInVersion': '72',
+      }),
+    personalDetails: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shopper name, date of birth, phone number, and email address.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    subtype: z.string().exactOptional().openapi({ description: 'The payment method subtype.' }),
+    type: z
+      .enum(['riverty', 'riverty_account', 'riverty_installments', 'sepadirectdebit_riverty'])
+      .default('riverty')
+      .openapi({ description: '**riverty**' }),
+  })
+  .openapi({ required: ['type'], title: 'Riverty' })
+  .openapi('RivertyDetails')
+
+const SamsungPayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    samsungPayToken: z
+      .string()
+      .max(10000)
+      .openapi({ description: 'The payload you received from the Samsung Pay SDK response.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('samsungpay')
+      .default('samsungpay')
+      .exactOptional()
+      .openapi({ description: '**samsungpay**' }),
+  })
+  .openapi({ required: ['samsungPayToken'], title: 'Samsung Pay' })
+  .openapi('SamsungPayDetails')
+
+const SepaDirectDebitDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    dueDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The date that the the shopper's bank account is charged." }),
+    iban: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The International Bank Account Number (IBAN).' }),
+    ownerName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the bank account holder.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    transferInstrumentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unique identifier of your user's verified transfer instrument, which you can use to top up their balance accounts.",
+      }),
+    type: z
+      .enum(['sepadirectdebit', 'sepadirectdebit_amazonpay'])
+      .default('sepadirectdebit')
+      .exactOptional()
+      .openapi({ description: '**sepadirectdebit**' }),
+  })
+  .openapi({ title: 'SEPA Direct Debit', required: [] })
+  .openapi('SepaDirectDebitDetails')
+
+const StoredPaymentMethodDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .enum([
+        'alipay_plus',
+        'alipay_plus_alipay_cn',
+        'alipay_plus_alipay_hk',
+        'alipay_plus_dana',
+        'alipay_plus_gcash',
+        'alipay_plus_kakaopay',
+        'alipay_plus_kplus',
+        'alipay_plus_naverpay',
+        'alipay_plus_rabbitlinepay',
+        'alipay_plus_tosspay',
+        'alipay_plus_touchngo',
+        'alipay_plus_truemoney',
+        'bcmc_mobile',
+        'bcmc_mobile_QR',
+        'bcmc_mobile_app',
+        'momo_wallet',
+        'momo_wallet_app',
+        'revolutpay',
+        'paymaya_wallet',
+        'grabpay_SG',
+        'grabpay_MY',
+        'grabpay_TH',
+        'grabpay_ID',
+        'grabpay_VN',
+        'grabpay_PH',
+        'oxxo',
+        'gcash',
+        'dana',
+        'kakaopay',
+        'truemoney',
+        'paysafecard',
+        'gopay_wallet',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The payment method type.' }),
+  })
+  .openapi({ title: 'Stored Payment Method', required: [] })
+  .openapi('StoredPaymentMethodDetails')
+
+const TwintDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    subtype: z.string().exactOptional().openapi({ description: 'The type of flow to initiate.' }),
+    type: z.literal('twint').exactOptional().openapi({ description: 'The payment method type.' }),
+  })
+  .openapi({ title: 'Twint', required: [] })
+  .openapi('TwintDetails')
+
+const UpiCollectDetailsSchema = z
+  .strictObject({
+    billingSequenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sequence number for the debit. For example, send **2** if this is the second debit for the subscription. The sequence number is included in the notification sent to the shopper.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperNotificationReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `shopperNotificationReference` returned in the response when you requested to notify the shopper. Used for recurring payment only.',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('upi_collect')
+      .default('upi_collect')
+      .openapi({ description: '**upi_collect**' }),
+    virtualPaymentAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The virtual payment address for UPI.' }),
+  })
+  .openapi({ required: ['type'], title: 'UPI Collect' })
+  .openapi('UpiCollectDetails')
+
+const UpiIntentDetailsSchema = z
+  .strictObject({
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'TPAP (Third Party Application) Id that is being used to make the UPI payment',
+      }),
+    billingSequenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sequence number for the debit. For example, send **2** if this is the second debit for the subscription. The sequence number is included in the notification sent to the shopper.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperNotificationReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `shopperNotificationReference` returned in the response when you requested to notify the shopper. Used for recurring payment only.',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('upi_intent').default('upi_intent').openapi({ description: '**upi_intent**' }),
+  })
+  .openapi({ required: ['type'], title: 'UPI Intent' })
+  .openapi('UpiIntentDetails')
+
+const UpiQrDetailsSchema = z
+  .strictObject({
+    billingSequenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sequence number for the debit. For example, send **2** if this is the second debit for the subscription. The sequence number is included in the notification sent to the shopper.',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    shopperNotificationReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `shopperNotificationReference` returned in the response when you requested to notify the shopper. Used for recurring payment only.',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z.literal('upi_qr').default('upi_qr').openapi({ description: '**upi_qr**' }),
+  })
+  .openapi({ required: ['type'], title: 'UPI QR' })
+  .openapi('UpiQrDetails')
+
+const VippsDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    telephoneNumber: z.string().openapi({ description: '' }),
+    type: z.literal('vipps').default('vipps').exactOptional().openapi({ description: '**vipps**' }),
+  })
+  .openapi({ required: ['telephoneNumber'], title: 'Vipps' })
+  .openapi('VippsDetails')
+
+const VisaCheckoutDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The funding source that should be used when multiple sources are available. For Brazilian combo cards, by default the funding source is credit. To use debit, set this value to **debit**.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .literal('visacheckout')
+      .default('visacheckout')
+      .exactOptional()
+      .openapi({ description: '**visacheckout**' }),
+    visaCheckoutCallId: z
+      .string()
+      .openapi({
+        description:
+          'The Visa Click to Pay Call ID value. When your shopper selects a payment and/or a shipping address from Visa Click to Pay, you will receive a Visa Click to Pay Call ID.',
+      }),
+  })
+  .openapi({ required: ['visaCheckoutCallId'], title: 'Visa Checkout' })
+  .openapi('VisaCheckoutDetails')
+
+const WeChatPayDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    type: z
+      .enum(['wechatpay', 'wechatpay_pos'])
+      .default('wechatpay')
+      .exactOptional()
+      .openapi({ description: '**wechatpay**' }),
+  })
+  .openapi({ title: 'WeChat Pay', required: [] })
+  .openapi('WeChatPayDetails')
+
+const WeChatPayMiniProgramDetailsSchema = z
+  .strictObject({
+    appId: z.string().exactOptional(),
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    openid: z.string().exactOptional(),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .literal('wechatpayMiniProgram')
+      .default('wechatpayMiniProgram')
+      .exactOptional()
+      .openapi({ description: '**wechatpayMiniProgram**' }),
+  })
+  .openapi({ title: 'WeChat Pay - Mini Program', required: [] })
+  .openapi('WeChatPayMiniProgramDetails')
+
+const ZipDetailsSchema = z
+  .strictObject({
+    checkoutAttemptId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The checkout attempt identifier.' }),
+    clickAndCollect: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set this to **true** if the shopper would like to pick up and collect their order, instead of having the goods delivered to them.',
+      }),
+    recurringDetailReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-deprecatedInVersion': '49',
+        'x-deprecatedMessage': 'Use `storedPaymentMethodId` instead.',
+      }),
+    sdkData: z
+      .string()
+      .max(50000)
+      .exactOptional()
+      .openapi({
+        description:
+          'Base64-encoded JSON object containing SDK related parameters required by the SDK',
+        'x-addedInVersion': '67',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the `recurringDetailReference` returned in the response when you created the token.',
+        'x-addedInVersion': '49',
+      }),
+    type: z
+      .enum(['zip', 'zip_pos'])
+      .default('zip')
+      .exactOptional()
+      .openapi({ description: '**zip**' }),
+  })
+  .openapi({ title: 'Zip', required: [] })
+  .openapi('ZipDetails')
+
+const PaymentValidationsNameRequestSchema = z
+  .strictObject({
+    status: z
+      .string()
+      .openapi({
+        description:
+          'Set to **requested** to request a [name validation](https://docs.adyen.com/payment-methods/cards/name-validation) to verify if the cardholder name provided by the shopper matches the cardholder name on file at the issuing bank.',
+      }),
+  })
+  .openapi({ required: ['status'], title: 'Name' })
+  .openapi('PaymentValidationsNameRequest')
+
+const PaymentValidationsSchema = z
+  .strictObject({ name: PaymentValidationsNameRequestSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('PaymentValidations')
+
+const ShopperTaxInfoSchema = z
+  .strictObject({
+    taxCountryCode: z
+      .string()
+      .max(2)
+      .openapi({
+        description:
+          'The two-character [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code associated with the provided tax identification number.\nCurrently used only for Indian PA-CB tax verification, when applicable.',
+      }),
+    taxIdentificationNumber: z
+      .string()
+      .max(20)
+      .openapi({ description: 'The shopper’s tax identification number.' }),
+  })
+  .openapi({ required: ['taxCountryCode', 'taxIdentificationNumber'] })
+  .openapi('ShopperTaxInfo')
+
+const SurchargeSchema = z
+  .strictObject({
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The [surcharge](https://docs.adyen.com/online-payments/surcharge/) amount to apply to the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). When you apply surcharge, include the surcharge in the `amount.value` field.\n\nReview our [Surcharge compliance guide](https://docs.adyen.com/development-resources/surcharge-compliance/) to learn about how to comply with regulatory requirements when applying surcharge.',
+      }),
+  })
+  .openapi({ required: ['value'] })
+  .openapi('Surcharge')
+
+const PaymentRequestSchema = z
+  .strictObject({
+    accountInfo: AccountInfoSchema.exactOptional().openapi({
+      description:
+        'Shopper account information for 3D Secure 2.\n> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.',
+      'x-addedInVersion': '40',
+    }),
+    additionalAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'If you want a [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) request to use a non-zero value, assign this value to `additionalAmount` (while the amount must be still set to 0 to trigger BIN or card verification).\nRequired to be in the same currency as the `amount`. ',
+    }),
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains additional data, which may be required for a particular payment request.\n\nThe `additionalData` object consists of entries, each of which includes the key and value.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/AdditionalData3DSecure' },
+          { $ref: '#/components/schemas/AdditionalDataAirline' },
+          { $ref: '#/components/schemas/AdditionalDataCarRental' },
+          { $ref: '#/components/schemas/AdditionalDataCommon' },
+          { $ref: '#/components/schemas/AdditionalDataLevel23' },
+          { $ref: '#/components/schemas/AdditionalDataLodging' },
+          { $ref: '#/components/schemas/AdditionalDataOpenInvoice' },
+          { $ref: '#/components/schemas/AdditionalDataOpi' },
+          { $ref: '#/components/schemas/AdditionalDataRatepay' },
+          { $ref: '#/components/schemas/AdditionalDataRetry' },
+          { $ref: '#/components/schemas/AdditionalDataRisk' },
+          { $ref: '#/components/schemas/AdditionalDataRiskStandalone' },
+          { $ref: '#/components/schemas/AdditionalDataSubMerchant' },
+          { $ref: '#/components/schemas/AdditionalDataTemporaryServices' },
+          { $ref: '#/components/schemas/AdditionalDataWallets' },
+        ],
+      }),
+    amount: AmountSchema.openapi({
+      description:
+        'The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero).',
+    }),
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+      'x-addedInVersion': '40',
+    }),
+    authenticationData: AuthenticationDataSchema.exactOptional().openapi({
+      description: 'Data for 3DS authentication.',
+      'x-addedInVersion': '69',
+    }),
+    bankAccount: CheckoutBankAccountSchema.exactOptional().openapi({
+      description:
+        'The details of the bank account, from which the payment should be made.\n> Either `bankAccount` or `card` field must be provided in a payment request.',
+    }),
+    billingAddress: BillingAddressSchema.exactOptional().openapi({
+      description:
+        'The address where to send the invoice.\n> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.\n>* For 3D Secure 2 transactions in all browser-based and mobile implementations.\n>* For cross-border payouts to and from Canada.',
+    }),
+    browserInfo: BrowserInfoSchema.exactOptional().openapi({
+      description:
+        "The shopper's browser information.\n> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.",
+    }),
+    captureDelayHours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [delay between the authorization and automatic capture](https://docs.adyen.com/online-payments/capture?tab=delayed-individual_2#delayed-automatic-capture) of the payment, specified in hours.\n\nMaximum value: **672** (28 days).',
+      }),
+    channel: z
+      .enum(['iOS', 'Android', 'Web'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The platform where a payment transaction takes place. This field is optional for filtering out payment methods that are only available on specific platforms. If this value is not set, then we will try to infer it from the `sdkVersion` or `token`.\n\nPossible values:\n* iOS\n* Android\n* Web',
+      }),
+    checkoutAttemptId: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Checkout attempt ID that corresponds to the Id generated by the client SDK for tracking user payment journey.',
+      }),
+    company: CompanySchema.exactOptional().openapi({
+      description: 'Information regarding the company.',
+      'x-addedInVersion': '32',
+    }),
+    countryCode: z
+      .string()
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'The shopper country code.\n\nFormat: [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)\nExample: NL or DE',
+      }),
+    dateOfBirth: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's date of birth.\n\nFormat [ISO-8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DD",
+      }),
+    dccQuote: ForexQuoteSchema.exactOptional().openapi({
+      description: 'The forex quote as returned in the response of the forex service.',
+    }),
+    deliverAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time the purchased goods should be delivered.\n\nFormat [ISO 8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DDThh:mm:ss.sssTZD\n\nExample: 2017-07-17T13:42:40.428+01:00',
+        'x-addedInVersion': '70',
+      }),
+    deliveryAddress: DeliveryAddressSchema.exactOptional().openapi({
+      description: 'The address where the purchased goods should be delivered.',
+    }),
+    deliveryDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The date and time the purchased goods should be delivered.\n\nFormat [ISO 8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DDThh:mm:ss.sssTZD\n\nExample: 2017-07-17T13:42:40.428+01:00',
+        'x-deprecatedInVersion': '70',
+        'x-deprecatedMessage': 'Use `deliverAt` instead.',
+      }),
+    deviceFingerprint: z
+      .string()
+      .max(5000)
+      .exactOptional()
+      .openapi({
+        description:
+          "A string containing the shopper's device fingerprint. For more information, refer to [Device fingerprinting](https://docs.adyen.com/risk-management/device-fingerprinting).",
+      }),
+    enableOneClick: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the shopper will be asked if the payment details should be stored for future [one-click payments](https://docs.adyen.com/get-started-with-adyen/payment-glossary/#one-click-payments-definition).',
+        'x-addedInVersion': '32',
+      }),
+    enablePayOut: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be tokenized for payouts.',
+        'x-addedInVersion': '32',
+      }),
+    enableRecurring: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be stored for [recurring payments](https://docs.adyen.com/online-payments/tokenization/#recurring-payment-types) where the shopper is not present, such as subscription or automatic top-up payments.',
+        'x-addedInVersion': '32',
+      }),
+    enhancedSchemeData: EnhancedSchemeDataSchema.exactOptional().openapi({
+      description:
+        '[Enhanced scheme data](https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/) that may be required for processing the payment and/or interchange savings can apply.',
+      'x-addedInVersion': '70',
+    }),
+    entityType: z
+      .enum(['NaturalPerson', 'CompanyName'])
+      .exactOptional()
+      .openapi({ description: 'The type of the entity the payment is processed for.' }),
+    fraudOffset: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'An integer value that is added to the normal fraud score. The value can be either positive or negative.',
+      }),
+    fundOrigin: FundOriginSchema.exactOptional().openapi({
+      description: 'The person or entity funding the money.',
+    }),
+    fundRecipient: FundRecipientSchema.exactOptional().openapi({
+      description: 'the person or entity receiving the money',
+    }),
+    industryUsage: z
+      .enum(['delayedCharge', 'installment', 'noShow'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for the amount update. Possible values: \n* **delayedCharge** \n* **noShow** \n* **installment**',
+        'x-addedInVersion': '70',
+      }),
+    installments: InstallmentsSchema.exactOptional().openapi({
+      description:
+        'Contains installment settings. For more information, refer to [Installments](https://docs.adyen.com/payment-methods/cards/credit-card-installments).',
+    }),
+    lineItems: z
+      .array(LineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Price and product information about the purchased items, to be included on the invoice sent to the shopper.\n> This field is required for 3x 4x Oney, Affirm, Afterpay, Clearpay, Klarna, Ratepay, and Riverty.',
+        'x-addedInVersion': '32',
+      }),
+    localizedShopperStatement: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The `localizedShopperStatement` field lets you use dynamic values for your shopper statement in a local character set. If this parameter is left empty, not provided, or not applicable (in case of cross-border transactions), then **shopperStatement** is used.\n\nCurrently, `localizedShopperStatement` is only supported for payments with Visa, Mastercard, JCB, Diners, and Discover.\n\n**Supported characters**: Hiragana, Katakana, Kanji, and alphanumeric.',
+        'x-addedInVersion': '68',
+      }),
+    mandate: MandateSchema.exactOptional().openapi({
+      description: 'The mandate details to initiate recurring transaction.',
+    }),
+    mcc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [merchant category code](https://en.wikipedia.org/wiki/Merchant_category_code) (MCC) is a four-digit number, which relates to a particular market segment. This code reflects the predominant activity that is conducted by the merchant.',
+      }),
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    merchantOrderReference: z
+      .string()
+      .max(1000)
+      .exactOptional()
+      .openapi({
+        description:
+          'You can use this reference to link multiple transactions to one another (for example, to track order authorization rate). For each billing cycle, this reference should be unique. After the first authorized payment attempt, do not reuse the reference. If you use this parameter, include it in all of the payment requests that you make. \n We strongly recommend that you:\n* Always include this parameter, so that you can benefit from linking payment requests to one another, in case of authorization retries. \n* Additionally include the following parameters in the `additionalData` object: [`retry.orderAttemptNumber`](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-additionalData-AdditionalDataRetry-retry-orderAttemptNumber), [`retry.chainAttemptNumber`](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-additionalData-AdditionalDataRetry-retry-chainAttemptNumber), and [`retry.skipRetry`](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-additionalData-AdditionalDataRetry-retry-skipRetry)',
+      }),
+    merchantRiskIndicator: MerchantRiskIndicatorSchema.exactOptional().openapi({
+      description:
+        'Additional risk fields for 3D Secure 2.\n> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.',
+      'x-addedInVersion': '40',
+    }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata consists of entries, each of which includes a key and a value.\nLimits:\n* Maximum 20 key-value pairs per request. When exceeding, the "177" error occurs: "Metadata size exceeds limit".\n* Maximum 20 characters per key.\n* Maximum 80 characters per value. ',
+      }),
+    mpiData: ThreeDSecureDataSchema.exactOptional().openapi({
+      description:
+        'Authentication data produced by an MPI (Mastercard SecureCode, Visa Secure, or Cartes Bancaires).',
+    }),
+    opi: OpiRequestSchema.exactOptional().openapi({
+      description: 'Configuration for Oracle Payment Interface (OPI) integrations.',
+      'x-addedInVersion': '71',
+    }),
+    order: EncryptedOrderDataSchema.exactOptional().openapi({
+      description: 'The order information required for partial payments.',
+    }),
+    orderReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'When you are doing multiple partial (gift card) payments, this is the `pspReference` of the first payment. We use this to link the multiple payments to each other. As your own reference for linking multiple payments, use the `merchantOrderReference`instead.',
+      }),
+    origin: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          '> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.',
+        'x-addedInVersion': '40',
+      }),
+    paymentMethod: z
+      .xor([
+        AchDetailsSchema,
+        AffirmDetailsSchema,
+        AfterpayDetailsSchema,
+        AlmaDetailsSchema,
+        AmazonPayDetailsSchema,
+        AncvDetailsSchema,
+        AndroidPayDetailsSchema,
+        ApplePayDetailsSchema,
+        AuPayDetailsSchema,
+        BacsDirectDebitDetailsSchema,
+        BillDeskDetailsSchema,
+        BlikDetailsSchema,
+        CardDetailsSchema,
+        CashAppDetailsSchema,
+        CellulantDetailsSchema,
+        DBaraiDetailsSchema,
+        DirectDebitAuDetailsSchema,
+        DokuDetailsSchema,
+        DragonpayDetailsSchema,
+        EBankingFinlandDetailsSchema,
+        EcontextVoucherDetailsSchema,
+        EftDetailsSchema,
+        ExternalTokenDetailsSchema,
+        FastlaneDetailsSchema,
+        GenericIssuerPaymentMethodDetailsSchema,
+        GooglePayDetailsSchema,
+        IdealDetailsSchema,
+        KlarnaDetailsSchema,
+        KlarnaNetworkDetailsSchema,
+        MasterpassDetailsSchema,
+        MbwayDetailsSchema,
+        MobilePayDetailsSchema,
+        MolPayDetailsSchema,
+        OpenInvoiceDetailsSchema,
+        PayByBankAISDirectDebitDetailsSchema,
+        PayByBankCADirectDebitDetailsSchema,
+        PayByBankDetailsSchema,
+        PayPalDetailsSchema,
+        PayPayDetailsSchema,
+        PayToDetailsSchema,
+        PayUUpiDetailsSchema,
+        PayWithGoogleDetailsSchema,
+        PaymentDetailsSchema,
+        PixDetailsSchema,
+        PixPayByBankDetailsSchema,
+        PseDetailsSchema,
+        RakutenPayDetailsSchema,
+        RatepayDetailsSchema,
+        RivertyDetailsSchema,
+        SamsungPayDetailsSchema,
+        SepaDirectDebitDetailsSchema,
+        StoredPaymentMethodDetailsSchema,
+        TwintDetailsSchema,
+        UpiCollectDetailsSchema,
+        UpiIntentDetailsSchema,
+        UpiQrDetailsSchema,
+        VippsDetailsSchema,
+        VisaCheckoutDetailsSchema,
+        WeChatPayDetailsSchema,
+        WeChatPayMiniProgramDetailsSchema,
+        ZipDetailsSchema,
+      ])
+      .openapi({
+        description: 'The type and required details of a payment method to use.',
+        discriminator: {
+          propertyName: 'type',
+          mapping: {
+            applepay: '#/components/schemas/ApplePayDetails',
+            samsungpay: '#/components/schemas/SamsungPayDetails',
+            androidpay: '#/components/schemas/AndroidPayDetails',
+            visacheckout: '#/components/schemas/VisaCheckoutDetails',
+            paywithgoogle: '#/components/schemas/PayWithGoogleDetails',
+            amazonpay: '#/components/schemas/AmazonPayDetails',
+            masterpass: '#/components/schemas/MasterpassDetails',
+            googlepay: '#/components/schemas/GooglePayDetails',
+            fastlane: '#/components/schemas/FastlaneDetails',
+            alipay: '#/components/schemas/PaymentDetails',
+            alipay_plus: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_alipay_cn: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_alipay_hk: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_dana: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_gcash: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_kakaopay: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_kplus: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_naverpay: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_rabbitlinepay: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_tosspay: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_touchngo: '#/components/schemas/StoredPaymentMethodDetails',
+            alipay_plus_truemoney: '#/components/schemas/StoredPaymentMethodDetails',
+            bcmc: '#/components/schemas/CardDetails',
+            bcmc_mobile: '#/components/schemas/StoredPaymentMethodDetails',
+            bcmc_mobile_QR: '#/components/schemas/StoredPaymentMethodDetails',
+            bcmc_mobile_app: '#/components/schemas/StoredPaymentMethodDetails',
+            scheme: '#/components/schemas/CardDetails',
+            networkToken: '#/components/schemas/CardDetails',
+            altId: '#/components/schemas/CardDetails',
+            externalToken: '#/components/schemas/ExternalTokenDetails',
+            multibanco: '#/components/schemas/PaymentDetails',
+            ach: '#/components/schemas/AchDetails',
+            ach_plaid: '#/components/schemas/AchDetails',
+            eft_directdebit_CA: '#/components/schemas/EftDetails',
+            bankTransfer: '#/components/schemas/PaymentDetails',
+            bankTransfer_IBAN: '#/components/schemas/PaymentDetails',
+            klarna: '#/components/schemas/KlarnaDetails',
+            klarnapayments: '#/components/schemas/KlarnaDetails',
+            klarnapayments_account: '#/components/schemas/KlarnaDetails',
+            klarnapayments_b2b: '#/components/schemas/KlarnaDetails',
+            klarna_paynow: '#/components/schemas/KlarnaDetails',
+            klarna_account: '#/components/schemas/KlarnaDetails',
+            klarna_b2b: '#/components/schemas/KlarnaDetails',
+            klarna_network: '#/components/schemas/KlarnaNetworkDetails',
+            paynow: '#/components/schemas/PaymentDetails',
+            afterpay_default: '#/components/schemas/AfterpayDetails',
+            afterpaytouch: '#/components/schemas/AfterpayDetails',
+            afterpaytouch_US: '#/components/schemas/AfterpayDetails',
+            afterpaytouch_pos: '#/components/schemas/AfterpayDetails',
+            clearpay: '#/components/schemas/AfterpayDetails',
+            afterpay_b2b: '#/components/schemas/AfterpayDetails',
+            zip: '#/components/schemas/ZipDetails',
+            zip_pos: '#/components/schemas/ZipDetails',
+            ratepay: '#/components/schemas/RatepayDetails',
+            ratepay_directdebit: '#/components/schemas/RatepayDetails',
+            affirm: '#/components/schemas/AffirmDetails',
+            affirm_pos: '#/components/schemas/PaymentDetails',
+            riverty_account: '#/components/schemas/RivertyDetails',
+            ideal: '#/components/schemas/IdealDetails',
+            iris: '#/components/schemas/PaymentDetails',
+            wero: '#/components/schemas/PaymentDetails',
+            paypal: '#/components/schemas/PayPalDetails',
+            paypay: '#/components/schemas/PayPayDetails',
+            rakutenpay: '#/components/schemas/RakutenPayDetails',
+            aupay: '#/components/schemas/AuPayDetails',
+            dbarai: '#/components/schemas/DBaraiDetails',
+            trustly: '#/components/schemas/PaymentDetails',
+            trustlyvector: '#/components/schemas/PaymentDetails',
+            oney: '#/components/schemas/PaymentDetails',
+            facilypay: '#/components/schemas/PaymentDetails',
+            facilypay_3x: '#/components/schemas/PaymentDetails',
+            facilypay_4x: '#/components/schemas/PaymentDetails',
+            facilypay_6x: '#/components/schemas/PaymentDetails',
+            facilypay_10x: '#/components/schemas/PaymentDetails',
+            facilypay_12x: '#/components/schemas/PaymentDetails',
+            sepadirectdebit: '#/components/schemas/SepaDirectDebitDetails',
+            sepadirectdebit_amazonpay: '#/components/schemas/SepaDirectDebitDetails',
+            momo_wallet: '#/components/schemas/StoredPaymentMethodDetails',
+            momo_wallet_app: '#/components/schemas/StoredPaymentMethodDetails',
+            doku: '#/components/schemas/DokuDetails',
+            doku_wallet: '#/components/schemas/DokuDetails',
+            doku_ovo: '#/components/schemas/DokuDetails',
+            doku_permata_lite_atm: '#/components/schemas/DokuDetails',
+            doku_permata_atm: '#/components/schemas/DokuDetails',
+            doku_alfamart: '#/components/schemas/DokuDetails',
+            doku_indomaret: '#/components/schemas/DokuDetails',
+            doku_sinarmas_va: '#/components/schemas/DokuDetails',
+            doku_bca_va: '#/components/schemas/DokuDetails',
+            doku_mandiri_va: '#/components/schemas/DokuDetails',
+            doku_cimb_va: '#/components/schemas/DokuDetails',
+            doku_danamon_va: '#/components/schemas/DokuDetails',
+            doku_bri_va: '#/components/schemas/DokuDetails',
+            doku_bni_va: '#/components/schemas/DokuDetails',
+            doku_bni: '#/components/schemas/DokuDetails',
+            vipps: '#/components/schemas/VippsDetails',
+            mobilepay: '#/components/schemas/MobilePayDetails',
+            cellulant: '#/components/schemas/CellulantDetails',
+            unionpay: '#/components/schemas/PaymentDetails',
+            kcp_banktransfer: '#/components/schemas/PaymentDetails',
+            kcp_payco: '#/components/schemas/PaymentDetails',
+            kcp_creditcard: '#/components/schemas/PaymentDetails',
+            wechatpay: '#/components/schemas/WeChatPayDetails',
+            wechatpay_pos: '#/components/schemas/WeChatPayDetails',
+            wechatpaySDK: '#/components/schemas/PaymentDetails',
+            wechatpayQR: '#/components/schemas/PaymentDetails',
+            wechatpayWeb: '#/components/schemas/PaymentDetails',
+            wechatpayMiniProgram: '#/components/schemas/WeChatPayMiniProgramDetails',
+            molpay_ebanking_fpx_MY: '#/components/schemas/MolPayDetails',
+            molpay_ebanking_TH: '#/components/schemas/MolPayDetails',
+            molpay_krungsribank: '#/components/schemas/MolPayDetails',
+            molpay_krungthaibank: '#/components/schemas/MolPayDetails',
+            molpay_siamcommercialbank: '#/components/schemas/MolPayDetails',
+            molpay_bangkokbank: '#/components/schemas/MolPayDetails',
+            molpay_kbank: '#/components/schemas/MolPayDetails',
+            molpay_boost: '#/components/schemas/PaymentDetails',
+            billdesk_online: '#/components/schemas/BillDeskDetails',
+            billdesk_wallet: '#/components/schemas/BillDeskDetails',
+            wallet_IN: '#/components/schemas/PaymentDetails',
+            payu_IN_cashcard: '#/components/schemas/PaymentDetails',
+            payu_IN_nb: '#/components/schemas/PaymentDetails',
+            payu_IN_upi: '#/components/schemas/PayUUpiDetails',
+            pse_payulatam: '#/components/schemas/PseDetails',
+            upi_collect: '#/components/schemas/UpiCollectDetails',
+            upi_intent: '#/components/schemas/UpiIntentDetails',
+            upi_qr: '#/components/schemas/UpiQrDetails',
+            paytm: '#/components/schemas/PaymentDetails',
+            molpay_ebanking_VN: '#/components/schemas/PaymentDetails',
+            onlineBanking_PL: '#/components/schemas/GenericIssuerPaymentMethodDetails',
+            eps: '#/components/schemas/GenericIssuerPaymentMethodDetails',
+            paybybank: '#/components/schemas/PayByBankDetails',
+            paybybank_AIS_DD: '#/components/schemas/PayByBankAISDirectDebitDetails',
+            paybybank_ca: '#/components/schemas/PayByBankCADirectDebitDetails',
+            onlineBanking_SK: '#/components/schemas/GenericIssuerPaymentMethodDetails',
+            onlineBanking_CZ: '#/components/schemas/GenericIssuerPaymentMethodDetails',
+            openinvoice: '#/components/schemas/OpenInvoiceDetails',
+            afterpay_directdebit: '#/components/schemas/OpenInvoiceDetails',
+            atome_pos: '#/components/schemas/OpenInvoiceDetails',
+            doku_paymentmethods: '#/components/schemas/DokuDetails',
+            doku_atm_mandiri_va: '#/components/schemas/DokuDetails',
+            doku_briepay: '#/components/schemas/DokuDetails',
+            doku_mandiri_multipayment_lite: '#/components/schemas/DokuDetails',
+            doku_card: '#/components/schemas/DokuDetails',
+            doku_atm_mandiri_va_lite: '#/components/schemas/DokuDetails',
+            doku_bca_klikpay: '#/components/schemas/DokuDetails',
+            doku_mandiri_multipayment: '#/components/schemas/DokuDetails',
+            doku_mandiri_clickpay: '#/components/schemas/DokuDetails',
+            ebanking_FI: '#/components/schemas/EBankingFinlandDetails',
+            molpay_ebanking_MY: '#/components/schemas/PaymentDetails',
+            molpay_ebanking_direct_MY: '#/components/schemas/PaymentDetails',
+            swish: '#/components/schemas/PaymentDetails',
+            twint: '#/components/schemas/TwintDetails',
+            pix: '#/components/schemas/PixDetails',
+            paybybank_pix: '#/components/schemas/PixPayByBankDetails',
+            bizum: '#/components/schemas/PaymentDetails',
+            walley: '#/components/schemas/PaymentDetails',
+            walley_b2b: '#/components/schemas/PaymentDetails',
+            alma: '#/components/schemas/AlmaDetails',
+            ancv: '#/components/schemas/AncvDetails',
+            paypo: '#/components/schemas/PaymentDetails',
+            revolutpay: '#/components/schemas/StoredPaymentMethodDetails',
+            satispay: '#/components/schemas/PaymentDetails',
+            scalapay: '#/components/schemas/PaymentDetails',
+            scalapay_3x: '#/components/schemas/PaymentDetails',
+            scalapay_4x: '#/components/schemas/PaymentDetails',
+            riverty: '#/components/schemas/RivertyDetails',
+            riverty_installments: '#/components/schemas/RivertyDetails',
+            sepadirectdebit_riverty: '#/components/schemas/RivertyDetails',
+            payto: '#/components/schemas/PayToDetails',
+            directdebit_AU: '#/components/schemas/DirectDebitAuDetails',
+            molpay_fpx: '#/components/schemas/PaymentDetails',
+            payme: '#/components/schemas/PaymentDetails',
+            payme_pos: '#/components/schemas/PaymentDetails',
+            econtext_seven_eleven: '#/components/schemas/EcontextVoucherDetails',
+            econtext_online: '#/components/schemas/EcontextVoucherDetails',
+            econtext: '#/components/schemas/EcontextVoucherDetails',
+            econtext_stores: '#/components/schemas/EcontextVoucherDetails',
+            econtext_atm: '#/components/schemas/EcontextVoucherDetails',
+            konbini: '#/components/schemas/PaymentDetails',
+            dragonpay_ebanking: '#/components/schemas/DragonpayDetails',
+            dragonpay_otc_banking: '#/components/schemas/DragonpayDetails',
+            dragonpay_otc_non_banking: '#/components/schemas/DragonpayDetails',
+            dragonpay_otc_philippines: '#/components/schemas/DragonpayDetails',
+            directEbanking: '#/components/schemas/PaymentDetails',
+            directdebit_GB: '#/components/schemas/BacsDirectDebitDetails',
+            boletobancario: '#/components/schemas/PaymentDetails',
+            giftcard: '#/components/schemas/CardDetails',
+            paymaya_wallet: '#/components/schemas/StoredPaymentMethodDetails',
+            grabpay_SG: '#/components/schemas/StoredPaymentMethodDetails',
+            grabpay_MY: '#/components/schemas/StoredPaymentMethodDetails',
+            grabpay_TH: '#/components/schemas/StoredPaymentMethodDetails',
+            grabpay_ID: '#/components/schemas/StoredPaymentMethodDetails',
+            grabpay_VN: '#/components/schemas/StoredPaymentMethodDetails',
+            grabpay_PH: '#/components/schemas/StoredPaymentMethodDetails',
+            oxxo: '#/components/schemas/StoredPaymentMethodDetails',
+            blik: '#/components/schemas/BlikDetails',
+            gcash: '#/components/schemas/StoredPaymentMethodDetails',
+            dana: '#/components/schemas/StoredPaymentMethodDetails',
+            kakaopay: '#/components/schemas/StoredPaymentMethodDetails',
+            truemoney: '#/components/schemas/StoredPaymentMethodDetails',
+            mbway: '#/components/schemas/MbwayDetails',
+            alliancedata: '#/components/schemas/CardDetails',
+            paysafecard: '#/components/schemas/StoredPaymentMethodDetails',
+            cashticket: '#/components/schemas/PaymentDetails',
+            ikano: '#/components/schemas/PaymentDetails',
+            karenmillen: '#/components/schemas/PaymentDetails',
+            oasis: '#/components/schemas/PaymentDetails',
+            warehouse: '#/components/schemas/PaymentDetails',
+            primeiropay_boleto: '#/components/schemas/PaymentDetails',
+            mada: '#/components/schemas/PaymentDetails',
+            benefit: '#/components/schemas/PaymentDetails',
+            knet: '#/components/schemas/PaymentDetails',
+            omannet: '#/components/schemas/PaymentDetails',
+            gopay_wallet: '#/components/schemas/StoredPaymentMethodDetails',
+            kcp_naverpay: '#/components/schemas/PaymentDetails',
+            onlinebanking_IN: '#/components/schemas/GenericIssuerPaymentMethodDetails',
+            fawry: '#/components/schemas/PaymentDetails',
+            atome: '#/components/schemas/PaymentDetails',
+            naps: '#/components/schemas/PaymentDetails',
+            nordea: '#/components/schemas/PaymentDetails',
+            boletobancario_bradesco: '#/components/schemas/PaymentDetails',
+            boletobancario_itau: '#/components/schemas/PaymentDetails',
+            boletobancario_santander: '#/components/schemas/PaymentDetails',
+            boletobancario_bancodobrasil: '#/components/schemas/PaymentDetails',
+            boletobancario_hsbc: '#/components/schemas/PaymentDetails',
+            molpay_maybank2u: '#/components/schemas/PaymentDetails',
+            molpay_cimb: '#/components/schemas/PaymentDetails',
+            molpay_rhb: '#/components/schemas/PaymentDetails',
+            molpay_amb: '#/components/schemas/PaymentDetails',
+            molpay_hlb: '#/components/schemas/PaymentDetails',
+            molpay_affin_epg: '#/components/schemas/PaymentDetails',
+            molpay_bankislam: '#/components/schemas/PaymentDetails',
+            molpay_publicbank: '#/components/schemas/PaymentDetails',
+            fpx_agrobank: '#/components/schemas/PaymentDetails',
+            touchngo: '#/components/schemas/PaymentDetails',
+            maybank2u_mae: '#/components/schemas/PaymentDetails',
+            duitnow: '#/components/schemas/PaymentDetails',
+            promptpay: '#/components/schemas/PaymentDetails',
+            twint_pos: '#/components/schemas/PaymentDetails',
+            alipay_hk: '#/components/schemas/PaymentDetails',
+            alipay_hk_web: '#/components/schemas/PaymentDetails',
+            alipay_hk_wap: '#/components/schemas/PaymentDetails',
+            alipay_wap: '#/components/schemas/PaymentDetails',
+            balanceplatform: '#/components/schemas/PaymentDetails',
+            cashapp: '#/components/schemas/CashAppDetails',
+            card: '#/components/schemas/CardDetails',
+          },
+        },
+      }),
+    paymentValidations: PaymentValidationsSchema.exactOptional().openapi({
+      description: 'The object that you can use to enable payment validations for a transaction.',
+      'x-addedInVersion': '69',
+    }),
+    platformChargebackLogic: PlatformChargebackLogicSchema.exactOptional().openapi({
+      description:
+        'Defines how to book chargebacks when using [Adyen for Platforms](https://docs.adyen.com/adyen-for-platforms-model).',
+      'x-addedInVersion': '68',
+    }),
+    recurringExpiry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date after which no further authorisations shall be performed. Only for 3D Secure 2.',
+      }),
+    recurringFrequency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Minimum number of days between authorisations. Only for 3D Secure 2.',
+      }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines a recurring payment type. Required when creating a token to store payment details or using stored payment details.\nAllowed values:\n* `Subscription` – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* `CardOnFile` – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* `UnscheduledCardOnFile` – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or have variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.\n",
+        'x-addedInVersion': '32',
+      }),
+    redirectFromIssuerMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the redirect method (GET or POST) when redirecting back from the issuer.',
+        'x-addedInVersion': '32',
+      }),
+    redirectToIssuerMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Specifies the redirect method (GET or POST) when redirecting to the issuer.',
+        'x-addedInVersion': '32',
+      }),
+    reference: z
+      .string()
+      .max(80)
+      .openapi({
+        description:
+          'The reference to uniquely identify a payment. This reference is used in all communication with you about the payment status. To provide multiple references for one transaction, separate the reference values with the hyphen (`-`) character. We strongly recommend that you use a unique value for each transaction.\nMaximum length: 80 characters.',
+      }),
+    returnUrl: z
+      .string()
+      .max(1024)
+      .openapi({
+        description:
+          'The URL to return to in case of a redirection.\nThe format depends on the channel. \n* For web, include the protocol `http://` or `https://`. You can also include your own additional query parameters, for example, shopper ID or order reference number.\nExample: `https://your-company.example.com/checkout?shopperOrder=12xy`\n* For iOS, use the custom URL for your app. To know more about setting custom URL schemes, refer to the [Apple Developer documentation](https://developer.apple.com/documentation/uikit/inter-process_communication/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app).\nExample: `my-app://`\n* For Android, use a custom URL handled by an Activity on your app. You can configure it with an [intent filter](https://developer.android.com/guide/components/intents-filters).\nExample: `my-app://your.package.name`\n\nIf the URL to return to includes non-ASCII characters, like spaces or special letters, URL encode the value.\n> The URL must not include personally identifiable information (PII), for example name or email address.',
+      }),
+    riskData: RiskDataSchema.exactOptional().openapi({
+      description:
+        'Contains risk data, such as client-side data, used to identify risk for a transaction.',
+    }),
+    sessionValidity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time until when the session remains valid, in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format.\n\nFor example: 2020-07-18T15:42:40.428+01:00',
+      }),
+    shopperConversionId: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique ID to [connect the shopper to a single checkout session](https://docs.adyen.com/online-payments/checkout-settings#checkout-shopper-conversion-id) that uses multiple API requests. You can use this to get insights into conversion rates.',
+      }),
+    shopperEmail: z
+      .string()
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's email address, in valid [RFC-5322](https://www.rfc-editor.org/rfc/rfc5322) format. We recommend that you provide this data, because it is used in velocity fraud checks. > Required for Visa and JCB transactions that require 3D Secure 2 authentication if you did not include the `telephoneNumber`.",
+      }),
+    shopperIP: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's IP address. We recommend that you provide this data, as it is used in a number of risk checks (for instance, number of payment attempts or location-based checks).\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication for all web and mobile integrations, if you did not include the `shopperEmail`. For native mobile integrations, the field is required to support cases where authentication is routed to the redirect flow. This field is also mandatory for some merchants depending on your business model. For more information, [contact Support](https://www.adyen.help/hc/en-us/requests/new).",
+      }),
+    shopperInteraction: z
+      .enum(['Ecommerce', 'ContAuth', 'Moto', 'POS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the sales channel, through which the shopper gives their card details, and whether the shopper is a returning customer.\nFor the web service API, Adyen assumes Ecommerce shopper interaction by default.\n\nThis field has the following possible values:\n* `Ecommerce` - Online transactions where the cardholder is present (online). For better authorisation rates, we recommend sending the card security code (CSC) along with the request.\n* `ContAuth` - Card on file and/or subscription transactions, where the cardholder is known to the merchant (returning customer). If the shopper is present (online), you can supply also the CSC to improve authorisation (one-click payment).\n* `Moto` - Mail-order and telephone-order transactions where the shopper is in contact with the merchant via email or telephone.\n* `POS` - Point-of-sale transactions where the shopper is physically present to make a payment using a secure payment terminal.',
+      }),
+    shopperLocale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language for the payment. The value combines the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) language code with the [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes) country code. For example, **nl-NL**.\n\nWhen using Drop-in/Components, the specified language appears if your front-end global configuration does not set the `locale`.',
+      }),
+    shopperName: ShopperNameSchema.exactOptional().openapi({
+      description: "The shopper's full name.",
+    }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for recurring payments. \nYour reference to uniquely identify this shopper, for example user ID or account ID. Minimum length: 3 characters.\n> Your reference must not include personally identifiable information (PII), for example name or email address.',
+      }),
+    shopperStatement: z
+      .string()
+      .max(10000)
+      .exactOptional()
+      .openapi({
+        description:
+          "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
+      }),
+    shopperTaxInfo: ShopperTaxInfoSchema.exactOptional().openapi({
+      description: 'The tax info of the shopper',
+      'x-addedInVersion': '68',
+    }),
+    socialSecurityNumber: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({ description: "The shopper's social security number." }),
+    splits: z
+      .array(SplitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects specifying how to split a payment when using [Adyen for Platforms](https://docs.adyen.com/platforms/process-payments#providing-split-information), [Classic Platforms integration](https://docs.adyen.com/classic-platforms/processing-payments#providing-split-information), or [Issuing](https://docs.adyen.com/issuing/manage-funds#split).',
+        'x-addedInVersion': '40',
+      }),
+    store: z
+      .string()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.',
+      }),
+    storePaymentMethod: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When true and `shopperReference` is provided, the payment details will be stored for future [recurring payments](https://docs.adyen.com/online-payments/tokenization/#recurring-payment-types).',
+        'x-addedInVersion': '49',
+      }),
+    subMerchants: z
+      .array(SubMerchantInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This field contains additional information on the submerchant, who is onboarded to an acquirer through a payment facilitator or aggregator',
+      }),
+    surcharge: SurchargeSchema.exactOptional().openapi({
+      description:
+        'The [surcharge](https://docs.adyen.com/online-payments/surcharge/) amount to apply to the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). When you apply surcharge, include the surcharge in the `amount.value` field.\n\nReview our [Surcharge compliance guide](https://docs.adyen.com/development-resources/surcharge-compliance/) to learn about how to comply with regulatory requirements when applying surcharge.',
+    }),
+    telephoneNumber: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's telephone number.\n The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.\n> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.",
+      }),
+    thirdPartyTokenRedundancyInfo: ThirdPartyTokenRedundancyInfoSchema.exactOptional().openapi({
+      description:
+        'Configuration for creating redundant payment tokens with third-party token vaults using the Adyen Forward API. This feature requires Forward API webhook integration and pre-configured templates in your Adyen account. Contact your Adyen account manager for setup and availability.',
+    }),
+    threeDS2RequestData: ThreeDS2RequestFieldsSchema.exactOptional().openapi({
+      description:
+        'Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments) or [Classic integration](https://docs.adyen.com/classic-integration) documentation.',
+      'x-addedInVersion': '40',
+    }),
+    threeDSAuthenticationOnly: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorisation.Default: **false**.',
+        'x-addedInVersion': '50',
+        'x-deprecatedInVersion': '69',
+        'x-deprecatedMessage': 'Use `authenticationData.authenticationOnly` instead.',
+      }),
+    trustedShopper: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Set to true if the payment should be routed to a trusted MID.',
+        'x-addedInVersion': '40',
+      }),
+  })
+  .openapi({ required: ['amount', 'merchantAccount', 'paymentMethod', 'reference', 'returnUrl'] })
+  .openapi('PaymentRequest')
+
+const PaymentReversalRequestSchema = z
+  .strictObject({
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Your reference for the reversal request. Maximum length: 80 characters.',
+      }),
+  })
+  .openapi({ required: ['merchantAccount'] })
+  .openapi('PaymentReversalRequest')
+
+const PaymentReversalResponseSchema = z
+  .strictObject({
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    paymentPspReference: z
+      .string()
+      .openapi({
+        description:
+          'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment to reverse. ',
+      }),
+    pspReference: z
+      .string()
+      .openapi({
+        description: "Adyen's 16-character reference associated with the reversal request.",
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Your reference for the reversal request.' }),
+    status: z
+      .literal('received')
+      .openapi({
+        description: 'The status of your request. This will always have the value **received**.',
+      }),
+  })
+  .openapi({ required: ['merchantAccount', 'paymentPspReference', 'pspReference', 'status'] })
+  .openapi('PaymentReversalResponse')
+
+const TaxTotalSchema = z
+  .strictObject({ amount: AmountSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TaxTotal')
+
+const PaypalUpdateOrderRequestSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        'The updated final payment amount. This amount is the item total plus the shipping costs of the selected `deliveryMethod`.',
+    }),
+    deliveryAddress: DeliveryAddressSchema.exactOptional().openapi({
+      description: 'The delivery address for this order.',
+    }),
+    deliveryMethods: z
+      .array(DeliveryMethodSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of new delivery methods and the cost of each.' }),
+    discountAmount: AmountSchema.exactOptional().openapi({
+      description: 'The discount amount for this order.',
+    }),
+    paymentData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `paymentData` from the client side. This value changes every time you make a `/paypal/updateOrder` request.',
+      }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The original `pspReference` from the `/payments` response.' }),
+    sessionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The original `sessionId` from the `/sessions` response.' }),
+    shippingAmount: AmountSchema.exactOptional().openapi({
+      description: 'The shipping amount for this order.',
+    }),
+    taxTotal: TaxTotalSchema.exactOptional().openapi({
+      description: 'Total tax amount from the order. ',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaypalUpdateOrderRequest')
+
+const PaypalUpdateOrderResponseSchema = z
+  .strictObject({
+    paymentData: z.string().openapi({ description: 'The updated paymentData.' }),
+    status: z
+      .enum(['error', 'success'])
+      .openapi({
+        description:
+          'The status of the request. This indicates whether the order was successfully updated with PayPal.',
+      }),
+  })
+  .openapi({ required: ['paymentData', 'status'] })
+  .openapi('PaypalUpdateOrderResponse')
+
+const ResponseAdditionalData3DSecureSchema = z
+  .strictObject({
+    cardHolderInfo: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Information provided by the issuer to the cardholder. If this field is present, you need to display this information to the cardholder. ',
+      }),
+    cavv: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Cardholder Authentication Verification Value (CAVV) for the 3D Secure authentication session, as a Base64-encoded 20-byte array.',
+      }),
+    cavvAlgorithm: z.string().exactOptional().openapi({ description: 'The CAVV algorithm used.' }),
+    scaExemptionRequested: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Shows the [exemption type](https://docs.adyen.com/payments-fundamentals/psd2-sca-compliance-and-implementation-guide#specifypreferenceinyourapirequest) that Adyen requested for the payment.\n\n Possible values:\n* **lowValue** \n* **secureCorporate** \n* **trustedBeneficiary** \n* **transactionRiskAnalysis** ',
+      }),
+    'threeds2.cardEnrolled': z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether a card is enrolled for 3D Secure 2.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalData3DSecure')
+
+const ResponseAdditionalDataBillingAddressSchema = z
+  .strictObject({
+    'billingAddress.city': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The billing address city passed in the payment request.' }),
+    'billingAddress.country': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The billing address country passed in the payment request.\n\nExample: NL',
+      }),
+    'billingAddress.houseNumberOrName': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The billing address house number or name passed in the payment request.',
+      }),
+    'billingAddress.postalCode': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing address postal code passed in the payment request.\n\nExample: 1011 DJ',
+      }),
+    'billingAddress.stateOrProvince': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing address state or province passed in the payment request.\n\nExample: NH',
+      }),
+    'billingAddress.street': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The billing address street passed in the payment request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataBillingAddress')
+
+const ResponseAdditionalDataCardSchema = z
+  .strictObject({
+    cardAltID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is an ALT ID (alternate ID) mapped to the Card PAN.\n\n> Returned only in case of Ecommerce Card Payment in India',
+      }),
+    cardBin: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The first six digits of the card number.\n\nThis is the [Bank Identification Number (BIN)](https://docs.adyen.com/get-started-with-adyen/payment-glossary#bank-identification-number-bin) for card numbers with a six-digit BIN.\n\nExample: 521234',
+      }),
+    cardHolderName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The cardholder name passed in the payment request.' }),
+    cardIssuingBank: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The bank or the financial institution granting lines of credit through card association branded payment cards. This information can be included when available.',
+      }),
+    cardIssuingCountry: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The country where the card was issued.\n\nExample: US' }),
+    cardIssuingCurrency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The currency in which the card is issued, if this information is available. Provided as the currency code or currency number from the ISO-4217 standard. \n\nExample: USD',
+      }),
+    cardPaymentMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The card payment method used for the transaction.\n\nExample: amex',
+      }),
+    cardProductId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Card Product ID represents the type of card following card scheme product definitions and can be returned for Adyen Acquiring service level payments.\n\nExample values Visa:\n* **A** - Visa Traditional\n* **B** - Visa Traditional Rewards\n* **C** - Visa Signature\n* **D** - Visa Signature Preferred\n* **F** - Visa Classic\n\nExample values Mastercard:\n* **MCC** - Mastercard Card\n* **MCE** - Mastercard Electronic Card\n* **MCF** - Mastercard Corporate Fleet Card\n* **MCG** - Gold Mastercard Card\n* **MCH** - Mastercard Premium Charge\n* **MCI** - Mastercard Select Debit\n',
+      }),
+    cardSummary: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last four digits of a card number.\n\n> Returned only in case of a card payment.',
+      }),
+    issuerBin: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The first eight digits of the card number. Only returned if the card number is 16 digits or more.\n\nThis is the [Bank Identification Number (BIN)](https://docs.adyen.com/get-started-with-adyen/payment-glossary#bank-identification-number-bin) for card numbers with an eight-digit BIN.\n\nExample: 52123423',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataCard')
+
+const ResponseAdditionalDataCommonSchema = z
+  .strictObject({
+    acquirerAccountCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the Adyen acquirer account.\n\nExample: PayPalSandbox_TestAcquirer\n\n> Only relevant for PayPal transactions.',
+      }),
+    acquirerCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the acquirer processing the payment request.\n\nExample: TestPmmAcquirer',
+      }),
+    acquirerReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference number that can be used for reconciliation in case a non-Adyen acquirer is used for settlement.\n\nExample: 7C9N3FNBKT9',
+      }),
+    alias: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Adyen alias of the card.\n\nExample: H167852639363479' }),
+    aliasType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the card alias.\n\nExample: Default' }),
+    authCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Authorisation code:\n* When the payment is authorised successfully, this field holds the authorisation code for the payment.\n* When the payment is not authorised, this field is empty.\n\nExample: 58747',
+      }),
+    authorisationMid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Merchant ID known by the acquirer.' }),
+    authorisedAmountCurrency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The currency of the authorised amount, as a three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    authorisedAmountValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value of the amount authorised.\n\nThis amount is represented in minor units according to the [following table](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    avsResult: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The AVS result code of the payment, which provides information about the outcome of the AVS check.\n\nFor possible values, see [AVS](https://docs.adyen.com/risk-management/configure-standard-risk-rules/consistency-rules#billing-address-does-not-match-cardholder-address-avs).',
+      }),
+    avsResultRaw: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Raw AVS result received from the acquirer, where available.\n\nExample: D',
+      }),
+    bic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'BIC of a bank account.\n\nExample: TESTNL01\n\n> Only relevant for SEPA Direct Debit transactions.',
+      }),
+    coBrandedWith: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Includes the co-branded card information.' }),
+    cvcResult: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The result of CVC verification.', example: '1 Matches' }),
+    cvcResultRaw: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The raw result of CVC verification.', example: 'M' }),
+    dsTransID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Supported for 3D Secure 2. The unique transaction identifier assigned by the DS to identify a single transaction.',
+      }),
+    eci: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Electronic Commerce Indicator returned from the schemes for the 3DS payment session.\n\nExample: 02',
+      }),
+    expiryDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The expiry date on the card.\n\nExample: 6/2016\n\n> Returned only in case of a card payment.',
+      }),
+    extraCostsCurrency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The currency of the extra amount charged due to additional amounts set in the skin used in the HPP payment request.\n\nExample: EUR',
+      }),
+    extraCostsValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value of the extra amount charged due to additional amounts set in the skin used in the HPP payment request. The amount is in minor units.',
+      }),
+    'fraudCheck-[itemNr]-[FraudCheckname]': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fraud score due to a particular fraud check. The fraud check name is found in the key of the key-value pair.',
+      }),
+    fraudManualReview: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the payment is sent to manual review.' }),
+    fraudResultType: z
+      .enum(['AMBER', 'GREEN', 'RED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The fraud result properties of the payment. Possible values:\n* AMBER\n* GREEN\n* RED\n\n',
+      }),
+    fraudRiskLevel: z
+      .enum(['veryLow', 'low', 'medium', 'high', 'veryHigh'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The risk level of the transaction as classified by the [machine learning](https://docs.adyen.com/risk-management/configure-your-risk-profile/machine-learning-rules/) fraud risk rule. The risk level indicates the likelihood that a transaction will result in a fraudulent dispute. Possible values:\n* veryLow\n* low\n* medium\n* high\n* veryHigh\n\n',
+      }),
+    fundingSource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Information regarding the funding type of the card. The possible return values are:\n* CHARGE\n* CREDIT\n* DEBIT\n* PREPAID\n* PREPAID_RELOADABLE\n\n* PREPAID_NONRELOADABLE\n* DEFFERED_DEBIT\n\n> This functionality requires additional configuration on Adyen's end. To enable it, contact the Support Team.\n\nFor receiving this field in the notification, enable **Include Funding Source** in **Notifications** > **Additional settings**.",
+      }),
+    fundsAvailability: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates availability of funds.\n\nVisa:\n* "I" (fast funds are supported)\n* "N" (otherwise)\n\nMastercard:\n* "I" (product type is Prepaid or Debit, or issuing country is in CEE/HGEM list)\n* "N" (otherwise)\n\n> Returned when you verify a card BIN or estimate costs, and only if payoutEligible is "Y" or "D".',
+      }),
+    inferredRefusalReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Provides the more granular indication of why a transaction was refused. When a transaction fails with either "Refused", "Restricted Card", "Transaction Not Permitted", "Not supported" or "DeclinedNon Generic" refusalReason from the issuer, Adyen cross references its PSP-wide data for extra insight into the refusal reason. If an inferred refusal reason is available, the `inferredRefusalReason`, field is populated and the `refusalReason`, is set to "Not Supported".\n\nPossible values:\n\n* 3D Secure Mandated\n* Closed Account\n* ContAuth Not Supported\n* CVC Mandated\n* Ecommerce Not Allowed\n* Crossborder Not Supported\n* Card Updated\n\n* Low Authrate Bin\n* Non-reloadable prepaid card',
+      }),
+    isCardCommercial: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the card is used for business purposes only.' }),
+    issuerCountry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The issuing country of the card based on the BIN list that Adyen maintains.\n\nExample: JP',
+      }),
+    liabilityShift: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Boolean value indicating whether a liability shift was offered for this payment.',
+      }),
+    mcBankNetReferenceNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `mcBankNetReferenceNumber`, is a minimum of six characters and a maximum of nine characters long.\n\n> Contact Support Team to enable this field.',
+      }),
+    merchantAdviceCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Merchant Advice Code (MAC) can be returned by Mastercard issuers for refused payments. If present, the MAC contains information about why the payment failed, and whether it can be retried.\n\nFor more information see [Mastercard Merchant Advice Codes](https://docs.adyen.com/development-resources/raw-acquirer-responses#mastercard-merchant-advice-codes).',
+      }),
+    merchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference provided for the transaction.' }),
+    networkProcessingMode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the processing flow.\n\nPossible values:\n* **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction. \n* **auth**: If you have not [configured automatic capture for the transaction](https://docs.adyen.com/online-payments/capture#types-of-capture), you must manually capture the funds.',
+      }),
+    networkTxReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returned in the response if you are not tokenizing with Adyen and are using the Merchant-initiated transactions (MIT) framework from Mastercard or Visa.\n\nThis contains either the Mastercard Trace ID or the Visa Transaction ID.',
+      }),
+    ownerName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The owner name of a bank account.\n\nOnly relevant for SEPA Direct Debit transactions.',
+      }),
+    paymentAccountReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Payment Account Reference (PAR) value links a network token with the underlying primary account number (PAN). The PAR value consists of 29 uppercase alphanumeric characters.',
+      }),
+    paymentMethod: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The payment method used in the transaction.' }),
+    paymentMethodVariant: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Adyen sub-variant of the payment method used for the payment request.\n\nFor more information, refer to [PaymentMethodVariant](https://docs.adyen.com/development-resources/paymentmethodvariant).\n\nExample: mcpro',
+      }),
+    payoutEligible: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether a payout is eligible or not for this card.\n\nVisa:\n* "Y"\n* "N"\n\nMastercard:\n* "Y" (domestic and cross-border)\n\n* "D" (only domestic)\n* "N" (no MoneySend)\n* "U" (unknown)',
+      }),
+    realtimeAccountUpdaterStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The response code from the Real Time Account Updater service.\n\nPossible return values are:\n* CardChanged\n* CardExpiryChanged\n* CloseAccount\n\n* ContactCardAccountHolder',
+      }),
+    receiptFreeText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Message to be displayed on the terminal.' }),
+    'recurring.contractTypes': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The recurring contract types applicable to the transaction.',
+        'x-addedInVersion': '40',
+      }),
+    'recurring.firstPspReference': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The `pspReference`, of the first recurring payment that created the recurring detail.\n\nThis functionality requires additional configuration on Adyen's end. To enable it, contact the Support Team.",
+      }),
+    'recurring.recurringDetailReference': z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The reference that uniquely identifies the recurring transaction.',
+        'x-deprecatedInVersion': '68',
+        'x-deprecatedMessage': 'Use tokenization.storedPaymentMethodId instead.',
+      }),
+    'recurring.shopperReference': z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The provided reference of the shopper for a recurring transaction.',
+        'x-addedInVersion': '40',
+        'x-deprecatedInVersion': '68',
+        'x-deprecatedMessage': 'Use tokenization.shopperReference instead.',
+      }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .exactOptional()
+      .openapi({
+        description: 'The processing model used for the recurring transaction.',
+        'x-addedInVersion': '40',
+      }),
+    referred: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the payment is referred, this field is set to true.\n\nThis field is unavailable if the payment is referred and is usually not returned with ecommerce transactions.\n\nExample: true',
+      }),
+    refusalReasonRaw: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Raw refusal reason received from the acquirer, where available.\n\nExample: AUTHORISED',
+      }),
+    requestAmount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The amount of the payment request.' }),
+    requestCurrencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The currency of the payment request.' }),
+    shopperInteraction: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The shopper interaction type of the payment request.\n\nExample: Ecommerce',
+      }),
+    shopperReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The shopperReference passed in the payment request.\n\nExample: AdyenTestShopperXX',
+      }),
+    terminalId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The terminal ID used in a point-of-sale payment.\n\nExample: 06022622',
+      }),
+    threeDAuthenticated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Boolean value indicating whether 3DS authentication was completed on this payment.\n\nExample: true',
+      }),
+    threeDAuthenticatedResponse: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The raw 3DS authentication result from the card issuer.\n\nExample: N',
+      }),
+    threeDOffered: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Boolean value indicating whether 3DS was offered for this payment.\n\nExample: true',
+      }),
+    threeDOfferedResponse: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The raw enrollment result from the 3DS directory services of the card schemes.\n\nExample: Y',
+      }),
+    threeDSVersion: z.string().exactOptional().openapi({ description: 'The 3D Secure 2 version.' }),
+    'tokenization.shopperReference': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference for the shopper that you sent when tokenizing the payment details.',
+      }),
+    'tokenization.store.operationType': z
+      .enum(['created', 'updated', 'alreadyExisting'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The operation performed on the token. Possible values:\n\n* **created**: the token has been created.\n* **updated**: the existing token has been updated.\n* **alreadyExisting**: the details have already been stored.\n',
+      }),
+    'tokenization.storedPaymentMethodId': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The reference that uniquely identifies tokenized payment details.',
+      }),
+    transactionLinkId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returned in the response for Mastercard payments.\n\nThis contains the Mastercard Transaction Link Identifier (TLID).',
+      }),
+    visaTransactionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `visaTransactionId`, has a fixed length of 15 numeric characters.\n\n> Contact Support Team to enable this field.',
+      }),
+    xid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The 3DS transaction ID of the 3DS session sent in notifications. The value is Base64-encoded and is returned for transactions with directoryResponse 'N' or 'Y'. \n\nExample: ODgxNDc2MDg2MDExODk5MAAAAAA=",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataCommon')
+
+const ResponseAdditionalDataDomesticErrorSchema = z
+  .strictObject({
+    domesticRefusalReasonRaw: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason the transaction was declined, given by the local issuer. \nCurrently available for merchants in Japan.',
+      }),
+    domesticShopperAdvice: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The action the shopper should take, in a local language. \nCurrently available in Japanese, for merchants in Japan.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataDomesticError')
+
+const ResponseAdditionalDataInstallmentsSchema = z
+  .strictObject({
+    'installmentPaymentData.installmentType': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of installment. The value of `installmentType` should be **IssuerFinanced**.',
+      }),
+    'installmentPaymentData.option[itemNr].annualPercentageRate': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Annual interest rate.' }),
+    'installmentPaymentData.option[itemNr].firstInstallmentAmount': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'First Installment Amount in minor units.' }),
+    'installmentPaymentData.option[itemNr].installmentFee': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Installment fee amount in minor units.' }),
+    'installmentPaymentData.option[itemNr].interestRate': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Interest rate for the installment period.' }),
+    'installmentPaymentData.option[itemNr].maximumNumberOfInstallments': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Maximum number of installments possible for this payment.' }),
+    'installmentPaymentData.option[itemNr].minimumNumberOfInstallments': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Minimum number of installments possible for this payment.' }),
+    'installmentPaymentData.option[itemNr].numberOfInstallments': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total number of installments possible for this payment.' }),
+    'installmentPaymentData.option[itemNr].subsequentInstallmentAmount': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Subsequent Installment Amount in minor units.' }),
+    'installmentPaymentData.option[itemNr].totalAmountDue': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total amount in minor units.' }),
+    'installmentPaymentData.paymentOptions': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Possible values:\n* PayInInstallmentsOnly\n* PayInFullOnly\n* PayInFullOrInstallments',
+      }),
+    'installments.value': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of installments that the payment amount should be charged with.\n\nExample: 5\n> Only relevant for card payments in countries that support installments.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataInstallments')
+
+const ResponseAdditionalDataNetworkTokensSchema = z
+  .strictObject({
+    'networkToken.available': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether a network token is available for the specified card.',
+      }),
+    'networkToken.bin': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Bank Identification Number of a tokenized card, which is the first six digits of a card number.',
+      }),
+    'networkToken.tokenSummary': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last four digits of a network token.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataNetworkTokens')
+
+const ResponseAdditionalDataOpiSchema = z
+  .strictObject({
+    'opi.transToken': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returned in the response if you included `opi.includeTransToken: true` in an ecommerce payment request. This contains an Oracle Payment Interface token that you can store in your Oracle Opera database to identify tokenized ecommerce transactions. For more information and required settings, see [Oracle Opera](https://docs.adyen.com/plugins/oracle-opera#opi-token-ecommerce).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataOpi')
+
+const ResponseAdditionalDataSepaSchema = z
+  .strictObject({
+    'sepadirectdebit.dateOfSignature': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The transaction signature date.\n\nFormat: yyyy-MM-dd' }),
+    'sepadirectdebit.mandateId': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Its value corresponds to the pspReference value of the transaction.',
+      }),
+    'sepadirectdebit.sepadirectdebit.dueDate': z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The date that the the shopper's bank account is charged." }),
+    'sepadirectdebit.sequenceType': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field can take one of the following values:\n* OneOff: (OOFF) Direct debit instruction to initiate exactly one direct debit transaction.\n\n* First: (FRST) Initial/first collection in a series of direct debit instructions.\n* Recurring: (RCUR) Direct debit instruction to carry out regular direct debit transactions initiated by the creditor.\n* Final: (FNAL) Last/final collection in a series of direct debit instructions.\n\nExample: OOFF',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataSepa')
+
+const ResponseAdditionalDataSwishSchema = z
+  .strictObject({
+    'swish.payerAlias': z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A Swish shopper's telephone number." }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseAdditionalDataSwish')
+
+const ServiceErrorSchema = z
+  .strictObject({
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains additional information about the payment. Some data fields are included only if you select them first. Go to **Customer Area** > **Developers** > **Additional data**.',
+        'x-addedInVersion': '46',
+      }),
+    errorCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The error code mapped to the error message.' }),
+    errorType: z.string().exactOptional().openapi({ description: 'The category of the error.' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A short explanation of the issue.' }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The PSP reference of the payment.' }),
+    status: z.int32().exactOptional().openapi({ description: 'The HTTP response status.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ServiceError')
+
+const SessionResultResponseSchema = z
+  .strictObject({
+    additionalData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains additional information about the payment. Some fields are included only if you enable them. To enable these fields in your Customer Area, go to **Developers** > **Additional data**.',
+        'x-anyOf': [
+          { $ref: '#/components/schemas/ResponseAdditionalData3DSecure' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataBillingAddress' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCard' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataCommon' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataDomesticError' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataInstallments' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataNetworkTokens' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataOpi' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSepa' },
+          { $ref: '#/components/schemas/ResponseAdditionalDataSwish' },
+        ],
+      }),
+    id: z.string().exactOptional().openapi({ description: 'A unique identifier of the session.' }),
+    payments: z
+      .array(PaymentSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of all authorised payments done for this session.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique reference that you provided in the original `/sessions` request. This identifies the payment and is used in all communication with you about the payment status.',
+      }),
+    status: z
+      .enum(['active', 'canceled', 'completed', 'expired', 'paymentPending', 'refused'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The status of the session. The status included in the response doesn't get updated. Don't make the request again to check for payment status updates.\n\nPossible values:\n* **completed**: the shopper completed the payment, and the payment was authorized.\n* **paymentPending**: the shopper is in the process of making the payment. This applies to payment methods with an asynchronous flow, like voucher payments where the shopper completes the payment in a physical shop.\n* **refused**: the session has been refused, because of too many refused payment attempts. The shopper can no longer complete the payment with this session.\n* **canceled**: the shopper canceled the payment.\n* **expired**: the session expired. The shopper can no longer complete the payment with this session. By default, the session expires one hour after it is created.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SessionResultResponse')
+
+const StandalonePaymentCancelRequestSchema = z
+  .strictObject({
+    applicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).',
+    }),
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    paymentReference: z
+      .string()
+      .openapi({
+        description:
+          'The [`reference`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments__reqParam_reference) of the payment that you want to cancel.',
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Your reference for the cancel request. Maximum length: 80 characters.',
+      }),
+  })
+  .openapi({ required: ['merchantAccount', 'paymentReference'] })
+  .openapi('StandalonePaymentCancelRequest')
+
+const StandalonePaymentCancelResponseSchema = z
+  .strictObject({
+    merchantAccount: z
+      .string()
+      .openapi({ description: 'The merchant account that is used to process the payment.' }),
+    paymentReference: z
+      .string()
+      .openapi({
+        description:
+          'The [`reference`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments__reqParam_reference) of the payment to cancel.',
+      }),
+    pspReference: z
+      .string()
+      .openapi({
+        description: "Adyen's 16-character reference associated with the cancel request.",
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Your reference for the cancel request.' }),
+    status: z
+      .literal('received')
+      .openapi({
+        description: 'The status of your request. This will always have the value **received**.',
+      }),
+  })
+  .openapi({ required: ['merchantAccount', 'paymentReference', 'pspReference', 'status'] })
+  .openapi('StandalonePaymentCancelResponse')
+
+const StoredPaymentMethodRequestSchema = z
+  .strictObject({
+    merchantAccount: z
+      .string()
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    opi: OpiRequestSchema.exactOptional().openapi({
+      description: 'Configuration for Oracle Payment Interface (OPI) integrations.',
+      'x-addedInVersion': '71',
+    }),
+    paymentMethod: PaymentMethodToStoreSchema.openapi({
+      description: 'Contains the information required to store a payment method.',
+    }),
+    recurringProcessingModel: z
+      .enum(['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'])
+      .openapi({
+        description:
+          "Defines a recurring payment type. Required when creating a token to store payment details.\nAllowed values:\n* `Subscription` – A transaction for a fixed or variable amount, which follows a fixed schedule.\n* `CardOnFile` – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.\n* `UnscheduledCardOnFile` – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or have variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.\n",
+        'x-addedInVersion': '70',
+      }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The shopper's email address. We recommend that you provide this data, as it is used in velocity fraud checks.",
+      }),
+    shopperIP: z.string().exactOptional().openapi({ description: 'The IP address of a shopper.' }),
+    shopperReference: z
+      .string()
+      .openapi({
+        description: 'A unique identifier for the shopper (for example, user ID or account ID).',
+      }),
+  })
+  .openapi({
+    required: ['merchantAccount', 'paymentMethod', 'recurringProcessingModel', 'shopperReference'],
+  })
+  .openapi('StoredPaymentMethodRequest')
+
+const UpdatePaymentLinkRequestSchema = z
+  .strictObject({
+    status: z
+      .literal('expired')
+      .openapi({ description: 'Status of the payment link. Possible values:\n* **expired**' }),
+  })
+  .openapi({ required: ['status'] })
+  .openapi('UpdatePaymentLinkRequest')
+
+const UtilityRequestSchema = z
+  .strictObject({
+    originDomains: z
+      .array(z.string())
+      .openapi({ description: 'The list of origin domains, for which origin keys are requested.' }),
+  })
+  .openapi({ required: ['originDomains'] })
+  .openapi('UtilityRequest')
+
+const UtilityResponseSchema = z
+  .strictObject({
+    originKeys: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of origin keys for all requested domains. For each list item, the key is the domain and the value is the origin key.',
+        'x-addedInVersion': '1',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UtilityResponse')
+
+const CalculationTypeSchema = z.literal('LRS_TCS').openapi('CalculationType')
+
+const RemittancePurposeSchema = z
+  .enum(['TOUR_PROGRAMME', 'TRAVEL_NON_TOUR', 'EDUCATION', 'DIGITAL'])
+  .openapi('RemittancePurpose')
+
+const SublimitStatusSchema = z.enum(['EXCEEDED', 'NOT_EXCEEDED']).openapi('SublimitStatus')
+
+const LrsContextSchema = z
+  .object({
+    remittancePurpose: RemittancePurposeSchema.openapi({
+      description: 'The remittance category, for example TOUR_PROGRAMME or EDUCATION.',
+    }),
+    sublimitStatus: SublimitStatusSchema.openapi({
+      description: 'The status of the INR 1 million LRS sublimit, for example EXCEEDED.',
+    }),
+  })
+  .openapi({ required: ['remittancePurpose', 'sublimitStatus'] })
+  .openapi('LrsContext')
+
+const TaxCalculationContextSchema = z
+  .object({
+    calculationType: CalculationTypeSchema.openapi({
+      description: 'The type of calculation requested. Initially only LRS_TCS is supported.',
+    }),
+    lrs: LrsContextSchema.openapi({ description: 'India-specific LRS declarations.' }),
+    taxCountryCode: z
+      .string()
+      .min(1)
+      .openapi({
+        description: 'The country governing tax processing. Initially only IN is supported.',
+      }),
+  })
+  .openapi({ required: ['calculationType', 'lrs', 'taxCountryCode'] })
+  .openapi('TaxCalculationContext')
+
+const TaxableAmountSchema = z
+  .object({
+    currency: z
+      .string()
+      .regex(/^[A-Z]{3}$/)
+      .min(1)
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n).max(10000000000n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 0,
+        maximum: 10000000000,
+        description:
+          'The amount in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+  })
+  .openapi({ required: ['currency', 'value'] })
+  .openapi('TaxableAmount')
+
+const CalculateTaxRequestSchema = z
+  .object({
+    merchantAccount: z
+      .string()
+      .min(0)
+      .max(1000)
+      .openapi({ description: 'The merchant account identifier requesting the tax calculation.' }),
+    taxCalculationContext: TaxCalculationContextSchema.openapi({
+      description: 'The context used to calculate the tax.',
+    }),
+    taxableAmount: TaxableAmountSchema.openapi({
+      description: 'The amount on which Adyen calculates the tax.',
+    }),
+  })
+  .openapi({ required: ['merchantAccount', 'taxCalculationContext', 'taxableAmount'] })
+  .openapi('CalculateTaxRequest')
+
+const TaxAmountSchema = z
+  .object({
+    currency: z
+      .string()
+      .regex(/^[A-Z]{3}$/)
+      .min(1)
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 0,
+        description:
+          'The amount in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+  })
+  .openapi({ required: ['currency', 'value'] })
+  .openapi('TaxAmount')
+
+const TaxCalculationComponentSchema = z
+  .object({
+    taxAmount: TaxAmountSchema.exactOptional().openapi({
+      description: 'The calculated tax amount of this component.',
+    }),
+    type: CalculationTypeSchema.exactOptional().openapi({
+      description: 'The type of the calculated tax component, for example LRS_TCS.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('TaxCalculationComponent')
+
+const TaxCalculationSchema = z
+  .object({
+    merchantAccount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant account for which the calculation was made.' }),
+    taxCalculationContext: TaxCalculationContextSchema.exactOptional().openapi({
+      description: 'The tax country, calculation type, and LRS declarations accepted by Adyen.',
+    }),
+    taxCalculations: z
+      .array(TaxCalculationComponentSchema)
+      .exactOptional()
+      .openapi({ description: 'The individual tax components calculated by Adyen.' }),
+    taxableAmount: TaxAmountSchema.exactOptional().openapi({
+      description: 'The taxable amount accepted by Adyen.',
+    }),
+    totalAmount: TaxAmountSchema.exactOptional().openapi({
+      description:
+        'The taxable amount plus the calculated tax. Use this amount in /payments.amount.',
+    }),
+    totalTaxAmount: TaxAmountSchema.exactOptional().openapi({
+      description: 'The total tax amount calculated by Adyen.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('TaxCalculation')
+
+const CalculateTaxResponseSchema = z
+  .object({
+    taxCalculation: TaxCalculationSchema.exactOptional().openapi({
+      description:
+        'The canonical calculation accepted and produced by Adyen. Informational in the initial release.',
+    }),
+    taxCalculationReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique reference for this calculation attempt.' }),
+    taxCalculationToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The opaque, encrypted, and signed token that represents the complete canonical calculation. Required in /payments.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CalculateTaxResponse')
+
+const CheckoutErrorResponseEntitySchema = z
+  .object({
+    errorCode: z.string(),
+    errorType: z.string(),
+    message: z.string(),
+    pspReference: z.string().exactOptional(),
+    status: z.int32().exactOptional(),
+  })
+  .openapi({ required: ['errorCode', 'errorType', 'message'] })
+  .openapi('CheckoutErrorResponseEntity')
+
+const SessionAmountUpdateSchema = z
+  .object({
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+  })
+  .openapi({ required: ['currency', 'value'] })
+  .openapi('SessionAmountUpdate')
+
+const CheckoutSessionPatchSessionRequestSchema = z
+  .object({
+    amount: SessionAmountUpdateSchema.openapi({
+      description: 'The amount to update for the payment session.',
+    }),
+    payable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the session is payable. If the payment amount is final, set this to **true** to indicate that the session is payable, so that the shopper can proceed to submit the payment. When you set this to **true**, you can no longer update the session.\n\nIf you set this to **false**, you must make another request to update the session and set this to **true** before the shopper can submit the payment.\n',
+      }),
+    sessionData: z
+      .string()
+      .min(1)
+      .openapi({
+        description:
+          'The encoded payment session data from the `beforeSubmit` callback from [Drop-in](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow?platform=Web&integration=Drop-in#update-the-session-amount) or [the Component](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow?platform=Web&integration=Components#update-the-session-amount).',
+      }),
+  })
+  .openapi({ required: ['amount', 'sessionData'] })
+  .openapi('CheckoutSessionPatchSessionRequest')
+
+const CheckoutSessionPatchSessionResponseSchema = z
+  .object({ sessionData: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CheckoutSessionPatchSessionResponse')
+
+const ShopperIdPaymentMethodSchema = z
+  .object({
+    type: z
+      .string()
+      .regex(/payTo|upi_collect/)
+      .min(0)
+      .max(50),
+  })
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        payTo: '#/components/schemas/PayToPaymentMethod',
+        upi_collect: '#/components/schemas/UPIPaymentMethod',
+      },
+    },
+    required: ['type'],
+  })
+  .openapi('ShopperIdPaymentMethod')
+
+const PayToPaymentMethodSchema = ShopperIdPaymentMethodSchema.and(
+  z
+    .object({ shopperReference: z.string().min(0).max(256).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ required: ['type'] })
+  .openapi('PayToPaymentMethod')
+
+const ResultSchema = z.enum(['VALID', 'INVALID', 'UNKNOWN', 'NOT_REQUIRED']).openapi('Result')
+
+const TaxIdentificationTypeSchema = z.literal('PAN').openapi('TaxIdentificationType')
+
+const ShopperTaxIdentificationSchema = z
+  .object({
+    taxCountryCode: z
+      .string()
+      .min(1)
+      .openapi({
+        description:
+          "The country governing the shopper's tax processing. Initially only IN is supported.",
+      }),
+    taxIdentificationNumber: z
+      .string()
+      .min(1)
+      .openapi({ description: 'The tax identification number submitted for verification.' }),
+    taxIdentificationType: TaxIdentificationTypeSchema.openapi({
+      description: 'The type of the tax identification. Initially only PAN is supported.',
+    }),
+  })
+  .openapi({ required: ['taxCountryCode', 'taxIdentificationNumber', 'taxIdentificationType'] })
+  .openapi('ShopperTaxIdentification')
+
+const UPIPaymentMethodSchema = ShopperIdPaymentMethodSchema.and(
+  z
+    .object({ virtualPaymentAddress: z.string().min(1).max(256).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ required: ['type'] })
+  .openapi('UPIPaymentMethod')
+
+const ValidateShopperIdRequestSchema = z
+  .object({
+    merchantAccount: z
+      .string()
+      .min(0)
+      .max(1000)
+      .openapi({
+        description:
+          'The merchant account identifier, with which you want to process the transaction.',
+      }),
+    paymentMethod: ShopperIdPaymentMethodSchema.openapi({ description: 'paymentMethod' }),
+    shopperEmail: z.string().min(0).max(300).exactOptional(),
+    shopperIP: z.string().min(0).max(15).exactOptional(),
+    shopperReference: z.string().min(0).max(256).exactOptional(),
+  })
+  .openapi({ required: ['merchantAccount', 'paymentMethod'] })
+  .openapi('ValidateShopperIdRequest')
+
+const ValidateShopperIdResponseSchema = z
+  .object({
+    reason: z.string().exactOptional().openapi({ description: 'Reason for the result.' }),
+    result: ResultSchema.exactOptional().openapi({
+      description: 'Result of the validation. Ex: valid, invalid, unknown',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ValidateShopperIdResponse')
+
+const VerifiedShopperTaxIdentificationSchema = z
+  .object({
+    maskedName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The masked name of the tax identification holder.' }),
+    taxCountryCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The country governing the shopper's tax processing." }),
+    taxIdentificationType: TaxIdentificationTypeSchema.exactOptional().openapi({
+      description: 'The type of the verified tax identification.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('VerifiedShopperTaxIdentification')
+
+const VerifyShopperTaxIdentificationRequestSchema = z
+  .object({
+    merchantAccount: z
+      .string()
+      .min(0)
+      .max(1000)
+      .openapi({ description: 'The merchant account identifier requesting the tax verification.' }),
+    shopperReference: z
+      .string()
+      .min(3)
+      .max(256)
+      .openapi({
+        description:
+          'Your reference to uniquely identify this shopper, for example user ID or account ID. Used to bind the verification to the shopper context.\n\n> Your reference must not include personally identifiable information (PII), for example name or email address.',
+      }),
+    shopperTaxIdentification: ShopperTaxIdentificationSchema.openapi({
+      description: 'The shopper tax identification to verify.',
+    }),
+  })
+  .openapi({ required: ['merchantAccount', 'shopperReference', 'shopperTaxIdentification'] })
+  .openapi('VerifyShopperTaxIdentificationRequest')
+
+const VerifyShopperTaxIdentificationResponseSchema = z
+  .object({
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The human-readable reason for the unsuccessful result.' }),
+    reasonCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reason code for the unsuccessful result, when available.' }),
+    result: ResultSchema.exactOptional().openapi({
+      description: 'The verification result, for example valid or invalid.',
+    }),
+    taxVerificationReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique reference for the verification attempt.' }),
+    verifiedShopperTaxIdentification:
+      VerifiedShopperTaxIdentificationSchema.exactOptional().openapi({
+        description: 'The masked representation of the verified tax identification.',
+      }),
+    verifiedShopperTaxIdentificationToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The opaque, encrypted, and signed token representing the successful verification. Required in /payments.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VerifyShopperTaxIdentificationResponse')
+
+const IdempotencyKeyParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'Idempotency-Key',
+      in: 'header',
+      description:
+        'A unique identifier for the message with a maximum of 64 characters (we recommend a UUID).',
+      required: false,
+      style: 'simple',
+      explode: false,
+      schema: { type: 'string' },
+      example: '37ca9c97-d1d1-4c62-89e8-706891a563ed',
+    },
+  })
+
+const Generic_400Example = {
+  summary: 'Response code 400. Bad request.',
+  value: {
+    status: 400,
+    errorCode: '702',
+    message: 'Unexpected input: ", expected: }',
+    errorType: 'validation',
+  },
+}
+
+const Generic_401Example = {
+  summary: 'Response code 401. Unauthorized.',
+  value: {
+    status: 401,
+    errorCode: '000',
+    message: 'HTTP Status Response - Unauthorized',
+    errorType: 'security',
+  },
+}
+
+const Generic_403Example = {
+  summary: 'Response code 403. Forbidden.',
+  value: {
+    status: 403,
+    errorCode: '901',
+    message: 'Invalid Merchant Account',
+    errorType: 'security',
+    pspReference: '881611827877203B',
+  },
+}
+
+const Generic_422Example = {
+  summary: 'Response code 422. Unprocessable entity.',
+  value: {
+    status: 422,
+    errorCode: '14_030',
+    message: 'Return URL is missing.',
+    errorType: 'validation',
+    pspReference: '8816118280275544',
+  },
+}
+
+const Generic_500Example = {
+  summary: 'Response code 500. Internal server error.',
+  value: {
+    status: 500,
+    errorCode: '905',
+    message: 'Payment details are not supported',
+    errorType: 'configuration',
+    pspReference: '8516091485743033',
+  },
+}
+
+const GetPaymentLinksLinkIdBasic_200Example = {
+  summary: 'Payment link details',
+  value: {
+    amount: { currency: 'EUR', value: 8700 },
+    countryCode: 'NL',
+    expiresAt: '2021-04-08T14:06:39Z',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    reference: 'shopper-reference-ekvL83',
+    shopperLocale: 'hu-HU',
+    shopperReference: 'shopper-reference-LZfdWZ',
+    status: 'active',
+    url: 'https://test.adyen.link/PL61C53A8B97E6915A',
+    id: 'PL61C53A8B97E6915A',
+  },
+}
+
+const GetSessionsSessionIdSuccess_200Example = {
+  summary: 'Response code: 200 - Success',
+  description: 'The status of the session with the specified ID.',
+  value: { id: 'CS12345678', status: 'completed' },
+}
+
+const GetStoredPaymentMethodsSuccess_200Example = {
+  summary: 'List of stored payment methods for specified shopper',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    storedPaymentMethods: [
+      {
+        brand: 'visa',
+        expiryMonth: '10',
+        expiryYear: '30',
+        holderName: 'John Smith',
+        id: '7219687191761347',
+        issuerName: 'ISSUER_NAME',
+        lastFour: '1111',
+        name: 'VISA',
+        shopperEmail: 'john.smith@example.com',
+        shopperReference: 'YOUR_SHOPPER_REFERENCE',
+        supportedRecurringProcessingModels: ['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'],
+        type: 'scheme',
+      },
+    ],
+  },
+}
+
+const PatchPaymentLinksLinkIdBasicExample = {
+  summary: 'Update the status of a payment link',
+  value: { status: 'expired' },
+}
+
+const PatchPaymentLinksLinkIdBasic_200Example = {
+  summary: 'Payment link status updated',
+  value: {
+    amount: { currency: 'EUR', value: 8700 },
+    countryCode: 'NL',
+    expiresAt: '2021-04-08T14:06:39Z',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    reference: 'shopper-reference-ekvL83',
+    shopperLocale: 'hu-HU',
+    shopperReference: 'shopper-reference-LZfdWZ',
+    status: 'expired',
+    url: 'https://test.adyen.link/PL61C53A8B97E6915A',
+    id: 'PL61C53A8B97E6915A',
+  },
+}
+
+const PostApplePaySessionsBasicExample = {
+  summary: 'Get payment session for Apple Pay',
+  value: {
+    displayName: 'YOUR_MERCHANT_NAME',
+    domainName: 'YOUR_DOMAIN_NAME',
+    merchantIdentifier: 'YOUR_MERCHANT_ID',
+  },
+}
+
+const PostApplePaySessionsBasic_200Example = {
+  summary: 'Payment session data for Apple Pay',
+  value: { data: 'eyJ2Z...' },
+}
+
+const PostCancelsCancelWithOwnReferenceExample = {
+  summary: 'Cancel a payment using your own reference',
+  description: 'Example cancel request with your own reference',
+  value: {
+    paymentReference: 'YOUR_UNIQUE_REFERENCE_FOR_THE_PAYMENT',
+    reference: 'YOUR_UNIQUE_REFERENCE_FOR_THE_CANCELLATION',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostCancelsCancelWithOwnReference_201Example = {
+  summary: 'Payment cancellation requested',
+  description: 'Example response when a payment cancellation was requested',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    paymentReference: 'YOUR_UNIQUE_REFERENCE_FOR_THE_PAYMENT',
+    reference: 'YOUR_UNIQUE_REFERENCE_FOR_THE_CANCELLATION',
+    pspReference: '993617894906488A',
+    status: 'received',
+  },
+}
+
+const PostCardDetailsBasicExample = {
+  summary: 'Get a list of brands on a card with the unencrypted card number',
+  description:
+    'Example request for getting a list of brands on a card using the first 6 digits of the card number.',
+  value: { merchantAccount: 'YOUR_MERCHANT_ACCOUNT', cardNumber: '411111' },
+}
+
+const PostCardDetailsBasic_200Example = {
+  summary: 'List of brands on the card',
+  description: 'Example response when the card is co-branded.',
+  value: {
+    brands: [
+      { type: 'visa', supported: true },
+      { type: 'cartebancaire', supported: true },
+    ],
+    fundingSource: 'CREDIT',
+    isCardCommercial: false,
+    issuingCountryCode: 'FR',
+  },
+}
+
+const PostCardDetailsSupportedBrandsExample = {
+  summary: 'Get a list of brands on a card specifying your supported card brands',
+  description:
+    'Example request for getting a list of brands on a card using the first 6 digits of the card number and including the card brands you support.',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    cardNumber: '411111',
+    supportedBrands: ['visa', 'mc', 'amex'],
+  },
+}
+
+const PostCardDetailsSupportedBrands_200Example = {
+  summary: 'List of brands on the card when you specify your supported card brands',
+  description: 'Example response when the card is co-branded, and you only support Visa.',
+  value: {
+    brands: [
+      { type: 'visa', supported: true },
+      { type: 'cartebancaire', supported: false },
+    ],
+    fundingSource: 'CREDIT',
+    isCardCommercial: false,
+    issuingCountryCode: 'FR',
+  },
+}
+
+const PostDonationCampaignsDonationCampaignsExample = {
+  summary: 'Get a list of active donation campaigns',
+  value: { merchantAccount: 'YOUR_MERCHANT_ACCOUNT', currency: 'EUR' },
+}
+
+const PostDonationCampaignsDonationCampaigns_200Example = {
+  summary: 'List of active donation campaigns',
+  value: {
+    donationCampaigns: [
+      {
+        id: 'DONATION_CAMPAIGN_ID',
+        campaignName: 'DONATION_CAMPAIGN_NAME',
+        donation: {
+          currency: 'EUR',
+          type: 'fixedAmounts',
+          donationType: 'fixedAmounts',
+          values: [100, 200, 300],
+        },
+        nonprofitName: 'NONPROFIT_NAME',
+        causeName: 'NONPROFIT_CAUSE',
+        nonprofitDescription: 'NONPROFIT_DESCRIPTION.',
+        nonprofitUrl: 'NONPROFIT_WEBSITE_URL',
+        logoUrl: 'NONPROFIT_LOGO_URL',
+        bannerUrl: 'NONPROFIT_BANNER_URL',
+        termsAndConditionsUrl: 'NONPROFIT_TERMS_AND_CONDITIONS_URL',
+      },
+      {
+        id: 'DONATION_CAMPAIGN_ID',
+        campaignName: 'DONATION_CAMPAIGN_NAME',
+        donation: {
+          currency: 'EUR',
+          type: 'roundup',
+          donationType: 'roundup',
+          maxRoundupAmount: 100,
+        },
+        nonprofitName: 'NONPROFIT_NAME',
+        causeName: 'NONPROFIT_CAUSE',
+        nonprofitDescription: 'NONPROFIT_DESCRIPTION.',
+        nonprofitUrl: 'NONPROFIT_WEBSITE_URL',
+        logoUrl: 'NONPROFIT_LOGO_URL',
+        bannerUrl: 'NONPROFIT_BANNER_URL',
+        termsAndConditionsUrl: 'NONPROFIT_TERMS_AND_CONDITIONS_URL',
+      },
+    ],
+  },
+}
+
+const PostDonationsDonationsCampaignsExample = {
+  summary: 'Make a donation to a campaign',
+  value: {
+    amount: { currency: 'EUR', value: 1000 },
+    reference: 'YOUR_DONATION_REFERENCE',
+    paymentMethod: { type: 'scheme' },
+    donationToken: 'YOUR_DONATION_TOKEN',
+    donationOriginalPspReference: '991559660454807J',
+    donationCampaignId: 'DONATION_CAMPAIGN_ID',
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostDonationsDonationsCampaigns_200Example = {
+  summary: 'Successful donation to a campaign',
+  value: {
+    id: 'UNIQUE_RESOURCE_ID',
+    status: 'completed',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    amount: { currency: 'EUR', value: 1000 },
+    reference: 'YOUR_DONATION_REFERENCE',
+    payment: {
+      pspReference: '8535762347980628',
+      resultCode: 'Authorised',
+      amount: { currency: 'EUR', value: 1000 },
+      merchantReference: 'YOUR_DONATION_REFERENCE',
+    },
+  },
+}
+
+const PostForwardForwardCardExample = {
+  summary: 'Forward stored payment details',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    storedPaymentMethodId: 'M5N7TQ4TG5PFWR50',
+    baseUrl: 'http://thirdparty.example.com',
+    request: {
+      httpMethod: 'post',
+      urlSuffix: '/payments',
+      credentials: 'YOUR_CREDENTIALS_FOR_THE_THIRD_PARTY',
+      headers: { Authorization: 'Basic {{credentials}}' },
+      body: '{"amount":{"value":100,"currency":"USD"},"paymentMethod":{"creditCard":{"holderName":"{{holderName}}","number":"{{number}}","expiryMonth":"{{expiryMonth}}","expiryYear":"{{expiryYear}}"}}}',
+    },
+  },
+}
+
+const PostForwardForwardCard_200Example = {
+  summary: 'Outcome of the forward request',
+  value: {
+    storedPaymentMethodId: 'M5N7TQ4TG5PFWR50',
+    pspReference: 'XB7XNCQ8HXSKGK82',
+    response: {
+      status: 200,
+      headers: { 'thirdparty-version': '2023-10-16' },
+      body: '{"success": "ok","data": {"tokenizeCreditCard": {"paymentMethod": {"id": "PAYMENT_METHOD_ID"}}}}',
+    },
+  },
+}
+
+const PostOrdersBasicExample = {
+  summary: 'Create an order',
+  value: {
+    reference: 'YOUR_ORDER_REFERENCE',
+    amount: { value: 2500, currency: 'EUR' },
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostOrdersBasic_200Example = {
+  summary: 'Order created',
+  value: {
+    pspReference: '8616178914061985',
+    resultCode: 'Success',
+    expiresAt: '2021-04-09T14:16:46Z',
+    orderData:
+      'Ab02b4c0!BQABAgCxXvknCldOcRElkxY8Za7iyym4Wv8aDzyNwmj/3nh4G6YtwnUIJHaK62NlN4oIsACdkn1FEjBwKlheG40jvXcYGBk4KFV5WvOhTVCpv/KXnkrI7xQv/u2lE7U4wA+HPB6K4Zj2L8xO/ogZi+zGZqFs5m16jmkH7ku6FzXygXLNuUCuOlmlXSZhdkHHTNVQSq1MELDK9OL74y532ETRPTCNxx8WlEiZB+LDqYrPvH9GgigtD5kw8Do45jfFfG72kWBEgfYqp4mbUmBB9ebXFYZKfF0qvW1x7A2Y9+/MFlTIdXfKW484bJeDBCTTrmKGXIj+U4r5imr5fXTyNLcrxyUqwrb9jg+5B4qg1XB6Cgj5UPlSI4O62I7v0s5TTj69dzLwUQRxSQbwLrZVGYavXzeVKI54BVLRV3d/+BbPvTqnTo34UhfZbPlOx9F2eyaS0ZXdOKnHw89uGUgxUpLsMqnbRysi/pxpZaulel+0mExb68wVxb/7Teob5eRG4gp7cfZVZs6tLXOYWL+W0TqIlsa3hWsfM0LeaovzkoDtW/pK5JABXwMtLig9tsxoEh9ONYtIzkXC21LZ8ebiuSIMaPizjF8yca+QxrCZalQsu6uKnBz/mm8nnsflaGU2QS5zcoxk1RudL1Bl36LM9UZGPpFEYWiYA4sUsnNLw7peJjWCGhDepnwMv4TlgsEtoDtz1T54AEp7ImtleSI6IkFGMEFBQTEwM0NBNTM3RUFFRDg3QzI0REQ1MzkwOUI4MEE3OEE5MjNFMzgyM0Q2OERBQ0M5NEI5RkY4MzA1REMifRslOdmfgUHTXl66WPD9xoW2whIeRx/jR++2MqNE16x6zQy+KtDN8/h60crZwmqkjVTQYqQlsYSYDHSIyb4wnnay16/5il1yS7vN3UCLaTXjYBIAyyx6Wr9j4P3CI/etB+PpviHoESC4mV6ZN4whMDQyziQ8s230GtboXbh42qND7rk9phySBogowQlXrtF+l2n2F46nyif0owEgik5fGARfvjZtY2w23s30KMLNwU4gWSvX4H6RMVS8TfZH2fKfNrwB3tZUXwYkELs5ntaHysswq5Mn5aq2BKAMHu/Rh/wureMSI73Qi0avjrzWCwzt3JH4wnzErMnOZwSdgA==',
+    reference: 'shopper-reference-ekvL83',
+    remainingAmount: { currency: 'EUR', value: 2500 },
+    amount: { currency: 'EUR', value: 300 },
+  },
+}
+
+const PostOrdersCancelBasicExample = {
+  summary: 'Cancel an order',
+  value: {
+    order: { pspReference: '8815517812932012', orderData: '823fh892f8f18f4...148f13f9f3f' },
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostOrdersCancelBasic_200Example = {
+  summary: 'Order cancelled',
+  value: { pspReference: '8816178914079738', resultCode: 'Received' },
+}
+
+const PostOriginKeysBasicExample = {
+  summary: 'Get origin keys',
+  value: {
+    originDomains: [
+      'https://www.your-domain1.com',
+      'https://www.your-domain2.com',
+      'https://www.your-domain3.com',
+    ],
+  },
+}
+
+const PostOriginKeysBasic_200Example = {
+  summary: "Example response for request 'basic'",
+  value: {
+    originKeys: {
+      'https://www.your-domain1.com':
+        'pub.v2.8116178901076090.aHR0cHM6Ly93d3cueW91ci1kb21haW4xLmNvbQ.pvbYlrXz0ICP4kwMJXDGDLVMqALhwXr1MSRjT-fkhvw',
+      'https://www.your-domain3.com':
+        'pub.v2.8116178901076090.aHR0cHM6Ly93d3cueW91ci1kb21haW4zLmNvbQ.FrTpVz7_RzAywKasM0kXCRoMfoMkKIKaxjFymRGORIc',
+      'https://www.your-domain2.com':
+        'pub.v2.8116178901076090.aHR0cHM6Ly93d3cueW91ci1kb21haW4yLmNvbQ.LdN9kvJ35fYFFiBSJA4idMnwwxJ5_yXpeNS__Ap5wkg',
+    },
+  },
+}
+
+const PostPaymentLinksBasicExample = {
+  summary: 'Create a payment link',
+  value: {
+    reference: 'YOUR_ORDER_NUMBER',
+    amount: { value: 1250, currency: 'BRL' },
+    countryCode: 'BR',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    shopperEmail: 'test@email.com',
+    shopperLocale: 'pt-BR',
+    billingAddress: {
+      street: 'Roque Petroni Jr',
+      postalCode: '59000060',
+      city: 'São Paulo',
+      houseNumberOrName: '999',
+      country: 'BR',
+      stateOrProvince: 'SP',
+    },
+    deliveryAddress: {
+      street: 'Roque Petroni Jr',
+      postalCode: '59000060',
+      city: 'São Paulo',
+      houseNumberOrName: '999',
+      country: 'BR',
+      stateOrProvince: 'SP',
+    },
+  },
+}
+
+const PostPaymentLinksBasic_201Example = {
+  summary: 'Payment link created',
+  value: {
+    amount: { currency: 'BRL', value: 1250 },
+    billingAddress: {
+      city: 'São Paulo',
+      country: 'BR',
+      houseNumberOrName: '999',
+      postalCode: '59000060',
+      stateOrProvince: 'SP',
+      street: 'Roque Petroni Jr',
+    },
+    countryCode: 'BR',
+    deliveryAddress: {
+      city: 'São Paulo',
+      country: 'BR',
+      houseNumberOrName: '999',
+      postalCode: '59000060',
+      stateOrProvince: 'SP',
+      street: 'Roque Petroni Jr',
+    },
+    expiresAt: '2022-10-28T09:16:22Z',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    reference: 'YOUR_ORDER_NUMBER',
+    reusable: false,
+    shopperEmail: 'test@email.com',
+    shopperLocale: 'pt-BR',
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    id: 'PLE83C39B0A0DE0C1E',
+    status: 'active',
+    url: 'https://test.adyen.link/PLE83C39B0A0DE0C1E',
+  },
+}
+
+const PostPaymentMethodsBalanceBasicExample = {
+  summary: 'Get gift card balance specifying amount of 10 EUR',
+  value: {
+    paymentMethod: { type: 'givex', number: '4126491073027401', cvc: '737' },
+    amount: { currency: 'EUR', value: 1000 },
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentMethodsBalanceBasic_200Example = {
+  summary: 'Gift card balance greater than amount specified in request',
+  value: {
+    pspReference: 'KHQC5N7G84BLNK43',
+    resultCode: 'Success',
+    balance: { currency: 'EUR', value: 5000 },
+  },
+}
+
+const PostPaymentMethodsBalanceNotEnoughExample = {
+  summary: 'Get gift card balance specifying amount of 100 EUR',
+  value: {
+    paymentMethod: { type: 'givex', number: '4126491073027401', cvc: '737' },
+    amount: { currency: 'EUR', value: 10000 },
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentMethodsBalanceNotEnough_200Example = {
+  summary: 'Gift card balance lower than amount specified in request',
+  value: {
+    pspReference: 'FKSPNCQ8HXSKGK82',
+    resultCode: 'NotEnoughBalance',
+    balance: { currency: 'EUR', value: 5000 },
+  },
+}
+
+const PostPaymentMethodsBasicExample = {
+  summary: 'Get available payment methods',
+  value: { merchantAccount: 'YOUR_MERCHANT_ACCOUNT' },
+}
+
+const PostPaymentMethodsBasic_200Example = {
+  summary: 'List of available payment methods',
+  value: {
+    paymentMethods: [
+      { name: 'ACH Direct Debit', type: 'ach' },
+      { name: 'Adyen Voucher', type: 'adyen_test_voucher' },
+      { name: 'AfterPay Invoice', type: 'afterpay_default' },
+      { name: 'AfterPay DirectDebit', type: 'afterpay_directdebit' },
+      { name: 'Afterpay', type: 'afterpaytouch' },
+      { name: 'Cards', type: 'scheme' },
+      { name: 'AliPay', type: 'alipay' },
+      { name: 'AliPay HK', type: 'alipay_hk' },
+      { name: 'AliPay', type: 'alipay_wap' },
+      { name: 'Android Pay', type: 'androidpay' },
+      { name: 'Apple Pay', type: 'applepay' },
+      { name: 'Credit Card via AsiaPay', type: 'asiapay' },
+      { name: 'China UnionPay', type: 'asiapay_unionpay' },
+      { name: 'Baby Gift Card', type: 'babygiftcard' },
+      { name: 'Baloto', type: 'baloto' },
+      { name: 'BancNet', type: 'bancnet' },
+      { name: 'Bank Transfer (BG)', type: 'bankTransfer_BG' },
+      { name: 'Bank Transfer (CH)', type: 'bankTransfer_CH' },
+      { name: 'Bank Transfer (DE)', type: 'bankTransfer_DE' },
+      { name: 'Bank Transfer (FI)', type: 'bankTransfer_FI' },
+      { name: 'Bank Transfer (GB)', type: 'bankTransfer_GB' },
+      { name: 'Bank Transfer (HU)', type: 'bankTransfer_HU' },
+      { name: 'SEPA Bank Transfer', type: 'bankTransfer_IBAN' },
+      { name: 'Bank Transfer (IE)', type: 'bankTransfer_IE' },
+      { name: 'Electronic Bank Transfer (MX)', type: 'bankTransfer_MX_linked' },
+      { name: 'Bank Transfer (MX)', type: 'bankTransfer_MX_offline' },
+      { name: 'Bank Transfer (NL)', type: 'bankTransfer_NL' },
+      { name: 'Bank Transfer (PL)', type: 'bankTransfer_PL' },
+      { name: 'Bank Transfer (SE)', type: 'bankTransfer_SE' },
+      { name: 'Bank Transfer (US)', type: 'bankTransfer_US' },
+      { name: 'Payconiq by Bancontact', type: 'bcmc_mobile' },
+      { name: 'Bijenkorf Cadeaucard', type: 'bijcadeaucard' },
+      { name: '99Bill', type: 'bill99' },
+      { name: 'Online Banking India', type: 'billdesk_online' },
+      { name: 'UPI', type: 'billdesk_upi' },
+      { name: 'Wallets India', type: 'billdesk_wallet' },
+      { name: 'Blik', type: 'blik' },
+      { name: 'Bloemen Giftcard', type: 'bloemengiftcard' },
+      { name: 'Boekenbon Giftcard', type: 'boekenbon' },
+      { name: 'Boleto', type: 'boleto' },
+      { name: 'Boleto Bancario', type: 'boletobancario_santander' },
+      { name: 'Bradesco', type: 'bradesco' },
+      { name: 'Cash-Ticket', type: 'cashticket' },
+      { name: 'CashU', type: 'cashu' },
+      { name: 'CCAvenue', type: 'ccavenue' },
+      { name: 'Mula Checkout', type: 'cellulant' },
+      { name: 'Chasin Giftcard', type: 'chasingiftcard' },
+      { name: 'Clearpay', type: 'clearpay' },
+      { name: 'ClickandBuy', type: 'clickandbuy' },
+      { name: 'Paiement en 3 fois par Cartes Bancaires', type: 'cofinoga_3xcb' },
+      { name: 'Costes Giftcard', type: 'costesgiftcard' },
+      { name: 'custom_settlement', type: 'custom_settlement' },
+      { name: 'DANA', type: 'dana' },
+      { name: 'DineroMail', type: 'dineromail' },
+      { name: 'Online bank transfer.', type: 'directEbanking' },
+      { name: 'Direct Debit Brazil - Banco do Brazil', type: 'directdebit_BR_bancodobrasil' },
+      { name: 'Direct Debit Brazil - Bradesco', type: 'directdebit_BR_bradesco' },
+      { name: 'Direct Debit Brazil - Caixa Economica Federal', type: 'directdebit_BR_caixa' },
+      { name: 'Direct Debit Brazil - HSBC', type: 'directdebit_BR_hsbc' },
+      { name: 'Direct Debit Brazil - Itau', type: 'directdebit_BR_itau' },
+      { name: 'Direct Debit Brazil - Santander', type: 'directdebit_BR_santander' },
+      { name: 'BACS Direct Debit', type: 'directdebit_GB' },
+      { name: 'Alfamart', type: 'doku_alfamart' },
+      { name: 'BCA Bank Transfer', type: 'doku_bca_va' },
+      { name: 'BNI VA', type: 'doku_bni_va' },
+      { name: 'BRI VA', type: 'doku_bri_va' },
+      { name: 'CIMB VA', type: 'doku_cimb_va' },
+      { name: 'Danamon VA', type: 'doku_danamon_va' },
+      { name: 'Indomaret', type: 'doku_indomaret' },
+      { name: 'Mandiri VA', type: 'doku_mandiri_va' },
+      { name: 'OVO', type: 'doku_ovo' },
+      { name: 'Bank Transfer', type: 'doku_permata_lite_atm' },
+      { name: 'DOKU wallet', type: 'doku_wallet' },
+      { name: 'Dragonpay Prepaid Credits', type: 'dragonpay_credits' },
+      { name: 'Online Banking', type: 'dragonpay_ebanking' },
+      { name: 'GCash', type: 'dragonpay_gcash' },
+      { name: 'Over The Counter Banks', type: 'dragonpay_otc_banking' },
+      { name: 'OTC non-Bank via Dragonpay', type: 'dragonpay_otc_non_banking' },
+      { name: 'Convenience Stores', type: 'dragonpay_otc_philippines' },
+      { name: '7/11', type: 'dragonpay_seveneleven' },
+      { name: 'eagleeye_voucher', type: 'eagleeye_voucher' },
+      { name: 'Finnish E-Banking', type: 'ebanking_FI' },
+      { name: 'Pay-easy ATM', type: 'econtext_atm' },
+      { name: 'Online Banking', type: 'econtext_online' },
+      { name: '7-Eleven', type: 'econtext_seven_eleven' },
+      { name: 'Convenience Stores', type: 'econtext_stores' },
+      { name: 'eft_directdebit_CA', type: 'eft_directdebit_CA' },
+      { name: 'Lastschrift (ELV)', type: 'elv' },
+      { name: 'Bank Payment', type: 'entercash' },
+      { name: 'Nationale Entertainment Card', type: 'entertainmentcard' },
+      { name: 'EPS', type: 'eps' },
+      { name: 'Expert Cadeaukaart', type: 'expertgiftcard' },
+      { name: '3x Oney', type: 'facilypay_3x' },
+      { name: '4x Oney', type: 'facilypay_4x' },
+      { name: 'Fashioncheque', type: 'fashioncheque' },
+      { name: 'Fawry', type: 'fawry' },
+      { name: 'FijnCadeau', type: 'fijncadeau' },
+      { name: 'Fleurop Bloemenbon', type: 'fleuropbloemenbon' },
+      { name: 'Fonq Giftcard', type: 'fonqgiftcard' },
+      { name: 'Gall & Gall', type: 'gallgall' },
+      { name: 'GCash', type: 'gcash' },
+      { name: 'Generic GiftCard', type: 'genericgiftcard' },
+      { name: 'GiftFor2', type: 'giftfor2card' },
+      { name: 'Givex', type: 'givex' },
+      { name: 'Globe GCash', type: 'globegcash' },
+      { name: 'Goldsmiths Card', type: 'goldsmithscard' },
+      { name: 'GoPay Wallet', type: 'gopay_wallet' },
+      { name: 'OVO', type: 'grabpay_ID' },
+      { name: 'GrabPay', type: 'grabpay_PH' },
+      { name: 'GrabPay', type: 'grabpay_SG' },
+      { name: 'Hallmark Card', type: 'hallmarkcard' },
+      { name: 'HDFC', type: 'hdfc' },
+      { name: 'Hunkemoller Member Card', type: 'hmclub' },
+      { name: 'Hunkemoller Lingerie Card', type: 'hmlingerie' },
+      { name: 'iDEAL', type: 'ideal' },
+      { name: 'igive', type: 'igive' },
+      { name: 'Korean Account Transfer (IniPay)', type: 'inicisIniPay_accounttransfer' },
+      { name: 'Korean Credit Cards (IniPay)', type: 'inicisIniPay_creditcard' },
+      { name: 'Korean Mobile Phone (IniPay)', type: 'inicisIniPay_mobilephone' },
+      { name: 'Korean Virtual Account (IniPay)', type: 'inicisIniPay_virtualaccount' },
+      { name: 'Korean Account Transfer (Mobile)', type: 'inicisMobile_accounttransfer' },
+      { name: 'Korean Credit Cards (Mobile)', type: 'inicisMobile_creditcard' },
+      { name: 'Korean Mobile Phone (Mobile)', type: 'inicisMobile_mobilephone' },
+      { name: 'Korean Virtual Account (Mobile)', type: 'inicisMobile_virtualaccount' },
+      { name: 'Korean Credit Cards', type: 'inicis_creditcard' },
+      { name: 'Interac® Online', type: 'interac' },
+      { name: 'Instant EFT', type: 'ipay' },
+      { name: 'iPay88', type: 'ipay88' },
+      { name: 'isracard', type: 'isracard' },
+      { name: 'Phone Payment', type: 'ivr' },
+      { name: 'Landline phone', type: 'ivrLandline' },
+      { name: 'Mobile phone', type: 'ivrMobile' },
+      { name: 'Kado Wereld', type: 'kadowereld' },
+      { name: 'KakaoPay', type: 'kakaopay' },
+      { name: 'Karen Millen Card', type: 'karenmillen' },
+      { name: 'Karen Millen GiftCard', type: 'karenmillengiftcard' },
+      { name: 'Bank Transfer', type: 'kcp_banktransfer' },
+      { name: 'Korea–issued cards', type: 'kcp_creditcard' },
+      { name: 'PayCo', type: 'kcp_payco' },
+      { name: 'Naver Pay', type: 'kcp_naverpay' },
+      { name: 'Virtual Account via KCP', type: 'kcp_va' },
+      { name: 'Pay later with Klarna.', type: 'klarna' },
+      { name: 'Pay over time with Klarna.', type: 'klarna_account' },
+      { name: 'Buy Now, Pay Later with Billie', type: 'klarna_b2b' },
+      { name: 'Pay now with Klarna.', type: 'klarna_paynow' },
+      { name: 'Leisure Card', type: 'leisurecard' },
+      { name: 'China Credit Card', type: 'lianlianpay_creditcard' },
+      { name: 'China Debit Card', type: 'lianlianpay_debitcard' },
+      { name: 'China Online Banking - Credit Card', type: 'lianlianpay_ebanking_credit' },
+      { name: 'China Online Banking - Debit Card', type: 'lianlianpay_ebanking_debit' },
+      { name: 'China Online Banking - Enterprise', type: 'lianlianpay_ebanking_enterprise' },
+      { name: 'Loods5 Cadeaukaart', type: 'loods5giftcard' },
+      { name: 'Loods5 Tegoedbon', type: 'loods5prepaidcard' },
+      { name: 'Love2Shop GiftCard', type: 'love2shop' },
+      { name: 'mada', type: 'mada' },
+      { name: 'Mappin & Webb Card', type: 'mappinwebbcard' },
+      { name: 'MB WAY', type: 'mbway' },
+      { name: 'Amazon Pay', type: 'amazonpay' },
+      { name: 'Mercado Pago', type: 'mercadopago' },
+      { name: 'MobilePay', type: 'mobilepay' },
+      { name: 'AliPay via Razer Merchant Services', type: 'molpay_alipay' },
+      { name: '7-Eleven', type: 'molpay_cash' },
+      { name: 'CIMB Virtual Account', type: 'molpay_cimb_va' },
+      { name: 'Malaysia E-Banking via Razer Merchant Services', type: 'molpay_ebanking_MY' },
+      { name: 'Vietnam E-Banking', type: 'molpay_ebanking_VN' },
+      { name: 'Malaysia E-Banking', type: 'molpay_ebanking_fpx_MY' },
+      { name: 'eNETS Debit', type: 'molpay_enetsd' },
+      { name: 'epay', type: 'molpay_epay' },
+      { name: 'Esapay', type: 'molpay_esapay' },
+      { name: 'MyClear FPX', type: 'molpay_fpx' },
+      { name: 'Maybank2u', type: 'molpay_maybank2u' },
+      { name: 'Nganluong', type: 'molpay_nganluong' },
+      { name: 'Convenience Stores Thailand', type: 'molpay_paysbuy' },
+      { name: 'MOLPoints', type: 'molpay_points' },
+      { name: 'RHB Now', type: 'molpay_rhb' },
+      { name: 'SAM by SingPost', type: 'molpay_singpost' },
+      { name: 'MOLWallet', type: 'molpay_wallet' },
+      { name: 'MoMo ATM', type: 'momo_atm' },
+      { name: 'Momo Wallet', type: 'momo_wallet' },
+      { name: 'Moneybookers', type: 'moneybookers' },
+      { name: 'Multibanco', type: 'multibanco' },
+      { name: 'De Nationale Musicalcard', type: 'musicalcard' },
+      { name: 'Nationale Bioscoopbon', type: 'nationalebioscoopbon' },
+      { name: 'Nationale Tuinbon', type: 'nationaletuinbon' },
+      { name: 'Nationale Verwen Cadeaubon', type: 'nationaleverwencadeaubon' },
+      { name: 'BankAxess', type: 'netaxept_bankaxess' },
+      { name: 'NETELLER', type: 'neteller' },
+      { name: 'Onebip', type: 'onebip' },
+      { name: 'One Two Three', type: 'onetwothree' },
+      { name: 'Online Banking PL', type: 'onlineBanking_PL' },
+      { name: 'Online banking', type: 'openbanking_UK' },
+      { name: 'Oxxo', type: 'oxxo' },
+      { name: 'Pathe Giftcard', type: 'pathegiftcard' },
+      { name: 'PayBright', type: 'paybright' },
+      { name: 'Maya Wallet', type: 'paymaya_wallet' },
+      { name: 'PayPal', type: 'paypal' },
+      { name: 'Paysafecard', type: 'paysafecard' },
+      { name: 'Payshop', type: 'payshop' },
+      { name: 'PayD AMT via Paythru', type: 'paythru_amt' },
+      { name: 'EFT via Paythru', type: 'paythru_eft' },
+      { name: 'PayTM', type: 'paytm' },
+      { name: 'PayU UPI', type: 'payu_IN_upi' },
+      { name: 'EFT Pro via PayU', type: 'payu_ZA_eftpro' },
+      { name: 'Google Pay', type: 'paywithgoogle' },
+      { name: 'pix', type: 'pix' },
+      { name: 'Plastix', type: 'plastix' },
+      { name: 'Pluim', type: 'pluimgiftcard' },
+      { name: 'Podium Card', type: 'podiumcard' },
+      { name: 'POLi', type: 'poli' },
+      { name: 'PPS', type: 'pps' },
+      { name: 'Primera Cadeaukaart', type: 'primeracadeaucard' },
+      { name: 'Illicado Gift Card', type: 'prosodie_illicado' },
+      { name: 'PSE', type: 'pse' },
+      { name: 'Qiwi Wallet', type: 'qiwiwallet' },
+      { name: 'RatePay Invoice', type: 'ratepay' },
+      { name: 'RatePay Direct Debit', type: 'ratepay_directdebit' },
+      { name: 'Rituals Giftcard', type: 'rituals' },
+      { name: 'Rob Peetoom Giftcard', type: 'robpeetoomgiftcard' },
+      { name: 'SafetyPay', type: 'safetypay' },
+      { name: 'SafetyPay Cash', type: 'safetypay_cash' },
+      { name: 'Shoes&Accessories Cadeau', type: 'sagiftcard' },
+      { name: 'Score Giftcard', type: 'scoregiftcard' },
+      { name: 'SEB Direktbetalning', type: 'sebdirectpayment' },
+      { name: 'SEPA Direct Debit', type: 'sepadirectdebit' },
+      { name: '7-Eleven', type: 'seveneleven' },
+      { name: 'Premium SMS', type: 'sms' },
+      { name: 'SVS', type: 'svs' },
+      { name: 'Swish', type: 'swish' },
+      { name: 'TCS Test GiftCard', type: 'tcstestgiftcard' },
+      { name: 'TenPay', type: 'tenpay' },
+      { name: 'The Sting Giftcard', type: 'thestinggiftcard' },
+      { name: 'TrueMoney', type: 'truemoney' },
+      { name: 'Trustly', type: 'trustly' },
+      { name: 'Online Banking by Trustpay', type: 'trustpay' },
+      { name: 'TWINT', type: 'twint' },
+      { name: 'Ukash', type: 'ukash' },
+      { name: 'UnionPay', type: 'unionpay' },
+      { name: 'UPI Collect', type: 'upi_collect' },
+      { name: 'Valuelink', type: 'valuelink' },
+      { name: 'V&D Cadeaukaart', type: 'vdcadeaucard' },
+      { name: 'Vipps', type: 'vipps' },
+      { name: 'Visa Checkout', type: 'visacheckout' },
+      { name: 'VVV Cadeaubon', type: 'vvvcadeaubon' },
+      { name: 'VVV Giftcard', type: 'vvvgiftcard' },
+      { name: 'Webshop Giftcard', type: 'webshopgiftcard' },
+      { name: 'WeChat Pay', type: 'wechatpayMiniProgram' },
+      { name: 'WeChat Pay', type: 'wechatpayQR' },
+      { name: 'WeChat Pay', type: 'wechatpayWeb' },
+      { name: 'WE Fashion Giftcard', type: 'wefashiongiftcard' },
+      { name: 'Western Union', type: 'westernunion' },
+      { name: 'Winkel Cheque', type: 'winkelcheque' },
+      { name: 'WOS Card', type: 'woscard' },
+      { name: 'Alfa-Click', type: 'yandex_alfaclick' },
+      { name: 'Pay using bank card', type: 'yandex_bank_card' },
+      { name: 'Cash terminals', type: 'yandex_cash' },
+      { name: 'Pay using installments', type: 'yandex_installments' },
+      { name: 'YooMoney', type: 'yandex_money' },
+      { name: 'Promsvyazbank', type: 'yandex_promsvyazbank' },
+      { name: 'SberPay', type: 'yandex_sberbank' },
+      { name: 'WebMoney', type: 'yandex_webmoney' },
+      { name: 'Your Gift', type: 'yourgift' },
+      { name: 'Zip', type: 'zip' },
+    ],
+  },
+}
+
+const PostPaymentMethodsFilteredExample = {
+  summary: 'Get payment methods based on the country and amount',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    countryCode: 'NL',
+    shopperLocale: 'nl-NL',
+    amount: { currency: 'EUR', value: 1000 },
+  },
+}
+
+const PostPaymentMethodsFiltered_200Example = {
+  summary: 'List of available payment methods, based on the specified country and amount',
+  value: {
+    paymentMethods: [
+      { name: 'iDEAL', type: 'ideal' },
+      { name: 'Hitelkártya', type: 'scheme' },
+      { name: 'PayPal', type: 'paypal' },
+      { name: 'AfterPay Invoice', type: 'afterpay_default' },
+      { name: 'Pay later with Klarna.', type: 'klarna' },
+      { name: 'SEPA Direct Debit', type: 'sepadirectdebit' },
+      { name: 'Paysafecard', type: 'paysafecard' },
+      { name: 'Bijenkorf Cadeaucard', type: 'bijcadeaucard' },
+      { name: 'Fonq Giftcard', type: 'fonqgiftcard' },
+      { name: 'Bank Transfer (NL)', type: 'bankTransfer_NL' },
+      { name: 'Pathe Giftcard', type: 'pathegiftcard' },
+      { name: 'VVV Giftcard', type: 'vvvgiftcard' },
+      { name: 'Podium Card', type: 'podiumcard' },
+      { name: 'RatePay Direct Debit', type: 'ratepay_directdebit' },
+      { name: 'Rituals Giftcard', type: 'rituals' },
+      { name: 'Hunkemoller Lingerie Card', type: 'hmlingerie' },
+      { name: 'Primera Cadeaukaart', type: 'primeracadeaucard' },
+      { name: 'Fashioncheque', type: 'fashioncheque' },
+      { name: 'NETELLER', type: 'neteller' },
+      { name: 'Adyen Voucher', type: 'adyen_test_voucher' },
+      { name: 'AfterPay B2B', type: 'afterpay_b2b' },
+      { name: 'AfterPay DirectDebit', type: 'afterpay_directdebit' },
+      { name: 'AliPay', type: 'alipay' },
+      { name: 'AliPay', type: 'alipay_wap' },
+      { name: 'Android Pay', type: 'androidpay' },
+      { name: 'Apple Pay', type: 'applepay' },
+      { name: 'Baby Gift Card', type: 'babygiftcard' },
+      { name: 'SEPA Bank Transfer', type: 'bankTransfer_IBAN' },
+      { name: 'Bloemen Giftcard', type: 'bloemengiftcard' },
+      { name: 'Boekenbon Giftcard', type: 'boekenbon' },
+      { name: 'Cash-Ticket', type: 'cashticket' },
+      { name: 'Chasin Giftcard', type: 'chasingiftcard' },
+      { name: 'ClickandBuy', type: 'clickandbuy' },
+      { name: 'Costes Giftcard', type: 'costesgiftcard' },
+      { name: 'custom_settlement', type: 'custom_settlement' },
+      { name: 'eft_directdebit_CA', type: 'eft_directdebit_CA' },
+      { name: 'Nationale Entertainment Card', type: 'entertainmentcard' },
+      { name: 'Expert Cadeaukaart', type: 'expertgiftcard' },
+      { name: 'FijnCadeau', type: 'fijncadeau' },
+      { name: 'Fleurop Bloemenbon', type: 'fleuropbloemenbon' },
+      { name: 'Gall & Gall', type: 'gallgall' },
+      { name: 'Generic GiftCard', type: 'genericgiftcard' },
+      { name: 'GiftFor2', type: 'giftfor2card' },
+      { name: 'Givex', type: 'givex' },
+      { name: 'Goldsmiths Card', type: 'goldsmithscard' },
+      { name: 'Hunkemoller Member Card', type: 'hmclub' },
+      { name: 'Phone Payment', type: 'ivr' },
+      { name: 'Landline phone', type: 'ivrLandline' },
+      { name: 'Mobile phone', type: 'ivrMobile' },
+      { name: 'Kado Wereld', type: 'kadowereld' },
+      { name: 'Karen Millen GiftCard', type: 'karenmillengiftcard' },
+      { name: 'Leisure Card', type: 'leisurecard' },
+      { name: 'Loods5 Cadeaukaart', type: 'loods5giftcard' },
+      { name: 'Loods5 Tegoedbon', type: 'loods5prepaidcard' },
+      { name: 'Amazon Pay', type: 'amazonpay' },
+      { name: 'MOLPoints', type: 'molpay_points' },
+      { name: 'Moneybookers', type: 'moneybookers' },
+      { name: 'De Nationale Musicalcard', type: 'musicalcard' },
+      { name: 'Nationale Bioscoopbon', type: 'nationalebioscoopbon' },
+      { name: 'Nationale Tuinbon', type: 'nationaletuinbon' },
+      { name: 'Nationale Verwen Cadeaubon', type: 'nationaleverwencadeaubon' },
+      { name: 'Onebip', type: 'onebip' },
+      { name: 'Google Pay', type: 'paywithgoogle' },
+      { name: 'Plastix', type: 'plastix' },
+      { name: 'Pluim', type: 'pluimgiftcard' },
+      { name: 'Illicado Gift Card', type: 'prosodie_illicado' },
+      { name: 'RatePay Invoice', type: 'ratepay' },
+      { name: 'Rob Peetoom Giftcard', type: 'robpeetoomgiftcard' },
+      { name: 'Shoes&Accessories Cadeau', type: 'sagiftcard' },
+      { name: 'Score Giftcard', type: 'scoregiftcard' },
+      { name: 'Premium SMS', type: 'sms' },
+      { name: 'SVS', type: 'svs' },
+      { name: 'TCS Test GiftCard', type: 'tcstestgiftcard' },
+      { name: 'The Sting Giftcard', type: 'thestinggiftcard' },
+      { name: 'Ukash', type: 'ukash' },
+      { name: 'UnionPay', type: 'unionpay' },
+      { name: 'Valuelink', type: 'valuelink' },
+      { name: 'V&D Cadeaukaart', type: 'vdcadeaucard' },
+      { name: 'Visa Checkout', type: 'visacheckout' },
+      { name: 'VVV Cadeaubon', type: 'vvvcadeaubon' },
+      { name: 'Webshop Giftcard', type: 'webshopgiftcard' },
+      { name: 'WE Fashion Giftcard', type: 'wefashiongiftcard' },
+      { name: 'Western Union', type: 'westernunion' },
+      { name: 'Winkel Cheque', type: 'winkelcheque' },
+      { name: 'Your Gift', type: 'yourgift' },
+    ],
+  },
+}
+
+const PostPaymentMethodsIncludeStoredExample = {
+  summary: 'Get payment methods including stored card details',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    countryCode: 'NL',
+    amount: { currency: 'EUR', value: 1000 },
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+  },
+}
+
+const PostPaymentMethodsIncludeStored_200Example = {
+  summary: 'Example response that includes stored payment methods',
+  value: {
+    paymentMethods: [
+      { name: 'iDEAL', type: 'ideal' },
+      { name: 'Cards', type: 'scheme' },
+      { name: 'PayPal', type: 'paypal' },
+      { name: 'AfterPay Invoice', type: 'afterpay_default' },
+      { name: 'Pay later with Klarna.', type: 'klarna' },
+      { name: 'SEPA Direct Debit', type: 'sepadirectdebit' },
+      { name: 'Paysafecard', type: 'paysafecard' },
+      { name: 'Bijenkorf Cadeaucard', type: 'bijcadeaucard' },
+      { name: 'Fonq Giftcard', type: 'fonqgiftcard' },
+      { name: 'Bank Transfer (NL)', type: 'bankTransfer_NL' },
+      { name: 'Pathe Giftcard', type: 'pathegiftcard' },
+      { name: 'VVV Giftcard', type: 'vvvgiftcard' },
+      { name: 'Podium Card', type: 'podiumcard' },
+      { name: 'RatePay Direct Debit', type: 'ratepay_directdebit' },
+      { name: 'Rituals Giftcard', type: 'rituals' },
+      { name: 'Hunkemoller Lingerie Card', type: 'hmlingerie' },
+      { name: 'Primera Cadeaukaart', type: 'primeracadeaucard' },
+      { name: 'Fashioncheque', type: 'fashioncheque' },
+      { name: 'NETELLER', type: 'neteller' },
+      { name: 'Adyen Voucher', type: 'adyen_test_voucher' },
+      { name: 'AfterPay B2B', type: 'afterpay_b2b' },
+      { name: 'AfterPay DirectDebit', type: 'afterpay_directdebit' },
+      { name: 'AliPay', type: 'alipay' },
+      { name: 'AliPay', type: 'alipay_wap' },
+      { name: 'Android Pay', type: 'androidpay' },
+      { name: 'Apple Pay', type: 'applepay' },
+      { name: 'Baby Gift Card', type: 'babygiftcard' },
+      { name: 'SEPA Bank Transfer', type: 'bankTransfer_IBAN' },
+      { name: 'Bloemen Giftcard', type: 'bloemengiftcard' },
+      { name: 'Boekenbon Giftcard', type: 'boekenbon' },
+      { name: 'Cash-Ticket', type: 'cashticket' },
+      { name: 'Chasin Giftcard', type: 'chasingiftcard' },
+      { name: 'ClickandBuy', type: 'clickandbuy' },
+      { name: 'Costes Giftcard', type: 'costesgiftcard' },
+      { name: 'custom_settlement', type: 'custom_settlement' },
+      { name: 'eft_directdebit_CA', type: 'eft_directdebit_CA' },
+      { name: 'Nationale Entertainment Card', type: 'entertainmentcard' },
+      { name: 'Expert Cadeaukaart', type: 'expertgiftcard' },
+      { name: 'FijnCadeau', type: 'fijncadeau' },
+      { name: 'Fleurop Bloemenbon', type: 'fleuropbloemenbon' },
+      { name: 'Gall & Gall', type: 'gallgall' },
+      { name: 'Generic GiftCard', type: 'genericgiftcard' },
+      { name: 'GiftFor2', type: 'giftfor2card' },
+      { name: 'Givex', type: 'givex' },
+      { name: 'Goldsmiths Card', type: 'goldsmithscard' },
+      { name: 'Hunkemoller Member Card', type: 'hmclub' },
+      { name: 'Phone Payment', type: 'ivr' },
+      { name: 'Landline phone', type: 'ivrLandline' },
+      { name: 'Mobile phone', type: 'ivrMobile' },
+      { name: 'Kado Wereld', type: 'kadowereld' },
+      { name: 'Karen Millen GiftCard', type: 'karenmillengiftcard' },
+      { name: 'Leisure Card', type: 'leisurecard' },
+      { name: 'Loods5 Cadeaukaart', type: 'loods5giftcard' },
+      { name: 'Loods5 Tegoedbon', type: 'loods5prepaidcard' },
+      { name: 'Amazon Pay', type: 'amazonpay' },
+      { name: 'MOLPoints', type: 'molpay_points' },
+      { name: 'Moneybookers', type: 'moneybookers' },
+      { name: 'De Nationale Musicalcard', type: 'musicalcard' },
+      { name: 'Nationale Bioscoopbon', type: 'nationalebioscoopbon' },
+      { name: 'Nationale Tuinbon', type: 'nationaletuinbon' },
+      { name: 'Nationale Verwen Cadeaubon', type: 'nationaleverwencadeaubon' },
+      { name: 'Onebip', type: 'onebip' },
+      { name: 'Google Pay', type: 'paywithgoogle' },
+      { name: 'Plastix', type: 'plastix' },
+      { name: 'Pluim', type: 'pluimgiftcard' },
+      { name: 'Illicado Gift Card', type: 'prosodie_illicado' },
+      { name: 'RatePay Invoice', type: 'ratepay' },
+      { name: 'Rob Peetoom Giftcard', type: 'robpeetoomgiftcard' },
+      { name: 'Shoes&Accessories Cadeau', type: 'sagiftcard' },
+      { name: 'Score Giftcard', type: 'scoregiftcard' },
+      { name: 'Premium SMS', type: 'sms' },
+      { name: 'SVS', type: 'svs' },
+      { name: 'TCS Test GiftCard', type: 'tcstestgiftcard' },
+      { name: 'The Sting Giftcard', type: 'thestinggiftcard' },
+      { name: 'Ukash', type: 'ukash' },
+      { name: 'UnionPay', type: 'unionpay' },
+      { name: 'Valuelink', type: 'valuelink' },
+      { name: 'V&D Cadeaukaart', type: 'vdcadeaucard' },
+      { name: 'Visa Checkout', type: 'visacheckout' },
+      { name: 'VVV Cadeaubon', type: 'vvvcadeaubon' },
+      { name: 'Webshop Giftcard', type: 'webshopgiftcard' },
+      { name: 'WE Fashion Giftcard', type: 'wefashiongiftcard' },
+      { name: 'Western Union', type: 'westernunion' },
+      { name: 'Winkel Cheque', type: 'winkelcheque' },
+      { name: 'Your Gift', type: 'yourgift' },
+    ],
+    storedPaymentMethods: [
+      {
+        brand: 'visa',
+        expiryMonth: '10',
+        expiryYear: '30',
+        holderName: 'John Smith',
+        id: '7219687191761347',
+        lastFour: '1111',
+        name: 'VISA',
+        shopperEmail: 'john.smith@example.com',
+        supportedRecurringProcessingModels: ['CardOnFile', 'Subscription', 'UnscheduledCardOnFile'],
+        type: 'scheme',
+      },
+    ],
+  },
+}
+
+const PostPaymentsApplepayExample = {
+  summary: 'Make an Apple Pay payment',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: { type: 'applepay', applePayToken: 'VNRWtuNlNEWkRCSm1xWndjMDFFbktkQU...' },
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsCard_3dSecure_2WebExample = {
+  summary: 'Make a card payment with 3D Secure 2 native authentication',
+  value: {
+    amount: { currency: 'EUR', value: 1000 },
+    reference: 'YOUR_ORDER_NUMBER',
+    paymentMethod: {
+      type: 'scheme',
+      encryptedCardNumber: 'test_4035501428146300',
+      encryptedExpiryMonth: 'test_03',
+      encryptedExpiryYear: 'test_2030',
+      encryptedSecurityCode: 'test_737',
+      holderName: 'John Smith',
+    },
+    authenticationData: { threeDSRequestData: { nativeThreeDS: 'preferred' } },
+    billingAddress: {
+      country: 'US',
+      city: 'New York',
+      street: 'Redwood Block',
+      houseNumberOrName: '37C',
+      stateOrProvince: 'NY',
+      postalCode: '10039',
+    },
+    shopperEmail: 's.hopper@test.com',
+    shopperIP: '192.0.2.1',
+    browserInfo: {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
+      acceptHeader:
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+      language: 'nl-NL',
+      colorDepth: 24,
+      screenHeight: 723,
+      screenWidth: 1536,
+      timeZoneOffset: 0,
+      javaEnabled: true,
+    },
+    channel: 'Web',
+    origin: 'https://your-company.example.com',
+    returnUrl: 'https://your-company.example.com/checkout/',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsCard_3dSecure_2Web_200Example = {
+  summary:
+    'Successful payment with 3D Secure 2 native authentication, using encrypted card details',
+  value: {
+    resultCode: 'IdentifyShopper',
+    action: {
+      paymentData: 'Ab02b4c0!BQABAgCuZFJrQOjSsl\\/zt+...',
+      paymentMethodType: 'scheme',
+      authorisationToken: 'Ab02b4c0!BQABAgAvrX03p...',
+      subtype: 'fingerprint',
+      token: 'eyJ0aHJlZURTTWV0aG9kTm90aWZpY...',
+      type: 'threeDS2',
+    },
+  },
+}
+
+const PostPaymentsCard_3dSecureRedirectExample = {
+  summary: 'Make a card payment with 3D Secure redirect authentication',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: {
+      type: 'scheme',
+      number: '4212345678901237',
+      expiryMonth: '03',
+      expiryYear: '2030',
+      holderName: 'John Smith',
+      cvc: '737',
+    },
+    browserInfo: {
+      userAgent: 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008052912 Firefox/3.0',
+      acceptHeader: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      javaEnabled: true,
+      colorDepth: 10,
+      screenHeight: 2000,
+      screenWidth: 3000,
+      timeZoneOffset: 5,
+      language: 'en',
+    },
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsCard_3dSecureRedirect_200Example = {
+  summary: 'Successful payment with 3D Secure redirect authentication',
+  value: {
+    additionalData: {
+      cardSummary: '5454',
+      'threeds2.threeDS2ResponseData.messageVersion': '2.1.0',
+      'threeds2.threeDS2Token': 'R5CZ2NWPJTGV9D82...',
+      'threeds2.threeDSServerTransID': '8835538461311270...',
+      cardBin: '545454',
+      'threeds2.cardEnrolled': 'true',
+      paymentMethod: 'mc',
+      cardPaymentMethod: 'mc',
+      fundingSource: 'CREDIT',
+      merchantReference: 'Your order number',
+      issuerBin: '54545454',
+      'threeds2.threeDSMethodURL':
+        'https://pal-test.adyen.com/threeds2simulator/acs/startMethod.shtml',
+      cardIssuingCountry: 'PL',
+    },
+    pspReference: 'JLCMPCQ8HXSKGK82',
+    resultCode: 'RedirectShopper',
+    action: {
+      paymentMethodType: 'scheme',
+      url: 'https://checkoutshopper-test.adyen.com/checkoutshopper/threeDS/redirect...',
+      method: 'GET',
+      type: 'redirect',
+    },
+  },
+}
+
+const PostPaymentsCardDirectExample = {
+  summary: 'Make a card payment with unencrypted card details',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: {
+      type: 'scheme',
+      number: '4111111111111111',
+      expiryMonth: '03',
+      expiryYear: '2030',
+      holderName: 'John Smith',
+      cvc: '737',
+    },
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsCardDirect_200Example = {
+  summary: 'Successful card payment with unencrypted card details',
+  value: {
+    additionalData: {
+      cvcResult: '1 Matches',
+      authCode: '044925',
+      avsResult: '4 AVS not supported for this card type',
+      avsResultRaw: '4',
+      cvcResultRaw: 'M',
+      refusalReasonRaw: 'AUTHORISED',
+      acquirerCode: 'TestPmmAcquirer',
+      acquirerReference: '8PQMP9VEP3H',
+    },
+    pspReference: '993617895204576J',
+    resultCode: 'Authorised',
+    merchantReference: 'string',
+  },
+}
+
+const PostPaymentsCardSecuredfieldsExample = {
+  summary: 'Make a card payment',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: {
+      type: 'scheme',
+      encryptedCardNumber: 'test_4111111111111111',
+      encryptedExpiryMonth: 'test_03',
+      encryptedExpiryYear: 'test_2030',
+      encryptedSecurityCode: 'test_737',
+    },
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsCardSecuredfields_200Example = {
+  summary: 'Successful card payment',
+  value: {
+    additionalData: {
+      cvcResult: '1 Matches',
+      authCode: '065696',
+      avsResult: '4 AVS not supported for this card type',
+      avsResultRaw: '4',
+      cvcResultRaw: 'M',
+      refusalReasonRaw: 'AUTHORISED',
+      acquirerCode: 'TestPmmAcquirer',
+      acquirerReference: '8PQMP9VIE9N',
+    },
+    pspReference: '993617895215577D',
+    resultCode: 'Authorised',
+    merchantReference: 'string',
+  },
+}
+
+const PostPaymentsDetails_00RedirectExample = {
+  summary: 'Submit the redirect result',
+  description: 'Example request when submitting a redirect result',
+  value: { details: { redirectResult: 'X6XtfGC3!Y...' } },
+}
+
+const PostPaymentsDetails_00Redirect_200Example = {
+  summary: 'Payment authorised',
+  description: 'Example response when submitting the redirect result',
+  value: { resultCode: 'Authorised', pspReference: 'V4HZ4RBFJGXXGN82' },
+}
+
+const PostPaymentsDetails_3dSecure_2NativeExample = {
+  summary: 'Submit 3D Secure 2 authentication result',
+  value: { details: { threeDSResult: 'eyJ0cmFuc1N0YXR1cyI6IlkifQ==' } },
+}
+
+const PostPaymentsEnableOneClickSFExample = {
+  summary: 'Tokenize card details for one-click payments',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: {
+      type: 'scheme',
+      encryptedCardNumber: 'test_4111111111111111',
+      encryptedExpiryMonth: 'test_03',
+      encryptedExpiryYear: 'test_2030',
+      encryptedSecurityCode: 'test_737',
+    },
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    storePaymentMethod: true,
+    shopperInteraction: 'Ecommerce',
+    recurringProcessingModel: 'CardOnFile',
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsEnableOneClickSF_200Example = {
+  summary: 'Card details tokenized for one-click payments',
+  value: {
+    additionalData: {
+      cvcResult: '1 Matches',
+      authCode: '082338',
+      avsResult: '4 AVS not supported for this card type',
+      avsResultRaw: '4',
+      cvcResultRaw: 'M',
+      refusalReasonRaw: 'AUTHORISED',
+      acquirerCode: 'TestPmmAcquirer',
+      acquirerReference: '8PQMP9VC172',
+      'tokenization.shopperReference': 'YOUR_SHOPPER_REFERENCE',
+      'tokenization.storedPaymentMethodId': 'M5N7TQ4TG5PFWR50',
+      'tokenization.store.operationType': 'created',
+    },
+    pspReference: '993617895195570C',
+    resultCode: 'Authorised',
+    merchantReference: 'string',
+  },
+}
+
+const PostPaymentsGooglepayExample = {
+  summary: 'Make a Google Pay payment',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: {
+      type: 'paywithgoogle',
+      googlePayToken: '==Payload as retrieved from Google Pay response==',
+    },
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YourMerchantAccount',
+  },
+}
+
+const PostPaymentsIdealExample = {
+  summary: 'Make an iDEAL payment',
+  value: {
+    amount: { currency: 'EUR', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: { type: 'ideal' },
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsIdeal_200Example = {
+  summary: 'Successful iDEAL payment',
+  value: {
+    resultCode: 'RedirectShopper',
+    action: {
+      paymentMethodType: 'ideal',
+      url: 'https://test.adyen.com/hpp/checkout.shtml?u=redirectIdeal&p=eJxtUl1zmzAQ-DXwZgaB*XrQg0Nwg2s3DTVtJy8ZRbqAYlsikmCMf30FddNMpzOak2bvZm-3Ts*KCJZLBpgzIEeX9kqBoOMMFXXlcq17UCXDCAXIPYGiLRFmRanshcF70GZ3xd6TpTDQKGK4FJ4ZO8D5XZF-vq-3T5*KL0VV5v*tHEBpe*Pob5cKXmBSA1gbxUXzIWF6JW6JITjLUIySNItQliVxsH6v*cYbnNSHZsMfcydYr8SrE9yY7HRjavMAlyyIjhuK*tzszj9ew-uHrN854a3bkfEE1uBp9od833cV6Lra4taYzglXlsueo6Tk2EptLJL6qW8h2gI9yN7oVnYdKItoUAOnoO3z62-aUlB5sk4qYFwBNTYzoD9015odmFYyJ1z-M2yr7uO4nSBW8xisNpua1NlG0SQwmiTaMMpeLWzDjojRs-cMep7natDTrL*TI2fcjDjwA7Twlws-3aPYOkKZDVH26F69THtShE57woUlmpSBqw9czP*k65*9IfCuq0jiJElQGi69Szn8DPebmKXDWATt6vxEWduea7*sLy-Lt*1bcbctGhgZk78A5S7dyQ',
+      method: 'GET',
+      type: 'redirect',
+    },
+  },
+}
+
+const PostPaymentsKlarnaExample = {
+  summary: 'Make a Klarna payment',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    reference: 'YOUR_ORDER_REFERENCE',
+    paymentMethod: { type: 'klarna' },
+    amount: { currency: 'SEK', value: 1000 },
+    shopperLocale: 'en_US',
+    countryCode: 'SE',
+    telephoneNumber: '+46 840 839 298',
+    shopperEmail: 'youremail@email.com',
+    shopperName: { firstName: 'Testperson-se', lastName: 'Approved' },
+    shopperReference: 'YOUR_UNIQUE_SHOPPER_ID_IOfW3k9G2PvXFu2j',
+    billingAddress: {
+      city: 'Ankeborg',
+      country: 'SE',
+      houseNumberOrName: '1',
+      postalCode: '12345',
+      street: 'Stargatan',
+    },
+    deliveryAddress: {
+      city: 'Ankeborg',
+      country: 'SE',
+      houseNumberOrName: '1',
+      postalCode: '12345',
+      street: 'Stargatan',
+    },
+    returnUrl: 'https://www.your-company.example.com/...',
+    lineItems: [
+      {
+        quantity: 1,
+        amountExcludingTax: 331,
+        taxPercentage: 2100,
+        description: 'Shoes',
+        id: 'Item #1',
+        taxAmount: 69,
+        amountIncludingTax: 400,
+        productUrl: 'URL_TO_PURCHASED_ITEM',
+        imageUrl: 'URL_TO_PICTURE_OF_PURCHASED_ITEM',
+      },
+      {
+        quantity: 2,
+        amountExcludingTax: 248,
+        taxPercentage: 2100,
+        description: 'Socks',
+        id: 'Item #2',
+        taxAmount: 52,
+        amountIncludingTax: 300,
+        productUrl: 'URL_TO_PURCHASED_ITEM',
+        imageUrl: 'URL_TO_PICTURE_OF_PURCHASED_ITEM',
+      },
+    ],
+  },
+}
+
+const PostPaymentsOnDemandTopUpFromTransferInstrumentExample = {
+  summary: 'Top up your balance account on-demand from your transfer instrument',
+  value: {
+    paymentMethod: {
+      type: 'sepadirectdebit',
+      transferInstrumentId: 'SE00000000000000000000001',
+      iban: 'IBAN_OF_TRANSFER_INSTRUMENT',
+      ownerName: 'John Smith',
+    },
+    amount: { value: 10000, currency: 'EUR' },
+    reference: 'YOUR_ORDER_NUMBER',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    returnUrl: 'https://your-company.example.com/...',
+    splits: [
+      {
+        amount: { value: 10000 },
+        type: 'TopUp',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the top-up.',
+        description: 'Your description for the top-up.',
+      },
+      {
+        type: 'PaymentFee',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the transaction fees.',
+        description: 'Your description for the transaction fees.',
+      },
+    ],
+  },
+}
+
+const PostPaymentsOnDemandTopUpFromTransferInstrument_200Example = {
+  summary: 'Successful top-up to your balance account from your transfer instrument',
+  value: {
+    additionalData: {
+      'sepadirectdebit.dateOfSignature': '2024-05-02',
+      'sepadirectdebit.mandateId': 'FJM726V375BV9D82',
+      'sepadirectdebit.sequenceType': 'Recurring',
+    },
+    pspReference: 'QFQTPCQ8HXSKGK82',
+    resultCode: 'Authorised',
+  },
+}
+
+const PostPaymentsOnDemandTopUpVisaExample = {
+  summary: 'Top up your balance account on-demand using a Visa credit card',
+  value: {
+    paymentMethod: {
+      type: 'scheme',
+      number: '4111111111111111',
+      cvc: '737',
+      expiryMonth: '03',
+      expiryYear: '2030',
+      holderName: 'John Smith',
+    },
+    amount: { value: 10000, currency: 'EUR' },
+    reference: 'YOUR_ORDER_NUMBER',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    returnUrl: 'https://your-company.example.com/...',
+    splits: [
+      {
+        amount: { value: 10000 },
+        type: 'TopUp',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the top-up.',
+        description: 'Your description for the top-up.',
+      },
+      {
+        type: 'PaymentFee',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the transaction fees.',
+        description: 'Your description for the transaction fees.',
+      },
+    ],
+  },
+}
+
+const PostPaymentsOnDemandTopUpVisa_200Example = {
+  summary: 'Successful top-up to your balance account using a Visa credit card',
+  value: {
+    additionalData: {
+      cardBin: '411111',
+      cardHolderName: 'John Smith',
+      cardIssuingCountry: 'NL',
+      cardIssuingCurrency: 'EUR',
+      cardPaymentMethod: 'visa',
+      cardProductId: 'A',
+      cardSummary: '1111',
+      issuerBin: '41111111',
+    },
+    pspReference: 'WNV97K8PPLC52VT5',
+    resultCode: 'Authorised',
+  },
+}
+
+const PostPaymentsOneclickSecuredfieldsExample = {
+  summary: 'Make a one-click payment with a token and CVV',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: {
+      type: 'scheme',
+      storedPaymentMethodId: '8416038790273850',
+      encryptedSecurityCode: 'adyenjs_0_1_18$MT6ppy0FAMVMLH...',
+    },
+    shopperReference: 'YOUR_UNIQUE_SHOPPER_ID_6738oneoff',
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    shopperInteraction: 'ContAuth',
+    recurringProcessingModel: 'CardOnFile',
+  },
+}
+
+const PostPaymentsPaymentPspReferenceAmountUpdatesAmountUpdateExample = {
+  summary: 'Update the amount of an authorized payment',
+  description: 'Example request to update the amount of a payment',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    amount: { currency: 'EUR', value: 2500 },
+    reference: 'YOUR_UNIQUE_REFERENCE',
+  },
+}
+
+const PostPaymentsPaymentPspReferenceAmountUpdatesAmountUpdate_201Example = {
+  summary: 'Amount update requested',
+  description: 'Example response when an amount update was requested',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    paymentPspReference: '993617894903480A',
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    pspReference: '993617894906488A',
+    status: 'received',
+    amount: { currency: 'EUR', value: 2500 },
+  },
+}
+
+const PostPaymentsPaymentPspReferenceCancelsCancelWithPspReferenceExample = {
+  summary: 'Cancel payment using a PSP reference',
+  description: 'Example cancel request with a PSP reference',
+  value: { reference: 'YOUR_UNIQUE_REFERENCE', merchantAccount: 'YOUR_MERCHANT_ACCOUNT' },
+}
+
+const PostPaymentsPaymentPspReferenceCancelsCancelWithPspReference_201Example = {
+  summary: 'Refund requested',
+  description: 'Example response when a refund was requested',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    paymentPspReference: '993617894903480A',
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    pspReference: '993617894906488A',
+    status: 'received',
+  },
+}
+
+const PostPaymentsPaymentPspReferenceCapturesCaptureExample = {
+  summary: 'Capture an authorized payment',
+  description: 'Example capture request',
+  value: {
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    amount: { value: 2000, currency: 'EUR' },
+  },
+}
+
+const PostPaymentsPaymentPspReferenceCapturesCapture_201Example = {
+  summary: 'Capture requested',
+  description: 'Example response when a capture was requested',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    paymentPspReference: '993617894903480A',
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    pspReference: '993617894906488A',
+    status: 'received',
+    amount: { value: 2000, currency: 'EUR' },
+  },
+}
+
+const PostPaymentsPaymentPspReferenceCapturesSplitBalanceplatformExample = {
+  summary: 'Capture and split an authorized payment between balance accounts',
+  description: 'Example capture request',
+  value: {
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    amount: { value: 2000, currency: 'USD' },
+    platformChargebackLogic: {
+      behavior: 'deductFromOneBalanceAccount',
+      targetAccount: 'BA00000000000000000000001',
+      costAllocationAccount: 'BA00000000000000000000001',
+    },
+    splits: [
+      {
+        amount: { value: 1500 },
+        type: 'BalanceAccount',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the sale amount',
+        description: 'Your description for the sale amount',
+      },
+      {
+        amount: { value: 500 },
+        type: 'Commission',
+        reference: 'Your reference for the commission',
+        description: 'Your description for the commission',
+      },
+      {
+        type: 'PaymentFee',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the fees',
+        description: 'Your description for the fees',
+      },
+    ],
+  },
+}
+
+const PostPaymentsPaymentPspReferenceCapturesSplitBalanceplatform_201Example = {
+  summary: 'Capture requested and split between balance accounts',
+  description: 'Example response when a capture was requested and split between balance accounts',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    paymentPspReference: '993617894903480A',
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    pspReference: '993617894906488A',
+    status: 'received',
+    amount: { value: 2000, currency: 'USD' },
+    platformChargebackLogic: {
+      behavior: 'deductFromOneBalanceAccount',
+      costAllocationAccount: 'BA00000000000000000000001',
+      targetAccount: 'BA00000000000000000000001',
+    },
+    splits: [
+      {
+        amount: { value: 1500 },
+        type: 'BalanceAccount',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the sale amount',
+        description: 'Your description for the sale amount',
+      },
+      {
+        amount: { value: 500 },
+        type: 'Commission',
+        reference: 'Your reference for the commission',
+        description: 'Your description for the commission',
+      },
+      {
+        type: 'PaymentFee',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the fees',
+        description: 'Your description for the fees',
+      },
+    ],
+  },
+}
+
+const PostPaymentsPaymentPspReferenceCapturesSplitClassicExample = {
+  summary: 'Capture and split an authorized payment in the Classic Platforms integration',
+  description: 'Example capture request',
+  value: {
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    amount: { value: 2000, currency: 'USD' },
+    splits: [
+      {
+        account: '8816080397613514',
+        amount: { value: 1500 },
+        reference: 'Your reference for the sale amount.',
+        type: 'MarketPlace',
+      },
+      {
+        amount: { value: 500 },
+        reference: 'Your reference for the commission.',
+        type: 'Commission',
+      },
+    ],
+  },
+}
+
+const PostPaymentsPaymentPspReferenceCapturesSplitClassic_201Example = {
+  summary: 'Capture requested and split in the Classic Platforms integration',
+  description: 'Example response when a capture was requested in the Classic Platforms integration',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    paymentPspReference: '993617894903480A',
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    pspReference: '993617894906488A',
+    status: 'received',
+    amount: { value: 2000, currency: 'USD' },
+    splits: [
+      {
+        account: '8816080397613514',
+        amount: { value: 1500 },
+        reference: 'Your reference for the sale amount.',
+        type: 'MarketPlace',
+      },
+      {
+        amount: { value: 500 },
+        reference: 'Your reference for the commission.',
+        type: 'Commission',
+      },
+    ],
+  },
+}
+
+const PostPaymentsPaymentPspReferenceRefundsRefundExample = {
+  summary: 'Refund a payment',
+  description: 'Example refund request',
+  value: {
+    amount: { currency: 'EUR', value: 2500 },
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsPaymentPspReferenceRefundsRefund_201Example = {
+  summary: 'Refund requested',
+  description: 'Example response when a refund was requested',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    paymentPspReference: '993617894903480A',
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    pspReference: '993617894906488A',
+    status: 'received',
+    amount: { currency: 'EUR', value: 2500 },
+  },
+}
+
+const PostPaymentsPaymentPspReferenceReversalsReversalExample = {
+  summary: 'Reverse (cancel or refund) a payment',
+  description: 'Example request to reverse a payment',
+  value: { reference: 'YOUR_UNIQUE_REFERENCE', merchantAccount: 'YOUR_MERCHANT_ACCOUNT' },
+}
+
+const PostPaymentsPaymentPspReferenceReversalsReversal_201Example = {
+  summary: 'Payment reversal requested',
+  description: 'Example response when a payment reversal was requested',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    paymentPspReference: '993617894903480A',
+    reference: 'YOUR_UNIQUE_REFERENCE',
+    pspReference: '993617894906488A',
+    status: 'received',
+  },
+}
+
+const PostPaymentsSplitBalanceplatformExample = {
+  summary: 'Split a payment between balance accounts',
+  value: {
+    paymentMethod: {
+      type: 'scheme',
+      encryptedCardNumber: 'test_4111111111111111',
+      encryptedExpiryMonth: 'test_03',
+      encryptedExpiryYear: 'test_2030',
+      encryptedSecurityCode: 'test_737',
+    },
+    amount: { value: 40000, currency: 'USD' },
+    reference: 'YOUR_ORDER_NUMBER',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    returnUrl: 'https://your-company.example.com/...',
+    platformChargebackLogic: {
+      behavior: 'deductFromOneBalanceAccount',
+      targetAccount: 'BA00000000000000000000001',
+      costAllocationAccount: 'BA00000000000000000000001',
+    },
+    splits: [
+      {
+        amount: { value: 39600 },
+        type: 'BalanceAccount',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the sale amount',
+        description: 'Your description for the sale amount',
+      },
+      {
+        amount: { value: 400 },
+        type: 'Commission',
+        reference: 'Your reference for the commission',
+        description: 'Your description for the commission',
+      },
+      {
+        type: 'PaymentFee',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the fees',
+        description: 'Your description for the fees',
+      },
+    ],
+  },
+}
+
+const PostPaymentsSplitBalanceplatform_200Example = {
+  summary: 'Payment split between balance accounts',
+  value: {
+    additionalData: {
+      refusalReasonRaw: 'AUTHORISED',
+      eci: 'N/A',
+      acquirerAccountCode: 'YOUR_ACQUIRER_ACCOUNT',
+      xid: 'N/A',
+      threeDAuthenticated: 'false',
+      paymentMethodVariant: 'visa',
+      issuerBin: '41111111',
+      payoutEligible: 'Y',
+      fraudManualReview: 'false',
+      threeDOffered: 'false',
+      threeDOfferedResponse: 'N/A',
+      authorisationMid: '50',
+      fundsAvailability: 'I',
+      authorisedAmountCurrency: 'USD',
+      threeDAuthenticatedResponse: 'N/A',
+      avsResultRaw: '5',
+      'retry.attempt1.rawResponse': 'AUTHORISED',
+      paymentMethod: 'visa',
+      avsResult: '5 No AVS data provided',
+      cardSummary: '1111',
+      'retry.attempt1.avsResultRaw': '5',
+      networkTxReference: '777718270854480',
+      expiryDate: '3/2030',
+      cavvAlgorithm: 'N/A',
+      cardBin: '411111',
+      alias: '8915844059375211',
+      cvcResultRaw: 'M',
+      merchantReference: 'YOUR_ORDER_NUMBER',
+      acquirerReference: 'YOUR_ACQUIRER_REFERENCE',
+      cardIssuingCountry: 'NL',
+      liabilityShift: 'false',
+      fraudResultType: 'GREEN',
+      authCode: '035450',
+      cardHolderName: 'John Smith',
+      isCardCommercial: 'unknown',
+      PaymentAccountReference: '6006491286999921374...',
+      'retry.attempt1.acquirerAccount': 'YOUR_ACQUIRER_ACCOUNT',
+      cardIssuingBank: 'ISSUING_BANK_CUSTOMER',
+      'retry.attempt1.acquirer': 'YOUR_ACQUIRER_CODE',
+      authorisedAmountValue: '40000',
+      issuerCountry: 'NL',
+      cvcResult: '1 Matches',
+      'retry.attempt1.responseCode': 'Approved',
+      aliasType: 'Default',
+      'retry.attempt1.shopperInteraction': 'Ecommerce',
+      cardPaymentMethod: 'visa',
+      acquirerCode: 'YOUR_ACQUIRER_CODE',
+    },
+    pspReference: 'PPKFQ89R6QRXGN82',
+    resultCode: 'Authorised',
+    amount: { currency: 'USD', value: 40000 },
+    donationToken: '81234567890123456...',
+    merchantReference: 'YOUR_ORDER_NUMBER',
+  },
+}
+
+const PostPaymentsSplitClassicExample = {
+  summary: 'Split a payment in a Classic Platforms integration',
+  value: {
+    paymentMethod: {
+      type: 'scheme',
+      encryptedCardNumber: 'test_4111111111111111',
+      encryptedExpiryMonth: 'test_03',
+      encryptedExpiryYear: 'test_2030',
+      encryptedSecurityCode: 'test_737',
+    },
+    amount: { value: 6200, currency: 'EUR' },
+    reference: 'YOUR_ORDER_NUMBER',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    returnUrl: 'https://your-company.example.com/...',
+    splits: [
+      {
+        amount: { value: 6000 },
+        type: 'MarketPlace',
+        account: '151272963',
+        reference: '6124145',
+        description: 'Porcelain Doll: Eliza (20cm)',
+      },
+      { amount: { value: 200 }, type: 'Commission', reference: '6124146' },
+    ],
+  },
+}
+
+const PostPaymentsSubscriptionFirstTransactionExample = {
+  summary: 'Tokenize card details for a subscription',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: {
+      type: 'scheme',
+      encryptedCardNumber: 'test_4111111111111111',
+      encryptedExpiryMonth: 'test_03',
+      encryptedExpiryYear: 'test_2030',
+      encryptedSecurityCode: 'test_737',
+    },
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    storePaymentMethod: true,
+    shopperInteraction: 'Ecommerce',
+    recurringProcessingModel: 'Subscription',
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+  },
+}
+
+const PostPaymentsSubscriptionFirstTransaction_200Example = {
+  summary: 'Card details tokenized for a subscription',
+  value: {
+    additionalData: {
+      cvcResult: '1 Matches',
+      authCode: '098871',
+      avsResult: '4 AVS not supported for this card type',
+      avsResultRaw: '4',
+      cvcResultRaw: 'M',
+      refusalReasonRaw: 'AUTHORISED',
+      acquirerCode: 'TestPmmAcquirer',
+      acquirerReference: '8PQMP9VD896',
+      'tokenization.shopperReference': 'YOUR_SHOPPER_REFERENCE',
+      'tokenization.storedPaymentMethodId': 'M5N7TQ4TG5PFWR50',
+      'tokenization.store.operationType': 'created',
+    },
+    pspReference: '993617895199574A',
+    resultCode: 'Authorised',
+    merchantReference: 'string',
+  },
+}
+
+const PostPaymentsSubscriptionPaymentExample = {
+  summary: 'Make a subscription payment with a token',
+  value: {
+    amount: { currency: 'USD', value: 1000 },
+    reference: 'Your order number',
+    paymentMethod: { type: 'scheme', storedPaymentMethodId: 'M5N7TQ4TG5PFWR50' },
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    returnUrl: 'https://your-company.example.com/...',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    shopperInteraction: 'ContAuth',
+    recurringProcessingModel: 'Subscription',
+  },
+}
+
+const PostPaypalUpdateOrderAdvancedWithDeliveryExample = {
+  summary: 'Update a PayPal order with delivery methods in an Advanced flow integration',
+  value: {
+    pspReference: 'DZ4DPSHB4WD2WN82',
+    paymentData: 'po7XZ...',
+    amount: { currency: 'EUR', value: 12000 },
+    deliveryMethods: [
+      {
+        reference: '1',
+        description: 'Express Shipping',
+        type: 'Shipping',
+        amount: { currency: 'EUR', value: 1000 },
+        selected: true,
+      },
+      {
+        reference: '2',
+        description: 'Standard Ground',
+        type: 'Shipping',
+        amount: { currency: 'EUR', value: 500 },
+        selected: false,
+      },
+    ],
+  },
+}
+
+const PostPaypalUpdateOrderAdvancedWithDelivery_200Example = {
+  summary: 'Order updated with delivery methods in an Advanced flow integration',
+  value: { paymentData: 'po7XZ...', status: 'success' },
+}
+
+const PostPaypalUpdateOrderAdvancedWithoutDeliveryExample = {
+  summary: 'Update a PayPal order in an Advanced flow integration',
+  value: {
+    pspReference: 'HWL5D5BDLSGLNK82',
+    paymentData: 'kly45P...',
+    amount: { currency: 'EUR', value: 1200 },
+  },
+}
+
+const PostPaypalUpdateOrderAdvancedWithoutDelivery_200Example = {
+  summary: 'Order updated with delivery methods in an Advanced flow integration',
+  value: { paymentData: 'kly45P...', status: 'success' },
+}
+
+const PostPaypalUpdateOrderSessionsWithDeliveryExample = {
+  summary: 'Update a PayPal order with delivery methods in a Sessions flow integration',
+  value: {
+    sessionId: 'CS12345679',
+    paymentData: 'ey4YZ...',
+    amount: { currency: 'EUR', value: 12000 },
+    deliveryMethods: [
+      {
+        reference: '1',
+        description: 'Express Shipping',
+        type: 'Shipping',
+        amount: { currency: 'EUR', value: 1000 },
+        selected: true,
+      },
+      {
+        reference: '2',
+        description: 'Standard Ground',
+        type: 'Shipping',
+        amount: { currency: 'EUR', value: 500 },
+        selected: false,
+      },
+    ],
+  },
+}
+
+const PostPaypalUpdateOrderSessionsWithDelivery_200Example = {
+  summary: 'Order updated with delivery methods in a Sessions flow integration',
+  value: { paymentData: 'ey4YZ...', status: 'success' },
+}
+
+const PostPaypalUpdateOrderSessionsWithoutDeliveryExample = {
+  summary: 'Update a PayPal order in a Sessions flow integration',
+  value: {
+    sessionId: 'CS12345679',
+    paymentData: 'em9YZ...',
+    amount: { currency: 'EUR', value: 8700 },
+  },
+}
+
+const PostPaypalUpdateOrderSessionsWithoutDelivery_200Example = {
+  summary: 'Order updated in a Sessions flow integration',
+  value: { paymentData: 'em9YZ...', status: 'success' },
+}
+
+const PostSessions_00SuccessExample = {
+  summary: 'Create a payment session',
+  description: 'Example request for creating a payment session',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    amount: { value: 100, currency: 'EUR' },
+    returnUrl: 'https://your-company.example.com/checkout?shopperOrder=12xy..',
+    reference: 'YOUR_PAYMENT_REFERENCE',
+    countryCode: 'NL',
+  },
+}
+
+const PostSessions_00Success_201Example = {
+  summary: 'Payment session created Success.',
+  description: 'Example response for creating a payment session',
+  value: {
+    amount: { currency: 'EUR', value: 100 },
+    countryCode: 'NL',
+    expiresAt: '2022-01-11T13:53:18+01:00',
+    id: 'CS451F2AB1ED897A94',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    reference: 'YOUR_PAYMENT_REFERENCE',
+    returnUrl: 'https://your-company.example.com/checkout?shopperOrder=12xy..',
+    sessionData: 'Ab02b4c0!BQABAgBfYI29...',
+  },
+}
+
+const PostSessions_01KlarnaExample = {
+  summary: 'Create a payment session including Klarna fields',
+  description:
+    'Example request for creating a payment session when Klarna is one of the available payment methods',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    reference: 'YOUR_ORDER_REFERENCE',
+    amount: { currency: 'SEK', value: 1000 },
+    shopperLocale: 'en_US',
+    countryCode: 'SE',
+    telephoneNumber: '+46 840 839 298',
+    shopperEmail: 'youremail@email.com',
+    shopperName: { firstName: 'Testperson-se', lastName: 'Approved' },
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    billingAddress: {
+      city: 'Ankeborg',
+      country: 'SE',
+      houseNumberOrName: '1',
+      postalCode: '12345',
+      street: 'Stargatan',
+    },
+    deliveryAddress: {
+      city: 'Ankeborg',
+      country: 'SE',
+      houseNumberOrName: '1',
+      postalCode: '12345',
+      street: 'Stargatan',
+    },
+    dateOfBirth: '1996-09-04',
+    socialSecurityNumber: '0108',
+    returnUrl: 'https://example.org',
+    lineItems: [
+      {
+        quantity: 1,
+        amountExcludingTax: 331,
+        taxPercentage: 2100,
+        description: 'Shoes',
+        id: 'Item #1',
+        taxAmount: 69,
+        amountIncludingTax: 400,
+        productUrl: 'URL_TO_PURCHASED_ITEM',
+        imageUrl: 'URL_TO_PICTURE_OF_PURCHASED_ITEM',
+      },
+      {
+        quantity: 2,
+        amountExcludingTax: 248,
+        taxPercentage: 2100,
+        description: 'Socks',
+        id: 'Item #2',
+        taxAmount: 52,
+        amountIncludingTax: 300,
+        productUrl: 'URL_TO_PURCHASED_ITEM',
+        imageUrl: 'URL_TO_PICTURE_OF_PURCHASED_ITEM',
+      },
+    ],
+  },
+}
+
+const PostSessions_01Klarna_201Example = {
+  summary: 'Payment session created for a Klarna payment  Success.',
+  description: 'Example ',
+  value: {
+    amount: { currency: 'SEK', value: 1000 },
+    billingAddress: {
+      city: 'Ankeborg',
+      country: 'SE',
+      houseNumberOrName: '1',
+      postalCode: '12345',
+      street: 'Stargatan',
+    },
+    countryCode: 'SE',
+    dateOfBirth: '1996-09-04T02:00:00+02:00',
+    deliveryAddress: {
+      city: 'Ankeborg',
+      country: 'SE',
+      houseNumberOrName: '1',
+      postalCode: '12345',
+      street: 'Stargatan',
+    },
+    expiresAt: '2022-01-11T13:57:52+01:00',
+    id: 'CSC52E9932D39ADAF3',
+    lineItems: [
+      {
+        amountExcludingTax: 331,
+        amountIncludingTax: 400,
+        description: 'Shoes',
+        id: 'Item #1',
+        imageUrl: 'URL_TO_PICTURE_OF_PURCHASED_ITEM',
+        productUrl: 'URL_TO_PURCHASED_ITEM',
+        quantity: 1,
+        taxAmount: 69,
+        taxPercentage: 2100,
+      },
+      {
+        amountExcludingTax: 248,
+        amountIncludingTax: 300,
+        description: 'Socks',
+        id: 'Item #2',
+        imageUrl: 'URL_TO_PICTURE_OF_PURCHASED_ITEM',
+        productUrl: 'URL_TO_PURCHASED_ITEM',
+        quantity: 2,
+        taxAmount: 52,
+        taxPercentage: 2100,
+      },
+    ],
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    reference: 'YOUR_ORDER_REFERENCE',
+    returnUrl: 'https://example.org',
+    shopperEmail: 'youremail@email.com',
+    shopperLocale: 'en_US',
+    shopperName: { firstName: 'Testperson-se', lastName: 'Approved' },
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    socialSecurityNumber: '0108',
+    telephoneNumber: '+46 840 839 298',
+    sessionData: 'Ab02b4c0!BQABAgBfYI29...',
+  },
+}
+
+const PostSessionsEnableOneClickExample = {
+  summary: 'Tokenize card details for one-click payments without asking shopper',
+  description:
+    'Example request for tokenizing card details for one-click payments without asking shopper',
+  value: {
+    merchantAccount: 'TestMerchantCheckout',
+    amount: { value: 100, currency: 'EUR' },
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    returnUrl: 'https://your-company.example.com/checkout?shopperOrder=12xy..',
+    reference: 'YOUR_PAYMENT_REFERENCE',
+    countryCode: 'NL',
+    storePaymentMethodMode: 'enabled',
+    shopperInteraction: 'Ecommerce',
+    recurringProcessingModel: 'CardOnFile',
+  },
+}
+
+const PostSessionsEnableOneClick_201Example = {
+  summary: "Shopper's payment details tokenized",
+  description: "Example response for tokenizing the shopper's payment details",
+  value: {
+    amount: { currency: 'EUR', value: 100 },
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    countryCode: 'NL',
+    expiresAt: '2022-01-11T13:56:05+01:00',
+    id: 'FJM726V375BV9D82',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    recurringProcessingModel: 'CardOnFile',
+    reference: 'YOUR_PAYMENT_REFERENCE',
+    returnUrl: 'https://your-company.example.com/checkout?shopperOrder=12xy..',
+    shopperInteraction: 'Ecommerce',
+    storePaymentMethod: true,
+    sessionData: 'Ab02b4c0!BQABAgBfYI29...',
+  },
+}
+
+const PostSessionsSplitExample = {
+  summary: 'Split a payment between balance accounts',
+  value: {
+    amount: { value: 40000, currency: 'USD' },
+    reference: 'YOUR_ORDER_NUMBER',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    returnUrl: 'https://your-company.example.com/...',
+    splits: [
+      {
+        amount: { value: 39200 },
+        type: 'BalanceAccount',
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the sale amount',
+        description: 'Your description for the sale amount',
+      },
+      {
+        amount: { value: 400 },
+        type: 'Commission',
+        reference: 'Your reference for the commission',
+        description: 'Your description for the commission',
+      },
+      {
+        amount: { value: 400 },
+        account: 'BA00000000000000000000001',
+        reference: 'Your reference for the fees',
+        description: 'Your description for the fees',
+        type: 'PaymentFee',
+      },
+    ],
+  },
+}
+
+const PostSessionsSplit_201Example = {
+  summary: 'Payment split between balance accounts',
+  value: {
+    amount: { currency: 'USD', value: 40000 },
+    expiresAt: '2023-06-26T11:01:55+02:00',
+    id: 'CSFCBC80570618EF2C',
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    reference: 'YOUR_ORDER_NUMBER',
+    returnUrl: 'https://your-company.example.com/...',
+    shopperLocale: 'en-US',
+    splits: [
+      {
+        account: 'BA00000000000000000000001',
+        amount: { value: 39200 },
+        description: 'Your description for the sale amount',
+        reference: 'Your reference for the sale amount',
+        type: 'BalanceAccount',
+      },
+      {
+        amount: { value: 400 },
+        description: 'Your description for the commission',
+        reference: 'Your reference for the commission',
+        type: 'Commission',
+      },
+      {
+        amount: { value: 400 },
+        account: 'BA00000000000000000000001',
+        description: 'Your description for the fees',
+        reference: 'Your reference for the fees',
+        type: 'PaymentFee',
+      },
+    ],
+    mode: 'embedded',
+    sessionData: 'Ab02b4c0!BQABAgCjTErwAztqXSFTiZtxZMjRLYkoGbPkmvCvDX1',
+  },
+}
+
+const PostStoredPaymentMethodsEncryptedCardDetailsExample = {
+  summary: 'Store encrypted card details for subscription payments',
+  description: 'Example request for storing encrypted card details for subscription payments',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    paymentMethod: {
+      type: 'scheme',
+      encryptedCardNumber: 'test_4111111111111111',
+      encryptedExpiryMonth: 'test_03',
+      encryptedExpiryYear: 'test_2030',
+      encryptedSecurityCode: 'test_737',
+      holderName: 'John Smith',
+    },
+    recurringProcessingModel: 'Subscription',
+    shopperEmail: 's.hopper@test.com',
+    shopperIP: '192.0.2.1',
+  },
+}
+
+const PostStoredPaymentMethodsEncryptedCardDetails_201Example = {
+  summary: 'Card details stored',
+  description: 'Example for a successful response to store encrypted card details',
+  value: {
+    expiryMonth: '03',
+    expiryYear: '2030',
+    holderName: 'John Smith',
+    id: 'KHQC5N7G84BLNK43',
+    lastFour: '1111',
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    type: 'scheme',
+  },
+}
+
+const PostStoredPaymentMethodsUnencryptedCardDetailsExample = {
+  summary: 'Store unencrypted card details for subscription payments',
+  description: 'Example request for storing encrypted card details for subscription payments',
+  value: {
+    merchantAccount: 'YOUR_MERCHANT_ACCOUNT',
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    paymentMethod: {
+      type: 'scheme',
+      number: '4111111111111111',
+      expiryMonth: '03',
+      expiryYear: '2030',
+      cvc: '737',
+      holderName: 'John Smith',
+    },
+    recurringProcessingModel: 'Subscription',
+    shopperEmail: 's.hopper@test.com',
+    shopperIP: '192.0.2.1',
+  },
+}
+
+const PostStoredPaymentMethodsUnencryptedCardDetails_201Example = {
+  summary: 'Card details stored',
+  description: 'Example for a successful response to store unencrypted card details',
+  value: {
+    expiryMonth: '03',
+    expiryYear: '2030',
+    holderName: 'John Smith',
+    id: 'KHQC5N7G84BLNK43',
+    lastFour: '1111',
+    shopperReference: 'YOUR_SHOPPER_REFERENCE',
+    type: 'scheme',
+  },
+}
+
+const IdempotencyKeyHeaderSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    description:
+      'The idempotency key used for processing the request. Present if the key was provided in the request.',
+    param: { required: false },
+  })
+
+const ApiKeyAuthSecurityScheme = { type: 'apiKey', name: 'X-API-Key', in: 'header' }
+
+const BasicAuthSecurityScheme = { type: 'http', scheme: 'basic' }
+
+export const postApplePaySessionsRoute = createRoute({
+  method: 'post',
+  path: '/applePay/sessions',
+  tags: ['Utility'],
+  summary: 'Get an Apple Pay session',
+  description:
+    "You need to use this endpoint if you have an API-only integration with Apple Pay which uses Adyen's Apple Pay certificate.\n\nThe endpoint returns the Apple Pay session data which you need to complete the [Apple Pay session validation](https://docs.adyen.com/payment-methods/apple-pay/api-only?tab=adyen-certificate-validation_1#complete-apple-pay-session-validation).",
+  operationId: 'post-applePay-sessions',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: ApplePaySessionRequestSchema,
+          examples: { basic: PostApplePaySessionsBasicExample },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: ApplePaySessionResponseSchema,
+          examples: { basic: PostApplePaySessionsBasic_200Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postCancelsRoute = createRoute({
+  method: 'post',
+  path: '/cancels',
+  tags: ['Modifications'],
+  summary: 'Cancel an authorised payment',
+  description:
+    'Cancels the authorisation on a payment that has not yet been [captured](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/captures), and returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**TECHNICAL_CANCEL** webhook](https://docs.adyen.com/online-payments/cancel#cancellation-webhook).\n\nIf you want to cancel a payment using the [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference), use the [`/payments/{paymentPspReference}/cancels`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/cancels) endpoint instead.\n\nIf you want to cancel a payment but are not sure whether it has been captured, use the [`/payments/{paymentPspReference}/reversals`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/reversals) endpoint instead.\n\nFor more information, refer to [Cancel](https://docs.adyen.com/online-payments/cancel).',
+  operationId: 'post-cancels',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: StandalonePaymentCancelRequestSchema,
+          examples: { 'cancel-with-own-reference': PostCancelsCancelWithOwnReferenceExample },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'Created - the request has been fulfilled and has resulted in one or more new resources being created.',
+      content: {
+        'application/json': {
+          schema: StandalonePaymentCancelResponseSchema,
+          examples: { 'cancel-with-own-reference': PostCancelsCancelWithOwnReference_201Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postCardDetailsRoute = createRoute({
+  method: 'post',
+  path: '/cardDetails',
+  tags: ['Payments'],
+  summary: 'Get the brands and other details of a card',
+  description:
+    "Use this endpoint to get information about the card or network token that enables you to decide on the routing of the transaction and the eligibility of the card for the type of transaction.\n\nIf you include [your supported brands](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/cardDetails__reqParam_supportedBrands) in the request, the response also tells you if you support each [brand that was identified on the card](https://docs.adyen.com/api-explorer/Checkout/latest/post/cardDetails#responses-200-brands).\n\nIf you have an API-only integration and collect card data, use this endpoint to find out if the shopper's card is co-bad. For co-badged cards, you must let the shopper choose the brand to pay with  if you support both brands.\n\n## Server-side API libraries\nWe provide open-source [server-side API libraries](https://docs.adyen.com/development-resources/libraries/) in several languages: \n- PHP\n- Java\n- Node.js\n- .NET\n- Go\n- Python\n- Ruby\n- Apex (beta)\n\nSee our [integration examples](https://github.com/adyen-examples#%EF%B8%8F-official-integration-examples) for example uses of the libraries.\n\n## Developer resources\nBIN Lookup API is available through a Postman collection. Click the button below to create a fork, then set the environment variables at **Environments**&nbsp;>&nbsp;**Adyen&nbsp;APIs**. \n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/25716737-677c7679-a695-4ebb-91da-68b4e7c9228a?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D25716737-677c7679-a695-4ebb-91da-68b4e7c9228a%26entityType%3Dcollection%26workspaceId%3Da8d63f9f-cfc7-4810-90c5-9e0c60030d3e#?env%5BAdyen%20APIs%5D=W3sia2V5IjoiWC1BUEktS2V5IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlLCJ0eXBlIjoic2VjcmV0In0seyJrZXkiOiJZT1VSX01FUkNIQU5UX0FDQ09VTlQiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJkZWZhdWx0In0seyJrZXkiOiJZT1VSX0NPTVBBTllfQUNDT1VOVCIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6ImRlZmF1bHQifSx7ImtleSI6IllPVVJfQkFMQU5DRV9QTEFURk9STSIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6ImRlZmF1bHQifV0=)\n\n\n",
+  operationId: 'post-cardDetails',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: CardDetailsRequestSchema,
+          examples: {
+            basic: PostCardDetailsBasicExample,
+            'supported-brands': PostCardDetailsSupportedBrandsExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: CardDetailsResponseSchema,
+          examples: {
+            basic: PostCardDetailsBasic_200Example,
+            'supported-brands': PostCardDetailsSupportedBrands_200Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postDonationCampaignsRoute = createRoute({
+  method: 'post',
+  path: '/donationCampaigns',
+  tags: ['Donations'],
+  summary: 'Get a list of donation campaigns.',
+  description:
+    'Queries the available donation campaigns for a donation based on the donation context (like merchant account, currency, and locale). The response contains active donation campaigns.',
+  operationId: 'post-donationCampaigns',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: DonationCampaignsRequestSchema,
+          examples: { 'donation-campaigns': PostDonationCampaignsDonationCampaignsExample },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: DonationCampaignsResponseSchema,
+          examples: { 'donation-campaigns': PostDonationCampaignsDonationCampaigns_200Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postDonationsRoute = createRoute({
+  method: 'post',
+  path: '/donations',
+  tags: ['Donations'],
+  summary: 'Make a donation',
+  description:
+    'Takes in the donation token generated by the `/payments` request and uses it to make the donation.\n\nFor more information, see [Donations](https://docs.adyen.com/online-payments/donations).',
+  operationId: 'post-donations',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: DonationPaymentRequestSchema,
+          examples: { 'donations-campaigns': PostDonationsDonationsCampaignsExample },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: DonationPaymentResponseSchema,
+          examples: { 'donations-campaigns': PostDonationsDonationsCampaigns_200Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postForwardRoute = createRoute({
+  method: 'post',
+  path: '/forward',
+  tags: ['Recurring'],
+  summary: 'Forward stored payment details',
+  description:
+    'Forwards the payment details you stored with Adyen to a third-party that you specify and returns the response from the third-party. Supports forwarding stored card details or [network tokens](https://docs.adyen.com/online-payments/network-tokenization). For more information, see [Forward stored payment details](https://docs.adyen.com/online-payments/tokenization/forward-payment-details).',
+  operationId: 'post-forward',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: CheckoutForwardRequestSchema,
+          examples: { 'forward-card': PostForwardForwardCardExample },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: CheckoutForwardResponseSchema,
+          examples: { 'forward-card': PostForwardForwardCard_200Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postOrdersRoute = createRoute({
+  method: 'post',
+  path: '/orders',
+  tags: ['Orders'],
+  summary: 'Create an order',
+  description:
+    'Creates an order to be used for partial payments. Make a POST `/orders` call before making a `/payments` call when processing payments with different payment methods.',
+  operationId: 'post-orders',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: CreateOrderRequestSchema,
+          examples: { basic: PostOrdersBasicExample },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: CreateOrderResponseSchema,
+          examples: { basic: PostOrdersBasic_200Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postOrdersCancelRoute = createRoute({
+  method: 'post',
+  path: '/orders/cancel',
+  tags: ['Orders'],
+  summary: 'Cancel an order',
+  description:
+    'Cancels an order. Cancellation of an order results in an automatic rollback of all payments made in the order, either by canceling or refunding the payment, depending on the type of payment method.',
+  operationId: 'post-orders-cancel',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: CancelOrderRequestSchema,
+          examples: { basic: PostOrdersCancelBasicExample },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: CancelOrderResponseSchema,
+          examples: { basic: PostOrdersCancelBasic_200Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postOriginKeysRoute = createRoute({
+  method: 'post',
+  path: '/originKeys',
+  tags: ['Utility'],
+  summary: 'Create originKey values for domains',
+  description:
+    "This operation takes the origin domains and returns a JSON object containing the corresponding origin keys for the domains. \n> If you're still using origin key for your Web Drop-in or Components integration, we recommend [switching to client key](https://docs.adyen.com/development-resources/client-side-authentication/migrate-from-origin-key-to-client-key). This allows you to use a single key for all origins, add or remove origins without generating a new key, and detect the card type from the number entered in your payment form. ",
+  operationId: 'post-originKeys',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: UtilityRequestSchema,
+          examples: { basic: PostOriginKeysBasicExample },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: UtilityResponseSchema,
+          examples: { basic: PostOriginKeysBasic_200Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  deprecated: true,
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentLinksRoute = createRoute({
+  method: 'post',
+  path: '/paymentLinks',
+  tags: ['Payment links'],
+  summary: 'Create a payment link',
+  description:
+    'Creates a payment link to a [Pay by Link](https://docs.adyen.com/unified-commerce/pay-by-link/) page where the shopper can pay. The list of payment methods presented to the shopper depends on the `currency` and `country` parameters sent in the request.\n\nFor more information, refer to [Pay by Link documentation](https://docs.adyen.com/online-payments/pay-by-link#create-payment-links-through-api).',
+  operationId: 'post-paymentLinks',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentLinkRequestSchema,
+          examples: { basic: PostPaymentLinksBasicExample },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: PaymentLinkResponseSchema,
+          examples: { basic: PostPaymentLinksBasic_201Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const getPaymentLinksLinkIdRoute = createRoute({
+  method: 'get',
+  path: '/paymentLinks/{linkId}',
+  tags: ['Payment links'],
+  summary: 'Get a payment link',
+  description: 'Retrieves the payment link details using the payment link `id`.',
+  operationId: 'get-paymentLinks-linkId',
+  request: {
+    params: z.object({
+      linkId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'linkId',
+            in: 'path',
+            description: 'Unique identifier of the payment link.',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: PaymentLinkResponseSchema,
+          examples: { basic: GetPaymentLinksLinkIdBasic_200Example },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const patchPaymentLinksLinkIdRoute = createRoute({
+  method: 'patch',
+  path: '/paymentLinks/{linkId}',
+  tags: ['Payment links'],
+  summary: 'Update the status of a payment link',
+  description:
+    'Updates the status of a payment link. Use this endpoint to [force the expiry of a payment link](https://docs.adyen.com/online-payments/pay-by-link#update-payment-link-status).',
+  operationId: 'patch-paymentLinks-linkId',
+  request: {
+    params: z.object({
+      linkId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'linkId',
+            in: 'path',
+            description: 'Unique identifier of the payment link.',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: UpdatePaymentLinkRequestSchema,
+          examples: { basic: PatchPaymentLinksLinkIdBasicExample },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: PaymentLinkResponseSchema,
+          examples: { basic: PatchPaymentLinksLinkIdBasic_200Example },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentMethodsRoute = createRoute({
+  method: 'post',
+  path: '/paymentMethods',
+  tags: ['Payments'],
+  summary: 'Get a list of available payment methods',
+  description:
+    'Retrieves the list of available payment methods for the transaction, based on the transaction information like amount, country, and currency.',
+  operationId: 'post-paymentMethods',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentMethodsRequestSchema,
+          examples: {
+            basic: PostPaymentMethodsBasicExample,
+            filtered: PostPaymentMethodsFilteredExample,
+            'include-stored': PostPaymentMethodsIncludeStoredExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: PaymentMethodsResponseSchema,
+          examples: {
+            basic: PostPaymentMethodsBasic_200Example,
+            filtered: PostPaymentMethodsFiltered_200Example,
+            'include-stored': PostPaymentMethodsIncludeStored_200Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentMethodsBalanceRoute = createRoute({
+  method: 'post',
+  path: '/paymentMethods/balance',
+  tags: ['Orders'],
+  summary: 'Get the balance of a gift card',
+  description:
+    "Retrieves the balance remaining on a shopper's gift card. To check a gift card's balance, make a POST `/paymentMethods/balance` call and include the gift card's details inside a `paymentMethod` object.",
+  operationId: 'post-paymentMethods-balance',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: BalanceCheckRequestSchema,
+          examples: {
+            basic: PostPaymentMethodsBalanceBasicExample,
+            'not-enough': PostPaymentMethodsBalanceNotEnoughExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: BalanceCheckResponseSchema,
+          examples: {
+            basic: PostPaymentMethodsBalanceBasic_200Example,
+            'not-enough': PostPaymentMethodsBalanceNotEnough_200Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentsRoute = createRoute({
+  method: 'post',
+  path: '/payments',
+  tags: ['Payments'],
+  summary: 'Start a transaction',
+  description:
+    'Sends payment parameters (like amount, country, and currency) together with other required input details collected from the shopper. To know more about required parameters for specific payment methods, refer to our [payment method guides](https://docs.adyen.com/payment-methods). \nThe response depends on the [payment flow](https://docs.adyen.com/payment-methods#payment-flow):\n* For a direct flow, the response includes a `pspReference` and a `resultCode` with the payment result, for example **Authorised** or **Refused**. \n* For a redirect or additional action, the response contains an `action` object. ',
+  operationId: 'post-payments',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentRequestSchema,
+          examples: {
+            applepay: PostPaymentsApplepayExample,
+            'card-3d-secure-2-web': PostPaymentsCard_3dSecure_2WebExample,
+            'card-3d-secure-redirect': PostPaymentsCard_3dSecureRedirectExample,
+            'card-direct': PostPaymentsCardDirectExample,
+            'card-securedfields': PostPaymentsCardSecuredfieldsExample,
+            'enableOneClick-SF': PostPaymentsEnableOneClickSFExample,
+            googlepay: PostPaymentsGooglepayExample,
+            ideal: PostPaymentsIdealExample,
+            klarna: PostPaymentsKlarnaExample,
+            'on-demand-top-up-from-transfer-instrument':
+              PostPaymentsOnDemandTopUpFromTransferInstrumentExample,
+            'on-demand-top-up-visa': PostPaymentsOnDemandTopUpVisaExample,
+            'oneclick-securedfields': PostPaymentsOneclickSecuredfieldsExample,
+            'split-balanceplatform': PostPaymentsSplitBalanceplatformExample,
+            'split-classic': PostPaymentsSplitClassicExample,
+            'subscription-first-transaction': PostPaymentsSubscriptionFirstTransactionExample,
+            'subscription-payment': PostPaymentsSubscriptionPaymentExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: PaymentResponseSchema,
+          examples: {
+            'card-3d-secure-2-web': PostPaymentsCard_3dSecure_2Web_200Example,
+            'card-3d-secure-redirect': PostPaymentsCard_3dSecureRedirect_200Example,
+            'card-direct': PostPaymentsCardDirect_200Example,
+            'card-securedfields': PostPaymentsCardSecuredfields_200Example,
+            'enableOneClick-SF': PostPaymentsEnableOneClickSF_200Example,
+            ideal: PostPaymentsIdeal_200Example,
+            'on-demand-top-up-from-transfer-instrument':
+              PostPaymentsOnDemandTopUpFromTransferInstrument_200Example,
+            'on-demand-top-up-visa': PostPaymentsOnDemandTopUpVisa_200Example,
+            'split-balanceplatform': PostPaymentsSplitBalanceplatform_200Example,
+            'subscription-first-transaction': PostPaymentsSubscriptionFirstTransaction_200Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentsDetailsRoute = createRoute({
+  method: 'post',
+  path: '/payments/details',
+  tags: ['Payments'],
+  summary: 'Submit details for a payment',
+  description:
+    'Submits details for a payment created using `/payments`. This step is only needed when no final state has been reached on the `/payments` request, for example when the shopper was redirected to another page to complete the payment.\n\n',
+  operationId: 'post-payments-details',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentDetailsRequestSchema,
+          examples: {
+            '00.redirect': PostPaymentsDetails_00RedirectExample,
+            '3d-secure-2-native': PostPaymentsDetails_3dSecure_2NativeExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: PaymentDetailsResponseSchema,
+          examples: { '00.redirect': PostPaymentsDetails_00Redirect_200Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentsPaymentPspReferenceAmountUpdatesRoute = createRoute({
+  method: 'post',
+  path: '/payments/{paymentPspReference}/amountUpdates',
+  tags: ['Modifications'],
+  summary: 'Update an authorised amount',
+  description:
+    'Increases or decreases the authorised payment amount and returns a unique reference for this request. You get the outcome of the request asynchronously, in an [**AUTHORISATION_ADJUSTMENT** webhook](https://docs.adyen.com/development-resources/webhooks/webhook-types/#event-codes).\n\nYou can only update authorised amounts that have not yet been [captured](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/captures).\n\nThe amount you specify in the request is the updated amount, which is larger or smaller than the initial authorised amount.\n\nFor more information, refer to [Authorisation adjustment](https://docs.adyen.com/online-payments/adjust-authorisation#use-cases).',
+  operationId: 'post-payments-paymentPspReference-amountUpdates',
+  request: {
+    params: z.object({
+      paymentPspReference: z
+        .string()
+        .openapi({
+          param: {
+            name: 'paymentPspReference',
+            in: 'path',
+            description:
+              'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment.',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentAmountUpdateRequestSchema,
+          examples: {
+            'amount-update': PostPaymentsPaymentPspReferenceAmountUpdatesAmountUpdateExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'Created - the request has been fulfilled and has resulted in one or more new resources being created.',
+      content: {
+        'application/json': {
+          schema: PaymentAmountUpdateResponseSchema,
+          examples: {
+            'amount-update': PostPaymentsPaymentPspReferenceAmountUpdatesAmountUpdate_201Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentsPaymentPspReferenceCancelsRoute = createRoute({
+  method: 'post',
+  path: '/payments/{paymentPspReference}/cancels',
+  tags: ['Modifications'],
+  summary: 'Cancel an authorised payment',
+  description:
+    "Cancels the authorisation on a payment that has not yet been [captured](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/captures), and returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**CANCELLATION** webhook](https://docs.adyen.com/online-payments/cancel#cancellation-webhook).\n\nIf you want to cancel a payment but don't have the [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference), use the [`/cancels`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/cancels) endpoint instead.\n\nIf you want to cancel a payment but are not sure whether it has been captured, use the [`/payments/{paymentPspReference}/reversals`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/reversals) endpoint instead.\n\nFor more information, refer to [Cancel](https://docs.adyen.com/online-payments/cancel).",
+  operationId: 'post-payments-paymentPspReference-cancels',
+  request: {
+    params: z.object({
+      paymentPspReference: z
+        .string()
+        .openapi({
+          param: {
+            name: 'paymentPspReference',
+            in: 'path',
+            description:
+              'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment that you want to cancel. ',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentCancelRequestSchema,
+          examples: {
+            'cancel-with-psp-reference':
+              PostPaymentsPaymentPspReferenceCancelsCancelWithPspReferenceExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'Created - the request has been fulfilled and has resulted in one or more new resources being created.',
+      content: {
+        'application/json': {
+          schema: PaymentCancelResponseSchema,
+          examples: {
+            'cancel-with-psp-reference':
+              PostPaymentsPaymentPspReferenceCancelsCancelWithPspReference_201Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentsPaymentPspReferenceCapturesRoute = createRoute({
+  method: 'post',
+  path: '/payments/{paymentPspReference}/captures',
+  tags: ['Modifications'],
+  summary: 'Capture an authorised payment',
+  description:
+    " Captures an authorised payment and returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**CAPTURE** webhook](https://docs.adyen.com/online-payments/capture#capture-notification).\n\nYou can capture either the full authorised amount or a part of the authorised amount. By default, any unclaimed amount after a partial capture gets cancelled. This does not apply if you enabled multiple partial captures on your account and the payment method supports multiple partial captures. \n\n[Automatic capture](https://docs.adyen.com/online-payments/capture#automatic-capture) is the default setting for most payment methods. In these cases, you don't need to make capture requests. However, making capture requests for payments that are captured automatically does not result in double charges.\n\nFor more information, refer to [Capture](https://docs.adyen.com/online-payments/capture).",
+  operationId: 'post-payments-paymentPspReference-captures',
+  request: {
+    params: z.object({
+      paymentPspReference: z
+        .string()
+        .openapi({
+          param: {
+            name: 'paymentPspReference',
+            in: 'path',
+            description:
+              'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment that you want to capture.',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentCaptureRequestSchema,
+          examples: {
+            capture: PostPaymentsPaymentPspReferenceCapturesCaptureExample,
+            'split-balanceplatform':
+              PostPaymentsPaymentPspReferenceCapturesSplitBalanceplatformExample,
+            'split-classic': PostPaymentsPaymentPspReferenceCapturesSplitClassicExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'Created - the request has been fulfilled and has resulted in one or more new resources being created.',
+      content: {
+        'application/json': {
+          schema: PaymentCaptureResponseSchema,
+          examples: {
+            capture: PostPaymentsPaymentPspReferenceCapturesCapture_201Example,
+            'split-balanceplatform':
+              PostPaymentsPaymentPspReferenceCapturesSplitBalanceplatform_201Example,
+            'split-classic': PostPaymentsPaymentPspReferenceCapturesSplitClassic_201Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentsPaymentPspReferenceRefundsRoute = createRoute({
+  method: 'post',
+  path: '/payments/{paymentPspReference}/refunds',
+  tags: ['Modifications'],
+  summary: 'Refund a captured payment',
+  description:
+    "Refunds a payment that has been [captured](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/captures), and returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**REFUND** webhook](https://docs.adyen.com/online-payments/refund#refund-webhook).\n\nYou can refund either the full captured amount or a part of the captured amount. You can also perform multiple partial refunds, as long as their sum doesn't exceed the captured amount.\n\n> Some payment methods do not support partial refunds. To learn if a payment method supports partial refunds, refer to the payment method page such as [cards](https://docs.adyen.com/payment-methods/cards#supported-cards), [iDEAL](https://docs.adyen.com/payment-methods/ideal), or [Klarna](https://docs.adyen.com/payment-methods/klarna). \n\nIf you want to refund a payment but are not sure whether it has been captured, use the [`/payments/{paymentPspReference}/reversals`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/reversals) endpoint instead.\n\nFor more information, refer to [Refund](https://docs.adyen.com/online-payments/refund).",
+  operationId: 'post-payments-paymentPspReference-refunds',
+  request: {
+    params: z.object({
+      paymentPspReference: z
+        .string()
+        .openapi({
+          param: {
+            name: 'paymentPspReference',
+            in: 'path',
+            description:
+              'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment that you want to refund.',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentRefundRequestSchema,
+          examples: { refund: PostPaymentsPaymentPspReferenceRefundsRefundExample },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'Created - the request has been fulfilled and has resulted in one or more new resources being created.',
+      content: {
+        'application/json': {
+          schema: PaymentRefundResponseSchema,
+          examples: { refund: PostPaymentsPaymentPspReferenceRefundsRefund_201Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaymentsPaymentPspReferenceReversalsRoute = createRoute({
+  method: 'post',
+  path: '/payments/{paymentPspReference}/reversals',
+  tags: ['Modifications'],
+  summary: 'Refund or cancel a payment',
+  description:
+    '[Refunds](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/refunds) a payment if it has already been captured, and [cancels](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/{paymentPspReference}/cancels) a payment if it has not yet been captured. Returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**CANCEL_OR_REFUND** webhook](https://docs.adyen.com/online-payments/reversal/#cancel-or-refund-webhook).\n\nThe reversed amount is always the full payment amount.\n> Do not use this request for payments that involve multiple partial captures.\n\nFor more information, refer to [Reversal](https://docs.adyen.com/online-payments/reversal).',
+  operationId: 'post-payments-paymentPspReference-reversals',
+  request: {
+    params: z.object({
+      paymentPspReference: z
+        .string()
+        .openapi({
+          param: {
+            name: 'paymentPspReference',
+            in: 'path',
+            description:
+              'The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment that you want to reverse. ',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentReversalRequestSchema,
+          examples: { reversal: PostPaymentsPaymentPspReferenceReversalsReversalExample },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'Created - the request has been fulfilled and has resulted in one or more new resources being created.',
+      content: {
+        'application/json': {
+          schema: PaymentReversalResponseSchema,
+          examples: { reversal: PostPaymentsPaymentPspReferenceReversalsReversal_201Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postPaypalUpdateOrderRoute = createRoute({
+  method: 'post',
+  path: '/paypal/updateOrder',
+  tags: ['Utility'],
+  summary: 'Updates the order for PayPal Express Checkout',
+  description:
+    'Updates the order for PayPal Express Checkout. This can be used to update the PayPal lightbox with an updated amount and delivery methods based on the delivery address.',
+  operationId: 'post-paypal-updateOrder',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: PaypalUpdateOrderRequestSchema,
+          examples: {
+            'advanced-with-delivery': PostPaypalUpdateOrderAdvancedWithDeliveryExample,
+            'advanced-without-delivery': PostPaypalUpdateOrderAdvancedWithoutDeliveryExample,
+            'sessions-with-delivery': PostPaypalUpdateOrderSessionsWithDeliveryExample,
+            'sessions-without-delivery': PostPaypalUpdateOrderSessionsWithoutDeliveryExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: PaypalUpdateOrderResponseSchema,
+          examples: {
+            'advanced-with-delivery': PostPaypalUpdateOrderAdvancedWithDelivery_200Example,
+            'advanced-without-delivery': PostPaypalUpdateOrderAdvancedWithoutDelivery_200Example,
+            'sessions-with-delivery': PostPaypalUpdateOrderSessionsWithDelivery_200Example,
+            'sessions-without-delivery': PostPaypalUpdateOrderSessionsWithoutDelivery_200Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_400Example },
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_401Example },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_403Example },
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_422Example },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: {
+        'application/json': {
+          schema: ServiceErrorSchema,
+          examples: { generic: Generic_500Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postSessionsRoute = createRoute({
+  method: 'post',
+  path: '/sessions',
+  tags: ['Payments'],
+  summary: 'Create a payment session',
+  description:
+    'Creates a payment session for [Drop-in](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in), [Components](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Components), and [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Hosted+Checkout) integrations.\n\nThe response contains encrypted payment session data. The front end then uses the session data to make any required server-side calls for the payment flow.\n\nYou get the payment outcome asynchronously, in an [AUTHORISATION](https://docs.adyen.com/api-explorer/#/Webhooks/latest/post/AUTHORISATION) webhook.',
+  operationId: 'post-sessions',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: CreateCheckoutSessionRequestSchema,
+          examples: {
+            '00.success': PostSessions_00SuccessExample,
+            '01.klarna': PostSessions_01KlarnaExample,
+            enableOneClick: PostSessionsEnableOneClickExample,
+            split: PostSessionsSplitExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'Created - the request has been fulfilled and has resulted in one or more new resources being created.',
+      content: {
+        'application/json': {
+          schema: CreateCheckoutSessionResponseSchema,
+          examples: {
+            '00.success': PostSessions_00Success_201Example,
+            '01.klarna': PostSessions_01Klarna_201Example,
+            enableOneClick: PostSessionsEnableOneClick_201Example,
+            split: PostSessionsSplit_201Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const getSessionsSessionIdRoute = createRoute({
+  method: 'get',
+  path: '/sessions/{sessionId}',
+  tags: ['Payments'],
+  summary: 'Get the result of a payment session',
+  description:
+    'Returns the status of the payment session with the `sessionId` and `sessionResult` specified in the path.',
+  operationId: 'get-sessions-sessionId',
+  request: {
+    params: z.object({
+      sessionId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'sessionId',
+            in: 'path',
+            description: 'A unique identifier of the session.',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    query: z.object({
+      sessionResult: z
+        .string()
+        .openapi({
+          param: {
+            name: 'sessionResult',
+            in: 'query',
+            description: 'The `sessionResult` value from the Drop-in or Component.',
+            required: true,
+            style: 'form',
+            explode: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: SessionResultResponseSchema,
+          examples: { success: GetSessionsSessionIdSuccess_200Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const patchSessionsSessionIdRoute = createRoute({
+  method: 'patch',
+  path: '/sessions/{sessionId}',
+  tags: ['Payments'],
+  summary: 'Update a payment session',
+  description:
+    "Updates an existing payment session with the `sessionId` specified in the path.\n\nYou can update the session's `amount` and `payable` fields. The session can only be updated if it is not yet payable.",
+  operationId: 'patch-sessions-sessionId',
+  request: {
+    params: z.object({
+      sessionId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'sessionId',
+            in: 'path',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: CheckoutSessionPatchSessionRequestSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: CheckoutSessionPatchSessionResponseSchema } },
+    },
+  },
+})
+
+export const getStoredPaymentMethodsRoute = createRoute({
+  method: 'get',
+  path: '/storedPaymentMethods',
+  tags: ['Recurring'],
+  summary: 'Get tokens for stored payment details',
+  description:
+    "Lists the tokens for stored payment details for the shopper identified in the path, if there are any available. The token ID can be used with payment requests for the shopper's payment. A summary of the stored details is included.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#api-permissions):\n\n* API tokenise payment details",
+  operationId: 'get-storedPaymentMethods',
+  request: {
+    query: z.object({
+      shopperReference: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'shopperReference',
+            in: 'query',
+            description:
+              'Your reference to uniquely identify this shopper, for example user ID or account ID. Minimum length: 3 characters.\n> Your reference must not include personally identifiable information (PII), for example name or email address.',
+            required: false,
+            style: 'form',
+            explode: true,
+            schema: { type: 'string' },
+          },
+        }),
+      merchantAccount: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'merchantAccount',
+            in: 'query',
+            description: 'Your merchant account.',
+            required: false,
+            style: 'form',
+            explode: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: {
+        'application/json': {
+          schema: ListStoredPaymentMethodsResponseSchema,
+          examples: { success: GetStoredPaymentMethodsSuccess_200Example },
+        },
+      },
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postStoredPaymentMethodsRoute = createRoute({
+  method: 'post',
+  path: '/storedPaymentMethods',
+  tags: ['Recurring'],
+  summary: 'Create a token to store payment details',
+  description:
+    "Creates a token to store the shopper's payment details. This token can be used for the shopper's future payments.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#api-permissions):\n\n* API tokenise payment details",
+  operationId: 'post-storedPaymentMethods',
+  request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: StoredPaymentMethodRequestSchema,
+          examples: {
+            'encrypted-card-details': PostStoredPaymentMethodsEncryptedCardDetailsExample,
+            'unencrypted-card-details': PostStoredPaymentMethodsUnencryptedCardDetailsExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'Created - the request has been fulfilled and has resulted in one or more new resources being created.',
+      content: {
+        'application/json': {
+          schema: StoredPaymentMethodResourceSchema,
+          examples: {
+            'encrypted-card-details': PostStoredPaymentMethodsEncryptedCardDetails_201Example,
+            'unencrypted-card-details': PostStoredPaymentMethodsUnencryptedCardDetails_201Example,
+          },
+        },
+      },
+      headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const deleteStoredPaymentMethodsStoredPaymentMethodIdRoute = createRoute({
+  method: 'delete',
+  path: '/storedPaymentMethods/{storedPaymentMethodId}',
+  tags: ['Recurring'],
+  summary: 'Delete a token for stored payment details',
+  description:
+    'Deletes the token identified in the path. The token can no longer be used with payment requests.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#api-permissions):\n\n* API tokenise payment details',
+  operationId: 'delete-storedPaymentMethods-storedPaymentMethodId',
+  request: {
+    params: z.object({
+      storedPaymentMethodId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'storedPaymentMethodId',
+            in: 'path',
+            description: 'The unique identifier of the token.',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    query: z.object({
+      shopperReference: z
+        .string()
+        .openapi({
+          param: {
+            name: 'shopperReference',
+            in: 'query',
+            description:
+              'Your reference to uniquely identify this shopper, for example user ID or account ID. Minimum length: 3 characters.\n> Your reference must not include personally identifiable information (PII), for example name or email address.',
+            required: true,
+            style: 'form',
+            explode: true,
+            schema: { type: 'string' },
+          },
+        }),
+      merchantAccount: z
+        .string()
+        .openapi({
+          param: {
+            name: 'merchantAccount',
+            in: 'query',
+            description: 'Your merchant account.',
+            required: true,
+            style: 'form',
+            explode: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: {
+      description: 'No Content - look at the actual response code for the status of the request. ',
+    },
+  },
+  security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
+})
+
+export const postCalculateTaxRoute = createRoute({
+  method: 'post',
+  path: '/calculateTax',
+  tags: ['Utility'],
+  summary: 'Calculate the tax for a transaction.',
+  description:
+    'Calculates the applicable tax, for example the India Liberalised Remittance Scheme Tax Collected at Source, based on the taxable amount and the tax calculation context. The response returns the canonical calculation and an opaque token that you submit in /payments. Use taxCalculation.totalAmount as the amount in /payments.',
+  operationId: 'post-calculateTax',
+  request: {
+    body: {
+      content: { 'application/json': { schema: CalculateTaxRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: CalculateTaxResponseSchema } },
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+  },
+})
+
+export const postValidateShopperIdRoute = createRoute({
+  method: 'post',
+  path: '/validateShopperId',
+  tags: ['Utility'],
+  summary: 'Validates shopper Id',
+  description: 'Validates the shopperId.\n',
+  operationId: 'post-validateShopperId',
+  request: {
+    body: {
+      content: { 'application/json': { schema: ValidateShopperIdRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: ValidateShopperIdResponseSchema } },
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+  },
+})
+
+export const postVerifyShopperTaxIdentificationRoute = createRoute({
+  method: 'post',
+  path: '/verifyShopperTaxIdentification',
+  tags: ['Utility'],
+  summary: "Verify the shopper's tax identification.",
+  description:
+    "In some countries, collecting and verifying tax information is required for regulatory compliance. Submit the shopper's tax identification for verification; when the verification succeeds, the response returns an opaque token that you submit in /payments.",
+  operationId: 'post-verifyShopperTaxIdentification',
+  request: {
+    body: {
+      content: { 'application/json': { schema: VerifyShopperTaxIdentificationRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: VerifyShopperTaxIdentificationResponseSchema } },
+    },
+    400: {
+      description: 'Bad Request - a problem reading or understanding the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    401: {
+      description: 'Unauthorized - authentication required.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    403: {
+      description: 'Forbidden - insufficient permissions to process the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    422: {
+      description: 'Unprocessable Entity - a request validation error.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+    500: {
+      description: 'Internal Server Error - the server could not process the request.',
+      content: { 'application/json': { schema: CheckoutErrorResponseEntitySchema } },
+    },
+  },
+})

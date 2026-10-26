@@ -1,0 +1,10 @@
+{
+  "name": "hono-takibi-examples",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "pnpm -r run generate",
+    "typecheck": "pnpm -r run typecheck"
+  },
+  "packageManager": "pnpm@11.7.0"
+}

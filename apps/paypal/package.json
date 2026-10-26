@@ -1,0 +1,20 @@
+{
+  "name": "@apps/paypal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/billing_subscriptions_v1.config.ts && hono-takibi -c configs/catalogs_products_v1.config.ts && hono-takibi -c configs/checkout_orders_v2.config.ts && hono-takibi -c configs/customer_disputes_v1.config.ts && hono-takibi -c configs/customer_partner_referrals_v2.config.ts && hono-takibi -c configs/invoicing_v2.config.ts && hono-takibi -c configs/notifications_webhooks_v1.config.ts && hono-takibi -c configs/payment-experience_web_experience_profiles_v1.config.ts && hono-takibi -c configs/payments_payment_v2.config.ts && hono-takibi -c configs/payments_payouts_batch_v1.config.ts && hono-takibi -c configs/reporting_transactions_v1.config.ts && hono-takibi -c configs/shipping_shipment_tracking_v1.config.ts && hono-takibi -c configs/vault_payment_tokens_v3.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

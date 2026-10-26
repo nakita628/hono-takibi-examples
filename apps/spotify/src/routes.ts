@@ -1,0 +1,9139 @@
+import { createRoute, z } from '@hono/zod-openapi'
+
+const ExternalUrlObjectSchema = z
+  .object({
+    spotify: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URL](/documentation/web-api/concepts/spotify-uris-ids) for the object.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ExternalUrlObject', required: [] })
+  .openapi('ExternalUrlObject')
+
+const ImageObjectSchema = z
+  .object({
+    url: z
+      .string()
+      .openapi({
+        example: 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228\n',
+        description: 'The source URL of the image.\n',
+      }),
+    height: z
+      .int()
+      .nullable()
+      .openapi({ example: 300, description: 'The image height in pixels.\n' }),
+    width: z
+      .int()
+      .nullable()
+      .openapi({ example: 300, description: 'The image width in pixels.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ImageObject', required: ['url', 'height', 'width'] })
+  .openapi('ImageObject')
+
+const AlbumRestrictionObjectSchema = z
+  .object({
+    reason: z
+      .enum(['market', 'product', 'explicit'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason for the restriction. Albums may be restricted if the content is not available in a given market, to the user's subscription type, or when the user's account is set to not play explicit content.\nAdditional reasons may be added in the future.\n",
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'AlbumRestrictionObject', required: [] })
+  .openapi('AlbumRestrictionObject')
+
+const AlbumBaseSchema = z
+  .object({
+    album_type: z
+      .enum(['album', 'single', 'compilation'])
+      .openapi({ description: 'The type of the album.\n', example: 'compilation' }),
+    total_tracks: z
+      .int()
+      .openapi({ description: 'The number of tracks in the album.', example: 9 }),
+    available_markets: z
+      .array(z.string())
+      .openapi({
+        deprecated: true,
+        example: ['CA', 'BR', 'IT'],
+        description:
+          'The markets in which the album is available: [ISO 3166-1 alpha-2 country codes](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). _**NOTE**: an album is considered available in a market when at least 1 of its tracks is available in that market._\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.openapi({
+      description: 'Known external URLs for this album.\n',
+    }),
+    href: z
+      .string()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the album.\n',
+      }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the album.\n',
+        example: '2up3OPMp9Tb4dAKM2erWXQ',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .openapi({ description: 'The cover art for the album in various sizes, widest first.\n' }),
+    name: z
+      .string()
+      .openapi({
+        description:
+          'The name of the album. In case of an album takedown, the value may be an empty string.\n',
+      }),
+    release_date: z
+      .string()
+      .openapi({ example: '1981-12', description: 'The date the album was first released.\n' }),
+    release_date_precision: z
+      .enum(['year', 'month', 'day'])
+      .openapi({
+        example: 'year',
+        description: 'The precision with which `release_date` value is known.\n',
+      }),
+    restrictions: AlbumRestrictionObjectSchema.exactOptional().openapi({
+      description: 'Included in the response when a content restriction is applied.\n',
+    }),
+    type: z.literal('album').openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .openapi({
+        example: 'spotify:album:2up3OPMp9Tb4dAKM2erWXQ',
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the album.\n',
+      }),
+  })
+  .openapi({
+    required: [
+      'album_type',
+      'total_tracks',
+      'available_markets',
+      'external_urls',
+      'href',
+      'id',
+      'images',
+      'name',
+      'release_date',
+      'release_date_precision',
+      'type',
+      'uri',
+    ],
+  })
+  .openapi('AlbumBase')
+
+const SimplifiedArtistObjectSchema = z
+  .object({
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known external URLs for this artist.\n',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the artist.\n',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the artist.\n',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the artist.\n' }),
+    type: z.literal('artist').exactOptional().openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the artist.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SimplifiedArtistObject', required: [] })
+  .openapi('SimplifiedArtistObject')
+
+const SimplifiedAlbumObjectSchema = AlbumBaseSchema.and(
+  z
+    .object({
+      artists: z
+        .array(SimplifiedArtistObjectSchema)
+        .openapi({
+          description:
+            'The artists of the album. Each artist object includes a link in `href` to more detailed information about the artist.\n',
+        }),
+    })
+    .openapi({ required: ['artists'] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'SimplifiedAlbumObject' })
+  .openapi('SimplifiedAlbumObject')
+
+const ExternalIdObjectSchema = z
+  .object({
+    isrc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[International Standard Recording Code](http://en.wikipedia.org/wiki/International_Standard_Recording_Code)\n',
+      }),
+    ean: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[International Article Number](http://en.wikipedia.org/wiki/International_Article_Number_%28EAN%29)\n',
+      }),
+    upc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Universal Product Code](http://en.wikipedia.org/wiki/Universal_Product_Code)\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ExternalIdObject', required: [] })
+  .openapi('ExternalIdObject')
+
+const LinkedTrackObjectSchema = z
+  .object({
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known external URLs for this track.\n',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the track.\n',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The object type: "track".\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'LinkedTrackObject', required: [] })
+  .openapi('LinkedTrackObject')
+
+const TrackRestrictionObjectSchema = z
+  .object({
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason for the restriction. Supported values:\n- `market` - The content item is not available in the given market.\n- `product` - The content item is not available for the user's subscription type.\n- `explicit` - The content item is explicit and the user's account is set to not play explicit content.\n\nAdditional reasons may be added in the future.\n**Note**: If you use this field, make sure that your application safely handles unknown values.\n",
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'TrackRestrictionObject', required: [] })
+  .openapi('TrackRestrictionObject')
+
+type TrackObjectType = {
+  album?: z.infer<typeof SimplifiedAlbumObjectSchema>
+  artists?: z.infer<typeof SimplifiedArtistObjectSchema>[]
+  available_markets?: string[]
+  disc_number?: number
+  duration_ms?: number
+  explicit?: boolean
+  external_ids?: z.infer<typeof ExternalIdObjectSchema>
+  external_urls?: z.infer<typeof ExternalUrlObjectSchema>
+  href?: string
+  id?: string
+  is_playable?: boolean
+  linked_from?: z.infer<typeof LinkedTrackObjectSchema>
+  restrictions?: z.infer<typeof TrackRestrictionObjectSchema>
+  name?: string
+  popularity?: number
+  preview_url?: string | null
+  track_number?: number
+  type?: 'track'
+  uri?: string
+  is_local?: boolean
+}
+
+const EpisodeRestrictionObjectSchema = z
+  .object({
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason for the restriction. Supported values:\n- `market` - The content item is not available in the given market.\n- `product` - The content item is not available for the user's subscription type.\n- `explicit` - The content item is explicit and the user's account is set to not play explicit content.\n\nAdditional reasons may be added in the future.\n**Note**: If you use this field, make sure that your application safely handles unknown values.\n",
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'EpisodeRestrictionObject', required: [] })
+  .openapi('EpisodeRestrictionObject')
+
+const ChapterRestrictionObjectSchema = z
+  .object({
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason for the restriction. Supported values:\n- `market` - The content item is not available in the given market.\n- `product` - The content item is not available for the user's subscription type.\n- `explicit` - The content item is explicit and the user's account is set to not play explicit content.\n- `payment_required` - Payment is required to play the content item.\n\nAdditional reasons may be added in the future.\n**Note**: If you use this field, make sure that your application safely handles unknown values.\n",
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ChapterRestrictionObject', required: [] })
+  .openapi('ChapterRestrictionObject')
+
+const FollowersObjectSchema = z
+  .object({
+    href: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This will always be set to null, as the Web API does not support it at the moment.\n',
+      }),
+    total: z.int().exactOptional().openapi({ description: 'The total number of followers.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'FollowersObject', required: [] })
+  .openapi('FollowersObject')
+
+const ArtistObjectSchema = z
+  .object({
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known external URLs for this artist.\n',
+    }),
+    followers: FollowersObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Information about the followers of the artist.\n',
+    }),
+    genres: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        example: ['Prog rock', 'Grunge'],
+        description:
+          'A list of the genres the artist is associated with. If not yet classified, the array is empty.\n',
+      }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the artist.\n',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the artist.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'Images of the artist in various sizes, widest first.\n' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the artist.\n' }),
+    popularity: z
+      .int()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular. The artist's popularity is calculated from the popularity of all the artist's tracks.\n",
+      }),
+    type: z.literal('artist').exactOptional().openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the artist.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ArtistObject', required: [] })
+  .openapi('ArtistObject')
+
+const TrackObjectSchema: z.ZodType<TrackObjectType> = z
+  .lazy(() =>
+    z
+      .object({
+        album: SimplifiedAlbumObjectSchema.exactOptional().openapi({
+          description:
+            'The album on which the track appears. The album object includes a link in `href` to full information about the album.\n',
+        }),
+        artists: z
+          .array(SimplifiedArtistObjectSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The artists who performed the track. Each artist object includes a link in `href` to more detailed information about the artist.\n',
+          }),
+        available_markets: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description:
+              'A list of the countries in which the track can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
+          }),
+        disc_number: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The disc number (usually `1` unless the album consists of more than one disc).\n',
+          }),
+        duration_ms: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The track length in milliseconds.\n' }),
+        explicit: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether or not the track has explicit lyrics ( `true` = yes it does; `false` = no it does not OR unknown).\n',
+          }),
+        external_ids: ExternalIdObjectSchema.exactOptional().openapi({
+          description: 'Known external IDs for the track.\n',
+        }),
+        external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+          description: 'Known external URLs for this track.\n',
+        }),
+        href: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A link to the Web API endpoint providing full details of the track.\n',
+          }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+          }),
+        is_playable: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking) is applied. If `true`, the track is playable in the given market. Otherwise `false`.\n',
+          }),
+        linked_from: LinkedTrackObjectSchema.exactOptional().openapi({
+          deprecated: true,
+          description:
+            'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking) is applied, and the requested track has been replaced with different track. The track in the `linked_from` object contains information about the originally requested track.',
+        }),
+        restrictions: TrackRestrictionObjectSchema.exactOptional().openapi({
+          description: 'Included in the response when a content restriction is applied.\n',
+        }),
+        name: z.string().exactOptional().openapi({ description: 'The name of the track.\n' }),
+        popularity: z
+          .int()
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description:
+              'The popularity of the track. The value will be between 0 and 100, with 100 being the most popular.<br/>The popularity of a track is a value between 0 and 100, with 100 being the most popular. The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are.<br/>Generally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past. Duplicate tracks (e.g. the same track from a single and an album) are rated independently. Artist and album popularity is derived mathematically from track popularity. _**Note**: the popularity value may lag actual popularity by a few days: the value is not updated in real time._\n',
+          }),
+        preview_url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description: 'A link to a 30 second preview (MP3 format) of the track. Can be `null`\n',
+          }),
+        track_number: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of the track. If an album has several discs, the track number is the number on the specified disc.\n',
+          }),
+        type: z
+          .literal('track')
+          .exactOptional()
+          .openapi({ description: 'The object type: "track".\n' }),
+        uri: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+          }),
+        is_local: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether or not the track is from a local file.\n' }),
+      })
+      .openapi({ 'x-spotify-docs-type': 'TrackObject', required: [] }),
+  )
+  .openapi('TrackObject')
+
+const ContextObjectSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The object type, e.g. "artist", "playlist", "album", "show".\n' }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the track.',
+      }),
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'External URLs for this context.',
+    }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the context.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ContextObject', required: [] })
+  .openapi('ContextObject')
+
+const PlayHistoryObjectSchema = z
+  .object({
+    track: TrackObjectSchema.exactOptional().openapi({
+      description: 'The track the user listened to.',
+    }),
+    played_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description: 'The date and time the track was played.',
+      }),
+    context: ContextObjectSchema.exactOptional().openapi({
+      description: 'The context the track was played from.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'PlayHistoryObject', required: [] })
+  .openapi('PlayHistoryObject')
+
+const PlaylistUserObjectSchema = z
+  .object({
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known public external URLs for this user.\n',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A link to the Web API endpoint for this user.\n' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify user ID](/documentation/web-api/concepts/spotify-uris-ids) for this user.\n',
+      }),
+    type: z.literal('user').exactOptional().openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for this user.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'PlaylistUserObject', required: [] })
+  .openapi('PlaylistUserObject')
+
+const ResumePointObjectSchema = z
+  .object({
+    fully_played: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the episode has been fully played by the user.\n' }),
+    resume_position_ms: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: "The user's most recent position in the episode in milliseconds.\n",
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ResumePointObject', required: [] })
+  .openapi('ResumePointObject')
+
+const EpisodeBaseSchema = z
+  .object({
+    audio_preview_url: z
+      .string()
+      .nullable()
+      .openapi({
+        deprecated: true,
+        example: 'https://p.scdn.co/mp3-preview/2f37da1d4221f40b9d1a98cd191f4d6f1646ad17',
+        description:
+          'A URL to a 30 second preview (MP3 format) of the episode. `null` if not available.\n',
+      }),
+    description: z
+      .string()
+      .openapi({
+        example:
+          'A Spotify podcast sharing fresh insights on important topics of the moment—in a way only Spotify can. You’ll hear from experts in the music, podcast and tech industries as we discover and uncover stories about our work and the world around us.\n',
+        description:
+          'A description of the episode. HTML tags are stripped away from this field, use `html_description` field in case HTML tags are needed.\n',
+      }),
+    html_description: z
+      .string()
+      .openapi({
+        example:
+          '<p>A Spotify podcast sharing fresh insights on important topics of the moment—in a way only Spotify can. You’ll hear from experts in the music, podcast and tech industries as we discover and uncover stories about our work and the world around us.</p>\n',
+        description: 'A description of the episode. This field may contain HTML tags.\n',
+      }),
+    duration_ms: z
+      .int()
+      .openapi({ example: 1686230, description: 'The episode length in milliseconds.\n' }),
+    explicit: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether or not the episode has explicit content (true = yes it does; false = no it does not OR unknown).\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.openapi({
+      description: 'External URLs for this episode.\n',
+    }),
+    href: z
+      .string()
+      .openapi({
+        example: 'https://api.spotify.com/v1/episodes/5Xt5DXGzch68nYYamXrNxZ',
+        description: 'A link to the Web API endpoint providing full details of the episode.\n',
+      }),
+    id: z
+      .string()
+      .openapi({
+        example: '5Xt5DXGzch68nYYamXrNxZ',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the episode.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .openapi({ description: 'The cover art for the episode in various sizes, widest first.\n' }),
+    is_externally_hosted: z
+      .boolean()
+      .openapi({ description: "True if the episode is hosted outside of Spotify's CDN.\n" }),
+    is_playable: z
+      .boolean()
+      .openapi({
+        description: 'True if the episode is playable in the given market. Otherwise false.\n',
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        example: 'en',
+        description:
+          'The language used in the episode, identified by a [ISO 639](https://en.wikipedia.org/wiki/ISO_639) code. This field is deprecated and might be removed in the future. Please use the `languages` field instead.\n',
+      }),
+    languages: z
+      .array(z.string())
+      .openapi({
+        example: ['fr', 'en'],
+        description:
+          'A list of the languages used in the episode, identified by their [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639) code.\n',
+      }),
+    name: z
+      .string()
+      .openapi({
+        example: 'Starting Your Own Podcast: Tips, Tricks, and Advice From Anchor Creators\n',
+        description: 'The name of the episode.\n',
+      }),
+    release_date: z
+      .string()
+      .openapi({
+        example: '1981-12-15',
+        description:
+          'The date the episode was first released, for example `"1981-12-15"`. Depending on the precision, it might be shown as `"1981"` or `"1981-12"`.\n',
+      }),
+    release_date_precision: z
+      .enum(['year', 'month', 'day'])
+      .openapi({
+        example: 'day',
+        description: 'The precision with which `release_date` value is known.\n',
+      }),
+    resume_point: ResumePointObjectSchema.exactOptional().openapi({
+      description:
+        "The user's most recent position in the episode. Set if the supplied access token is a user token and has the scope 'user-read-playback-position'.\n",
+    }),
+    type: z.literal('episode').openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .openapi({
+        example: 'spotify:episode:0zLhl3WsOCQHbe1BPTiHgr',
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the episode.\n',
+      }),
+    restrictions: EpisodeRestrictionObjectSchema.exactOptional().openapi({
+      description: 'Included in the response when a content restriction is applied.\n',
+    }),
+  })
+  .openapi({
+    required: [
+      'audio_preview_url',
+      'description',
+      'html_description',
+      'duration_ms',
+      'explicit',
+      'external_urls',
+      'href',
+      'id',
+      'images',
+      'is_externally_hosted',
+      'is_playable',
+      'languages',
+      'name',
+      'release_date',
+      'release_date_precision',
+      'type',
+      'uri',
+    ],
+  })
+  .openapi('EpisodeBase')
+
+const CopyrightObjectSchema = z
+  .object({
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The copyright text for this content.\n' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of copyright: `C` = the copyright, `P` = the sound recording (performance) copyright.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CopyrightObject', required: [] })
+  .openapi('CopyrightObject')
+
+const ShowBaseSchema = z
+  .object({
+    available_markets: z
+      .array(z.string())
+      .openapi({
+        deprecated: true,
+        description:
+          'A list of the countries in which the show can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
+      }),
+    copyrights: z
+      .array(CopyrightObjectSchema)
+      .openapi({ description: 'The copyright statements of the show.\n' }),
+    description: z
+      .string()
+      .openapi({
+        description:
+          'A description of the show. HTML tags are stripped away from this field, use `html_description` field in case HTML tags are needed.\n',
+      }),
+    html_description: z
+      .string()
+      .openapi({ description: 'A description of the show. This field may contain HTML tags.\n' }),
+    explicit: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether or not the show has explicit content (true = yes it does; false = no it does not OR unknown).\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.openapi({
+      description: 'External URLs for this show.\n',
+    }),
+    href: z
+      .string()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the show.\n',
+      }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the show.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .openapi({ description: 'The cover art for the show in various sizes, widest first.\n' }),
+    is_externally_hosted: z
+      .boolean()
+      .openapi({
+        description:
+          "True if all of the shows episodes are hosted outside of Spotify's CDN. This field might be `null` in some cases.\n",
+      }),
+    languages: z
+      .array(z.string())
+      .openapi({
+        description:
+          'A list of the languages used in the show, identified by their [ISO 639](https://en.wikipedia.org/wiki/ISO_639) code.\n',
+      }),
+    media_type: z.string().openapi({ description: 'The media type of the show.\n' }),
+    name: z.string().openapi({ description: 'The name of the episode.\n' }),
+    publisher: z
+      .string()
+      .openapi({ deprecated: true, description: 'The publisher of the show.\n' }),
+    type: z.literal('show').openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the show.\n',
+      }),
+    total_episodes: z.int().openapi({ description: 'The total number of episodes in the show.\n' }),
+  })
+  .openapi({
+    required: [
+      'available_markets',
+      'copyrights',
+      'description',
+      'explicit',
+      'external_urls',
+      'href',
+      'html_description',
+      'id',
+      'images',
+      'is_externally_hosted',
+      'languages',
+      'media_type',
+      'name',
+      'publisher',
+      'total_episodes',
+      'type',
+      'uri',
+    ],
+  })
+  .openapi('ShowBase')
+
+const SimplifiedShowObjectSchema = ShowBaseSchema.openapi({
+  'x-spotify-docs-type': 'SimplifiedShowObject',
+}).openapi('SimplifiedShowObject')
+
+const EpisodeObjectSchema = EpisodeBaseSchema.and(
+  z
+    .object({
+      show: SimplifiedShowObjectSchema.openapi({
+        description: 'The show on which the episode belongs.\n',
+      }),
+    })
+    .openapi({ required: ['show'] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'EpisodeObject' })
+  .openapi('EpisodeObject')
+
+const PlaylistTrackObjectSchema = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the track or episode was added. _**Note**: some very old playlists may return `null` in this field._\n',
+      }),
+    added_by: PlaylistUserObjectSchema.exactOptional().openapi({
+      description:
+        'The Spotify user who added the track or episode. _**Note**: some very old playlists may return `null` in this field._\n',
+    }),
+    is_local: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this track or episode is a [local file](/documentation/web-api/concepts/playlists/#local-files) or not.\n',
+      }),
+    item: z
+      .xor([TrackObjectSchema, EpisodeObjectSchema])
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'TrackObject | EpisodeObject',
+        description: 'Information about the track or episode.',
+        discriminator: { propertyName: 'type' },
+      }),
+    track: z
+      .xor([TrackObjectSchema, EpisodeObjectSchema])
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'TrackObject | EpisodeObject',
+        deprecated: true,
+        description:
+          '**Deprecated:** Use `item` instead. Information about the track or episode.\n',
+        discriminator: { propertyName: 'type' },
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'PlaylistTrackObject', required: [] })
+  .openapi('PlaylistTrackObject')
+
+const QueueObjectSchema = z
+  .object({
+    currently_playing: z
+      .xor([TrackObjectSchema, EpisodeObjectSchema])
+      .exactOptional()
+      .openapi({
+        discriminator: { propertyName: 'type' },
+        'x-spotify-docs-type': 'TrackObject | EpisodeObject',
+        description: 'The currently playing track or episode. Can be `null`.',
+      }),
+    queue: z
+      .array(
+        z
+          .xor([TrackObjectSchema, EpisodeObjectSchema])
+          .openapi({
+            discriminator: { propertyName: 'type' },
+            'x-spotify-docs-type': 'TrackObject | EpisodeObject',
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The tracks or episodes in the queue. Can be empty.' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'QueueObject', required: [] })
+  .openapi('QueueObject')
+
+const DeviceObjectSchema = z
+  .object({
+    id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The device ID. This ID is unique and persistent to some extent. However, this is not guaranteed and any cached `device_id` should periodically be cleared out and refetched as necessary.',
+      }),
+    is_active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If this device is the currently active device.' }),
+    is_private_session: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If this device is currently in a private session.' }),
+    is_restricted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether controlling this device is restricted. At present if this is "true" then no Web API commands will be accepted by this device.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'Kitchen speaker',
+        description:
+          'A human-readable name for the device. Some devices have a name that the user can configure (e.g. \\"Loudest speaker\\") and some devices have a generic name associated with the manufacturer or device model.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'computer',
+        description: 'Device type, such as "computer", "smartphone" or "speaker".',
+      }),
+    volume_percent: z
+      .int()
+      .min(0)
+      .max(100)
+      .nullable()
+      .exactOptional()
+      .openapi({ example: 59, description: 'The current volume in percent.' }),
+    supports_volume: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If this device can be used to set the volume.' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'DeviceObject', required: [] })
+  .openapi('DeviceObject')
+
+const DisallowsObjectSchema = z
+  .object({
+    interrupting_playback: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Interrupting playback. Optional field.' }),
+    pausing: z.boolean().exactOptional().openapi({ description: 'Pausing. Optional field.' }),
+    resuming: z.boolean().exactOptional().openapi({ description: 'Resuming. Optional field.' }),
+    seeking: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Seeking playback location. Optional field.' }),
+    skipping_next: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Skipping to the next context. Optional field.' }),
+    skipping_prev: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Skipping to the previous context. Optional field.' }),
+    toggling_repeat_context: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Toggling repeat context flag. Optional field.' }),
+    toggling_shuffle: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Toggling shuffle flag. Optional field.' }),
+    toggling_repeat_track: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Toggling repeat track flag. Optional field.' }),
+    transferring_playback: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Transfering playback between devices. Optional field.' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'DisallowsObject', required: [] })
+  .openapi('DisallowsObject')
+
+const CurrentlyPlayingContextObjectSchema = z
+  .object({
+    device: DeviceObjectSchema.exactOptional().openapi({
+      description: 'The device that is currently active.\n',
+    }),
+    repeat_state: z.string().exactOptional().openapi({ description: 'off, track, context' }),
+    shuffle_state: z.boolean().exactOptional().openapi({ description: 'If shuffle is on or off.' }),
+    context: ContextObjectSchema.exactOptional().openapi({
+      description: 'A Context Object. Can be `null`.',
+    }),
+    timestamp: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Unix Millisecond Timestamp when playback state was last changed (play, pause, skip, scrub, new song, etc.).',
+      }),
+    progress_ms: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Progress into the currently playing track or episode. Can be `null`.',
+      }),
+    is_playing: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If something is currently playing, return `true`.' }),
+    item: z
+      .xor([TrackObjectSchema, EpisodeObjectSchema])
+      .exactOptional()
+      .openapi({
+        discriminator: { propertyName: 'type' },
+        'x-spotify-docs-type': 'TrackObject | EpisodeObject',
+        description: 'The currently playing track or episode. Can be `null`.',
+      }),
+    currently_playing_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The object type of the currently playing item. Can be one of `track`, `episode`, `ad` or `unknown`.\n',
+      }),
+    actions: DisallowsObjectSchema.exactOptional().openapi({
+      description:
+        'Allows to update the user interface based on which playback actions are available within the current context.\n',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CurrentlyPlayingContextObject', required: [] })
+  .openapi('CurrentlyPlayingContextObject')
+
+const ErrorObjectSchema = z
+  .object({
+    status: z
+      .int()
+      .min(400)
+      .max(599)
+      .openapi({
+        description:
+          'The HTTP status code (also returned in the response header; see [Response Status Codes](/documentation/web-api/concepts/api-calls#response-status-codes) for more information).\n',
+      }),
+    message: z
+      .string()
+      .openapi({ description: 'A short description of the cause of the error.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ErrorObject', required: ['status', 'message'] })
+  .openapi('ErrorObject')
+
+const ExplicitContentSettingsObjectSchema = z
+  .object({
+    filter_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'When `true`, indicates that explicit content should not be played.\n',
+      }),
+    filter_locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "When `true`, indicates that the explicit content setting is locked and can't be changed by the user.\n",
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ExplicitContentSettingsObject', required: [] })
+  .openapi('ExplicitContentSettingsObject')
+
+const PrivateUserObjectSchema = z
+  .object({
+    account_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A public, immutable, pseudoanonymous identifier for the user's account. Use this field for account linking rather than the `id` field, as it is stable and will not change over the lifetime of the account.\n",
+        example: 'aB3dE5fG7h',
+      }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "The country of the user, as set in the user's account profile. An [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). _This field is only available when the current user has granted access to the [user-read-private](/documentation/web-api/concepts/scopes/#list-of-scopes) scope._\n",
+      }),
+    display_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The name displayed on the user's profile. `null` if not available.\n",
+      }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "The user's email address, as entered by the user when creating their account. _**Important!** This email address is unverified; there is no proof that it actually belongs to the user._ _This field is only available when the current user has granted access to the [user-read-email](/documentation/web-api/concepts/scopes/#list-of-scopes) scope._\n",
+      }),
+    explicit_content: ExplicitContentSettingsObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "The user's explicit content settings. _This field is only available when the current user has granted access to the [user-read-private](/documentation/web-api/concepts/scopes/#list-of-scopes) scope._\n",
+    }),
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known external URLs for this user.',
+    }),
+    followers: FollowersObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Information about the followers of the user.',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A link to the Web API endpoint for this user.\n' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify user ID](/documentation/web-api/concepts/spotify-uris-ids) for the user. Do not use this field for account linking — use `account_id` instead, which is immutable.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .exactOptional()
+      .openapi({ description: "The user's profile image." }),
+    product: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The user\'s Spotify subscription level: "premium", "free", etc. (The subscription level "open" can be considered the same as "free".) _This field is only available when the current user has granted access to the [user-read-private](/documentation/web-api/concepts/scopes/#list-of-scopes) scope._\n',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The object type: "user"\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the user.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'PrivateUserObject', required: [] })
+  .openapi('PrivateUserObject')
+
+const PublicUserObjectSchema = z
+  .object({
+    display_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "The name displayed on the user's profile. `null` if not available.\n",
+      }),
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known public external URLs for this user.\n',
+    }),
+    followers: FollowersObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Information about the followers of this user.\n',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A link to the Web API endpoint for this user.\n' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify user ID](/documentation/web-api/concepts/spotify-uris-ids) for this user.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .exactOptional()
+      .openapi({ description: "The user's profile image.\n" }),
+    type: z.literal('user').exactOptional().openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for this user.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'PublicUserObject', required: [] })
+  .openapi('PublicUserObject')
+
+const LoudnessSchema = z
+  .float32()
+  .openapi({
+    example: -5.883,
+    'x-spotify-docs-type': 'Float',
+    description:
+      'The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typically range between -60 and 0 db.\n',
+  })
+  .openapi('Loudness')
+
+const TempoSchema = z
+  .float32()
+  .openapi({
+    example: 118.211,
+    'x-spotify-docs-type': 'Float',
+    description:
+      'The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.\n',
+  })
+  .openapi('Tempo')
+
+const TimeSignatureSchema = z
+  .int()
+  .min(3)
+  .max(7)
+  .openapi({
+    description:
+      'An estimated time signature. The time signature (meter) is a notational convention to specify how many beats are in each bar (or measure). The time signature ranges from 3 to 7 indicating time signatures of "3/4", to "7/4".',
+    example: 4,
+  })
+  .openapi('TimeSignature')
+
+const KeySchema = z
+  .int()
+  .min(-1)
+  .max(11)
+  .openapi({
+    example: 9,
+    description:
+      'The key the track is in. Integers map to pitches using standard [Pitch Class notation](https://en.wikipedia.org/wiki/Pitch_class). E.g. 0 = C, 1 = C♯/D♭, 2 = D, and so on. If no key was detected, the value is -1.\n',
+  })
+  .openapi('Key')
+
+const ModeSchema = z
+  .int()
+  .openapi({
+    example: 0,
+    description:
+      'Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0.\n',
+  })
+  .openapi('Mode')
+
+const TimeIntervalObjectSchema = z
+  .object({
+    start: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The starting point (in seconds) of the time interval.',
+        example: 0.49567,
+      }),
+    duration: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The duration (in seconds) of the time interval.',
+        example: 2.18749,
+      }),
+    confidence: z
+      .number()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description: 'The confidence, from 0.0 to 1.0, of the reliability of the interval.',
+        example: 0.925,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TimeIntervalObject')
+
+const SectionObjectSchema = z
+  .object({
+    start: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The starting point (in seconds) of the section.', example: 0 }),
+    duration: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The duration (in seconds) of the section.', example: 6.97092 }),
+    confidence: z
+      .number()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The confidence, from 0.0 to 1.0, of the reliability of the section\'s "designation".',
+        example: 1,
+      }),
+    loudness: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The overall loudness of the section in decibels (dB). Loudness values are useful for comparing relative loudness of sections within tracks.',
+        example: -14.938,
+      }),
+    tempo: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The overall estimated tempo of the section in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.',
+        example: 113.178,
+      }),
+    tempo_confidence: z
+      .number()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          "The confidence, from 0.0 to 1.0, of the reliability of the tempo. Some tracks contain tempo changes or sounds which don't contain tempo (like pure speech) which would correspond to a low value in this field.",
+        example: 0.647,
+      }),
+    key: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The estimated overall key of the section. The values in this field ranging from 0 to 11 mapping to pitches using standard Pitch Class notation (E.g. 0 = C, 1 = C♯/D♭, 2 = D, and so on). If no key was detected, the value is -1.',
+        example: 9,
+      }),
+    key_confidence: z
+      .number()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The confidence, from 0.0 to 1.0, of the reliability of the key. Songs with many key changes may correspond to low values in this field.',
+        example: 0.297,
+      }),
+    mode: z
+      .union([z.literal(-1), z.literal(0), z.literal(1)])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the modality (major or minor) of a section, the type of scale from which its melodic content is derived. This field will contain a 0 for "minor", a 1 for "major", or a -1 for no result. Note that the major key (e.g. C major) could more likely be confused with the minor key at 3 semitones lower (e.g. A minor) as both keys carry the same pitches.',
+      }),
+    mode_confidence: z
+      .number()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description: 'The confidence, from 0.0 to 1.0, of the reliability of the `mode`.',
+        example: 0.471,
+      }),
+    time_signature: TimeSignatureSchema.exactOptional(),
+    time_signature_confidence: z
+      .number()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The confidence, from 0.0 to 1.0, of the reliability of the `time_signature`. Sections with time signature changes may correspond to low values in this field.',
+        example: 1,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SectionObject')
+
+const SegmentObjectSchema = z
+  .object({
+    start: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The starting point (in seconds) of the segment.',
+        example: 0.70154,
+      }),
+    duration: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The duration (in seconds) of the segment.', example: 0.19891 }),
+    confidence: z
+      .number()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        example: 0.435,
+        description:
+          'The confidence, from 0.0 to 1.0, of the reliability of the segmentation. Segments of the song which are difficult to logically segment (e.g: noise) may correspond to low values in this field.\n',
+      }),
+    loudness_start: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The onset loudness of the segment in decibels (dB). Combined with `loudness_max` and `loudness_max_time`, these components can be used to describe the "attack" of the segment.',
+        example: -23.053,
+      }),
+    loudness_max: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The peak loudness of the segment in decibels (dB). Combined with `loudness_start` and `loudness_max_time`, these components can be used to describe the "attack" of the segment.',
+        example: -14.25,
+      }),
+    loudness_max_time: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The segment-relative offset of the segment peak loudness in seconds. Combined with `loudness_start` and `loudness_max`, these components can be used to desctibe the "attack" of the segment.',
+        example: 0.07305,
+      }),
+    loudness_end: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The offset loudness of the segment in decibels (dB). This value should be equivalent to the loudness_start of the following segment.',
+        example: 0,
+      }),
+    pitches: z
+      .array(z.number().min(0).max(1))
+      .exactOptional()
+      .openapi({
+        description:
+          'Pitch content is given by a “chroma” vector, corresponding to the 12 pitch classes C, C#, D to B, with values ranging from 0 to 1 that describe the relative dominance of every pitch in the chromatic scale. For example a C Major chord would likely be represented by large values of C, E and G (i.e. classes 0, 4, and 7).\n\nVectors are normalized to 1 by their strongest dimension, therefore noisy sounds are likely represented by values that are all close to 1, while pure tones are described by one value at 1 (the pitch) and others near 0.\nAs can be seen below, the 12 vector indices are a combination of low-power spectrum values at their respective pitch frequencies.\n![pitch vector](/assets/audio/Pitch_vector.png)\n',
+        example: [0.212, 0.141, 0.294],
+      }),
+    timbre: z
+      .array(z.number())
+      .exactOptional()
+      .openapi({
+        description:
+          'Timbre is the quality of a musical note or sound that distinguishes different types of musical instruments, or voices. It is a complex notion also referred to as sound color, texture, or tone quality, and is derived from the shape of a segment’s spectro-temporal surface, independently of pitch and loudness. The timbre feature is a vector that includes 12 unbounded values roughly centered around 0. Those values are high level abstractions of the spectral surface, ordered by degree of importance.\n\nFor completeness however, the first dimension represents the average loudness of the segment; second emphasizes brightness; third is more closely correlated to the flatness of a sound; fourth to sounds with a stronger attack; etc. See an image below representing the 12 basis functions (i.e. template segments).\n![timbre basis functions](/assets/audio/Timbre_basis_functions.png)\n\nThe actual timbre of the segment is best described as a linear combination of these 12 basis functions weighted by the coefficient values: timbre = c1 x b1 + c2 x b2 + ... + c12 x b12, where c1 to c12 represent the 12 coefficients and b1 to b12 the 12 basis functions as displayed below. Timbre vectors are best used in comparison with each other.\n',
+        example: [42.115, 64.373, -0.233],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SegmentObject')
+
+const AudioAnalysisObjectSchema = z
+  .object({
+    meta: z
+      .object({
+        analyzer_version: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: '4.0.0',
+            description: 'The version of the Analyzer used to analyze this track.',
+          }),
+        platform: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'Linux',
+            description: "The platform used to read the track's audio data.",
+          }),
+        detailed_status: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'OK',
+            description:
+              'A detailed status code for this track. If analysis data is missing, this code may explain why.',
+          }),
+        status_code: z
+          .int()
+          .exactOptional()
+          .openapi({
+            example: 0,
+            description:
+              'The return code of the analyzer process. 0 if successful, 1 if any errors occurred.',
+          }),
+        timestamp: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            example: 1495193577,
+            description: 'The Unix timestamp (in seconds) at which this track was analyzed.',
+          }),
+        analysis_time: z
+          .number()
+          .exactOptional()
+          .openapi({
+            example: 6.93906,
+            description: 'The amount of time taken to analyze this track.',
+          }),
+        input_process: z
+          .string()
+          .exactOptional()
+          .openapi({
+            example: 'libvorbisfile L+R 44100->22050',
+            description: "The method used to read the track's audio data.",
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    track: z
+      .object({
+        num_samples: z
+          .int()
+          .exactOptional()
+          .openapi({
+            example: 4585515,
+            description:
+              'The exact number of audio samples analyzed from this track. See also `analysis_sample_rate`.',
+          }),
+        duration: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Length of the track in seconds.', example: 207.95985 }),
+        sample_md5: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'This field will always contain the empty string.' }),
+        offset_seconds: z
+          .int()
+          .exactOptional()
+          .openapi({
+            example: 0,
+            description:
+              'An offset to the start of the region of the track that was analyzed. (As the entire track is analyzed, this should always be 0.)',
+          }),
+        window_seconds: z
+          .int()
+          .exactOptional()
+          .openapi({
+            example: 0,
+            description:
+              'The length of the region of the track was analyzed, if a subset of the track was analyzed. (As the entire track is analyzed, this should always be 0.)',
+          }),
+        analysis_sample_rate: z
+          .int()
+          .exactOptional()
+          .openapi({
+            example: 22050,
+            description:
+              'The sample rate used to decode and analyze this track. May differ from the actual sample rate of this track available on Spotify.',
+          }),
+        analysis_channels: z
+          .int()
+          .exactOptional()
+          .openapi({
+            example: 1,
+            description:
+              'The number of channels used for analysis. If 1, all channels are summed together to mono before analysis.',
+          }),
+        end_of_fade_in: z
+          .number()
+          .exactOptional()
+          .openapi({
+            example: 0,
+            description:
+              "The time, in seconds, at which the track's fade-in period ends. If the track has no fade-in, this will be 0.0.",
+          }),
+        start_of_fade_out: z
+          .number()
+          .exactOptional()
+          .openapi({
+            example: 201.13705,
+            description:
+              "The time, in seconds, at which the track's fade-out period starts. If the track has no fade-out, this should match the track's length.",
+          }),
+        loudness: LoudnessSchema.exactOptional(),
+        tempo: TempoSchema.exactOptional(),
+        tempo_confidence: z
+          .number()
+          .min(0)
+          .max(1)
+          .exactOptional()
+          .openapi({
+            example: 0.73,
+            description: 'The confidence, from 0.0 to 1.0, of the reliability of the `tempo`.',
+          }),
+        time_signature: TimeSignatureSchema.exactOptional(),
+        time_signature_confidence: z
+          .number()
+          .min(0)
+          .max(1)
+          .exactOptional()
+          .openapi({
+            example: 0.994,
+            description:
+              'The confidence, from 0.0 to 1.0, of the reliability of the `time_signature`.',
+          }),
+        key: KeySchema.exactOptional(),
+        key_confidence: z
+          .number()
+          .min(0)
+          .max(1)
+          .exactOptional()
+          .openapi({
+            example: 0.408,
+            description: 'The confidence, from 0.0 to 1.0, of the reliability of the `key`.',
+          }),
+        mode: ModeSchema.exactOptional(),
+        mode_confidence: z
+          .number()
+          .min(0)
+          .max(1)
+          .exactOptional()
+          .openapi({
+            example: 0.485,
+            description: 'The confidence, from 0.0 to 1.0, of the reliability of the `mode`.',
+          }),
+        codestring: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'An [Echo Nest Musical Fingerprint (ENMFP)](https://academiccommons.columbia.edu/doi/10.7916/D8Q248M4) codestring for this track.',
+          }),
+        code_version: z
+          .number()
+          .exactOptional()
+          .openapi({
+            example: 3.15,
+            description:
+              'A version number for the Echo Nest Musical Fingerprint format used in the codestring field.',
+          }),
+        echoprintstring: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'An [EchoPrint](https://github.com/spotify/echoprint-codegen) codestring for this track.',
+          }),
+        echoprint_version: z
+          .number()
+          .exactOptional()
+          .openapi({
+            example: 4.15,
+            description:
+              'A version number for the EchoPrint format used in the echoprintstring field.',
+          }),
+        synchstring: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A [Synchstring](https://github.com/echonest/synchdata) for this track.',
+          }),
+        synch_version: z
+          .number()
+          .exactOptional()
+          .openapi({
+            example: 1,
+            description: 'A version number for the Synchstring used in the synchstring field.',
+          }),
+        rhythmstring: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A Rhythmstring for this track. The format of this string is similar to the Synchstring.',
+          }),
+        rhythm_version: z
+          .number()
+          .exactOptional()
+          .openapi({
+            example: 1,
+            description: 'A version number for the Rhythmstring used in the rhythmstring field.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    bars: z
+      .array(TimeIntervalObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The time intervals of the bars throughout the track. A bar (or measure) is a segment of time defined as a given number of beats.',
+      }),
+    beats: z
+      .array(TimeIntervalObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The time intervals of beats throughout the track. A beat is the basic time unit of a piece of music; for example, each tick of a metronome. Beats are typically multiples of tatums.',
+      }),
+    sections: z
+      .array(SectionObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Sections are defined by large variations in rhythm or timbre, e.g. chorus, verse, bridge, guitar solo, etc. Each section contains its own descriptions of tempo, key, mode, time_signature, and loudness.',
+      }),
+    segments: z
+      .array(SegmentObjectSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Each segment contains a roughly conisistent sound throughout its duration.',
+      }),
+    tatums: z
+      .array(TimeIntervalObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A tatum represents the lowest regular pulse train that a listener intuitively infers from the timing of perceived musical events (segments).',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'AudioAnalysisObject', required: [] })
+  .openapi('AudioAnalysisObject')
+
+const AudioFeaturesObjectSchema = z
+  .object({
+    acousticness: z
+      .float32()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        example: 0.00242,
+        'x-spotify-docs-type': 'Float',
+        description:
+          'A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.\n',
+      }),
+    analysis_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'https://api.spotify.com/v1/audio-analysis/2takcwOaAZWiXQijPHIx7B\n',
+        description:
+          'A URL to access the full audio analysis of this track. An access token is required to access this data.\n',
+      }),
+    danceability: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        example: 0.585,
+        'x-spotify-docs-type': 'Float',
+        description:
+          'Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.\n',
+      }),
+    duration_ms: z
+      .int()
+      .exactOptional()
+      .openapi({ example: 237040, description: 'The duration of the track in milliseconds.\n' }),
+    energy: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        example: 0.842,
+        'x-spotify-docs-type': 'Float',
+        description:
+          'Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.\n',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: '2takcwOaAZWiXQijPHIx7B',
+        description: 'The Spotify ID for the track.\n',
+      }),
+    instrumentalness: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        example: 0.00686,
+        'x-spotify-docs-type': 'Float',
+        description:
+          'Predicts whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly "vocal". The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.\n',
+      }),
+    key: KeySchema.exactOptional(),
+    liveness: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        example: 0.0866,
+        'x-spotify-docs-type': 'Float',
+        description:
+          'Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live. A value above 0.8 provides strong likelihood that the track is live.\n',
+      }),
+    loudness: LoudnessSchema.exactOptional(),
+    mode: ModeSchema.exactOptional(),
+    speechiness: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        example: 0.0556,
+        'x-spotify-docs-type': 'Float',
+        description:
+          'Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.\n',
+      }),
+    tempo: TempoSchema.exactOptional(),
+    time_signature: TimeSignatureSchema.exactOptional(),
+    track_href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'https://api.spotify.com/v1/tracks/2takcwOaAZWiXQijPHIx7B\n',
+        description: 'A link to the Web API endpoint providing full details of the track.\n',
+      }),
+    type: z
+      .literal('audio_features')
+      .exactOptional()
+      .openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'spotify:track:2takcwOaAZWiXQijPHIx7B',
+        description: 'The Spotify URI for the track.\n',
+      }),
+    valence: z
+      .float32()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        example: 0.428,
+        'x-spotify-docs-type': 'Float',
+        description:
+          'A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'AudioFeaturesObject', required: [] })
+  .openapi('AudioFeaturesObject')
+
+const SimplifiedTrackObjectSchema = z
+  .object({
+    artists: z
+      .array(SimplifiedArtistObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The artists who performed the track. Each artist object includes a link in `href` to more detailed information about the artist.',
+      }),
+    available_markets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'A list of the countries in which the track can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
+      }),
+    disc_number: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The disc number (usually `1` unless the album consists of more than one disc).',
+      }),
+    duration_ms: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The track length in milliseconds.' }),
+    explicit: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not the track has explicit lyrics ( `true` = yes it does; `false` = no it does not OR unknown).',
+      }),
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'External URLs for this track.\n',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the track.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+      }),
+    is_playable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking/) is applied. If `true`, the track is playable in the given market. Otherwise `false`.\n',
+      }),
+    linked_from: LinkedTrackObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking/) is applied and is only part of the response if the track linking, in fact, exists. The requested track has been replaced with a different track. The track in the `linked_from` object contains information about the originally requested track.',
+    }),
+    restrictions: TrackRestrictionObjectSchema.exactOptional().openapi({
+      description: 'Included in the response when a content restriction is applied.\n',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the track.' }),
+    preview_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'A URL to a 30 second preview (MP3 format) of the track.\n',
+      }),
+    track_number: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of the track. If an album has several discs, the track number is the number on the specified disc.\n',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The object type: "track".\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+      }),
+    is_local: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the track is from a local file.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SimplifiedTrackObject', required: [] })
+  .openapi('SimplifiedTrackObject')
+
+const CursorObjectSchema = z
+  .object({
+    after: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The cursor to use as key to find the next page of items.' }),
+    before: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The cursor to use as key to find the previous page of items.' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CursorObject', required: [] })
+  .openapi('CursorObject')
+
+const CursorPagingObjectSchema = z
+  .object({
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint returning the full result of the request.',
+      }),
+    limit: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of items in the response (as set in the query or by default).',
+      }),
+    next: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL to the next page of items. ( `null` if none)' }),
+    cursors: CursorObjectSchema.exactOptional().openapi({
+      description: 'The cursors used to find the next set of items.',
+    }),
+    total: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The total number of items available to return.' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CursorPagingObject', required: [] })
+  .openapi('CursorPagingObject')
+
+const CursorPagingPlayHistoryObjectSchema = CursorPagingObjectSchema.and(
+  z.object({ items: z.array(PlayHistoryObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
+  .openapi('CursorPagingPlayHistoryObject')
+
+const CursorPagingSimplifiedArtistObjectSchema = CursorPagingObjectSchema.and(
+  z.object({ items: z.array(ArtistObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingArtistObject' })
+  .openapi('CursorPagingSimplifiedArtistObject')
+
+const PagingObjectSchema = z
+  .object({
+    href: z
+      .string()
+      .openapi({
+        example: 'https://api.spotify.com/v1/me/shows?offset=0&limit=20\n',
+        description: 'A link to the Web API endpoint returning the full result of the request\n',
+      }),
+    limit: z
+      .int()
+      .openapi({
+        example: 20,
+        description:
+          'The maximum number of items in the response (as set in the query or by default).\n',
+      }),
+    next: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'https://api.spotify.com/v1/me/shows?offset=1&limit=1',
+        description: 'URL to the next page of items. ( `null` if none)\n',
+      }),
+    offset: z
+      .int()
+      .openapi({
+        example: 0,
+        description: 'The offset of the items returned (as set in the query or by default)\n',
+      }),
+    previous: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'https://api.spotify.com/v1/me/shows?offset=1&limit=1',
+        description: 'URL to the previous page of items. ( `null` if none)\n',
+      }),
+    total: z
+      .int()
+      .openapi({ example: 4, description: 'The total number of items available to return.\n' }),
+  })
+  .openapi({
+    'x-spotify-docs-type': 'PagingObject',
+    required: ['href', 'items', 'limit', 'next', 'offset', 'previous', 'total'],
+  })
+  .openapi('PagingObject')
+
+const PlaylistOwnerObjectSchema = PlaylistUserObjectSchema.and(
+  z
+    .object({
+      display_name: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: "The name displayed on the user's profile. `null` if not available.\n",
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('PlaylistOwnerObject')
+
+const PlaylistTracksRefObjectSchema = z
+  .object({
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A link to the Web API endpoint where full details of the playlist's tracks can be retrieved.\n",
+      }),
+    total: z.int().exactOptional().openapi({ description: 'Number of tracks in the playlist.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'PlaylistTracksRefObject', required: [] })
+  .openapi('PlaylistTracksRefObject')
+
+const SimplifiedPlaylistObjectSchema = z
+  .object({
+    collaborative: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: '`true` if the owner allows other users to modify the playlist.\n' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The playlist description. _Only returned for modified, verified playlists, otherwise_ `null`.\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known external URLs for this playlist.\n',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the playlist.\n',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the playlist.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Images for the playlist. The array may be empty or contain up to three images. The images are returned by size in descending order. See [Working with Playlists](/documentation/web-api/concepts/playlists). _**Note**: If returned, the source URL for the image (`url`) is temporary and will expire in less than a day._\n',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the playlist.\n' }),
+    owner: PlaylistOwnerObjectSchema.exactOptional().openapi({
+      description: 'The user who owns the playlist\n',
+    }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "The playlist's public/private status (if it is added to the user's profile): `true` the playlist is public, `false` the playlist is private, `null` the playlist status is not relevant. For more about public/private status, see [Working with Playlists](/documentation/web-api/concepts/playlists)\n",
+      }),
+    snapshot_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version identifier for the current playlist. Can be supplied in other requests to target a specific playlist version\n',
+      }),
+    items: PlaylistTracksRefObjectSchema.exactOptional().openapi({
+      description:
+        "A collection containing a link ( `href` ) to the Web API endpoint where full details of the playlist's items can be retrieved, along with the `total` number of items in the playlist. Note, a track object may be `null`. This can happen if a track is no longer available.\n",
+    }),
+    tracks: PlaylistTracksRefObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "**Deprecated:** Use `items` instead. A collection containing a link ( `href` ) to the Web API endpoint where full details of the playlist's tracks can be retrieved, along with the `total` number of tracks in the playlist. Note, a track object may be `null`. This can happen if a track is no longer available.\n",
+    }),
+    type: z.string().exactOptional().openapi({ description: 'The object type: "playlist"\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the playlist.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SimplifiedPlaylistObject', required: [] })
+  .openapi('SimplifiedPlaylistObject')
+
+const PagingPlaylistObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedPlaylistObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingPlaylistObject' })
+  .openapi('PagingPlaylistObject')
+
+const PagingFeaturedPlaylistObjectSchema = z
+  .object({
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The localized message of a playlist.\n',
+        example: 'Popular Playlists',
+      }),
+    playlists: PagingPlaylistObjectSchema.exactOptional(),
+  })
+  .openapi({ 'x-spotify-docs-type': 'PagingFeaturedPlaylistObject', required: [] })
+  .openapi('PagingFeaturedPlaylistObject')
+
+const ArtistDiscographyAlbumObjectSchema = SimplifiedAlbumObjectSchema.and(
+  z
+    .object({
+      album_group: z
+        .enum(['album', 'single', 'compilation', 'appears_on'])
+        .openapi({
+          deprecated: true,
+          example: 'compilation',
+          description: 'This field describes the relationship between the artist and the album.\n',
+        }),
+    })
+    .openapi({ required: ['album_group'] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'ArtistDiscographyAlbumObject' })
+  .openapi('ArtistDiscographyAlbumObject')
+
+const PagingArtistDiscographyAlbumObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(ArtistDiscographyAlbumObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingArtistDiscographyAlbumObject' })
+  .openapi('PagingArtistDiscographyAlbumObject')
+
+const PagingSimplifiedAlbumObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedAlbumObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingAlbumObject' })
+  .openapi('PagingSimplifiedAlbumObject')
+
+const PagingSimplifiedTrackObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedTrackObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
+  .openapi('PagingSimplifiedTrackObject')
+
+const AlbumObjectSchema = AlbumBaseSchema.and(
+  z
+    .object({
+      artists: z
+        .array(SimplifiedArtistObjectSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The artists of the album. Each artist object includes a link in `href` to more detailed information about the artist.\n',
+        }),
+      tracks: PagingSimplifiedTrackObjectSchema.exactOptional().openapi({
+        description: 'The tracks of the album.\n',
+      }),
+      copyrights: z
+        .array(CopyrightObjectSchema)
+        .exactOptional()
+        .openapi({ description: 'The copyright statements of the album.\n' }),
+      external_ids: ExternalIdObjectSchema.exactOptional().openapi({
+        description: 'Known external IDs for the album.\n',
+      }),
+      genres: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          deprecated: true,
+          example: [],
+          description: '**Deprecated** The array is always empty.\n',
+        }),
+      label: z
+        .string()
+        .exactOptional()
+        .openapi({ deprecated: true, description: 'The label associated with the album.\n' }),
+      popularity: z
+        .int()
+        .exactOptional()
+        .openapi({
+          deprecated: true,
+          description:
+            'The popularity of the album. The value will be between 0 and 100, with 100 being the most popular.\n',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    'x-spotify-docs-type': 'AlbumObject',
+    required: ['artists', 'tracks', 'copyrights', 'external_ids', 'genres', 'label', 'popularity'],
+  })
+  .openapi('AlbumObject')
+
+const SavedAlbumObjectSchema = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the album was saved\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
+      }),
+    album: AlbumObjectSchema.exactOptional().openapi({
+      description: 'Information about the album.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SavedAlbumObject', required: [] })
+  .openapi('SavedAlbumObject')
+
+const PagingSavedAlbumObjectSchema = PagingObjectSchema.and(
+  z.object({ items: z.array(SavedAlbumObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingSavedAlbumObject' })
+  .openapi('PagingSavedAlbumObject')
+
+const SavedTrackObjectSchema = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the track was saved.\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
+      }),
+    track: TrackObjectSchema.exactOptional().openapi({
+      description: 'Information about the track.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SavedTrackObject', required: [] })
+  .openapi('SavedTrackObject')
+
+const PagingSavedTrackObjectSchema = PagingObjectSchema.and(
+  z.object({ items: z.array(SavedTrackObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
+  .openapi('PagingSavedTrackObject')
+
+const PagingTrackObjectSchema = PagingObjectSchema.and(
+  z.object({ items: z.array(TrackObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
+  .openapi('PagingTrackObject')
+
+const PagingPlaylistTrackObjectSchema = PagingObjectSchema.and(
+  z.object({ items: z.array(PlaylistTrackObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingPlaylistTrackObject' })
+  .openapi('PagingPlaylistTrackObject')
+
+const PagingSimplifiedShowObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedShowObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingShowObject' })
+  .openapi('PagingSimplifiedShowObject')
+
+const SavedShowObjectSchema = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the show was saved.\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
+      }),
+    show: SimplifiedShowObjectSchema.exactOptional().openapi({
+      description: 'Information about the show.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SavedShowObject', required: [] })
+  .openapi('SavedShowObject')
+
+const PagingSavedShowObjectSchema = PagingObjectSchema.and(
+  z.object({ items: z.array(SavedShowObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingShowObject' })
+  .openapi('PagingSavedShowObject')
+
+const SimplifiedEpisodeObjectSchema = EpisodeBaseSchema.openapi({
+  'x-spotify-docs-type': 'SimplifiedEpisodeObject',
+}).openapi('SimplifiedEpisodeObject')
+
+const PagingSimplifiedEpisodeObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedEpisodeObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingEpisodeObject' })
+  .openapi('PagingSimplifiedEpisodeObject')
+
+const SavedEpisodeObjectSchema = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the episode was saved.\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\n',
+      }),
+    episode: EpisodeObjectSchema.exactOptional().openapi({
+      description: 'Information about the episode.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SavedEpisodeObject', required: [] })
+  .openapi('SavedEpisodeObject')
+
+const PagingSavedEpisodeObjectSchema = PagingObjectSchema.and(
+  z.object({ items: z.array(SavedEpisodeObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingEpisodeObject' })
+  .openapi('PagingSavedEpisodeObject')
+
+const AuthorObjectSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the author.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'AuthorObject', required: [] })
+  .openapi('AuthorObject')
+
+const NarratorObjectSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the Narrator.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'NarratorObject', required: [] })
+  .openapi('NarratorObject')
+
+const AudiobookBaseSchema = z
+  .object({
+    authors: z
+      .array(AuthorObjectSchema)
+      .openapi({ description: 'The author(s) for the audiobook.\n' }),
+    available_markets: z
+      .array(z.string())
+      .openapi({
+        deprecated: true,
+        description:
+          'A list of the countries in which the audiobook can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
+      }),
+    copyrights: z
+      .array(CopyrightObjectSchema)
+      .openapi({ description: 'The copyright statements of the audiobook.\n' }),
+    description: z
+      .string()
+      .openapi({
+        description:
+          'A description of the audiobook. HTML tags are stripped away from this field, use `html_description` field in case HTML tags are needed.\n',
+      }),
+    html_description: z
+      .string()
+      .openapi({
+        description: 'A description of the audiobook. This field may contain HTML tags.\n',
+      }),
+    edition: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The edition of the audiobook.\n', example: 'Unabridged' }),
+    explicit: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether or not the audiobook has explicit content (true = yes it does; false = no it does not OR unknown).\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.openapi({
+      description: 'External URLs for this audiobook.\n',
+    }),
+    href: z
+      .string()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the audiobook.\n',
+      }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the audiobook.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .openapi({
+        description: 'The cover art for the audiobook in various sizes, widest first.\n',
+      }),
+    languages: z
+      .array(z.string())
+      .openapi({
+        description:
+          'A list of the languages used in the audiobook, identified by their [ISO 639](https://en.wikipedia.org/wiki/ISO_639) code.\n',
+      }),
+    media_type: z.string().openapi({ description: 'The media type of the audiobook.\n' }),
+    name: z.string().openapi({ description: 'The name of the audiobook.\n' }),
+    narrators: z
+      .array(NarratorObjectSchema)
+      .openapi({ description: 'The narrator(s) for the audiobook.\n' }),
+    publisher: z
+      .string()
+      .openapi({ deprecated: true, description: 'The publisher of the audiobook.\n' }),
+    type: z.literal('audiobook').openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the audiobook.\n',
+      }),
+    total_chapters: z.int().openapi({ description: 'The number of chapters in this audiobook.\n' }),
+  })
+  .openapi({
+    required: [
+      'authors',
+      'available_markets',
+      'copyrights',
+      'description',
+      'explicit',
+      'external_urls',
+      'href',
+      'html_description',
+      'id',
+      'images',
+      'languages',
+      'media_type',
+      'name',
+      'narrators',
+      'publisher',
+      'total_chapters',
+      'type',
+      'uri',
+    ],
+  })
+  .openapi('AudiobookBase')
+
+const SimplifiedAudiobookObjectSchema = AudiobookBaseSchema.openapi({
+  'x-spotify-docs-type': 'SimplifiedAudiobookObject',
+}).openapi('SimplifiedAudiobookObject')
+
+const PagingSimplifiedAudiobookObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedAudiobookObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingAudiobookObject' })
+  .openapi('PagingSimplifiedAudiobookObject')
+
+const PagingArtistObjectSchema = PagingObjectSchema.and(
+  z.object({ items: z.array(ArtistObjectSchema).exactOptional() }).openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingArtistObject' })
+  .openapi('PagingArtistObject')
+
+const ChapterBaseSchema = z
+  .object({
+    audio_preview_url: z
+      .string()
+      .nullable()
+      .openapi({
+        deprecated: true,
+        example: 'https://p.scdn.co/mp3-preview/2f37da1d4221f40b9d1a98cd191f4d6f1646ad17',
+        description:
+          'A URL to a 30 second preview (MP3 format) of the chapter. `null` if not available.\n',
+      }),
+    available_markets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'A list of the countries in which the chapter can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
+      }),
+    chapter_number: z.int().openapi({ example: 1, description: 'The number of the chapter\n' }),
+    description: z
+      .string()
+      .openapi({
+        example:
+          'We kept on ascending, with occasional periods of quick descent, but in the main always ascending. Suddenly, I became conscious of the fact that the driver was in the act of pulling up the horses in the courtyard of a vast ruined castle, from whose tall black windows came no ray of light, and whose broken battlements showed a jagged line against the moonlit sky.\n',
+        description:
+          'A description of the chapter. HTML tags are stripped away from this field, use `html_description` field in case HTML tags are needed.\n',
+      }),
+    html_description: z
+      .string()
+      .openapi({
+        example:
+          '<p>We kept on ascending, with occasional periods of quick descent, but in the main always ascending. Suddenly, I became conscious of the fact that the driver was in the act of pulling up the horses in the courtyard of a vast ruined castle, from whose tall black windows came no ray of light, and whose broken battlements showed a jagged line against the moonlit sky.</p>\n',
+        description: 'A description of the chapter. This field may contain HTML tags.\n',
+      }),
+    duration_ms: z
+      .int()
+      .openapi({ example: 1686230, description: 'The chapter length in milliseconds.\n' }),
+    explicit: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether or not the chapter has explicit content (true = yes it does; false = no it does not OR unknown).\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.openapi({
+      description: 'External URLs for this chapter.\n',
+    }),
+    href: z
+      .string()
+      .openapi({
+        example: 'https://api.spotify.com/v1/episodes/5Xt5DXGzch68nYYamXrNxZ',
+        description: 'A link to the Web API endpoint providing full details of the chapter.\n',
+      }),
+    id: z
+      .string()
+      .openapi({
+        example: '5Xt5DXGzch68nYYamXrNxZ',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the chapter.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .openapi({ description: 'The cover art for the chapter in various sizes, widest first.\n' }),
+    is_playable: z
+      .boolean()
+      .openapi({
+        description: 'True if the chapter is playable in the given market. Otherwise false.\n',
+      }),
+    languages: z
+      .array(z.string())
+      .openapi({
+        example: ['fr', 'en'],
+        description:
+          'A list of the languages used in the chapter, identified by their [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639) code.\n',
+      }),
+    name: z
+      .string()
+      .openapi({
+        example: 'Starting Your Own Podcast: Tips, Tricks, and Advice From Anchor Creators\n',
+        description: 'The name of the chapter.\n',
+      }),
+    release_date: z
+      .string()
+      .openapi({
+        example: '1981-12-15',
+        description:
+          'The date the chapter was first released, for example `"1981-12-15"`. Depending on the precision, it might be shown as `"1981"` or `"1981-12"`.\n',
+      }),
+    release_date_precision: z
+      .enum(['year', 'month', 'day'])
+      .openapi({
+        example: 'day',
+        description: 'The precision with which `release_date` value is known.\n',
+      }),
+    resume_point: ResumePointObjectSchema.exactOptional().openapi({
+      description:
+        "The user's most recent position in the chapter. Set if the supplied access token is a user token and has the scope 'user-read-playback-position'.\n",
+    }),
+    type: z.literal('episode').openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .openapi({
+        example: 'spotify:episode:0zLhl3WsOCQHbe1BPTiHgr',
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the chapter.\n',
+      }),
+    restrictions: ChapterRestrictionObjectSchema.exactOptional().openapi({
+      description: 'Included in the response when a content restriction is applied.\n',
+    }),
+  })
+  .openapi({
+    required: [
+      'audio_preview_url',
+      'chapter_number',
+      'description',
+      'html_description',
+      'duration_ms',
+      'explicit',
+      'external_urls',
+      'href',
+      'id',
+      'images',
+      'is_playable',
+      'languages',
+      'name',
+      'release_date',
+      'release_date_precision',
+      'type',
+      'uri',
+    ],
+  })
+  .openapi('ChapterBase')
+
+const SimplifiedChapterObjectSchema = ChapterBaseSchema.openapi({
+  'x-spotify-docs-type': 'SimplifiedChapterObject',
+}).openapi('SimplifiedChapterObject')
+
+const PagingSimplifiedChapterObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedChapterObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingSimplifiedChapterObject' })
+  .openapi('PagingSimplifiedChapterObject')
+
+const RecommendationSeedObjectSchema = z
+  .object({
+    afterFilteringSize: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of tracks available after min\\_\\* and max\\_\\* filters have been applied.\n',
+      }),
+    afterRelinkingSize: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The number of tracks available after relinking for regional availability.\n',
+      }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A link to the full track or artist data for this seed. For tracks this will be a link to a Track Object. For artists a link to an Artist Object. For genre seeds, this value will be `null`.\n',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id used to select this seed. This will be the same as the string used in the `seed_artists`, `seed_tracks` or `seed_genres` parameter.\n',
+      }),
+    initialPoolSize: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of recommended tracks available for this seed.\n' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The entity type of this seed. One of `artist`, `track` or `genre`.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'RecommendationSeedObject', required: [] })
+  .openapi('RecommendationSeedObject')
+
+const RecommendationsObjectSchema = z
+  .object({
+    seeds: z
+      .array(RecommendationSeedObjectSchema)
+      .openapi({ description: 'An array of recommendation seed objects.\n' }),
+    tracks: z
+      .array(TrackObjectSchema)
+      .openapi({
+        description: 'An array of track objects ordered according to the parameters supplied.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'RecommendationsObject', required: ['seeds', 'tracks'] })
+  .openapi('RecommendationsObject')
+
+const PlaylistObjectSchema = z
+  .object({
+    collaborative: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: '`true` if the owner allows other users to modify the playlist.\n' }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The playlist description. _Only returned for modified, verified playlists, otherwise_ `null`.\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known external URLs for this playlist.\n',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the playlist.\n',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the playlist.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Images for the playlist. The array may be empty or contain up to three images. The images are returned by size in descending order. See [Working with Playlists](/documentation/web-api/concepts/playlists). _**Note**: If returned, the source URL for the image (`url`) is temporary and will expire in less than a day._\n',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the playlist.\n' }),
+    owner: PlaylistOwnerObjectSchema.exactOptional().openapi({
+      description: 'The user who owns the playlist\n',
+    }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "The playlist's public/private status (if it is added to the user's profile): `true` the playlist is public, `false` the playlist is private, `null` the playlist status is not relevant. For more about public/private status, see [Working with Playlists](/documentation/web-api/concepts/playlists)\n",
+      }),
+    snapshot_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version identifier for the current playlist. Can be supplied in other requests to target a specific playlist version\n',
+      }),
+    items: PagingPlaylistTrackObjectSchema.exactOptional().openapi({
+      description:
+        'The items of the playlist. _**Note**: This field is only available for playlists owned by the current user or playlists the user is a collaborator of._\n',
+    }),
+    tracks: PagingPlaylistTrackObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description: '**Deprecated:** Use `items` instead. The tracks of the playlist.\n',
+    }),
+    type: z.string().exactOptional().openapi({ description: 'The object type: "playlist"\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the playlist.\n',
+      }),
+    followers: FollowersObjectSchema.exactOptional().openapi({
+      description: 'Information about the followers of the playlist.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'PlaylistObject', required: [] })
+  .openapi('PlaylistObject')
+
+const CategoryObjectSchema = z
+  .object({
+    href: z
+      .string()
+      .openapi({
+        description: 'A link to the Web API endpoint returning full details of the category.\n',
+      }),
+    icons: z
+      .array(ImageObjectSchema)
+      .openapi({ description: 'The category icon, in various sizes.\n' }),
+    id: z
+      .string()
+      .openapi({
+        example: 'equal',
+        description:
+          'The [Spotify category ID](/documentation/web-api/concepts/spotify-uris-ids) of the category.\n',
+      }),
+    name: z.string().openapi({ example: 'EQUAL', description: 'The name of the category.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CategoryObject', required: ['href', 'icons', 'id', 'name'] })
+  .openapi('CategoryObject')
+
+const ShowObjectSchema = ShowBaseSchema.and(
+  z
+    .object({
+      episodes: PagingSimplifiedEpisodeObjectSchema.openapi({
+        description: 'The episodes of the show.\n',
+      }),
+    })
+    .openapi({ required: ['episodes'] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'ShowObject' })
+  .openapi('ShowObject')
+
+const AudiobookObjectSchema = AudiobookBaseSchema.and(
+  z
+    .object({
+      chapters: PagingSimplifiedChapterObjectSchema.openapi({
+        description: 'The chapters of the audiobook.\n',
+      }),
+    })
+    .openapi({ required: ['chapters'] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'AudiobookObject' })
+  .openapi('AudiobookObject')
+
+const ChapterObjectSchema = ChapterBaseSchema.and(
+  z
+    .object({
+      audiobook: SimplifiedAudiobookObjectSchema.openapi({
+        description: 'The audiobook for which the chapter belongs.\n',
+      }),
+    })
+    .openapi({ required: ['audiobook'] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'ChapterObject' })
+  .openapi('ChapterObject')
+
+const CurrentlyPlayingObjectSchema = z
+  .object({
+    context: ContextObjectSchema.exactOptional().openapi({
+      description: 'A Context Object. Can be `null`.',
+    }),
+    timestamp: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Unix Millisecond Timestamp when data was fetched',
+      }),
+    progress_ms: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Progress into the currently playing track or episode. Can be `null`.',
+      }),
+    is_playing: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If something is currently playing, return `true`.' }),
+    item: z
+      .xor([TrackObjectSchema, EpisodeObjectSchema])
+      .exactOptional()
+      .openapi({
+        discriminator: { propertyName: 'type' },
+        'x-spotify-docs-type': 'TrackObject | EpisodeObject',
+        description: 'The currently playing track or episode. Can be `null`.',
+      }),
+    currently_playing_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The object type of the currently playing item. Can be one of `track`, `episode`, `ad` or `unknown`.\n',
+      }),
+    actions: DisallowsObjectSchema.exactOptional().openapi({
+      description:
+        'Allows to update the user interface based on which playback actions are available within the current context.\n',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CurrentlyPlayingObject', required: [] })
+  .openapi('CurrentlyPlayingObject')
+
+const SavedAudiobookObjectSchema = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the audiobook was saved\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
+      }),
+    audiobook: AudiobookObjectSchema.exactOptional().openapi({
+      description: 'Information about the audiobook.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SavedAudiobookObject', required: [] })
+  .openapi('SavedAudiobookObject')
+
+const PagingSavedAudiobookObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SavedAudiobookObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+).openapi('PagingSavedAudiobookObject')
+
+const UnauthorizedResponse = {
+  description:
+    'Bad or expired token. This can happen if the user revoked a token or\nthe access token has expired. You should re-authenticate the user.\n',
+  content: {
+    'application/json': {
+      schema: z.object({ error: ErrorObjectSchema }).openapi({ required: ['error'] }),
+    },
+  },
+}
+
+const ForbiddenResponse = {
+  description:
+    "Bad OAuth request (wrong consumer key, bad nonce, expired\ntimestamp...). Unfortunately, re-authenticating the user won't help here.\n",
+  content: {
+    'application/json': {
+      schema: z.object({ error: ErrorObjectSchema }).openapi({ required: ['error'] }),
+    },
+  },
+}
+
+const NotFoundResponse = {
+  description: 'The requested resource cannot be found.\n',
+  content: {
+    'application/json': {
+      schema: z.object({ error: ErrorObjectSchema }).openapi({ required: ['error'] }),
+    },
+  },
+}
+
+const BadRequestResponse = {
+  description: 'The request contains malformed data in path, query parameters, or body.\n',
+  content: {
+    'application/json': {
+      schema: z.object({ error: ErrorObjectSchema }).openapi({ required: ['error'] }),
+    },
+  },
+}
+
+const TooManyRequestsResponse = {
+  description: 'The app has exceeded its rate limits.\n',
+  content: {
+    'application/json': {
+      schema: z.object({ error: ErrorObjectSchema }).openapi({ required: ['error'] }),
+    },
+  },
+}
+
+const ManyAlbumsResponse = {
+  description: 'A set of albums',
+  content: {
+    'application/json': {
+      schema: z.object({ albums: z.array(AlbumObjectSchema) }).openapi({ required: ['albums'] }),
+    },
+  },
+}
+
+const ManyAudiobooksResponse = {
+  description:
+    "A set of audiobooks. If one of the requested audiobooks is unavailable then you'll find a `null` item in the `audiobooks` array where the audiobook object would otherwise be.",
+  content: {
+    'application/json': {
+      schema: z
+        .object({ audiobooks: z.array(AudiobookObjectSchema) })
+        .openapi({ required: ['audiobooks'] }),
+    },
+  },
+}
+
+const ManyChaptersResponse = {
+  description: 'A set of chapters',
+  content: {
+    'application/json': {
+      schema: z
+        .object({ chapters: z.array(ChapterObjectSchema) })
+        .openapi({ required: ['chapters'] }),
+    },
+  },
+}
+
+const ManyDevicesResponse = {
+  description: 'A set of devices',
+  content: {
+    'application/json': {
+      schema: z.object({ devices: z.array(DeviceObjectSchema) }).openapi({ required: ['devices'] }),
+    },
+  },
+}
+
+const PagedAlbumsResponse = {
+  description: 'A paged set of albums',
+  content: {
+    'application/json': {
+      schema: z
+        .object({ albums: PagingSimplifiedAlbumObjectSchema })
+        .openapi({ required: ['albums'] }),
+    },
+  },
+}
+
+const PagedPlaylistsResponse = {
+  description: 'A paged set of playlists',
+  content: { 'application/json': { schema: PagingPlaylistObjectSchema } },
+}
+
+const PagedFeaturedPlaylistsResponse = {
+  description: 'A paged set of playlists',
+  content: { 'application/json': { schema: PagingFeaturedPlaylistObjectSchema } },
+}
+
+const PagedCategoriesResponse = {
+  description: 'A paged set of categories',
+  content: {
+    'application/json': {
+      schema: z
+        .object({
+          categories: PagingObjectSchema.and(
+            z
+              .object({ items: z.array(CategoryObjectSchema).exactOptional() })
+              .openapi({ required: [] }),
+          ),
+        })
+        .openapi({ required: ['categories'] }),
+    },
+  },
+}
+
+const CursorPagedArtistsResponse = {
+  description: 'A paged set of artists',
+  content: {
+    'application/json': {
+      schema: z
+        .object({ artists: CursorPagingSimplifiedArtistObjectSchema })
+        .openapi({ required: ['artists'] }),
+    },
+  },
+}
+
+const CursorPagedPlayHistoryResponse = {
+  description: 'A paged set of tracks',
+  content: { 'application/json': { schema: CursorPagingPlayHistoryObjectSchema } },
+}
+
+const ManyArtistsResponse = {
+  description: 'A set of artists',
+  content: {
+    'application/json': {
+      schema: z.object({ artists: z.array(ArtistObjectSchema) }).openapi({ required: ['artists'] }),
+    },
+  },
+}
+
+const ManyAudioFeaturesResponse = {
+  description: 'A set of audio features',
+  content: {
+    'application/json': {
+      schema: z
+        .object({ audio_features: z.array(AudioFeaturesObjectSchema) })
+        .openapi({ required: ['audio_features'] }),
+    },
+  },
+}
+
+const ManyEpisodesResponse = {
+  description: 'A set of episodes',
+  content: {
+    'application/json': {
+      schema: z
+        .object({ episodes: z.array(EpisodeObjectSchema) })
+        .openapi({ required: ['episodes'] }),
+    },
+  },
+}
+
+const ManyGenresResponse = {
+  description: 'A set of genres',
+  content: {
+    'application/json': {
+      schema: z
+        .object({ genres: z.array(z.string()).openapi({ example: ['alternative', 'samba'] }) })
+        .openapi({ required: ['genres'] }),
+    },
+  },
+}
+
+const OneEpisodeResponse = {
+  description: 'An episode',
+  content: { 'application/json': { schema: EpisodeObjectSchema } },
+}
+
+const OneChapterResponse = {
+  description: 'A Chapter',
+  content: { 'application/json': { schema: ChapterObjectSchema } },
+}
+
+const OneAudiobookResponse = {
+  description: 'An Audiobook',
+  content: { 'application/json': { schema: AudiobookObjectSchema } },
+}
+
+const OneAlbumResponse = {
+  description: 'An album',
+  content: { 'application/json': { schema: AlbumObjectSchema } },
+}
+
+const ArrayOfImagesResponse = {
+  description: 'A set of images',
+  content: { 'application/json': { schema: z.array(ImageObjectSchema) } },
+}
+
+const OnePrivateUserResponse = {
+  description: 'A user',
+  content: { 'application/json': { schema: PrivateUserObjectSchema } },
+}
+
+const OnePublicUserResponse = {
+  description: 'A user',
+  content: { 'application/json': { schema: PublicUserObjectSchema } },
+}
+
+const OneTrackResponse = {
+  description: 'A track',
+  content: { 'application/json': { schema: TrackObjectSchema } },
+}
+
+const OneShowResponse = {
+  description: 'A show',
+  content: { 'application/json': { schema: ShowObjectSchema } },
+}
+
+const OneCategoryResponse = {
+  description: 'A category',
+  content: { 'application/json': { schema: CategoryObjectSchema } },
+}
+
+const OnePlaylistResponse = {
+  description: 'A playlist',
+  content: { 'application/json': { schema: PlaylistObjectSchema } },
+}
+
+const OneAudioFeaturesResponse = {
+  description: 'Audio features for one track',
+  content: { 'application/json': { schema: AudioFeaturesObjectSchema } },
+}
+
+const OneAudioAnalysisResponse = {
+  description: 'Audio analysis for one track',
+  content: { 'application/json': { schema: AudioAnalysisObjectSchema } },
+}
+
+const OneArtistResponse = {
+  description: 'An artist',
+  content: { 'application/json': { schema: ArtistObjectSchema } },
+}
+
+const ManyTracksResponse = {
+  description: 'A set of tracks',
+  content: {
+    'application/json': {
+      schema: z.object({ tracks: z.array(TrackObjectSchema) }).openapi({ required: ['tracks'] }),
+    },
+  },
+}
+
+const ManySimplifiedShowsResponse = {
+  description: 'A set of shows',
+  content: {
+    'application/json': {
+      schema: z
+        .object({ shows: z.array(SimplifiedShowObjectSchema) })
+        .openapi({ required: ['shows'] }),
+    },
+  },
+}
+
+const PagingSimplifiedTrackObjectResponse = {
+  description: 'Pages of tracks',
+  content: { 'application/json': { schema: PagingSimplifiedTrackObjectSchema } },
+}
+
+const PagingSavedTrackObjectResponse = {
+  description: 'Pages of tracks',
+  content: { 'application/json': { schema: PagingSavedTrackObjectSchema } },
+}
+
+const PagingPlaylistTrackObjectResponse = {
+  description: 'Pages of tracks',
+  content: { 'application/json': { schema: PagingPlaylistTrackObjectSchema } },
+}
+
+const PagingArtistDiscographyAlbumObjectResponse = {
+  description: 'Pages of albums',
+  content: { 'application/json': { schema: PagingArtistDiscographyAlbumObjectSchema } },
+}
+
+const PagingSavedAlbumObjectResponse = {
+  description: 'Pages of albums',
+  content: { 'application/json': { schema: PagingSavedAlbumObjectSchema } },
+}
+
+const PagingSavedShowObjectResponse = {
+  description: 'Pages of shows',
+  content: { 'application/json': { schema: PagingSavedShowObjectSchema } },
+}
+
+const PagingSimplifiedEpisodeObjectResponse = {
+  description: 'Pages of episodes',
+  content: { 'application/json': { schema: PagingSimplifiedEpisodeObjectSchema } },
+}
+
+const PagingSavedEpisodeObjectResponse = {
+  description: 'Pages of episodes',
+  content: { 'application/json': { schema: PagingSavedEpisodeObjectSchema } },
+}
+
+const PagingSimplifiedAudiobookObjectResponse = {
+  description: 'Pages of audiobooks',
+  content: { 'application/json': { schema: PagingSimplifiedAudiobookObjectSchema } },
+}
+
+const PagingSimplifiedChapterObjectResponse = {
+  description: 'Pages of chapters',
+  content: { 'application/json': { schema: PagingSimplifiedChapterObjectSchema } },
+}
+
+const SearchItemsResponse = {
+  description: 'Search response',
+  content: {
+    'application/json': {
+      schema: z
+        .object({
+          tracks: PagingTrackObjectSchema.exactOptional(),
+          artists: PagingArtistObjectSchema.exactOptional(),
+          albums: PagingSimplifiedAlbumObjectSchema.exactOptional(),
+          playlists: PagingPlaylistObjectSchema.exactOptional(),
+          shows: PagingSimplifiedShowObjectSchema.exactOptional(),
+          episodes: PagingSimplifiedEpisodeObjectSchema.exactOptional(),
+          audiobooks: PagingSimplifiedAudiobookObjectSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    },
+  },
+}
+
+const OneRecommendationsResponse = {
+  description: 'A set of recommendations',
+  content: { 'application/json': { schema: RecommendationsObjectSchema } },
+}
+
+const ArrayOfBooleansResponse = {
+  description: 'Array of booleans',
+  content: {
+    'application/json': { schema: z.array(z.boolean()).openapi({ example: [false, true] }) },
+  },
+}
+
+const SingletonArrayOfBooleanResponse = {
+  description: 'Array of boolean, containing a single boolean',
+  content: { 'application/json': { schema: z.array(z.boolean()).openapi({ example: [true] }) } },
+}
+
+const QueueResponse = {
+  description: 'Information about the queue',
+  content: { 'application/json': { schema: QueueObjectSchema } },
+}
+
+const OneCurrentlyPlayingResponse = {
+  description: 'Information about playback',
+  content: { 'application/json': { schema: CurrentlyPlayingContextObjectSchema } },
+}
+
+const OneCurrentlyPlayingTrackResponse = {
+  description: 'Information about the currently playing track',
+  content: { 'application/json': { schema: CurrentlyPlayingObjectSchema } },
+}
+
+const PlaylistSnapshotIdResponse = {
+  description: 'A snapshot ID for the playlist',
+  content: {
+    'application/json': {
+      schema: z
+        .object({ snapshot_id: z.string().exactOptional().openapi({ example: 'abc' }) })
+        .openapi({ required: [] }),
+    },
+  },
+}
+
+const MarketsResponse = {
+  description: 'A markets object with an array of country codes',
+  content: {
+    'application/json': {
+      schema: z
+        .object({
+          markets: z
+            .array(z.string())
+            .exactOptional()
+            .openapi({ example: ['CA', 'BR', 'IT'] }),
+        })
+        .openapi({ required: [] }),
+    },
+  },
+}
+
+const PagingArtistObjectResponse = {
+  description: 'Pages of artists',
+  content: { 'application/json': { schema: PagingArtistObjectSchema } },
+}
+
+const PagingSavedAudiobookObjectResponse = {
+  description: 'Pages of saved audiobooks',
+  content: { 'application/json': { schema: PagingSavedAudiobookObjectSchema } },
+}
+
+const PagingTrackObjectResponse = {
+  description: 'Pages of tracks',
+  content: { 'application/json': { schema: PagingTrackObjectSchema } },
+}
+
+const PathAlbumIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      in: 'path',
+      name: 'id',
+      required: true,
+      schema: {
+        title: 'Spotify Album ID',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) of the album.\n',
+        example: '4aawyAB9vmqN3uQ7FjRGTy',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Album ID',
+    description:
+      'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) of the album.\n',
+    example: '4aawyAB9vmqN3uQ7FjRGTy',
+  })
+
+const PathPlaylistIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'playlist_id',
+      required: true,
+      in: 'path',
+      schema: {
+        title: 'Playlist ID',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) of the playlist.\n',
+        example: '3cEYpjA9oz9GiPac4AsH4n',
+        type: 'string',
+      },
+    },
+    title: 'Playlist ID',
+    description:
+      'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) of the playlist.\n',
+    example: '3cEYpjA9oz9GiPac4AsH4n',
+  })
+
+const QueryMarketParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'market',
+      required: false,
+      in: 'query',
+      schema: {
+        title: 'Market',
+        description:
+          'An [ISO 3166-1 alpha-2 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).\n  If a country code is specified, only content that is available in that market will be returned.<br/>\n  If a valid user access token is specified in the request header, the country associated with\n  the user account will take priority over this parameter.<br/>\n  _**Note**: If neither market or user country are provided, the content is considered unavailable for the client._<br/>\n  Users can view the country that is associated with their account in the [account settings](https://www.spotify.com/account/overview/).\n',
+        example: 'ES',
+        type: 'string',
+      },
+    },
+    title: 'Market',
+    description:
+      'An [ISO 3166-1 alpha-2 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).\n  If a country code is specified, only content that is available in that market will be returned.<br/>\n  If a valid user access token is specified in the request header, the country associated with\n  the user account will take priority over this parameter.<br/>\n  _**Note**: If neither market or user country are provided, the content is considered unavailable for the client._<br/>\n  Users can view the country that is associated with their account in the [account settings](https://www.spotify.com/account/overview/).\n',
+    example: 'ES',
+  })
+
+const QueryLimitParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int().min(1).max(50),
+  )
+  .default(20)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'limit',
+      required: false,
+      in: 'query',
+      schema: {
+        title: 'Limit',
+        description:
+          'The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.\n',
+        default: 20,
+        example: 10,
+        type: 'integer',
+        minimum: 1,
+        maximum: 50,
+      },
+    },
+    title: 'Limit',
+    description: 'The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.\n',
+    example: 10,
+  })
+
+const QueryOffsetParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int(),
+  )
+  .default(0)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'offset',
+      required: false,
+      in: 'query',
+      schema: {
+        title: 'Offset',
+        description:
+          'The index of the first item to return. Default: 0 (the first item). Use with limit to get the next set of items.\n',
+        default: 0,
+        example: 5,
+        type: 'integer',
+      },
+    },
+    title: 'Offset',
+    description:
+      'The index of the first item to return. Default: 0 (the first item). Use with limit to get the next set of items.\n',
+    example: 5,
+  })
+
+const QueryAdditionalTypesParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'additional_types',
+      required: false,
+      in: 'query',
+      schema: {
+        title: 'Additional Types',
+        description:
+          'A comma-separated list of item types that your client supports besides the default `track` type. Valid types are: `track` and `episode`.<br/>\n_**Note**: This parameter was introduced to allow existing clients to maintain their current behaviour and might be deprecated in the future._<br/>\nIn addition to providing this parameter, make sure that your client properly handles cases of new types in the future by checking against the `type` field of each object.\n',
+        type: 'string',
+      },
+    },
+    title: 'Additional Types',
+    description:
+      'A comma-separated list of item types that your client supports besides the default `track` type. Valid types are: `track` and `episode`.<br/>\n_**Note**: This parameter was introduced to allow existing clients to maintain their current behaviour and might be deprecated in the future._<br/>\nIn addition to providing this parameter, make sure that your client properly handles cases of new types in the future by checking against the `type` field of each object.\n',
+  })
+
+const QueryAlbumIdsParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'ids',
+      required: true,
+      in: 'query',
+      schema: {
+        title: 'Spotify Album IDs',
+        description:
+          'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the albums. Maximum: 20 IDs.\n',
+        example: '382ObEPsp2rxGrnsizN5TX,1A2GTWGtFfWp7KSQTwWOyo,2noRn2Aes5aoNVsU6iWThc',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Album IDs',
+    description:
+      'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the albums. Maximum: 20 IDs.\n',
+    example: '382ObEPsp2rxGrnsizN5TX,1A2GTWGtFfWp7KSQTwWOyo,2noRn2Aes5aoNVsU6iWThc',
+  })
+
+const PathArtistIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'id',
+      required: true,
+      in: 'path',
+      schema: {
+        title: 'Spotify Artist ID',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) of the artist.\n',
+        example: '0TnOYISbd1XYRBk9myaseg',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Artist ID',
+    description:
+      'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) of the artist.\n',
+    example: '0TnOYISbd1XYRBk9myaseg',
+  })
+
+const PathShowIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'id',
+      required: true,
+      in: 'path',
+      schema: {
+        title: 'Spotify Show ID',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the show.\n',
+        example: '38bS44xjbVVZ3No3ByF1dJ',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Show ID',
+    description:
+      'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the show.\n',
+    example: '38bS44xjbVVZ3No3ByF1dJ',
+  })
+
+const PathAudiobookIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'id',
+      required: true,
+      in: 'path',
+      schema: {
+        title: 'Spotify Audiobook ID',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the audiobook.\n',
+        example: '7iHfbu1YPACw6oZPAFJtqe',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Audiobook ID',
+    description:
+      'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the audiobook.\n',
+    example: '7iHfbu1YPACw6oZPAFJtqe',
+  })
+
+const QueryAudiobookIdsParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'ids',
+      required: true,
+      in: 'query',
+      schema: {
+        title: 'Spotify Audiobook IDs',
+        description:
+          'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=18yVqkdbdRvS24c0Ilj2ci,1HGw3J3NxZO1TP1BTtVhpZ`. Maximum: 50 IDs.\n',
+        example: '18yVqkdbdRvS24c0Ilj2ci,1HGw3J3NxZO1TP1BTtVhpZ,7iHfbu1YPACw6oZPAFJtqe',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Audiobook IDs',
+    description:
+      'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=18yVqkdbdRvS24c0Ilj2ci,1HGw3J3NxZO1TP1BTtVhpZ`. Maximum: 50 IDs.\n',
+    example: '18yVqkdbdRvS24c0Ilj2ci,1HGw3J3NxZO1TP1BTtVhpZ,7iHfbu1YPACw6oZPAFJtqe',
+  })
+
+const PathChapterIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'id',
+      required: true,
+      in: 'path',
+      schema: {
+        title: 'Spotify Chapter ID',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the chapter.\n',
+        example: '0D5wENdkdwbqlrHoaJ9g29',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Chapter ID',
+    description:
+      'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the chapter.\n',
+    example: '0D5wENdkdwbqlrHoaJ9g29',
+  })
+
+const QueryChapterIdsParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'ids',
+      required: true,
+      in: 'query',
+      schema: {
+        title: 'Spotify Chapter IDs',
+        description:
+          'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=0IsXVP0JmcB2adSE338GkK,3ZXb8FKZGU0EHALYX6uCzU`. Maximum: 50 IDs.\n',
+        example: '0IsXVP0JmcB2adSE338GkK,3ZXb8FKZGU0EHALYX6uCzU,0D5wENdkdwbqlrHoaJ9g29',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Chapter IDs',
+    description:
+      'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=0IsXVP0JmcB2adSE338GkK,3ZXb8FKZGU0EHALYX6uCzU`. Maximum: 50 IDs.\n',
+    example: '0IsXVP0JmcB2adSE338GkK,3ZXb8FKZGU0EHALYX6uCzU,0D5wENdkdwbqlrHoaJ9g29',
+  })
+
+const QueryTrackIdsParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'ids',
+      required: true,
+      in: 'query',
+      schema: {
+        title: 'Spotify Track IDs',
+        description:
+          'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=4iV5W9uYEdYUVa79Axb7Rh,1301WleyT98MSxVHPZCA6M`. Maximum: 50 IDs.\n',
+        example: '7ouMYWpwJ422jRcDASZB7P,4VqPOruhp5EdPBeR92t6lQ,2takcwOaAZWiXQijPHIx7B',
+        type: 'string',
+      },
+    },
+    title: 'Spotify Track IDs',
+    description:
+      'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=4iV5W9uYEdYUVa79Axb7Rh,1301WleyT98MSxVHPZCA6M`. Maximum: 50 IDs.\n',
+    example: '7ouMYWpwJ422jRcDASZB7P,4VqPOruhp5EdPBeR92t6lQ,2takcwOaAZWiXQijPHIx7B',
+  })
+
+const QueryIncludeGroupsParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'include_groups',
+      required: false,
+      in: 'query',
+      schema: {
+        title: 'Groups to include (single, album, appears_on, compilation)',
+        description:
+          'A comma-separated list of keywords that will be used to filter the response. If not supplied, all album types will be returned. <br/>\nValid values are:<br/>- `album`<br/>- `single`<br/>- `appears_on`<br/>- `compilation`<br/>For example: `include_groups=album,single`.\n',
+        example: 'single,appears_on',
+        type: 'string',
+      },
+    },
+    title: 'Groups to include (single, album, appears_on, compilation)',
+    description:
+      'A comma-separated list of keywords that will be used to filter the response. If not supplied, all album types will be returned. <br/>\nValid values are:<br/>- `album`<br/>- `single`<br/>- `appears_on`<br/>- `compilation`<br/>For example: `include_groups=album,single`.\n',
+    example: 'single,appears_on',
+  })
+
+const QueryShowIdsParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'ids',
+      required: true,
+      in: 'query',
+      schema: {
+        title: 'Ids',
+        description:
+          'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the shows. Maximum: 50 IDs.\n',
+        example: '5CfCWKI5pZ28U0uOzXkDHe,5as3aKmN2k11yfDDDSrvaZ',
+        type: 'string',
+      },
+    },
+    title: 'Ids',
+    description:
+      'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the shows. Maximum: 50 IDs.\n',
+    example: '5CfCWKI5pZ28U0uOzXkDHe,5as3aKmN2k11yfDDDSrvaZ',
+  })
+
+const PathUserIdParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'user_id',
+      required: true,
+      in: 'path',
+      schema: {
+        title: 'User ID',
+        description:
+          "The user's [Spotify user ID](/documentation/web-api/concepts/spotify-uris-ids).\n",
+        example: 'smedjan',
+        type: 'string',
+      },
+    },
+    title: 'User ID',
+    description:
+      "The user's [Spotify user ID](/documentation/web-api/concepts/spotify-uris-ids).\n",
+    example: 'smedjan',
+  })
+
+const Oauth_2_0SecurityScheme = {
+  type: 'oauth2',
+  description: 'Spotify supports OAuth 2.0 for authenticating all API requests.',
+  flows: {
+    authorizationCode: {
+      authorizationUrl: 'https://accounts.spotify.com/authorize',
+      tokenUrl: 'https://accounts.spotify.com/api/token',
+      scopes: {
+        'app-remote-control': 'Communicate with the Spotify app on your device.\n',
+        'playlist-read-private': 'Access your private playlists.\n',
+        'playlist-read-collaborative': 'Access your collaborative playlists.\n',
+        'playlist-modify-public': 'Manage your public playlists.\n',
+        'playlist-modify-private': 'Manage your private playlists.\n',
+        'user-library-read': 'Access your saved content.\n',
+        'user-library-modify': 'Manage your saved content.\n',
+        'user-read-private': 'Access your subscription details.\n',
+        'user-read-email': 'Get your real email address.\n',
+        'user-follow-read': 'Access your followers and who you are following.\n',
+        'user-follow-modify': 'Manage your saved content.\n',
+        'user-top-read': 'Read your top artists and content.\n',
+        'user-read-playback-position': 'Read your position in content you have played.\n',
+        'user-read-playback-state':
+          'Read your currently playing content and Spotify Connect devices information.\n',
+        'user-read-recently-played': 'Access your recently played items.\n',
+        'user-read-currently-playing': 'Read your currently playing content.\n',
+        'user-modify-playback-state':
+          'Control playback on your Spotify clients and Spotify Connect devices.\n',
+        'ugc-image-upload': 'Upload images to Spotify on your behalf.\n',
+        streaming: 'Play content and control playback on your other devices.\n',
+      },
+    },
+  },
+}
+
+export const getAlbumsIdRoute = createRoute({
+  method: 'get',
+  path: '/albums/{id}',
+  tags: ['Albums'],
+  summary: 'Get Album\n',
+  description: 'Get Spotify catalog information for a single album.\n',
+  operationId: 'get-an-album',
+  request: {
+    params: z.object({ id: PathAlbumIdParamsSchema }),
+    query: z.object({ market: QueryMarketParamsSchema }),
+  },
+  responses: {
+    200: OneAlbumResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getAlbumsRoute = createRoute({
+  method: 'get',
+  path: '/albums',
+  tags: ['Albums'],
+  summary: 'Get Several Albums\n',
+  description:
+    'Get Spotify catalog information for multiple albums identified by their Spotify IDs.\n',
+  operationId: 'get-multiple-albums',
+  request: { query: z.object({ ids: QueryAlbumIdsParamsSchema, market: QueryMarketParamsSchema }) },
+  responses: {
+    200: ManyAlbumsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getAlbumsIdTracksRoute = createRoute({
+  method: 'get',
+  path: '/albums/{id}/tracks',
+  tags: ['Albums', 'Tracks'],
+  summary: 'Get Album Tracks\n',
+  description:
+    'Get Spotify catalog information about an album’s tracks.\nOptional parameters can be used to limit the number of tracks returned.\n',
+  operationId: 'get-an-albums-tracks',
+  request: {
+    params: z.object({ id: PathAlbumIdParamsSchema }),
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingSimplifiedTrackObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getArtistsIdRoute = createRoute({
+  method: 'get',
+  path: '/artists/{id}',
+  tags: ['Artists'],
+  summary: 'Get Artist\n',
+  description:
+    'Get Spotify catalog information for a single artist identified by their unique Spotify ID.\n',
+  operationId: 'get-an-artist',
+  request: { params: z.object({ id: PathArtistIdParamsSchema }) },
+  responses: {
+    200: OneArtistResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getArtistsRoute = createRoute({
+  method: 'get',
+  path: '/artists',
+  tags: ['Artists'],
+  summary: 'Get Several Artists\n',
+  description: 'Get Spotify catalog information for several artists based on their Spotify IDs.\n',
+  operationId: 'get-multiple-artists',
+  request: {
+    query: z.object({
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify Artist IDs',
+              description:
+                'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the artists. Maximum: 50 IDs.\n',
+              example: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Artist IDs',
+          description:
+            'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the artists. Maximum: 50 IDs.\n',
+          example: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6',
+        }),
+    }),
+  },
+  responses: {
+    200: ManyArtistsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getArtistsIdAlbumsRoute = createRoute({
+  method: 'get',
+  path: '/artists/{id}/albums',
+  tags: ['Artists', 'Albums'],
+  summary: "Get Artist's Albums\n",
+  description: "Get Spotify catalog information about an artist's albums.\n",
+  operationId: 'get-an-artists-albums',
+  request: {
+    params: z.object({ id: PathArtistIdParamsSchema }),
+    query: z.object({
+      include_groups: QueryIncludeGroupsParamsSchema,
+      market: QueryMarketParamsSchema,
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(10),
+        )
+        .default(5)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Limit',
+              description:
+                'The maximum number of items to return. Default: 5. Minimum: 1. Maximum: 10.\n',
+              default: 5,
+              example: 5,
+              type: 'integer',
+              minimum: 0,
+              maximum: 10,
+            },
+          },
+          title: 'Limit',
+          description:
+            'The maximum number of items to return. Default: 5. Minimum: 1. Maximum: 10.\n',
+          example: 5,
+        }),
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingArtistDiscographyAlbumObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getArtistsIdTopTracksRoute = createRoute({
+  method: 'get',
+  path: '/artists/{id}/top-tracks',
+  tags: ['Artists', 'Tracks'],
+  summary: "Get Artist's Top Tracks\n",
+  description: "Get Spotify catalog information about an artist's top tracks by country.\n",
+  operationId: 'get-an-artists-top-tracks',
+  request: {
+    params: z.object({ id: PathArtistIdParamsSchema }),
+    query: z.object({ market: QueryMarketParamsSchema }),
+  },
+  responses: {
+    200: ManyTracksResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getArtistsIdRelatedArtistsRoute = createRoute({
+  method: 'get',
+  path: '/artists/{id}/related-artists',
+  tags: ['Artists'],
+  summary: "Get Artist's Related Artists\n",
+  description:
+    "Get Spotify catalog information about artists similar to a given artist. Similarity is based on analysis of the Spotify community's listening history.\n",
+  operationId: 'get-an-artists-related-artists',
+  request: { params: z.object({ id: PathArtistIdParamsSchema }) },
+  responses: {
+    200: ManyArtistsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getShowsIdRoute = createRoute({
+  method: 'get',
+  path: '/shows/{id}',
+  tags: ['Shows'],
+  summary: 'Get Show\n',
+  description:
+    'Get Spotify catalog information for a single show identified by its\nunique Spotify ID.\n',
+  operationId: 'get-a-show',
+  request: {
+    query: z.object({ market: QueryMarketParamsSchema }),
+    params: z.object({ id: PathShowIdParamsSchema }),
+  },
+  responses: {
+    200: OneShowResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-playback-position'] }],
+})
+
+export const getShowsRoute = createRoute({
+  method: 'get',
+  path: '/shows',
+  tags: ['Shows'],
+  summary: 'Get Several Shows\n',
+  description: 'Get Spotify catalog information for several shows based on their Spotify IDs.\n',
+  operationId: 'get-multiple-shows',
+  request: { query: z.object({ market: QueryMarketParamsSchema, ids: QueryShowIdsParamsSchema }) },
+  responses: {
+    200: ManySimplifiedShowsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getShowsIdEpisodesRoute = createRoute({
+  method: 'get',
+  path: '/shows/{id}/episodes',
+  tags: ['Shows', 'Episodes'],
+  summary: 'Get Show Episodes\n',
+  description:
+    'Get Spotify catalog information about an show’s episodes. Optional parameters can be used to limit the number of episodes returned.\n',
+  operationId: 'get-a-shows-episodes',
+  request: {
+    params: z.object({ id: PathShowIdParamsSchema }),
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingSimplifiedEpisodeObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-playback-position'] }],
+})
+
+export const getEpisodesIdRoute = createRoute({
+  method: 'get',
+  path: '/episodes/{id}',
+  tags: ['Episodes'],
+  summary: 'Get Episode\n',
+  description:
+    'Get Spotify catalog information for a single episode identified by its\nunique Spotify ID.\n',
+  operationId: 'get-an-episode',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            schema: {
+              title: 'Get an Episode',
+              description:
+                'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the episode.',
+              example: '512ojhOuo1ktJprKbVcKyQ',
+              type: 'string',
+            },
+          },
+          title: 'Get an Episode',
+          description:
+            'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the episode.',
+          example: '512ojhOuo1ktJprKbVcKyQ',
+        }),
+    }),
+    query: z.object({ market: QueryMarketParamsSchema }),
+  },
+  responses: {
+    200: OneEpisodeResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-playback-position'] }],
+})
+
+export const getEpisodesRoute = createRoute({
+  method: 'get',
+  path: '/episodes',
+  tags: ['Episodes'],
+  summary: 'Get Several Episodes\n',
+  description: 'Get Spotify catalog information for several episodes based on their Spotify IDs.\n',
+  operationId: 'get-multiple-episodes',
+  request: {
+    query: z.object({
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Ids',
+              description:
+                'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the episodes. Maximum: 50 IDs.\n',
+              example: '77o6BIVlYM3msb4MMIL1jH,0Q86acNRm6V9GYx55SXKwf',
+              type: 'string',
+            },
+          },
+          title: 'Ids',
+          description:
+            'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the episodes. Maximum: 50 IDs.\n',
+          example: '77o6BIVlYM3msb4MMIL1jH,0Q86acNRm6V9GYx55SXKwf',
+        }),
+      market: QueryMarketParamsSchema,
+    }),
+  },
+  responses: {
+    200: ManyEpisodesResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-read-playback-position'] }],
+})
+
+export const getAudiobooksIdRoute = createRoute({
+  method: 'get',
+  path: '/audiobooks/{id}',
+  tags: ['Audiobooks'],
+  summary: 'Get an Audiobook\n',
+  description:
+    'Get Spotify catalog information for a single audiobook. Audiobooks are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.\n',
+  operationId: 'get-an-audiobook',
+  request: {
+    params: z.object({ id: PathAudiobookIdParamsSchema }),
+    query: z.object({ market: QueryMarketParamsSchema }),
+  },
+  responses: {
+    200: OneAudiobookResponse,
+    400: BadRequestResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    404: NotFoundResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getAudiobooksRoute = createRoute({
+  method: 'get',
+  path: '/audiobooks',
+  tags: ['Audiobooks'],
+  summary: 'Get Several Audiobooks\n',
+  description:
+    'Get Spotify catalog information for several audiobooks identified by their Spotify IDs. Audiobooks are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.\n',
+  operationId: 'get-multiple-audiobooks',
+  request: {
+    query: z.object({ ids: QueryAudiobookIdsParamsSchema, market: QueryMarketParamsSchema }),
+  },
+  responses: {
+    200: ManyAudiobooksResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getAudiobooksIdChaptersRoute = createRoute({
+  method: 'get',
+  path: '/audiobooks/{id}/chapters',
+  tags: ['Audiobooks', 'Chapters'],
+  summary: 'Get Audiobook Chapters\n',
+  description:
+    "Get Spotify catalog information about an audiobook's chapters. Audiobooks are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.\n",
+  operationId: 'get-audiobook-chapters',
+  request: {
+    params: z.object({ id: PathAudiobookIdParamsSchema }),
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingSimplifiedChapterObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getMeAudiobooksRoute = createRoute({
+  method: 'get',
+  path: '/me/audiobooks',
+  tags: ['Audiobooks', 'Library'],
+  summary: "Get User's Saved Audiobooks\n",
+  description:
+    "Get a list of the audiobooks saved in the current Spotify user's 'Your Music' library.\n",
+  operationId: 'get-users-saved-audiobooks',
+  request: { query: z.object({ limit: QueryLimitParamsSchema, offset: QueryOffsetParamsSchema }) },
+  responses: {
+    200: PagingSavedAudiobookObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const putMeAudiobooksRoute = createRoute({
+  method: 'put',
+  path: '/me/audiobooks',
+  tags: ['Audiobooks', 'Library'],
+  summary: 'Save Audiobooks for Current User\n',
+  description:
+    "Save one or more audiobooks to the current Spotify user's library.\n\n**Note:** This endpoint is deprecated. Use [Save Items to Library](/documentation/web-api/reference/save-library-items) instead.\n",
+  operationId: 'save-audiobooks-user',
+  request: { query: z.object({ ids: QueryAudiobookIdsParamsSchema }) },
+  responses: {
+    200: { description: 'Audiobook(s) are saved to the library' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const deleteMeAudiobooksRoute = createRoute({
+  method: 'delete',
+  path: '/me/audiobooks',
+  tags: ['Audiobooks', 'Library'],
+  summary: "Remove User's Saved Audiobooks\n",
+  description:
+    "Remove one or more audiobooks from the Spotify user's library.\n\n**Note:** This endpoint is deprecated. Use [Remove Items from Library](/documentation/web-api/reference/remove-library-items) instead.\n",
+  operationId: 'remove-audiobooks-user',
+  request: { query: z.object({ ids: QueryAudiobookIdsParamsSchema }) },
+  responses: {
+    200: { description: 'Audiobook(s) have been removed from the library' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const getMeAudiobooksContainsRoute = createRoute({
+  method: 'get',
+  path: '/me/audiobooks/contains',
+  tags: ['Audiobooks', 'Library'],
+  summary: "Check User's Saved Audiobooks\n",
+  description:
+    "Check if one or more audiobooks are already saved in the current Spotify user's library.\n\n**Note:** This endpoint is deprecated. Use [Check User's Saved Items](/documentation/web-api/reference/check-library-contains) instead.\n",
+  operationId: 'check-users-saved-audiobooks',
+  request: { query: z.object({ ids: QueryAudiobookIdsParamsSchema }) },
+  responses: {
+    200: ArrayOfBooleansResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const getChaptersIdRoute = createRoute({
+  method: 'get',
+  path: '/chapters/{id}',
+  tags: ['Chapters'],
+  summary: 'Get a Chapter\n',
+  description:
+    'Get Spotify catalog information for a single audiobook chapter. Chapters are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.\n',
+  operationId: 'get-a-chapter',
+  request: {
+    params: z.object({ id: PathChapterIdParamsSchema }),
+    query: z.object({ market: QueryMarketParamsSchema }),
+  },
+  responses: {
+    200: OneChapterResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getChaptersRoute = createRoute({
+  method: 'get',
+  path: '/chapters',
+  tags: ['Chapters'],
+  summary: 'Get Several Chapters\n',
+  description:
+    'Get Spotify catalog information for several audiobook chapters identified by their Spotify IDs. Chapters are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.\n',
+  operationId: 'get-several-chapters',
+  request: {
+    query: z.object({ ids: QueryChapterIdsParamsSchema, market: QueryMarketParamsSchema }),
+  },
+  responses: {
+    200: ManyChaptersResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getTracksIdRoute = createRoute({
+  method: 'get',
+  path: '/tracks/{id}',
+  tags: ['Tracks'],
+  summary: 'Get Track\n',
+  description:
+    'Get Spotify catalog information for a single track identified by its\nunique Spotify ID.\n',
+  operationId: 'get-track',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            schema: {
+              title: 'Spotify Track ID',
+              description:
+                'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the track.\n',
+              example: '11dFghVXANMlKmJXsNCbNl',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track ID',
+          description:
+            'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the track.\n',
+          example: '11dFghVXANMlKmJXsNCbNl',
+        }),
+    }),
+    query: z.object({ market: QueryMarketParamsSchema }),
+  },
+  responses: {
+    200: OneTrackResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getTracksRoute = createRoute({
+  method: 'get',
+  path: '/tracks',
+  tags: ['Tracks'],
+  summary: 'Get Several Tracks\n',
+  description: 'Get Spotify catalog information for multiple tracks based on their Spotify IDs.\n',
+  operationId: 'get-several-tracks',
+  request: {
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify Track IDs',
+              description:
+                'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=4iV5W9uYEdYUVa79Axb7Rh,1301WleyT98MSxVHPZCA6M`. Maximum: 50 IDs.\n',
+              example: '7ouMYWpwJ422jRcDASZB7P,4VqPOruhp5EdPBeR92t6lQ,2takcwOaAZWiXQijPHIx7B',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track IDs',
+          description:
+            'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=4iV5W9uYEdYUVa79Axb7Rh,1301WleyT98MSxVHPZCA6M`. Maximum: 50 IDs.\n',
+          example: '7ouMYWpwJ422jRcDASZB7P,4VqPOruhp5EdPBeR92t6lQ,2takcwOaAZWiXQijPHIx7B',
+        }),
+    }),
+  },
+  responses: {
+    200: ManyTracksResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getSearchRoute = createRoute({
+  method: 'get',
+  path: '/search',
+  tags: ['Search'],
+  summary: 'Search for Item\n',
+  description:
+    'Get Spotify catalog information about albums, artists, playlists, tracks, shows, episodes or audiobooks\nthat match a keyword string. Audiobooks are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.\n',
+  operationId: 'search',
+  request: {
+    query: z.object({
+      q: z
+        .string()
+        .openapi({
+          param: {
+            name: 'q',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Query',
+              description:
+                'Your search query.\n\nYou can narrow down your search using field filters. The available filters are `album`, `artist`, `track`, `year`, `upc`, `tag:hipster`, `tag:new`, `isrc`, and `genre`. Each field filter only applies to certain result types.\n\nThe `artist` and `year` filters can be used while searching albums, artists and tracks. You can filter on a single `year` or a range (e.g. 1955-1960).<br />\nThe `album` filter can be used while searching albums and tracks.<br />\nThe `genre` filter can be used while searching artists and tracks.<br />\nThe `isrc` and `track` filters can be used while searching tracks.<br />\nThe `upc`, `tag:new` and `tag:hipster` filters can only be used while searching albums. The `tag:new` filter will return albums released in the past two weeks and `tag:hipster` can be used to return only albums with the lowest 10% popularity.<br />\n',
+              example: 'remaster%20track:Doxy%20artist:Miles%20Davis',
+              type: 'string',
+            },
+          },
+          title: 'Query',
+          description:
+            'Your search query.\n\nYou can narrow down your search using field filters. The available filters are `album`, `artist`, `track`, `year`, `upc`, `tag:hipster`, `tag:new`, `isrc`, and `genre`. Each field filter only applies to certain result types.\n\nThe `artist` and `year` filters can be used while searching albums, artists and tracks. You can filter on a single `year` or a range (e.g. 1955-1960).<br />\nThe `album` filter can be used while searching albums and tracks.<br />\nThe `genre` filter can be used while searching artists and tracks.<br />\nThe `isrc` and `track` filters can be used while searching tracks.<br />\nThe `upc`, `tag:new` and `tag:hipster` filters can only be used while searching albums. The `tag:new` filter will return albums released in the past two weeks and `tag:hipster` can be used to return only albums with the lowest 10% popularity.<br />\n',
+          example: 'remaster%20track:Doxy%20artist:Miles%20Davis',
+        }),
+      type: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.enum(['album', 'artist', 'playlist', 'track', 'show', 'episode', 'audiobook'])),
+        )
+        .openapi({
+          param: {
+            name: 'type',
+            required: true,
+            explode: false,
+            in: 'query',
+            schema: {
+              title: 'Item type',
+              description:
+                'A comma-separated list of item types to search across. Search results include hits\nfrom all the specified item types. For example: `q=abacab&type=album,track` returns\nboth albums and tracks matching "abacab".\n',
+              items: {
+                type: 'string',
+                enum: ['album', 'artist', 'playlist', 'track', 'show', 'episode', 'audiobook'],
+              },
+              type: 'array',
+            },
+          },
+          title: 'Item type',
+          description:
+            'A comma-separated list of item types to search across. Search results include hits\nfrom all the specified item types. For example: `q=abacab&type=album,track` returns\nboth albums and tracks matching "abacab".\n',
+        }),
+      market: QueryMarketParamsSchema,
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(10),
+        )
+        .default(5)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Limit',
+              description: 'The maximum number of results to return in each item type.\n',
+              default: 5,
+              example: 10,
+              type: 'integer',
+              minimum: 1,
+              maximum: 10,
+            },
+          },
+          title: 'Limit',
+          description: 'The maximum number of results to return in each item type.\n',
+          example: 10,
+        }),
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(1000),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'offset',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Offset',
+              description:
+                'The index of the first result to return. Use\nwith limit to get the next page of search results.\n',
+              default: 0,
+              minimum: 0,
+              maximum: 1000,
+              example: 5,
+              type: 'integer',
+            },
+          },
+          title: 'Offset',
+          description:
+            'The index of the first result to return. Use\nwith limit to get the next page of search results.\n',
+          example: 5,
+        }),
+      include_external: z
+        .literal('audio')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_external',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Include External',
+              description:
+                'If `include_external=audio` is specified it signals that the client can play externally hosted audio content, and marks\nthe content as playable in the response. By default externally hosted audio content is marked as unplayable in the response.\n',
+              type: 'string',
+              enum: ['audio'],
+            },
+          },
+          title: 'Include External',
+          description:
+            'If `include_external=audio` is specified it signals that the client can play externally hosted audio content, and marks\nthe content as playable in the response. By default externally hosted audio content is marked as unplayable in the response.\n',
+        }),
+    }),
+  },
+  responses: {
+    200: SearchItemsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getMeRoute = createRoute({
+  method: 'get',
+  path: '/me',
+  tags: ['Users'],
+  summary: "Get Current User's Profile\n",
+  description:
+    "Get detailed profile information about the current user (including the\ncurrent user's username).\n",
+  operationId: 'get-current-users-profile',
+  responses: {
+    200: OnePrivateUserResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-private', 'user-read-email'] }],
+})
+
+export const getPlaylistsPlaylistIdRoute = createRoute({
+  method: 'get',
+  path: '/playlists/{playlist_id}',
+  tags: ['Playlists'],
+  summary: 'Get Playlist\n',
+  description: 'Get a playlist owned by a Spotify user.\n',
+  operationId: 'get-playlist',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      fields: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'fields',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Fields',
+              description:
+                "Filters for the query: a comma-separated list of the\nfields to return. If omitted, all fields are returned. For example, to get\njust the playlist''s description and URI: `fields=description,uri`. A dot\nseparator can be used to specify non-reoccurring fields, while parentheses\ncan be used to specify reoccurring fields within objects. For example, to\nget just the added date and user ID of the adder: `fields=tracks.items(added_at,added_by.id)`.\nUse multiple parentheses to drill down into nested objects, for example: `fields=tracks.items(track(name,href,album(name,href)))`.\nFields can be excluded by prefixing them with an exclamation mark, for example:\n`fields=tracks.items(track(name,href,album(!name,href)))`\n",
+              example: 'items(added_by.id,track(name,href,album(name,href)))',
+              type: 'string',
+            },
+          },
+          title: 'Fields',
+          description:
+            "Filters for the query: a comma-separated list of the\nfields to return. If omitted, all fields are returned. For example, to get\njust the playlist''s description and URI: `fields=description,uri`. A dot\nseparator can be used to specify non-reoccurring fields, while parentheses\ncan be used to specify reoccurring fields within objects. For example, to\nget just the added date and user ID of the adder: `fields=tracks.items(added_at,added_by.id)`.\nUse multiple parentheses to drill down into nested objects, for example: `fields=tracks.items(track(name,href,album(name,href)))`.\nFields can be excluded by prefixing them with an exclamation mark, for example:\n`fields=tracks.items(track(name,href,album(!name,href)))`\n",
+          example: 'items(added_by.id,track(name,href,album(name,href)))',
+        }),
+      additional_types: QueryAdditionalTypesParamsSchema,
+    }),
+  },
+  responses: {
+    200: OnePlaylistResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const putPlaylistsPlaylistIdRoute = createRoute({
+  method: 'put',
+  path: '/playlists/{playlist_id}',
+  tags: ['Playlists', 'Library'],
+  summary: 'Change Playlist Details\n',
+  description:
+    "Change a playlist's name and public/private state. (The user must, of\ncourse, own the playlist.)\n",
+  operationId: 'change-playlist-details',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              name: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The new name for the playlist, for example `"My New Playlist Title"`\n',
+                }),
+              public: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The playlist's public/private status (if it should be added to the user's profile or not): `true` the playlist will be public, `false` the playlist will be private, `null` the playlist status is not relevant. For more about public/private status, see [Working with Playlists](/documentation/web-api/concepts/playlists)\n",
+                }),
+              collaborative: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If `true`, the playlist will become collaborative and other users will be able to modify the playlist in their Spotify client. <br/>\n_**Note**: You can only set `collaborative` to `true` on non-public playlists._\n',
+                }),
+              description: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Value for playlist description as displayed in Spotify Clients and in the Web API.\n',
+                }),
+            })
+            .openapi({
+              example: {
+                name: 'Updated Playlist Name',
+                description: 'Updated playlist description',
+                public: false,
+              },
+              required: [],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Playlist updated' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const getPlaylistsPlaylistIdTracksRoute = createRoute({
+  method: 'get',
+  path: '/playlists/{playlist_id}/tracks',
+  tags: ['Playlists', 'Tracks'],
+  summary: 'Get Playlist Items [DEPRECATED]\n',
+  description:
+    '**Deprecated:** Use [Get Playlist Items](/documentation/web-api/reference/get-playlists-items) instead.\n\nGet full details of the items of a playlist owned by a Spotify user.\n',
+  operationId: 'get-playlists-tracks',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      fields: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'fields',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Fields',
+              description:
+                'Filters for the query: a comma-separated list of the\nfields to return. If omitted, all fields are returned. For example, to get\njust the total number of items and the request limit:<br/>`fields=total,limit`<br/>A\ndot separator can be used to specify non-reoccurring fields, while parentheses\ncan be used to specify reoccurring fields within objects. For example, to\nget just the added date and user ID of the adder:<br/>`fields=items(added_at,added_by.id)`<br/>Use\nmultiple parentheses to drill down into nested objects, for example:<br/>`fields=items(track(name,href,album(name,href)))`<br/>Fields\ncan be excluded by prefixing them with an exclamation mark, for example:<br/>`fields=items.track.album(!external_urls,images)`\n',
+              example: 'items(added_by.id,track(name,href,album(name,href)))',
+              type: 'string',
+            },
+          },
+          title: 'Fields',
+          description:
+            'Filters for the query: a comma-separated list of the\nfields to return. If omitted, all fields are returned. For example, to get\njust the total number of items and the request limit:<br/>`fields=total,limit`<br/>A\ndot separator can be used to specify non-reoccurring fields, while parentheses\ncan be used to specify reoccurring fields within objects. For example, to\nget just the added date and user ID of the adder:<br/>`fields=items(added_at,added_by.id)`<br/>Use\nmultiple parentheses to drill down into nested objects, for example:<br/>`fields=items(track(name,href,album(name,href)))`<br/>Fields\ncan be excluded by prefixing them with an exclamation mark, for example:<br/>`fields=items.track.album(!external_urls,images)`\n',
+          example: 'items(added_by.id,track(name,href,album(name,href)))',
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .default(20)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Limit',
+              description:
+                'The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 100.\n',
+              default: 20,
+              example: 10,
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+            },
+          },
+          title: 'Limit',
+          description:
+            'The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 100.\n',
+          example: 10,
+        }),
+      offset: QueryOffsetParamsSchema,
+      additional_types: QueryAdditionalTypesParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingPlaylistTrackObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['playlist-read-private'] }],
+})
+
+export const putPlaylistsPlaylistIdTracksRoute = createRoute({
+  method: 'put',
+  path: '/playlists/{playlist_id}/tracks',
+  tags: ['Playlists', 'Tracks'],
+  summary: 'Update Playlist Items [DEPRECATED]\n',
+  description:
+    "**Deprecated:** Use [Update Playlist Items](/documentation/web-api/reference/reorder-or-replace-playlists-items) instead.\n\nEither reorder or replace items in a playlist depending on the request's parameters.\nTo reorder items, include `range_start`, `insert_before`, `range_length` and `snapshot_id` in the request's body.\nTo replace items, include `uris` as either a query parameter or in the request's body.\nReplacing items in a playlist will overwrite its existing items. This operation can be used for replacing or clearing items in a playlist.\n<br/>\n**Note**: Replace and reorder are mutually exclusive operations which share the same endpoint, but have different parameters.\nThese operations can't be applied together in a single request.\n",
+  operationId: 'reorder-or-replace-playlists-tracks',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    query: z.object({
+      uris: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'uris',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Spotify Track URIs',
+              description:
+                'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to set, can be track or episode URIs. For example: `uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M,spotify:episode:512ojhOuo1ktJprKbVcKyQ`<br/>A maximum of 100 items can be set in one request.\n',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track URIs',
+          description:
+            'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to set, can be track or episode URIs. For example: `uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M,spotify:episode:512ojhOuo1ktJprKbVcKyQ`<br/>A maximum of 100 items can be set in one request.\n',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              uris: z.array(z.string()).exactOptional(),
+              range_start: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'The position of the first item to be reordered.\n' }),
+              insert_before: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The position where the items should be inserted.<br/>To reorder the items to the end of the playlist, simply set _insert_before_ to the position after the last item.<br/>Examples:<br/>To reorder the first item to the last position in a playlist with 10 items, set _range_start_ to 0, and _insert_before_ to 10.<br/>To reorder the last item in a playlist with 10 items to the start of the playlist, set _range_start_ to 9, and _insert_before_ to 0.\n',
+                }),
+              range_length: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The amount of items to be reordered. Defaults to 1 if not set.<br/>The range of items to be reordered begins from the _range_start_ position, and includes the _range_length_ subsequent items.<br/>Example:<br/>To move the items at index 9-10 to the start of the playlist, _range_start_ is set to 9, and _range_length_ is set to 2.\n',
+                }),
+              snapshot_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The playlist's snapshot ID against which you want to make the changes.\n",
+                }),
+            })
+            .openapi({
+              example: { range_start: 1, insert_before: 3, range_length: 2 },
+              required: [],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: PlaylistSnapshotIdResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const postPlaylistsPlaylistIdTracksRoute = createRoute({
+  method: 'post',
+  path: '/playlists/{playlist_id}/tracks',
+  tags: ['Playlists', 'Tracks'],
+  summary: 'Add Items to Playlist [DEPRECATED]\n',
+  description:
+    "**Deprecated:** Use [Add Items to Playlist](/documentation/web-api/reference/add-items-to-playlist) instead.\n\nAdd one or more items to a user's playlist.\n",
+  operationId: 'add-tracks-to-playlist',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    query: z.object({
+      position: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'position',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Position (append by default)',
+              description:
+                'The position to insert the items, a zero-based index. For example, to insert the items in the first position: `position=0`; to insert the items in the third position: `position=2`. If omitted, the items will be appended to the playlist. Items are added in the order they are listed in the query string or request body.\n',
+              example: 0,
+              type: 'integer',
+            },
+          },
+          title: 'Position (append by default)',
+          description:
+            'The position to insert the items, a zero-based index. For example, to insert the items in the first position: `position=0`; to insert the items in the third position: `position=2`. If omitted, the items will be appended to the playlist. Items are added in the order they are listed in the query string or request body.\n',
+          example: 0,
+        }),
+      uris: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'uris',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Spotify Track URIs',
+              description:
+                'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to add, can be track or episode URIs. For example:<br/>`uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh, spotify:track:1301WleyT98MSxVHPZCA6M, spotify:episode:512ojhOuo1ktJprKbVcKyQ`<br/>A maximum of 100 items can be added in one request. <br/>\n_**Note**: it is likely that passing a large number of item URIs as a query parameter will exceed the maximum length of the request URI. When adding a large number of items, it is recommended to pass them in the request body, see below._\n',
+              example: 'spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track URIs',
+          description:
+            'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to add, can be track or episode URIs. For example:<br/>`uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh, spotify:track:1301WleyT98MSxVHPZCA6M, spotify:episode:512ojhOuo1ktJprKbVcKyQ`<br/>A maximum of 100 items can be added in one request. <br/>\n_**Note**: it is likely that passing a large number of item URIs as a query parameter will exceed the maximum length of the request URI. When adding a large number of items, it is recommended to pass them in the request body, see below._\n',
+          example: 'spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              uris: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to add. For example: `{"uris": ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh","spotify:track:1301WleyT98MSxVHPZCA6M", "spotify:episode:512ojhOuo1ktJprKbVcKyQ"]}`<br/>A maximum of 100 items can be added in one request. _**Note**: if the `uris` parameter is present in the query string, any URIs listed here in the body will be ignored._\n',
+                }),
+              position: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The position to insert the items, a zero-based index. For example, to insert the items in the first position: `position=0` ; to insert the items in the third position: `position=2`. If omitted, the items will be appended to the playlist. Items are added in the order they appear in the uris array. For example: `{"uris": ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh","spotify:track:1301WleyT98MSxVHPZCA6M"], "position": 3}`\n',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    201: PlaylistSnapshotIdResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const deletePlaylistsPlaylistIdTracksRoute = createRoute({
+  method: 'delete',
+  path: '/playlists/{playlist_id}/tracks',
+  tags: ['Playlists', 'Tracks'],
+  summary: 'Remove Playlist Items [DEPRECATED]\n',
+  description:
+    "**Deprecated:** Use [Remove Playlist Items](/documentation/web-api/reference/remove-items-playlist) instead.\n\nRemove one or more items from a user's playlist.\n",
+  operationId: 'remove-tracks-playlist',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              tracks: z
+                .array(
+                  z
+                    .object({
+                      uri: z.string().exactOptional().openapi({ description: 'Spotify URI' }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .openapi({
+                  description:
+                    'An array of objects containing [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) of the tracks or episodes to remove.\nFor example: `{ "tracks": [{ "uri": "spotify:track:4iV5W9uYEdYUVa79Axb7Rh" },{ "uri": "spotify:track:1301WleyT98MSxVHPZCA6M" }] }`. A maximum of 100 objects can be sent at once.\n',
+                }),
+              snapshot_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The playlist's snapshot ID against which you want to make the changes.\nThe API will validate that the specified items exist and in the specified positions and make the changes,\neven if more recent changes have been made to the playlist.\n",
+                }),
+            })
+            .openapi({ required: ['tracks'] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: PlaylistSnapshotIdResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const getPlaylistsPlaylistIdItemsRoute = createRoute({
+  method: 'get',
+  path: '/playlists/{playlist_id}/items',
+  tags: ['Playlists', 'Tracks'],
+  summary: 'Get Playlist Items\n',
+  description:
+    'Get full details of the items of a playlist owned by a Spotify user.\n\n**Note**: This endpoint is only accessible for playlists owned by the current user or playlists the user is a collaborator of. A `403 Forbidden` status code will be returned if the user is neither the owner nor a collaborator of the playlist.\n',
+  operationId: 'get-playlists-items',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      fields: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'fields',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Fields',
+              description:
+                'Filters for the query: a comma-separated list of the\nfields to return. If omitted, all fields are returned. For example, to get\njust the total number of items and the request limit:<br/>`fields=total,limit`<br/>A\ndot separator can be used to specify non-reoccurring fields, while parentheses\ncan be used to specify reoccurring fields within objects. For example, to\nget just the added date and user ID of the adder:<br/>`fields=items(added_at,added_by.id)`<br/>Use\nmultiple parentheses to drill down into nested objects, for example:<br/>`fields=items(track(name,href,album(name,href)))`<br/>Fields\ncan be excluded by prefixing them with an exclamation mark, for example:<br/>`fields=items.track.album(!external_urls,images)`\n',
+              example: 'items(added_by.id,track(name,href,album(name,href)))',
+              type: 'string',
+            },
+          },
+          title: 'Fields',
+          description:
+            'Filters for the query: a comma-separated list of the\nfields to return. If omitted, all fields are returned. For example, to get\njust the total number of items and the request limit:<br/>`fields=total,limit`<br/>A\ndot separator can be used to specify non-reoccurring fields, while parentheses\ncan be used to specify reoccurring fields within objects. For example, to\nget just the added date and user ID of the adder:<br/>`fields=items(added_at,added_by.id)`<br/>Use\nmultiple parentheses to drill down into nested objects, for example:<br/>`fields=items(track(name,href,album(name,href)))`<br/>Fields\ncan be excluded by prefixing them with an exclamation mark, for example:<br/>`fields=items.track.album(!external_urls,images)`\n',
+          example: 'items(added_by.id,track(name,href,album(name,href)))',
+        }),
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+      additional_types: QueryAdditionalTypesParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingPlaylistTrackObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['playlist-read-private'] }],
+})
+
+export const putPlaylistsPlaylistIdItemsRoute = createRoute({
+  method: 'put',
+  path: '/playlists/{playlist_id}/items',
+  tags: ['Playlists', 'Tracks'],
+  summary: 'Update Playlist Items\n',
+  description:
+    "Either reorder or replace items in a playlist depending on the request's parameters.\nTo reorder items, include `range_start`, `insert_before`, `range_length` and `snapshot_id` in the request's body.\nTo replace items, include `uris` as either a query parameter or in the request's body.\nReplacing items in a playlist will overwrite its existing items. This operation can be used for replacing or clearing items in a playlist.\n<br/>\n**Note**: Replace and reorder are mutually exclusive operations which share the same endpoint, but have different parameters.\nThese operations can't be applied together in a single request.\n",
+  operationId: 'reorder-or-replace-playlists-items',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    query: z.object({
+      uris: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'uris',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Spotify Track URIs',
+              description:
+                'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to set, can be track or episode URIs. For example: `uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M,spotify:episode:512ojhOuo1ktJprKbVcKyQ`<br/>A maximum of 100 items can be set in one request.\n',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track URIs',
+          description:
+            'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to set, can be track or episode URIs. For example: `uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M,spotify:episode:512ojhOuo1ktJprKbVcKyQ`<br/>A maximum of 100 items can be set in one request.\n',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              uris: z.array(z.string()).exactOptional(),
+              range_start: z
+                .int()
+                .exactOptional()
+                .openapi({ description: 'The position of the first item to be reordered.\n' }),
+              insert_before: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The position where the items should be inserted.<br/>To reorder the items to the end of the playlist, simply set _insert_before_ to the position after the last item.<br/>Examples:<br/>To reorder the first item to the last position in a playlist with 10 items, set _range_start_ to 0, and _insert_before_ to 10.<br/>To reorder the last item in a playlist with 10 items to the start of the playlist, set _range_start_ to 9, and _insert_before_ to 0.\n',
+                }),
+              range_length: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The amount of items to be reordered. Defaults to 1 if not set.<br/>The range of items to be reordered begins from the _range_start_ position, and includes the _range_length_ subsequent items.<br/>Example:<br/>To move the items at index 9-10 to the start of the playlist, _range_start_ is set to 9, and _range_length_ is set to 2.\n',
+                }),
+              snapshot_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The playlist's snapshot ID against which you want to make the changes.\n",
+                }),
+            })
+            .openapi({
+              example: { range_start: 1, insert_before: 3, range_length: 2 },
+              required: [],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: PlaylistSnapshotIdResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const postPlaylistsPlaylistIdItemsRoute = createRoute({
+  method: 'post',
+  path: '/playlists/{playlist_id}/items',
+  tags: ['Playlists', 'Tracks'],
+  summary: 'Add Items to Playlist\n',
+  description: "Add one or more items to a user's playlist.\n",
+  operationId: 'add-items-to-playlist',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    query: z.object({
+      position: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'position',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Position (append by default)',
+              description:
+                'The position to insert the items, a zero-based index. For example, to insert the items in the first position: `position=0`; to insert the items in the third position: `position=2`. If omitted, the items will be appended to the playlist. Items are added in the order they are listed in the query string or request body.\n',
+              example: 0,
+              type: 'integer',
+            },
+          },
+          title: 'Position (append by default)',
+          description:
+            'The position to insert the items, a zero-based index. For example, to insert the items in the first position: `position=0`; to insert the items in the third position: `position=2`. If omitted, the items will be appended to the playlist. Items are added in the order they are listed in the query string or request body.\n',
+          example: 0,
+        }),
+      uris: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'uris',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Spotify Track URIs',
+              description:
+                'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to add, can be track or episode URIs. For example:<br/>`uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh, spotify:track:1301WleyT98MSxVHPZCA6M, spotify:episode:512ojhOuo1ktJprKbVcKyQ`<br/>A maximum of 100 items can be added in one request. <br/>\n_**Note**: it is likely that passing a large number of item URIs as a query parameter will exceed the maximum length of the request URI. When adding a large number of items, it is recommended to pass them in the request body, see below._\n',
+              example: 'spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track URIs',
+          description:
+            'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to add, can be track or episode URIs. For example:<br/>`uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh, spotify:track:1301WleyT98MSxVHPZCA6M, spotify:episode:512ojhOuo1ktJprKbVcKyQ`<br/>A maximum of 100 items can be added in one request. <br/>\n_**Note**: it is likely that passing a large number of item URIs as a query parameter will exceed the maximum length of the request URI. When adding a large number of items, it is recommended to pass them in the request body, see below._\n',
+          example: 'spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              uris: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) to add. For example: `{"uris": ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh","spotify:track:1301WleyT98MSxVHPZCA6M", "spotify:episode:512ojhOuo1ktJprKbVcKyQ"]}`<br/>A maximum of 100 items can be added in one request. _**Note**: if the `uris` parameter is present in the query string, any URIs listed here in the body will be ignored._\n',
+                }),
+              position: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The position to insert the items, a zero-based index. For example, to insert the items in the first position: `position=0` ; to insert the items in the third position: `position=2`. If omitted, the items will be appended to the playlist. Items are added in the order they appear in the uris array. For example: `{"uris": ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh","spotify:track:1301WleyT98MSxVHPZCA6M"], "position": 3}`\n',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    201: PlaylistSnapshotIdResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const deletePlaylistsPlaylistIdItemsRoute = createRoute({
+  method: 'delete',
+  path: '/playlists/{playlist_id}/items',
+  tags: ['Playlists', 'Tracks'],
+  summary: 'Remove Playlist Items\n',
+  description: "Remove one or more items from a user's playlist.\n",
+  operationId: 'remove-items-playlist',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              items: z
+                .array(
+                  z
+                    .object({
+                      uri: z.string().exactOptional().openapi({ description: 'Spotify URI' }),
+                    })
+                    .openapi({ required: [] }),
+                )
+                .openapi({
+                  description:
+                    'An array of objects containing [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids) of the tracks or episodes to remove.\nFor example: `{ "items": [{ "uri": "spotify:track:4iV5W9uYEdYUVa79Axb7Rh" },{ "uri": "spotify:track:1301WleyT98MSxVHPZCA6M" }] }`. A maximum of 100 objects can be sent at once.\n',
+                }),
+              snapshot_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The playlist's snapshot ID against which you want to make the changes.\nThe API will validate that the specified items exist and in the specified positions and make the changes,\neven if more recent changes have been made to the playlist.\n",
+                }),
+            })
+            .openapi({ required: ['items'] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: PlaylistSnapshotIdResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const getMePlaylistsRoute = createRoute({
+  method: 'get',
+  path: '/me/playlists',
+  tags: ['Playlists', 'Library'],
+  summary: "Get Current User's Playlists\n",
+  description: 'Get a list of the playlists owned or followed by the current Spotify\nuser.\n',
+  operationId: 'get-a-list-of-current-users-playlists',
+  request: {
+    query: z.object({
+      limit: QueryLimitParamsSchema,
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'offset',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Offset',
+              description:
+                "'The index of the first playlist to return. Default:\n0 (the first object). Maximum offset: 100.000\\. Use with `limit` to get the\nnext set of playlists.'\n",
+              default: 0,
+              example: 5,
+              type: 'integer',
+            },
+          },
+          title: 'Offset',
+          description:
+            "'The index of the first playlist to return. Default:\n0 (the first object). Maximum offset: 100.000\\. Use with `limit` to get the\nnext set of playlists.'\n",
+          example: 5,
+        }),
+    }),
+  },
+  responses: {
+    200: PagedPlaylistsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['playlist-read-private'] }],
+})
+
+export const postMePlaylistsRoute = createRoute({
+  method: 'post',
+  path: '/me/playlists',
+  tags: ['Playlists', 'Library'],
+  summary: 'Create Playlist\n',
+  description:
+    'Create a playlist for the current Spotify user. (The playlist will be empty until\nyou [add tracks](/documentation/web-api/reference/add-tracks-to-playlist).)\nEach user is generally limited to a maximum of 11000 playlists.\n',
+  operationId: 'create-playlist',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              name: z
+                .string()
+                .openapi({
+                  description:
+                    'The name for the new playlist, for example `"Your Coolest Playlist"`. This name does not need to be unique; a user may have several playlists with the same name.\n',
+                }),
+              public: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Defaults to `true`. The playlist's public/private status (if it should be added to the user's profile or not): `true` the playlist will be public, `false` the playlist will be private. To be able to create private playlists, the user must have granted the `playlist-modify-private` [scope](/documentation/web-api/concepts/scopes/#list-of-scopes). For more about public/private status, see [Working with Playlists](/documentation/web-api/concepts/playlists)\n",
+                }),
+              collaborative: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Defaults to `false`. If `true` the playlist will be collaborative. _**Note**: to create a collaborative playlist you must also set `public` to `false`. To create collaborative playlists you must have granted `playlist-modify-private` and `playlist-modify-public` [scopes](/documentation/web-api/concepts/scopes/#list-of-scopes)._\n',
+                }),
+              description: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'value for playlist description as displayed in Spotify Clients and in the Web API.\n',
+                }),
+            })
+            .openapi({
+              example: {
+                name: 'New Playlist',
+                description: 'New playlist description',
+                public: false,
+              },
+              required: ['name'],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    201: OnePlaylistResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const putMeLibraryRoute = createRoute({
+  method: 'put',
+  path: '/me/library',
+  tags: ['Library'],
+  summary: 'Save Items to Library\n',
+  description:
+    "Add one or more items to the current user's library. Accepts Spotify URIs for tracks, albums, episodes, shows, audiobooks, users, and playlists.\n",
+  operationId: 'save-library-items',
+  request: {
+    query: z.object({
+      uris: z
+        .string()
+        .openapi({
+          param: {
+            name: 'uris',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify URIs',
+              description:
+                'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 40 URIs.\n\nSupported URI types:\n- `spotify:track:{id}`\n- `spotify:album:{id}`\n- `spotify:episode:{id}`\n- `spotify:show:{id}`\n- `spotify:audiobook:{id}`\n- `spotify:user:{id}`\n- `spotify:playlist:{id}`\n',
+              example: 'spotify:track:7a3LWj5xSFhFRYmztS8wgK,spotify:album:4aawyAB9vmqN3uQ7FjRGTy',
+              type: 'string',
+            },
+          },
+          title: 'Spotify URIs',
+          description:
+            'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 40 URIs.\n\nSupported URI types:\n- `spotify:track:{id}`\n- `spotify:album:{id}`\n- `spotify:episode:{id}`\n- `spotify:show:{id}`\n- `spotify:audiobook:{id}`\n- `spotify:user:{id}`\n- `spotify:playlist:{id}`\n',
+          example: 'spotify:track:7a3LWj5xSFhFRYmztS8wgK,spotify:album:4aawyAB9vmqN3uQ7FjRGTy',
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'Items saved to library' },
+    400: {
+      description:
+        'Bad Request. Possible reasons: missing `uris` parameter, invalid URI format, unsupported URI type, or more than 40 URIs provided.\n',
+      content: { 'application/json': { schema: ErrorObjectSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [
+    { oauth_2_0: ['user-library-modify', 'user-follow-modify', 'playlist-modify-public'] },
+  ],
+})
+
+export const deleteMeLibraryRoute = createRoute({
+  method: 'delete',
+  path: '/me/library',
+  tags: ['Library'],
+  summary: 'Remove Items from Library\n',
+  description:
+    "Remove one or more items from the current user's library. Accepts Spotify URIs for tracks, albums, episodes, shows, audiobooks, users, and playlists.\n",
+  operationId: 'remove-library-items',
+  request: {
+    query: z.object({
+      uris: z
+        .string()
+        .openapi({
+          param: {
+            name: 'uris',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify URIs',
+              description:
+                'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 40 URIs.\n\nSupported URI types:\n- `spotify:track:{id}`\n- `spotify:album:{id}`\n- `spotify:episode:{id}`\n- `spotify:show:{id}`\n- `spotify:audiobook:{id}`\n- `spotify:user:{id}`\n- `spotify:playlist:{id}`\n',
+              example: 'spotify:track:7a3LWj5xSFhFRYmztS8wgK,spotify:album:4aawyAB9vmqN3uQ7FjRGTy',
+              type: 'string',
+            },
+          },
+          title: 'Spotify URIs',
+          description:
+            'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 40 URIs.\n\nSupported URI types:\n- `spotify:track:{id}`\n- `spotify:album:{id}`\n- `spotify:episode:{id}`\n- `spotify:show:{id}`\n- `spotify:audiobook:{id}`\n- `spotify:user:{id}`\n- `spotify:playlist:{id}`\n',
+          example: 'spotify:track:7a3LWj5xSFhFRYmztS8wgK,spotify:album:4aawyAB9vmqN3uQ7FjRGTy',
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'Items removed from library' },
+    400: {
+      description:
+        'Bad Request. Possible reasons: missing `uris` parameter, invalid URI format, unsupported URI type, or more than 40 URIs provided.\n',
+      content: { 'application/json': { schema: ErrorObjectSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [
+    { oauth_2_0: ['user-library-modify', 'user-follow-modify', 'playlist-modify-public'] },
+  ],
+})
+
+export const getMeLibraryContainsRoute = createRoute({
+  method: 'get',
+  path: '/me/library/contains',
+  tags: ['Library'],
+  summary: "Check User's Saved Items\n",
+  description:
+    "Check if one or more items are already saved in the current user's library. Accepts Spotify URIs for tracks, albums, episodes, shows, audiobooks, artists, users, and playlists.\n",
+  operationId: 'check-library-contains',
+  request: {
+    query: z.object({
+      uris: z
+        .string()
+        .openapi({
+          param: {
+            name: 'uris',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify URIs',
+              description:
+                'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 40 URIs.\n\nSupported URI types:\n- `spotify:track:{id}`\n- `spotify:album:{id}`\n- `spotify:episode:{id}`\n- `spotify:show:{id}`\n- `spotify:audiobook:{id}`\n- `spotify:artist:{id}`\n- `spotify:user:{id}`\n- `spotify:playlist:{id}`\n',
+              example:
+                'spotify:track:7a3LWj5xSFhFRYmztS8wgK,spotify:album:4aawyAB9vmqN3uQ7FjRGTy,spotify:artist:2takcwOaAZWiXQijPHIx7B',
+              type: 'string',
+            },
+          },
+          title: 'Spotify URIs',
+          description:
+            'A comma-separated list of [Spotify URIs](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 40 URIs.\n\nSupported URI types:\n- `spotify:track:{id}`\n- `spotify:album:{id}`\n- `spotify:episode:{id}`\n- `spotify:show:{id}`\n- `spotify:audiobook:{id}`\n- `spotify:artist:{id}`\n- `spotify:user:{id}`\n- `spotify:playlist:{id}`\n',
+          example:
+            'spotify:track:7a3LWj5xSFhFRYmztS8wgK,spotify:album:4aawyAB9vmqN3uQ7FjRGTy,spotify:artist:2takcwOaAZWiXQijPHIx7B',
+        }),
+    }),
+  },
+  responses: {
+    200: ArrayOfBooleansResponse,
+    400: {
+      description:
+        'Bad Request. Possible reasons: missing `uris` parameter, invalid URI format, unsupported URI type, or more than 40 URIs provided.\n',
+      content: { 'application/json': { schema: ErrorObjectSchema } },
+    },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-library-read', 'user-follow-read', 'playlist-read-private'] }],
+})
+
+export const getMeAlbumsRoute = createRoute({
+  method: 'get',
+  path: '/me/albums',
+  tags: ['Albums', 'Library'],
+  summary: "Get User's Saved Albums\n",
+  description:
+    "Get a list of the albums saved in the current Spotify user's 'Your Music' library.\n",
+  operationId: 'get-users-saved-albums',
+  request: {
+    query: z.object({
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+      market: QueryMarketParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingSavedAlbumObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const putMeAlbumsRoute = createRoute({
+  method: 'put',
+  path: '/me/albums',
+  tags: ['Albums', 'Library'],
+  summary: 'Save Albums for Current User\n',
+  description:
+    "Save one or more albums to the current user's 'Your Music' library.\n\n**Note:** This endpoint is deprecated. Use [Save Items to Library](/documentation/web-api/reference/save-library-items) instead.\n",
+  operationId: 'save-albums-user',
+  request: {
+    query: z.object({ ids: QueryAlbumIdsParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              ids: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `["4iV5W9uYEdYUVa79Axb7Rh", "1301WleyT98MSxVHPZCA6M"]`<br/>A maximum of 50 items can be specified in one request. _**Note**: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored._\n',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'The album is saved' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const deleteMeAlbumsRoute = createRoute({
+  method: 'delete',
+  path: '/me/albums',
+  tags: ['Albums', 'Library'],
+  summary: "Remove Users' Saved Albums\n",
+  description:
+    "Remove one or more albums from the current user's 'Your Music' library.\n\n**Note:** This endpoint is deprecated. Use [Remove Items from Library](/documentation/web-api/reference/remove-library-items) instead.\n",
+  operationId: 'remove-albums-user',
+  request: {
+    query: z.object({ ids: QueryAlbumIdsParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              ids: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `["4iV5W9uYEdYUVa79Axb7Rh", "1301WleyT98MSxVHPZCA6M"]`<br/>A maximum of 50 items can be specified in one request. _**Note**: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored._\n',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Album(s) have been removed from the library' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const getMeAlbumsContainsRoute = createRoute({
+  method: 'get',
+  path: '/me/albums/contains',
+  tags: ['Albums', 'Library'],
+  summary: "Check User's Saved Albums\n",
+  description:
+    "Check if one or more albums is already saved in the current Spotify user's 'Your Music' library.\n\n**Note:** This endpoint is deprecated. Use [Check User's Saved Items](/documentation/web-api/reference/check-library-contains) instead.\n",
+  operationId: 'check-users-saved-albums',
+  request: { query: z.object({ ids: QueryAlbumIdsParamsSchema }) },
+  responses: {
+    200: ArrayOfBooleansResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const getMeTracksRoute = createRoute({
+  method: 'get',
+  path: '/me/tracks',
+  tags: ['Tracks', 'Library'],
+  summary: "Get User's Saved Tracks\n",
+  description:
+    "Get a list of the songs saved in the current Spotify user's 'Your Music' library.\n",
+  operationId: 'get-users-saved-tracks',
+  request: {
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingSavedTrackObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const putMeTracksRoute = createRoute({
+  method: 'put',
+  path: '/me/tracks',
+  tags: ['Tracks', 'Library'],
+  summary: 'Save Tracks for Current User\n',
+  description:
+    "Save one or more tracks to the current user's 'Your Music' library.\n\n**Note:** This endpoint is deprecated. Use [Save Items to Library](/documentation/web-api/reference/save-library-items) instead.\n",
+  operationId: 'save-tracks-user',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              ids: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `["4iV5W9uYEdYUVa79Axb7Rh", "1301WleyT98MSxVHPZCA6M"]`<br/>A maximum of 50 items can be specified in one request. _**Note**: if the `timestamped_ids` is present in the body, any IDs listed in the query parameters (deprecated) or the `ids` field in the body will be ignored._\n',
+                }),
+              timestamped_ids: z
+                .array(
+                  z
+                    .object({
+                      id: z
+                        .string()
+                        .openapi({
+                          description:
+                            'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+                        }),
+                      added_at: z.iso
+                        .datetime({ offset: true })
+                        .openapi({
+                          'x-spotify-docs-type': 'Timestamp',
+                          description:
+                            "The timestamp when the track was added to the library. Use ISO 8601 format with UTC timezone (e.g., `2023-01-15T14:30:00Z`). You can specify past timestamps to insert tracks at specific positions in the library's chronological order. The API uses minute-level granularity for ordering, though the timestamp supports millisecond precision.\n",
+                        }),
+                    })
+                    .openapi({ required: ['id', 'added_at'] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    "A JSON array of objects containing track IDs with their corresponding timestamps. Each object must include a track ID and an `added_at` timestamp. This allows you to specify when tracks were added to maintain a specific chronological order in the user's library.<br/>A maximum of 50 items can be specified in one request. _**Note**: if the `timestamped_ids` is present in the body, any IDs listed in the query parameters (deprecated) or the `ids` field in the body will be ignored._\n",
+                }),
+            })
+            .openapi({ required: ['ids'] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Track saved' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const deleteMeTracksRoute = createRoute({
+  method: 'delete',
+  path: '/me/tracks',
+  tags: ['Tracks', 'Library'],
+  summary: "Remove User's Saved Tracks\n",
+  description:
+    "Remove one or more tracks from the current user's 'Your Music' library.\n\n**Note:** This endpoint is deprecated. Use [Remove Items from Library](/documentation/web-api/reference/remove-library-items) instead.\n",
+  operationId: 'remove-tracks-user',
+  request: {
+    query: z.object({ ids: QueryTrackIdsParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              ids: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `["4iV5W9uYEdYUVa79Axb7Rh", "1301WleyT98MSxVHPZCA6M"]`<br/>A maximum of 50 items can be specified in one request. _**Note**: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored._\n',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Track removed' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const getMeTracksContainsRoute = createRoute({
+  method: 'get',
+  path: '/me/tracks/contains',
+  tags: ['Tracks', 'Library'],
+  summary: "Check User's Saved Tracks\n",
+  description:
+    "Check if one or more tracks is already saved in the current Spotify user's 'Your Music' library.\n\n**Note:** This endpoint is deprecated. Use [Check User's Saved Items](/documentation/web-api/reference/check-library-contains) instead.\n",
+  operationId: 'check-users-saved-tracks',
+  request: { query: z.object({ ids: QueryTrackIdsParamsSchema }) },
+  responses: {
+    200: ArrayOfBooleansResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const getMeEpisodesRoute = createRoute({
+  method: 'get',
+  path: '/me/episodes',
+  tags: ['Episodes', 'Library'],
+  summary: "Get User's Saved Episodes\n",
+  description: "Get a list of the episodes saved in the current Spotify user's library.\n",
+  operationId: 'get-users-saved-episodes',
+  request: {
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingSavedEpisodeObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-library-read', 'user-read-playback-position'] }],
+})
+
+export const putMeEpisodesRoute = createRoute({
+  method: 'put',
+  path: '/me/episodes',
+  tags: ['Episodes', 'Library'],
+  summary: 'Save Episodes for Current User\n',
+  description:
+    "Save one or more episodes to the current user's library.\n\n**Note:** This endpoint is deprecated. Use [Save Items to Library](/documentation/web-api/reference/save-library-items) instead.\n",
+  operationId: 'save-episodes-user',
+  request: {
+    query: z.object({
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify Episodes IDs',
+              description:
+                'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 50 IDs.\n',
+              example: '77o6BIVlYM3msb4MMIL1jH,0Q86acNRm6V9GYx55SXKwf',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Episodes IDs',
+          description:
+            'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 50 IDs.\n',
+          example: '77o6BIVlYM3msb4MMIL1jH,0Q86acNRm6V9GYx55SXKwf',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              ids: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). <br/>A maximum of 50 items can be specified in one request. _**Note**: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored._\n',
+                }),
+            })
+            .openapi({ required: ['ids'] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Episode saved' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const deleteMeEpisodesRoute = createRoute({
+  method: 'delete',
+  path: '/me/episodes',
+  tags: ['Episodes', 'Library'],
+  summary: "Remove User's Saved Episodes\n",
+  description:
+    "Remove one or more episodes from the current user's library.\n\n**Note:** This endpoint is deprecated. Use [Remove Items from Library](/documentation/web-api/reference/remove-library-items) instead.\n",
+  operationId: 'remove-episodes-user',
+  request: {
+    query: z.object({ ids: QueryTrackIdsParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              ids: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). <br/>A maximum of 50 items can be specified in one request. _**Note**: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored._\n',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Episode removed' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const getMeEpisodesContainsRoute = createRoute({
+  method: 'get',
+  path: '/me/episodes/contains',
+  tags: ['Episodes', 'Library'],
+  summary: "Check User's Saved Episodes\n",
+  description:
+    "Check if one or more episodes is already saved in the current Spotify user's 'Your Episodes' library.\n\n**Note:** This endpoint is deprecated. Use [Check User's Saved Items](/documentation/web-api/reference/check-library-contains) instead.\n",
+  operationId: 'check-users-saved-episodes',
+  request: {
+    query: z.object({
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify Episode IDs',
+              description:
+                'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the episodes. Maximum: 50 IDs.\n',
+              example: '77o6BIVlYM3msb4MMIL1jH,0Q86acNRm6V9GYx55SXKwf',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Episode IDs',
+          description:
+            'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for the episodes. Maximum: 50 IDs.\n',
+          example: '77o6BIVlYM3msb4MMIL1jH,0Q86acNRm6V9GYx55SXKwf',
+        }),
+    }),
+  },
+  responses: {
+    200: ArrayOfBooleansResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const getMeShowsRoute = createRoute({
+  method: 'get',
+  path: '/me/shows',
+  tags: ['Shows', 'Library'],
+  summary: "Get User's Saved Shows\n",
+  description:
+    "Get a list of shows saved in the current Spotify user's library. Optional parameters can be used to limit the number of shows returned.\n",
+  operationId: 'get-users-saved-shows',
+  request: { query: z.object({ limit: QueryLimitParamsSchema, offset: QueryOffsetParamsSchema }) },
+  responses: {
+    200: PagingSavedShowObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const putMeShowsRoute = createRoute({
+  method: 'put',
+  path: '/me/shows',
+  tags: ['Shows', 'Library'],
+  summary: 'Save Shows for Current User\n',
+  description:
+    "Save one or more shows to current Spotify user's library.\n\n**Note:** This endpoint is deprecated. Use [Save Items to Library](/documentation/web-api/reference/save-library-items) instead.\n",
+  operationId: 'save-shows-user',
+  request: {
+    query: z.object({ ids: QueryShowIdsParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ids: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify IDs](https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids).  \nA maximum of 50 items can be specified in one request. *Note: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored.*',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Show saved' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const deleteMeShowsRoute = createRoute({
+  method: 'delete',
+  path: '/me/shows',
+  tags: ['Shows', 'Library'],
+  summary: "Remove User's Saved Shows\n",
+  description:
+    "Delete one or more shows from current Spotify user's library.\n\n**Note:** This endpoint is deprecated. Use [Remove Items from Library](/documentation/web-api/reference/remove-library-items) instead.\n",
+  operationId: 'remove-shows-user',
+  request: {
+    query: z.object({ ids: QueryShowIdsParamsSchema, market: QueryMarketParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ids: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the [Spotify IDs](https://developer.spotify.com/documentation/web-api/#spotify-uris-and-ids).  \nA maximum of 50 items can be specified in one request. *Note: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored.*',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Show removed' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-modify'] }],
+})
+
+export const getMeShowsContainsRoute = createRoute({
+  method: 'get',
+  path: '/me/shows/contains',
+  tags: ['Shows', 'Library'],
+  summary: "Check User's Saved Shows\n",
+  description:
+    "Check if one or more shows is already saved in the current Spotify user's library.\n\n**Note:** This endpoint is deprecated. Use [Check User's Saved Items](/documentation/web-api/reference/check-library-contains) instead.\n",
+  operationId: 'check-users-saved-shows',
+  request: { query: z.object({ ids: QueryShowIdsParamsSchema }) },
+  responses: {
+    200: ArrayOfBooleansResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-library-read'] }],
+})
+
+export const getUsersUserIdRoute = createRoute({
+  method: 'get',
+  path: '/users/{user_id}',
+  tags: ['Users'],
+  summary: "Get User's Profile\n",
+  description: 'Get public profile information about a Spotify user.\n',
+  operationId: 'get-users-profile',
+  request: { params: z.object({ user_id: PathUserIdParamsSchema }) },
+  responses: {
+    200: OnePublicUserResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getUsersUserIdPlaylistsRoute = createRoute({
+  method: 'get',
+  path: '/users/{user_id}/playlists',
+  tags: ['Playlists', 'Users'],
+  summary: "Get User's Playlists\n",
+  description: 'Get a list of the playlists owned or followed by a Spotify user.\n',
+  operationId: 'get-list-users-playlists',
+  request: {
+    params: z.object({ user_id: PathUserIdParamsSchema }),
+    query: z.object({
+      limit: QueryLimitParamsSchema,
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'offset',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Offset',
+              description:
+                'The index of the first playlist to return. Default:\n0 (the first object). Maximum offset: 100.000\\. Use with `limit` to get the\nnext set of playlists.\n',
+              default: 0,
+              example: 5,
+              type: 'integer',
+            },
+          },
+          title: 'Offset',
+          description:
+            'The index of the first playlist to return. Default:\n0 (the first object). Maximum offset: 100.000\\. Use with `limit` to get the\nnext set of playlists.\n',
+          example: 5,
+        }),
+    }),
+  },
+  responses: {
+    200: PagedPlaylistsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['playlist-read-private', 'playlist-read-collaborative'] }],
+})
+
+export const postUsersUserIdPlaylistsRoute = createRoute({
+  method: 'post',
+  path: '/users/{user_id}/playlists',
+  tags: ['Playlists', 'Library'],
+  summary: 'Create Playlist for user\n',
+  description:
+    '**Deprecated**: Use [Create Playlist](/documentation/web-api/reference/create-playlist) instead.\n\nCreate a playlist for a Spotify user. (The playlist will be empty until\nyou [add tracks](/documentation/web-api/reference/add-tracks-to-playlist).)\nEach user is generally limited to a maximum of 11000 playlists.\n',
+  operationId: 'create-playlist-for-user',
+  request: {
+    params: z.object({ user_id: PathUserIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              name: z
+                .string()
+                .openapi({
+                  description:
+                    'The name for the new playlist, for example `"Your Coolest Playlist"`. This name does not need to be unique; a user may have several playlists with the same name.\n',
+                }),
+              public: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Defaults to `true`. The playlist's public/private status (if it should be added to the user's profile or not): `true` the playlist will be public, `false` the playlist will be private. To be able to create private playlists, the user must have granted the `playlist-modify-private` [scope](/documentation/web-api/concepts/scopes/#list-of-scopes). For more about public/private status, see [Working with Playlists](/documentation/web-api/concepts/playlists)\n",
+                }),
+              collaborative: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Defaults to `false`. If `true` the playlist will be collaborative. _**Note**: to create a collaborative playlist you must also set `public` to `false`. To create collaborative playlists you must have granted `playlist-modify-private` and `playlist-modify-public` [scopes](/documentation/web-api/concepts/scopes/#list-of-scopes)._\n',
+                }),
+              description: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'value for playlist description as displayed in Spotify Clients and in the Web API.\n',
+                }),
+            })
+            .openapi({
+              example: {
+                name: 'New Playlist',
+                description: 'New playlist description',
+                public: false,
+              },
+              required: ['name'],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    201: OnePlaylistResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const putPlaylistsPlaylistIdFollowersRoute = createRoute({
+  method: 'put',
+  path: '/playlists/{playlist_id}/followers',
+  tags: ['Users', 'Playlists'],
+  summary: 'Follow Playlist\n',
+  description:
+    'Add the current user as a follower of a playlist.\n\n**Note:** This endpoint is deprecated. Use [Save Items to Library](/documentation/web-api/reference/save-library-items) instead.\n',
+  operationId: 'follow-playlist',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              public: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Defaults to `true`. If `true` the playlist will be included in user's public playlists (added to profile), if `false` it will remain private. For more about public/private status, see [Working with Playlists](/documentation/web-api/concepts/playlists)\n",
+                }),
+            })
+            .openapi({ example: { public: false }, required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: { description: 'Playlist followed' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const deletePlaylistsPlaylistIdFollowersRoute = createRoute({
+  method: 'delete',
+  path: '/playlists/{playlist_id}/followers',
+  tags: ['Users', 'Playlists'],
+  summary: 'Unfollow Playlist\n',
+  description:
+    'Remove the current user as a follower of a playlist.\n\n**Note:** This endpoint is deprecated. Use [Remove Items from Library](/documentation/web-api/reference/remove-library-items) instead.\n',
+  operationId: 'unfollow-playlist',
+  request: { params: z.object({ playlist_id: PathPlaylistIdParamsSchema }) },
+  responses: {
+    200: { description: 'Playlist unfollowed' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['playlist-modify-public', 'playlist-modify-private'] }],
+})
+
+export const getBrowseFeaturedPlaylistsRoute = createRoute({
+  method: 'get',
+  path: '/browse/featured-playlists',
+  tags: ['Playlists'],
+  summary: 'Get Featured Playlists\n',
+  description:
+    "Get a list of Spotify featured playlists (shown, for example, on a Spotify player's 'Browse' tab).\n",
+  operationId: 'get-featured-playlists',
+  request: {
+    query: z.object({
+      locale: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'locale',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Locale',
+              description:
+                'The desired language, consisting of an [ISO 639-1](http://en.wikipedia.org/wiki/ISO_639-1) language code and an [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2), joined by an underscore. For example: `es_MX`, meaning &quot;Spanish (Mexico)&quot;. Provide this parameter if you want the category strings returned in a particular language.<br/> _**Note**: if `locale` is not supplied, or if the specified language is not available, the category strings returned will be in the Spotify default language (American English)._\n',
+              example: 'sv_SE',
+              type: 'string',
+            },
+          },
+          title: 'Locale',
+          description:
+            'The desired language, consisting of an [ISO 639-1](http://en.wikipedia.org/wiki/ISO_639-1) language code and an [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2), joined by an underscore. For example: `es_MX`, meaning &quot;Spanish (Mexico)&quot;. Provide this parameter if you want the category strings returned in a particular language.<br/> _**Note**: if `locale` is not supplied, or if the specified language is not available, the category strings returned will be in the Spotify default language (American English)._\n',
+          example: 'sv_SE',
+        }),
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagedFeaturedPlaylistsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getBrowseCategoriesRoute = createRoute({
+  method: 'get',
+  path: '/browse/categories',
+  tags: ['Categories'],
+  summary: 'Get Several Browse Categories\n',
+  description:
+    'Get a list of categories used to tag items in Spotify (on, for example, the Spotify player’s “Browse” tab).\n',
+  operationId: 'get-categories',
+  request: {
+    query: z.object({
+      locale: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'locale',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Locale',
+              description:
+                'The desired language, consisting of an [ISO 639-1](http://en.wikipedia.org/wiki/ISO_639-1) language code and an [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2), joined by an underscore. For example: `es_MX`, meaning &quot;Spanish (Mexico)&quot;. Provide this parameter if you want the category strings returned in a particular language.<br/> _**Note**: if `locale` is not supplied, or if the specified language is not available, the category strings returned will be in the Spotify default language (American English)._\n',
+              example: 'sv_SE',
+              type: 'string',
+            },
+          },
+          title: 'Locale',
+          description:
+            'The desired language, consisting of an [ISO 639-1](http://en.wikipedia.org/wiki/ISO_639-1) language code and an [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2), joined by an underscore. For example: `es_MX`, meaning &quot;Spanish (Mexico)&quot;. Provide this parameter if you want the category strings returned in a particular language.<br/> _**Note**: if `locale` is not supplied, or if the specified language is not available, the category strings returned will be in the Spotify default language (American English)._\n',
+          example: 'sv_SE',
+        }),
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagedCategoriesResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getBrowseCategoriesCategoryIdRoute = createRoute({
+  method: 'get',
+  path: '/browse/categories/{category_id}',
+  tags: ['Categories'],
+  summary: 'Get Single Browse Category\n',
+  description:
+    'Get a single category used to tag items in Spotify (on, for example, the Spotify player’s “Browse” tab).\n',
+  operationId: 'get-a-category',
+  request: {
+    params: z.object({
+      category_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'category_id',
+            required: true,
+            in: 'path',
+            schema: {
+              title: 'Category ID',
+              description:
+                'The [Spotify category ID](/documentation/web-api/concepts/spotify-uris-ids) for the category.\n',
+              example: 'dinner',
+              type: 'string',
+            },
+          },
+          title: 'Category ID',
+          description:
+            'The [Spotify category ID](/documentation/web-api/concepts/spotify-uris-ids) for the category.\n',
+          example: 'dinner',
+        }),
+    }),
+    query: z.object({
+      locale: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'locale',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Locale',
+              description:
+                'The desired language, consisting of an [ISO 639-1](http://en.wikipedia.org/wiki/ISO_639-1) language code and an [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2), joined by an underscore. For example: `es_MX`, meaning &quot;Spanish (Mexico)&quot;. Provide this parameter if you want the category strings returned in a particular language.<br/> _**Note**: if `locale` is not supplied, or if the specified language is not available, the category strings returned will be in the Spotify default language (American English)._\n',
+              example: 'sv_SE',
+              type: 'string',
+            },
+          },
+          title: 'Locale',
+          description:
+            'The desired language, consisting of an [ISO 639-1](http://en.wikipedia.org/wiki/ISO_639-1) language code and an [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2), joined by an underscore. For example: `es_MX`, meaning &quot;Spanish (Mexico)&quot;. Provide this parameter if you want the category strings returned in a particular language.<br/> _**Note**: if `locale` is not supplied, or if the specified language is not available, the category strings returned will be in the Spotify default language (American English)._\n',
+          example: 'sv_SE',
+        }),
+    }),
+  },
+  responses: {
+    200: OneCategoryResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getBrowseCategoriesCategoryIdPlaylistsRoute = createRoute({
+  method: 'get',
+  path: '/browse/categories/{category_id}/playlists',
+  tags: ['Playlists', 'Categories'],
+  summary: "Get Category's Playlists\n",
+  description: 'Get a list of Spotify playlists tagged with a particular category.\n',
+  operationId: 'get-a-categories-playlists',
+  request: {
+    params: z.object({
+      category_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'category_id',
+            required: true,
+            in: 'path',
+            schema: {
+              title: 'Category ID',
+              description:
+                'The [Spotify category ID](/documentation/web-api/concepts/spotify-uris-ids) for the category.\n',
+              example: 'dinner',
+              type: 'string',
+            },
+          },
+          title: 'Category ID',
+          description:
+            'The [Spotify category ID](/documentation/web-api/concepts/spotify-uris-ids) for the category.\n',
+          example: 'dinner',
+        }),
+    }),
+    query: z.object({ limit: QueryLimitParamsSchema, offset: QueryOffsetParamsSchema }),
+  },
+  responses: {
+    200: PagedFeaturedPlaylistsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getPlaylistsPlaylistIdImagesRoute = createRoute({
+  method: 'get',
+  path: '/playlists/{playlist_id}/images',
+  tags: ['Playlists'],
+  summary: 'Get Playlist Cover Image\n',
+  description: 'Get the current image associated with a specific playlist.\n',
+  operationId: 'get-playlist-cover',
+  request: { params: z.object({ playlist_id: PathPlaylistIdParamsSchema }) },
+  responses: {
+    200: ArrayOfImagesResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: [] }],
+})
+
+export const putPlaylistsPlaylistIdImagesRoute = createRoute({
+  method: 'put',
+  path: '/playlists/{playlist_id}/images',
+  tags: ['Playlists'],
+  summary: 'Add Custom Playlist Cover Image\n',
+  description: 'Replace the image used to represent a specific playlist.\n',
+  operationId: 'upload-custom-playlist-cover',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    body: {
+      content: {
+        'image/jpeg': {
+          schema: z
+            .base64()
+            .openapi({
+              example:
+                '/9j/2wCEABoZGSccJz4lJT5CLy8vQkc9Ozs9R0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0cBHCcnMyYzPSYmPUc9Mj1HR0dEREdHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR//dAAQAAf/uAA5BZG9iZQBkwAAAAAH/wAARCAABAAEDACIAAREBAhEB/8QASwABAQAAAAAAAAAAAAAAAAAAAAYBAQAAAAAAAAAAAAAAAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwAAARECEQA/AJgAH//Z',
+              description: 'Base64 encoded JPEG image data, maximum payload size is 256 KB.',
+            }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    202: { description: 'Image uploaded' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [
+    { oauth_2_0: ['ugc-image-upload', 'playlist-modify-public', 'playlist-modify-private'] },
+  ],
+})
+
+export const getBrowseNewReleasesRoute = createRoute({
+  method: 'get',
+  path: '/browse/new-releases',
+  tags: ['Albums'],
+  summary: 'Get New Releases\n',
+  description:
+    'Get a list of new album releases featured in Spotify (shown, for example, on a Spotify player’s “Browse” tab).\n',
+  operationId: 'get-new-releases',
+  request: { query: z.object({ limit: QueryLimitParamsSchema, offset: QueryOffsetParamsSchema }) },
+  responses: {
+    200: PagedAlbumsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getMeFollowingRoute = createRoute({
+  method: 'get',
+  path: '/me/following',
+  tags: ['Users', 'Library', 'Artists'],
+  summary: 'Get Followed Artists\n',
+  description: "Get the current user's followed artists.\n",
+  operationId: 'get-followed',
+  request: {
+    query: z.object({
+      type: z
+        .literal('artist')
+        .openapi({
+          param: {
+            name: 'type',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Item Type',
+              description: 'The ID type: currently only `artist` is supported.\n',
+              enum: ['artist'],
+              example: 'artist',
+              type: 'string',
+            },
+          },
+          title: 'Item Type',
+          description: 'The ID type: currently only `artist` is supported.\n',
+          example: 'artist',
+        }),
+      after: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'after',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'After',
+              description: 'The last artist ID retrieved from the previous request.\n',
+              example: '0I2XqVXqHScXjHhk6AYYRe',
+              type: 'string',
+            },
+          },
+          title: 'After',
+          description: 'The last artist ID retrieved from the previous request.\n',
+          example: '0I2XqVXqHScXjHhk6AYYRe',
+        }),
+      limit: QueryLimitParamsSchema,
+    }),
+  },
+  responses: {
+    200: CursorPagedArtistsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-follow-read'] }],
+})
+
+export const putMeFollowingRoute = createRoute({
+  method: 'put',
+  path: '/me/following',
+  tags: ['Users', 'Artists', 'Library'],
+  summary: 'Follow Artists or Users\n',
+  description:
+    'Add the current user as a follower of one or more artists or other Spotify users.\n\n**Note:** This endpoint is deprecated. Use [Save Items to Library](/documentation/web-api/reference/save-library-items) instead.\n',
+  operationId: 'follow-artists-users',
+  request: {
+    query: z.object({
+      type: z
+        .enum(['artist', 'user'])
+        .openapi({
+          param: {
+            name: 'type',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Item Type',
+              description: 'The ID type.\n',
+              enum: ['artist', 'user'],
+              example: 'artist',
+              type: 'string',
+            },
+          },
+          title: 'Item Type',
+          description: 'The ID type.\n',
+          example: 'artist',
+        }),
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify IDs',
+              description:
+                'A comma-separated list of the artist or the user [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids).\nA maximum of 50 IDs can be sent in one request.\n',
+              example: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6',
+              type: 'string',
+            },
+          },
+          title: 'Spotify IDs',
+          description:
+            'A comma-separated list of the artist or the user [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids).\nA maximum of 50 IDs can be sent in one request.\n',
+          example: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              ids: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'A JSON array of the artist or user [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids).\nFor example: `{ids:["74ASZWbe4lXaubB36ztrGX", "08td7MxkoHQkXnWAYD8d6Q"]}`. A maximum of 50 IDs can be sent in one request. _**Note**: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored._\n',
+                }),
+            })
+            .openapi({ required: ['ids'] }),
+        },
+      },
+    },
+  },
+  responses: {
+    204: { description: 'Artist or user followed' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-follow-modify'] }],
+})
+
+export const deleteMeFollowingRoute = createRoute({
+  method: 'delete',
+  path: '/me/following',
+  tags: ['Users', 'Artists', 'Library'],
+  summary: 'Unfollow Artists or Users\n',
+  description:
+    'Remove the current user as a follower of one or more artists or other Spotify users.\n\n**Note:** This endpoint is deprecated. Use [Remove Items from Library](/documentation/web-api/reference/remove-library-items) instead.\n',
+  operationId: 'unfollow-artists-users',
+  request: {
+    query: z.object({
+      type: z
+        .enum(['artist', 'user'])
+        .openapi({
+          param: {
+            name: 'type',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Item Type',
+              description: 'The ID type: either `artist` or `user`.\n',
+              enum: ['artist', 'user'],
+              example: 'artist',
+              type: 'string',
+            },
+          },
+          title: 'Item Type',
+          description: 'The ID type: either `artist` or `user`.\n',
+          example: 'artist',
+        }),
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify IDs',
+              description:
+                'A comma-separated list of the artist or the user [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q`. A maximum of 50 IDs can be sent in one request.\n',
+              example: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6',
+              type: 'string',
+            },
+          },
+          title: 'Spotify IDs',
+          description:
+            'A comma-separated list of the artist or the user [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q`. A maximum of 50 IDs can be sent in one request.\n',
+          example: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              ids: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A JSON array of the artist or user [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids). For example: `{ids:["74ASZWbe4lXaubB36ztrGX", "08td7MxkoHQkXnWAYD8d6Q"]}`. A maximum of 50 IDs can be sent in one request. _**Note**: if the `ids` parameter is present in the query string, any IDs listed here in the body will be ignored._\n',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    204: { description: 'Artist or user unfollowed' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-follow-modify'] }],
+})
+
+export const getMeFollowingContainsRoute = createRoute({
+  method: 'get',
+  path: '/me/following/contains',
+  tags: ['Users', 'Artists', 'Library'],
+  summary: 'Check If User Follows Artists or Users\n',
+  description:
+    "Check to see if the current user is following one or more artists or other Spotify users.\n\n**Note:** This endpoint is deprecated. Use [Check User's Saved Items](/documentation/web-api/reference/check-library-contains) instead.\n",
+  operationId: 'check-current-user-follows',
+  request: {
+    query: z.object({
+      type: z
+        .enum(['artist', 'user'])
+        .openapi({
+          param: {
+            name: 'type',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Item Type',
+              description: 'The ID type: either `artist` or `user`.\n',
+              enum: ['artist', 'user'],
+              example: 'artist',
+              type: 'string',
+            },
+          },
+          title: 'Item Type',
+          description: 'The ID type: either `artist` or `user`.\n',
+          example: 'artist',
+        }),
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify IDs',
+              description:
+                'A comma-separated list of the artist or the user [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) to check. For example: `ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q`. A maximum of 50 IDs can be sent in one request.\n',
+              example: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6',
+              type: 'string',
+            },
+          },
+          title: 'Spotify IDs',
+          description:
+            'A comma-separated list of the artist or the user [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) to check. For example: `ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q`. A maximum of 50 IDs can be sent in one request.\n',
+          example: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6',
+        }),
+    }),
+  },
+  responses: {
+    200: ArrayOfBooleansResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: ['user-follow-read'] }],
+})
+
+export const getPlaylistsPlaylistIdFollowersContainsRoute = createRoute({
+  method: 'get',
+  path: '/playlists/{playlist_id}/followers/contains',
+  tags: ['Users', 'Playlists'],
+  summary: 'Check if Current User Follows Playlist\n',
+  description:
+    "Check to see if the current user is following a specified playlist.\n\n**Note:** This endpoint is deprecated. Use [Check User's Saved Items](/documentation/web-api/reference/check-library-contains) instead.\n",
+  operationId: 'check-if-user-follows-playlist',
+  request: {
+    params: z.object({ playlist_id: PathPlaylistIdParamsSchema }),
+    query: z.object({
+      ids: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Spotify user IDs',
+              description:
+                "**Deprecated** A single item list containing current user's [Spotify Username](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 1 id.\n",
+              example: 'jmperezperez',
+              type: 'string',
+            },
+          },
+          title: 'Spotify user IDs',
+          description:
+            "**Deprecated** A single item list containing current user's [Spotify Username](/documentation/web-api/concepts/spotify-uris-ids). Maximum: 1 id.\n",
+          example: 'jmperezperez',
+        }),
+    }),
+  },
+  responses: {
+    200: SingletonArrayOfBooleanResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getAudioFeaturesRoute = createRoute({
+  method: 'get',
+  path: '/audio-features',
+  tags: ['Tracks'],
+  summary: "Get Several Tracks' Audio Features\n",
+  description: 'Get audio features for multiple tracks based on their Spotify IDs.\n',
+  operationId: 'get-several-audio-features',
+  request: {
+    query: z.object({
+      ids: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ids',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify Track IDs',
+              description:
+                'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids)\nfor the tracks. Maximum: 100 IDs.\n',
+              example: '7ouMYWpwJ422jRcDASZB7P,4VqPOruhp5EdPBeR92t6lQ,2takcwOaAZWiXQijPHIx7B',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track IDs',
+          description:
+            'A comma-separated list of the [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids)\nfor the tracks. Maximum: 100 IDs.\n',
+          example: '7ouMYWpwJ422jRcDASZB7P,4VqPOruhp5EdPBeR92t6lQ,2takcwOaAZWiXQijPHIx7B',
+        }),
+    }),
+  },
+  responses: {
+    200: ManyAudioFeaturesResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getAudioFeaturesIdRoute = createRoute({
+  method: 'get',
+  path: '/audio-features/{id}',
+  tags: ['Tracks'],
+  summary: "Get Track's Audio Features\n",
+  description:
+    'Get audio feature information for a single track identified by its unique\nSpotify ID.\n',
+  operationId: 'get-audio-features',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            schema: {
+              title: 'Spotify Track ID',
+              description:
+                'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+              example: '11dFghVXANMlKmJXsNCbNl',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track ID',
+          description:
+            'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+          example: '11dFghVXANMlKmJXsNCbNl',
+        }),
+    }),
+  },
+  responses: {
+    200: OneAudioFeaturesResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getAudioAnalysisIdRoute = createRoute({
+  method: 'get',
+  path: '/audio-analysis/{id}',
+  tags: ['Tracks'],
+  summary: "Get Track's Audio Analysis\n",
+  description:
+    'Get a low-level audio analysis for a track in the Spotify catalog. The audio analysis describes the track’s structure and musical content, including rhythm, pitch, and timbre.\n',
+  operationId: 'get-audio-analysis',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            schema: {
+              title: 'Spotify Track ID',
+              description:
+                'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the track.\n',
+              example: '11dFghVXANMlKmJXsNCbNl',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track ID',
+          description:
+            'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids)\nfor the track.\n',
+          example: '11dFghVXANMlKmJXsNCbNl',
+        }),
+    }),
+  },
+  responses: {
+    200: OneAudioAnalysisResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getRecommendationsRoute = createRoute({
+  method: 'get',
+  path: '/recommendations',
+  tags: ['Tracks'],
+  summary: 'Get Recommendations\n',
+  description:
+    'Recommendations are generated based on the available information for a given seed entity and matched against similar artists and tracks. If there is sufficient information about the provided seeds, a list of tracks will be returned together with pool size details.\n\nFor artists and tracks that are very new or obscure there might not be enough data to generate a list of tracks.\n',
+  operationId: 'get-recommendations',
+  request: {
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .default(20)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Limit',
+              description:
+                'The target size of the list of recommended tracks. For seeds with unusually small pools or when highly restrictive filtering is applied, it may be impossible to generate the requested number of recommended tracks. Debugging information for such cases is available in the response. Default: 20\\. Minimum: 1\\. Maximum: 100.\n',
+              default: 20,
+              example: 10,
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+            },
+          },
+          title: 'Limit',
+          description:
+            'The target size of the list of recommended tracks. For seeds with unusually small pools or when highly restrictive filtering is applied, it may be impossible to generate the requested number of recommended tracks. Debugging information for such cases is available in the response. Default: 20\\. Minimum: 1\\. Maximum: 100.\n',
+          example: 10,
+        }),
+      market: QueryMarketParamsSchema,
+      seed_artists: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'seed_artists',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Spotify Artist ID Seeds',
+              description:
+                'A comma separated list of [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for seed artists.  Up to 5 seed values may be provided in any combination of `seed_artists`, `seed_tracks` and `seed_genres`.<br/> _**Note**: only required if `seed_genres` and `seed_tracks` are not set_.\n',
+              example: '4NHQUGzhtTLFvgF5SZesLK',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Artist ID Seeds',
+          description:
+            'A comma separated list of [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for seed artists.  Up to 5 seed values may be provided in any combination of `seed_artists`, `seed_tracks` and `seed_genres`.<br/> _**Note**: only required if `seed_genres` and `seed_tracks` are not set_.\n',
+          example: '4NHQUGzhtTLFvgF5SZesLK',
+        }),
+      seed_genres: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'seed_genres',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Genres Seeds',
+              description:
+                'A comma separated list of any genres in the set of [available genre seeds](/documentation/web-api/reference/get-recommendation-genres). Up to 5 seed values may be provided in any combination of `seed_artists`, `seed_tracks` and `seed_genres`.<br/> _**Note**: only required if `seed_artists` and `seed_tracks` are not set_.\n',
+              example: 'classical,country',
+              type: 'string',
+            },
+          },
+          title: 'Genres Seeds',
+          description:
+            'A comma separated list of any genres in the set of [available genre seeds](/documentation/web-api/reference/get-recommendation-genres). Up to 5 seed values may be provided in any combination of `seed_artists`, `seed_tracks` and `seed_genres`.<br/> _**Note**: only required if `seed_artists` and `seed_tracks` are not set_.\n',
+          example: 'classical,country',
+        }),
+      seed_tracks: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'seed_tracks',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Spotify Track ID Seeds',
+              description:
+                'A comma separated list of [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for a seed track.  Up to 5 seed values may be provided in any combination of `seed_artists`, `seed_tracks` and `seed_genres`.<br/> _**Note**: only required if `seed_artists` and `seed_genres` are not set_.\n',
+              example: '0c6xIDDpzE81m2q797ordA',
+              type: 'string',
+            },
+          },
+          title: 'Spotify Track ID Seeds',
+          description:
+            'A comma separated list of [Spotify IDs](/documentation/web-api/concepts/spotify-uris-ids) for a seed track.  Up to 5 seed values may be provided in any combination of `seed_artists`, `seed_tracks` and `seed_genres`.<br/> _**Note**: only required if `seed_artists` and `seed_genres` are not set_.\n',
+          example: '0c6xIDDpzE81m2q797ordA',
+        }),
+      min_acousticness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_acousticness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Acousticness',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Min. Acousticness',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_acousticness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_acousticness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Acousticness',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Max. Acousticness',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_acousticness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_acousticness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Acousticness',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Target Acousticness',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_danceability: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_danceability',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Danceability',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Min. Danceability',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_danceability: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_danceability',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Danceability',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Max. Danceability',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_danceability: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_danceability',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Danceability',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Target Danceability',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_duration_ms: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_duration_ms',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Duration (ms)',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'integer',
+            },
+          },
+          title: 'Min. Duration (ms)',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_duration_ms: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_duration_ms',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Duration (ms)',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'integer',
+            },
+          },
+          title: 'Max. Duration (ms)',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_duration_ms: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_duration_ms',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Duration (ms)',
+              description: 'Target duration of the track (ms)',
+              type: 'integer',
+            },
+          },
+          title: 'Target Duration (ms)',
+          description: 'Target duration of the track (ms)',
+        }),
+      min_energy: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_energy',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Energy',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Min. Energy',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_energy: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_energy',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Energy',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Max. Energy',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_energy: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_energy',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Energy',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Target Energy',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_instrumentalness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_instrumentalness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Instrumentalness',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Min. Instrumentalness',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_instrumentalness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_instrumentalness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Instrumentalness',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Max. Instrumentalness',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_instrumentalness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_instrumentalness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Instrumentalness',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Target Instrumentalness',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_key: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(11),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_key',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Key',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 11,
+            },
+          },
+          title: 'Min. Key',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_key: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(11),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_key',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Key',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 11,
+            },
+          },
+          title: 'Max. Key',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_key: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(11),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_key',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Key',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 11,
+            },
+          },
+          title: 'Target Key',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_liveness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_liveness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Liveness',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Min. Liveness',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_liveness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_liveness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Liveness',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Max. Liveness',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_liveness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_liveness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Liveness',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Target Liveness',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_loudness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_loudness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Loudness',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+            },
+          },
+          title: 'Min. Loudness',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_loudness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_loudness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Loudness',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+            },
+          },
+          title: 'Max. Loudness',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_loudness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_loudness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Loudness',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'number',
+            },
+          },
+          title: 'Target Loudness',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_mode: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_mode',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Mode',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Min. Mode',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_mode: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_mode',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Mode',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Max. Mode',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_mode: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_mode',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Mode',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Target Mode',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_popularity: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_popularity',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Popularity',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 100,
+            },
+          },
+          title: 'Min. Popularity',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_popularity: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_popularity',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Popularity',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 100,
+            },
+          },
+          title: 'Max. Popularity',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_popularity: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_popularity',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Popularity',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'integer',
+              minimum: 0,
+              maximum: 100,
+            },
+          },
+          title: 'Target Popularity',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_speechiness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_speechiness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Speechiness',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Min. Speechiness',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_speechiness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_speechiness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Speechiness',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Max. Speechiness',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_speechiness: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_speechiness',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Speechiness',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Target Speechiness',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_tempo: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_tempo',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Tempo',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+            },
+          },
+          title: 'Min. Tempo',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_tempo: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_tempo',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Tempo',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+            },
+          },
+          title: 'Max. Tempo',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_tempo: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_tempo',
+            required: false,
+            in: 'query',
+            schema: { title: 'Target Tempo', description: 'Target tempo (BPM)', type: 'number' },
+          },
+          title: 'Target Tempo',
+          description: 'Target tempo (BPM)',
+        }),
+      min_time_signature: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().max(11),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_time_signature',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Time Signature',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'integer',
+              maximum: 11,
+            },
+          },
+          title: 'Min. Time Signature',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_time_signature: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_time_signature',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Time Signature',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'integer',
+            },
+          },
+          title: 'Max. Time Signature',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_time_signature: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_time_signature',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Time Signature',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'integer',
+            },
+          },
+          title: 'Target Time Signature',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+      min_valence: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_valence',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Min. Valence',
+              description:
+                'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Min. Valence',
+          description:
+            'For each tunable track attribute, a hard floor on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `min_tempo=140` would restrict results to only those tracks with a tempo of greater than 140 beats per minute.\n',
+        }),
+      max_valence: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_valence',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Max. Valence',
+              description:
+                'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Max. Valence',
+          description:
+            'For each tunable track attribute, a hard ceiling on the selected track attribute’s value can be provided. See tunable track attributes below for the list of available options. For example, `max_instrumentalness=0.35` would filter out most tracks that are likely to be instrumental.\n',
+        }),
+      target_valence: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.number().min(0).max(1),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'target_valence',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Target Valence',
+              description:
+                'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+              type: 'number',
+              minimum: 0,
+              maximum: 1,
+            },
+          },
+          title: 'Target Valence',
+          description:
+            'For each of the tunable track attributes (below) a target value may be provided. Tracks with the attribute values nearest to the target values will be preferred. For example, you might request `target_energy=0.6` and `target_danceability=0.8`. All target values will be weighed equally in ranking results.\n',
+        }),
+    }),
+  },
+  responses: {
+    200: OneRecommendationsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getRecommendationsAvailableGenreSeedsRoute = createRoute({
+  method: 'get',
+  path: '/recommendations/available-genre-seeds',
+  tags: ['Genres'],
+  summary: 'Get Available Genre Seeds\n',
+  description:
+    'Retrieve a list of available genres seed parameter values for [recommendations](/documentation/web-api/reference/get-recommendations).\n',
+  operationId: 'get-recommendation-genres',
+  responses: {
+    200: ManyGenresResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getMePlayerRoute = createRoute({
+  method: 'get',
+  path: '/me/player',
+  tags: ['Player'],
+  summary: 'Get Playback State\n',
+  description:
+    'Get information about the user’s current playback state, including track or episode, progress, and active device.\n',
+  operationId: 'get-information-about-the-users-current-playback',
+  request: {
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      additional_types: QueryAdditionalTypesParamsSchema,
+    }),
+  },
+  responses: {
+    200: OneCurrentlyPlayingResponse,
+    204: { description: 'Playback not available or active' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-playback-state'] }],
+})
+
+export const putMePlayerRoute = createRoute({
+  method: 'put',
+  path: '/me/player',
+  tags: ['Player'],
+  summary: 'Transfer Playback\n',
+  description:
+    'Transfer playback to a new device and optionally begin playback. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n',
+  operationId: 'transfer-a-users-playback',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              device_ids: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'A JSON array containing the ID of the device on which playback should be started/transferred.<br/>For example:`{device_ids:["74ASZWbe4lXaubB36ztrGX"]}`<br/>_**Note**: Although an array is accepted, only a single device_id is currently supported. Supplying more than one will return `400 Bad Request`_\n',
+                }),
+              play: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    '**true**: ensure playback happens on new device.<br/>**false** or not provided: keep the current playback state.\n',
+                }),
+            })
+            .openapi({
+              example: { device_ids: ['74ASZWbe4lXaubB36ztrGX'] },
+              required: ['device_ids'],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    204: { description: 'Playback transferred' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const getMePlayerDevicesRoute = createRoute({
+  method: 'get',
+  path: '/me/player/devices',
+  tags: ['Player'],
+  summary: 'Get Available Devices\n',
+  description:
+    'Get information about a user’s available Spotify Connect devices. Some device models are not supported and will not be listed in the API response.\n',
+  operationId: 'get-a-users-available-devices',
+  responses: {
+    200: ManyDevicesResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-playback-state'] }],
+})
+
+export const getMePlayerCurrentlyPlayingRoute = createRoute({
+  method: 'get',
+  path: '/me/player/currently-playing',
+  tags: ['Player'],
+  summary: 'Get Currently Playing Track\n',
+  description: "Get the object currently being played on the user's Spotify account.\n",
+  operationId: 'get-the-users-currently-playing-track',
+  request: {
+    query: z.object({
+      market: QueryMarketParamsSchema,
+      additional_types: QueryAdditionalTypesParamsSchema,
+    }),
+  },
+  responses: {
+    200: OneCurrentlyPlayingTrackResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-currently-playing'] }],
+})
+
+export const putMePlayerPlayRoute = createRoute({
+  method: 'put',
+  path: '/me/player/play',
+  tags: ['Player'],
+  summary: 'Start/Resume Playback\n',
+  description:
+    "Start a new context or resume current playback on the user's active device. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n",
+  operationId: 'start-a-users-playback',
+  request: {
+    query: z.object({
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If not supplied, the user's currently active device is the target.",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If not supplied, the user's currently active device is the target.",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .looseObject({
+              context_uri: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Optional. Spotify URI of the context to play.\nValid contexts are albums, artists & playlists.\n`{context_uri:"spotify:album:1Je1IMUlBXcx1Fz0WE7oPT"}`\n',
+                }),
+              uris: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Optional. A JSON array of the Spotify track URIs to play.\nFor example: `{"uris": ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh", "spotify:track:1301WleyT98MSxVHPZCA6M"]}`\n',
+                }),
+              offset: z
+                .looseObject({})
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Optional. Indicates from where in the context playback should start. Only available when context_uri corresponds to an album or playlist object\n"position" is zero based and can’t be negative. Example: `"offset": {"position": 5}`\n"uri" is a string representing the uri of the item to start at. Example: `"offset": {"uri": "spotify:track:1301WleyT98MSxVHPZCA6M"}`\n',
+                }),
+              position_ms: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Indicates from what position to start playback. Must be a positive number. Passing in a position that is greater than the length of the track will cause the player to start playing the next song.\n',
+                }),
+            })
+            .openapi({
+              example: {
+                context_uri: 'spotify:album:5ht7ItJgpBH7W6vJ5BqpPr',
+                offset: { position: 5 },
+                position_ms: 0,
+              },
+              required: [],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    204: { description: 'Playback started' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const putMePlayerPauseRoute = createRoute({
+  method: 'put',
+  path: '/me/player/pause',
+  tags: ['Player'],
+  summary: 'Pause Playback\n',
+  description:
+    "Pause playback on the user's account. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n",
+  operationId: 'pause-a-users-playback',
+  request: {
+    query: z.object({
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If not supplied, the user's currently active device is the target.\n",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If not supplied, the user's currently active device is the target.\n",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Playback paused' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const postMePlayerNextRoute = createRoute({
+  method: 'post',
+  path: '/me/player/next',
+  tags: ['Player'],
+  summary: 'Skip To Next\n',
+  description:
+    'Skips to next track in the user’s queue. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n',
+  operationId: 'skip-users-playback-to-next-track',
+  request: {
+    query: z.object({
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If not supplied, the user's currently active device is the target.",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If not supplied, the user's currently active device is the target.",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Command sent' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const postMePlayerPreviousRoute = createRoute({
+  method: 'post',
+  path: '/me/player/previous',
+  tags: ['Player'],
+  summary: 'Skip To Previous\n',
+  description:
+    'Skips to previous track in the user’s queue. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n',
+  operationId: 'skip-users-playback-to-previous-track',
+  request: {
+    query: z.object({
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Command sent' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const putMePlayerSeekRoute = createRoute({
+  method: 'put',
+  path: '/me/player/seek',
+  tags: ['Player'],
+  summary: 'Seek To Position\n',
+  description:
+    'Seeks to the given position in the user’s currently playing track. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n',
+  operationId: 'seek-to-position-in-currently-playing-track',
+  request: {
+    query: z.object({
+      position_ms: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            name: 'position_ms',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Position (ms)',
+              description:
+                'The position in milliseconds to seek to. Must be a\npositive number. Passing in a position that is greater than the length of\nthe track will cause the player to start playing the next song.\n',
+              example: 25000,
+              type: 'integer',
+            },
+          },
+          title: 'Position (ms)',
+          description:
+            'The position in milliseconds to seek to. Must be a\npositive number. Passing in a position that is greater than the length of\nthe track will cause the player to start playing the next song.\n',
+          example: 25000,
+        }),
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Command sent' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const putMePlayerRepeatRoute = createRoute({
+  method: 'put',
+  path: '/me/player/repeat',
+  tags: ['Player'],
+  summary: 'Set Repeat Mode\n',
+  description:
+    "Set the repeat mode for the user's playback. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n",
+  operationId: 'set-repeat-mode-on-users-playback',
+  request: {
+    query: z.object({
+      state: z
+        .string()
+        .openapi({
+          param: {
+            name: 'state',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'State',
+              description:
+                '**track**, **context** or **off**.<br/>\n**track** will repeat the current track.<br/>\n**context** will repeat the current context.<br/>\n**off** will turn repeat off.\n',
+              example: 'context',
+              type: 'string',
+            },
+          },
+          title: 'State',
+          description:
+            '**track**, **context** or **off**.<br/>\n**track** will repeat the current track.<br/>\n**context** will repeat the current context.<br/>\n**off** will turn repeat off.\n',
+          example: 'context',
+        }),
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Command sent' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const putMePlayerVolumeRoute = createRoute({
+  method: 'put',
+  path: '/me/player/volume',
+  tags: ['Player'],
+  summary: 'Set Playback Volume\n',
+  description:
+    'Set the volume for the user’s current playback device. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n',
+  operationId: 'set-volume-for-users-playback',
+  request: {
+    query: z.object({
+      volume_percent: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            name: 'volume_percent',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Volume %',
+              description: 'The volume to set. Must be a value from 0 to 100 inclusive.\n',
+              example: 50,
+              type: 'integer',
+            },
+          },
+          title: 'Volume %',
+          description: 'The volume to set. Must be a value from 0 to 100 inclusive.\n',
+          example: 50,
+        }),
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If not supplied, the user's currently active device is the target.\n",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If not supplied, the user's currently active device is the target.\n",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Command sent' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const putMePlayerShuffleRoute = createRoute({
+  method: 'put',
+  path: '/me/player/shuffle',
+  tags: ['Player'],
+  summary: 'Toggle Playback Shuffle\n',
+  description:
+    'Toggle shuffle on or off for user’s playback. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n',
+  operationId: 'toggle-shuffle-for-users-playback',
+  request: {
+    query: z.object({
+      state: z
+        .stringbool()
+        .openapi({
+          param: {
+            name: 'state',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'State',
+              description:
+                "**true** : Shuffle user's playback.<br/>\n**false** : Do not shuffle user's playback.\n",
+              example: true,
+              type: 'boolean',
+            },
+          },
+          title: 'State',
+          description:
+            "**true** : Shuffle user's playback.<br/>\n**false** : Do not shuffle user's playback.\n",
+          example: true,
+        }),
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Command sent' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const getMePlayerRecentlyPlayedRoute = createRoute({
+  method: 'get',
+  path: '/me/player/recently-played',
+  tags: ['Player'],
+  summary: 'Get Recently Played Tracks\n',
+  description:
+    "Get tracks from the current user's recently played tracks.\n_**Note**: Currently doesn't support podcast episodes._\n",
+  operationId: 'get-recently-played',
+  request: {
+    query: z.object({
+      limit: QueryLimitParamsSchema,
+      after: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'after',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'After',
+              description:
+                'A Unix timestamp in milliseconds. Returns all items\nafter (but not including) this cursor position. If `after` is specified, `before`\nmust not be specified.\n',
+              example: 1484811043508,
+              type: 'integer',
+            },
+          },
+          title: 'After',
+          description:
+            'A Unix timestamp in milliseconds. Returns all items\nafter (but not including) this cursor position. If `after` is specified, `before`\nmust not be specified.\n',
+          example: 1484811043508,
+        }),
+      before: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'before',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Before',
+              description:
+                'A Unix timestamp in milliseconds. Returns all items\nbefore (but not including) this cursor position. If `before` is specified,\n`after` must not be specified.\n',
+              type: 'integer',
+            },
+          },
+          title: 'Before',
+          description:
+            'A Unix timestamp in milliseconds. Returns all items\nbefore (but not including) this cursor position. If `before` is specified,\n`after` must not be specified.\n',
+        }),
+    }),
+  },
+  responses: {
+    200: CursorPagedPlayHistoryResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-recently-played'] }],
+})
+
+export const getMePlayerQueueRoute = createRoute({
+  method: 'get',
+  path: '/me/player/queue',
+  tags: ['Player'],
+  summary: "Get the User's Queue\n",
+  description: "Get the list of objects that make up the user's queue.\n",
+  operationId: 'get-queue',
+  responses: {
+    200: QueueResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-read-currently-playing', 'user-read-playback-state'] }],
+})
+
+export const postMePlayerQueueRoute = createRoute({
+  method: 'post',
+  path: '/me/player/queue',
+  tags: ['Player'],
+  summary: 'Add Item to Playback Queue\n',
+  description:
+    "Add an item to be played next in the user's current playback queue. This API only works for users who have Spotify Premium. The order of execution is not guaranteed when you use this API with other Player API endpoints.\n",
+  operationId: 'add-to-queue',
+  request: {
+    query: z.object({
+      uri: z
+        .string()
+        .openapi({
+          param: {
+            name: 'uri',
+            required: true,
+            in: 'query',
+            schema: {
+              title: 'Spotify URI',
+              description:
+                'The uri of the item to add to the queue. Must be a track or an episode uri.\n',
+              example: 'spotify:track:4iV5W9uYEdYUVa79Axb7Rh',
+              type: 'string',
+            },
+          },
+          title: 'Spotify URI',
+          description:
+            'The uri of the item to add to the queue. Must be a track or an episode uri.\n',
+          example: 'spotify:track:4iV5W9uYEdYUVa79Axb7Rh',
+        }),
+      device_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'device_id',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Device ID',
+              description:
+                "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+              example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+              type: 'string',
+            },
+          },
+          title: 'Device ID',
+          description:
+            "The id of the device this command is targeting. If\nnot supplied, the user's currently active device is the target.\n",
+          example: '0d1841b0976bae2a3a310dd74c0f3df354899bc8',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Command received' },
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-modify-playback-state'] }],
+})
+
+export const getMarketsRoute = createRoute({
+  method: 'get',
+  path: '/markets',
+  tags: ['Markets'],
+  summary: 'Get Available Markets\n',
+  description: 'Get the list of markets where Spotify is available.\n',
+  operationId: 'get-available-markets',
+  responses: {
+    200: MarketsResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  deprecated: true,
+  security: [{ oauth_2_0: [] }],
+})
+
+export const getMeTopArtistsRoute = createRoute({
+  method: 'get',
+  path: '/me/top/artists',
+  tags: ['Users', 'Artists', 'Library'],
+  summary: "Get User's Top Artists\n",
+  description: "Get the current user's top artists based on calculated affinity.\n",
+  operationId: 'get-users-top-artists',
+  request: {
+    query: z.object({
+      time_range: z
+        .string()
+        .default('medium_term')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'time_range',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Time Range',
+              description:
+                'Over what time frame the affinities are computed. Valid values: `long_term` (calculated from ~1 year of data and including all new data as it becomes available), `medium_term` (approximately last 6 months), `short_term` (approximately last 4 weeks). Default: `medium_term`\n',
+              default: 'medium_term',
+              example: 'medium_term',
+              type: 'string',
+            },
+          },
+          title: 'Time Range',
+          description:
+            'Over what time frame the affinities are computed. Valid values: `long_term` (calculated from ~1 year of data and including all new data as it becomes available), `medium_term` (approximately last 6 months), `short_term` (approximately last 4 weeks). Default: `medium_term`\n',
+          example: 'medium_term',
+        }),
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingArtistObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-top-read'] }],
+})
+
+export const getMeTopTracksRoute = createRoute({
+  method: 'get',
+  path: '/me/top/tracks',
+  tags: ['Users', 'Tracks', 'Library'],
+  summary: "Get User's Top Tracks\n",
+  description: "Get the current user's top tracks based on calculated affinity.\n",
+  operationId: 'get-users-top-tracks',
+  request: {
+    query: z.object({
+      time_range: z
+        .string()
+        .default('medium_term')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'time_range',
+            required: false,
+            in: 'query',
+            schema: {
+              title: 'Time Range',
+              description:
+                'Over what time frame the affinities are computed. Valid values: `long_term` (calculated from ~1 year of data and including all new data as it becomes available), `medium_term` (approximately last 6 months), `short_term` (approximately last 4 weeks). Default: `medium_term`\n',
+              default: 'medium_term',
+              example: 'medium_term',
+              type: 'string',
+            },
+          },
+          title: 'Time Range',
+          description:
+            'Over what time frame the affinities are computed. Valid values: `long_term` (calculated from ~1 year of data and including all new data as it becomes available), `medium_term` (approximately last 6 months), `short_term` (approximately last 4 weeks). Default: `medium_term`\n',
+          example: 'medium_term',
+        }),
+      limit: QueryLimitParamsSchema,
+      offset: QueryOffsetParamsSchema,
+    }),
+  },
+  responses: {
+    200: PagingTrackObjectResponse,
+    401: UnauthorizedResponse,
+    403: ForbiddenResponse,
+    429: TooManyRequestsResponse,
+  },
+  security: [{ oauth_2_0: ['user-top-read'] }],
+})

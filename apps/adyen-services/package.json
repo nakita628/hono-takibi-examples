@@ -1,0 +1,20 @@
+{
+  "name": "@apps/adyen-services",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/A2APaymentsService-v1.config.ts && hono-takibi -c configs/AccountService-v6.config.ts && hono-takibi -c configs/BalanceControlService-v2.config.ts && hono-takibi -c configs/BalancePlatformService-v2.config.ts && hono-takibi -c configs/BinLookupService-v54.config.ts && hono-takibi -c configs/CapitalService-v1.config.ts && hono-takibi -c configs/CheckoutService-v72.config.ts && hono-takibi -c configs/CloudDeviceService-v1.config.ts && hono-takibi -c configs/DataProtectionService-v1.config.ts && hono-takibi -c configs/DisputeService-v30.config.ts && hono-takibi -c configs/DocumentCollectorService-v1.config.ts && hono-takibi -c configs/ForeignExchangeService-v1.config.ts && hono-takibi -c configs/FundService-v6.config.ts && hono-takibi -c configs/HopService-v6.config.ts && hono-takibi -c configs/LegalEntityService-v4.config.ts && hono-takibi -c configs/ManagementService-v3.config.ts && hono-takibi -c configs/NotificationConfigurationService-v6.config.ts && hono-takibi -c configs/OpenBankingService-v1.config.ts && hono-takibi -c configs/PaymentService-v68.config.ts && hono-takibi -c configs/PaymentsAppService-v1.config.ts && hono-takibi -c configs/PayoutService-v68.config.ts && hono-takibi -c configs/RaiseDisputesService-v4.config.ts && hono-takibi -c configs/RecurringService-v68.config.ts && hono-takibi -c configs/SessionAuthenticationService-v1.config.ts && hono-takibi -c configs/SessionService-v68.config.ts && hono-takibi -c configs/SoftPOSConfigurationService-v3.config.ts && hono-takibi -c configs/StoredValueService-v46.config.ts && hono-takibi -c configs/TerminalAPI-v1.config.ts && hono-takibi -c configs/TestCardService-v1.config.ts && hono-takibi -c configs/TfmAPIService-v1.config.ts && hono-takibi -c configs/TransactionService-v4.config.ts && hono-takibi -c configs/TransferService-v4.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

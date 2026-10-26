@@ -1,0 +1,20 @@
+{
+  "name": "@apps/line",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/channel-access-token.config.ts && hono-takibi -c configs/insight.config.ts && hono-takibi -c configs/liff.config.ts && hono-takibi -c configs/manage-audience.config.ts && hono-takibi -c configs/messaging-api.config.ts && hono-takibi -c configs/module.config.ts && hono-takibi -c configs/module-attach.config.ts && hono-takibi -c configs/shop.config.ts && hono-takibi -c configs/webhook.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

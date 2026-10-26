@@ -1,0 +1,20 @@
+{
+  "name": "@apps/xero",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/xero_accounting.config.ts && hono-takibi -c configs/xero-accountdata.config.ts && hono-takibi -c configs/xero-app-store.config.ts && hono-takibi -c configs/xero_assets.config.ts && hono-takibi -c configs/xero_bankfeeds.config.ts && hono-takibi -c configs/xero_files.config.ts && hono-takibi -c configs/xero-finance.config.ts && hono-takibi -c configs/xero-identity.config.ts && hono-takibi -c configs/xero-payroll-au.config.ts && hono-takibi -c configs/xero-payroll-au-v2.config.ts && hono-takibi -c configs/xero-payroll-nz.config.ts && hono-takibi -c configs/xero-payroll-uk.config.ts && hono-takibi -c configs/xero-projects.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}
