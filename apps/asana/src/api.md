@@ -14739,7 +14739,7 @@ curl https://app.asana.com/api/1.0/memberships \
 
 `GET /memberships`
 
-Returns compact `goal_membership`, `project_membership`, `portfolio_membership`, `custom_type_membership`, or `custom_field_membership` records. The possible types for `parent` in this request are `goal`, `project`, `portfolio`, `custom_type`, or `custom_field`. An additional member (user GID or team GID) can be passed in to filter to a specific membership.
+Returns compact `goal_membership`, `project_membership`, `portfolio_membership`, `custom_type_membership`, `custom_field_membership`, `table_membership`, or `record_membership` records. The possible types for `parent` in this request are `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record`. An additional member (user GID or team GID) can be passed in to filter to a specific membership.
 
 Alternatively, when `parent` is absent, you can use the `member` and `resource_subtype` parameters together to fetch all memberships of a specific type for a given member. For example, passing `member` as a team GID and `resource_subtype` as `project_membership` will return all project memberships for that team.
 
@@ -14747,7 +14747,7 @@ Alternatively, when `parent` is absent, you can use the `member` and `resource_s
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|parent|query|string|false|Globally unique identifier for `goal`, `project`, `portfolio`, `custom_type`, or `custom_field`. This parameter is optional when `resource_subtype` is provided along with `member` of type `team`.|
+|parent|query|string|false|Globally unique identifier for `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record`. This parameter is optional when `resource_subtype` is provided along with `member` of type `team`.|
 |member|query|string|false|Globally unique identifier for `team` or `user`. When used with `resource_subtype` and without `parent`, `member` must be of type `team`. For user-type memberships `parent` parameter is required to disambiguate the workspace from which memberships should be retrieved.|
 |resource_subtype|query|string|false|The type of membership to return. Required when `parent` is absent. Currently supported value is `project_membership` (when `member` is a team GID, returns all project memberships for that team).|
 |limit|query|integer|false|Results per page.<br>The number of objects to return per page. The value must be between 1 and 100.|
@@ -14933,7 +14933,7 @@ curl https://app.asana.com/api/1.0/memberships \
 
 `POST /memberships`
 
-Creates a new membership in a `goal`, `project`, `portfolio`, `custom_type`, or `custom_field`, where members can be Teams or Users.
+Creates a new membership in a `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record`, where members can be Teams or Users.
 
 Returns the full record of the newly created membership.
 
@@ -15117,7 +15117,7 @@ curl https://app.asana.com/api/1.0/memberships/12345 \
 
 `GET /memberships/{membership_gid}`
 
-Returns a `project_membership`, `goal_membership`, `portfolio_membership`, `custom_type_membership`, or `custom_field_membership` record for a membership id.
+Returns a `project_membership`, `goal_membership`, `portfolio_membership`, `custom_type_membership`, `custom_field_membership`, `table_membership`, or `record_membership` record for a membership id.
 
 <h3 id="get-a-membership-parameters">Parameters</h3>
 
@@ -15293,8 +15293,7 @@ curl https://app.asana.com/api/1.0/memberships/12345 \
 `PUT /memberships/{membership_gid}`
 
 An existing membership can be updated by making a `PUT` request on the membership. Only the fields provided in the `data` block will be updated;
-any unspecified fields will remain unchanged. Memberships on `goals`, `projects`, `portfolios`, `custom_types`, and `custom_fields` can be updated.
-
+any unspecified fields will remain unchanged. Memberships on `goals`, `projects`, `portfolios`, `custom_types`, `custom_fields`, `tables`, and `records` can be updated.
 Returns the full record of the updated membership.
 
 > Body parameter
@@ -15476,7 +15475,7 @@ curl https://app.asana.com/api/1.0/memberships/12345 \
 
 `DELETE /memberships/{membership_gid}`
 
-A specific, existing membership for a `goal`, `project`, `portfolio`, `custom_type`, or `custom_field` can be deleted by making a `DELETE` request
+A specific, existing membership for a `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record` can be deleted by making a `DELETE` request
 on the URL for that membership.
 
 Returns an empty data record.
@@ -71086,6 +71085,8 @@ A *member* object represents either a team or user.
 |*anyOf*|[PortfolioMembershipCompactResponse](#schemaportfoliomembershipcompactresponse)|false|none|none|
 |*anyOf*|[CustomFieldMembershipCompact](#schemacustomfieldmembershipcompact)|false|none|This object describes a user or team's membership to a custom field including their level of access (Admin, Editor, or User).|
 |*anyOf*|[CustomTypeMembershipCompact](#schemacustomtypemembershipcompact)|false|none|This object describes a user or team's membership to a custom type including their level of access (Admin, Editor, User, or Viewer).|
+|*anyOf*|[TableMembershipCompact](#schematablemembershipcompact)|false|none|A user or team's membership in a table.|
+|*anyOf*|[RecordMembershipCompact](#schemarecordmembershipcompact)|false|none|A user or team's membership in a record.|
 
 <h2 id="tocS_ModifyDependenciesRequest">ModifyDependenciesRequest</h2>
 <!-- backwards compatibility -->
@@ -73351,6 +73352,198 @@ This object describes a user or team's membership to a custom type including the
 |access_level|admin|
 |access_level|editor|
 |access_level|user|
+|access_level|viewer|
+
+<h2 id="tocS_TableMembershipCompact">TableMembershipCompact</h2>
+<!-- backwards compatibility -->
+<a id="schematablemembershipcompact"></a>
+<a id="schema_TableMembershipCompact"></a>
+<a id="tocStablemembershipcompact"></a>
+<a id="tocstablemembershipcompact"></a>
+
+```json
+{
+  "gid": "12345",
+  "resource_type": "membership",
+  "resource_subtype": "table_membership",
+  "parent": {
+    "gid": "12345",
+    "resource_type": "table",
+    "name": "Vendor contracts"
+  },
+  "member": {
+    "gid": "12345",
+    "resource_type": "user",
+    "name": "Greg Sanchez"
+  },
+  "access_level": "viewer"
+}
+```
+
+A user or team's membership in a table.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|gid|string|false|read-only|Globally unique identifier of the resource, as a string.|
+|resource_type|string|false|read-only|The base type of this resource.|
+|resource_subtype|string|false|none|Type of the membership.|
+|parent|[TableCompact](#schematablecompact)|false|none|The table the user or team is a member of.|
+|member|[MemberCompact](#schemamembercompact)|false|none|Member can be a user or a team.|
+|access_level|string|false|read-only|The member's access level in the table.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|access_level|admin|
+|access_level|editor|
+|access_level|commenter|
+|access_level|viewer|
+
+<h2 id="tocS_TableMembershipResponse">TableMembershipResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematablemembershipresponse"></a>
+<a id="schema_TableMembershipResponse"></a>
+<a id="tocStablemembershipresponse"></a>
+<a id="tocstablemembershipresponse"></a>
+
+```json
+{
+  "gid": "12345",
+  "resource_type": "membership",
+  "resource_subtype": "table_membership",
+  "parent": {
+    "gid": "12345",
+    "resource_type": "table",
+    "name": "Vendor contracts"
+  },
+  "member": {
+    "gid": "12345",
+    "resource_type": "user",
+    "name": "Greg Sanchez"
+  },
+  "access_level": "viewer"
+}
+```
+
+A user or team's membership in a table.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|gid|string|false|read-only|Globally unique identifier of the resource, as a string.|
+|resource_type|string|false|read-only|The base type of this resource.|
+|resource_subtype|string|false|none|Type of the membership.|
+|parent|[TableCompact](#schematablecompact)|false|none|The table the user or team is a member of.|
+|member|[MemberCompact](#schemamembercompact)|false|none|Member can be a user or a team.|
+|access_level|string|false|read-only|The member's access level in the table.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|access_level|admin|
+|access_level|editor|
+|access_level|commenter|
+|access_level|viewer|
+
+<h2 id="tocS_RecordMembershipCompact">RecordMembershipCompact</h2>
+<!-- backwards compatibility -->
+<a id="schemarecordmembershipcompact"></a>
+<a id="schema_RecordMembershipCompact"></a>
+<a id="tocSrecordmembershipcompact"></a>
+<a id="tocsrecordmembershipcompact"></a>
+
+```json
+{
+  "gid": "12345",
+  "resource_type": "membership",
+  "resource_subtype": "record_membership",
+  "parent": {
+    "gid": "12345",
+    "resource_type": "record",
+    "name": "Q3 renewal"
+  },
+  "member": {
+    "gid": "12345",
+    "resource_type": "user",
+    "name": "Greg Sanchez"
+  },
+  "access_level": "viewer"
+}
+```
+
+A user or team's membership in a record.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|gid|string|false|read-only|Globally unique identifier of the resource, as a string.|
+|resource_type|string|false|read-only|The base type of this resource.|
+|resource_subtype|string|false|none|Type of the membership.|
+|parent|[RecordItemCompact](#schemarecorditemcompact)|false|none|The record the user or team is a member of.|
+|member|[MemberCompact](#schemamembercompact)|false|none|Member can be a user or a team.|
+|access_level|string|false|read-only|The member's access level in the record.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|access_level|admin|
+|access_level|editor|
+|access_level|commenter|
+|access_level|viewer|
+
+<h2 id="tocS_RecordMembershipResponse">RecordMembershipResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemarecordmembershipresponse"></a>
+<a id="schema_RecordMembershipResponse"></a>
+<a id="tocSrecordmembershipresponse"></a>
+<a id="tocsrecordmembershipresponse"></a>
+
+```json
+{
+  "gid": "12345",
+  "resource_type": "membership",
+  "resource_subtype": "record_membership",
+  "parent": {
+    "gid": "12345",
+    "resource_type": "record",
+    "name": "Q3 renewal"
+  },
+  "member": {
+    "gid": "12345",
+    "resource_type": "user",
+    "name": "Greg Sanchez"
+  },
+  "access_level": "viewer"
+}
+```
+
+A user or team's membership in a record.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|gid|string|false|read-only|Globally unique identifier of the resource, as a string.|
+|resource_type|string|false|read-only|The base type of this resource.|
+|resource_subtype|string|false|none|Type of the membership.|
+|parent|[RecordItemCompact](#schemarecorditemcompact)|false|none|The record the user or team is a member of.|
+|member|[MemberCompact](#schemamembercompact)|false|none|Member can be a user or a team.|
+|access_level|string|false|read-only|The member's access level in the record.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|access_level|admin|
+|access_level|editor|
+|access_level|commenter|
 |access_level|viewer|
 
 <h2 id="tocS_ProjectMembershipBase">ProjectMembershipBase</h2>
@@ -81143,7 +81336,7 @@ This object represents a user's connection to a goal.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|access_level|string|false|none|Sets the access level for the member. Goals can have access levels `viewer`, `commenter`, `editor` or `admin`. Projects can have access levels `admin`, `editor` or `commenter`. Portfolios can have access levels `admin`, `editor` or `viewer`. Custom Fields can have access levels `admin`, `editor` or `user`.|
+|access_level|string|false|none|Sets the access level for the member. Goals can have access levels `viewer`, `commenter`, `editor` or `admin`. Projects can have access levels `admin`, `editor` or `commenter`. Portfolios can have access levels `admin`, `editor` or `viewer`. Custom Fields can have access levels `admin`, `editor` or `user`. Tables accept `admin`, `editor`, or `viewer` on creation. Records accept `admin`, `editor`, `commenter`, or `viewer`.|
 
 <h2 id="tocS_CreateMembershipRequest">CreateMembershipRequest</h2>
 <!-- backwards compatibility -->
@@ -81165,9 +81358,9 @@ This object represents a user's connection to a goal.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|access_level|string|false|none|Sets the access level for the member. Goals can have access levels `viewer`, `commenter`, `editor` or `admin`. Projects can have access levels `admin`, `editor` or `commenter`. Portfolios can have access levels `admin`, `editor` or `viewer`. Custom Fields can have access levels `admin`, `editor` or `user`.|
+|access_level|string|false|none|Sets the access level for the member. Goals can have access levels `viewer`, `commenter`, `editor` or `admin`. Projects can have access levels `admin`, `editor` or `commenter`. Portfolios can have access levels `admin`, `editor` or `viewer`. Custom Fields can have access levels `admin`, `editor` or `user`. Tables accept `admin`, `editor`, or `viewer` on creation. Records accept `admin`, `editor`, `commenter`, or `viewer`.|
 |member|string|false|none|The gid of the user or team.|
-|parent|string|false|none|The gid of the `goal`, `project`, or `portfolio` to add the member to.|
+|parent|string|false|none|The gid of the `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record` to add the member to.|
 |role|string|false|none|**Deprecated.** *Deprecated: new integrations should use access_level* The role given to the member. Optional argument, will default to `commenter` for goals and the default project role for projects. Can be `editor` or `commenter` for goals. Can be `admin`,`editor` or `commenter` for projects.|
 
 <h2 id="tocS_MembershipResponse">MembershipResponse</h2>
@@ -81231,6 +81424,8 @@ This object represents a user's connection to a goal.
 |*anyOf*|[PortfolioMembershipCompact](#schemaportfoliomembershipcompact)|false|none|This object determines if a user is a member of a portfolio.|
 |*anyOf*|[CustomFieldMembershipCompact](#schemacustomfieldmembershipcompact)|false|none|This object describes a user or team's membership to a custom field including their level of access (Admin, Editor, or User).|
 |*anyOf*|[CustomTypeMembershipCompact](#schemacustomtypemembershipcompact)|false|none|This object describes a user or team's membership to a custom type including their level of access (Admin, Editor, User, or Viewer).|
+|*anyOf*|[TableMembershipCompact](#schematablemembershipcompact)|false|none|A user or team's membership in a table.|
+|*anyOf*|[RecordMembershipCompact](#schemarecordmembershipcompact)|false|none|A user or team's membership in a record.|
 
 <h2 id="tocS_UpdateTimeTrackingEntryRequest">UpdateTimeTrackingEntryRequest</h2>
 <!-- backwards compatibility -->

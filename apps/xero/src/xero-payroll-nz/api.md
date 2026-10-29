@@ -675,6 +675,7 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
     "specialStudentLoanRatePercentage": null,
     "specialTaxRatePercentage": null,
     "kiwiSaverContributions": "MakeContributions",
+    "kiwiSaverStatus": "ActiveKiwiSaverMember",
     "kiwiSaverOptOutDate": null,
     "kiwiSaverContributionHolidayEndDate": null,
     "kiwiSaverEmployeeContributionRatePercentage": 3,
@@ -682,7 +683,8 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
     "kiwiSaverEmployerSalarySacrificeContributionRatePercentage": 0,
     "hasStudentLoanBalance": false,
     "studentLoanBalance": null,
-    "studentLoanAsAt": null
+    "studentLoanAsAt": null,
+    "registeredForGST": null
   }
 }
 ```
@@ -715,11 +717,11 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
     "irdNumber": "111111111",
     "taxCode": "M",
     "esctRatePercentage": 17.5,
-    "isEligibleForKiwiSaver": true,
     "hasSpecialStudentLoanRate": false,
     "specialStudentLoanRatePercentage": null,
     "specialTaxRatePercentage": null,
     "kiwiSaverContributions": "MakeContributions",
+    "kiwiSaverStatus": "ActiveKiwiSaverMember",
     "kiwiSaverOptOutDate": null,
     "kiwiSaverContributionHolidayEndDate": null,
     "kiwiSaverEmployeeContributionRatePercentage": 3,
@@ -727,11 +729,14 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
     "kiwiSaverEmployerSalarySacrificeContributionRatePercentage": 0,
     "hasStudentLoanBalance": false,
     "studentLoanBalance": null,
-    "studentLoanAsAt": null
+    "studentLoanAsAt": null,
+    "registeredForGST": null
   }'
 ```
 
 `POST /Employees/{EmployeeID}/Tax`
+
+Replaces the entire EmployeeTax record. This is not a partial update. Any field omitted from the request is treated as null and overwrites the stored value. To change individual fields, GET the current record, merge your changes, remove deprecated fields such as isEligibleForKiwiSaver, and POST the complete object.
 
 > Body parameter
 
@@ -740,11 +745,11 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
   "irdNumber": "111111111",
   "taxCode": "M",
   "esctRatePercentage": 17.5,
-  "isEligibleForKiwiSaver": true,
   "hasSpecialStudentLoanRate": false,
   "specialStudentLoanRatePercentage": null,
   "specialTaxRatePercentage": null,
   "kiwiSaverContributions": "MakeContributions",
+  "kiwiSaverStatus": "ActiveKiwiSaverMember",
   "kiwiSaverOptOutDate": null,
   "kiwiSaverContributionHolidayEndDate": null,
   "kiwiSaverEmployeeContributionRatePercentage": 3,
@@ -752,7 +757,8 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
   "kiwiSaverEmployerSalarySacrificeContributionRatePercentage": 0,
   "hasStudentLoanBalance": false,
   "studentLoanBalance": null,
-  "studentLoanAsAt": null
+  "studentLoanAsAt": null,
+  "registeredForGST": null
 }
 ```
 
@@ -767,11 +773,12 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
 |» irdNumber|body|string|false|The IRD Number.|
 |» taxCode|body|[TaxCode](#schemataxcode)|false|Tax codes used for employee tax|
 |» specialTaxRatePercentage|body|number(double)|false|Special tax rate percentage.|
-|» hasSpecialStudentLoanRate|body|boolean|false|Does the employee has a special student loan rate?|
+|» hasSpecialStudentLoanRate|body|boolean|false|Does the employee have a special student loan rate?|
 |» specialStudentLoanRatePercentage|body|number(double)|false|The employee student loan rate percentage.|
-|» isEligibleForKiwiSaver|body|boolean|false|The employee eligibility for KiwiSaver.|
+|» isEligibleForKiwiSaver|body|boolean|false|**Deprecated.** The employee eligibility for KiwiSaver. Deprecated, replaced by kiwiSaverStatus. Omit this field from POST requests.|
 |» esctRatePercentage|body|number(double)|false|Employer superannuation contribution tax rate.|
 |» kiwiSaverContributions|body|string|false|Contribution Option which can be 'MakeContributions' 'OptOut', 'OnAContributionsHoliday', 'OnASavingsSuspension', 'NotCurrentlyAKiwiSaverMember' for employees without a KiwiSaver membership|
+|» kiwiSaverStatus|body|string|false|KiwiSaver eligibility. Required in POST requests for all tax codes except WT and NSW.|
 |» kiwiSaverEmployeeContributionRatePercentage|body|number(double)|false|Employee Contribution percentage.|
 |» kiwiSaverEmployerContributionRatePercentage|body|number(double)|false|Employer Contribution percentage.|
 |» kiwiSaverEmployerSalarySacrificeContributionRatePercentage|body|number(double)|false|Employer Contribution through Salary Sacrifice percentage.|
@@ -780,6 +787,7 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
 |» hasStudentLoanBalance|body|boolean|false|Does the employee have a remaining student loan balance? Set a remaining balance if you have received a letter from IR.|
 |» studentLoanBalance|body|number(double)|false|The employee's student loan balance shown on the letter from IR.|
 |» studentLoanAsAt|body|string(date)|false|The date of the letter from IR.|
+|» registeredForGST|body|boolean|false|Is the employee registered for GST? Required in POST requests when taxCode is WT.|
 
 #### Enumerated Values
 
@@ -809,6 +817,12 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
 |» kiwiSaverContributions|OnAContributionsHoliday|
 |» kiwiSaverContributions|OnASavingsSuspension|
 |» kiwiSaverContributions|NotCurrentlyAKiwiSaverMember|
+|» kiwiSaverStatus|ActiveKiwiSaverMember|
+|» kiwiSaverStatus|AutomaticallyEnrolledIntoKiwiSaver|
+|» kiwiSaverStatus|EmployedForLessThan28Days|
+|» kiwiSaverStatus|NotRequiredToBeAutomaticallyEnrolled|
+|» kiwiSaverStatus|OptedIntoKiwiSaver|
+|» kiwiSaverStatus|NotEligibleForKiwiSaver|
 
 > Example responses
 
@@ -831,6 +845,7 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
     "specialStudentLoanRatePercentage": null,
     "specialTaxRatePercentage": null,
     "kiwiSaverContributions": "MakeContributions",
+    "kiwiSaverStatus": "ActiveKiwiSaverMember",
     "kiwiSaverOptOutDate": null,
     "kiwiSaverContributionHolidayEndDate": null,
     "kiwiSaverEmployeeContributionRatePercentage": 3,
@@ -838,7 +853,8 @@ curl https://api.xero.com/payroll.xro/2.0/Employees/4ff1e5cc-9835-40d5-bb18-09fd
     "kiwiSaverEmployerSalarySacrificeContributionRatePercentage": 0,
     "hasStudentLoanBalance": false,
     "studentLoanBalance": null,
-    "studentLoanAsAt": null
+    "studentLoanAsAt": null,
+    "registeredForGST": null
   }
 }
 ```
@@ -7460,6 +7476,7 @@ The object returned for a bad request
     "isEligibleForKiwiSaver": true,
     "esctRatePercentage": 1,
     "kiwiSaverContributions": "MakeContributions",
+    "kiwiSaverStatus": "ActiveKiwiSaverMember",
     "kiwiSaverEmployeeContributionRatePercentage": 4,
     "kiwiSaverEmployerContributionRatePercentage": 10,
     "kiwiSaverEmployerSalarySacrificeContributionRatePercentage": 2,
@@ -7467,7 +7484,8 @@ The object returned for a bad request
     "kiwiSaverContributionHolidayEndDate": "2019-06-01T00:00:00",
     "hasStudentLoanBalance": false,
     "studentLoanBalance": 30,
-    "studentLoanAsAt": "2020-07-01T00:00:00"
+    "studentLoanAsAt": "2020-07-01T00:00:00",
+    "registeredForGST": true
   }
 }
 ```
@@ -7497,6 +7515,7 @@ The object returned for a bad request
   "isEligibleForKiwiSaver": true,
   "esctRatePercentage": 1,
   "kiwiSaverContributions": "MakeContributions",
+  "kiwiSaverStatus": "ActiveKiwiSaverMember",
   "kiwiSaverEmployeeContributionRatePercentage": 4,
   "kiwiSaverEmployerContributionRatePercentage": 10,
   "kiwiSaverEmployerSalarySacrificeContributionRatePercentage": 2,
@@ -7504,7 +7523,8 @@ The object returned for a bad request
   "kiwiSaverContributionHolidayEndDate": "2019-06-01T00:00:00",
   "hasStudentLoanBalance": false,
   "studentLoanBalance": 30,
-  "studentLoanAsAt": "2020-07-01T00:00:00"
+  "studentLoanAsAt": "2020-07-01T00:00:00",
+  "registeredForGST": true
 }
 ```
 
@@ -7515,11 +7535,12 @@ The object returned for a bad request
 |irdNumber|string|false|none|The IRD Number.|
 |taxCode|[TaxCode](#schemataxcode)|false|none|Tax codes used for employee tax|
 |specialTaxRatePercentage|number(double)|false|none|Special tax rate percentage.|
-|hasSpecialStudentLoanRate|boolean|false|none|Does the employee has a special student loan rate?|
+|hasSpecialStudentLoanRate|boolean|false|none|Does the employee have a special student loan rate?|
 |specialStudentLoanRatePercentage|number(double)|false|none|The employee student loan rate percentage.|
-|isEligibleForKiwiSaver|boolean|false|none|The employee eligibility for KiwiSaver.|
+|isEligibleForKiwiSaver|boolean|false|none|**Deprecated.** The employee eligibility for KiwiSaver. Deprecated, replaced by kiwiSaverStatus. Omit this field from POST requests.|
 |esctRatePercentage|number(double)|false|none|Employer superannuation contribution tax rate.|
 |kiwiSaverContributions|string|false|none|Contribution Option which can be 'MakeContributions' 'OptOut', 'OnAContributionsHoliday', 'OnASavingsSuspension', 'NotCurrentlyAKiwiSaverMember' for employees without a KiwiSaver membership|
+|kiwiSaverStatus|string|false|none|KiwiSaver eligibility. Required in POST requests for all tax codes except WT and NSW.|
 |kiwiSaverEmployeeContributionRatePercentage|number(double)|false|none|Employee Contribution percentage.|
 |kiwiSaverEmployerContributionRatePercentage|number(double)|false|none|Employer Contribution percentage.|
 |kiwiSaverEmployerSalarySacrificeContributionRatePercentage|number(double)|false|none|Employer Contribution through Salary Sacrifice percentage.|
@@ -7528,6 +7549,7 @@ The object returned for a bad request
 |hasStudentLoanBalance|boolean|false|none|Does the employee have a remaining student loan balance? Set a remaining balance if you have received a letter from IR.|
 |studentLoanBalance|number(double)|false|none|The employee's student loan balance shown on the letter from IR.|
 |studentLoanAsAt|string(date)|false|none|The date of the letter from IR.|
+|registeredForGST|boolean|false|none|Is the employee registered for GST? Required in POST requests when taxCode is WT.|
 
 #### Enumerated Values
 
@@ -7557,6 +7579,12 @@ The object returned for a bad request
 |kiwiSaverContributions|OnAContributionsHoliday|
 |kiwiSaverContributions|OnASavingsSuspension|
 |kiwiSaverContributions|NotCurrentlyAKiwiSaverMember|
+|kiwiSaverStatus|ActiveKiwiSaverMember|
+|kiwiSaverStatus|AutomaticallyEnrolledIntoKiwiSaver|
+|kiwiSaverStatus|EmployedForLessThan28Days|
+|kiwiSaverStatus|NotRequiredToBeAutomaticallyEnrolled|
+|kiwiSaverStatus|OptedIntoKiwiSaver|
+|kiwiSaverStatus|NotEligibleForKiwiSaver|
 
 <h2 id="tocS_TaxCode">TaxCode</h2>
 <!-- backwards compatibility -->

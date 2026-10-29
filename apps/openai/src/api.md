@@ -3633,6 +3633,13 @@ Generates audio from the input text.
 
 Returns the audio file content, or a stream of audio events.
 
+The `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`, `gpt-4o-mini-tts-2025-03-20`, and
+`gpt-4o-mini-tts-2025-12-15` models are deprecated and scheduled to shut down
+on January 6, 2027. These examples use the existing Speech API; for new
+integrations, migrate to `gpt-realtime-2.1-mini` through the
+[Realtime API](https://developers.openai.com/api/docs/guides/realtime). See the
+[deprecation schedule](https://developers.openai.com/api/docs/deprecations) for migration details.
+
 
 > Body parameter
 
@@ -4135,7 +4142,18 @@ curl https://api.openai.com/v1/audio/translations \
 
 `POST /audio/translations`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
 Translates audio into English.
+
+This endpoint supports only `whisper-1`. The endpoint and model are deprecated
+and scheduled to shut down on February 26, 2027. Migrate to
+`/v1/realtime/translations`, which requires a separate integration. See the
+[deprecation schedule](https://developers.openai.com/api/docs/deprecations)
+for details.
+
 
 > Body parameter
 
@@ -7009,7 +7027,8 @@ List all items for a conversation with the given ID.
           "type": "input_text",
           "text": "string",
           "prompt_cache_breakpoint": {
-            "mode": "explicit"
+            "mode": "explicit",
+            "ttl": "30m"
           }
         }
       ],
@@ -7188,7 +7207,8 @@ Create items in a conversation with the given ID.
           "type": "input_text",
           "text": "string",
           "prompt_cache_breakpoint": {
-            "mode": "explicit"
+            "mode": "explicit",
+            "ttl": "30m"
           }
         }
       ],
@@ -7358,7 +7378,8 @@ Get a single item from a conversation with the given IDs.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -14924,6 +14945,7 @@ Creates an edited or extended image given one or more source images and a prompt
 |» » *anyOf*|body|null|false|none|
 |» images|body|[[ImageRefParam](#schemaimagerefparam)]|true|Input image references to edit.<br>For GPT image models, you can provide up to 16 images.<br>|
 |» mask|body|[ImageRefParam](#schemaimagerefparam)|false|Reference an input image by either URL or uploaded file ID.<br>Provide exactly one of `image_url` or `file_id`.<br>|
+|» markup|body|[ImageRefParam](#schemaimagerefparam)|false|A transparent PNG overlaid on the first image, referenced by file ID, HTTPS URL, or base64 data URL. Must match that image's dimensions after orientation and contain transparent pixels. Supports GPT Image 2.5 and 2.6. Cannot be combined with mask.|
 |» prompt|body|string|true|A text description of the desired image edit.|
 |» n|body|integer \| null|false|The number of edited images to generate.|
 |» » *anyOf*|body|integer|false|none|
@@ -16615,6 +16637,24 @@ as input for the model's response.
     },
     "total_tokens": 380
   },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
   "user": null,
   "metadata": {}
 }
@@ -16812,6 +16852,24 @@ Retrieves a model response with the given ID.
       "reasoning_tokens": 0
     },
     "total_tokens": 380
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
   },
   "user": null,
   "metadata": {}
@@ -17081,6 +17139,24 @@ the `background` parameter set to `true` can be cancelled.
     },
     "total_tokens": 380
   },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
   "user": null,
   "metadata": {}
 }
@@ -17205,7 +17281,8 @@ Returns a list of input items for a given response.
           "type": "input_text",
           "text": "string",
           "prompt_cache_breakpoint": {
-            "mode": "explicit"
+            "mode": "explicit",
+            "ttl": "30m"
           }
         }
       ],
@@ -18134,6 +18211,24 @@ as input for the model's response.
     },
     "total_tokens": 380
   },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
   "user": null,
   "metadata": {}
 }
@@ -18333,6 +18428,24 @@ Retrieves a model response with the given ID.
       "reasoning_tokens": 0
     },
     "total_tokens": 380
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
   },
   "user": null,
   "metadata": {}
@@ -18615,6 +18728,24 @@ the `background` parameter set to `true` can be cancelled.
       "reasoning_tokens": 0
     },
     "total_tokens": 380
+  },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
   },
   "user": null,
   "metadata": {}
@@ -18963,7 +19094,8 @@ Returns a list of input items for a given response.
           "type": "input_text",
           "text": "string",
           "prompt_cache_breakpoint": {
-            "mode": "explicit"
+            "mode": "explicit",
+            "ttl": "30m"
           }
         }
       ],
@@ -21789,6 +21921,369 @@ Get a safety alert belonging to the authenticated API project.
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 ApiKeyAuth
+</aside>
+
+## List the external key configs registered on the user's organization
+
+<a id="opIdListtheexternalkeyconfigsregisteredontheuser'sorganization"></a>
+
+> Code samples
+
+```bash
+curl https://api.openai.com/v1/organization/external_keys \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /organization/external_keys`
+
+List the external key configs registered on the user's organization
+
+<h3 id="list-the-external-key-configs-registered-on-the-users-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer|false|none|
+|order|query|[OrderEnum](#schemaorderenum)|false|none|
+|after|query|string \| null|false|none|
+|purpose|query|[ExternalKeyPurpose](#schemaexternalkeypurpose)|false|Filter by key purpose. When omitted, returns keys of all purposes.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|order|asc|
+|order|desc|
+|purpose|ekm|
+|purpose|psp_decryption|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "string",
+      "id": "string",
+      "type": "string",
+      "purpose": "ekm",
+      "name": "string",
+      "api_project_ids": [
+        "string"
+      ],
+      "workspace_id": "string",
+      "created_at": 0,
+      "role_arn": "string",
+      "external_id": "string",
+      "kms_arn": "string",
+      "workload_identity_project_number": "string",
+      "workload_identity_pool_id": "string",
+      "workload_identity_provider_id": "string",
+      "audience": "string",
+      "kms_project_id": "string",
+      "kms_key_ring_name": "string",
+      "kms_key_name": "string",
+      "kms_key_location": "string",
+      "kms_key_version": "string",
+      "tenant_id": "string",
+      "vault_uri": "string",
+      "key_name": "string",
+      "key_version": "string"
+    }
+  ],
+  "first_id": "string",
+  "last_id": "string",
+  "has_more": true
+}
+```
+
+<h3 id="list-the-external-key-configs-registered-on-the-users-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListExternalKeysResource](#schemalistexternalkeysresource)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth
+</aside>
+
+## Add an external key config for an organization
+
+<a id="opIdAddanexternalkeyconfigforanorganization"></a>
+
+> Code samples
+
+```bash
+curl https://api.openai.com/v1/organization/external_keys \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "type": "aws",
+    "role_arn": "string",
+    "kms_arn": "string",
+    "external_id": "string",
+    "purpose": "ekm"
+  }'
+```
+
+`POST /organization/external_keys`
+
+Add an external key config for an organization
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "type": "aws",
+  "role_arn": "string",
+  "kms_arn": "string",
+  "external_id": "string",
+  "purpose": "ekm"
+}
+```
+
+<h3 id="add-an-external-key-config-for-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[V1OrganizationExternalKeysPostRequest](#schemav1organizationexternalkeyspostrequest)|true|none|
+|» *oneOf*|body|[AwsExternalKeyParams](#schemaawsexternalkeyparams)|false|none|
+|» *oneOf*|body|[GcpExternalKeyParams](#schemagcpexternalkeyparams)|false|none|
+|» *oneOf*|body|[AzureExternalKeyParams](#schemaazureexternalkeyparams)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "string",
+  "id": "string",
+  "type": "string",
+  "purpose": "ekm",
+  "name": "string",
+  "api_project_ids": [
+    "string"
+  ],
+  "workspace_id": "string",
+  "created_at": 0,
+  "role_arn": "string",
+  "external_id": "string",
+  "kms_arn": "string",
+  "workload_identity_project_number": "string",
+  "workload_identity_pool_id": "string",
+  "workload_identity_provider_id": "string",
+  "audience": "string",
+  "kms_project_id": "string",
+  "kms_key_ring_name": "string",
+  "kms_key_name": "string",
+  "kms_key_location": "string",
+  "kms_key_version": "string",
+  "tenant_id": "string",
+  "vault_uri": "string",
+  "key_name": "string",
+  "key_version": "string"
+}
+```
+
+<h3 id="add-an-external-key-config-for-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ExternalKeyResource](#schemaexternalkeyresource)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth
+</aside>
+
+## Retrieve an external key registration
+
+<a id="opIdRetrieveanexternalkeyregistration"></a>
+
+> Code samples
+
+```bash
+curl https://api.openai.com/v1/organization/external_keys/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /organization/external_keys/{external_key_id}`
+
+Retrieve a stored external key registration for the user's organization.
+
+<h3 id="retrieve-an-external-key-registration-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|external_key_id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "string",
+  "id": "string",
+  "type": "string",
+  "purpose": "ekm",
+  "name": "string",
+  "api_project_ids": [
+    "string"
+  ],
+  "workspace_id": "string",
+  "created_at": 0,
+  "role_arn": "string",
+  "external_id": "string",
+  "kms_arn": "string",
+  "workload_identity_project_number": "string",
+  "workload_identity_pool_id": "string",
+  "workload_identity_provider_id": "string",
+  "audience": "string",
+  "kms_project_id": "string",
+  "kms_key_ring_name": "string",
+  "kms_key_name": "string",
+  "kms_key_location": "string",
+  "kms_key_version": "string",
+  "tenant_id": "string",
+  "vault_uri": "string",
+  "key_name": "string",
+  "key_version": "string"
+}
+```
+
+<h3 id="retrieve-an-external-key-registration-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ExternalKeyResource](#schemaexternalkeyresource)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth
+</aside>
+
+## Delete an external key config for the user's organization
+
+<a id="opIdDeleteanexternalkeyconfigfortheuser'sorganization"></a>
+
+> Code samples
+
+```bash
+curl https://api.openai.com/v1/organization/external_keys/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /organization/external_keys/{external_key_id}`
+
+Delete an external key config for the user's organization
+
+<h3 id="delete-an-external-key-config-for-the-users-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|external_key_id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "string",
+  "id": "string",
+  "type": "string",
+  "purpose": "ekm",
+  "name": "string",
+  "api_project_ids": [
+    "string"
+  ],
+  "workspace_id": "string",
+  "created_at": 0,
+  "role_arn": "string",
+  "external_id": "string",
+  "kms_arn": "string",
+  "workload_identity_project_number": "string",
+  "workload_identity_pool_id": "string",
+  "workload_identity_provider_id": "string",
+  "audience": "string",
+  "kms_project_id": "string",
+  "kms_key_ring_name": "string",
+  "kms_key_name": "string",
+  "kms_key_location": "string",
+  "kms_key_version": "string",
+  "tenant_id": "string",
+  "vault_uri": "string",
+  "key_name": "string",
+  "key_version": "string"
+}
+```
+
+<h3 id="delete-an-external-key-config-for-the-users-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ExternalKeyResource](#schemaexternalkeyresource)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth
+</aside>
+
+## Validate an external key config for the user's organization
+
+<a id="opIdValidateanexternalkeyconfigfortheuser'sorganization"></a>
+
+> Code samples
+
+```bash
+curl https://api.openai.com/v1/organization/external_keys/string/validate \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /organization/external_keys/{external_key_id}/validate`
+
+Validate an external key config for the user's organization
+
+<h3 id="validate-an-external-key-config-for-the-users-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|external_key_id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": "string"
+}
+```
+
+<h3 id="validate-an-external-key-config-for-the-users-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ValidateExternalKeyResource](#schemavalidateexternalkeyresource)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AdminApiKeyAuth
 </aside>
 
 ## Decisions
@@ -51112,6 +51607,12 @@ Lists project-owned automations, optionally filtered by target session.
           "multi_agent": {
             "enabled": true,
             "max_concurrent_subagents": 1
+          },
+          "compaction": {
+            "async": true
+          },
+          "experimental": {
+            "time_awareness": true
           }
         },
         "environment": {
@@ -51314,6 +51815,9 @@ curl https://api.openai.com/v1/agents/automations \
     "target": {
       "type": "new_session",
       "agent": {
+        "experimental": {
+          "time_awareness": true
+        },
         "model": "string",
         "reasoning": {
           "effort": "none",
@@ -51330,6 +51834,9 @@ curl https://api.openai.com/v1/agents/automations \
         "multi_agent": {
           "enabled": true,
           "max_concurrent_subagents": 1
+        },
+        "compaction": {
+          "async": true
         },
         "tools": [
           {
@@ -51390,6 +51897,9 @@ Saves an active automation without invoking it immediately.
   "target": {
     "type": "new_session",
     "agent": {
+      "experimental": {
+        "time_awareness": true
+      },
       "model": "string",
       "reasoning": {
         "effort": "none",
@@ -51406,6 +51916,9 @@ Saves an active automation without invoking it immediately.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
       },
       "tools": [
         {
@@ -51504,6 +52017,12 @@ Saves an active automation without invoking it immediately.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -51716,6 +52235,12 @@ Retrieves a project-owned automation.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -51880,6 +52405,9 @@ curl https://api.openai.com/v1/agents/automations/string \
     "target": {
       "type": "new_session",
       "agent": {
+        "experimental": {
+          "time_awareness": true
+        },
         "model": "string",
         "reasoning": {
           "effort": "none",
@@ -51896,6 +52424,9 @@ curl https://api.openai.com/v1/agents/automations/string \
         "multi_agent": {
           "enabled": true,
           "max_concurrent_subagents": 1
+        },
+        "compaction": {
+          "async": true
         },
         "tools": [
           {
@@ -51956,6 +52487,9 @@ Updates supplied fields; target and metadata replace the whole field.
   "target": {
     "type": "new_session",
     "agent": {
+      "experimental": {
+        "time_awareness": true
+      },
       "model": "string",
       "reasoning": {
         "effort": "none",
@@ -51972,6 +52506,9 @@ Updates supplied fields; target and metadata replace the whole field.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
       },
       "tools": [
         {
@@ -52077,6 +52614,12 @@ Updates supplied fields; target and metadata replace the whole field.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -52434,6 +52977,12 @@ Pauses future scheduled delivery without stopping an active session.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -52647,6 +53196,12 @@ Resumes scheduled delivery; one-time automations without a pending invocation re
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -55457,6 +56012,12 @@ Lists reusable agents in the current project. See [agent configuration](https://
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     }
   ],
@@ -55588,6 +56149,9 @@ curl https://api.openai.com/v1/agents \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "experimental": {
+      "time_awareness": false
+    },
     "metadata": {
       "property1": "string",
       "property2": "string"
@@ -55621,6 +56185,9 @@ curl https://api.openai.com/v1/agents \
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
     }
   }'
 ```
@@ -55633,6 +56200,9 @@ Creates a reusable agent without storing credentials. See [agent configuration](
 
 ```json
 {
+  "experimental": {
+    "time_awareness": false
+  },
   "metadata": {
     "property1": "string",
     "property2": "string"
@@ -55666,6 +56236,9 @@ Creates a reusable agent without storing credentials. See [agent configuration](
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
   }
 }
 ```
@@ -55675,6 +56248,7 @@ Creates a reusable agent without storing credentials. See [agent configuration](
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateAgentParams](#schemacreateagentparams)|false|none|
+|» experimental|body|[ExperimentalConfigParam](#schemaexperimentalconfigparam)|false|Experimental agent settings. All experimental features default to disabled.|
 |» metadata|body|object \| null|false|Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters. Omission or null defaults to an empty map.|
 |» » **additionalProperties**|body|string|false|none|
 |» name|body|string \| null|false|A human-readable name for the agent. Omission or null leaves the agent unnamed.|
@@ -55692,6 +56266,9 @@ Creates a reusable agent without storing credentials. See [agent configuration](
 |» tools|body|[[PersistedAgentToolConfigParam](#schemapersistedagenttoolconfigparam)]|false|Tools available to the agent. Defaults to an empty list. The tool list must fit within 3 MiB (3,145,728 bytes) of compact UTF-8 JSON.|
 |» multi_agent|body|[MultiAgentConfigCurrentParam](#schemamultiagentconfigcurrentparam) \| null|false|Configuration for creating and coordinating subagents. Subagent tools are disabled by default.|
 |» » *anyOf*|body|[MultiAgentConfigCurrentParam](#schemamultiagentconfigcurrentparam)|false|Explicit configuration for creating and coordinating subagents.|
+|» » *anyOf*|body|null|false|none|
+|» compaction|body|[CompactionParam](#schemacompactionparam) \| null|false|Context compaction settings. Omission or null enables background compaction.|
+|» » *anyOf*|body|[CompactionParam](#schemacompactionparam)|false|Settings for compacting the agent's context.|
 |» » *anyOf*|body|null|false|none|
 
 #### Enumerated Values
@@ -55748,6 +56325,12 @@ Creates a reusable agent without storing credentials. See [agent configuration](
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
+  },
+  "experimental": {
+    "time_awareness": true
   }
 }
 ```
@@ -55926,6 +56509,12 @@ Retrieves a reusable agent by ID. See [agent configuration](https://developers.o
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
+  },
+  "experimental": {
+    "time_awareness": true
   }
 }
 ```
@@ -56052,6 +56641,9 @@ curl https://api.openai.com/v1/agents/string \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "experimental": {
+      "time_awareness": true
+    },
     "model": "string",
     "reasoning": {
       "effort": "none",
@@ -56068,6 +56660,9 @@ curl https://api.openai.com/v1/agents/string \
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
     },
     "metadata": {
       "property1": "string",
@@ -56097,6 +56692,9 @@ Updates a reusable agent. See [agent configuration](https://developers.openai.co
 
 ```json
 {
+  "experimental": {
+    "time_awareness": true
+  },
   "model": "string",
   "reasoning": {
     "effort": "none",
@@ -56113,6 +56711,9 @@ Updates a reusable agent. See [agent configuration](https://developers.openai.co
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
   },
   "metadata": {
     "property1": "string",
@@ -56140,6 +56741,7 @@ Updates a reusable agent. See [agent configuration](https://developers.openai.co
 |---|---|---|---|---|
 |agent_id|path|string|true|The ID of the reusable agent.|
 |body|body|[UpdateAgentParams](#schemaupdateagentparams)|false|none|
+|» experimental|body|[ExperimentalConfigOverridesParam](#schemaexperimentalconfigoverridesparam)|false|Experimental settings to merge by key. Omitted settings keep their current values.|
 |» model|body|string|false|The model to use for the agent. The requested model name is preserved.|
 |» reasoning|body|[ReasoningParam](#schemareasoningparam) \| null|false|Configuration for model reasoning. Omit to keep the current settings; pass `null` to reset to the model's default effort.|
 |» » *anyOf*|body|[ReasoningParam](#schemareasoningparam)|false|Reasoning configuration for the agent.|
@@ -56153,6 +56755,9 @@ Updates a reusable agent. See [agent configuration](https://developers.openai.co
 |» instructions|body|string \| null|false|Additional instructions appended to the agent's default base instructions. Omit to leave unchanged.|
 |» multi_agent|body|[MultiAgentConfigCurrentParam](#schemamultiagentconfigcurrentparam) \| null|false|Configuration for creating and coordinating subagents.|
 |» » *anyOf*|body|[MultiAgentConfigCurrentParam](#schemamultiagentconfigcurrentparam)|false|Explicit configuration for creating and coordinating subagents.|
+|» » *anyOf*|body|null|false|none|
+|» compaction|body|[CompactionParam](#schemacompactionparam) \| null|false|Context compaction settings. Omit to keep the current settings. A supplied object replaces the settings; null or an empty object enables background compaction.|
+|» » *anyOf*|body|[CompactionParam](#schemacompactionparam)|false|Settings for compacting the agent's context.|
 |» » *anyOf*|body|null|false|none|
 |» metadata|body|object \| null|false|Replaces all metadata. Omit to leave unchanged, or pass null or {} to clear it. Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters.|
 |» » **additionalProperties**|body|string|false|none|
@@ -56213,6 +56818,12 @@ Updates a reusable agent. See [agent configuration](https://developers.openai.co
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
+  },
+  "experimental": {
+    "time_awareness": true
   }
 }
 ```
@@ -57678,6 +58289,7 @@ Lists managed agent sessions using ID-based pagination and the requested sort or
 |order|query|[ListOrderParam](#schemalistorderparam)|false|The order in which resources are returned. Defaults to `desc`.|
 |after|query|string|false|Return resources after this resource ID in the selected order.|
 |agent_id|query|string|false|Only return sessions whose root agent has this ID. Omit to return sessions for all agents.|
+|metadata|query|object|false|Exact string matches supplied as `metadata[key]=value`. All supplied pairs must match. Up to 16 pairs, with keys from 1 to 64 characters and values up to 512 characters. New sessions and metadata updates may take time to appear in filtered results.|
 
 #### Enumerated Values
 
@@ -57765,6 +58377,12 @@ Lists managed agent sessions using ID-based pagination and the requested sort or
         "multi_agent": {
           "enabled": true,
           "max_concurrent_subagents": 1
+        },
+        "compaction": {
+          "async": true
+        },
+        "experimental": {
+          "time_awareness": true
         }
       },
       "environment": {
@@ -57919,6 +58537,9 @@ curl https://api.openai.com/v1/agents/sessions \
       "property2": "string"
     },
     "agent": {
+      "experimental": {
+        "time_awareness": true
+      },
       "model": "string",
       "reasoning": {
         "effort": "none",
@@ -57935,6 +58556,9 @@ curl https://api.openai.com/v1/agents/sessions \
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
       },
       "tools": [
         {
@@ -57974,6 +58598,9 @@ Creates a managed agent session, optionally submits initial input, and returns t
     "property2": "string"
   },
   "agent": {
+    "experimental": {
+      "time_awareness": true
+    },
     "model": "string",
     "reasoning": {
       "effort": "none",
@@ -57990,6 +58617,9 @@ Creates a managed agent session, optionally submits initial input, and returns t
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
     },
     "tools": [
       {
@@ -58108,6 +58738,12 @@ Creates a managed agent session, optionally submits initial input, and returns t
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
+    },
+    "experimental": {
+      "time_awareness": true
     }
   },
   "environment": {
@@ -58351,6 +58987,12 @@ Retrieves the current state of a managed agent session. See [managing sessions](
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
+    },
+    "experimental": {
+      "time_awareness": true
     }
   },
   "environment": {
@@ -58617,6 +59259,12 @@ Updates session metadata, model, reasoning effort, or service tier. Model settin
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
+    },
+    "experimental": {
+      "time_awareness": true
     }
   },
   "environment": {
@@ -66597,7 +67245,7 @@ Learn about [audio inputs](https://developers.openai.com/api/docs/guides/audio).
 |---|---|---|---|---|
 |type|string|true|none|The type of the content part. Always `input_audio`.|
 |input_audio|object|true|none|none|
-|prompt_cache_breakpoint|[PromptCacheBreakpointParam](#schemapromptcachebreakpointparam)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[PromptCacheBreakpointParam](#schemapromptcachebreakpointparam)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -66635,7 +67283,7 @@ Learn about [file inputs](https://developers.openai.com/api/docs/guides/text) fo
 |---|---|---|---|---|
 |type|string|true|none|The type of the content part. Always `file`.|
 |file|object|true|none|none|
-|prompt_cache_breakpoint|[PromptCacheBreakpointParam](#schemapromptcachebreakpointparam)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[PromptCacheBreakpointParam](#schemapromptcachebreakpointparam)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -66672,7 +67320,7 @@ Learn about [image inputs](https://developers.openai.com/api/docs/guides/images-
 |---|---|---|---|---|
 |type|string|true|none|The type of the content part.|
 |image_url|object|true|none|none|
-|prompt_cache_breakpoint|[PromptCacheBreakpointParam](#schemapromptcachebreakpointparam)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[PromptCacheBreakpointParam](#schemapromptcachebreakpointparam)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -66733,7 +67381,7 @@ Learn about [text inputs](https://developers.openai.com/api/docs/guides/text).
 |---|---|---|---|---|
 |type|string|true|none|The type of the content part.|
 |text|string|true|none|The text content.|
-|prompt_cache_breakpoint|[PromptCacheBreakpointParam](#schemapromptcachebreakpointparam)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[PromptCacheBreakpointParam](#schemapromptcachebreakpointparam)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -67931,7 +68579,8 @@ The output of a computer tool call.
   "type": "input_text",
   "text": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -67963,7 +68612,8 @@ Multi-modal input and output contents.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -68028,7 +68678,8 @@ A single item within a conversation. The set of possible types are the same as t
           "type": "input_text",
           "text": "string",
           "prompt_cache_breakpoint": {
-            "mode": "explicit"
+            "mode": "explicit",
+            "ttl": "30m"
           }
         }
       ],
@@ -69576,6 +70227,7 @@ Request payload for adding a user to a group.
   "image": "string",
   "prompt": "A cute baby sea otter wearing a beret",
   "mask": "string",
+  "markup": "string",
   "background": "transparent",
   "model": "gpt-image-1.5",
   "n": 1,
@@ -69599,6 +70251,7 @@ Request payload for adding a user to a group.
 |image|string(binary) \| [string(binary)]|true|none|The image(s) to edit. Must be a supported image file or an array of images.<br><br>For the GPT image models (`gpt-image-1-mini`, `gpt-image-1.5`,<br>`gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,<br>`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and<br>`gpt-image-2.5-flare-2026-09-08`), each image should be a `png`, `webp`, or `jpg`<br>file less than 50MB. You can provide up to 16 images. `chatgpt-image-latest`<br>follows the same input constraints as GPT image models.<br>|
 |prompt|string|true|none|A text description of the desired image(s). The maximum length is 32000 characters for the GPT image models.|
 |mask|string(binary)|false|none|An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where `image` should be edited. If there are multiple images provided, the mask will be applied on the first image. Must be a valid PNG file, less than 4MB, and have the same dimensions as `image`.|
+|markup|[markup](#schemamarkup)|false|none|A transparent PNG overlaid on the first image to guide the edit. Must match that image's dimensions after orientation and contain transparent pixels. Supports GPT Image 2.5 and 2.6. Cannot be combined with mask.|
 |background|string \| null|false|none|Set the background of the generated image(s). This parameter is only supported for<br>the GPT image models. Must be one of `transparent`, `opaque`, or `auto` (default<br>value). When `auto` is used, the model will automatically determine the best<br>background for the image.<br><br>`gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their `2026-09-08`<br>snapshots, support `opaque` and `transparent` backgrounds. Transparent backgrounds<br>are available for supported GPT Image models. For `gpt-image-2` and<br>`gpt-image-2-2026-04-21`, this support is in preview. When using `transparent`,<br>set the output format to `png` or `webp`.<br>|
 |model|string|true|none|The GPT image model to use for image editing<br>(`gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,<br>`gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,<br>`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,<br>`gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`).<br><br>`gpt-image-1` was shut down on October 23, 2026. Use<br>`gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.<br>|
 |n|integer \| null|false|none|The number of images to generate. Must be between 1 and 10.|
@@ -71669,6 +72322,10 @@ interactions.
     "image_url": "https://example.com/source-image.png",
     "file_id": "file-abc123"
   },
+  "markup": {
+    "image_url": "https://example.com/source-image.png",
+    "file_id": "file-abc123"
+  },
   "prompt": "Add a watercolor effect and keep the subject centered",
   "n": 1,
   "quality": "high",
@@ -71698,6 +72355,7 @@ JSON edits support GPT image models.
 |model|string \| null|false|none|The GPT image model to use for image editing, including `gpt-image-2`, its dated<br>snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,<br>`gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and<br>`gpt-image-2.5-flare-2026-09-08`. Defaults to `gpt-image-2.5-sunburst`.<br><br>`gpt-image-1` was shut down on October 23, 2026. Use<br>`gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.<br>|
 |images|[[ImageRefParam](#schemaimagerefparam)]|true|none|Input image references to edit.<br>For GPT image models, you can provide up to 16 images.<br>|
 |mask|[ImageRefParam](#schemaimagerefparam)|false|none|Reference an input image by either URL or uploaded file ID.<br>Provide exactly one of `image_url` or `file_id`.<br>|
+|markup|[ImageRefParam](#schemaimagerefparam)|false|none|A transparent PNG overlaid on the first image, referenced by file ID, HTTPS URL, or base64 data URL. Must match that image's dimensions after orientation and contain transparent pixels. Supports GPT Image 2.5 and 2.6. Cannot be combined with mask.|
 |prompt|string|true|none|A text description of the desired image edit.|
 |n|integer \| null|false|none|The number of edited images to generate.|
 |quality|string \| null|false|none|Output quality for GPT image models. The GPT image models support `low`, `medium`,<br>and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their<br>`2026-09-08` snapshots, also support `xhigh` and `max`. Defaults to `auto`.<br>|
@@ -73842,7 +74500,8 @@ Fine-tuning job event object
   "type": "input_text",
   "text": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -75287,7 +75946,8 @@ An audio input to the model.
   "type": "input_text",
   "text": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -75344,7 +76004,8 @@ An audio input to the model.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ]
@@ -75389,7 +76050,8 @@ precedence over instructions given with the `user` role.
     "type": "input_text",
     "text": "string",
     "prompt_cache_breakpoint": {
-      "mode": "explicit"
+      "mode": "explicit",
+      "ttl": "30m"
     }
   }
 ]
@@ -75415,7 +76077,8 @@ types.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -75679,7 +76342,8 @@ Request payload for granting a group access to a project.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ]
@@ -75738,7 +76402,8 @@ Content item used to generate a response.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -77608,7 +78273,7 @@ Server events for Live. Response lifecycle events are wrapped inside response.ev
 |*oneOf*|[LiveErrorEvent](#schemaliveerrorevent)|false|none|Reports an error in the Live session, such as an invalid client command. Use error.client_event_id, when present, to identify the command that caused the error.|
 |*oneOf*|[LiveInfoEvent](#schemaliveinfoevent)|false|none|An informational notice about the Live session, such as the event permissions applied to a frontend data channel.|
 |*oneOf*|[LiveTransportDTMFReceived](#schemalivetransportdtmfreceived)|false|none|A SIP DTMF keypress received from the caller. Delivered only to sideband observers.|
-|*oneOf*|[LiveTransportDTMFSend](#schemalivetransportdtmfsend)|false|none|A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.|
+|*oneOf*|[LiveTransportDTMFSent](#schemalivetransportdtmfsent)|false|none|A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.|
 |*oneOf*|[LiveTransportRinging](#schemalivetransportringing)|false|none|The outbound SIP provider leg is ringing or providing early media. Delivered only to sideband observers.|
 |*oneOf*|[LiveTransportAnswered](#schemalivetransportanswered)|false|none|The outbound SIP provider leg answered and media is established. Delivered only to sideband observers.|
 |*oneOf*|[LiveTransportFailed](#schemalivetransportfailed)|false|none|An asynchronous outbound SIP setup failure. Delivered only to sideband observers.|
@@ -77943,7 +78608,7 @@ Server events for Live. Response lifecycle events are wrapped inside response.ev
 |*oneOf*|[LiveErrorEvent](#schemaliveerrorevent)|false|none|Reports an error in the Live session, such as an invalid client command. Use error.client_event_id, when present, to identify the command that caused the error.|
 |*oneOf*|[LiveInfoEvent](#schemaliveinfoevent)|false|none|An informational notice about the Live session, such as the event permissions applied to a frontend data channel.|
 |*oneOf*|[LiveTransportDTMFReceived](#schemalivetransportdtmfreceived)|false|none|A SIP DTMF keypress received from the caller. Delivered only to sideband observers.|
-|*oneOf*|[LiveTransportDTMFSend](#schemalivetransportdtmfsend)|false|none|A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.|
+|*oneOf*|[LiveTransportDTMFSent](#schemalivetransportdtmfsent)|false|none|A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.|
 |*oneOf*|[LiveTransportRinging](#schemalivetransportringing)|false|none|The outbound SIP provider leg is ringing or providing early media. Delivered only to sideband observers.|
 |*oneOf*|[LiveTransportAnswered](#schemalivetransportanswered)|false|none|The outbound SIP provider leg answered and media is established. Delivered only to sideband observers.|
 |*oneOf*|[LiveTransportFailed](#schemalivetransportfailed)|false|none|An asynchronous outbound SIP setup failure. Delivered only to sideband observers.|
@@ -78093,6 +78758,7 @@ Client events accepted by an attached Live sideband WebSocket. The session has a
 |*oneOf*|[LiveInputAudioMuteParam](#schemaliveinputaudiomuteparam)|false|none|Mute audio input to the Live model without closing the session. The server acknowledges with `session.input_audio.muted`.|
 |*oneOf*|[LiveInputAudioUnmuteParam](#schemaliveinputaudiounmuteparam)|false|none|Resume audio input to a Live model after muting it. The server acknowledges with `session.input_audio.unmuted`. An active audio fixture still pauses inference until playback finishes.|
 |*oneOf*|[LiveOutputAudioFixturePlayParam](#schemaliveoutputaudiofixtureplayparam)|false|none|Play one complete audio fixture through the session output. Send this event over the primary WebSocket or a server sideband. Audio must be raw mono PCM16 little-endian at 24 kHz, regardless of the session audio format, and at most 30 seconds. The entire payload is validated before model speech is interrupted and input is muted. Only one fixture can be active. fixture.playing acknowledges acceptance and fixture.played reports server mixer drain. These notifications are not exact transport-media boundaries. Input arriving during playback is dropped and not replayed.|
+|*oneOf*|[LiveTransportDTMFSendParam](#schemalivetransportdtmfsendparam)|false|none|Send one DTMF keypress to the SIP trunk through a Live sideband connection. This command is supported only for SIP calls. A successful send emits `transport.dtmf.sent` on sideband. If you provide `event_id`, the success notification includes it as `client_event_id`; a failure includes it as `error.client_event_id`. Send separate events for multiple keypresses.|
 |*oneOf*|[LiveInstructionsAppendParam](#schemaliveinstructionsappendparam)|false|none|Append developer instructions to the Live conversation while it is running, optionally associating them with an existing client delegation. Rejected while an audio fixture is active. These instructions remain in conversation history through compaction and are included in future backend delegations. For external audio, describe content already delivered so the assistant does not repeat it.|
 |*oneOf*|[LiveThinkingAppendParam](#schemalivethinkingappendparam)|false|none|Provide silent reasoning or progress context to the Live model, optionally for an existing client delegation. Rejected while an audio fixture is active.|
 |*oneOf*|[LiveCommentaryAppendParam](#schemalivecommentaryappendparam)|false|none|Provide context the Live model can communicate to the user, optionally for an existing client delegation. Rejected while an audio fixture is active.|
@@ -78169,6 +78835,8 @@ Server events received by an attached Live sideband WebSocket. Audio deltas are 
 |*oneOf*|[LiveTransportRinging](#schemalivetransportringing)|false|none|The outbound SIP provider leg is ringing or providing early media. Delivered only to sideband observers.|
 |*oneOf*|[LiveTransportAnswered](#schemalivetransportanswered)|false|none|The outbound SIP provider leg answered and media is established. Delivered only to sideband observers.|
 |*oneOf*|[LiveTransportFailed](#schemalivetransportfailed)|false|none|An asynchronous outbound SIP setup failure. Delivered only to sideband observers.|
+|*oneOf*|[LiveTransportDTMFReceived](#schemalivetransportdtmfreceived)|false|none|A SIP DTMF keypress received from the caller. Delivered only to sideband observers.|
+|*oneOf*|[LiveTransportDTMFSent](#schemalivetransportdtmfsent)|false|none|A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.|
 |*oneOf*|[LiveSessionStarted](#schemalivesessionstarted)|false|none|Returned when a Live session has started. Contains the resolved session configuration, including server defaults.|
 |*oneOf*|[LiveSessionUpdated](#schemalivesessionupdated)|false|none|Returned when a Live session update is accepted. Contains the resolved session configuration after the update.|
 |*oneOf*|[LiveInputAudioMuted](#schemaliveinputaudiomuted)|false|none|Acknowledges a session.input_audio.mute command. An independent input mute sends silence to the model and preserves sideband audio reflection. Fixture playback does not emit this event.|
@@ -79538,6 +80206,7 @@ The Live model. Required in the session configuration for every transport; do no
 |---|---|
 |*anyOf*|gpt-6-astra|
 |*anyOf*|gpt-6.1-sol|
+|*anyOf*|gpt-6.1-terra|
 |*anyOf*|gpt-6-sol|
 |*anyOf*|gpt-6-luna|
 |*anyOf*|gpt-5.6-sol|
@@ -85296,7 +85965,6 @@ returned the session will remain unaffected.
     "input": [
       {
         "id": "string",
-        "object": "realtime.item",
         "type": "message",
         "status": "completed",
         "role": "system",
@@ -85526,6 +86194,57 @@ Send this event to update a transcription session.
 |Property|Value|
 |---|---|
 |type|transcription_session.update|
+
+<h2 id="tocS_RealtimeConnectDocumentationParams">RealtimeConnectDocumentationParams</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeconnectdocumentationparams"></a>
+<a id="schema_RealtimeConnectDocumentationParams"></a>
+<a id="tocSrealtimeconnectdocumentationparams"></a>
+<a id="tocsrealtimeconnectdocumentationparams"></a>
+
+```json
+{
+  "model": "string",
+  "call_id": "string",
+  "intent": "realtime"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model|string|false|none|none|
+|call_id|string|false|none|none|
+|intent|string|false|none|Selects the session type. Set `transcription` and omit `model` for a transcription session. If omitted, the session type from a client secret applies when present; otherwise the intent is `realtime`.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|intent|realtime|
+|intent|transcription|
+
+<h2 id="tocS_RealtimeConnectParams">RealtimeConnectParams</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeconnectparams"></a>
+<a id="schema_RealtimeConnectParams"></a>
+<a id="tocSrealtimeconnectparams"></a>
+<a id="tocsrealtimeconnectparams"></a>
+
+```json
+{
+  "model": "string",
+  "call_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model|string|false|none|none|
+|call_id|string|false|none|none|
 
 <h2 id="tocS_RealtimeConversationItem">RealtimeConversationItem</h2>
 <!-- backwards compatibility -->
@@ -86530,7 +87249,6 @@ The response resource.
   "input": [
     {
       "id": "string",
-      "object": "realtime.item",
       "type": "message",
       "status": "completed",
       "role": "system",
@@ -86562,7 +87280,7 @@ Create a new Realtime response with these parameters
 |conversation|string|false|none|Controls which conversation the response is added to. Currently supports<br>`auto` and `none`, with `auto` as the default value. The `auto` value<br>means that the contents of the response will be added to the default<br>conversation. Set this to `none` to create an out-of-band response which<br>will not add items to default conversation.<br>|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |prompt|[Prompt](#schemaprompt)|false|none|none|
-|input|[[RealtimeConversationItem](#schemarealtimeconversationitem)]|false|none|Input items to include in the prompt for the model. Using this field<br>creates a new context for this Response instead of using the default<br>conversation. An empty array `[]` will clear the context for this Response.<br>Note that this can include references to items that previously appeared in the session<br>using their id.<br>|
+|input|[[RealtimeResponseInputItem](#schemarealtimeresponseinputitem)]|false|none|Input items to include in the prompt for the model. Using this field<br>creates a new context for this Response instead of using the default<br>conversation. An empty array `[]` will clear the context for this Response.<br>Note that this can include references to items that previously appeared in the session<br>using their id.<br>|
 
 #### Enumerated Values
 
@@ -86570,6 +87288,489 @@ Create a new Realtime response with these parameters
 |---|---|
 |output_modalities|text|
 |output_modalities|audio|
+
+<h2 id="tocS_RealtimeResponseInputAudio">RealtimeResponseInputAudio</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputaudio"></a>
+<a id="schema_RealtimeResponseInputAudio"></a>
+<a id="tocSrealtimeresponseinputaudio"></a>
+<a id="tocsrealtimeresponseinputaudio"></a>
+
+```json
+{
+  "type": "input_audio",
+  "audio": "string",
+  "transcript": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|audio|string|true|none|Base64 audio bytes in the session input audio format.|
+|transcript|string \| null|false|none|Optional text to associate with the input audio.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|input_audio|
+
+<h2 id="tocS_RealtimeResponseInputFunctionCall">RealtimeResponseInputFunctionCall</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputfunctioncall"></a>
+<a id="schema_RealtimeResponseInputFunctionCall"></a>
+<a id="tocSrealtimeresponseinputfunctioncall"></a>
+<a id="tocsrealtimeresponseinputfunctioncall"></a>
+
+```json
+{
+  "id": "string",
+  "type": "function_call",
+  "status": "completed",
+  "call_id": "string",
+  "name": "string",
+  "arguments": "string"
+}
+```
+
+A function call supplied as input to a Realtime response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|none|
+|type|string|true|none|none|
+|status|string \| null|false|none|none|
+|call_id|string|true|none|none|
+|name|string|true|none|none|
+|arguments|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|function_call|
+|status|completed|
+|status|incomplete|
+|status|null|
+
+<h2 id="tocS_RealtimeResponseInputFunctionCallOutput">RealtimeResponseInputFunctionCallOutput</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputfunctioncalloutput"></a>
+<a id="schema_RealtimeResponseInputFunctionCallOutput"></a>
+<a id="tocSrealtimeresponseinputfunctioncalloutput"></a>
+<a id="tocsrealtimeresponseinputfunctioncalloutput"></a>
+
+```json
+{
+  "id": "string",
+  "type": "function_call_output",
+  "status": "completed",
+  "call_id": "string",
+  "output": "string"
+}
+```
+
+The result of a function call supplied as input to a Realtime response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|none|
+|type|string|true|none|none|
+|status|string \| null|false|none|none|
+|call_id|string|true|none|none|
+|output|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|function_call_output|
+|status|completed|
+|status|incomplete|
+|status|null|
+
+<h2 id="tocS_RealtimeResponseInputImage">RealtimeResponseInputImage</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputimage"></a>
+<a id="schema_RealtimeResponseInputImage"></a>
+<a id="tocSrealtimeresponseinputimage"></a>
+<a id="tocsrealtimeresponseinputimage"></a>
+
+```json
+{
+  "type": "input_image",
+  "image_url": "http://example.com",
+  "detail": "auto"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|image_url|string(uri)|true|none|A base64 data URL with an image MIME type; use PNG or JPEG.|
+|detail|string \| null|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|input_image|
+|detail|low|
+|detail|high|
+|detail|auto|
+|detail|null|
+
+<h2 id="tocS_RealtimeResponseInputItem">RealtimeResponseInputItem</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputitem"></a>
+<a id="schema_RealtimeResponseInputItem"></a>
+<a id="tocSrealtimeresponseinputitem"></a>
+<a id="tocsrealtimeresponseinputitem"></a>
+
+```json
+{
+  "id": "string",
+  "type": "message",
+  "status": "completed",
+  "role": "system",
+  "content": [
+    {
+      "type": "input_text",
+      "text": "string"
+    }
+  ]
+}
+```
+
+An existing item reference or a new message or function call item for a Realtime response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anyOf*|[RealtimeResponseInputMessage](#schemarealtimeresponseinputmessage)|false|none|A message supplied as input to a Realtime response. The role determines the allowed content.|
+|*anyOf*|[RealtimeResponseInputFunctionCall](#schemarealtimeresponseinputfunctioncall)|false|none|A function call supplied as input to a Realtime response.|
+|*anyOf*|[RealtimeResponseInputFunctionCallOutput](#schemarealtimeresponseinputfunctioncalloutput)|false|none|The result of a function call supplied as input to a Realtime response.|
+|*anyOf*|[RealtimeResponseItemReference](#schemarealtimeresponseitemreference)|false|none|Reference an existing item in this Realtime session as response.create input.<br>Item references are only accepted in the response input array, not as new<br>conversation items.<br>|
+
+<h2 id="tocS_RealtimeResponseInputMessage">RealtimeResponseInputMessage</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputmessage"></a>
+<a id="schema_RealtimeResponseInputMessage"></a>
+<a id="tocSrealtimeresponseinputmessage"></a>
+<a id="tocsrealtimeresponseinputmessage"></a>
+
+```json
+{
+  "id": "string",
+  "type": "message",
+  "status": "completed",
+  "role": "system",
+  "content": [
+    {
+      "type": "input_text",
+      "text": "string"
+    }
+  ]
+}
+```
+
+A message supplied as input to a Realtime response. The role determines the allowed content.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|*anyOf*|[RealtimeResponseInputMessageSystem](#schemarealtimeresponseinputmessagesystem)|false|none|none|
+|*anyOf*|[RealtimeResponseInputMessageDeveloper](#schemarealtimeresponseinputmessagedeveloper)|false|none|none|
+|*anyOf*|[RealtimeResponseInputMessageUser](#schemarealtimeresponseinputmessageuser)|false|none|none|
+|*anyOf*|[RealtimeResponseInputMessageAssistant](#schemarealtimeresponseinputmessageassistant)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|message|
+
+<h2 id="tocS_RealtimeResponseInputMessageAssistant">RealtimeResponseInputMessageAssistant</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputmessageassistant"></a>
+<a id="schema_RealtimeResponseInputMessageAssistant"></a>
+<a id="tocSrealtimeresponseinputmessageassistant"></a>
+<a id="tocsrealtimeresponseinputmessageassistant"></a>
+
+```json
+{
+  "id": "string",
+  "type": "message",
+  "status": "completed",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "output_text",
+      "text": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|An optional client ID. The value `root` is reserved.|
+|type|string|true|none|none|
+|status|string \| null|false|none|Optional input status. Omission or null defaults to completed.|
+|role|string|true|none|none|
+|content|array|true|none|none|
+|role|string|true|none|none|
+|content|[object]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|message|
+|status|completed|
+|status|incomplete|
+|status|null|
+|role|assistant|
+
+<h2 id="tocS_RealtimeResponseInputMessageDeveloper">RealtimeResponseInputMessageDeveloper</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputmessagedeveloper"></a>
+<a id="schema_RealtimeResponseInputMessageDeveloper"></a>
+<a id="tocSrealtimeresponseinputmessagedeveloper"></a>
+<a id="tocsrealtimeresponseinputmessagedeveloper"></a>
+
+```json
+{
+  "id": "string",
+  "type": "message",
+  "status": "completed",
+  "role": "developer",
+  "content": [
+    {
+      "type": "input_text",
+      "text": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|An optional client ID. The value `root` is reserved.|
+|type|string|true|none|none|
+|status|string \| null|false|none|Optional input status. Omission or null defaults to completed.|
+|role|string|true|none|none|
+|content|array|true|none|none|
+|role|string|true|none|none|
+|content|[[RealtimeResponseInputText](#schemarealtimeresponseinputtext)]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|message|
+|status|completed|
+|status|incomplete|
+|status|null|
+|role|developer|
+
+<h2 id="tocS_RealtimeResponseInputMessageFields">RealtimeResponseInputMessageFields</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputmessagefields"></a>
+<a id="schema_RealtimeResponseInputMessageFields"></a>
+<a id="tocSrealtimeresponseinputmessagefields"></a>
+<a id="tocsrealtimeresponseinputmessagefields"></a>
+
+```json
+{
+  "id": "string",
+  "type": "message",
+  "status": "completed",
+  "role": "string",
+  "content": []
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|An optional client ID. The value `root` is reserved.|
+|type|string|true|none|none|
+|status|string \| null|false|none|Optional input status. Omission or null defaults to completed.|
+|role|string|true|none|none|
+|content|array|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|message|
+|status|completed|
+|status|incomplete|
+|status|null|
+
+<h2 id="tocS_RealtimeResponseInputMessageSystem">RealtimeResponseInputMessageSystem</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputmessagesystem"></a>
+<a id="schema_RealtimeResponseInputMessageSystem"></a>
+<a id="tocSrealtimeresponseinputmessagesystem"></a>
+<a id="tocsrealtimeresponseinputmessagesystem"></a>
+
+```json
+{
+  "id": "string",
+  "type": "message",
+  "status": "completed",
+  "role": "system",
+  "content": [
+    {
+      "type": "input_text",
+      "text": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|An optional client ID. The value `root` is reserved.|
+|type|string|true|none|none|
+|status|string \| null|false|none|Optional input status. Omission or null defaults to completed.|
+|role|string|true|none|none|
+|content|array|true|none|none|
+|role|string|true|none|none|
+|content|[[RealtimeResponseInputText](#schemarealtimeresponseinputtext)]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|message|
+|status|completed|
+|status|incomplete|
+|status|null|
+|role|system|
+
+<h2 id="tocS_RealtimeResponseInputMessageUser">RealtimeResponseInputMessageUser</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputmessageuser"></a>
+<a id="schema_RealtimeResponseInputMessageUser"></a>
+<a id="tocSrealtimeresponseinputmessageuser"></a>
+<a id="tocsrealtimeresponseinputmessageuser"></a>
+
+```json
+{
+  "id": "string",
+  "type": "message",
+  "status": "completed",
+  "role": "user",
+  "content": [
+    {
+      "type": "input_text",
+      "text": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|An optional client ID. The value `root` is reserved.|
+|type|string|true|none|none|
+|status|string \| null|false|none|Optional input status. Omission or null defaults to completed.|
+|role|string|true|none|none|
+|content|array|true|none|none|
+|role|string|true|none|none|
+|content|[[RealtimeResponseInputText](#schemarealtimeresponseinputtext) \| [RealtimeResponseInputAudio](#schemarealtimeresponseinputaudio) \| [RealtimeResponseInputImage](#schemarealtimeresponseinputimage)]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|message|
+|status|completed|
+|status|incomplete|
+|status|null|
+|role|user|
+
+<h2 id="tocS_RealtimeResponseInputText">RealtimeResponseInputText</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseinputtext"></a>
+<a id="schema_RealtimeResponseInputText"></a>
+<a id="tocSrealtimeresponseinputtext"></a>
+<a id="tocsrealtimeresponseinputtext"></a>
+
+```json
+{
+  "type": "input_text",
+  "text": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|text|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|input_text|
+
+<h2 id="tocS_RealtimeResponseItemReference">RealtimeResponseItemReference</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimeresponseitemreference"></a>
+<a id="schema_RealtimeResponseItemReference"></a>
+<a id="tocSrealtimeresponseitemreference"></a>
+<a id="tocsrealtimeresponseitemreference"></a>
+
+```json
+{
+  "type": "item_reference",
+  "id": "string"
+}
+```
+
+Reference an existing item in this Realtime session as response.create input.
+Item references are only accepted in the response input array, not as new
+conversation items.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The type of this item. Always `item_reference`.|
+|id|string|true|none|The ID of an existing item in the same Realtime session.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|item_reference|
 
 <h2 id="tocS_RealtimeServerEvent">RealtimeServerEvent</h2>
 <!-- backwards compatibility -->
@@ -89788,6 +90989,25 @@ Response from creating a translation session and client secret for the Realtime 
 |expires_at|integer(unixtime)|true|none|Expiration timestamp for the client secret, in seconds since epoch.|
 |session|[RealtimeTranslationSession](#schemarealtimetranslationsession)|true|none|A Realtime translation session. Translation sessions continuously translate input<br>audio into the configured output language.<br>|
 
+<h2 id="tocS_RealtimeTranslationConnectParams">RealtimeTranslationConnectParams</h2>
+<!-- backwards compatibility -->
+<a id="schemarealtimetranslationconnectparams"></a>
+<a id="schema_RealtimeTranslationConnectParams"></a>
+<a id="tocSrealtimetranslationconnectparams"></a>
+<a id="tocsrealtimetranslationconnectparams"></a>
+
+```json
+{
+  "model": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model|string|true|none|none|
+
 <h2 id="tocS_RealtimeTranslationServerEvent">RealtimeTranslationServerEvent</h2>
 <!-- backwards compatibility -->
 <a id="schemarealtimetranslationserverevent"></a>
@@ -90449,6 +91669,24 @@ for subsequent turns of a conversation if you are manually
     },
     "total_tokens": 380
   },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
   "user": null,
   "metadata": {}
 }
@@ -90489,6 +91727,7 @@ for subsequent turns of a conversation if you are manually
 |instructions|string \| [[InputItem](#schemainputitem)] \| null|true|none|none|
 |output_text|string \| null|false|none|none|
 |usage|[ResponseUsage](#schemaresponseusage) \| null|false|none|none|
+|tool_usage|[ResponseToolUsage](#schemaresponsetoolusage)|false|none|Usage reported by hosted tools, separate from base model `usage`. The field<br>can be omitted when tool usage is unavailable. When present, tool families<br>with no recorded usage have zero counts.<br><br>`image_gen` sums available token counts across image generation calls.<br>Calls with missing or incomplete usage records may be skipped. Output<br>token details and cached input counts can be omitted. An omitted cache<br>count means cache usage is unknown.<br><br>`web_search.num_requests` counts billable searches. Discounted searches<br>and actions such as opening a page are excluded. Use billing records to<br>reconcile final charges.<br>|
 |prompt_cache_options|[PromptCacheOptions](#schemapromptcacheoptions)|false|none|The prompt-caching options that were applied to the response. Supported for `gpt-5.6` and later models.|
 |prompt_cache_diagnostics|[PromptCacheDiagnostics](#schemapromptcachediagnostics)|false|none|Prompt cache diagnostics requested for this response.|
 |moderation|[Moderation](#schemamoderation) \| null|false|none|none|
@@ -90896,6 +92135,24 @@ Emitted when the code interpreter is actively interpreting the code snippet.
       },
       "total_tokens": 380
     },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "user": null,
     "metadata": {}
   },
@@ -91188,6 +92445,24 @@ Emitted when a content part is done.
       },
       "total_tokens": 380
     },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "user": null,
     "metadata": {}
   },
@@ -91459,6 +92734,24 @@ Emitted when an error occurs.
         "reasoning_tokens": 0
       },
       "total_tokens": 380
+    },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
     },
     "user": null,
     "metadata": {}
@@ -92027,6 +93320,24 @@ Emitted when a partial image is available during image generation streaming.
       },
       "total_tokens": 380
     },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "user": null,
     "metadata": {}
   },
@@ -92118,6 +93429,24 @@ Emitted when the response is in progress.
       },
       "total_tokens": 380
     },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "user": null,
     "metadata": {}
   },
@@ -92165,7 +93494,8 @@ by a successor `response.created` that commits the queued steering input.
           "type": "input_text",
           "text": "string",
           "prompt_cache_breakpoint": {
-            "mode": "explicit"
+            "mode": "explicit",
+            "ttl": "30m"
           }
         }
       ],
@@ -92863,6 +94193,24 @@ Emitted when an annotation is added to output text content.
         "reasoning_tokens": 0
       },
       "total_tokens": 380
+    },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
     },
     "user": null,
     "metadata": {}
@@ -101003,7 +102351,7 @@ Options for prompt caching. Supported for `gpt-5.6` and later models. By default
 }
 ```
 
-Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
 ### Properties
 
@@ -101349,23 +102697,27 @@ Specify additional output data to include in the model response. Currently suppo
 
 ```json
 {
-  "mode": "explicit"
+  "mode": "explicit",
+  "ttl": "30m"
 }
 ```
 
-Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |mode|string|true|none|The breakpoint mode. Always `explicit`.|
+|ttl|string|false|none|The minimum lifetime of this cache breakpoint. Defaults to the request TTL.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |mode|explicit|
+|ttl|30m|
+|ttl|12h|
 
 <h2 id="tocS_InputTextContent">InputTextContent</h2>
 <!-- backwards compatibility -->
@@ -101379,7 +102731,8 @@ Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL
   "type": "input_text",
   "text": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -101392,7 +102745,7 @@ A text input to the model.
 |---|---|---|---|---|
 |type|string|true|none|The type of the input item. Always `input_text`.|
 |text|string|true|none|The text input to the model.|
-|prompt_cache_breakpoint|[PromptCacheBreakpointConfig](#schemapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[PromptCacheBreakpointConfig](#schemapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -101794,7 +103147,8 @@ A refusal from the model.
   "file_id": "string",
   "detail": "low",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -101809,7 +103163,7 @@ An image input to the model. Learn about [image inputs](https://developers.opena
 |image_url|string(uri) \| null|false|none|none|
 |file_id|string \| null|false|none|none|
 |detail|[ImageDetail](#schemaimagedetail)|true|none|The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.|
-|prompt_cache_breakpoint|[PromptCacheBreakpointConfig](#schemapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[PromptCacheBreakpointConfig](#schemapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -101835,7 +103189,8 @@ An image input to the model. Learn about [image inputs](https://developers.opena
   "file_id": "string",
   "detail": "low",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -101850,7 +103205,7 @@ A screenshot of a computer.
 |image_url|string(uri) \| null|true|none|none|
 |file_id|string \| null|true|none|none|
 |detail|[ImageDetail](#schemaimagedetail)|true|none|The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.|
-|prompt_cache_breakpoint|[PromptCacheBreakpointConfig](#schemapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[PromptCacheBreakpointConfig](#schemapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -101887,7 +103242,8 @@ A screenshot of a computer.
   "filename": "string",
   "file_data": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   },
   "file_url": "http://example.com",
   "detail": "auto"
@@ -101904,7 +103260,7 @@ A file input to the model.
 |file_id|string \| null|false|none|none|
 |filename|string|false|none|The name of the file to be sent to the model.|
 |file_data|string|false|none|The content of the file to be sent to the model.<br>|
-|prompt_cache_breakpoint|[PromptCacheBreakpointConfig](#schemapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[PromptCacheBreakpointConfig](#schemapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 |file_url|string(uri)|false|none|The URL of the file to be sent to the model.|
 |detail|[FileInputDetail](#schemafileinputdetail)|false|none|The detail level of the file to be sent to the model. Use `auto` to let the system select the detail level; for GPT-5.6 and later models, `auto` uses high-quality rendering, which may increase input token usage. Use `low` for lower-cost rendering, or `high` to render the file at higher quality. Defaults to `auto`.|
 
@@ -101946,7 +103302,8 @@ A file input to the model.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -103106,7 +104463,7 @@ Configuration for a code interpreter container. Optionally specify the IDs of th
 "high"
 ```
 
-Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
 <h2 id="tocS_LocalShellToolParam">LocalShellToolParam</h2>
 <!-- backwards compatibility -->
@@ -105884,6 +107241,19 @@ An internal identifier for an item to reference.
 |Property|Value|
 |---|---|
 |object|conversation|
+
+<h2 id="tocS_markup">markup</h2>
+<!-- backwards compatibility -->
+<a id="schemamarkup"></a>
+<a id="schema_markup"></a>
+<a id="tocSmarkup"></a>
+<a id="tocsmarkup"></a>
+
+```json
+"string"
+```
+
+A transparent PNG overlaid on the first image to guide the edit. Must match that image's dimensions after orientation and contain transparent pixels. Supports GPT Image 2.5 and 2.6. Cannot be combined with mask.
 
 <h2 id="tocS_ImageGenOutputTokensDetails">ImageGenOutputTokensDetails</h2>
 <!-- backwards compatibility -->
@@ -108757,6 +110127,132 @@ The conversation that this response belongs to.
 |cyber|daybreak_blue|
 |cyber|daybreak_red|
 
+<h2 id="tocS_CachedUsageDetails">CachedUsageDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemacachedusagedetails"></a>
+<a id="schema_CachedUsageDetails"></a>
+<a id="tocScachedusagedetails"></a>
+<a id="tocscachedusagedetails"></a>
+
+```json
+{
+  "cached_text_tokens": 0,
+  "cached_image_tokens": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cached_text_tokens|integer|true|none|none|
+|cached_image_tokens|integer|true|none|none|
+
+<h2 id="tocS_ImageGenToolUsage">ImageGenToolUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemaimagegentoolusage"></a>
+<a id="schema_ImageGenToolUsage"></a>
+<a id="tocSimagegentoolusage"></a>
+<a id="tocsimagegentoolusage"></a>
+
+```json
+{
+  "input_tokens": 0,
+  "total_tokens": 0,
+  "output_tokens": 0,
+  "output_tokens_details": {
+    "image_tokens": 0,
+    "text_tokens": 0
+  },
+  "input_tokens_details": {
+    "text_tokens": 0,
+    "image_tokens": 0
+  },
+  "cached_tokens": 0,
+  "cached_tokens_details": {
+    "cached_text_tokens": 0,
+    "cached_image_tokens": 0
+  }
+}
+```
+
+Token usage for image generation tool calls in a response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|input_tokens|integer|true|none|The number of tokens (images and text) in the input prompt.|
+|total_tokens|integer|true|none|The total number of tokens (images and text) used for the image generation.|
+|output_tokens|integer|true|none|The number of output tokens generated by the model.|
+|output_tokens_details|[ImageGenOutputTokensDetails](#schemaimagegenoutputtokensdetails)|false|none|The output token details for the image generation.|
+|input_tokens_details|[ImageGenInputUsageDetails](#schemaimagegeninputusagedetails)|true|none|The input tokens detailed information for the image generation.|
+|cached_tokens|integer|false|none|none|
+|cached_tokens_details|[CachedUsageDetails](#schemacachedusagedetails)|false|none|none|
+
+<h2 id="tocS_WebSearchUsage">WebSearchUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemawebsearchusage"></a>
+<a id="schema_WebSearchUsage"></a>
+<a id="tocSwebsearchusage"></a>
+<a id="tocswebsearchusage"></a>
+
+```json
+{
+  "num_requests": 0
+}
+```
+
+Usage details for web search requests that ran while generating the response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|num_requests|integer|true|none|The number of billable web search requests issued.|
+
+<h2 id="tocS_ResponseToolUsage">ResponseToolUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemaresponsetoolusage"></a>
+<a id="schema_ResponseToolUsage"></a>
+<a id="tocSresponsetoolusage"></a>
+<a id="tocsresponsetoolusage"></a>
+
+```json
+{
+  "image_gen": {
+    "input_tokens": 0,
+    "total_tokens": 0,
+    "output_tokens": 0,
+    "output_tokens_details": {
+      "image_tokens": 0,
+      "text_tokens": 0
+    },
+    "input_tokens_details": {
+      "text_tokens": 0,
+      "image_tokens": 0
+    },
+    "cached_tokens": 0,
+    "cached_tokens_details": {
+      "cached_text_tokens": 0,
+      "cached_image_tokens": 0
+    }
+  },
+  "web_search": {
+    "num_requests": 0
+  }
+}
+```
+
+Aggregated usage details for billable tools that ran while generating the response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|image_gen|[ImageGenToolUsage](#schemaimagegentoolusage)|true|none|Aggregated usage statistics for image generation tool calls.|
+|web_search|[WebSearchUsage](#schemawebsearchusage)|true|none|Aggregated billable usage statistics for web search tool calls.|
+
 <h2 id="tocS_PromptCacheOptions">PromptCacheOptions</h2>
 <!-- backwards compatibility -->
 <a id="schemapromptcacheoptions"></a>
@@ -109520,6 +111016,334 @@ A streaming event that indicated shell call output was completed.
 |error_type|potentially_unintended_data_access|
 |error_type|potentially_unintended_destructive_activity|
 |error_type|other|
+
+<h2 id="tocS_OrderEnum">OrderEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemaorderenum"></a>
+<a id="schema_OrderEnum"></a>
+<a id="tocSorderenum"></a>
+<a id="tocsorderenum"></a>
+
+```json
+"asc"
+```
+
+<h2 id="tocS_ExternalKeyPurpose">ExternalKeyPurpose</h2>
+<!-- backwards compatibility -->
+<a id="schemaexternalkeypurpose"></a>
+<a id="schema_ExternalKeyPurpose"></a>
+<a id="tocSexternalkeypurpose"></a>
+<a id="tocsexternalkeypurpose"></a>
+
+```json
+"ekm"
+```
+
+<h2 id="tocS_ExternalKeyResource">ExternalKeyResource</h2>
+<!-- backwards compatibility -->
+<a id="schemaexternalkeyresource"></a>
+<a id="schema_ExternalKeyResource"></a>
+<a id="tocSexternalkeyresource"></a>
+<a id="tocsexternalkeyresource"></a>
+
+```json
+{
+  "object": "string",
+  "id": "string",
+  "type": "string",
+  "purpose": "ekm",
+  "name": "string",
+  "api_project_ids": [
+    "string"
+  ],
+  "workspace_id": "string",
+  "created_at": 0,
+  "role_arn": "string",
+  "external_id": "string",
+  "kms_arn": "string",
+  "workload_identity_project_number": "string",
+  "workload_identity_pool_id": "string",
+  "workload_identity_provider_id": "string",
+  "audience": "string",
+  "kms_project_id": "string",
+  "kms_key_ring_name": "string",
+  "kms_key_name": "string",
+  "kms_key_location": "string",
+  "kms_key_version": "string",
+  "tenant_id": "string",
+  "vault_uri": "string",
+  "key_name": "string",
+  "key_version": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|none|
+|id|string|true|none|none|
+|type|string|true|none|none|
+|purpose|[ExternalKeyPurpose](#schemaexternalkeypurpose)|false|none|none|
+|name|string|true|none|none|
+|api_project_ids|[string]|true|none|none|
+|workspace_id|string|true|none|none|
+|created_at|integer|true|none|none|
+|role_arn|string|false|none|none|
+|external_id|string|false|none|none|
+|kms_arn|string|false|none|none|
+|workload_identity_project_number|string|false|none|none|
+|workload_identity_pool_id|string|false|none|none|
+|workload_identity_provider_id|string|false|none|none|
+|audience|string|false|none|none|
+|kms_project_id|string|false|none|none|
+|kms_key_ring_name|string|false|none|none|
+|kms_key_name|string|false|none|none|
+|kms_key_location|string|false|none|none|
+|kms_key_version|string|false|none|none|
+|tenant_id|string|false|none|none|
+|vault_uri|string|false|none|none|
+|key_name|string|false|none|none|
+|key_version|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|purpose|ekm|
+|purpose|psp_decryption|
+
+<h2 id="tocS_ListExternalKeysResource">ListExternalKeysResource</h2>
+<!-- backwards compatibility -->
+<a id="schemalistexternalkeysresource"></a>
+<a id="schema_ListExternalKeysResource"></a>
+<a id="tocSlistexternalkeysresource"></a>
+<a id="tocslistexternalkeysresource"></a>
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "string",
+      "id": "string",
+      "type": "string",
+      "purpose": "ekm",
+      "name": "string",
+      "api_project_ids": [
+        "string"
+      ],
+      "workspace_id": "string",
+      "created_at": 0,
+      "role_arn": "string",
+      "external_id": "string",
+      "kms_arn": "string",
+      "workload_identity_project_number": "string",
+      "workload_identity_pool_id": "string",
+      "workload_identity_provider_id": "string",
+      "audience": "string",
+      "kms_project_id": "string",
+      "kms_key_ring_name": "string",
+      "kms_key_name": "string",
+      "kms_key_location": "string",
+      "kms_key_version": "string",
+      "tenant_id": "string",
+      "vault_uri": "string",
+      "key_name": "string",
+      "key_version": "string"
+    }
+  ],
+  "first_id": "string",
+  "last_id": "string",
+  "has_more": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|none|
+|data|[[ExternalKeyResource](#schemaexternalkeyresource)]|true|none|none|
+|first_id|string \| null|true|none|none|
+|last_id|string \| null|true|none|none|
+|has_more|boolean|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|object|list|
+
+<h2 id="tocS_AwsExternalKeyParams">AwsExternalKeyParams</h2>
+<!-- backwards compatibility -->
+<a id="schemaawsexternalkeyparams"></a>
+<a id="schema_AwsExternalKeyParams"></a>
+<a id="tocSawsexternalkeyparams"></a>
+<a id="tocsawsexternalkeyparams"></a>
+
+```json
+{
+  "name": "string",
+  "type": "aws",
+  "role_arn": "string",
+  "kms_arn": "string",
+  "external_id": "string",
+  "purpose": "ekm"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A friendly name to identify this config|
+|type|string|true|none|none|
+|role_arn|string|true|none|The Role ARN that OpenAI will assume to call your KMS|
+|kms_arn|string|true|none|The Key Management System ARN for the master key you manage|
+|external_id|string|true|none|The ExternalID that OpenAI will pass in the AssumeRole call for the customer's AWS account. This must be the OpenAI organization ID or an API project ID that belongs to the organization.|
+|purpose|[ExternalKeyPurpose](#schemaexternalkeypurpose)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|aws|
+|purpose|ekm|
+|purpose|psp_decryption|
+
+<h2 id="tocS_GcpExternalKeyParams">GcpExternalKeyParams</h2>
+<!-- backwards compatibility -->
+<a id="schemagcpexternalkeyparams"></a>
+<a id="schema_GcpExternalKeyParams"></a>
+<a id="tocSgcpexternalkeyparams"></a>
+<a id="tocsgcpexternalkeyparams"></a>
+
+```json
+{
+  "name": "string",
+  "type": "gcp",
+  "workload_identity_project_number": "string",
+  "workload_identity_pool_id": "string",
+  "workload_identity_provider_id": "string",
+  "kms_project_id": "string",
+  "kms_key_ring_name": "string",
+  "kms_key_name": "string",
+  "kms_key_location": "string",
+  "audience": "string",
+  "purpose": "ekm",
+  "kms_key_version": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A friendly name to identify this config|
+|type|string|true|none|none|
+|workload_identity_project_number|string|true|none|The numeric GCP project number where you registered OpenAI's workload identity|
+|workload_identity_pool_id|string|true|none|The pool containing the Workload Identity provider that you registered for OpenAI|
+|workload_identity_provider_id|string|true|none|The Workload Identity provider that you registered for OpenAI|
+|kms_project_id|string|true|none|The string GCP project name where your KMS resides|
+|kms_key_ring_name|string|true|none|The Key Management System key ring for the master key you manage|
+|kms_key_name|string|true|none|The name of the Key Management System master key you manage|
+|kms_key_location|string|true|none|The region where your Key Management System master key is located|
+|audience|string|true|none|The aud field in the identity token OpenAI will pass in the call to the customer's GCP STS. This must be the OpenAI organization ID or an API project ID that belongs to the organization.|
+|purpose|[ExternalKeyPurpose](#schemaexternalkeypurpose)|false|none|none|
+|kms_key_version|string|false|none|An exact CryptoKeyVersion number. Required for PSP decryption; not accepted for EKM.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|gcp|
+|purpose|ekm|
+|purpose|psp_decryption|
+
+<h2 id="tocS_AzureExternalKeyParams">AzureExternalKeyParams</h2>
+<!-- backwards compatibility -->
+<a id="schemaazureexternalkeyparams"></a>
+<a id="schema_AzureExternalKeyParams"></a>
+<a id="tocSazureexternalkeyparams"></a>
+<a id="tocsazureexternalkeyparams"></a>
+
+```json
+{
+  "name": "string",
+  "type": "azure",
+  "tenant_id": "string",
+  "vault_uri": "string",
+  "key_name": "string",
+  "purpose": "ekm",
+  "key_version": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A friendly name to identify this config|
+|type|string|true|none|none|
+|tenant_id|string|true|none|Your Azure tenant UUID|
+|vault_uri|string|true|none|The URI of the Azure vault containing the master key you manage|
+|key_name|string|true|none|The name of the Azure Key Vault master key that you manage|
+|purpose|[ExternalKeyPurpose](#schemaexternalkeypurpose)|false|none|none|
+|key_version|string|false|none|An exact Azure Key Vault key version. Required for PSP decryption; not accepted for EKM.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|azure|
+|purpose|ekm|
+|purpose|psp_decryption|
+
+<h2 id="tocS_V1OrganizationExternalKeysPostRequest">V1OrganizationExternalKeysPostRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemav1organizationexternalkeyspostrequest"></a>
+<a id="schema_V1OrganizationExternalKeysPostRequest"></a>
+<a id="tocSv1organizationexternalkeyspostrequest"></a>
+<a id="tocsv1organizationexternalkeyspostrequest"></a>
+
+```json
+{
+  "name": "string",
+  "type": "aws",
+  "role_arn": "string",
+  "kms_arn": "string",
+  "external_id": "string",
+  "purpose": "ekm"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[AwsExternalKeyParams](#schemaawsexternalkeyparams)|false|none|none|
+|*oneOf*|[GcpExternalKeyParams](#schemagcpexternalkeyparams)|false|none|none|
+|*oneOf*|[AzureExternalKeyParams](#schemaazureexternalkeyparams)|false|none|none|
+
+<h2 id="tocS_ValidateExternalKeyResource">ValidateExternalKeyResource</h2>
+<!-- backwards compatibility -->
+<a id="schemavalidateexternalkeyresource"></a>
+<a id="schema_ValidateExternalKeyResource"></a>
+<a id="tocSvalidateexternalkeyresource"></a>
+<a id="tocsvalidateexternalkeyresource"></a>
+
+```json
+{
+  "status": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|string|true|none|none|
 
 <h2 id="tocS_DecisionsUsageBucketWidth">DecisionsUsageBucketWidth</h2>
 <!-- backwards compatibility -->
@@ -110645,17 +112469,6 @@ The service account API key create request payload.
 |---|---|
 |object|content_provenance_check|
 
-<h2 id="tocS_OrderEnum">OrderEnum</h2>
-<!-- backwards compatibility -->
-<a id="schemaorderenum"></a>
-<a id="schema_OrderEnum"></a>
-<a id="tocSorderenum"></a>
-<a id="tocsorderenum"></a>
-
-```json
-"asc"
-```
-
 <h2 id="tocS_VideoModel">VideoModel</h2>
 <!-- backwards compatibility -->
 <a id="schemavideomodel"></a>
@@ -111472,7 +113285,8 @@ Parameters for remixing an existing generated video.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -115315,6 +117129,48 @@ The resolved configuration for creating and coordinating subagents.
 |enabled|boolean|true|none|Whether subagent tools are enabled. Defaults to false.|
 |max_concurrent_subagents|integer \| null(int64)|true|none|Maximum number of subagents that may run concurrently, or null when disabled. Defaults to 6 when enabled.|
 
+<h2 id="tocS_CompactionResource">CompactionResource</h2>
+<!-- backwards compatibility -->
+<a id="schemacompactionresource"></a>
+<a id="schema_CompactionResource"></a>
+<a id="tocScompactionresource"></a>
+<a id="tocscompactionresource"></a>
+
+```json
+{
+  "async": true
+}
+```
+
+The effective settings for compacting the agent's context.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|async|boolean|true|none|Whether context is compacted in the background. Defaults to true.|
+
+<h2 id="tocS_ExperimentalConfigResource">ExperimentalConfigResource</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentalconfigresource"></a>
+<a id="schema_ExperimentalConfigResource"></a>
+<a id="tocSexperimentalconfigresource"></a>
+<a id="tocsexperimentalconfigresource"></a>
+
+```json
+{
+  "time_awareness": true
+}
+```
+
+The effective experimental settings for an agent.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|time_awareness|boolean|true|none|Whether the model receives periodic current-time reminders.|
+
 <h2 id="tocS_AutomationAgentConfigResource">AutomationAgentConfigResource</h2>
 <!-- backwards compatibility -->
 <a id="schemaautomationagentconfigresource"></a>
@@ -115352,6 +117208,12 @@ The resolved configuration for creating and coordinating subagents.
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
+  },
+  "experimental": {
+    "time_awareness": true
   }
 }
 ```
@@ -115369,6 +117231,8 @@ Inline agent configuration without a generated session-local identity.
 |instructions|string \| null|true|none|Custom instructions, or null when absent.|
 |tools|[[AgentToolResource](#schemaagenttoolresource)]|true|none|Configured tools, excluding confidential credentials.|
 |multi_agent|[MultiAgentConfigResource](#schemamultiagentconfigresource)|true|none|The configuration for creating and coordinating subagents.|
+|compaction|[CompactionResource](#schemacompactionresource)|false|none|The effective context compaction settings.|
+|experimental|[ExperimentalConfigResource](#schemaexperimentalconfigresource)|false|none|The effective experimental settings for the agent.|
 
 #### Enumerated Values
 
@@ -116041,6 +117905,12 @@ A user message recorded in a session.
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
+    },
+    "experimental": {
+      "time_awareness": true
     }
   },
   "environment": {
@@ -116155,6 +118025,12 @@ A user message recorded in a session.
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
+    },
+    "experimental": {
+      "time_awareness": true
     }
   },
   "environment": {
@@ -116324,6 +118200,12 @@ How the automation was created, independently of how an invocation started.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -116446,6 +118328,12 @@ Fields shared by periodic and one-time automations.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -116556,6 +118444,12 @@ Fields shared by periodic and one-time automations.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -116655,6 +118549,27 @@ An API error response.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |error|[ErrorBodyResource](#schemaerrorbodyresource)|true|none|The error returned by the API.|
+
+<h2 id="tocS_ExperimentalConfigOverridesParam">ExperimentalConfigOverridesParam</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentalconfigoverridesparam"></a>
+<a id="schema_ExperimentalConfigOverridesParam"></a>
+<a id="tocSexperimentalconfigoverridesparam"></a>
+<a id="tocsexperimentalconfigoverridesparam"></a>
+
+```json
+{
+  "time_awareness": true
+}
+```
+
+Experimental settings to update. Omitted settings keep their current values.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|time_awareness|boolean|false|none|Whether to give the model periodic current-time reminders. Omit to keep the current setting.|
 
 <h2 id="tocS_ReasoningEffortParam">ReasoningEffortParam</h2>
 <!-- backwards compatibility -->
@@ -116859,6 +118774,27 @@ Explicit configuration for creating and coordinating subagents.
 |---|---|---|---|---|
 |enabled|boolean|true|none|Whether subagent tools are enabled.|
 |max_concurrent_subagents|integer(int64)|false|none|Maximum number of subagents that may run concurrently. Defaults to 6.|
+
+<h2 id="tocS_CompactionParam">CompactionParam</h2>
+<!-- backwards compatibility -->
+<a id="schemacompactionparam"></a>
+<a id="schema_CompactionParam"></a>
+<a id="tocScompactionparam"></a>
+<a id="tocscompactionparam"></a>
+
+```json
+{
+  "async": true
+}
+```
+
+Settings for compacting the agent's context.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|async|boolean \| null|false|none|Whether to compact context in the background. Omission or null defaults to true. Set to false to use blocking compaction. Background compaction may increase token usage.|
 
 <h2 id="tocS_AgentToolConfigParamFunction">AgentToolConfigParamFunction</h2>
 <!-- backwards compatibility -->
@@ -117323,6 +119259,9 @@ A tool available to the agent.
 
 ```json
 {
+  "experimental": {
+    "time_awareness": true
+  },
   "model": "string",
   "reasoning": {
     "effort": "none",
@@ -117340,6 +119279,9 @@ A tool available to the agent.
     "enabled": true,
     "max_concurrent_subagents": 1
   },
+  "compaction": {
+    "async": true
+  },
   "tools": [
     {
       "type": "function",
@@ -117355,18 +119297,20 @@ A tool available to the agent.
 }
 ```
 
-Agent configuration for a session. Omitted fields inherit from `agent_id` when supplied. Supplied objects and arrays replace the whole field; null resets nullable fields.
+Agent configuration for a session. Omitted fields inherit from `agent_id` when supplied. Supplied objects and arrays replace the whole field, except experimental settings, which merge by key. Null resets nullable fields.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|experimental|[ExperimentalConfigOverridesParam](#schemaexperimentalconfigoverridesparam)|false|none|Experimental settings to merge by key. Omitted settings keep their current values.|
 |model|string|false|none|The model to use for the agent. The requested model name is preserved.|
 |reasoning|[ReasoningParam](#schemareasoningparam) \| null|false|none|Configuration for model reasoning. Omit to keep the current settings; pass `null` to reset to the model's default effort.|
 |text|[TextParam](#schematextparam) \| null|false|none|Configuration for text generated by the agent.|
 |service_tier|[ServiceTierParam](#schemaservicetierparam) \| null|false|none|The service tier used for model requests.|
 |instructions|string \| null|false|none|Additional instructions appended to the agent's default base instructions. Omit to leave unchanged.|
 |multi_agent|[MultiAgentConfigCurrentParam](#schemamultiagentconfigcurrentparam) \| null|false|none|Configuration for creating and coordinating subagents.|
+|compaction|[CompactionParam](#schemacompactionparam) \| null|false|none|Context compaction settings. Omit to keep the current settings. A supplied object replaces the settings; null or an empty object enables background compaction.|
 |tools|[[AgentToolConfigParam](#schemaagenttoolconfigparam)]|false|none|Tools available to the agent. Omit to inherit, or pass null to clear them. The resolved tool list must fit within 3 MiB (3,145,728 bytes) of compact UTF-8 JSON.|
 
 <h2 id="tocS_EnvironmentParamNone">EnvironmentParamNone</h2>
@@ -118124,6 +120068,9 @@ A user message submitted to a session.
 {
   "type": "new_session",
   "agent": {
+    "experimental": {
+      "time_awareness": true
+    },
     "model": "string",
     "reasoning": {
       "effort": "none",
@@ -118140,6 +120087,9 @@ A user message submitted to a session.
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
     },
     "tools": [
       {
@@ -118242,6 +120192,9 @@ Deliver instructions to an existing session.
 {
   "type": "new_session",
   "agent": {
+    "experimental": {
+      "time_awareness": true
+    },
     "model": "string",
     "reasoning": {
       "effort": "none",
@@ -118258,6 +120211,9 @@ Deliver instructions to an existing session.
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
     },
     "tools": [
       {
@@ -118321,6 +120277,9 @@ The session an automation invocation targets.
   "target": {
     "type": "new_session",
     "agent": {
+      "experimental": {
+        "time_awareness": true
+      },
       "model": "string",
       "reasoning": {
         "effort": "none",
@@ -118337,6 +120296,9 @@ The session an automation invocation targets.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
       },
       "tools": [
         {
@@ -118415,6 +120377,9 @@ The session an automation invocation targets.
   "target": {
     "type": "new_session",
     "agent": {
+      "experimental": {
+        "time_awareness": true
+      },
       "model": "string",
       "reasoning": {
         "effort": "none",
@@ -118431,6 +120396,9 @@ The session an automation invocation targets.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
       },
       "tools": [
         {
@@ -118507,6 +120475,9 @@ The session an automation invocation targets.
   "target": {
     "type": "new_session",
     "agent": {
+      "experimental": {
+        "time_awareness": true
+      },
       "model": "string",
       "reasoning": {
         "effort": "none",
@@ -118523,6 +120494,9 @@ The session an automation invocation targets.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
       },
       "tools": [
         {
@@ -118592,6 +120566,9 @@ Creates an automation without invoking it immediately.
   "target": {
     "type": "new_session",
     "agent": {
+      "experimental": {
+        "time_awareness": true
+      },
       "model": "string",
       "reasoning": {
         "effort": "none",
@@ -118608,6 +120585,9 @@ Creates an automation without invoking it immediately.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
       },
       "tools": [
         {
@@ -118771,6 +120751,12 @@ Updates configuration; timing fields must match the stored automation type.
         "multi_agent": {
           "enabled": true,
           "max_concurrent_subagents": 1
+        },
+        "compaction": {
+          "async": true
+        },
+        "experimental": {
+          "time_awareness": true
         }
       },
       "environment": {
@@ -122003,6 +123989,12 @@ A credential-free tool available to a reusable agent.
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
+  },
+  "experimental": {
+    "time_awareness": true
   }
 }
 ```
@@ -122026,6 +124018,8 @@ A reusable agent scoped to the caller's project.
 |instructions|string \| null|true|none|Custom instructions appended to the agent's default base instructions.|
 |tools|[[PersistedAgentToolResource](#schemapersistedagenttoolresource)]|true|none|Tools available to the agent.|
 |multi_agent|[MultiAgentConfigResource](#schemamultiagentconfigresource)|true|none|The resolved configuration for creating and coordinating subagents.|
+|compaction|[CompactionResource](#schemacompactionresource)|false|none|The effective context compaction settings.|
+|experimental|[ExperimentalConfigResource](#schemaexperimentalconfigresource)|false|none|The effective experimental settings for the agent.|
 
 #### Enumerated Values
 
@@ -122088,6 +124082,12 @@ A reusable agent scoped to the caller's project.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     }
   ],
@@ -122114,6 +124114,27 @@ A page of Agents API resources, with IDs for retrieving additional pages.
 |Property|Value|
 |---|---|
 |object|list|
+
+<h2 id="tocS_ExperimentalConfigParam">ExperimentalConfigParam</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentalconfigparam"></a>
+<a id="schema_ExperimentalConfigParam"></a>
+<a id="tocSexperimentalconfigparam"></a>
+<a id="tocsexperimentalconfigparam"></a>
+
+```json
+{
+  "time_awareness": false
+}
+```
+
+Experimental agent settings. These features may change.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|time_awareness|boolean|false|none|Whether to give the model periodic current-time reminders. Defaults to false.|
 
 <h2 id="tocS_PersistedAgentToolConfigParamFunction">PersistedAgentToolConfigParamFunction</h2>
 <!-- backwards compatibility -->
@@ -122503,6 +124524,9 @@ A tool that can be stored on a reusable agent without session credentials.
 
 ```json
 {
+  "experimental": {
+    "time_awareness": false
+  },
   "metadata": {
     "property1": "string",
     "property2": "string"
@@ -122536,6 +124560,9 @@ A tool that can be stored on a reusable agent without session credentials.
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
   }
 }
 ```
@@ -122546,6 +124573,7 @@ Parameters for creating a reusable agent.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|experimental|[ExperimentalConfigParam](#schemaexperimentalconfigparam)|false|none|Experimental agent settings. All experimental features default to disabled.|
 |metadata|object \| null|false|none|Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters. Omission or null defaults to an empty map.|
 |name|string \| null|false|none|A human-readable name for the agent. Omission or null leaves the agent unnamed.|
 |model|string|true|none|The model to use for the agent. The requested model name is preserved.|
@@ -122555,6 +124583,7 @@ Parameters for creating a reusable agent.
 |instructions|string \| null|false|none|Additional instructions appended to the agent's default base instructions. Omit or set to null to add no custom instructions.|
 |tools|[[PersistedAgentToolConfigParam](#schemapersistedagenttoolconfigparam)]|false|none|Tools available to the agent. Defaults to an empty list. The tool list must fit within 3 MiB (3,145,728 bytes) of compact UTF-8 JSON.|
 |multi_agent|[MultiAgentConfigCurrentParam](#schemamultiagentconfigcurrentparam) \| null|false|none|Configuration for creating and coordinating subagents. Subagent tools are disabled by default.|
+|compaction|[CompactionParam](#schemacompactionparam) \| null|false|none|Context compaction settings. Omission or null enables background compaction.|
 
 <h2 id="tocS_UpdateAgentParams">UpdateAgentParams</h2>
 <!-- backwards compatibility -->
@@ -122565,6 +124594,9 @@ Parameters for creating a reusable agent.
 
 ```json
 {
+  "experimental": {
+    "time_awareness": true
+  },
   "model": "string",
   "reasoning": {
     "effort": "none",
@@ -122581,6 +124613,9 @@ Parameters for creating a reusable agent.
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
   },
   "metadata": {
     "property1": "string",
@@ -122608,12 +124643,14 @@ Fields to replace on an existing reusable agent.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|experimental|[ExperimentalConfigOverridesParam](#schemaexperimentalconfigoverridesparam)|false|none|Experimental settings to merge by key. Omitted settings keep their current values.|
 |model|string|false|none|The model to use for the agent. The requested model name is preserved.|
 |reasoning|[ReasoningParam](#schemareasoningparam) \| null|false|none|Configuration for model reasoning. Omit to keep the current settings; pass `null` to reset to the model's default effort.|
 |text|[TextParam](#schematextparam) \| null|false|none|Configuration for text generated by the agent.|
 |service_tier|[ServiceTierParam](#schemaservicetierparam) \| null|false|none|The service tier used for model requests.|
 |instructions|string \| null|false|none|Additional instructions appended to the agent's default base instructions. Omit to leave unchanged.|
 |multi_agent|[MultiAgentConfigCurrentParam](#schemamultiagentconfigcurrentparam) \| null|false|none|Configuration for creating and coordinating subagents.|
+|compaction|[CompactionParam](#schemacompactionparam) \| null|false|none|Context compaction settings. Omit to keep the current settings. A supplied object replaces the settings; null or an empty object enables background compaction.|
 |metadata|object \| null|false|none|Replaces all metadata. Omit to leave unchanged, or pass null or {} to clear it. Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters.|
 |name|string \| null|false|none|A replacement name. Omit to leave unchanged, or pass null to clear it.|
 |tools|[[PersistedAgentToolConfigParam](#schemapersistedagenttoolconfigparam)]|false|none|Replaces the tool list. Omit to leave it unchanged, or pass null to clear it. The replacement must fit within 3 MiB (3,145,728 bytes) of compact UTF-8 JSON.|
@@ -123374,6 +125411,12 @@ An action that must be completed before a session can continue.
   "multi_agent": {
     "enabled": true,
     "max_concurrent_subagents": 1
+  },
+  "compaction": {
+    "async": true
+  },
+  "experimental": {
+    "time_awareness": true
   }
 }
 ```
@@ -123393,6 +125436,8 @@ The effective agent configuration for a session.
 |instructions|string \| null|true|none|Custom instructions appended to the agent's default base instructions.|
 |tools|[[AgentToolResource](#schemaagenttoolresource)]|true|none|Tools available to the agent.|
 |multi_agent|[MultiAgentConfigResource](#schemamultiagentconfigresource)|true|none|Configuration for creating and coordinating subagents.|
+|compaction|[CompactionResource](#schemacompactionresource)|false|none|The effective context compaction settings.|
+|experimental|[ExperimentalConfigResource](#schemaexperimentalconfigresource)|false|none|The effective experimental settings for the agent.|
 
 #### Enumerated Values
 
@@ -123657,6 +125702,12 @@ The execution environment for a session.
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
+    },
+    "experimental": {
+      "time_awareness": true
     }
   },
   "environment": {
@@ -123790,6 +125841,12 @@ A Managed Agents session.
         "multi_agent": {
           "enabled": true,
           "max_concurrent_subagents": 1
+        },
+        "compaction": {
+          "async": true
+        },
+        "experimental": {
+          "time_awareness": true
         }
       },
       "environment": {
@@ -123869,6 +125926,9 @@ Initial input submitted when creating a session.
     "property2": "string"
   },
   "agent": {
+    "experimental": {
+      "time_awareness": true
+    },
     "model": "string",
     "reasoning": {
       "effort": "none",
@@ -123885,6 +125945,9 @@ Initial input submitted when creating a session.
     "multi_agent": {
       "enabled": true,
       "max_concurrent_subagents": 1
+    },
+    "compaction": {
+      "async": true
     },
     "tools": [
       {
@@ -124491,6 +126554,12 @@ Emitted when command execution produces an output delta.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -124998,6 +127067,12 @@ Emitted when an item is added to a turn.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -125119,6 +127194,12 @@ Emitted when a session becomes idle.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -125240,6 +127321,12 @@ Emitted when a session starts processing a turn.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -125361,6 +127448,12 @@ Emitted when a session is waiting for one or more required actions.
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -131724,16 +133817,16 @@ A SIP DTMF keypress received from the caller. Delivered only to sideband observe
 |---|---|
 |type|transport.dtmf.received|
 
-<h2 id="tocS_LiveTransportDTMFSend">LiveTransportDTMFSend</h2>
+<h2 id="tocS_LiveTransportDTMFSent">LiveTransportDTMFSent</h2>
 <!-- backwards compatibility -->
-<a id="schemalivetransportdtmfsend"></a>
-<a id="schema_LiveTransportDTMFSend"></a>
-<a id="tocSlivetransportdtmfsend"></a>
-<a id="tocslivetransportdtmfsend"></a>
+<a id="schemalivetransportdtmfsent"></a>
+<a id="schema_LiveTransportDTMFSent"></a>
+<a id="tocSlivetransportdtmfsent"></a>
+<a id="tocslivetransportdtmfsent"></a>
 
 ```json
 {
-  "type": "transport.dtmf.send",
+  "type": "transport.dtmf.sent",
   "event_id": "event_dtmf_2",
   "event": "#"
 }
@@ -131754,7 +133847,7 @@ A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideba
 
 |Property|Value|
 |---|---|
-|type|transport.dtmf.send|
+|type|transport.dtmf.sent|
 
 <h2 id="tocS_LiveTransportRinging">LiveTransportRinging</h2>
 <!-- backwards compatibility -->
@@ -131951,10 +134044,41 @@ An event sent by the Live API on a primary WebSocket or sideband connection.
 |*oneOf*|[LiveErrorEvent](#schemaliveerrorevent)|false|none|Reports an error in the Live session, such as an invalid client command. Use error.client_event_id, when present, to identify the command that caused the error.|
 |*oneOf*|[LiveInfoEvent](#schemaliveinfoevent)|false|none|An informational notice about the Live session, such as the event permissions applied to a frontend data channel.|
 |*oneOf*|[LiveTransportDTMFReceived](#schemalivetransportdtmfreceived)|false|none|A SIP DTMF keypress received from the caller. Delivered only to sideband observers.|
-|*oneOf*|[LiveTransportDTMFSend](#schemalivetransportdtmfsend)|false|none|A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.|
+|*oneOf*|[LiveTransportDTMFSent](#schemalivetransportdtmfsent)|false|none|A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.|
 |*oneOf*|[LiveTransportRinging](#schemalivetransportringing)|false|none|The outbound SIP provider leg is ringing or providing early media. Delivered only to sideband observers.|
 |*oneOf*|[LiveTransportAnswered](#schemalivetransportanswered)|false|none|The outbound SIP provider leg answered and media is established. Delivered only to sideband observers.|
 |*oneOf*|[LiveTransportFailed](#schemalivetransportfailed)|false|none|An asynchronous outbound SIP setup failure. Delivered only to sideband observers.|
+
+<h2 id="tocS_LiveTransportDTMFSendParam">LiveTransportDTMFSendParam</h2>
+<!-- backwards compatibility -->
+<a id="schemalivetransportdtmfsendparam"></a>
+<a id="schema_LiveTransportDTMFSendParam"></a>
+<a id="tocSlivetransportdtmfsendparam"></a>
+<a id="tocslivetransportdtmfsendparam"></a>
+
+```json
+{
+  "type": "transport.dtmf.send",
+  "event_id": "evt_dtmf_001",
+  "event": "#"
+}
+```
+
+Send one DTMF keypress to the SIP trunk through a Live sideband connection. This command is supported only for SIP calls. A successful send emits `transport.dtmf.sent` on sideband. If you provide `event_id`, the success notification includes it as `client_event_id`; a failure includes it as `error.client_event_id`. Send separate events for multiple keypresses.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|event_id|string \| null|false|none|none|
+|type|string|true|none|none|
+|event|string|true|none|The DTMF key to send: one of `0`–`9`, `A`–`D`, `*`, or `#`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|transport.dtmf.send|
 
 <h2 id="tocS_UserMessageItemParam">UserMessageItemParam</h2>
 <!-- backwards compatibility -->
@@ -133748,7 +135872,7 @@ A tool that generates images using the GPT image models.
 "high"
 ```
 
-Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
 <h2 id="tocS_BetaProgrammaticToolCallingParam">BetaProgrammaticToolCallingParam</h2>
 <!-- backwards compatibility -->
@@ -134569,7 +136693,8 @@ Compacts the current context. Must be the final input item.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ]
@@ -134807,7 +136932,8 @@ The output of a custom tool call from your code, being sent back to the model.
   "type": "input_text",
   "text": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -134834,7 +136960,8 @@ The output of a custom tool call from your code, being sent back to the model.
   "filename": "string",
   "file_data": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   },
   "file_url": "http://example.com",
   "detail": "auto"
@@ -134851,7 +136978,7 @@ A file input to the model.
 |file_id|string \| null|false|none|none|
 |filename|string|false|none|The name of the file to be sent to the model.|
 |file_data|string|false|none|The content of the file to be sent to the model.<br>|
-|prompt_cache_breakpoint|[BetaPromptCacheBreakpointConfig](#schemabetapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[BetaPromptCacheBreakpointConfig](#schemabetapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 |file_url|string(uri)|false|none|The URL of the file to be sent to the model.|
 |detail|[BetaFileInputDetail](#schemabetafileinputdetail)|false|none|The detail level of the file to be sent to the model. Use `auto` to let the system select the detail level; for GPT-5.6 and later models, `auto` uses high-quality rendering, which may increase input token usage. Use `low` for lower-cost rendering, or `high` to render the file at higher quality. Defaults to `auto`.|
 
@@ -134884,23 +137011,27 @@ A file input to the model.
 
 ```json
 {
-  "mode": "explicit"
+  "mode": "explicit",
+  "ttl": "30m"
 }
 ```
 
-Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |mode|string|true|none|The breakpoint mode. Always `explicit`.|
+|ttl|string|false|none|The minimum lifetime of this cache breakpoint. Defaults to the request TTL.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |mode|explicit|
+|ttl|30m|
+|ttl|12h|
 
 <h2 id="tocS_BetaInputImageContent">BetaInputImageContent</h2>
 <!-- backwards compatibility -->
@@ -134916,7 +137047,8 @@ Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL
   "file_id": "string",
   "detail": "low",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -134931,7 +137063,7 @@ An image input to the model. Learn about [image inputs](https://developers.opena
 |image_url|string(uri) \| null|false|none|none|
 |file_id|string \| null|false|none|none|
 |detail|[BetaImageDetail](#schemabetaimagedetail)|true|none|The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.|
-|prompt_cache_breakpoint|[BetaPromptCacheBreakpointConfig](#schemabetapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[BetaPromptCacheBreakpointConfig](#schemabetapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -134966,7 +137098,8 @@ An image input to the model. Learn about [image inputs](https://developers.opena
   "type": "input_text",
   "text": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -134979,7 +137112,7 @@ A text input to the model.
 |---|---|---|---|---|
 |type|string|true|none|The type of the input item. Always `input_text`.|
 |text|string|true|none|The text input to the model.|
-|prompt_cache_breakpoint|[BetaPromptCacheBreakpointConfig](#schemabetapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[BetaPromptCacheBreakpointConfig](#schemabetapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -137154,7 +139287,7 @@ An image input to the model. Learn about [image inputs](https://developers.opena
 }
 ```
 
-Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
 ### Properties
 
@@ -138661,7 +140794,8 @@ A citation to a file.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ]
@@ -138707,7 +140841,8 @@ precedence over instructions given with the `user` role.
     "type": "input_text",
     "text": "string",
     "prompt_cache_breakpoint": {
-      "mode": "explicit"
+      "mode": "explicit",
+      "ttl": "30m"
     }
   }
 ]
@@ -138728,7 +140863,8 @@ types.
   "type": "input_text",
   "text": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -138981,6 +141117,7 @@ Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide
 |---|---|
 |*anyOf*|gpt-6-astra|
 |*anyOf*|gpt-6.1-sol|
+|*anyOf*|gpt-6.1-terra|
 |*anyOf*|gpt-6-sol|
 |*anyOf*|gpt-6-luna|
 |*anyOf*|gpt-5.6-sol|
@@ -139231,7 +141368,8 @@ Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide
           "type": "input_text",
           "text": "string",
           "prompt_cache_breakpoint": {
-            "mode": "explicit"
+            "mode": "explicit",
+            "ttl": "30m"
           }
         }
       ],
@@ -139282,7 +141420,8 @@ A list of Response items.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -140506,7 +142645,8 @@ replaced by another configuration update.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ]
@@ -140573,7 +142713,8 @@ Opaque encrypted content that Responses API decrypts inside trusted model execut
   "file_id": "string",
   "detail": "low",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```
@@ -140588,7 +142729,7 @@ A screenshot of a computer.
 |image_url|string(uri) \| null|true|none|none|
 |file_id|string \| null|true|none|none|
 |detail|[BetaImageDetail](#schemabetaimagedetail)|true|none|The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.|
-|prompt_cache_breakpoint|[BetaPromptCacheBreakpointConfig](#schemabetapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
+|prompt_cache_breakpoint|[BetaPromptCacheBreakpointConfig](#schemabetapromptcachebreakpointconfig)|false|none|Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.|
 
 #### Enumerated Values
 
@@ -140934,7 +143075,8 @@ The output of a computer tool call.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -141095,7 +143237,8 @@ a breakdown of output tokens, and the total tokens used.
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -141162,7 +143305,8 @@ An item representing a message, tool call, tool output, reasoning, or other resp
       "type": "input_text",
       "text": "string",
       "prompt_cache_breakpoint": {
-        "mode": "explicit"
+        "mode": "explicit",
+        "ttl": "30m"
       }
     }
   ],
@@ -141372,6 +143516,24 @@ Event representing a delta (partial update) to the input of a custom tool call.
       },
       "total_tokens": 380
     },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "user": null,
     "metadata": {}
   },
@@ -141462,6 +143624,24 @@ Emitted when a response is queued and waiting to be processed.
     },
     "total_tokens": 380
   },
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "text_tokens": 0,
+        "image_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  },
   "user": null,
   "metadata": {}
 }
@@ -141502,6 +143682,7 @@ Emitted when a response is queued and waiting to be processed.
 |instructions|string \| [[BetaInputItem](#schemabetainputitem)] \| null|true|none|none|
 |output_text|string \| null|false|none|none|
 |usage|[BetaResponseUsage](#schemabetaresponseusage) \| null|false|none|none|
+|tool_usage|[BetaResponseToolUsage](#schemabetaresponsetoolusage)|false|none|Usage reported by hosted tools, separate from base model `usage`. The field<br>can be omitted when tool usage is unavailable. When present, tool families<br>with no recorded usage have zero counts.<br><br>`image_gen` sums available token counts across image generation calls.<br>Calls with missing or incomplete usage records may be skipped. Output<br>token details and cached input counts can be omitted. An omitted cache<br>count means cache usage is unknown.<br><br>`web_search.num_requests` counts billable searches. Discounted searches<br>and actions such as opening a page are excluded. Use billing records to<br>reconcile final charges.<br>|
 |prompt_cache_options|[BetaPromptCacheOptions](#schemabetapromptcacheoptions)|false|none|The prompt-caching options that were applied to the response. Supported for `gpt-5.6` and later models.|
 |prompt_cache_diagnostics|[BetaPromptCacheDiagnostics](#schemabetapromptcachediagnostics)|false|none|Prompt cache diagnostics requested for this response.|
 |moderation|[BetaModeration](#schemabetamoderation) \| null|false|none|none|
@@ -141882,6 +144063,178 @@ The prompt-caching options that were applied to the response. Supported for `gpt
 |ttl|30m|
 |mode|implicit|
 |mode|explicit|
+
+<h2 id="tocS_BetaResponseToolUsage">BetaResponseToolUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemabetaresponsetoolusage"></a>
+<a id="schema_BetaResponseToolUsage"></a>
+<a id="tocSbetaresponsetoolusage"></a>
+<a id="tocsbetaresponsetoolusage"></a>
+
+```json
+{
+  "image_gen": {
+    "input_tokens": 0,
+    "total_tokens": 0,
+    "output_tokens": 0,
+    "output_tokens_details": {
+      "image_tokens": 0,
+      "text_tokens": 0
+    },
+    "input_tokens_details": {
+      "text_tokens": 0,
+      "image_tokens": 0
+    },
+    "cached_tokens": 0,
+    "cached_tokens_details": {
+      "cached_text_tokens": 0,
+      "cached_image_tokens": 0
+    }
+  },
+  "web_search": {
+    "num_requests": 0
+  }
+}
+```
+
+Aggregated usage details for billable tools that ran while generating the response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|image_gen|[BetaImageGenToolUsage](#schemabetaimagegentoolusage)|true|none|Aggregated usage statistics for image generation tool calls.|
+|web_search|[BetaWebSearchUsage](#schemabetawebsearchusage)|true|none|Aggregated billable usage statistics for web search tool calls.|
+
+<h2 id="tocS_BetaWebSearchUsage">BetaWebSearchUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemabetawebsearchusage"></a>
+<a id="schema_BetaWebSearchUsage"></a>
+<a id="tocSbetawebsearchusage"></a>
+<a id="tocsbetawebsearchusage"></a>
+
+```json
+{
+  "num_requests": 0
+}
+```
+
+Usage details for web search requests that ran while generating the response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|num_requests|integer|true|none|The number of billable web search requests issued.|
+
+<h2 id="tocS_BetaImageGenToolUsage">BetaImageGenToolUsage</h2>
+<!-- backwards compatibility -->
+<a id="schemabetaimagegentoolusage"></a>
+<a id="schema_BetaImageGenToolUsage"></a>
+<a id="tocSbetaimagegentoolusage"></a>
+<a id="tocsbetaimagegentoolusage"></a>
+
+```json
+{
+  "input_tokens": 0,
+  "total_tokens": 0,
+  "output_tokens": 0,
+  "output_tokens_details": {
+    "image_tokens": 0,
+    "text_tokens": 0
+  },
+  "input_tokens_details": {
+    "text_tokens": 0,
+    "image_tokens": 0
+  },
+  "cached_tokens": 0,
+  "cached_tokens_details": {
+    "cached_text_tokens": 0,
+    "cached_image_tokens": 0
+  }
+}
+```
+
+Token usage for image generation tool calls in a response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|input_tokens|integer|true|none|The number of tokens (images and text) in the input prompt.|
+|total_tokens|integer|true|none|The total number of tokens (images and text) used for the image generation.|
+|output_tokens|integer|true|none|The number of output tokens generated by the model.|
+|output_tokens_details|[BetaImageGenOutputTokensDetails](#schemabetaimagegenoutputtokensdetails)|false|none|The output token details for the image generation.|
+|input_tokens_details|[BetaImageGenInputUsageDetails](#schemabetaimagegeninputusagedetails)|true|none|The input tokens detailed information for the image generation.|
+|cached_tokens|integer|false|none|none|
+|cached_tokens_details|[BetaCachedUsageDetails](#schemabetacachedusagedetails)|false|none|none|
+
+<h2 id="tocS_BetaCachedUsageDetails">BetaCachedUsageDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemabetacachedusagedetails"></a>
+<a id="schema_BetaCachedUsageDetails"></a>
+<a id="tocSbetacachedusagedetails"></a>
+<a id="tocsbetacachedusagedetails"></a>
+
+```json
+{
+  "cached_text_tokens": 0,
+  "cached_image_tokens": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cached_text_tokens|integer|true|none|none|
+|cached_image_tokens|integer|true|none|none|
+
+<h2 id="tocS_BetaImageGenInputUsageDetails">BetaImageGenInputUsageDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemabetaimagegeninputusagedetails"></a>
+<a id="schema_BetaImageGenInputUsageDetails"></a>
+<a id="tocSbetaimagegeninputusagedetails"></a>
+<a id="tocsbetaimagegeninputusagedetails"></a>
+
+```json
+{
+  "text_tokens": 0,
+  "image_tokens": 0
+}
+```
+
+The input tokens detailed information for the image generation.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|text_tokens|integer|true|none|The number of text tokens in the input prompt.|
+|image_tokens|integer|true|none|The number of image tokens in the input prompt.|
+
+<h2 id="tocS_BetaImageGenOutputTokensDetails">BetaImageGenOutputTokensDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemabetaimagegenoutputtokensdetails"></a>
+<a id="schema_BetaImageGenOutputTokensDetails"></a>
+<a id="tocSbetaimagegenoutputtokensdetails"></a>
+<a id="tocsbetaimagegenoutputtokensdetails"></a>
+
+```json
+{
+  "image_tokens": 0,
+  "text_tokens": 0
+}
+```
+
+The output token details for the image generation.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|image_tokens|integer|true|none|The number of image output tokens generated by the model.|
+|text_tokens|integer|true|none|The number of text output tokens generated by the model.|
 
 <h2 id="tocS_BetaOutputItem">BetaOutputItem</h2>
 <!-- backwards compatibility -->
@@ -143547,6 +145900,24 @@ Emitted when a new output item is added.
       },
       "total_tokens": 380
     },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "user": null,
     "metadata": {}
   },
@@ -144106,6 +146477,24 @@ Emitted when an error occurs.
       },
       "total_tokens": 380
     },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "user": null,
     "metadata": {}
   },
@@ -144388,6 +146777,24 @@ Emitted when a new content part is added.
         "reasoning_tokens": 0
       },
       "total_tokens": 380
+    },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
     },
     "user": null,
     "metadata": {}
@@ -144846,6 +147253,24 @@ Emitted when there is a partial audio response.
       },
       "total_tokens": 380
     },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "user": null,
     "metadata": {}
   },
@@ -144945,6 +147370,24 @@ by a successor `response.created` that commits the queued steering input.
         "reasoning_tokens": 0
       },
       "total_tokens": 380
+    },
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "text_tokens": 0,
+          "image_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
     },
     "user": null,
     "metadata": {}
@@ -145671,7 +148114,8 @@ Learn more:
   "type": "input_text",
   "text": "string",
   "prompt_cache_breakpoint": {
-    "mode": "explicit"
+    "mode": "explicit",
+    "ttl": "30m"
   }
 }
 ```

@@ -18863,6 +18863,10 @@ const GpuInfoSchema = z
       .int()
       .exactOptional()
       .openapi({ description: 'The number of GPUs allocated to the Droplet.', example: 1 }),
+    fabric: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If GPU fabric networking is enabled.', example: true }),
     model: z
       .string()
       .exactOptional()
@@ -23070,6 +23074,14 @@ const ConsentRecordSchema = z
           'The unique identifier of the environment. For Harness Runtime, this is the Environment Config ID. Empty for team-level records (`source: inference`), which are not tied to an environment.',
         example: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
       }),
+    environment_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Same as agent_id when present. Dual-emitted during the rename; omitted when agent_id is empty.',
+        example: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
+      }),
     enabled: z
       .boolean()
       .openapi({
@@ -23136,6 +23148,12 @@ const AgentConsentSchema = z
           'The unique identifier of the environment. For Harness Runtime, this is the Environment Config ID.',
         example: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
       }),
+    environment_id: z
+      .uuid()
+      .openapi({
+        description: 'Same as agent_id. Dual-emitted during the rename.',
+        example: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
+      }),
     enabled: z
       .boolean()
       .openapi({
@@ -23152,7 +23170,7 @@ const AgentConsentSchema = z
   })
   .openapi({
     description: 'Consent details for a specific environment.',
-    required: ['team_id', 'source', 'agent_id', 'enabled'],
+    required: ['team_id', 'source', 'agent_id', 'environment_id', 'enabled'],
   })
   .openapi('AgentConsent')
 
@@ -23252,9 +23270,17 @@ const ExportJobSchema = z
       }),
     agent_id: z
       .uuid()
+      .exactOptional()
       .openapi({
         description:
           'The environment whose data is being exported. For Harness Runtime, this is the Environment Config ID. Not meaningful for `inference` exports; use `type` to distinguish the export scope.',
+        example: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
+      }),
+    environment_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'Same as agent_id. Dual-emitted during the rename.',
         example: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
       }),
     status: z
@@ -23277,7 +23303,6 @@ const ExportJobSchema = z
             example: ['01a0f3d5-d5f1-798a-9352-2cd8f8b81e78'],
           }),
       })
-      .exactOptional()
       .openapi({ description: 'The filters applied to this export.', required: [] }),
     created_at: z
       .int()
@@ -23309,7 +23334,7 @@ const ExportJobSchema = z
   })
   .openapi({
     description: 'An export job that produces a downloadable archive of signals data.',
-    required: ['export_id', 'agent_id', 'status', 'created_at'],
+    required: ['export_id', 'status', 'created_at', 'filters'],
   })
   .openapi('ExportJob')
 
@@ -23320,15 +23345,24 @@ const CreateExportRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The scope of the export. `agent` exports Signals conversations for one Harness Runtime environment and requires `agent_id`. `inference` exports Serverless Inference Signals conversations for the whole team (team-wide; omit `agent_id`). Defaults to `agent` when `agent_id` is provided and to `inference` when it is omitted.',
+          'The scope of the export. `agent` exports Signals conversations for one Harness Runtime environment and requires `environment_id` (or deprecated `agent_id`). `inference` exports Serverless Inference Signals conversations for the whole team (team-wide; omit `environment_id` and `agent_id`). Defaults to `agent` when `environment_id` or `agent_id` is provided and to `inference` when both are omitted.',
         example: 'agent',
+      }),
+    environment_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The environment whose data should be exported. For Harness Runtime, this is the Environment Config ID. Required when `type` is `agent` if `agent_id` is omitted; must be omitted when `type` is `inference`. Prefer this over `agent_id`.',
+        example: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
       }),
     agent_id: z
       .uuid()
       .exactOptional()
       .openapi({
+        deprecated: true,
         description:
-          'The environment whose data should be exported. For Harness Runtime, this is the Environment Config ID. Required when `type` is `agent`; must be omitted when `type` is `inference`.',
+          'Deprecated alias for `environment_id`. Accepted for backward compatibility; must equal `environment_id` when both are set. Both set and different returns 400. Required when `type` is `agent` if `environment_id` is omitted; must be omitted when `type` is `inference`.',
         example: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
       }),
     signal_type: z
@@ -23456,6 +23490,14 @@ const DeletionJobSchema = z
           'The Harness Runtime Environment Config ID (agent UUID) whose conversations are being deleted. Only present for `agent` deletions.',
         example: '01a10d3f-2c09-764f-99f8-458e521627f3',
       }),
+    environment_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Same as agent_id when present. Dual-emitted during the rename; omitted when agent_id is omitted.',
+        example: '01a10d3f-2c09-764f-99f8-458e521627f3',
+      }),
     status: z
       .enum(['queued', 'running', 'complete', 'failed'])
       .openapi({ description: 'The current status of the deletion job.', example: 'running' }),
@@ -23533,7 +23575,7 @@ const CreateDeletionRequestSchema = z
       .enum(['agent', 'inference'])
       .openapi({
         description:
-          'The scope of the deletion. `agent` deletes Signals conversations for one Harness Runtime environment and requires `agent_id`. `inference` deletes Serverless Inference Signals conversations for the whole team (team-wide; omit `agent_id`).',
+          'The scope of the deletion. `agent` deletes Signals conversations for one Harness Runtime environment and requires `environment_id` (or deprecated `agent_id`). `inference` deletes Serverless Inference Signals conversations for the whole team (team-wide; omit `environment_id` and `agent_id`).',
         example: 'agent',
       }),
     team_id: z
@@ -23552,12 +23594,21 @@ const CreateDeletionRequestSchema = z
         description: 'The team whose data should be deleted. Must match the authenticated team.',
         example: 12345678,
       }),
-    agent_id: z
+    environment_id: z
       .uuid()
       .exactOptional()
       .openapi({
         description:
-          "The Harness Runtime Environment Config ID of the environment whose conversations should be deleted. This is the environment's `agent_id`. Required when `type` is `agent`; must be omitted when `type` is `inference`.",
+          'The Harness Runtime Environment Config ID of the environment whose conversations should be deleted. Required when `type` is `agent` if `agent_id` is omitted; must be omitted when `type` is `inference`. Prefer this over `agent_id`.',
+        example: '01a10d3f-2c09-764f-99f8-458e521627f3',
+      }),
+    agent_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Deprecated alias for `environment_id`. Accepted for backward compatibility; must equal `environment_id` when both are set. Both set and different returns 400. Required when `type` is `agent` if `environment_id` is omitted; must be omitted when `type` is `inference`.',
         example: '01a10d3f-2c09-764f-99f8-458e521627f3',
       }),
   })
@@ -34765,7 +34816,7 @@ const ApiCreateModelEvaluationRunInputPublicSchema = z
         type: 'integer',
         format: 'int64',
         description:
-          'Number of times to evaluate each dataset row (n-pass/epochs), so the\nresult reports avg@k/pass@k/cons@k instead of a single score. Defaults\nto 1 when unset. Capped at 3 until throughput/sharding work lands, since\neach extra epoch roughly multiplies wall-clock run time. Not persisted\non presets.',
+          'How many times each dataset row is evaluated. Defaults to 1, maximum 10.\nWhen more than 1, the results show how consistent the model is across\nattempts (avg@k, pass@k, cons@k). Each extra attempt makes the run take\nlonger. Not saved in presets.',
         example: 1,
       }),
     eval_preset_uuid: z
@@ -39984,7 +40035,7 @@ const CreateImageRequestSchema = z
       .string()
       .openapi({
         description: 'The model to use for image generation.\n',
-        example: 'openai-gpt-image-1',
+        example: 'openai-gpt-image-2',
       }),
     moderation: z
       .string()
@@ -40044,7 +40095,7 @@ const CreateImageRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The size of the generated images. GPT-IMAGE-1 supports: auto (automatically select best size), 1536x1024 (landscape), 1024x1536 (portrait).\n',
+          'The size of the generated images. GPT-IMAGE-2 supports: auto (automatically select best size), 1536x1024 (landscape), 1024x1536 (portrait).\n',
         example: 'auto',
       }),
     stream: z
@@ -51433,6 +51484,7 @@ const ListConsentsResponseResponse = {
             team_id: 39449946,
             source: 'agent',
             agent_id: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
+            environment_id: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
             enabled: true,
             updated_at: '2026-08-10T10:09:25.738533Z',
           },
@@ -51441,6 +51493,7 @@ const ListConsentsResponseResponse = {
             team_id: 39449946,
             source: 'agent',
             agent_id: '019fb6b1-aad4-7d54-a74e-c5570d768148',
+            environment_id: '019fb6b1-aad4-7d54-a74e-c5570d768148',
             enabled: true,
             updated_at: '2026-08-07T10:10:16.385447Z',
           },
@@ -51497,6 +51550,7 @@ const AgentConsentResponseResponse = {
         team_id: 39449946,
         source: 'agent',
         agent_id: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
+        environment_id: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
         enabled: true,
         updated_at: '2026-08-10T10:09:25.738533Z',
       },
@@ -51520,6 +51574,7 @@ const UpdateConsentResponseResponse = {
           team_id: 39449946,
           source: 'agent',
           agent_id: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
+          environment_id: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
           enabled: true,
           updated_at: '2026-10-07T11:06:32.280572Z',
         },
@@ -51688,6 +51743,7 @@ const ListExportsResponseResponse = {
               export_id: '9f13c09c-c877-436b-9863-dcc39c9dd737',
               type: 'agent',
               agent_id: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
+              environment_id: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
               status: 'complete',
               filters: {
                 signal_type: ['ExecutionFailureToolNotFound'],
@@ -51720,6 +51776,7 @@ const ExportJobResponseResponse = {
         export_id: '9f13c09c-c877-436b-9863-dcc39c9dd737',
         type: 'agent',
         agent_id: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
+        environment_id: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
         status: 'complete',
         filters: {
           signal_type: ['ExecutionFailureToolNotFound'],
@@ -51839,6 +51896,7 @@ const ListDeletionsResponseResponse = {
               deletion_id: '01J9ZX0N5Q7M2K3R4S5T6V7W8X',
               type: 'agent',
               agent_id: '01a10d3f-2c09-764f-99f8-458e521627f3',
+              environment_id: '01a10d3f-2c09-764f-99f8-458e521627f3',
               status: 'running',
               error_message: null,
               created_at: 1791036405,
@@ -51881,6 +51939,7 @@ const DeletionJobResponseResponse = {
         deletion_id: '01J9ZX0N5Q7M2K3R4S5T6V7W8X',
         type: 'agent',
         agent_id: '01a10d3f-2c09-764f-99f8-458e521627f3',
+        environment_id: '01a10d3f-2c09-764f-99f8-458e521627f3',
         status: 'running',
         error_message: null,
         created_at: 1791036405,
@@ -51906,6 +51965,7 @@ const DeletionJobAcceptedResponseResponse = {
         deletion_id: '01J9ZX0N5Q7M2K3R4S5T6V7W8X',
         type: 'agent',
         agent_id: '01a10d3f-2c09-764f-99f8-458e521627f3',
+        environment_id: '01a10d3f-2c09-764f-99f8-458e521627f3',
         status: 'queued',
         error_message: null,
         created_at: 1791036405,
@@ -61214,21 +61274,21 @@ const SourceRequiredParamsSchema = z
       in: 'query',
       name: 'source',
       description:
-        'The consent source to update. Only team-level sources are accepted on this endpoint; currently `inference` (Serverless Inference chat completions). Per-environment consent (`agent`) is managed with `PUT /v1/consent/{agent_id}` instead.',
+        'The consent source to update. Only team-level sources are accepted on this endpoint; currently `inference` (Serverless Inference chat completions). Per-environment consent (`agent`) is managed with `PUT /v1/consent/{environment_id}` instead.',
       required: true,
       schema: { type: 'string', enum: ['inference'] },
       example: 'inference',
     },
   })
 
-const AgentIdParamsSchema = z
+const EnvironmentIdParamsSchema = z
   .uuid()
   .openapi({
     param: {
       in: 'path',
-      name: 'agent_id',
+      name: 'environment_id',
       description:
-        'A unique identifier for an environment. For Harness Runtime, this is the Environment Config ID.',
+        'A unique identifier for an environment. For Harness Runtime, this is the Environment Config ID. Formerly named agent_id.',
       required: true,
       schema: { type: 'string', format: 'uuid' },
       example: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
@@ -61326,6 +61386,36 @@ const ParametersSessionIdParamsSchema = z
       required: true,
       schema: { type: 'string', format: 'uuid' },
       example: '01a0f3d5-d5f1-798a-9352-2cd8f8b81e78',
+    },
+  })
+
+const EnvironmentIdQueryParamsSchema = z
+  .uuid()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'environment_id',
+      description: 'Optional filter by environment ID.',
+      required: false,
+      schema: { type: 'string', format: 'uuid' },
+      example: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
+    },
+  })
+
+const AgentIdParamsSchema = z
+  .uuid()
+  .exactOptional()
+  .openapi({
+    param: {
+      in: 'query',
+      name: 'agent_id',
+      deprecated: true,
+      description:
+        'Deprecated alias for environment_id. Accepted for backward compatibility; must equal environment_id when both are set. Both set and different returns 400.',
+      required: false,
+      schema: { type: 'string', format: 'uuid' },
+      example: '019fb3d2-8a56-72cc-8bf9-9d21510b2a99',
     },
   })
 
@@ -79076,7 +79166,7 @@ export const putV1ConsentRoute = createRoute({
   tags: ['Signals'],
   summary: 'Update Team-Level Consent',
   description:
-    'To enable or disable signals collection for a source that is consented at\nthe team level, send a PUT request to `/v1/consent?source=inference` with\nan `enabled` boolean in the request body. Currently the only team-level\nsource is `inference`, which covers Serverless Inference chat completions\nmade by your team.\n\nTo revoke consent, send the same request with `enabled` set to `false`.\nThe `source` query parameter is required. Per-environment consent for Harness\nRuntime environments is managed with `PUT /v1/consent/{agent_id}` instead.\n',
+    'To enable or disable signals collection for a source that is consented at\nthe team level, send a PUT request to `/v1/consent?source=inference` with\nan `enabled` boolean in the request body. Currently the only team-level\nsource is `inference`, which covers Serverless Inference chat completions\nmade by your team.\n\nTo revoke consent, send the same request with `enabled` set to `false`.\nThe `source` query parameter is required. Per-environment consent for Harness\nRuntime environments is managed with `PUT /v1/consent/{environment_id}` instead.\n',
   operationId: 'signals_update_team_consent',
   request: {
     query: z.object({ source: SourceRequiredParamsSchema }),
@@ -79107,15 +79197,15 @@ export const putV1ConsentRoute = createRoute({
   security: [{ bearer_auth: ['signals:update'] }],
 })
 
-export const getV1ConsentAgentIdRoute = createRoute({
+export const getV1ConsentEnvironmentIdRoute = createRoute({
   method: 'get',
-  path: '/v1/consent/{agent_id}',
+  path: '/v1/consent/{environment_id}',
   tags: ['Signals'],
   summary: 'Retrieve Consent for an Environment',
   description:
-    'To retrieve the consent record for a specific environment, send a GET\nrequest to `/v1/consent/{agent_id}`. The response includes an `enabled`\nfield indicating whether signals collection is on for this environment.\n\nThis endpoint only serves per-environment (`source: agent`) records. Team-level\ninference consent is read from `GET /v1/consent?source=inference`.\n',
+    'To retrieve the consent record for a specific environment, send a GET\nrequest to `/v1/consent/{environment_id}`. The response includes an `enabled`\nfield indicating whether signals collection is on for this environment.\n\nThis endpoint only serves per-environment (`source: agent`) records. Team-level\ninference consent is read from `GET /v1/consent?source=inference`.\n',
   operationId: 'signals_get_consent',
-  request: { params: z.object({ agent_id: AgentIdParamsSchema }) },
+  request: { params: z.object({ environment_id: EnvironmentIdParamsSchema }) },
   responses: {
     200: AgentConsentResponseResponse,
     400: BadRequestResponse,
@@ -79128,16 +79218,16 @@ export const getV1ConsentAgentIdRoute = createRoute({
   security: [{ bearer_auth: ['signals:read'] }],
 })
 
-export const putV1ConsentAgentIdRoute = createRoute({
+export const putV1ConsentEnvironmentIdRoute = createRoute({
   method: 'put',
-  path: '/v1/consent/{agent_id}',
+  path: '/v1/consent/{environment_id}',
   tags: ['Signals'],
   summary: 'Update Consent for an Environment',
   description:
-    'To enable or disable signals collection for a specific environment, send a\nPUT request to `/v1/consent/{agent_id}` with an `enabled` boolean in the\nrequest body.\n\nThis endpoint only manages per-environment (`source: agent`) consent. To manage\nteam-level consent for Serverless Inference, use\n`PUT /v1/consent?source=inference` instead.\n',
+    'To enable or disable signals collection for a specific environment, send a\nPUT request to `/v1/consent/{environment_id}` with an `enabled` boolean in the\nrequest body.\n\nThis endpoint only manages per-environment (`source: agent`) consent. To manage\nteam-level consent for Serverless Inference, use\n`PUT /v1/consent?source=inference` instead.\n',
   operationId: 'signals_update_consent',
   request: {
-    params: z.object({ agent_id: AgentIdParamsSchema }),
+    params: z.object({ environment_id: EnvironmentIdParamsSchema }),
     body: {
       content: {
         'application/json': {
@@ -79168,16 +79258,16 @@ export const putV1ConsentAgentIdRoute = createRoute({
   security: [{ bearer_auth: ['signals:update'] }],
 })
 
-export const getV1SignalsAgentsAgentIdSessionsRoute = createRoute({
+export const getV1SignalsAgentsEnvironmentIdSessionsRoute = createRoute({
   method: 'get',
-  path: '/v1/signals/agents/{agent_id}/sessions',
+  path: '/v1/signals/agents/{environment_id}/sessions',
   tags: ['Signals'],
   summary: 'List Sessions for an Environment',
   description:
-    'To list signals sessions for a specific environment, send a GET request to\n`/v1/signals/agents/{agent_id}/sessions`. Results are paginated using cursor-based\npagination with `limit` and `after` parameters.\n',
+    'To list signals sessions for a specific environment, send a GET request to\n`/v1/signals/agents/{environment_id}/sessions`. Results are paginated using cursor-based\npagination with `limit` and `after` parameters.\n',
   operationId: 'signals_list_agent_sessions',
   request: {
-    params: z.object({ agent_id: AgentIdParamsSchema }),
+    params: z.object({ environment_id: EnvironmentIdParamsSchema }),
     query: z.object({
       limit: LimitParamsSchema,
       after: AfterParamsSchema,
@@ -79234,7 +79324,14 @@ export const getV1SignalsExportsRoute = createRoute({
   description:
     'To list signals export jobs for your team, send a GET request to\n`/v1/signals/exports`. Results are paginated using cursor-based pagination\nwith `limit` and `after` parameters.\n',
   operationId: 'signals_list_exports',
-  request: { query: z.object({ limit: LimitParamsSchema, after: AfterParamsSchema }) },
+  request: {
+    query: z.object({
+      environment_id: EnvironmentIdQueryParamsSchema,
+      agent_id: AgentIdParamsSchema,
+      limit: LimitParamsSchema,
+      after: AfterParamsSchema,
+    }),
+  },
   responses: {
     200: ListExportsResponseResponse,
     401: UnauthorizedResponse,
@@ -79251,7 +79348,7 @@ export const postV1SignalsExportsRoute = createRoute({
   tags: ['Signals'],
   summary: 'Create an Export Job',
   description:
-    "To create a new signals data export, send a POST request to\n`/v1/signals/exports`. To export one Harness Runtime environment, include its\n`agent_id` (`type` defaults to `agent`). To export the team's Serverless\nInference Signals conversations, set `type` to `inference` and omit\n`agent_id`. You may optionally filter the export by `signal_type`,\n`session_ids`, `start_time`, and `end_time`. Use the export options endpoint\nto discover available signal types.\n\nThe export job runs asynchronously. Poll the get export endpoint to check\nits status. When complete, use the download endpoint to retrieve a\npre-signed URL.\n",
+    "To create a new signals data export, send a POST request to\n`/v1/signals/exports`. To export one Harness Runtime environment, include its\n`environment_id` (`type` defaults to `agent`). Deprecated `agent_id` is still\naccepted. To export the team's Serverless Inference Signals conversations, set\n`type` to `inference` and omit `environment_id` and `agent_id`. You may\noptionally filter the export by `signal_type`,\n`session_ids`, `start_time`, and `end_time`. Use the export options endpoint\nto discover available signal types.\n\nThe export job runs asynchronously. Poll the get export endpoint to check\nits status. When complete, use the download endpoint to retrieve a\npre-signed URL.\n",
   operationId: 'signals_create_export',
   request: {
     body: {
@@ -79262,7 +79359,7 @@ export const postV1SignalsExportsRoute = createRoute({
             agent: {
               summary: 'Export one Harness Runtime environment',
               value: {
-                agent_id: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
+                environment_id: '01a0f3d5-b58d-7c99-a743-7ca0397b7f5d',
                 signal_type: ['ExecutionFailureToolNotFound'],
               },
             },
@@ -79372,7 +79469,7 @@ export const postV1SignalsDeletionsRoute = createRoute({
   tags: ['Signals'],
   summary: 'Create a Data Deletion Job',
   description:
-    "To permanently delete Signals conversation data, send a POST request to\n`/v1/signals/deletions`. Deletion cannot be undone.\n\nTwo deletion types are supported:\n\n- `agent` — deletes Signals conversations for one Harness Runtime environment and\n  turns off collection for that environment. Requires `agent_id`, which is the\n  environment's Environment Config ID (the environment's `agent_id`). On create, matching\n  conversations are hidden from Signals reads immediately. Wait until the\n  job is `complete` before enabling Signals for the environment again.\n- `inference` — deletes Serverless Inference Signals conversations for your\n  whole team (team-wide; not limited to one endpoint or model) that were\n  collected at or before the deletion request, and turns off team inference\n  collection (`source=inference`). Do not send `agent_id`. On create,\n  matching conversations are hidden from Signals reads immediately.\n\nThe job runs asynchronously; poll the get endpoint until `status` is\n`complete` or `failed`. DigitalOcean may retry transient processing errors\nwhile a job is still active. If a job ends as `failed`, matching\nconversations stay hidden and collection stays off; send the same create\nrequest again to retry. Earlier export files are not deleted and remain\navailable until they expire.\n\nNote: Deletion removes Signals conversation data for the requested scope.\nAggregated Insights or metrics charts may still show historical summary\ndatapoints after deletion. Those summaries are not the same as recoverable\nconversation content.\n\nThe endpoint is idempotent: if a queued or running job already exists for\nthe same target, it is returned with `200 OK`. A new job returns\n`202 Accepted`. Each team can have a limited number of active jobs;\nrequests beyond that limit return `429 Too Many Requests`.\n",
+    "To permanently delete Signals conversation data, send a POST request to\n`/v1/signals/deletions`. Deletion cannot be undone.\n\nTwo deletion types are supported:\n\n- `agent` — deletes Signals conversations for one Harness Runtime environment and\n  turns off collection for that environment. Requires `environment_id` (the\n  environment's Environment Config ID). Deprecated `agent_id` is still accepted;\n  both set and equal is accepted, both set and different returns 400. On create,\n  matching conversations are hidden from Signals reads immediately. Wait until the\n  job is `complete` before enabling Signals for the environment again.\n- `inference` — deletes Serverless Inference Signals conversations for your\n  whole team (team-wide; not limited to one endpoint or model) that were\n  collected at or before the deletion request, and turns off team inference\n  collection (`source=inference`). Do not send `environment_id` or `agent_id`.\n  On create, matching conversations are hidden from Signals reads immediately.\n\nThe job runs asynchronously; poll the get endpoint until `status` is\n`complete` or `failed`. DigitalOcean may retry transient processing errors\nwhile a job is still active. If a job ends as `failed`, matching\nconversations stay hidden and collection stays off; send the same create\nrequest again to retry. Earlier export files are not deleted and remain\navailable until they expire.\n\nNote: Deletion removes Signals conversation data for the requested scope.\nAggregated Insights or metrics charts may still show historical summary\ndatapoints after deletion. Those summaries are not the same as recoverable\nconversation content.\n\nThe endpoint is idempotent: if a queued or running job already exists for\nthe same target, it is returned with `200 OK`. A new job returns\n`202 Accepted`. Each team can have a limited number of active jobs;\nrequests beyond that limit return `429 Too Many Requests`.\n",
   operationId: 'signals_create_deletion',
   request: {
     body: {
@@ -79384,7 +79481,7 @@ export const postV1SignalsDeletionsRoute = createRoute({
               value: {
                 type: 'agent',
                 team_id: 12345678,
-                agent_id: '01a10d3f-2c09-764f-99f8-458e521627f3',
+                environment_id: '01a10d3f-2c09-764f-99f8-458e521627f3',
               },
             },
             Inference: { value: { type: 'inference', team_id: 12345678 } },
@@ -96030,7 +96127,7 @@ export const postV1ImagesGenerationsRoute = createRoute({
   tags: ['Serverless Inference'],
   summary: 'Generate images from text prompts',
   description:
-    'Creates a high-quality image from a text prompt using GPT-IMAGE-1, the latest image generation model with automatic prompt optimization and enhanced visual capabilities.',
+    'Creates a high-quality image from a text prompt using GPT-IMAGE-2, the latest image generation model with automatic prompt optimization and enhanced visual capabilities.',
   operationId: 'inference_create_image',
   request: {
     body: { content: { 'application/json': { schema: CreateImageRequestSchema } }, required: true },

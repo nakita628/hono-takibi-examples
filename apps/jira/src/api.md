@@ -1,4 +1,4 @@
-<h1 id="the-jira-cloud-platform-rest-api">The Jira Cloud platform REST API v1001.0.0-SNAPSHOT-12ca6ec572dce8558d78a98d942a1c3f7f182787</h1>
+<h1 id="the-jira-cloud-platform-rest-api">The Jira Cloud platform REST API v1001.0.0-SNAPSHOT-f6465463661722583daccffab8c9da1746fe0520</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -15795,7 +15795,6 @@ Only fields that are available for the specified combination of projects and wor
 |400|Bad Request|Returned if the request parameters are invalid.|None|
 |401|Unauthorized|Returned if authentication is missing.|None|
 |403|Forbidden|Returned if the user does not have permission to view the projects or work types.|None|
-|404|Not Found|Returned if the endpoint is not enabled via feature flag.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -17583,6 +17582,20 @@ Creates an issue priority.
 "{\"errorMessages\":[\"Only Jira administrators can access issue type screen schemes.\"],\"errors\":{}}"
 ```
 
+> 422 Response
+
+```json
+{
+  "current_count": 0,
+  "entity_type": "string",
+  "error_code": "string",
+  "limit_type": "string",
+  "max_allowed_limit": 0,
+  "message": "string",
+  "scope_id": "string"
+}
+```
+
 <h3 id="create-priority-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -17591,6 +17604,7 @@ Creates an issue priority.
 |400|Bad Request|Returned if the request isn't valid.|[ErrorCollection](#schemaerrorcollection)|
 |401|Unauthorized|Returned if the authentication credentials are incorrect or missing.|[ErrorCollection](#schemaerrorcollection)|
 |403|Forbidden|Returned if the user doesn't have the necessary permission.|[ErrorCollection](#schemaerrorcollection)|
+|422|Unprocessable Entity|Returned if the priority can't be added to the default priority scheme because that scheme has reached the maximum number of priorities.|[LimitExceededResponseBean](#schemalimitexceededresponsebean)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34056,14 +34070,15 @@ curl https://your-domain.atlassian.net/rest/api/3/policies \
 
 Returns a paginated summary of all known policies, including their names, descriptions, and which projects each policy is assigned to.
 
-Results are paginated using the standard startAt, maxResults, total, isLast and values fields.
+When \{@code tanuki-358-cursor-policy-listing\} is enabled, omit cursor for the first page and pass the returned \{@code nextPageCursor\} for subsequent pages. The legacy \{@code startAt\} and \{@code total\} fields are null because an offset and total are not available in cursor mode. When disabled, the offset contract is unchanged.
 
 <h3 id="get-all-policies-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|startAt|query|integer(int64)|false|the index of the first item to return (0-based, default 0)|
-|maxResults|query|integer(int32)|false|the maximum number of items to return per page (default 50, max 200)|
+|startAt|query|integer(int64)|false|legacy 0-based offset (default 0); only 0 is accepted in cursor mode|
+|maxResults|query|integer(int32)|false|the maximum number of items to return per page (default 50; cursor max 50)|
+|cursor|query|string|false|opaque cursor returned by the previous page, absent for the first page|
 
 > Example responses
 
@@ -34073,6 +34088,7 @@ Results are paginated using the standard startAt, maxResults, total, isLast and 
 {
   "isLast": true,
   "maxResults": 0,
+  "nextPageCursor": "string",
   "startAt": 0,
   "total": 0,
   "values": [
@@ -34087,6 +34103,20 @@ Results are paginated using the standard startAt, maxResults, total, isLast and 
       "version": 0
     }
   ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errorMessages": [
+    "string"
+  ],
+  "errors": {
+    "property1": "string",
+    "property2": "string"
+  }
 }
 ```
 
@@ -34118,13 +34148,29 @@ Results are paginated using the standard startAt, maxResults, total, isLast and 
 }
 ```
 
+> 500 Response
+
+```json
+{
+  "errorMessages": [
+    "string"
+  ],
+  "errors": {
+    "property1": "string",
+    "property2": "string"
+  }
+}
+```
+
 <h3 id="get-all-policies-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|200 response|[PolicySummaryResponse](#schemapolicysummaryresponse)|
+|400|Bad Request|400 response|[ErrorResponse](#schemaerrorresponse)|
 |401|Unauthorized|401 response|[ErrorResponse](#schemaerrorresponse)|
 |403|Forbidden|403 response|[ErrorResponse](#schemaerrorresponse)|
+|500|Internal Server Error|500 response|[ErrorResponse](#schemaerrorresponse)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -97057,6 +97103,7 @@ A list of projects in which a user is granted permissions.
 {
   "isLast": true,
   "maxResults": 0,
+  "nextPageCursor": "string",
   "startAt": 0,
   "total": 0,
   "values": [
@@ -97080,6 +97127,7 @@ A list of projects in which a user is granted permissions.
 |---|---|---|---|---|
 |isLast|boolean|false|none|none|
 |maxResults|integer(int32)|false|none|none|
+|nextPageCursor|string|false|none|none|
 |startAt|integer(int64)|false|none|none|
 |total|integer(int64)|false|none|none|
 |values|[[PolicySummary](#schemapolicysummary)]|false|none|none|

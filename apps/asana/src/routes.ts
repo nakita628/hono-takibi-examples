@@ -735,12 +735,162 @@ const CustomTypeMembershipCompactSchema = z
   })
   .openapi('CustomTypeMembershipCompact')
 
+const TableCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'table',
+        'x-insert-after': 'gid',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the table.', example: 'Vendor contracts' }),
+  })
+  .openapi({
+    description:
+      'A *table* is a container for structured records (rows), with columns defined by custom field settings.',
+    required: [],
+  })
+  .openapi('TableCompact')
+
+const TableMembershipCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'membership',
+        'x-insert-after': 'gid',
+      }),
+    resource_subtype: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of the membership.', example: 'table_membership' }),
+    parent: TableCompactSchema.exactOptional().openapi({
+      description: 'The table the user or team is a member of.',
+    }),
+    member: MemberCompactSchema.exactOptional().openapi({
+      description: 'Member can be a user or a team.',
+    }),
+    access_level: z
+      .enum(['admin', 'editor', 'commenter', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description: "The member's access level in the table.",
+        readOnly: true,
+        example: 'viewer',
+      }),
+  })
+  .openapi({ description: "A user or team's membership in a table.", required: [] })
+  .openapi('TableMembershipCompact')
+
+const RecordItemCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'record',
+        'x-insert-after': 'gid',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the record.', example: 'Q3 renewal' }),
+  })
+  .openapi({
+    description:
+      "A *record* is a single row in a table. Fields on a record are backed by the table's custom field settings.",
+    required: [],
+  })
+  .openapi('RecordItemCompact')
+
+const RecordMembershipCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'membership',
+        'x-insert-after': 'gid',
+      }),
+    resource_subtype: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of the membership.', example: 'record_membership' }),
+    parent: RecordItemCompactSchema.exactOptional().openapi({
+      description: 'The record the user or team is a member of.',
+    }),
+    member: MemberCompactSchema.exactOptional().openapi({
+      description: 'Member can be a user or a team.',
+    }),
+    access_level: z
+      .enum(['admin', 'editor', 'commenter', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description: "The member's access level in the record.",
+        readOnly: true,
+        example: 'viewer',
+      }),
+  })
+  .openapi({ description: "A user or team's membership in a record.", required: [] })
+  .openapi('RecordMembershipCompact')
+
 type MembershipCompactType =
   | z.infer<typeof GoalMembershipCompactSchema>
   | z.infer<typeof ProjectMembershipCompactResponseSchema>
   | z.infer<typeof PortfolioMembershipCompactResponseSchema>
   | z.infer<typeof CustomFieldMembershipCompactSchema>
   | z.infer<typeof CustomTypeMembershipCompactSchema>
+  | z.infer<typeof TableMembershipCompactSchema>
+  | z.infer<typeof RecordMembershipCompactSchema>
 
 const WorkspaceCompactSchema = z
   .object({
@@ -807,6 +957,8 @@ type MembershipResponseType =
   | z.infer<typeof PortfolioMembershipCompactSchema>
   | z.infer<typeof CustomFieldMembershipCompactSchema>
   | z.infer<typeof CustomTypeMembershipCompactSchema>
+  | z.infer<typeof TableMembershipCompactSchema>
+  | z.infer<typeof RecordMembershipCompactSchema>
 
 const AgentCompactSchema = z
   .object({
@@ -3747,6 +3899,8 @@ const MembershipCompactSchema: z.ZodType<MembershipCompactType> = z
       PortfolioMembershipCompactResponseSchema,
       CustomFieldMembershipCompactSchema,
       CustomTypeMembershipCompactSchema,
+      TableMembershipCompactSchema,
+      RecordMembershipCompactSchema,
     ]),
   )
   .openapi('MembershipCompact')
@@ -4979,6 +5133,13 @@ const CustomTypeMembershipBaseSchema = CustomTypeMembershipCompactSchema.openapi
 
 const CustomTypeMembershipResponseSchema = CustomTypeMembershipCompactSchema.openapi(
   'CustomTypeMembershipResponse',
+)
+
+const TableMembershipResponseSchema =
+  TableMembershipCompactSchema.openapi('TableMembershipResponse')
+
+const RecordMembershipResponseSchema = RecordMembershipCompactSchema.openapi(
+  'RecordMembershipResponse',
 )
 
 const ProjectMembershipBaseSchema = ProjectMembershipCompactSchema.openapi('ProjectMembershipBase')
@@ -6794,38 +6955,6 @@ const StoryResponseSchema = StoryBaseSchema.and(
     .openapi({ required: [] }),
 ).openapi('StoryResponse')
 
-const RecordItemCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'record',
-        'x-insert-after': 'gid',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the record.', example: 'Q3 renewal' }),
-  })
-  .openapi({
-    description:
-      "A *record* is a single row in a table. Fields on a record are backed by the table's custom field settings.",
-    required: [],
-  })
-  .openapi('RecordItemCompact')
-
 const RecordItemBaseSchema = RecordItemCompactSchema.openapi('RecordItemBase')
 
 const RecordItemRequestSchema = RecordItemCompactSchema.and(
@@ -6889,38 +7018,6 @@ const RecordItemUpdateRequestSchema = z
   })
   .openapi({ required: [] })
   .openapi('RecordItemUpdateRequest')
-
-const TableCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'table',
-        'x-insert-after': 'gid',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the table.', example: 'Vendor contracts' }),
-  })
-  .openapi({
-    description:
-      'A *table* is a container for structured records (rows), with columns defined by custom field settings.',
-    required: [],
-  })
-  .openapi('TableCompact')
 
 const RecordItemResponseSchema = RecordItemCompactSchema.and(
   z
@@ -8908,7 +9005,7 @@ const MembershipRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Sets the access level for the member. Goals can have access levels `viewer`, `commenter`, `editor` or `admin`. Projects can have access levels `admin`, `editor` or `commenter`. Portfolios can have access levels `admin`, `editor` or `viewer`. Custom Fields can have access levels `admin`, `editor` or `user`.',
+          'Sets the access level for the member. Goals can have access levels `viewer`, `commenter`, `editor` or `admin`. Projects can have access levels `admin`, `editor` or `commenter`. Portfolios can have access levels `admin`, `editor` or `viewer`. Custom Fields can have access levels `admin`, `editor` or `user`. Tables accept `admin`, `editor`, or `viewer` on creation. Records accept `admin`, `editor`, `commenter`, or `viewer`.',
         example: 'editor',
       }),
   })
@@ -8926,7 +9023,8 @@ const CreateMembershipRequestSchema = MembershipRequestSchema.and(
         .string()
         .exactOptional()
         .openapi({
-          description: 'The gid of the `goal`, `project`, or `portfolio` to add the member to.',
+          description:
+            'The gid of the `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record` to add the member to.',
           example: '987654',
         }),
       role: z
@@ -8950,6 +9048,8 @@ const MembershipResponseSchema: z.ZodType<MembershipResponseType> = z
       PortfolioMembershipCompactSchema,
       CustomFieldMembershipCompactSchema,
       CustomTypeMembershipCompactSchema,
+      TableMembershipCompactSchema,
+      RecordMembershipCompactSchema,
     ]),
   )
   .openapi('MembershipResponse')
@@ -20739,7 +20839,7 @@ export const getMembershipsRoute = createRoute({
   tags: ['Memberships'],
   summary: 'Get multiple memberships',
   description:
-    'Returns compact `goal_membership`, `project_membership`, `portfolio_membership`, `custom_type_membership`, or `custom_field_membership` records. The possible types for `parent` in this request are `goal`, `project`, `portfolio`, `custom_type`, or `custom_field`. An additional member (user GID or team GID) can be passed in to filter to a specific membership.\n\nAlternatively, when `parent` is absent, you can use the `member` and `resource_subtype` parameters together to fetch all memberships of a specific type for a given member. For example, passing `member` as a team GID and `resource_subtype` as `project_membership` will return all project memberships for that team.',
+    'Returns compact `goal_membership`, `project_membership`, `portfolio_membership`, `custom_type_membership`, `custom_field_membership`, `table_membership`, or `record_membership` records. The possible types for `parent` in this request are `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record`. An additional member (user GID or team GID) can be passed in to filter to a specific membership.\n\nAlternatively, when `parent` is absent, you can use the `member` and `resource_subtype` parameters together to fetch all memberships of a specific type for a given member. For example, passing `member` as a team GID and `resource_subtype` as `project_membership` will return all project memberships for that team.',
   operationId: 'getMemberships',
   request: {
     query: z.object({
@@ -20752,7 +20852,7 @@ export const getMembershipsRoute = createRoute({
             name: 'parent',
             in: 'query',
             description:
-              'Globally unique identifier for `goal`, `project`, `portfolio`, `custom_type`, or `custom_field`. This parameter is optional when `resource_subtype` is provided along with `member` of type `team`.',
+              'Globally unique identifier for `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record`. This parameter is optional when `resource_subtype` is provided along with `member` of type `team`.',
             schema: { type: 'string' },
             example: '159874',
             required: false,
@@ -20843,7 +20943,7 @@ export const postMembershipsRoute = createRoute({
   tags: ['Memberships'],
   summary: 'Create a membership',
   description:
-    'Creates a new membership in a `goal`, `project`, `portfolio`, `custom_type`, or `custom_field`, where members can be Teams or Users.\n\nReturns the full record of the newly created membership.',
+    'Creates a new membership in a `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record`, where members can be Teams or Users.\n\nReturns the full record of the newly created membership.',
   operationId: 'createMembership',
   request: {
     query: z.object({ opt_pretty: PrettyParamsSchema }),
@@ -20884,7 +20984,7 @@ export const getMembershipsMembershipGidRoute = createRoute({
   tags: ['Memberships'],
   summary: 'Get a membership',
   description:
-    'Returns a `project_membership`, `goal_membership`, `portfolio_membership`, `custom_type_membership`, or `custom_field_membership` record for a membership id.',
+    'Returns a `project_membership`, `goal_membership`, `portfolio_membership`, `custom_type_membership`, `custom_field_membership`, `table_membership`, or `record_membership` record for a membership id.',
   operationId: 'getMembership',
   request: {
     params: z.object({ membership_gid: MembershipPathGidParamsSchema }),
@@ -20916,7 +21016,7 @@ export const putMembershipsMembershipGidRoute = createRoute({
   tags: ['Memberships'],
   summary: 'Update a membership',
   description:
-    'An existing membership can be updated by making a `PUT` request on the membership. Only the fields provided in the `data` block will be updated;\nany unspecified fields will remain unchanged. Memberships on `goals`, `projects`, `portfolios`, `custom_types`, and `custom_fields` can be updated.\n\nReturns the full record of the updated membership.',
+    'An existing membership can be updated by making a `PUT` request on the membership. Only the fields provided in the `data` block will be updated;\nany unspecified fields will remain unchanged. Memberships on `goals`, `projects`, `portfolios`, `custom_types`, `custom_fields`, `tables`, and `records` can be updated.\nReturns the full record of the updated membership.',
   operationId: 'updateMembership',
   request: {
     params: z.object({ membership_gid: MembershipPathGidParamsSchema }),
@@ -20959,7 +21059,7 @@ export const deleteMembershipsMembershipGidRoute = createRoute({
   tags: ['Memberships'],
   summary: 'Delete a membership',
   description:
-    'A specific, existing membership for a `goal`, `project`, `portfolio`, `custom_type`, or `custom_field` can be deleted by making a `DELETE` request\non the URL for that membership.\n\nReturns an empty data record.',
+    'A specific, existing membership for a `goal`, `project`, `portfolio`, `custom_type`, `custom_field`, `table`, or `record` can be deleted by making a `DELETE` request\non the URL for that membership.\n\nReturns an empty data record.',
   operationId: 'deleteMembership',
   request: {
     params: z.object({ membership_gid: MembershipPathGidParamsSchema }),

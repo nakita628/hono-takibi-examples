@@ -2722,6 +2722,219 @@ const ApiV1EmployeesWorkRecordTimeRangeResponseSerializerSchema = z
   .openapi({ required: [] })
   .openapi('ApiV1EmployeesWorkRecordTimeRangeResponseSerializer')
 
+const ApiV1EmployeesWorkRecordHolidayTypeSchema = z
+  .enum(['full', 'half', 'morning_off', 'afternoon_off', 'hourly'])
+  .openapi({
+    description:
+      '取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off、時間休: hourly）',
+  })
+  .openapi('ApiV1EmployeesWorkRecordHolidayType')
+
+const ApiV1EmployeesWorkRecordHolidayTypeFieldsSchema = z
+  .object({ holiday_type: ApiV1EmployeesWorkRecordHolidayTypeSchema })
+  .openapi({ required: ['holiday_type'] })
+  .openapi('ApiV1EmployeesWorkRecordHolidayTypeFields')
+
+const ApiV1EmployeesWorkRecordHolidayMinsSchema = z
+  .int32()
+  .min(1)
+  .max(1440)
+  .openapi({ description: '休暇により計上する時間（分単位）' })
+  .openapi('ApiV1EmployeesWorkRecordHolidayMins')
+
+const ApiV1EmployeesWorkRecordHolidayTimeRangeRequestSchema = z
+  .strictObject({
+    start_at: z.iso
+      .datetime({ offset: true })
+      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
+      .openapi({ description: '取得開始時刻', example: '2018-07-31 08:00:00' }),
+    end_at: z.iso
+      .datetime({ offset: true })
+      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
+      .openapi({ description: '取得終了時刻', example: '2018-07-31 09:00:00' }),
+  })
+  .openapi({ required: ['start_at', 'end_at'] })
+  .openapi('ApiV1EmployeesWorkRecordHolidayTimeRangeRequest')
+
+const ApiV1EmployeesWorkRecordHolidayTimeRangesRequestSchema = z
+  .array(ApiV1EmployeesWorkRecordHolidayTimeRangeRequestSchema)
+  .min(1)
+  .openapi({ description: '時間休の取得時間帯' })
+  .openapi('ApiV1EmployeesWorkRecordHolidayTimeRangesRequest')
+
+const ApiV1EmployeesWorkRecordHolidayTimeRequestFieldsSchema = z
+  .object({
+    mins: ApiV1EmployeesWorkRecordHolidayMinsSchema.exactOptional(),
+    time_ranges: ApiV1EmployeesWorkRecordHolidayTimeRangesRequestSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiV1EmployeesWorkRecordHolidayTimeRequestFields')
+
+const ApiV1EmployeesWorkRecordAnnualPaidHolidayRequestSchema =
+  ApiV1EmployeesWorkRecordHolidayTypeFieldsSchema.and(
+    ApiV1EmployeesWorkRecordHolidayTimeRequestFieldsSchema,
+  )
+    .and(
+      z
+        .object({
+          holiday_category: z
+            .literal('annual_paid_holiday')
+            .openapi({ description: '休暇カテゴリ' }),
+        })
+        .openapi({ required: ['holiday_category'] }),
+    )
+    .openapi({ title: '年次有給休暇' })
+    .openapi('ApiV1EmployeesWorkRecordAnnualPaidHolidayRequest')
+
+const ApiV1EmployeesWorkRecordSpecialHolidaySettingIdSchema = z
+  .int32()
+  .min(1)
+  .max(2147483647)
+  .openapi({ description: '特別休暇設定ID' })
+  .openapi('ApiV1EmployeesWorkRecordSpecialHolidaySettingId')
+
+const ApiV1EmployeesWorkRecordSpecialHolidayRequestSchema =
+  ApiV1EmployeesWorkRecordHolidayTypeFieldsSchema.and(
+    ApiV1EmployeesWorkRecordHolidayTimeRequestFieldsSchema,
+  )
+    .and(
+      z
+        .object({
+          holiday_category: z.literal('special_holiday').openapi({ description: '休暇カテゴリ' }),
+          special_holiday_setting_id: ApiV1EmployeesWorkRecordSpecialHolidaySettingIdSchema,
+        })
+        .openapi({ required: ['holiday_category', 'special_holiday_setting_id'] }),
+    )
+    .openapi({ title: '特別休暇' })
+    .openapi('ApiV1EmployeesWorkRecordSpecialHolidayRequest')
+
+const ApiV1EmployeesWorkRecordCompensatoryHolidayTypeSchema = z
+  .enum(['full', 'half', 'morning_off', 'afternoon_off'])
+  .openapi({
+    description: '取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off）',
+  })
+  .openapi('ApiV1EmployeesWorkRecordCompensatoryHolidayType')
+
+const ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDateSchema = z.iso
+  .date()
+  .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)
+  .openapi({ description: '代休の元となる休日出勤日', example: '2018-07-31' })
+  .openapi('ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDate')
+
+const ApiV1EmployeesWorkRecordCompensatoryHolidayRequestSchema = z
+  .object({
+    holiday_category: z.literal('compensatory_holiday').openapi({ description: '休暇カテゴリ' }),
+    holiday_type: ApiV1EmployeesWorkRecordCompensatoryHolidayTypeSchema,
+    source_date: ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDateSchema,
+  })
+  .openapi({ title: '代休', required: ['holiday_category', 'holiday_type', 'source_date'] })
+  .openapi('ApiV1EmployeesWorkRecordCompensatoryHolidayRequest')
+
+const ApiV1EmployeesWorkRecordHolidayRequestSchema = z
+  .xor([
+    ApiV1EmployeesWorkRecordAnnualPaidHolidayRequestSchema,
+    ApiV1EmployeesWorkRecordSpecialHolidayRequestSchema,
+    ApiV1EmployeesWorkRecordCompensatoryHolidayRequestSchema,
+  ])
+  .openapi({
+    description:
+      '休暇の内訳。\nfull、morning_off、afternoon_off では mins と time_ranges を指定しません。\nannual_paid_holiday と有給の special_holiday の half では mins を指定します。無給の special_holiday の half では mins を指定できません。\nhalf を2つ組み合わせて全休にする場合は、どちらの half でも mins を指定できません。\ncompensatory_holiday では mins と time_ranges を指定しません。\nannual_paid_holiday と special_holiday の hourly では、対象日に適用される勤務賃金設定の時間休の入力方式に従い、時間数方式の場合は mins、時間帯方式の場合は time_ranges を指定します。\nhourly の mins は60分単位です。',
+    discriminator: {
+      propertyName: 'holiday_category',
+      mapping: {
+        annual_paid_holiday:
+          '#/components/schemas/ApiV1EmployeesWorkRecordAnnualPaidHolidayRequest',
+        special_holiday: '#/components/schemas/ApiV1EmployeesWorkRecordSpecialHolidayRequest',
+        compensatory_holiday:
+          '#/components/schemas/ApiV1EmployeesWorkRecordCompensatoryHolidayRequest',
+      },
+    },
+  })
+  .openapi('ApiV1EmployeesWorkRecordHolidayRequest')
+
+const ApiV1EmployeesWorkRecordHolidayTimeRangeResponseSchema = z
+  .strictObject({
+    start_at: z.iso.datetime({ offset: true }).openapi({ description: '取得開始時刻' }),
+    end_at: z.iso.datetime({ offset: true }).openapi({ description: '取得終了時刻' }),
+  })
+  .openapi({ required: ['start_at', 'end_at'] })
+  .openapi('ApiV1EmployeesWorkRecordHolidayTimeRangeResponse')
+
+const ApiV1EmployeesWorkRecordHolidayTimeRangesResponseSchema = z
+  .array(ApiV1EmployeesWorkRecordHolidayTimeRangeResponseSchema)
+  .openapi({ description: '時間休の取得時間帯' })
+  .openapi('ApiV1EmployeesWorkRecordHolidayTimeRangesResponse')
+
+const ApiV1EmployeesWorkRecordHolidayTimeResponseFieldsSchema = z
+  .object({
+    mins: ApiV1EmployeesWorkRecordHolidayMinsSchema.exactOptional(),
+    time_ranges: ApiV1EmployeesWorkRecordHolidayTimeRangesResponseSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiV1EmployeesWorkRecordHolidayTimeResponseFields')
+
+const ApiV1EmployeesWorkRecordAnnualPaidHolidayResponseSchema =
+  ApiV1EmployeesWorkRecordHolidayTypeFieldsSchema.and(
+    ApiV1EmployeesWorkRecordHolidayTimeResponseFieldsSchema,
+  )
+    .and(
+      z
+        .object({
+          holiday_category: z
+            .literal('annual_paid_holiday')
+            .openapi({ description: '休暇カテゴリ' }),
+        })
+        .openapi({ required: ['holiday_category'] }),
+    )
+    .openapi({ title: '年次有給休暇' })
+    .openapi('ApiV1EmployeesWorkRecordAnnualPaidHolidayResponse')
+
+const ApiV1EmployeesWorkRecordSpecialHolidayResponseSchema =
+  ApiV1EmployeesWorkRecordHolidayTypeFieldsSchema.and(
+    ApiV1EmployeesWorkRecordHolidayTimeResponseFieldsSchema,
+  )
+    .and(
+      z
+        .object({
+          holiday_category: z.literal('special_holiday').openapi({ description: '休暇カテゴリ' }),
+          special_holiday_setting_id: ApiV1EmployeesWorkRecordSpecialHolidaySettingIdSchema,
+        })
+        .openapi({ required: ['holiday_category', 'special_holiday_setting_id'] }),
+    )
+    .openapi({ title: '特別休暇' })
+    .openapi('ApiV1EmployeesWorkRecordSpecialHolidayResponse')
+
+const ApiV1EmployeesWorkRecordCompensatoryHolidayResponseSchema = z
+  .object({
+    holiday_category: z.literal('compensatory_holiday').openapi({ description: '休暇カテゴリ' }),
+    holiday_type: ApiV1EmployeesWorkRecordCompensatoryHolidayTypeSchema,
+    source_date: ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDateSchema,
+  })
+  .openapi({ title: '代休', required: ['holiday_category', 'holiday_type', 'source_date'] })
+  .openapi('ApiV1EmployeesWorkRecordCompensatoryHolidayResponse')
+
+const ApiV1EmployeesWorkRecordHolidayResponseSchema = z
+  .xor([
+    ApiV1EmployeesWorkRecordAnnualPaidHolidayResponseSchema,
+    ApiV1EmployeesWorkRecordSpecialHolidayResponseSchema,
+    ApiV1EmployeesWorkRecordCompensatoryHolidayResponseSchema,
+  ])
+  .openapi({
+    description:
+      '休暇の内訳。\nfull では mins と time_ranges を返しません。\nhalf では mins を返します。\nmorning_off、afternoon_off では mins を返さず、時間帯を持つ実績の場合は time_ranges を返します。\nhourly では mins を返し、時間帯を持つ実績の場合は time_ranges も返します。',
+    discriminator: {
+      propertyName: 'holiday_category',
+      mapping: {
+        annual_paid_holiday:
+          '#/components/schemas/ApiV1EmployeesWorkRecordAnnualPaidHolidayResponse',
+        special_holiday: '#/components/schemas/ApiV1EmployeesWorkRecordSpecialHolidayResponse',
+        compensatory_holiday:
+          '#/components/schemas/ApiV1EmployeesWorkRecordCompensatoryHolidayResponse',
+      },
+    },
+  })
+  .openapi('ApiV1EmployeesWorkRecordHolidayResponse')
+
 const ApiV1EmployeesHealthInsuranceRuleUpdateRequestSerializerSchema = z
   .object({
     entried: z
@@ -3292,11 +3505,19 @@ const ApiV1EmployeesWorkRecordSerializerSchema = z
     half_special_holiday_mins: z
       .int32()
       .exactOptional()
-      .openapi({ description: '特別休暇の半休を利用した時間（分単位）' }),
+      .openapi({
+        description:
+          '[deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
     hourly_special_holiday_mins: z
       .int32()
       .exactOptional()
-      .openapi({ description: '特別休暇の時間休を利用した時間（分単位）' }),
+      .openapi({
+        description:
+          '[deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
     is_absence: z
       .boolean()
       .exactOptional()
@@ -3342,19 +3563,33 @@ const ApiV1EmployeesWorkRecordSerializerSchema = z
           .openapi({ required: ['type', 'mins', 'days'] }),
       )
       .exactOptional()
-      .openapi({ description: '年次有給休暇の実績' }),
+      .openapi({
+        description: '[deprecated] 年次有給休暇の実績 ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
+    holidays: z
+      .array(ApiV1EmployeesWorkRecordHolidayResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          '休暇の内訳（年次有給休暇、特別休暇、代休）。\nfull では mins と time_ranges を返しません。half では mins を返します。\nmorning_off、afternoon_off では mins を返さず、時間帯を持つ実績の場合は time_ranges を返します。\nhourly は年休・特休のみで、mins を返し、時間帯を持つ実績の場合は time_ranges も返します。',
+      }),
     special_holiday: z
       .float32()
       .exactOptional()
       .openapi({
         description:
-          'この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。',
+          '[deprecated] この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
       }),
     special_holiday_setting_id: z
       .int32()
       .nullable()
       .exactOptional()
-      .openapi({ description: '特別休暇設定ID' }),
+      .openapi({
+        description: '[deprecated] 特別休暇設定ID ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
     use_attendance_deduction: z
       .boolean()
       .exactOptional()
@@ -3366,7 +3601,12 @@ const ApiV1EmployeesWorkRecordSerializerSchema = z
     use_half_compensatory_holiday: z
       .boolean()
       .exactOptional()
-      .openapi({ description: '代休の半休を利用したかどうか', example: false }),
+      .openapi({
+        description:
+          '[deprecated] 代休の半休を利用したかどうか ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+        example: false,
+      }),
     total_overtime_work_mins: z
       .int32()
       .exactOptional()
@@ -3396,8 +3636,24 @@ const ApiV1EmployeesWorkRecordSerializerSchema = z
     total_excess_statutory_work_mins: z
       .int32()
       .exactOptional()
-      .openapi({ description: '法定内残業時間（分）' }),
+      .openapi({
+        description:
+          '[deprecated] 法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を参照してください',
+        deprecated: true,
+      }),
     total_latenight_excess_statutory_work_mins: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 深夜の法定内残業時間（分） ※ 削除予定のため total_latenight_overtime_within_statutory_work_mins を参照してください',
+        deprecated: true,
+      }),
+    total_overtime_within_statutory_work_mins: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: '法定内残業時間（分）' }),
+    total_latenight_overtime_within_statutory_work_mins: z
       .int32()
       .exactOptional()
       .openapi({ description: '深夜の法定内残業時間（分）' }),
@@ -3405,7 +3661,7 @@ const ApiV1EmployeesWorkRecordSerializerSchema = z
       .int32()
       .exactOptional()
       .openapi({ description: '所定外法定外労働時間（分）' }),
-    total_latenight_overtime_except_normal_work_min: z
+    total_latenight_overtime_except_normal_work_mins: z
       .int32()
       .exactOptional()
       .openapi({ description: '深夜の所定外法定外労働時間（分）' }),
@@ -3472,23 +3728,33 @@ const LegacyApiV1EmployeesWorkRecordSerializerSchema = z
       .exactOptional()
       .openapi({
         description:
-          '[deprecated] 有給休暇の半休を利用した時間（分単位）※ 削除予定のため paid_holidays を参照してください',
+          '[deprecated] 有給休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
       }),
     half_special_holiday_mins: z
       .int32()
       .exactOptional()
-      .openapi({ description: '特別休暇の半休を利用した時間（分単位）' }),
+      .openapi({
+        description:
+          '[deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
     hourly_paid_holiday_mins: z
       .int32()
       .exactOptional()
       .openapi({
         description:
-          '[deprecated] 有給休暇の時間休を利用した時間（分単位）※ 削除予定のため paid_holidays を参照してください',
+          '[deprecated] 有給休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
       }),
     hourly_special_holiday_mins: z
       .int32()
       .exactOptional()
-      .openapi({ description: '特別休暇の時間休を利用した時間（分単位）' }),
+      .openapi({
+        description:
+          '[deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
     is_absence: z
       .boolean()
       .exactOptional()
@@ -3515,20 +3781,25 @@ const LegacyApiV1EmployeesWorkRecordSerializerSchema = z
       .exactOptional()
       .openapi({
         description:
-          '[deprecated] この日に対する有給取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_paid_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_paid_holiday_minsを参照してください。※ 削除予定のため paid_holidays を参照してください',
+          '[deprecated] この日に対する有給取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_paid_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_paid_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
       }),
     special_holiday: z
       .float32()
       .exactOptional()
       .openapi({
         description:
-          'この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。',
+          '[deprecated] この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
       }),
     special_holiday_setting_id: z
       .int32()
       .nullable()
       .exactOptional()
-      .openapi({ description: '特別休暇設定ID' }),
+      .openapi({
+        description: '[deprecated] 特別休暇設定ID ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
     use_attendance_deduction: z
       .boolean()
       .exactOptional()
@@ -3540,7 +3811,12 @@ const LegacyApiV1EmployeesWorkRecordSerializerSchema = z
     use_half_compensatory_holiday: z
       .boolean()
       .exactOptional()
-      .openapi({ description: '代休の半休を利用したかどうか', example: false }),
+      .openapi({
+        description:
+          '[deprecated] 代休の半休を利用したかどうか ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+        example: false,
+      }),
     total_overtime_work_mins: z
       .int32()
       .exactOptional()
@@ -3570,8 +3846,24 @@ const LegacyApiV1EmployeesWorkRecordSerializerSchema = z
     total_excess_statutory_work_mins: z
       .int32()
       .exactOptional()
-      .openapi({ description: '法定内残業時間（分）' }),
+      .openapi({
+        description:
+          '[deprecated] 法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を参照してください',
+        deprecated: true,
+      }),
     total_latenight_excess_statutory_work_mins: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 深夜の法定内残業時間（分） ※ 削除予定のため total_latenight_overtime_within_statutory_work_mins を参照してください',
+        deprecated: true,
+      }),
+    total_overtime_within_statutory_work_mins: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: '法定内残業時間（分）' }),
+    total_latenight_overtime_within_statutory_work_mins: z
       .int32()
       .exactOptional()
       .openapi({ description: '深夜の法定内残業時間（分）' }),
@@ -3579,7 +3871,7 @@ const LegacyApiV1EmployeesWorkRecordSerializerSchema = z
       .int32()
       .exactOptional()
       .openapi({ description: '所定外法定外労働時間（分）' }),
-    total_latenight_overtime_except_normal_work_min: z
+    total_latenight_overtime_except_normal_work_mins: z
       .int32()
       .exactOptional()
       .openapi({ description: '深夜の所定外法定外労働時間（分）' }),
@@ -3600,6 +3892,14 @@ const ApiV1EmployeesWorkRecordSummarySerializerSchema = z
       .exactOptional()
       .openapi({ description: '所定内労働時間（分）' }),
     total_excess_statutory_work_mins: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 給与計算に用いられる法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を参照してください',
+        deprecated: true,
+      }),
+    total_overtime_within_statutory_work_mins: z
       .int32()
       .exactOptional()
       .openapi({ description: '給与計算に用いられる法定内残業時間（分）' }),
@@ -3664,6 +3964,15 @@ const ApiV1EmployeesWorkRecordSummarySerializerSchema = z
       .exactOptional()
       .openapi({ description: '不足時間（分）' }),
     total_deemed_paid_excess_statutory_work_mins: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] みなし外の法定内残業時間（分） ※ 削除予定のため total_deemed_paid_overtime_within_statutory_work_mins を参照してください',
+        deprecated: true,
+      }),
+    total_deemed_paid_overtime_within_statutory_work_mins: z
       .int32()
       .nullable()
       .exactOptional()
@@ -4232,7 +4541,7 @@ const ApiV1EmployeesWorkRecordsControllerUpdateBodySchema = z
       .exactOptional()
       .openapi({
         description:
-          '欠勤かどうか\n\nis_absenceにtrueを指定すると、以下のパラーメータについて、指定した値が反映されず無視されます。\n- break_records\n  - clock_in_at\n  - clock_out_at\n- clock_in_at\n- clock_out_at\n- early_leaving_mins\n- lateness_mins\n- normal_work_clock_in_at\n- normal_work_clock_out_at\n- normal_work_mins\n- paid_holidays\n- special_holiday\n- special_holiday_setting_id\n- half_special_holiday_mins\n- hourly_special_holiday_mins',
+          '欠勤かどうか\n\nis_absenceにtrueを指定すると、以下のパラメータについて、指定した値が反映されず無視されます。\n- break_records\n  - clock_in_at\n  - clock_out_at\n- clock_in_at\n- clock_out_at\n- early_leaving_mins\n- lateness_mins\n- normal_work_clock_in_at\n- normal_work_clock_out_at\n- normal_work_mins\n\nただし、休暇（holidays、paid_holidays、special_holiday、half_special_holiday_mins、hourly_special_holiday_mins）を指定した場合は休暇の登録が優先され、is_absence の指定は無視されます。',
       }),
     lateness_mins: z
       .int32()
@@ -4290,30 +4599,57 @@ const ApiV1EmployeesWorkRecordsControllerUpdateBodySchema = z
           })
           .openapi({ required: ['type'] }),
       )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description: '[deprecated] 年次有給休暇の内訳 ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+      }),
+    holidays: z
+      .array(ApiV1EmployeesWorkRecordHolidayRequestSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          '休暇の内訳。年次有給休暇、特別休暇、代休を指定できます。\nfull、morning_off、afternoon_off では mins と time_ranges を指定しません。年休と有給の特休の half では mins を指定します。無給の特休の half では mins を指定できません。\nhalf を2つ組み合わせて全休にする場合は、どちらの half でも mins を指定できません。\n年休・特休の hourly は、対象日に適用される勤務賃金設定の時間休の入力方式に従い、時間数方式の場合は mins、時間帯方式の場合は time_ranges を指定します。mins は60分単位です。代休では holiday_type にかかわらず mins と time_ranges を指定しません。\n特別休暇では special_holiday_setting_id、代休では source_date が必須です。',
+      }),
     special_holiday: z
       .union([z.literal(0), z.literal(1)])
       .exactOptional()
-      .openapi({ description: 'この日の特別休暇取得日数。1日単位で指定します。', example: '1.0' }),
+      .openapi({
+        description:
+          '[deprecated] この日の特別休暇取得日数。1日単位で指定します。 ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+        example: '1.0',
+      }),
     special_holiday_setting_id: z
       .int32()
       .min(1)
       .max(2147483647)
       .nullable()
       .exactOptional()
-      .openapi({ description: '特別休暇設定ID' }),
+      .openapi({
+        description: '[deprecated] 特別休暇設定ID ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+      }),
     half_special_holiday_mins: z
       .int32()
       .min(0)
       .max(1440)
       .exactOptional()
-      .openapi({ description: '特別休暇の半休を利用した時間（分単位）' }),
+      .openapi({
+        description:
+          '[deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+      }),
     hourly_special_holiday_mins: z
       .int32()
       .min(0)
       .max(1440)
       .exactOptional()
-      .openapi({ description: '特別休暇の時間休を利用した時間（分単位）' }),
+      .openapi({
+        description:
+          '[deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+      }),
     use_attendance_deduction: z
       .boolean()
       .exactOptional()
@@ -4381,7 +4717,7 @@ const LegacyApiV1EmployeesWorkRecordsControllerUpdateBodySchema = z
       .exactOptional()
       .openapi({
         description:
-          '欠勤かどうか\n\nis_absenceにtrueを指定すると、以下のパラーメータについて、指定した値が反映されず無視されます。\n- break_records\n  - clock_in_at\n  - clock_out_at\n- clock_in_at\n- clock_out_at\n- early_leaving_mins\n- lateness_mins\n- normal_work_clock_in_at\n- normal_work_clock_out_at\n- normal_work_mins\n- paid_holiday\n- half_paid_holiday_mins\n- hourly_paid_holiday_mins\n- special_holiday\n- special_holiday_setting_id\n- half_special_holiday_mins\n- hourly_special_holiday_mins',
+          '欠勤かどうか\n\nis_absenceにtrueを指定すると、以下のパラメータについて、指定した値が反映されず無視されます。\n- break_records\n  - clock_in_at\n  - clock_out_at\n- clock_in_at\n- clock_out_at\n- early_leaving_mins\n- lateness_mins\n- normal_work_clock_in_at\n- normal_work_clock_out_at\n- normal_work_mins\n\nただし、休暇（paid_holiday、half_paid_holiday_mins、hourly_paid_holiday_mins、special_holiday、half_special_holiday_mins、hourly_special_holiday_mins）を指定した場合は休暇の登録が優先され、is_absence の指定は無視されます。',
       }),
     lateness_mins: z
       .int32()
@@ -4422,7 +4758,8 @@ const LegacyApiV1EmployeesWorkRecordsControllerUpdateBodySchema = z
       .exactOptional()
       .openapi({
         description:
-          '[deprecated] この日の有休取得日数。1日単位で指定します。 ※ paid_holidays を指定する場合にはこちらの値は参照されません ※ 削除予定のため paid_holidays->type を指定してください',
+          '[deprecated] この日の有休取得日数。1日単位で指定します。 ※ paid_holidays を指定する場合にはこちらの値は参照されません ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
         example: '1.0',
       }),
     half_paid_holiday_mins: z
@@ -4432,7 +4769,8 @@ const LegacyApiV1EmployeesWorkRecordsControllerUpdateBodySchema = z
       .exactOptional()
       .openapi({
         description:
-          '[deprecated] 有給休暇の半休を利用した時間（分単位） ※ paid_holidaysを指定する場合にはこちらの値は参照されません ※ 削除予定のためpaid_holidays->mins を指定してください',
+          '[deprecated] 有給休暇の半休を利用した時間（分単位） ※ paid_holidaysを指定する場合にはこちらの値は参照されません ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
       }),
     hourly_paid_holiday_mins: z
       .int32()
@@ -4441,31 +4779,48 @@ const LegacyApiV1EmployeesWorkRecordsControllerUpdateBodySchema = z
       .exactOptional()
       .openapi({
         description:
-          '[deprecated] morning_off または afternoon_off を指定します ※ paid_holidaysを指定する場合にはこちらの値は参照使用されません ※ 削除予定のため paid_holidays->type を指定してください',
+          '[deprecated] 有給休暇の時間休を利用した時間（分単位） ※ paid_holidaysを指定する場合にはこちらの値は参照されません ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
       }),
     special_holiday: z
       .union([z.literal(0), z.literal(1)])
       .exactOptional()
-      .openapi({ description: 'この日の特別休暇取得日数。1日単位で指定します。', example: '1.0' }),
+      .openapi({
+        description:
+          '[deprecated] この日の特別休暇取得日数。1日単位で指定します。 ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+        example: '1.0',
+      }),
     special_holiday_setting_id: z
       .int32()
       .min(1)
       .max(2147483647)
       .nullable()
       .exactOptional()
-      .openapi({ description: '特別休暇設定ID' }),
+      .openapi({
+        description: '[deprecated] 特別休暇設定ID ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+      }),
     half_special_holiday_mins: z
       .int32()
       .min(0)
       .max(1440)
       .exactOptional()
-      .openapi({ description: '特別休暇の半休を利用した時間（分単位）' }),
+      .openapi({
+        description:
+          '[deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+      }),
     hourly_special_holiday_mins: z
       .int32()
       .min(0)
       .max(1440)
       .exactOptional()
-      .openapi({ description: '特別休暇の時間休を利用した時間（分単位）' }),
+      .openapi({
+        description:
+          '[deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays をご利用ください',
+        deprecated: true,
+      }),
     use_attendance_deduction: z
       .boolean()
       .exactOptional()
@@ -4524,6 +4879,16 @@ const ApiV1EmployeesWorkRecordSummaryControllerUpdateBodySchema = z
       .min(0)
       .max(2147483647)
       .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 給与計算に用いられる法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります',
+        deprecated: true,
+      }),
+    total_overtime_within_statutory_work_mins: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
       .openapi({ description: '給与計算に用いられる法定内残業時間（分）' }),
     total_holiday_work_mins: z
       .int()
@@ -4542,8 +4907,28 @@ const ApiV1EmployeesWorkRecordSummaryControllerUpdateBodySchema = z
       .min(0)
       .max(2147483647)
       .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 実労働時間ベースの法定内残業時間（分） ※ 削除予定のため total_actual_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります',
+        deprecated: true,
+      }),
+    total_actual_overtime_within_statutory_work_mins: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
       .openapi({ description: '実労働時間ベースの法定内残業時間（分）' }),
     total_overtime_work_mins: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 時間外労働時間（分） ※ 削除予定のため total_overtime_excess_statutory_work_mins を指定してください。両方指定した場合はエラーになります',
+        deprecated: true,
+      }),
+    total_overtime_excess_statutory_work_mins: z
       .int()
       .min(0)
       .max(2147483647)
@@ -4608,6 +4993,16 @@ const ApiV1EmployeesWorkRecordSummaryControllerUpdateBodySchema = z
       .exactOptional()
       .openapi({ description: '不足時間（分）（フレックスタイム制でのみ使用）' }),
     total_deemed_paid_excess_statutory_work_mins: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] みなし外の法定内残業時間（分）（裁量労働制でのみ使用） ※ 削除予定のため total_deemed_paid_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります',
+        deprecated: true,
+      }),
+    total_deemed_paid_overtime_within_statutory_work_mins: z
       .int()
       .min(0)
       .max(2147483647)
@@ -6247,7 +6642,7 @@ const ApiV1EmployeeYearendAdjustmentDependentSerializerSchema = z
       .exactOptional()
       .openapi({
         description:
-          '所得 配偶者は「扶養状況」がsocial_insurance_only又はnot_dependentの場合のみ更新可能。配偶者以外は更新可能。 配偶者で「扶養状況」がsocial_insurance_and_tax又はtax_onlyの場合、「給与収入」、「給与以外の所得」から自動で「所得」が計算されます。',
+          '所得 配偶者は「扶養状況」がsocial_insurance_only又はnot_dependentの場合のみ更新可能。配偶者以外は更新可能。\n配偶者で「扶養状況」がsocial_insurance_and_tax又はtax_onlyの場合、「給与収入」、「給与以外の所得」から自動で「所得」が計算されます。<br>\n<br>\n2026年以降の年末調整で、freee人事労務の年末調整画面から「公的年金収入」を入力している場合、公的年金等の所得は「給与以外の所得」に合算して返却されます。\nこの場合、「所得」は「給与所得と年金所得の双方を有する者に対する所得金額調整控除」を適用した後の金額となるため、「給与収入」と「給与以外の所得」から算出した金額とは一致しないことがあります。',
       }),
     employment_revenue: z
       .int32()
@@ -7901,6 +8296,39 @@ const ApiV1AllowanceSerializerSchema = z
         'attendance_tag_total_latenight_work_mins',
         'attendance_tag_total_normal_work_mins',
         'attendance_tag_total_overtime_work_mins',
+        'attendance_tag_total_work_mins',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 計算の基となる勤怠項目・カスタム項目の識別子（calc_typeがfixedの場合はnull） ※ 削除予定のため formula_element_code を参照してください',
+        deprecated: true,
+      }),
+    formula_element_code: z
+      .enum([
+        'num_absences',
+        'num_paid_holidays',
+        'num_total_workdays',
+        'num_work_days_with_early_leaving',
+        'num_work_days_with_lateness',
+        'total_overtime_within_statutory_work_mins',
+        'total_holiday_work_mins',
+        'total_lateness_and_early_leaving_mins',
+        'total_latenight_work_mins',
+        'total_normal_work_mins',
+        'total_overtime_excess_statutory_work_mins',
+        'total_prescribed_holiday_work_mins',
+        'total_work_mins',
+        'company_profile_custom_field',
+        'attendance_tag_total_count',
+        'attendance_tag_assigned_days',
+        'attendance_tag_total_overtime_within_statutory_work_mins',
+        'attendance_tag_total_prescribed_holiday_work_mins',
+        'attendance_tag_total_holiday_work_mins',
+        'attendance_tag_total_latenight_work_mins',
+        'attendance_tag_total_normal_work_mins',
+        'attendance_tag_total_overtime_excess_statutory_work_mins',
         'attendance_tag_total_work_mins',
       ])
       .nullable()

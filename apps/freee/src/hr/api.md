@@ -4032,6 +4032,19 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01?comp
       "days": 0.5
     }
   ],
+  "holidays": [
+    {
+      "holiday_type": "full",
+      "mins": 1,
+      "time_ranges": [
+        {
+          "start_at": "1970-01-01T00:00:00Z",
+          "end_at": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "holiday_category": "annual_paid_holiday"
+    }
+  ],
   "special_holiday": 0,
   "special_holiday_setting_id": 0,
   "use_attendance_deduction": true,
@@ -4044,8 +4057,10 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01?comp
   "not_auto_calc_work_time": false,
   "total_excess_statutory_work_mins": 0,
   "total_latenight_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
+  "total_latenight_overtime_within_statutory_work_mins": 0,
   "total_overtime_except_normal_work_mins": 0,
-  "total_latenight_overtime_except_normal_work_min": 0
+  "total_latenight_overtime_except_normal_work_mins": 0
 }
 ```
 
@@ -4164,6 +4179,19 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01 \
       {
         "type": "half",
         "mins": 0
+      }
+    ],
+    "holidays": [
+      {
+        "holiday_type": "full",
+        "mins": 1,
+        "time_ranges": [
+          {
+            "start_at": "2018-07-31 08:00:00",
+            "end_at": "2018-07-31 09:00:00"
+          }
+        ],
+        "holiday_category": "annual_paid_holiday"
       }
     ],
     "special_holiday": "1.0",
@@ -4428,6 +4456,19 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01 \
       "mins": 0
     }
   ],
+  "holidays": [
+    {
+      "holiday_type": "full",
+      "mins": 1,
+      "time_ranges": [
+        {
+          "start_at": "2018-07-31 08:00:00",
+          "end_at": "2018-07-31 09:00:00"
+        }
+      ],
+      "holiday_category": "annual_paid_holiday"
+    }
+  ],
   "special_holiday": "1.0",
   "special_holiday_setting_id": 1,
   "half_special_holiday_mins": 0,
@@ -4487,6 +4528,19 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01 \
       "days": 0.5
     }
   ],
+  "holidays": [
+    {
+      "holiday_type": "full",
+      "mins": 1,
+      "time_ranges": [
+        {
+          "start_at": "1970-01-01T00:00:00Z",
+          "end_at": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "holiday_category": "annual_paid_holiday"
+    }
+  ],
   "special_holiday": 0,
   "special_holiday_setting_id": 0,
   "use_attendance_deduction": true,
@@ -4499,8 +4553,10 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_records/1970-01-01 \
   "not_auto_calc_work_time": false,
   "total_excess_statutory_work_mins": 0,
   "total_latenight_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
+  "total_latenight_overtime_within_statutory_work_mins": 0,
   "total_overtime_except_normal_work_mins": 0,
-  "total_latenight_overtime_except_normal_work_min": 0
+  "total_latenight_overtime_except_normal_work_mins": 0
 }
 ```
 
@@ -4731,6 +4787,7 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1
   "total_work_mins": 0,
   "total_normal_work_mins": 0,
   "total_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
   "total_overtime_except_normal_work_mins": 0,
   "total_overtime_within_normal_work_mins": 0,
   "total_prescribed_holiday_work_mins": 0,
@@ -4797,6 +4854,19 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1
           "days": 0.5
         }
       ],
+      "holidays": [
+        {
+          "holiday_type": "full",
+          "mins": 1,
+          "time_ranges": [
+            {
+              "start_at": "1970-01-01T00:00:00Z",
+              "end_at": "1970-01-01T00:00:00Z"
+            }
+          ],
+          "holiday_category": "annual_paid_holiday"
+        }
+      ],
       "special_holiday": 0,
       "special_holiday_setting_id": 0,
       "use_attendance_deduction": true,
@@ -4809,12 +4879,15 @@ curl 'https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1
       "not_auto_calc_work_time": false,
       "total_excess_statutory_work_mins": 0,
       "total_latenight_excess_statutory_work_mins": 0,
+      "total_overtime_within_statutory_work_mins": 0,
+      "total_latenight_overtime_within_statutory_work_mins": 0,
       "total_overtime_except_normal_work_mins": 0,
-      "total_latenight_overtime_except_normal_work_min": 0
+      "total_latenight_overtime_except_normal_work_mins": 0
     }
   ],
   "total_shortage_work_mins": 0,
   "total_deemed_paid_excess_statutory_work_mins": 0,
+  "total_deemed_paid_overtime_within_statutory_work_mins": 0,
   "total_deemed_paid_overtime_except_normal_work_mins": 0
 }
 ```
@@ -4906,10 +4979,13 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
     "total_work_mins": 0,
     "total_normal_work_mins": 0,
     "total_excess_statutory_work_mins": 0,
+    "total_overtime_within_statutory_work_mins": 0,
     "total_holiday_work_mins": 0,
     "total_latenight_work_mins": 0,
     "total_actual_excess_statutory_work_mins": 0,
+    "total_actual_overtime_within_statutory_work_mins": 0,
     "total_overtime_work_mins": 0,
+    "total_overtime_excess_statutory_work_mins": 0,
     "total_prescribed_holiday_work_mins": 0,
     "num_absences": 0,
     "num_absences_for_deduction": 0,
@@ -4920,6 +4996,7 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
     "num_paid_holidays": 0,
     "total_shortage_work_mins": 0,
     "total_deemed_paid_excess_statutory_work_mins": 0,
+    "total_deemed_paid_overtime_within_statutory_work_mins": 0,
     "total_deemed_paid_overtime_except_normal_work_mins": 0
   }'
 ```
@@ -4949,10 +5026,13 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
   "total_work_mins": 0,
   "total_normal_work_mins": 0,
   "total_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
   "total_holiday_work_mins": 0,
   "total_latenight_work_mins": 0,
   "total_actual_excess_statutory_work_mins": 0,
+  "total_actual_overtime_within_statutory_work_mins": 0,
   "total_overtime_work_mins": 0,
+  "total_overtime_excess_statutory_work_mins": 0,
   "total_prescribed_holiday_work_mins": 0,
   "num_absences": 0,
   "num_absences_for_deduction": 0,
@@ -4963,6 +5043,7 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
   "num_paid_holidays": 0,
   "total_shortage_work_mins": 0,
   "total_deemed_paid_excess_statutory_work_mins": 0,
+  "total_deemed_paid_overtime_within_statutory_work_mins": 0,
   "total_deemed_paid_overtime_except_normal_work_mins": 0
 }
 ```
@@ -4982,11 +5063,14 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
 |» work_days_on_legal_holidays|body|number(float)|false|法定休日の勤務日数|
 |» total_work_mins|body|integer|false|労働時間（分）|
 |» total_normal_work_mins|body|integer|false|所定労働時間（分）|
-|» total_excess_statutory_work_mins|body|integer|false|給与計算に用いられる法定内残業時間（分）|
+|» total_excess_statutory_work_mins|body|integer|false|**Deprecated.** [deprecated] 給与計算に用いられる法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります|
+|» total_overtime_within_statutory_work_mins|body|integer|false|給与計算に用いられる法定内残業時間（分）|
 |» total_holiday_work_mins|body|integer|false|法定休日労働時間（分）|
 |» total_latenight_work_mins|body|integer|false|深夜労働時間（分）|
-|» total_actual_excess_statutory_work_mins|body|integer|false|実労働時間ベースの法定内残業時間（分）|
-|» total_overtime_work_mins|body|integer|false|時間外労働時間（分）|
+|» total_actual_excess_statutory_work_mins|body|integer|false|**Deprecated.** [deprecated] 実労働時間ベースの法定内残業時間（分） ※ 削除予定のため total_actual_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります|
+|» total_actual_overtime_within_statutory_work_mins|body|integer|false|実労働時間ベースの法定内残業時間（分）|
+|» total_overtime_work_mins|body|integer|false|**Deprecated.** [deprecated] 時間外労働時間（分） ※ 削除予定のため total_overtime_excess_statutory_work_mins を指定してください。両方指定した場合はエラーになります|
+|» total_overtime_excess_statutory_work_mins|body|integer|false|時間外労働時間（分）|
 |» total_prescribed_holiday_work_mins|body|integer|false|所定休日労働時間（分）|
 |» num_absences|body|number(float)|false|欠勤日数|
 |» num_absences_for_deduction|body|number(float)|false|控除対象の欠勤日数<br><br>フレックスタイム制の場合は、指定した値が反映されず無視されます。|
@@ -4996,7 +5080,8 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
 |» total_early_leaving_mins_for_deduction|body|integer|false|控除対象の早退時間（分）<br><br>フレックスタイム制と裁量労働制の場合は、指定した値が反映されず無視されます。|
 |» num_paid_holidays|body|number(float)|false|有給取得日数|
 |» total_shortage_work_mins|body|integer|false|不足時間（分）（フレックスタイム制でのみ使用）|
-|» total_deemed_paid_excess_statutory_work_mins|body|integer|false|みなし外の法定内残業時間（分）（裁量労働制でのみ使用）|
+|» total_deemed_paid_excess_statutory_work_mins|body|integer|false|**Deprecated.** [deprecated] みなし外の法定内残業時間（分）（裁量労働制でのみ使用） ※ 削除予定のため total_deemed_paid_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります|
+|» total_deemed_paid_overtime_within_statutory_work_mins|body|integer|false|みなし外の法定内残業時間（分）（裁量労働制でのみ使用）|
 |» total_deemed_paid_overtime_except_normal_work_mins|body|integer|false|みなし外の時間外労働時間（分）（裁量労働制でのみ使用）|
 
 > Example responses
@@ -5013,6 +5098,7 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
   "total_work_mins": 0,
   "total_normal_work_mins": 0,
   "total_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
   "total_overtime_except_normal_work_mins": 0,
   "total_overtime_within_normal_work_mins": 0,
   "total_prescribed_holiday_work_mins": 0,
@@ -5079,6 +5165,19 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
           "days": 0.5
         }
       ],
+      "holidays": [
+        {
+          "holiday_type": "full",
+          "mins": 1,
+          "time_ranges": [
+            {
+              "start_at": "1970-01-01T00:00:00Z",
+              "end_at": "1970-01-01T00:00:00Z"
+            }
+          ],
+          "holiday_category": "annual_paid_holiday"
+        }
+      ],
       "special_holiday": 0,
       "special_holiday_setting_id": 0,
       "use_attendance_deduction": true,
@@ -5091,12 +5190,15 @@ curl https://api.freee.co.jp/hr/api/v1/employees/1/work_record_summaries/2021/1 
       "not_auto_calc_work_time": false,
       "total_excess_statutory_work_mins": 0,
       "total_latenight_excess_statutory_work_mins": 0,
+      "total_overtime_within_statutory_work_mins": 0,
+      "total_latenight_overtime_within_statutory_work_mins": 0,
       "total_overtime_except_normal_work_mins": 0,
-      "total_latenight_overtime_except_normal_work_min": 0
+      "total_latenight_overtime_except_normal_work_mins": 0
     }
   ],
   "total_shortage_work_mins": 0,
   "total_deemed_paid_excess_statutory_work_mins": 0,
+  "total_deemed_paid_overtime_within_statutory_work_mins": 0,
   "total_deemed_paid_overtime_except_normal_work_mins": 0
 }
 ```
@@ -8752,6 +8854,7 @@ curl 'https://api.freee.co.jp/hr/api/v1/allowances?company_id=1' \
       "amount_source": "direct",
       "is_daily_prorated": true,
       "formula_element": "num_absences",
+      "formula_element_code": "num_absences",
       "round_type": "round",
       "rate_multiplier": 0,
       "company_profile_custom_field_id": 0,
@@ -8926,6 +9029,7 @@ curl 'https://api.freee.co.jp/hr/api/v1/allowances?company_id=1' \
     "amount_source": "direct",
     "is_daily_prorated": true,
     "formula_element": "num_absences",
+    "formula_element_code": "num_absences",
     "round_type": "round",
     "rate_multiplier": 0,
     "company_profile_custom_field_id": 0,
@@ -9053,6 +9157,7 @@ curl 'https://api.freee.co.jp/hr/api/v1/allowances/1?company_id=1' \
     "amount_source": "direct",
     "is_daily_prorated": true,
     "formula_element": "num_absences",
+    "formula_element_code": "num_absences",
     "round_type": "round",
     "rate_multiplier": 0,
     "company_profile_custom_field_id": 0,
@@ -20479,6 +20584,536 @@ bearer
 |clock_in_at|string(date-time)|false|none|開始時刻|
 |clock_out_at|string(date-time)|false|none|終了時刻|
 
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayRequest">ApiV1EmployeesWorkRecordHolidayRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidayrequest"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayRequest"></a>
+<a id="tocSapiv1employeesworkrecordholidayrequest"></a>
+<a id="tocsapiv1employeesworkrecordholidayrequest"></a>
+
+```json
+{
+  "holiday_type": "full",
+  "mins": 1,
+  "time_ranges": [
+    {
+      "start_at": "2018-07-31 08:00:00",
+      "end_at": "2018-07-31 09:00:00"
+    }
+  ],
+  "holiday_category": "annual_paid_holiday"
+}
+```
+
+休暇の内訳。
+full、morning_off、afternoon_off では mins と time_ranges を指定しません。
+annual_paid_holiday と有給の special_holiday の half では mins を指定します。無給の special_holiday の half では mins を指定できません。
+half を2つ組み合わせて全休にする場合は、どちらの half でも mins を指定できません。
+compensatory_holiday では mins と time_ranges を指定しません。
+annual_paid_holiday と special_holiday の hourly では、対象日に適用される勤務賃金設定の時間休の入力方式に従い、時間数方式の場合は mins、時間帯方式の場合は time_ranges を指定します。
+hourly の mins は60分単位です。
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ApiV1EmployeesWorkRecordAnnualPaidHolidayRequest](#schemaapiv1employeesworkrecordannualpaidholidayrequest)|false|none|none|
+|*oneOf*|[ApiV1EmployeesWorkRecordSpecialHolidayRequest](#schemaapiv1employeesworkrecordspecialholidayrequest)|false|none|none|
+|*oneOf*|[ApiV1EmployeesWorkRecordCompensatoryHolidayRequest](#schemaapiv1employeesworkrecordcompensatoryholidayrequest)|false|none|none|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayResponse">ApiV1EmployeesWorkRecordHolidayResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidayresponse"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayResponse"></a>
+<a id="tocSapiv1employeesworkrecordholidayresponse"></a>
+<a id="tocsapiv1employeesworkrecordholidayresponse"></a>
+
+```json
+{
+  "holiday_type": "full",
+  "mins": 1,
+  "time_ranges": [
+    {
+      "start_at": "1970-01-01T00:00:00Z",
+      "end_at": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "holiday_category": "annual_paid_holiday"
+}
+```
+
+休暇の内訳。
+full では mins と time_ranges を返しません。
+half では mins を返します。
+morning_off、afternoon_off では mins を返さず、時間帯を持つ実績の場合は time_ranges を返します。
+hourly では mins を返し、時間帯を持つ実績の場合は time_ranges も返します。
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ApiV1EmployeesWorkRecordAnnualPaidHolidayResponse](#schemaapiv1employeesworkrecordannualpaidholidayresponse)|false|none|none|
+|*oneOf*|[ApiV1EmployeesWorkRecordSpecialHolidayResponse](#schemaapiv1employeesworkrecordspecialholidayresponse)|false|none|none|
+|*oneOf*|[ApiV1EmployeesWorkRecordCompensatoryHolidayResponse](#schemaapiv1employeesworkrecordcompensatoryholidayresponse)|false|none|none|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordAnnualPaidHolidayRequest">ApiV1EmployeesWorkRecordAnnualPaidHolidayRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordannualpaidholidayrequest"></a>
+<a id="schema_ApiV1EmployeesWorkRecordAnnualPaidHolidayRequest"></a>
+<a id="tocSapiv1employeesworkrecordannualpaidholidayrequest"></a>
+<a id="tocsapiv1employeesworkrecordannualpaidholidayrequest"></a>
+
+```json
+{
+  "holiday_type": "full",
+  "mins": 1,
+  "time_ranges": [
+    {
+      "start_at": "2018-07-31 08:00:00",
+      "end_at": "2018-07-31 09:00:00"
+    }
+  ],
+  "holiday_category": "annual_paid_holiday"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|holiday_type|[ApiV1EmployeesWorkRecordHolidayType](#schemaapiv1employeesworkrecordholidaytype)|true|none|取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off、時間休: hourly）|
+|mins|[ApiV1EmployeesWorkRecordHolidayMins](#schemaapiv1employeesworkrecordholidaymins)|false|none|休暇により計上する時間（分単位）|
+|time_ranges|[ApiV1EmployeesWorkRecordHolidayTimeRangesRequest](#schemaapiv1employeesworkrecordholidaytimerangesrequest)|false|none|時間休の取得時間帯|
+|holiday_category|string|true|none|休暇カテゴリ|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|holiday_type|full|
+|holiday_type|half|
+|holiday_type|morning_off|
+|holiday_type|afternoon_off|
+|holiday_type|hourly|
+|holiday_category|annual_paid_holiday|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordSpecialHolidayRequest">ApiV1EmployeesWorkRecordSpecialHolidayRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordspecialholidayrequest"></a>
+<a id="schema_ApiV1EmployeesWorkRecordSpecialHolidayRequest"></a>
+<a id="tocSapiv1employeesworkrecordspecialholidayrequest"></a>
+<a id="tocsapiv1employeesworkrecordspecialholidayrequest"></a>
+
+```json
+{
+  "holiday_type": "full",
+  "mins": 1,
+  "time_ranges": [
+    {
+      "start_at": "2018-07-31 08:00:00",
+      "end_at": "2018-07-31 09:00:00"
+    }
+  ],
+  "holiday_category": "special_holiday",
+  "special_holiday_setting_id": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|holiday_type|[ApiV1EmployeesWorkRecordHolidayType](#schemaapiv1employeesworkrecordholidaytype)|true|none|取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off、時間休: hourly）|
+|mins|[ApiV1EmployeesWorkRecordHolidayMins](#schemaapiv1employeesworkrecordholidaymins)|false|none|休暇により計上する時間（分単位）|
+|time_ranges|[ApiV1EmployeesWorkRecordHolidayTimeRangesRequest](#schemaapiv1employeesworkrecordholidaytimerangesrequest)|false|none|時間休の取得時間帯|
+|holiday_category|string|true|none|休暇カテゴリ|
+|special_holiday_setting_id|[ApiV1EmployeesWorkRecordSpecialHolidaySettingId](#schemaapiv1employeesworkrecordspecialholidaysettingid)|true|none|特別休暇設定ID|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|holiday_type|full|
+|holiday_type|half|
+|holiday_type|morning_off|
+|holiday_type|afternoon_off|
+|holiday_type|hourly|
+|holiday_category|special_holiday|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordCompensatoryHolidayRequest">ApiV1EmployeesWorkRecordCompensatoryHolidayRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordcompensatoryholidayrequest"></a>
+<a id="schema_ApiV1EmployeesWorkRecordCompensatoryHolidayRequest"></a>
+<a id="tocSapiv1employeesworkrecordcompensatoryholidayrequest"></a>
+<a id="tocsapiv1employeesworkrecordcompensatoryholidayrequest"></a>
+
+```json
+{
+  "holiday_category": "compensatory_holiday",
+  "holiday_type": "full",
+  "source_date": "2018-07-31"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|holiday_category|string|true|none|休暇カテゴリ|
+|holiday_type|[ApiV1EmployeesWorkRecordCompensatoryHolidayType](#schemaapiv1employeesworkrecordcompensatoryholidaytype)|true|none|取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off）|
+|source_date|[ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDate](#schemaapiv1employeesworkrecordcompensatoryholidaysourcedate)|true|none|代休の元となる休日出勤日|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|holiday_category|compensatory_holiday|
+|holiday_type|full|
+|holiday_type|half|
+|holiday_type|morning_off|
+|holiday_type|afternoon_off|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayTypeFields">ApiV1EmployeesWorkRecordHolidayTypeFields</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaytypefields"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayTypeFields"></a>
+<a id="tocSapiv1employeesworkrecordholidaytypefields"></a>
+<a id="tocsapiv1employeesworkrecordholidaytypefields"></a>
+
+```json
+{
+  "holiday_type": "full"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|holiday_type|[ApiV1EmployeesWorkRecordHolidayType](#schemaapiv1employeesworkrecordholidaytype)|true|none|取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off、時間休: hourly）|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|holiday_type|full|
+|holiday_type|half|
+|holiday_type|morning_off|
+|holiday_type|afternoon_off|
+|holiday_type|hourly|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayTimeRequestFields">ApiV1EmployeesWorkRecordHolidayTimeRequestFields</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaytimerequestfields"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayTimeRequestFields"></a>
+<a id="tocSapiv1employeesworkrecordholidaytimerequestfields"></a>
+<a id="tocsapiv1employeesworkrecordholidaytimerequestfields"></a>
+
+```json
+{
+  "mins": 1,
+  "time_ranges": [
+    {
+      "start_at": "2018-07-31 08:00:00",
+      "end_at": "2018-07-31 09:00:00"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mins|[ApiV1EmployeesWorkRecordHolidayMins](#schemaapiv1employeesworkrecordholidaymins)|false|none|休暇により計上する時間（分単位）|
+|time_ranges|[ApiV1EmployeesWorkRecordHolidayTimeRangesRequest](#schemaapiv1employeesworkrecordholidaytimerangesrequest)|false|none|時間休の取得時間帯|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordAnnualPaidHolidayResponse">ApiV1EmployeesWorkRecordAnnualPaidHolidayResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordannualpaidholidayresponse"></a>
+<a id="schema_ApiV1EmployeesWorkRecordAnnualPaidHolidayResponse"></a>
+<a id="tocSapiv1employeesworkrecordannualpaidholidayresponse"></a>
+<a id="tocsapiv1employeesworkrecordannualpaidholidayresponse"></a>
+
+```json
+{
+  "holiday_type": "full",
+  "mins": 1,
+  "time_ranges": [
+    {
+      "start_at": "1970-01-01T00:00:00Z",
+      "end_at": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "holiday_category": "annual_paid_holiday"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|holiday_type|[ApiV1EmployeesWorkRecordHolidayType](#schemaapiv1employeesworkrecordholidaytype)|true|none|取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off、時間休: hourly）|
+|mins|[ApiV1EmployeesWorkRecordHolidayMins](#schemaapiv1employeesworkrecordholidaymins)|false|none|休暇により計上する時間（分単位）|
+|time_ranges|[ApiV1EmployeesWorkRecordHolidayTimeRangesResponse](#schemaapiv1employeesworkrecordholidaytimerangesresponse)|false|none|時間休の取得時間帯|
+|holiday_category|string|true|none|休暇カテゴリ|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|holiday_type|full|
+|holiday_type|half|
+|holiday_type|morning_off|
+|holiday_type|afternoon_off|
+|holiday_type|hourly|
+|holiday_category|annual_paid_holiday|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordSpecialHolidayResponse">ApiV1EmployeesWorkRecordSpecialHolidayResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordspecialholidayresponse"></a>
+<a id="schema_ApiV1EmployeesWorkRecordSpecialHolidayResponse"></a>
+<a id="tocSapiv1employeesworkrecordspecialholidayresponse"></a>
+<a id="tocsapiv1employeesworkrecordspecialholidayresponse"></a>
+
+```json
+{
+  "holiday_type": "full",
+  "mins": 1,
+  "time_ranges": [
+    {
+      "start_at": "1970-01-01T00:00:00Z",
+      "end_at": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "holiday_category": "special_holiday",
+  "special_holiday_setting_id": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|holiday_type|[ApiV1EmployeesWorkRecordHolidayType](#schemaapiv1employeesworkrecordholidaytype)|true|none|取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off、時間休: hourly）|
+|mins|[ApiV1EmployeesWorkRecordHolidayMins](#schemaapiv1employeesworkrecordholidaymins)|false|none|休暇により計上する時間（分単位）|
+|time_ranges|[ApiV1EmployeesWorkRecordHolidayTimeRangesResponse](#schemaapiv1employeesworkrecordholidaytimerangesresponse)|false|none|時間休の取得時間帯|
+|holiday_category|string|true|none|休暇カテゴリ|
+|special_holiday_setting_id|[ApiV1EmployeesWorkRecordSpecialHolidaySettingId](#schemaapiv1employeesworkrecordspecialholidaysettingid)|true|none|特別休暇設定ID|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|holiday_type|full|
+|holiday_type|half|
+|holiday_type|morning_off|
+|holiday_type|afternoon_off|
+|holiday_type|hourly|
+|holiday_category|special_holiday|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordCompensatoryHolidayResponse">ApiV1EmployeesWorkRecordCompensatoryHolidayResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordcompensatoryholidayresponse"></a>
+<a id="schema_ApiV1EmployeesWorkRecordCompensatoryHolidayResponse"></a>
+<a id="tocSapiv1employeesworkrecordcompensatoryholidayresponse"></a>
+<a id="tocsapiv1employeesworkrecordcompensatoryholidayresponse"></a>
+
+```json
+{
+  "holiday_category": "compensatory_holiday",
+  "holiday_type": "full",
+  "source_date": "2018-07-31"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|holiday_category|string|true|none|休暇カテゴリ|
+|holiday_type|[ApiV1EmployeesWorkRecordCompensatoryHolidayType](#schemaapiv1employeesworkrecordcompensatoryholidaytype)|true|none|取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off）|
+|source_date|[ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDate](#schemaapiv1employeesworkrecordcompensatoryholidaysourcedate)|true|none|代休の元となる休日出勤日|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|holiday_category|compensatory_holiday|
+|holiday_type|full|
+|holiday_type|half|
+|holiday_type|morning_off|
+|holiday_type|afternoon_off|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayTimeResponseFields">ApiV1EmployeesWorkRecordHolidayTimeResponseFields</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaytimeresponsefields"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayTimeResponseFields"></a>
+<a id="tocSapiv1employeesworkrecordholidaytimeresponsefields"></a>
+<a id="tocsapiv1employeesworkrecordholidaytimeresponsefields"></a>
+
+```json
+{
+  "mins": 1,
+  "time_ranges": [
+    {
+      "start_at": "1970-01-01T00:00:00Z",
+      "end_at": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mins|[ApiV1EmployeesWorkRecordHolidayMins](#schemaapiv1employeesworkrecordholidaymins)|false|none|休暇により計上する時間（分単位）|
+|time_ranges|[ApiV1EmployeesWorkRecordHolidayTimeRangesResponse](#schemaapiv1employeesworkrecordholidaytimerangesresponse)|false|none|時間休の取得時間帯|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayType">ApiV1EmployeesWorkRecordHolidayType</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaytype"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayType"></a>
+<a id="tocSapiv1employeesworkrecordholidaytype"></a>
+<a id="tocsapiv1employeesworkrecordholidaytype"></a>
+
+```json
+"full"
+```
+
+取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off、時間休: hourly）
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordCompensatoryHolidayType">ApiV1EmployeesWorkRecordCompensatoryHolidayType</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordcompensatoryholidaytype"></a>
+<a id="schema_ApiV1EmployeesWorkRecordCompensatoryHolidayType"></a>
+<a id="tocSapiv1employeesworkrecordcompensatoryholidaytype"></a>
+<a id="tocsapiv1employeesworkrecordcompensatoryholidaytype"></a>
+
+```json
+"full"
+```
+
+取得単位（全休: full、半休: half、午前休: morning_off、午後休: afternoon_off）
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayMins">ApiV1EmployeesWorkRecordHolidayMins</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaymins"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayMins"></a>
+<a id="tocSapiv1employeesworkrecordholidaymins"></a>
+<a id="tocsapiv1employeesworkrecordholidaymins"></a>
+
+```json
+1
+```
+
+休暇により計上する時間（分単位）
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayTimeRangesRequest">ApiV1EmployeesWorkRecordHolidayTimeRangesRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaytimerangesrequest"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayTimeRangesRequest"></a>
+<a id="tocSapiv1employeesworkrecordholidaytimerangesrequest"></a>
+<a id="tocsapiv1employeesworkrecordholidaytimerangesrequest"></a>
+
+```json
+[
+  {
+    "start_at": "2018-07-31 08:00:00",
+    "end_at": "2018-07-31 09:00:00"
+  }
+]
+```
+
+時間休の取得時間帯
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayTimeRangesResponse">ApiV1EmployeesWorkRecordHolidayTimeRangesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaytimerangesresponse"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayTimeRangesResponse"></a>
+<a id="tocSapiv1employeesworkrecordholidaytimerangesresponse"></a>
+<a id="tocsapiv1employeesworkrecordholidaytimerangesresponse"></a>
+
+```json
+[
+  {
+    "start_at": "1970-01-01T00:00:00Z",
+    "end_at": "1970-01-01T00:00:00Z"
+  }
+]
+```
+
+時間休の取得時間帯
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordSpecialHolidaySettingId">ApiV1EmployeesWorkRecordSpecialHolidaySettingId</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordspecialholidaysettingid"></a>
+<a id="schema_ApiV1EmployeesWorkRecordSpecialHolidaySettingId"></a>
+<a id="tocSapiv1employeesworkrecordspecialholidaysettingid"></a>
+<a id="tocsapiv1employeesworkrecordspecialholidaysettingid"></a>
+
+```json
+1
+```
+
+特別休暇設定ID
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDate">ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDate</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordcompensatoryholidaysourcedate"></a>
+<a id="schema_ApiV1EmployeesWorkRecordCompensatoryHolidaySourceDate"></a>
+<a id="tocSapiv1employeesworkrecordcompensatoryholidaysourcedate"></a>
+<a id="tocsapiv1employeesworkrecordcompensatoryholidaysourcedate"></a>
+
+```json
+"2018-07-31"
+```
+
+代休の元となる休日出勤日
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayTimeRangeRequest">ApiV1EmployeesWorkRecordHolidayTimeRangeRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaytimerangerequest"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayTimeRangeRequest"></a>
+<a id="tocSapiv1employeesworkrecordholidaytimerangerequest"></a>
+<a id="tocsapiv1employeesworkrecordholidaytimerangerequest"></a>
+
+```json
+{
+  "start_at": "2018-07-31 08:00:00",
+  "end_at": "2018-07-31 09:00:00"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|start_at|string(date-time)|true|none|取得開始時刻|
+|end_at|string(date-time)|true|none|取得終了時刻|
+
+<h2 id="tocS_ApiV1EmployeesWorkRecordHolidayTimeRangeResponse">ApiV1EmployeesWorkRecordHolidayTimeRangeResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1employeesworkrecordholidaytimerangeresponse"></a>
+<a id="schema_ApiV1EmployeesWorkRecordHolidayTimeRangeResponse"></a>
+<a id="tocSapiv1employeesworkrecordholidaytimerangeresponse"></a>
+<a id="tocsapiv1employeesworkrecordholidaytimerangeresponse"></a>
+
+```json
+{
+  "start_at": "1970-01-01T00:00:00Z",
+  "end_at": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|start_at|string(date-time)|true|none|取得開始時刻|
+|end_at|string(date-time)|true|none|取得終了時刻|
+
 <h2 id="tocS_ApiV1EmployeesWelfarePensionInsuranceRuleSerializer">ApiV1EmployeesWelfarePensionInsuranceRuleSerializer</h2>
 <!-- backwards compatibility -->
 <a id="schemaapiv1employeeswelfarepensioninsuranceruleserializer"></a>
@@ -20963,6 +21598,7 @@ bearer
   "total_work_mins": 0,
   "total_normal_work_mins": 0,
   "total_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
   "total_overtime_except_normal_work_mins": 0,
   "total_overtime_within_normal_work_mins": 0,
   "total_prescribed_holiday_work_mins": 0,
@@ -21029,6 +21665,19 @@ bearer
           "days": 0.5
         }
       ],
+      "holidays": [
+        {
+          "holiday_type": "full",
+          "mins": 1,
+          "time_ranges": [
+            {
+              "start_at": "1970-01-01T00:00:00Z",
+              "end_at": "1970-01-01T00:00:00Z"
+            }
+          ],
+          "holiday_category": "annual_paid_holiday"
+        }
+      ],
       "special_holiday": 0,
       "special_holiday_setting_id": 0,
       "use_attendance_deduction": true,
@@ -21041,12 +21690,15 @@ bearer
       "not_auto_calc_work_time": false,
       "total_excess_statutory_work_mins": 0,
       "total_latenight_excess_statutory_work_mins": 0,
+      "total_overtime_within_statutory_work_mins": 0,
+      "total_latenight_overtime_within_statutory_work_mins": 0,
       "total_overtime_except_normal_work_mins": 0,
-      "total_latenight_overtime_except_normal_work_min": 0
+      "total_latenight_overtime_except_normal_work_mins": 0
     }
   ],
   "total_shortage_work_mins": 0,
   "total_deemed_paid_excess_statutory_work_mins": 0,
+  "total_deemed_paid_overtime_within_statutory_work_mins": 0,
   "total_deemed_paid_overtime_except_normal_work_mins": 0
 }
 ```
@@ -21062,7 +21714,8 @@ bearer
 |work_days|number(float)|false|none|労働日数|
 |total_work_mins|integer(int32)|false|none|総勤務時間（分）|
 |total_normal_work_mins|integer(int32)|false|none|所定内労働時間（分）|
-|total_excess_statutory_work_mins|integer(int32)|false|none|給与計算に用いられる法定内残業時間（分）|
+|total_excess_statutory_work_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 給与計算に用いられる法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を参照してください|
+|total_overtime_within_statutory_work_mins|integer(int32)|false|none|給与計算に用いられる法定内残業時間（分）|
 |total_overtime_except_normal_work_mins|integer(int32)|false|none|所定外法定外労働時間|
 |total_overtime_within_normal_work_mins|integer(int32)|false|none|所定内法定外労働時間（裁量労働制の場合はみなしベース）|
 |total_prescribed_holiday_work_mins|integer(int32)|false|none|所定休日労働時間（分）|
@@ -21081,7 +21734,8 @@ bearer
 |multi_hourly_wages|[[ApiV1EmployeesEmployeeMultiHourlyWageWorkRecordSummarySerializer](#schemaapiv1employeesemployeemultihourlywageworkrecordsummaryserializer)]|false|none|複数時給の労働時間の内訳（複数時給を設定している従業員のみ）|
 |work_records|[[ApiV1EmployeesWorkRecordSerializer](#schemaapiv1employeesworkrecordserializer) \| [LegacyApiV1EmployeesWorkRecordSerializer](#schemalegacyapiv1employeesworkrecordserializer)]|false|none|日々の勤怠情報|
 |total_shortage_work_mins|integer(int32) \| null|false|none|不足時間（分）|
-|total_deemed_paid_excess_statutory_work_mins|integer(int32) \| null|false|none|みなし外の法定内残業時間（分）|
+|total_deemed_paid_excess_statutory_work_mins|integer(int32) \| null|false|none|**Deprecated.** [deprecated] みなし外の法定内残業時間（分） ※ 削除予定のため total_deemed_paid_overtime_within_statutory_work_mins を参照してください|
+|total_deemed_paid_overtime_within_statutory_work_mins|integer(int32) \| null|false|none|みなし外の法定内残業時間（分）|
 |total_deemed_paid_overtime_except_normal_work_mins|integer(int32) \| null|false|none|みなし外の時間外労働時間（分）|
 
 <h2 id="tocS_ApiV1EmployeesWorkRecordSerializer">ApiV1EmployeesWorkRecordSerializer</h2>
@@ -21127,6 +21781,19 @@ bearer
       "days": 0.5
     }
   ],
+  "holidays": [
+    {
+      "holiday_type": "full",
+      "mins": 1,
+      "time_ranges": [
+        {
+          "start_at": "1970-01-01T00:00:00Z",
+          "end_at": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "holiday_category": "annual_paid_holiday"
+    }
+  ],
   "special_holiday": 0,
   "special_holiday_setting_id": 0,
   "use_attendance_deduction": true,
@@ -21139,8 +21806,10 @@ bearer
   "not_auto_calc_work_time": false,
   "total_excess_statutory_work_mins": 0,
   "total_latenight_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
+  "total_latenight_overtime_within_statutory_work_mins": 0,
   "total_overtime_except_normal_work_mins": 0,
-  "total_latenight_overtime_except_normal_work_min": 0
+  "total_latenight_overtime_except_normal_work_mins": 0
 }
 ```
 
@@ -21156,8 +21825,8 @@ bearer
 |day_pattern|string|false|none|勤務パターン<br>- normal_day: 所定労働日<br>- prescribed_holiday: 所定休日<br>- legal_holiday: 法定休日|
 |schedule_pattern|string|false|none|スケジュールパターン<br>- substitute_holiday_work: 振替出勤<br>- substitute_holiday: 振替休日<br>- compensatory_holiday_work: 代休出勤<br>- compensatory_holiday: 代休<br>- special_holiday: 特別休暇|
 |early_leaving_mins|integer(int32)|false|none|早退分の時間（分単位）|
-|half_special_holiday_mins|integer(int32)|false|none|特別休暇の半休を利用した時間（分単位）|
-|hourly_special_holiday_mins|integer(int32)|false|none|特別休暇の時間休を利用した時間（分単位）|
+|half_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
+|hourly_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
 |is_absence|boolean|false|none|欠勤かどうか|
 |is_editable|boolean|false|none|勤怠データが編集可能かどうか|
 |lateness_mins|integer(int32)|false|none|遅刻分の時間（分単位）|
@@ -21165,21 +21834,24 @@ bearer
 |normal_work_clock_out_at|string(date-time) \| null|false|none|所定労働終了時刻|
 |normal_work_mins|integer(int32)|false|none|所定労働時間|
 |note|string|false|none|勤怠メモ|
-|paid_holidays|[object]|false|none|年次有給休暇の実績|
-|special_holiday|number(float)|false|none|この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。|
-|special_holiday_setting_id|integer(int32) \| null|false|none|特別休暇設定ID|
+|paid_holidays|[object]|false|none|**Deprecated.** [deprecated] 年次有給休暇の実績 ※ 削除予定のため holidays を参照してください|
+|holidays|[[ApiV1EmployeesWorkRecordHolidayResponse](#schemaapiv1employeesworkrecordholidayresponse)]|false|none|休暇の内訳（年次有給休暇、特別休暇、代休）。<br>full では mins と time_ranges を返しません。half では mins を返します。<br>morning_off、afternoon_off では mins を返さず、時間帯を持つ実績の場合は time_ranges を返します。<br>hourly は年休・特休のみで、mins を返し、時間帯を持つ実績の場合は time_ranges も返します。|
+|special_holiday|number(float)|false|none|**Deprecated.** [deprecated] この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください|
+|special_holiday_setting_id|integer(int32) \| null|false|none|**Deprecated.** [deprecated] 特別休暇設定ID ※ 削除予定のため holidays を参照してください|
 |use_attendance_deduction|boolean|false|none|欠勤・遅刻・早退を控除対象時間に算入するかどうか|
 |use_default_work_pattern|boolean|false|none|デフォルトの勤務時間設定を使っているかどうか|
-|use_half_compensatory_holiday|boolean|false|none|代休の半休を利用したかどうか|
+|use_half_compensatory_holiday|boolean|false|none|**Deprecated.** [deprecated] 代休の半休を利用したかどうか ※ 削除予定のため holidays を参照してください|
 |total_overtime_work_mins|integer(int32)|false|none|時間外労働時間（分）（Webの勤怠登録画面にて詳細項目の「勤務時間の長さを自動で計算しない」にチェックを入れた場合0が返却されます。時間外労働時間はtotal_overtime_except_normal_work_minsを参照してください。）|
 |total_prescribed_holiday_work_mins|integer(int32)|false|none|所定休日労働時間（分）|
 |total_holiday_work_mins|integer(int32)|false|none|法定休日労働時間（分）|
 |total_latenight_work_mins|integer(int32)|false|none|深夜労働時間（分）|
 |not_auto_calc_work_time|boolean|false|none|勤怠登録時に勤務時間の長さを自動で計算しないかどうか|
-|total_excess_statutory_work_mins|integer(int32)|false|none|法定内残業時間（分）|
-|total_latenight_excess_statutory_work_mins|integer(int32)|false|none|深夜の法定内残業時間（分）|
+|total_excess_statutory_work_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を参照してください|
+|total_latenight_excess_statutory_work_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 深夜の法定内残業時間（分） ※ 削除予定のため total_latenight_overtime_within_statutory_work_mins を参照してください|
+|total_overtime_within_statutory_work_mins|integer(int32)|false|none|法定内残業時間（分）|
+|total_latenight_overtime_within_statutory_work_mins|integer(int32)|false|none|深夜の法定内残業時間（分）|
 |total_overtime_except_normal_work_mins|integer(int32)|false|none|所定外法定外労働時間（分）|
-|total_latenight_overtime_except_normal_work_min|integer(int32)|false|none|深夜の所定外法定外労働時間（分）|
+|total_latenight_overtime_except_normal_work_mins|integer(int32)|false|none|深夜の所定外法定外労働時間（分）|
 
 #### Enumerated Values
 
@@ -21246,8 +21918,10 @@ bearer
   "not_auto_calc_work_time": false,
   "total_excess_statutory_work_mins": 0,
   "total_latenight_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
+  "total_latenight_overtime_within_statutory_work_mins": 0,
   "total_overtime_except_normal_work_mins": 0,
-  "total_latenight_overtime_except_normal_work_min": 0
+  "total_latenight_overtime_except_normal_work_mins": 0
 }
 ```
 
@@ -21263,10 +21937,10 @@ bearer
 |day_pattern|string|false|none|勤務パターン<br>- normal_day: 所定労働日<br>- prescribed_holiday: 所定休日<br>- legal_holiday: 法定休日|
 |schedule_pattern|string|false|none|スケジュールパターン<br>- substitute_holiday_work: 振替出勤<br>- substitute_holiday: 振替休日<br>- compensatory_holiday_work: 代休出勤<br>- compensatory_holiday: 代休<br>- special_holiday: 特別休暇|
 |early_leaving_mins|integer(int32)|false|none|早退分の時間（分単位）|
-|half_paid_holiday_mins|integer(int32)|false|none|[deprecated] 有給休暇の半休を利用した時間（分単位）※ 削除予定のため paid_holidays を参照してください|
-|half_special_holiday_mins|integer(int32)|false|none|特別休暇の半休を利用した時間（分単位）|
-|hourly_paid_holiday_mins|integer(int32)|false|none|[deprecated] 有給休暇の時間休を利用した時間（分単位）※ 削除予定のため paid_holidays を参照してください|
-|hourly_special_holiday_mins|integer(int32)|false|none|特別休暇の時間休を利用した時間（分単位）|
+|half_paid_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 有給休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
+|half_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
+|hourly_paid_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 有給休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
+|hourly_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください|
 |is_absence|boolean|false|none|欠勤かどうか|
 |is_editable|boolean|false|none|勤怠データが編集可能かどうか|
 |lateness_mins|integer(int32)|false|none|遅刻分の時間（分単位）|
@@ -21274,21 +21948,23 @@ bearer
 |normal_work_clock_out_at|string(date-time) \| null|false|none|所定労働終了時刻|
 |normal_work_mins|integer(int32)|false|none|所定労働時間|
 |note|string|false|none|勤怠メモ|
-|paid_holiday|number(float)|false|none|[deprecated] この日に対する有給取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_paid_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_paid_holiday_minsを参照してください。※ 削除予定のため paid_holidays を参照してください|
-|special_holiday|number(float)|false|none|この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。|
-|special_holiday_setting_id|integer(int32) \| null|false|none|特別休暇設定ID|
+|paid_holiday|number(float)|false|none|**Deprecated.** [deprecated] この日に対する有給取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_paid_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_paid_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください|
+|special_holiday|number(float)|false|none|**Deprecated.** [deprecated] この日に対する特別休暇取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_special_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_special_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください|
+|special_holiday_setting_id|integer(int32) \| null|false|none|**Deprecated.** [deprecated] 特別休暇設定ID ※ 削除予定のため holidays を参照してください|
 |use_attendance_deduction|boolean|false|none|欠勤・遅刻・早退を控除対象時間に算入するかどうか|
 |use_default_work_pattern|boolean|false|none|デフォルトの勤務時間設定を使っているかどうか|
-|use_half_compensatory_holiday|boolean|false|none|代休の半休を利用したかどうか|
+|use_half_compensatory_holiday|boolean|false|none|**Deprecated.** [deprecated] 代休の半休を利用したかどうか ※ 削除予定のため holidays を参照してください|
 |total_overtime_work_mins|integer(int32)|false|none|時間外労働時間（分）（Webの勤怠登録画面にて詳細項目の「勤務時間の長さを自動で計算しない」にチェックを入れた場合0が返却されます。時間外労働時間はtotal_overtime_except_normal_work_minsを参照してください。）|
 |total_prescribed_holiday_work_mins|integer(int32)|false|none|所定休日労働時間（分）|
 |total_holiday_work_mins|integer(int32)|false|none|法定休日労働時間（分）|
 |total_latenight_work_mins|integer(int32)|false|none|深夜労働時間（分）|
 |not_auto_calc_work_time|boolean|false|none|勤怠登録時に勤務時間の長さを自動で計算しないかどうか|
-|total_excess_statutory_work_mins|integer(int32)|false|none|法定内残業時間（分）|
-|total_latenight_excess_statutory_work_mins|integer(int32)|false|none|深夜の法定内残業時間（分）|
+|total_excess_statutory_work_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を参照してください|
+|total_latenight_excess_statutory_work_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 深夜の法定内残業時間（分） ※ 削除予定のため total_latenight_overtime_within_statutory_work_mins を参照してください|
+|total_overtime_within_statutory_work_mins|integer(int32)|false|none|法定内残業時間（分）|
+|total_latenight_overtime_within_statutory_work_mins|integer(int32)|false|none|深夜の法定内残業時間（分）|
 |total_overtime_except_normal_work_mins|integer(int32)|false|none|所定外法定外労働時間（分）|
-|total_latenight_overtime_except_normal_work_min|integer(int32)|false|none|深夜の所定外法定外労働時間（分）|
+|total_latenight_overtime_except_normal_work_mins|integer(int32)|false|none|深夜の所定外法定外労働時間（分）|
 
 #### Enumerated Values
 
@@ -23271,6 +23947,19 @@ bearer
       "mins": 0
     }
   ],
+  "holidays": [
+    {
+      "holiday_type": "full",
+      "mins": 1,
+      "time_ranges": [
+        {
+          "start_at": "2018-07-31 08:00:00",
+          "end_at": "2018-07-31 09:00:00"
+        }
+      ],
+      "holiday_category": "annual_paid_holiday"
+    }
+  ],
   "special_holiday": "1.0",
   "special_holiday_setting_id": 1,
   "half_special_holiday_mins": 0,
@@ -23291,17 +23980,18 @@ bearer
 |clock_out_at|string(date-time)|false|none|退勤時刻<br><br>複数の出退勤を指定できないため非推奨です。 `work_record_segments` を利用してください。|
 |day_pattern|string|false|none|勤務パターン（所定労働日: normal_day, 所定休日: prescribed_holiday, 法定休日: legal_holiday）<br><br>prescribed_holiday、legal_holidayを指定すると、以下のパラメータについて、指定した値が反映されず無視されます。<br>- early_leaving_mins<br>- lateness_mins<br>- paid_holiday|
 |early_leaving_mins|integer(int32)|false|none|早退分の時間（分単位）|
-|is_absence|boolean|false|none|欠勤かどうか<br><br>is_absenceにtrueを指定すると、以下のパラーメータについて、指定した値が反映されず無視されます。<br>- break_records<br>  - clock_in_at<br>  - clock_out_at<br>- clock_in_at<br>- clock_out_at<br>- early_leaving_mins<br>- lateness_mins<br>- normal_work_clock_in_at<br>- normal_work_clock_out_at<br>- normal_work_mins<br>- paid_holidays<br>- special_holiday<br>- special_holiday_setting_id<br>- half_special_holiday_mins<br>- hourly_special_holiday_mins|
+|is_absence|boolean|false|none|欠勤かどうか<br><br>is_absenceにtrueを指定すると、以下のパラメータについて、指定した値が反映されず無視されます。<br>- break_records<br>  - clock_in_at<br>  - clock_out_at<br>- clock_in_at<br>- clock_out_at<br>- early_leaving_mins<br>- lateness_mins<br>- normal_work_clock_in_at<br>- normal_work_clock_out_at<br>- normal_work_mins<br><br>ただし、休暇（holidays、paid_holidays、special_holiday、half_special_holiday_mins、hourly_special_holiday_mins）を指定した場合は休暇の登録が優先され、is_absence の指定は無視されます。|
 |lateness_mins|integer(int32)|false|none|遅刻分の時間（分単位）|
 |normal_work_clock_in_at|string(date-time)|false|none|所定労働開始時刻。指定しない場合はデフォルト設定が使用されます。（デフォルト設定は従業員に設定した勤務賃金設定の出退勤時刻と労働時間の設定を参照して値が決まります。）|
 |normal_work_clock_out_at|string(date-time)|false|none|所定労働終了時刻。指定しない場合はデフォルト設定が使用されます。（デフォルト設定は従業員に設定した勤務賃金設定の出退勤時刻と労働時間の設定を参照して値が決まります。）|
 |normal_work_mins|integer(int32)|false|none|所定労働時間。指定しない場合はデフォルト設定が使用されます。（デフォルト設定は従業員に設定した勤務賃金設定の出退勤時刻と労働時間の設定を参照して値が決まります。）|
 |note|string|false|none|勤怠メモ|
-|paid_holidays|[object]|false|none|none|
-|special_holiday|number(float)|false|none|この日の特別休暇取得日数。1日単位で指定します。|
-|special_holiday_setting_id|integer(int32) \| null|false|none|特別休暇設定ID|
-|half_special_holiday_mins|integer(int32)|false|none|特別休暇の半休を利用した時間（分単位）|
-|hourly_special_holiday_mins|integer(int32)|false|none|特別休暇の時間休を利用した時間（分単位）|
+|paid_holidays|[object]|false|none|**Deprecated.** [deprecated] 年次有給休暇の内訳 ※ 削除予定のため holidays をご利用ください|
+|holidays|[[ApiV1EmployeesWorkRecordHolidayRequest](#schemaapiv1employeesworkrecordholidayrequest)]|false|none|休暇の内訳。年次有給休暇、特別休暇、代休を指定できます。<br>full、morning_off、afternoon_off では mins と time_ranges を指定しません。年休と有給の特休の half では mins を指定します。無給の特休の half では mins を指定できません。<br>half を2つ組み合わせて全休にする場合は、どちらの half でも mins を指定できません。<br>年休・特休の hourly は、対象日に適用される勤務賃金設定の時間休の入力方式に従い、時間数方式の場合は mins、時間帯方式の場合は time_ranges を指定します。mins は60分単位です。代休では holiday_type にかかわらず mins と time_ranges を指定しません。<br>特別休暇では special_holiday_setting_id、代休では source_date が必須です。|
+|special_holiday|number(float)|false|none|**Deprecated.** [deprecated] この日の特別休暇取得日数。1日単位で指定します。 ※ 削除予定のため holidays をご利用ください|
+|special_holiday_setting_id|integer(int32) \| null|false|none|**Deprecated.** [deprecated] 特別休暇設定ID ※ 削除予定のため holidays をご利用ください|
+|half_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays をご利用ください|
+|hourly_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays をご利用ください|
 |use_attendance_deduction|boolean|false|none|欠勤・遅刻・早退を控除対象時間に算入するかどうか|
 |use_default_work_pattern|boolean|false|none|デフォルトの勤務設定を使うかどうか。<br><br>trueを指定した場合、以下のパラメータについて、指定した値に関係なく、従業員に設定した勤務賃金設定の休日の設定を参照して値が決まります<br>- day_pattern<br><br>trueを指定した場合、以下のパラメータについて、指定した値に関係なく、従業員に設定した勤務賃金設定の出退勤時刻と労働時間の設定を参照して値が決まります。<br>- normal_work_clock_in_at<br>- normal_work_clock_out_at<br>- normal_work_mins|
 
@@ -23370,19 +24060,19 @@ bearer
 |clock_out_at|string(date-time)|false|none|退勤時刻<br><br>複数の出退勤を指定できないため非推奨です。 `work_record_segments` を利用してください。|
 |day_pattern|string|false|none|勤務パターン（所定労働日: normal_day, 所定休日: prescribed_holiday, 法定休日: legal_holiday）<br><br>prescribed_holiday、legal_holidayを指定すると、以下のパラメータについて、指定した値が反映されず無視されます。<br>- early_leaving_mins<br>- lateness_mins<br>- paid_holiday|
 |early_leaving_mins|integer(int32)|false|none|早退分の時間（分単位）|
-|is_absence|boolean|false|none|欠勤かどうか<br><br>is_absenceにtrueを指定すると、以下のパラーメータについて、指定した値が反映されず無視されます。<br>- break_records<br>  - clock_in_at<br>  - clock_out_at<br>- clock_in_at<br>- clock_out_at<br>- early_leaving_mins<br>- lateness_mins<br>- normal_work_clock_in_at<br>- normal_work_clock_out_at<br>- normal_work_mins<br>- paid_holiday<br>- half_paid_holiday_mins<br>- hourly_paid_holiday_mins<br>- special_holiday<br>- special_holiday_setting_id<br>- half_special_holiday_mins<br>- hourly_special_holiday_mins|
+|is_absence|boolean|false|none|欠勤かどうか<br><br>is_absenceにtrueを指定すると、以下のパラメータについて、指定した値が反映されず無視されます。<br>- break_records<br>  - clock_in_at<br>  - clock_out_at<br>- clock_in_at<br>- clock_out_at<br>- early_leaving_mins<br>- lateness_mins<br>- normal_work_clock_in_at<br>- normal_work_clock_out_at<br>- normal_work_mins<br><br>ただし、休暇（paid_holiday、half_paid_holiday_mins、hourly_paid_holiday_mins、special_holiday、half_special_holiday_mins、hourly_special_holiday_mins）を指定した場合は休暇の登録が優先され、is_absence の指定は無視されます。|
 |lateness_mins|integer(int32)|false|none|遅刻分の時間（分単位）|
 |normal_work_clock_in_at|string(date-time)|false|none|所定労働開始時刻。指定しない場合はデフォルト設定が使用されます。（デフォルト設定は従業員に設定した勤務賃金設定の出退勤時刻と労働時間の設定を参照して値が決まります。）|
 |normal_work_clock_out_at|string(date-time)|false|none|所定労働終了時刻。指定しない場合はデフォルト設定が使用されます。（デフォルト設定は従業員に設定した勤務賃金設定の出退勤時刻と労働時間の設定を参照して値が決まります。）|
 |normal_work_mins|integer(int32)|false|none|所定労働時間。指定しない場合はデフォルト設定が使用されます。（デフォルト設定は従業員に設定した勤務賃金設定の出退勤時刻と労働時間の設定を参照して値が決まります。）|
 |note|string|false|none|勤怠メモ|
-|paid_holiday|number(float)|false|none|[deprecated] この日の有休取得日数。1日単位で指定します。 ※ paid_holidays を指定する場合にはこちらの値は参照されません ※ 削除予定のため paid_holidays->type を指定してください|
-|half_paid_holiday_mins|integer(int32)|false|none|[deprecated] 有給休暇の半休を利用した時間（分単位） ※ paid_holidaysを指定する場合にはこちらの値は参照されません ※ 削除予定のためpaid_holidays->mins を指定してください|
-|hourly_paid_holiday_mins|integer(int32)|false|none|[deprecated] morning_off または afternoon_off を指定します ※ paid_holidaysを指定する場合にはこちらの値は参照使用されません ※ 削除予定のため paid_holidays->type を指定してください|
-|special_holiday|number(float)|false|none|この日の特別休暇取得日数。1日単位で指定します。|
-|special_holiday_setting_id|integer(int32) \| null|false|none|特別休暇設定ID|
-|half_special_holiday_mins|integer(int32)|false|none|特別休暇の半休を利用した時間（分単位）|
-|hourly_special_holiday_mins|integer(int32)|false|none|特別休暇の時間休を利用した時間（分単位）|
+|paid_holiday|number(float)|false|none|**Deprecated.** [deprecated] この日の有休取得日数。1日単位で指定します。 ※ paid_holidays を指定する場合にはこちらの値は参照されません ※ 削除予定のため holidays をご利用ください|
+|half_paid_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 有給休暇の半休を利用した時間（分単位） ※ paid_holidaysを指定する場合にはこちらの値は参照されません ※ 削除予定のため holidays をご利用ください|
+|hourly_paid_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 有給休暇の時間休を利用した時間（分単位） ※ paid_holidaysを指定する場合にはこちらの値は参照されません ※ 削除予定のため holidays をご利用ください|
+|special_holiday|number(float)|false|none|**Deprecated.** [deprecated] この日の特別休暇取得日数。1日単位で指定します。 ※ 削除予定のため holidays をご利用ください|
+|special_holiday_setting_id|integer(int32) \| null|false|none|**Deprecated.** [deprecated] 特別休暇設定ID ※ 削除予定のため holidays をご利用ください|
+|half_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays をご利用ください|
+|hourly_special_holiday_mins|integer(int32)|false|none|**Deprecated.** [deprecated] 特別休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays をご利用ください|
 |use_attendance_deduction|boolean|false|none|欠勤・遅刻・早退を控除対象時間に算入するかどうか|
 |use_default_work_pattern|boolean|false|none|デフォルトの勤務設定を使うかどうか。<br><br>trueを指定した場合、以下のパラメータについて、指定した値に関係なく、従業員に設定した勤務賃金設定の休日の設定を参照して値が決まります<br>- day_pattern<br><br>trueを指定した場合、以下のパラメータについて、指定した値に関係なく、従業員に設定した勤務賃金設定の出退勤時刻と労働時間の設定を参照して値が決まります。<br>- normal_work_clock_in_at<br>- normal_work_clock_out_at<br>- normal_work_mins|
 
@@ -23415,10 +24105,13 @@ bearer
   "total_work_mins": 0,
   "total_normal_work_mins": 0,
   "total_excess_statutory_work_mins": 0,
+  "total_overtime_within_statutory_work_mins": 0,
   "total_holiday_work_mins": 0,
   "total_latenight_work_mins": 0,
   "total_actual_excess_statutory_work_mins": 0,
+  "total_actual_overtime_within_statutory_work_mins": 0,
   "total_overtime_work_mins": 0,
+  "total_overtime_excess_statutory_work_mins": 0,
   "total_prescribed_holiday_work_mins": 0,
   "num_absences": 0,
   "num_absences_for_deduction": 0,
@@ -23429,6 +24122,7 @@ bearer
   "num_paid_holidays": 0,
   "total_shortage_work_mins": 0,
   "total_deemed_paid_excess_statutory_work_mins": 0,
+  "total_deemed_paid_overtime_within_statutory_work_mins": 0,
   "total_deemed_paid_overtime_except_normal_work_mins": 0
 }
 ```
@@ -23444,11 +24138,14 @@ bearer
 |work_days_on_legal_holidays|number(float)|false|none|法定休日の勤務日数|
 |total_work_mins|integer|false|none|労働時間（分）|
 |total_normal_work_mins|integer|false|none|所定労働時間（分）|
-|total_excess_statutory_work_mins|integer|false|none|給与計算に用いられる法定内残業時間（分）|
+|total_excess_statutory_work_mins|integer|false|none|**Deprecated.** [deprecated] 給与計算に用いられる法定内残業時間（分） ※ 削除予定のため total_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります|
+|total_overtime_within_statutory_work_mins|integer|false|none|給与計算に用いられる法定内残業時間（分）|
 |total_holiday_work_mins|integer|false|none|法定休日労働時間（分）|
 |total_latenight_work_mins|integer|false|none|深夜労働時間（分）|
-|total_actual_excess_statutory_work_mins|integer|false|none|実労働時間ベースの法定内残業時間（分）|
-|total_overtime_work_mins|integer|false|none|時間外労働時間（分）|
+|total_actual_excess_statutory_work_mins|integer|false|none|**Deprecated.** [deprecated] 実労働時間ベースの法定内残業時間（分） ※ 削除予定のため total_actual_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります|
+|total_actual_overtime_within_statutory_work_mins|integer|false|none|実労働時間ベースの法定内残業時間（分）|
+|total_overtime_work_mins|integer|false|none|**Deprecated.** [deprecated] 時間外労働時間（分） ※ 削除予定のため total_overtime_excess_statutory_work_mins を指定してください。両方指定した場合はエラーになります|
+|total_overtime_excess_statutory_work_mins|integer|false|none|時間外労働時間（分）|
 |total_prescribed_holiday_work_mins|integer|false|none|所定休日労働時間（分）|
 |num_absences|number(float)|false|none|欠勤日数|
 |num_absences_for_deduction|number(float)|false|none|控除対象の欠勤日数<br><br>フレックスタイム制の場合は、指定した値が反映されず無視されます。|
@@ -23458,7 +24155,8 @@ bearer
 |total_early_leaving_mins_for_deduction|integer|false|none|控除対象の早退時間（分）<br><br>フレックスタイム制と裁量労働制の場合は、指定した値が反映されず無視されます。|
 |num_paid_holidays|number(float)|false|none|有給取得日数|
 |total_shortage_work_mins|integer|false|none|不足時間（分）（フレックスタイム制でのみ使用）|
-|total_deemed_paid_excess_statutory_work_mins|integer|false|none|みなし外の法定内残業時間（分）（裁量労働制でのみ使用）|
+|total_deemed_paid_excess_statutory_work_mins|integer|false|none|**Deprecated.** [deprecated] みなし外の法定内残業時間（分）（裁量労働制でのみ使用） ※ 削除予定のため total_deemed_paid_overtime_within_statutory_work_mins を指定してください。両方指定した場合はエラーになります|
+|total_deemed_paid_overtime_within_statutory_work_mins|integer|false|none|みなし外の法定内残業時間（分）（裁量労働制でのみ使用）|
 |total_deemed_paid_overtime_except_normal_work_mins|integer|false|none|みなし外の時間外労働時間（分）（裁量労働制でのみ使用）|
 
 <h2 id="tocS_ApiV1EmployeesTimeClocksController.index_response">ApiV1EmployeesTimeClocksController.index_response</h2>
@@ -25746,7 +26444,7 @@ bearer
 |relationship|string|false|none|続柄 null不可 spouse: 配偶者, father: 父, mother: 母, child: 子, senior_brother: 兄, junior_brother: 弟, senior_sister: 姉, junior_sister: 妹, grandchild: 孫, grandfather: 祖父, grandmother: 祖母, father_in_law: 義父, mother_in_law: 義母, grandfather_in_law: 義祖父, grandmother_in_law: 義祖母, other: その他, great_grandfather: 曽祖父, great_grandmother: 曽祖母, spouses_child: 配偶者の連れ子|
 |birth_date|string(date)|false|none|生年月日 null不可 1900年1月1日から現在年+5年12月31日まで登録可能|
 |social_insurance_and_tax_dependent|string|false|none|扶養状況 social_insurance_and_tax: 所得税・住民税と社会保険, tax_only: 所得税・住民税のみ, social_insurance_only: 社会保険のみ, not_dependent: 扶養していない|
-|income|integer(int32)|false|none|所得 配偶者は「扶養状況」がsocial_insurance_only又はnot_dependentの場合のみ更新可能。配偶者以外は更新可能。 配偶者で「扶養状況」がsocial_insurance_and_tax又はtax_onlyの場合、「給与収入」、「給与以外の所得」から自動で「所得」が計算されます。|
+|income|integer(int32)|false|none|所得 配偶者は「扶養状況」がsocial_insurance_only又はnot_dependentの場合のみ更新可能。配偶者以外は更新可能。<br>配偶者で「扶養状況」がsocial_insurance_and_tax又はtax_onlyの場合、「給与収入」、「給与以外の所得」から自動で「所得」が計算されます。<br><br><br><br>2026年以降の年末調整で、freee人事労務の年末調整画面から「公的年金収入」を入力している場合、公的年金等の所得は「給与以外の所得」に合算して返却されます。<br>この場合、「所得」は「給与所得と年金所得の双方を有する者に対する所得金額調整控除」を適用した後の金額となるため、「給与収入」と「給与以外の所得」から算出した金額とは一致しないことがあります。|
 |employment_revenue|integer(int32)|false|none|給与収入 配偶者は「扶養状況」がsocial_insurance_and_tax又はtax_onlyの場合のみ更新可能。配偶者以外は更新不可。更新不可の場合は0となります。|
 |all_other_income|integer(int32)|false|none|給与以外の所得 配偶者は「扶養状況」がsocial_insurance_and_tax又はtax_onlyの場合のみ更新可能。配偶者以外は更新不可。更新不可の場合は0となります。|
 |disability_type|string|false|none|障害に該当するか null不可 na: 障害なし, general: 一般の障害者, heavy: 特別障害者|
@@ -26905,6 +27603,7 @@ bearer
   "amount_source": "direct",
   "is_daily_prorated": true,
   "formula_element": "num_absences",
+  "formula_element_code": "num_absences",
   "round_type": "round",
   "rate_multiplier": 0,
   "company_profile_custom_field_id": 0,
@@ -26932,7 +27631,8 @@ bearer
 |amount|integer \| null|false|none|金額（変動手当の場合はnull）|
 |amount_source|string|true|none|金額ソース|
 |is_daily_prorated|boolean|true|none|日割り計算対象フラグ（calc_typeがfixed以外の場合はfalse）|
-|formula_element|string \| null|false|none|計算の基となる勤怠項目・カスタム項目の識別子（calc_typeがfixedの場合はnull）|
+|formula_element|string \| null|false|none|**Deprecated.** [deprecated] 計算の基となる勤怠項目・カスタム項目の識別子（calc_typeがfixedの場合はnull） ※ 削除予定のため formula_element_code を参照してください|
+|formula_element_code|string \| null|false|none|計算の基となる勤怠項目・カスタム項目の識別子（calc_typeがfixedの場合はnull）|
 |round_type|string \| null|false|none|端数処理（calc_typeがfixedの場合はnull）|
 |rate_multiplier|number \| null|false|none|乗数（amount_sourceがsystem_deduction_charge/system_overtime_chargeの場合のみ）|
 |company_profile_custom_field_id|integer(int64) \| null|false|none|カスタム項目ID（calc_typeがcustomの場合のみ）|
@@ -26982,6 +27682,29 @@ bearer
 |formula_element|attendance_tag_total_normal_work_mins|
 |formula_element|attendance_tag_total_overtime_work_mins|
 |formula_element|attendance_tag_total_work_mins|
+|formula_element_code|num_absences|
+|formula_element_code|num_paid_holidays|
+|formula_element_code|num_total_workdays|
+|formula_element_code|num_work_days_with_early_leaving|
+|formula_element_code|num_work_days_with_lateness|
+|formula_element_code|total_overtime_within_statutory_work_mins|
+|formula_element_code|total_holiday_work_mins|
+|formula_element_code|total_lateness_and_early_leaving_mins|
+|formula_element_code|total_latenight_work_mins|
+|formula_element_code|total_normal_work_mins|
+|formula_element_code|total_overtime_excess_statutory_work_mins|
+|formula_element_code|total_prescribed_holiday_work_mins|
+|formula_element_code|total_work_mins|
+|formula_element_code|company_profile_custom_field|
+|formula_element_code|attendance_tag_total_count|
+|formula_element_code|attendance_tag_assigned_days|
+|formula_element_code|attendance_tag_total_overtime_within_statutory_work_mins|
+|formula_element_code|attendance_tag_total_prescribed_holiday_work_mins|
+|formula_element_code|attendance_tag_total_holiday_work_mins|
+|formula_element_code|attendance_tag_total_latenight_work_mins|
+|formula_element_code|attendance_tag_total_normal_work_mins|
+|formula_element_code|attendance_tag_total_overtime_excess_statutory_work_mins|
+|formula_element_code|attendance_tag_total_work_mins|
 |round_type|round|
 |round_type|floor|
 |round_type|ceil|
@@ -27008,6 +27731,7 @@ bearer
       "amount_source": "direct",
       "is_daily_prorated": true,
       "formula_element": "num_absences",
+      "formula_element_code": "num_absences",
       "round_type": "round",
       "rate_multiplier": 0,
       "company_profile_custom_field_id": 0,
@@ -27052,6 +27776,7 @@ bearer
     "amount_source": "direct",
     "is_daily_prorated": true,
     "formula_element": "num_absences",
+    "formula_element_code": "num_absences",
     "round_type": "round",
     "rate_multiplier": 0,
     "company_profile_custom_field_id": 0,

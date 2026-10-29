@@ -2479,13 +2479,28 @@ const AbuseReportsAppealEligibilitySchema = z
     has_open_appeal: z
       .boolean()
       .openapi({ description: 'Whether the report already has an open (undecided) appeal.' }),
+    has_pending_notice: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the report is in its Notice and Takedown notice period. No mitigation is applied yet, but one will be applied at `notice_deadline` unless the report is resolved first.',
+      }),
     max_appeals: z.int().openapi({ description: 'Maximum number of appeals allowed per report.' }),
+    notice_deadline: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'When the notice period ends and the mitigation is applied. Present only when `has_pending_notice` is true. Time in RFC 3339 format (https://www.rfc-editor.org/rfc/rfc3339.html)',
+        example: '2009-11-10T23:00:00Z',
+      }),
   })
   .openapi({
     required: [
       'appealable',
       'has_appealable_mitigations',
       'has_open_appeal',
+      'has_pending_notice',
       'appeal_count',
       'max_appeals',
     ],
@@ -3139,7 +3154,7 @@ const AbuseReportsMitigationAppealRequestSchema = z
   ])
   .openapi({
     description:
-      'Submit an appeal for a report. Provide either a list of mitigations to appeal, or an appeal type with its supporting details, but not both. When type is "counter_notice", the counter-notice details are required.',
+      'Submit an appeal for a report. Provide either a list of mitigations to appeal, or an appeal type with its supporting details, but not both. When type is "counter_notice", the counter-notice details are required. A "content_removed" appeal takes an optional explanation instead and is accepted only while the report is in its Notice and Takedown notice period (`has_pending_notice` on the eligibility response). Reports that allow a single appeal (`max_appeals` of 1) never have a notice period and accept it whenever `appealable` is true.',
   })
   .openapi('AbuseReportsMitigationAppealRequest')
 
@@ -5064,6 +5079,14 @@ const AccessName_9Schema = z
   .openapi({ description: 'The name of the Access policy.', example: 'Allow devs' })
   .openapi('AccessName_9')
 
+const AccessPolicyResolutionAccountIdSchema = z
+  .string()
+  .openapi({
+    description:
+      'The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.',
+  })
+  .openapi('AccessPolicyResolutionAccountId')
+
 const AccessRequire_2Schema = z
   .array(AccessRuleSchema)
   .default([])
@@ -5080,6 +5103,7 @@ const AccessBasePolicyReqSchema = z
     exclude: AccessExclude_2Schema.exactOptional(),
     include: AccessInclude_2Schema,
     name: AccessName_9Schema,
+    policy_resolution_account_id: AccessPolicyResolutionAccountIdSchema.exactOptional(),
     require: AccessRequire_2Schema.exactOptional(),
   })
   .openapi({ required: ['name', 'decision', 'include'] })
@@ -5251,6 +5275,7 @@ const AccessBasePolicyRespSchema = z
     id: AccessUuid_2Schema.exactOptional(),
     include: AccessInclude_2Schema.exactOptional(),
     name: AccessName_9Schema.exactOptional(),
+    policy_resolution_account_id: AccessPolicyResolutionAccountIdSchema.exactOptional(),
     require: AccessRequire_2Schema.exactOptional(),
     updated_at: AccessTimestampSchema.exactOptional(),
   })
@@ -9410,6 +9435,16 @@ const AccessGoogleApps_2Schema = AccessIdentityProvider_2Schema.and(
   .openapi({ title: 'Google Workspace' })
   .openapi('AccessGoogleApps_2')
 
+const AccessGrantTrustToAllAccountsInOrgSchema = z
+  .boolean()
+  .openapi({
+    description:
+      "Whether all accounts in the organization are trusted to use this account's cross-account Access resources.",
+    example: false,
+    'x-auditable': true,
+  })
+  .openapi('AccessGrantTrustToAllAccountsInOrg')
+
 const AccessIdSchema = z
   .string()
   .openapi({
@@ -11770,6 +11805,30 @@ const AccessTargetRuleSchema = z
     required: [],
   })
   .openapi('AccessTargetRule')
+
+const AccessTrustingAccountsSchema = z
+  .array(z.string().regex(/^[0-9a-fA-F]{32}$/))
+  .openapi({
+    description:
+      "Explicit account IDs trusted to use this account's cross-account Access resources. At most 100 unique valid account IDs are accepted. Omitted from responses when empty.",
+    example: ['023e105f4ecef8ad9ca31a8372d0c353'],
+    'x-auditable': true,
+  })
+  .openapi('AccessTrustingAccounts')
+
+const AccessTrustSettingsResponseSchema = AccessApiResponseSingleSchema.and(
+  z
+    .object({
+      result: z
+        .object({
+          grant_trust_to_all_accounts_in_org: AccessGrantTrustToAllAccountsInOrgSchema,
+          trusting_accounts: AccessTrustingAccountsSchema.exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ required: ['grant_trust_to_all_accounts_in_org'] }),
+    })
+    .openapi({ required: [] }),
+).openapi('AccessTrustSettingsResponse')
 
 const AccessUntilSchema = z.iso
   .datetime({ offset: true })
@@ -14485,7 +14544,7 @@ const AnalyticsSqlSqlQueryTimeRangeSchema = z
 const AnalyticsSqlSqlQueryRequestSchema = z
   .strictObject({
     params: z
-      .xor([z.array(z.any()), z.looseObject({})])
+      .xor([z.array(z.xor([z.string().nullable(), z.number(), z.boolean()])), z.looseObject({})])
       .exactOptional()
       .openapi({
         description:
@@ -17465,7 +17524,9 @@ const BillSubsApiSubscriptionV2Schema = z
     price: BillSubsApiPriceSchema.exactOptional(),
     rate_plan: BillSubsApiRatePlanSchema.exactOptional(),
     state: BillSubsApiStateSchema.exactOptional(),
-    zone: BillSubsApiZoneSchema.exactOptional(),
+    zone: BillSubsApiZoneSchema.exactOptional().openapi({
+      'x-fern-property-name': 'subscription-zone',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BillSubsApiSubscriptionV2')
@@ -39349,6 +39410,18 @@ const DnsSettingsNameserverSetIpSetSchema = z
   })
   .openapi('DnsSettingsNameserverSetIpSet')
 
+const DnsSettingsNameserverSetNameSchema = z
+  .string()
+  .min(1)
+  .max(255)
+  .openapi({
+    description:
+      "Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.",
+    example: 'Production nameservers',
+    'x-auditable': true,
+  })
+  .openapi('DnsSettingsNameserverSetName')
+
 const DnsSettingsNameserverSetResponseBaseSchema = z
   .object({
     created_on: z.iso
@@ -39361,8 +39434,9 @@ const DnsSettingsNameserverSetResponseBaseSchema = z
       }),
     id: DnsSettingsNameserverSetIdSchema,
     ip_set: DnsSettingsNameserverSetIpSetSchema,
+    name: DnsSettingsNameserverSetNameSchema,
   })
-  .openapi({ required: ['id', 'ip_set', 'created_on'] })
+  .openapi({ required: ['id', 'name', 'ip_set', 'created_on'] })
   .openapi('DnsSettingsNameserverSetResponseBase')
 
 const DnsSettingsNameserverSetIpv4AddressesSchema = z
@@ -39448,6 +39522,7 @@ const DnsSettingsNameserverSetCreateSchema = z
         'x-auditable': true,
       }),
     ip_set: DnsSettingsNameserverSetIpSetSchema.exactOptional(),
+    name: DnsSettingsNameserverSetNameSchema,
     nameservers: z
       .array(DnsSettingsNameserverSetCreateMemberSchema)
       .min(2)
@@ -39457,8 +39532,17 @@ const DnsSettingsNameserverSetCreateSchema = z
           'Lists each nameserver and the number of addresses to allocate to it. Requires a unique name for each entry in the set.',
       }),
   })
-  .openapi({ required: ['nameservers'] })
+  .openapi({ required: ['name', 'nameservers'] })
   .openapi('DnsSettingsNameserverSetCreate')
+
+const DnsSettingsNameserverSetPatchSchema = z
+  .strictObject({ name: DnsSettingsNameserverSetNameSchema.exactOptional() })
+  .openapi({
+    description:
+      "Updates only the customer-defined name. All other fields are rejected, even if unchanged. An empty object or the current name succeeds without changing the set. A null name is invalid. Requires the account-scoped creation entitlements, including eligibility for the set's current IP set and the Advanced entitlement for an Advanced set.",
+    required: [],
+  })
+  .openapi('DnsSettingsNameserverSetPatch')
 
 const DnsSettingsNameserverSetResponseMemberSchema = z
   .object({
@@ -46918,6 +47002,24 @@ const FirewallPackageResponseCollectionSchema = z
 const FirewallPackageResponseSingleSchema = FirewallApiResponseSingleSchema.and(
   z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
 ).openapi('FirewallPackageResponseSingle')
+
+const FirewallPayloadLoggingKeySchema = z
+  .object({
+    public_key: z
+      .string()
+      .length(44)
+      .openapi({
+        description:
+          'Defines the X25519 public key, as standard base64 of exactly 32 bytes, that encrypts matched payloads. Cloudflare stores only the public key; keep the private key to decrypt logged payloads.',
+        example: 'Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8=',
+      }),
+  })
+  .openapi({ required: ['public_key'] })
+  .openapi('FirewallPayloadLoggingKey')
+
+const FirewallPayloadLoggingKeyResponseSingleSchema = FirewallApiResponseCommonSchema.and(
+  z.object({ result: FirewallPayloadLoggingKeySchema.exactOptional() }).openapi({ required: [] }),
+).openapi('FirewallPayloadLoggingKeyResponseSingle')
 
 const FirewallPeriodSchema = z
   .number()
@@ -57875,6 +57977,7 @@ const LogpushDatasetSchema = z
   .enum([
     'access_requests',
     'account_abuse_protection_events',
+    'ai_gateway_events',
     'audit_logs',
     'audit_logs_v2',
     'biso_user_actions',
@@ -75667,6 +75770,14 @@ const R2DataCatalogCatalogSchema = z
         description: 'Use this to uniquely identify the catalog.',
         example: '550e8400-e29b-41d4-a716-446655440000',
       }),
+    jurisdiction: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the data-locality jurisdiction of the catalog. The first enable sets it, and it cannot change. Currently always `default`.',
+        example: 'default',
+      }),
     maintenance_config: R2DataCatalogCatalogMaintenanceConfigSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Configures maintenance for the catalog.' }),
@@ -75683,6 +75794,28 @@ const R2DataCatalogCatalogSchema = z
     required: ['id', 'name', 'bucket', 'status'],
   })
   .openapi('R2DataCatalogCatalog')
+
+const R2DataCatalogCatalogCredentialRequestSchema = z
+  .object({
+    token: z
+      .string()
+      .openapi({
+        description: 'Provides the Cloudflare API token for accessing R2.',
+        example: 'your-cloudflare-api-token-here',
+        'x-sensitive': true,
+      }),
+  })
+  .openapi({ description: 'Contains request to store catalog credentials.', required: ['token'] })
+  .openapi('R2DataCatalogCatalogCredentialRequest')
+
+const R2DataCatalogCatalogActivationRequestSchema = z
+  .object({ credential: R2DataCatalogCatalogCredentialRequestSchema.exactOptional() })
+  .openapi({
+    description:
+      "Contains the optional request to enable a catalog. Send an empty body\nto keep the defaults. If you include `credential`, the service checks\nthat the token can access the bucket, then stores it as the catalog's\nmaintenance credential, like the store credentials operation.\n",
+    required: [],
+  })
+  .openapi('R2DataCatalogCatalogActivationRequest')
 
 const R2DataCatalogCatalogActivationResponseSchema = z
   .object({
@@ -75704,18 +75837,6 @@ const R2DataCatalogCatalogActivationResponseSchema = z
     required: ['id', 'name'],
   })
   .openapi('R2DataCatalogCatalogActivationResponse')
-
-const R2DataCatalogCatalogCredentialRequestSchema = z
-  .object({
-    token: z
-      .string()
-      .openapi({
-        description: 'Provides the Cloudflare API token for accessing R2.',
-        example: 'your-cloudflare-api-token-here',
-      }),
-  })
-  .openapi({ description: 'Contains request to store catalog credentials.', required: ['token'] })
-  .openapi('R2DataCatalogCatalogCredentialRequest')
 
 const R2DataCatalogCatalogListSchema = z
   .object({
@@ -82206,11 +82327,19 @@ const ReportsErrorSchema = z
   .openapi({ required: ['code', 'message'] })
   .openapi('ReportsError')
 
+const ReportsMessageSchema = z
+  .object({
+    code: z.number().openapi({ example: 10000 }),
+    message: z.string().openapi({ example: 'This is an example message' }),
+  })
+  .openapi({ required: ['code', 'message'] })
+  .openapi('ReportsMessage')
+
 const ReportsAccountIndustryErrorResponseSchema = z
   .object({
     errors: z.array(ReportsErrorSchema),
-    messages: z.array(z.any().nullable()).default([]).exactOptional(),
-    result: z.any().nullable(),
+    messages: z.array(ReportsMessageSchema).default([]).exactOptional(),
+    result: z.object({}).nullable(),
     success: z.literal(false),
   })
   .openapi({ required: ['success', 'errors', 'result'] })
@@ -83945,14 +84074,6 @@ const ReportsGetReportResponseSchema = z
   })
   .openapi('ReportsGetReportResponse')
 
-const ReportsMessageSchema = z
-  .object({
-    code: z.number().openapi({ example: 10000 }),
-    message: z.string().openapi({ example: 'This is an example message' }),
-  })
-  .openapi({ required: ['code', 'message'] })
-  .openapi('ReportsMessage')
-
 const ReportsPatchAccountIndustryBodySchema = z
   .object({
     industry: z
@@ -84428,8 +84549,8 @@ const ReportsPoliciesListResponseSchema = z
 const ReportsPolicyErrorResponseSchema = z
   .object({
     errors: z.array(ReportsErrorSchema),
-    messages: z.array(z.any().nullable()).default([]).exactOptional(),
-    result: z.any().nullable(),
+    messages: z.array(ReportsMessageSchema).default([]).exactOptional(),
+    result: z.object({}).nullable(),
     success: z.literal(false),
   })
   .openapi({ required: ['success', 'errors', 'result'] })
@@ -89914,7 +90035,7 @@ const RulesetsResponseSchema = z
     errors: RulesetsErrorsSchema,
     messages: RulesetsMessagesSchema,
     result: z
-      .xor([z.object({}).nullable(), z.array(z.any()), z.string(), z.number(), z.boolean()])
+      .xor([z.object({}).nullable(), z.array(z.object({})), z.string(), z.number(), z.boolean()])
       .openapi({ description: 'A result.', title: 'Result' }),
     success: z
       .boolean()
@@ -97476,6 +97597,16 @@ const TeamsDevicesGatewayUniqueIdSchema = z
 
 const TeamsDevicesGlobalAccelerationSchema = z
   .object({
+    allow_manual_override: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether WARP users may manually override the automatic Global Acceleration decision. Defaults to true when not provided.',
+        example: true,
+        'x-auditable': true,
+      }),
     api_endpoints: z
       .array(z.string().openapi({ 'x-auditable': true }))
       .max(5)
@@ -99250,6 +99381,15 @@ const TeamsDevicesPhysicalDeviceSchema = z
       .openapi({
         description: 'The model name of the device.',
         example: 'Mark VII',
+        'x-auditable': true,
+      }),
+    multiuser: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if this device is in [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/).',
+        example: true,
         'x-auditable': true,
       }),
     name: z
@@ -103341,7 +103481,14 @@ const TunnelAddressFamilySchema = z
 const TunnelMessagesSchema = z
   .array(
     z
-      .object({ code: z.int().min(1000), message: z.string() })
+      .object({
+        code: z.int().min(1000),
+        context: z
+          .looseObject({})
+          .exactOptional()
+          .openapi({ description: 'Optional error-specific context.' }),
+        message: z.string(),
+      })
       .openapi({ required: ['code', 'message'] }),
   )
   .openapi({ example: [] })
@@ -107153,12 +107300,9 @@ const WafProductApiBundleCustomTopicSchema = z
       }),
     topic: z
       .string()
-      .regex(/^[ -~]+$/)
-      .min(2)
-      .max(50)
       .openapi({
         description:
-          'Description of the topic category. Must contain only printable ASCII characters.',
+          'Description of the topic category. Must contain 2–50 UTF-8 bytes. Text in any language is supported, including spaces, numbers, punctuation, and symbols. Tabs, line breaks, invalid text, and invisible formatting characters are not allowed.',
         example: 'credit card numbers',
       }),
   })
@@ -109635,6 +109779,20 @@ const WorkersObservabilityTelemetryEventSchema = z
           .string()
           .exactOptional()
           .openapi({ description: 'Human-readable name for this span.' }),
+        spanStatus: z
+          .enum(['unset', 'ok', 'error'])
+          .exactOptional()
+          .openapi({
+            description:
+              'OpenTelemetry span status. Present only on spans. `unset` when the span did not set a status, including spans recorded before status was captured.',
+          }),
+        spanStatusMessage: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'OpenTelemetry span status message. Present only on spans when the status is `error` and a message was set.',
+          }),
         stackId: z
           .string()
           .exactOptional()
@@ -111957,7 +112115,7 @@ const WorkersBindingKindVpcNetworkSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Enables Gateway identity for the binding. Requires network_id to be "cf1:network" and cannot be combined with tunnel_id.\n',
+          'Enables Gateway identity for the binding. Requires network_id to be "cf1:network" and cannot be combined with tunnel_id or an explicit "cf1:vnet:<UUID>" network_id.\n',
         'x-auditable': true,
       }),
     name: WorkersBindingNameSchema,
@@ -111966,7 +112124,7 @@ const WorkersBindingKindVpcNetworkSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Identifier of the network to bind to. Only "cf1:network" is currently supported. Mutually exclusive with tunnel_id.\n',
+          'Identifier of the network to bind to. Use "cf1:network" to select the account\'s default virtual network at runtime, or "cf1:vnet:<UUID>" to select an explicit virtual network in the Worker\'s account. Mutually exclusive with tunnel_id.\n',
         example: 'cf1:network',
         'x-auditable': true,
       }),
@@ -114237,6 +114395,39 @@ const WorkersAssets_2Schema = z
   .openapi({ description: 'Configuration for assets within a Worker.', required: [] })
   .openapi('WorkersAssets_2')
 
+const WorkersCodeUpdateStrategySchema = z
+  .xor([
+    z
+      .strictObject({
+        mode: z
+          .literal('immediate')
+          .openapi({ description: 'Apply Durable Object code updates immediately.' }),
+      })
+      .openapi({ required: ['mode'] }),
+    z
+      .strictObject({
+        max_delay: z
+          .number()
+          .min(0)
+          .max(86400)
+          .multipleOf(0.001)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Set the maximum number of seconds to wait before forcing the update. When omitted, the default maximum delay applies.',
+          }),
+        mode: z
+          .literal('deferred')
+          .openapi({
+            description: 'Allow active Durable Objects to hibernate before updating their code.',
+          }),
+      })
+      .openapi({ required: ['mode'] }),
+  ])
+  .openapi({ 'x-auditable': true })
+  .openapi('WorkersCodeUpdateStrategy')
+
 const WorkersCompletedUploadAssetsResponseSchema = WorkersApiResponseCommonSchema.and(
   z
     .object({
@@ -114358,6 +114549,15 @@ const WorkersDeploymentSchema = z
       .exactOptional()
       .openapi({ required: [] }),
     author_email: z.email().exactOptional().openapi({ readOnly: true, 'x-auditable': true }),
+    code_update_strategy: z
+      .xor([WorkersCodeUpdateStrategySchema, z.literal(null).nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Choose whether to apply Durable Object code updates immediately or defer them. When omitted, the default strategy applies.',
+        writeOnly: true,
+        'x-auditable': true,
+      }),
     created_on: z.iso.datetime({ offset: true }).openapi({ readOnly: true, 'x-auditable': true }),
     id: z.uuid().openapi({ readOnly: true, 'x-auditable': true }),
     source: z.string().openapi({ example: 'api', readOnly: true, 'x-auditable': true }),
@@ -114887,6 +115087,13 @@ const WorkersMultipartScriptSchema = z
             example: 'worker.js',
           }),
         cache_options: WorkersCacheOptionsSchema.exactOptional(),
+        code_update_strategy: z
+          .xor([WorkersCodeUpdateStrategySchema, z.literal(null).nullable()])
+          .exactOptional()
+          .openapi({
+            description:
+              'Choose whether to apply Durable Object code updates immediately or defer them. When omitted, the default strategy applies.',
+          }),
         compatibility_date: WorkersCompatibilityDateSchema.exactOptional(),
         compatibility_flags: WorkersCompatibilityFlagsSchema.exactOptional(),
         exports: WorkersExportsConfigMapSchema.exactOptional().openapi({
@@ -134043,6 +134250,58 @@ const WorkersNamespaceUploadRequestBody = {
                     'Global CacheW configuration for the Worker. When caching is on,\nthe platform provisions a `cloudflare.app` zone for the Worker.\nA `type: worker` entry in the `exports` map can override this\nvalue for a single entrypoint.\n',
                   required: ['enabled'],
                 }),
+              code_update_strategy: z
+                .xor([
+                  z
+                    .xor([
+                      z
+                        .strictObject({
+                          mode: z
+                            .literal('immediate')
+                            .openapi({
+                              description: 'Apply Durable Object code updates immediately.',
+                            }),
+                        })
+                        .openapi({ required: ['mode'] }),
+                      z
+                        .strictObject({
+                          max_delay: z
+                            .preprocess(
+                              (val) => (val === 'null' ? null : val),
+                              z
+                                .preprocess(
+                                  (val) =>
+                                    typeof val === 'string' &&
+                                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                      ? Number(val)
+                                      : val,
+                                  z.number().min(0).max(86400).multipleOf(0.001),
+                                )
+                                .nullable(),
+                            )
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'Set the maximum number of seconds to wait before forcing the update. When omitted, the default maximum delay applies.',
+                            }),
+                          mode: z
+                            .literal('deferred')
+                            .openapi({
+                              description:
+                                'Allow active Durable Objects to hibernate before updating their code.',
+                            }),
+                        })
+                        .openapi({ required: ['mode'] }),
+                    ])
+                    .openapi({ 'x-auditable': true }),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.literal(null).nullable()),
+                ])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Choose whether to apply Durable Object code updates immediately or defer them. When omitted, the default strategy applies.',
+                }),
               compatibility_date: WorkersCompatibilityDateSchema.exactOptional(),
               compatibility_flags: WorkersCompatibilityFlagsSchema.exactOptional(),
               exports: z
@@ -134922,6 +135181,58 @@ const WorkersScriptUploadRequestBody = {
                   description:
                     'Global CacheW configuration for the Worker. When caching is on,\nthe platform provisions a `cloudflare.app` zone for the Worker.\nA `type: worker` entry in the `exports` map can override this\nvalue for a single entrypoint.\n',
                   required: ['enabled'],
+                }),
+              code_update_strategy: z
+                .xor([
+                  z
+                    .xor([
+                      z
+                        .strictObject({
+                          mode: z
+                            .literal('immediate')
+                            .openapi({
+                              description: 'Apply Durable Object code updates immediately.',
+                            }),
+                        })
+                        .openapi({ required: ['mode'] }),
+                      z
+                        .strictObject({
+                          max_delay: z
+                            .preprocess(
+                              (val) => (val === 'null' ? null : val),
+                              z
+                                .preprocess(
+                                  (val) =>
+                                    typeof val === 'string' &&
+                                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                      ? Number(val)
+                                      : val,
+                                  z.number().min(0).max(86400).multipleOf(0.001),
+                                )
+                                .nullable(),
+                            )
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'Set the maximum number of seconds to wait before forcing the update. When omitted, the default maximum delay applies.',
+                            }),
+                          mode: z
+                            .literal('deferred')
+                            .openapi({
+                              description:
+                                'Allow active Durable Objects to hibernate before updating their code.',
+                            }),
+                        })
+                        .openapi({ required: ['mode'] }),
+                    ])
+                    .openapi({ 'x-auditable': true }),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.literal(null).nullable()),
+                ])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Choose whether to apply Durable Object code updates immediately or defer them. When omitted, the default strategy applies.',
                 }),
               compatibility_date: WorkersCompatibilityDateSchema.exactOptional(),
               compatibility_flags: WorkersCompatibilityFlagsSchema.exactOptional(),
@@ -146738,6 +147049,129 @@ export const postAccountsAccountIdAccessOrganizationsRevokeUserRoute = createRou
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
 })
 
+export const getAccountsAccountIdAccessOrganizationsTrustSettingsRoute = createRoute({
+  method: 'get',
+  path: '/accounts/{account_id}/access/organizations/trust_settings',
+  tags: ['Zero Trust organization'],
+  summary: 'Get Zero Trust organization trust settings',
+  description: 'Returns the trust settings for your Zero Trust organization.',
+  operationId: 'zero-trust-organization-get-trust-settings',
+  request: {
+    params: z.object({
+      account_id: AccessIdentifierSchema.openapi({
+        param: {
+          name: 'account_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/access_identifier' },
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Zero Trust organization trust settings',
+      content: { 'application/json': { schema: AccessTrustSettingsResponseSchema } },
+    },
+    '4XX': {
+      description: 'Failed to get Zero Trust organization trust settings',
+      content: { 'application/json': { schema: AccessApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_token: [] }, { api_email: [], api_key: [] }],
+})
+
+export const putAccountsAccountIdAccessOrganizationsTrustSettingsRoute = createRoute({
+  method: 'put',
+  path: '/accounts/{account_id}/access/organizations/trust_settings',
+  tags: ['Zero Trust organization'],
+  summary: 'Replace Zero Trust organization trust settings',
+  description: 'Replaces the trust settings for your Zero Trust organization.',
+  operationId: 'zero-trust-organization-replace-trust-settings',
+  request: {
+    params: z.object({
+      account_id: AccessIdentifierSchema.openapi({
+        param: {
+          name: 'account_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/access_identifier' },
+        },
+      }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              grant_trust_to_all_accounts_in_org: AccessGrantTrustToAllAccountsInOrgSchema,
+              trusting_accounts: AccessTrustingAccountsSchema.exactOptional(),
+            })
+            .openapi({ required: ['grant_trust_to_all_accounts_in_org'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Replaced Zero Trust organization trust settings',
+      content: { 'application/json': { schema: AccessTrustSettingsResponseSchema } },
+    },
+    '4XX': {
+      description: 'Failed to replace Zero Trust organization trust settings',
+      content: { 'application/json': { schema: AccessApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_token: [] }, { api_email: [], api_key: [] }],
+})
+
+export const patchAccountsAccountIdAccessOrganizationsTrustSettingsRoute = createRoute({
+  method: 'patch',
+  path: '/accounts/{account_id}/access/organizations/trust_settings',
+  tags: ['Zero Trust organization'],
+  summary: 'Update Zero Trust organization trust settings',
+  description: 'Updates the trust settings for your Zero Trust organization.',
+  operationId: 'zero-trust-organization-update-trust-settings',
+  request: {
+    params: z.object({
+      account_id: AccessIdentifierSchema.openapi({
+        param: {
+          name: 'account_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/access_identifier' },
+        },
+      }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              grant_trust_to_all_accounts_in_org:
+                AccessGrantTrustToAllAccountsInOrgSchema.exactOptional(),
+              trusting_accounts: AccessTrustingAccountsSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Updated Zero Trust organization trust settings',
+      content: { 'application/json': { schema: AccessTrustSettingsResponseSchema } },
+    },
+    '4XX': {
+      description: 'Failed to update Zero Trust organization trust settings',
+      content: { 'application/json': { schema: AccessApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_token: [] }, { api_email: [], api_key: [] }],
+})
+
 export const getAccountsAccountIdAccessPoliciesRoute = createRoute({
   method: 'get',
   path: '/accounts/{account_id}/access/policies',
@@ -157960,16 +158394,23 @@ export const getAccountsAccountIdAiGatewayGatewaysRoute = createRoute({
       },
     },
     400: {
-      description: 'Bad Request',
+      description: 'Input Validation Error',
       content: {
         'application/json': {
           schema: z
             .object({
-              errors: z.array(z.object({ message: z.string() }).openapi({ required: ['message'] })),
-              result: z.object({}),
-              success: z.boolean().openapi({ example: false }),
+              errors: z.array(
+                z
+                  .object({
+                    code: z.number().openapi({ example: 7001 }),
+                    message: z.string().openapi({ example: 'Input Validation Error' }),
+                    path: z.array(z.string().openapi({ example: 'body' })),
+                  })
+                  .openapi({ required: ['code', 'message', 'path'] }),
+              ),
+              success: z.boolean(),
             })
-            .openapi({ required: ['result', 'success', 'errors'] }),
+            .openapi({ required: ['success', 'errors'] }),
         },
       },
     },
@@ -165979,6 +166420,27 @@ export const getAccountsAccountIdAiGatewayGatewaysIdRoute = createRoute({
         },
       },
     },
+    400: {
+      description: 'Input Validation Error',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              errors: z.array(
+                z
+                  .object({
+                    code: z.number().openapi({ example: 7001 }),
+                    message: z.string().openapi({ example: 'Input Validation Error' }),
+                    path: z.array(z.string().openapi({ example: 'body' })),
+                  })
+                  .openapi({ required: ['code', 'message', 'path'] }),
+              ),
+              success: z.boolean(),
+            })
+            .openapi({ required: ['success', 'errors'] }),
+        },
+      },
+    },
     404: {
       description: 'Not Found',
       content: {
@@ -167090,6 +167552,27 @@ export const deleteAccountsAccountIdAiGatewayGatewaysIdRoute = createRoute({
               success: z.boolean(),
             })
             .openapi({ required: ['success', 'result'] }),
+        },
+      },
+    },
+    400: {
+      description: 'Input Validation Error',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              errors: z.array(
+                z
+                  .object({
+                    code: z.number().openapi({ example: 7001 }),
+                    message: z.string().openapi({ example: 'Input Validation Error' }),
+                    path: z.array(z.string().openapi({ example: 'body' })),
+                  })
+                  .openapi({ required: ['code', 'message', 'path'] }),
+              ),
+              success: z.boolean(),
+            })
+            .openapi({ required: ['success', 'errors'] }),
         },
       },
     },
@@ -186744,7 +187227,7 @@ export const postAccountsAccountIdAiRunModelNameRoute = createRoute({
                       }),
                     response_format: z
                       .object({
-                        json_schema: z.any().exactOptional(),
+                        json_schema: z.object({}).exactOptional(),
                         type: z.enum(['json_object', 'json_schema']).exactOptional(),
                       })
                       .exactOptional()
@@ -186888,7 +187371,7 @@ export const postAccountsAccountIdAiRunModelNameRoute = createRoute({
                       }),
                     response_format: z
                       .object({
-                        json_schema: z.any().exactOptional(),
+                        json_schema: z.object({}).exactOptional(),
                         type: z.enum(['json_object', 'json_schema']).exactOptional(),
                       })
                       .exactOptional()
@@ -188010,8 +188493,8 @@ export const postAccountsAccountIdAiWebsearchRoute = createRoute({
                     .object({ code: z.number(), message: z.string() })
                     .openapi({ required: ['code', 'message'] }),
                 ),
-                messages: z.array(z.any().nullable()),
-                result: z.union([z.any().nullable(), z.object({}), z.any().nullable()]),
+                messages: z.array(z.object({})),
+                result: z.object({}).nullable(),
                 success: z.literal(false),
               })
               .openapi({ required: ['success', 'errors', 'messages', 'result'] }),
@@ -189754,6 +190237,252 @@ export const postAccountsAccountIdAnalyticsQueryDatasetTopNRoute = createRoute({
     403: ArtForbiddenResponse,
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
+})
+
+export const getAccountsAccountIdAnalyticsSqlRoute = createRoute({
+  method: 'get',
+  path: '/accounts/{account_id}/analytics/sql',
+  tags: ['Analytics SQL'],
+  summary: 'Query analytics datasets',
+  description:
+    'Executes a SQL query scoped to the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account, so an accountTag predicate or JSON scope is not required. Explicit account scope must match the path account. Any zone restrictions must belong to that account. Query parameters, time ranges, output formats, authorization, and responses follow the legacy query endpoint.',
+  operationId: 'sql-api-query-get-account-scoped',
+  request: {
+    params: z.object({
+      account_id: z
+        .string()
+        .regex(/^[a-f0-9]{32}$/)
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'path',
+            description: 'Account that authorizes and scopes the request.',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-f0-9]{32}$' },
+            example: '0123456789abcdef0123456789abcdef',
+          },
+        }),
+    }),
+    query: z.object({
+      query: z
+        .string()
+        .openapi({
+          param: {
+            name: 'query',
+            in: 'query',
+            description:
+              'SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.\n',
+            required: true,
+            schema: { type: 'string' },
+            example:
+              "SELECT edgeResponseStatus FROM events.httpRequests WHERE datetime > '2026-01-01' LIMIT 10",
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: AnalyticsSqlQuerySuccessResponse,
+    400: AnalyticsSqlMalformedRequestResponse,
+    403: AnalyticsSqlForbiddenResponse,
+    422: AnalyticsSqlUnprocessableQueryResponse,
+    429: AnalyticsSqlQueryLimitExceededResponse,
+    500: AnalyticsSqlInternalErrorResponse,
+    501: AnalyticsSqlNotImplementedResponse,
+    503: AnalyticsSqlServiceUnavailableResponse,
+    507: AnalyticsSqlResourceExhaustedResponse,
+  },
+  security: [{ api_token: [] }],
+})
+
+export const postAccountsAccountIdAnalyticsSqlRoute = createRoute({
+  method: 'post',
+  path: '/accounts/{account_id}/analytics/sql',
+  tags: ['Analytics SQL'],
+  summary: 'Query analytics datasets',
+  description:
+    'Executes a SQL query scoped to the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account, so an accountTag predicate or JSON scope is not required. Explicit account scope must match the path account. Any zone restrictions must belong to that account. Query parameters, time ranges, output formats, authorization, and responses follow the legacy query endpoint.',
+  operationId: 'sql-api-query-post-account-scoped',
+  request: {
+    params: z.object({
+      account_id: z
+        .string()
+        .regex(/^[a-f0-9]{32}$/)
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'path',
+            description: 'Account that authorizes and scopes the request.',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-f0-9]{32}$' },
+            example: '0123456789abcdef0123456789abcdef',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': { schema: AnalyticsSqlSqlQueryRequestSchema },
+        'text/plain': {
+          schema: z.string(),
+          example:
+            "SELECT edgeResponseStatus FROM events.httpRequests WHERE datetime > '2026-01-01' LIMIT 10",
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: AnalyticsSqlQuerySuccessResponse,
+    400: AnalyticsSqlMalformedRequestResponse,
+    403: AnalyticsSqlForbiddenResponse,
+    422: AnalyticsSqlUnprocessableQueryResponse,
+    429: AnalyticsSqlQueryLimitExceededResponse,
+    500: AnalyticsSqlInternalErrorResponse,
+    501: AnalyticsSqlNotImplementedResponse,
+    503: AnalyticsSqlServiceUnavailableResponse,
+    507: AnalyticsSqlResourceExhaustedResponse,
+  },
+  security: [{ api_token: [] }],
+})
+
+export const getAccountsAccountIdAnalyticsSqlIntrospectionRoute = createRoute({
+  method: 'get',
+  path: '/accounts/{account_id}/analytics/sql/introspection',
+  tags: ['Analytics SQL'],
+  summary: 'List available analytics datasets',
+  description:
+    'Returns the dataset catalogue for the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account; account_tag is not required as a query parameter. If supplied, it must match the path account. Dataset and column discovery options are identical to the legacy introspection endpoint.',
+  operationId: 'sql-api-introspection-account-scoped',
+  request: {
+    params: z.object({
+      account_id: z
+        .string()
+        .regex(/^[a-f0-9]{32}$/)
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'path',
+            description: 'Account that authorizes and scopes the request.',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-f0-9]{32}$' },
+            example: '0123456789abcdef0123456789abcdef',
+          },
+        }),
+    }),
+    query: z.object({
+      include_columns: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_columns',
+            in: 'query',
+            description: 'Include column metadata for each returned dataset.',
+            schema: { type: 'boolean', default: false },
+            required: false,
+          },
+        }),
+      include_custom_attributes: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_custom_attributes',
+            in: 'query',
+            description:
+              'Include a capped set of custom attribute names and types observed during the preceding seven days, as `custom_attributes`. Requires a nonempty dataset_name. Deprecated in favor of `include_attributes`.\n',
+            schema: { type: 'boolean', default: false },
+            required: false,
+          },
+        }),
+      include_attributes: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_attributes',
+            in: 'query',
+            description:
+              'Include a capped set of attribute names and types observed during the preceding seven days, as `attributes`. Requires a nonempty dataset_name. Replaces `include_custom_attributes`, which is deprecated.\n',
+            schema: { type: 'boolean', default: false },
+            required: false,
+          },
+        }),
+      include_wae: z
+        .stringbool()
+        .default(true)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_wae',
+            in: 'query',
+            description:
+              "Include Workers Analytics Engine datasets, which are discovered from the account's own data. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.\n",
+            schema: { type: 'boolean', default: true },
+            required: false,
+          },
+        }),
+      include_lex: z
+        .stringbool()
+        .default(true)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_lex',
+            in: 'query',
+            description:
+              'Include Log Explorer datasets, which are listed only where the account has them. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.\n',
+            schema: { type: 'boolean', default: true },
+            required: false,
+          },
+        }),
+      dataset_name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'dataset_name',
+            in: 'query',
+            description:
+              "Return only the dataset with this exact name. An empty value is treated as if the parameter had been omitted, and does not filter the catalogue. A name that matches no dataset in this deployment's catalogue is rejected with `422`; a dataset that exists but is not describable here is rejected identically, so the two cases cannot be told apart.\n\nA Workers Analytics Engine dataset is named in full, as `events.analyticsEngine.<dataset_name>`; the namespace on its own returns every such dataset the account has. A `dataset_name` the account does not have is rejected with `422` like any other unknown name.\n",
+            schema: { type: 'string' },
+            example: 'events.httpRequests',
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Dataset catalogue returned successfully.',
+      content: { 'application/json': { schema: AnalyticsSqlIntrospectionResponseSchema } },
+    },
+    400: AnalyticsSqlMalformedRequestResponse,
+    403: {
+      description:
+        'Authentication failed or the caller does not have Account Analytics Read permission on the specified account.\n',
+      content: { 'text/plain': { schema: z.string(), example: 'Authorization error' } },
+    },
+    422: {
+      description:
+        'The request could not be processed. This is returned when the account tag is invalid or unknown, when `include_custom_attributes` or `include_attributes` is set without a `dataset_name`, when a Workers Analytics Engine `dataset_name` is supplied alongside `include_wae=false` or contains characters a dataset name cannot contain, or when the supplied criteria match no dataset that this deployment can describe — either because no such dataset exists or because it is not describable here. The message names the criteria that matched nothing.\n',
+      content: {
+        'text/plain': {
+          schema: z.string(),
+          example:
+            'Input was invalid: There are no introspectable datasets matching the provided criteria (dataset_name=`events.nonexistent`)',
+        },
+      },
+    },
+    500: AnalyticsSqlInternalErrorResponse,
+    503: {
+      description: 'The authorization service is temporarily unavailable.',
+      content: { 'text/plain': { schema: z.string() } },
+    },
+  },
+  security: [{ api_token: [] }],
 })
 
 export const getAccountsAccountIdAnalyticsEngineSqlRoute = createRoute({
@@ -195955,7 +196684,7 @@ export const getAccountsAccountIdArtifactsNamespacesNamespaceReposNameTreeHashRo
   tags: ['Artifacts'],
   summary: 'Read a Git tree',
   description:
-    'Returns decoded entries for an immutable Git tree object. Tree responses are cacheable forever by hash.',
+    "Returns decoded entries for an immutable Git tree object. A commit hash returns that commit's root tree; a blob or tag hash returns 422. Tree responses are cacheable forever by hash.",
   operationId: 'artifacts_repos_tree_get',
   request: {
     params: z.object({
@@ -196219,6 +196948,47 @@ export const getAccountsAccountIdArtifactsNamespacesNamespaceReposNameTreeHashRo
     },
     404: {
       description: 'Resource not found.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              errors: z
+                .array(
+                  z
+                    .object({
+                      code: z.int().min(-9007199254740991).max(9007199254740991),
+                      documentation_url: z.url().exactOptional(),
+                      message: z.string(),
+                      source: z
+                        .object({ pointer: z.string().exactOptional() })
+                        .exactOptional()
+                        .openapi({ required: [] }),
+                    })
+                    .openapi({ required: ['code', 'message'] }),
+                )
+                .min(1),
+              messages: z.array(
+                z
+                  .object({
+                    code: z.int().min(-9007199254740991).max(9007199254740991),
+                    documentation_url: z.url().exactOptional(),
+                    message: z.string(),
+                    source: z
+                      .object({ pointer: z.string().exactOptional() })
+                      .exactOptional()
+                      .openapi({ required: [] }),
+                  })
+                  .openapi({ required: ['code', 'message'] }),
+              ),
+              result: z.object({}).nullable(),
+              success: z.literal(false),
+            })
+            .openapi({ required: ['result', 'success', 'errors', 'messages'] }),
+        },
+      },
+    },
+    422: {
+      description: 'Unprocessable entity.',
       content: {
         'application/json': {
           schema: z
@@ -198448,6 +199218,7 @@ export const getAccountsAccountIdBasinCatalogRoute = createRoute({
                 {
                   bucket: 'analytics-bucket',
                   id: '550e8400-e29b-41d4-a716-446655440000',
+                  jurisdiction: 'default',
                   maintenance_config: {
                     compaction: { state: 'enabled', target_size_mb: '128' },
                     snapshot_expiration: {
@@ -198547,6 +199318,7 @@ export const getAccountsAccountIdBasinCatalogBucketNameRoute = createRoute({
               bucket: 'analytics-bucket',
               credential_status: 'present',
               id: '550e8400-e29b-41d4-a716-446655440000',
+              jurisdiction: 'default',
               maintenance_config: {
                 compaction: { state: 'enabled', target_size_mb: '128' },
                 snapshot_expiration: {
@@ -198882,6 +199654,14 @@ export const postAccountsAccountIdBasinCatalogBucketNameEnableRoute = createRout
         },
       }),
     }),
+    body: {
+      content: {
+        'application/json': {
+          schema: R2DataCatalogCatalogActivationRequestSchema,
+          example: { credential: { token: 'your-cloudflare-api-token-here' } },
+        },
+      },
+    },
   },
   responses: {
     200: {
@@ -217565,6 +218345,129 @@ export const getAccountsAccountIdCloudforceOneEventsDatasetDatasetIdIndicatorsRo
   deprecated: true,
   security: [{ api_token: [] }],
 })
+
+export const deleteAccountsAccountIdCloudforceOneEventsDatasetDatasetIdIndicatorsRoute =
+  createRoute({
+    method: 'delete',
+    path: '/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators',
+    tags: ['Indicator'],
+    summary: 'Delete indicators in bulk',
+    description:
+      'Deletes up to 200 indicators from a dataset. Pass the indicator UUIDs in `indicatorIds`; UUIDs that are not found are returned in `missingUUIDs`.',
+    operationId: 'delete_IndicatorDeleteBulk',
+    request: {
+      params: z.object({
+        account_id: z
+          .string()
+          .openapi({
+            param: {
+              name: 'account_id',
+              in: 'path',
+              description: 'Account ID.',
+              required: true,
+              schema: { description: 'Account ID.', type: 'string' },
+            },
+            description: 'Account ID.',
+          }),
+        dataset_id: z
+          .string()
+          .openapi({
+            param: {
+              name: 'dataset_id',
+              in: 'path',
+              description: 'Dataset ID.',
+              required: true,
+              schema: { description: 'Dataset ID.', type: 'string' },
+            },
+            description: 'Dataset ID.',
+          }),
+      }),
+      query: z.object({
+        indicatorIds: z
+          .preprocess(
+            (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+            z.array(z.uuid()).min(1).max(200),
+          )
+          .openapi({
+            param: {
+              name: 'indicatorIds',
+              in: 'query',
+              description: 'Indicator UUIDs to delete, 1-200 per request.',
+              required: true,
+              schema: {
+                description: 'Indicator UUIDs to delete, 1-200 per request.',
+                type: 'array',
+                items: { format: 'uuid', type: 'string' },
+                maxItems: 200,
+                minItems: 1,
+              },
+            },
+            description: 'Indicator UUIDs to delete, 1-200 per request.',
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'Returns the number of deleted indicators.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                deletedCount: z
+                  .int()
+                  .min(0)
+                  .openapi({ description: 'Number of indicators deleted.' }),
+                missingUUIDs: z
+                  .array(z.string())
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Requested UUIDs that were not found in the dataset. Omitted when every UUID was deleted.',
+                  }),
+              })
+              .openapi({ required: ['deletedCount'] }),
+          },
+        },
+      },
+      400: {
+        description: 'Bad Request.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                errors: z.array(
+                  z
+                    .object({ message: z.string().openapi({ example: 'An error occurred.' }) })
+                    .openapi({ required: ['message'] }),
+                ),
+                result: z.object({}),
+                success: z.boolean(),
+              })
+              .openapi({ required: ['result', 'success', 'errors'] }),
+          },
+        },
+      },
+      404: {
+        description: 'Bad Request.',
+        content: {
+          'application/json': {
+            schema: z
+              .object({
+                errors: z.array(
+                  z
+                    .object({ message: z.string().openapi({ example: 'An error occurred.' }) })
+                    .openapi({ required: ['message'] }),
+                ),
+                result: z.object({}),
+                success: z.boolean(),
+              })
+              .openapi({ required: ['result', 'success', 'errors'] }),
+          },
+        },
+      },
+    },
+    security: [{ api_token: [] }],
+  })
 
 export const postAccountsAccountIdCloudforceOneEventsDatasetDatasetIdIndicatorsBulkRoute =
   createRoute({
@@ -245826,13 +246729,11 @@ export const getAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesRoute = cre
                             required: ['band', 'pir_id', 'pirs'],
                           }),
                         severity: z
-                          .number()
-                          .min(1)
-                          .max(5)
+                          .enum(['informational', 'low', 'medium', 'high', 'critical'])
                           .nullable()
                           .openapi({
                             description:
-                              'Intrinsic article severity from 1 (informational) to 5 (critical). Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.',
+                              'Beta. Intrinsic article severity band, from informational to critical, independent of any organisation or Priority Intelligence Requirement. Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.',
                           }),
                         summary: z
                           .string()
@@ -245994,7 +246895,7 @@ export const getAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesRelevanceAg
     tags: ['Threat Signals'],
     summary: 'Count Threat Signals articles by relevance band',
     description:
-      "Beta. Counts the account's Threat Signals articles in each relevance band, for each active Priority Intelligence Requirement and across all of them. Uses the same PIRs as article relevance: active PIRs, including those the matcher paused; drafts and deleted PIRs are excluded. Articles not scored against a PIR are not counted for it. The combined counts place each article once, in the band of its best score, so they are not the sum of the per-PIR counts. All counts are read together and are exact.",
+      "Beta. Counts the account's Threat Signals articles in each relevance band, for each active Priority Intelligence Requirement and across all of them. Uses the same PIRs as article relevance: active PIRs, including those the matcher paused; drafts and deleted PIRs are excluded. Articles not scored against a PIR are not counted for it. The combined counts place each article once, in the band of its best score, so they are not the sum of the per-PIR counts. read counts only read or only unread articles. All counts are read together and are exact.",
     operationId: 'rssArticleRelevanceAggregate',
     request: {
       params: z.object({
@@ -246040,6 +246941,23 @@ export const getAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesRelevanceAg
             },
             description:
               'Include articles published at or before this ISO 8601 date-time with Z or a numeric UTC offset; normalized to UTC.',
+          }),
+        read: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'read',
+              in: 'query',
+              schema: {
+                description:
+                  'Filter by read state. Accepts true, false, 1, or 0; omit to include read and unread articles.',
+                type: 'boolean',
+              },
+              required: false,
+            },
+            description:
+              'Filter by read state. Accepts true, false, 1, or 0; omit to include read and unread articles.',
           }),
       }),
     },
@@ -246117,7 +247035,7 @@ export const getAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesSeverityAgg
     tags: ['Threat Signals'],
     summary: 'Count Threat Signals articles by severity band',
     description:
-      "Beta. Counts the account's Threat Signals articles in each intrinsic severity band. An article's band is the severity level nearest its severity, from informational to critical. Articles without a severity are not counted. min_relevance counts only articles at or above a relevance band for any active Priority Intelligence Requirement. Like the article severity field, severity is reported only while the account has an active Priority Intelligence Requirement, including one the matcher paused; otherwise every count is zero. All counts are read together and are exact.",
+      "Beta. Counts the account's Threat Signals articles in each intrinsic severity band. An article's band is the one reported as its severity, from informational to critical. Articles without a severity are not counted. Also counts, for each active Priority Intelligence Requirement, the articles scored against it. min_relevance counts only articles at or above a relevance band: overall, for any active PIR; per PIR, for that PIR, the same rule as the per-PIR relevance counts. pir_id counts for one active PIR only. read counts only read or only unread articles, in both articles and priorities. Like the article severity field, severity is reported only while the account has an active Priority Intelligence Requirement, including one the matcher paused; otherwise every count is zero and priorities is empty. All counts are read together and are exact.",
     operationId: 'rssArticleSeverityAggregate',
     request: {
       params: z.object({
@@ -246164,6 +247082,41 @@ export const getAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesSeverityAgg
             description:
               'Include articles published at or before this ISO 8601 date-time with Z or a numeric UTC offset; normalized to UTC.',
           }),
+        read: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'read',
+              in: 'query',
+              schema: {
+                description:
+                  'Filter by read state. Accepts true, false, 1, or 0; omit to include read and unread articles.',
+                type: 'boolean',
+              },
+              required: false,
+            },
+            description:
+              'Filter by read state. Accepts true, false, 1, or 0; omit to include read and unread articles.',
+          }),
+        pir_id: z
+          .uuid()
+          .exactOptional()
+          .openapi({
+            param: {
+              name: 'pir_id',
+              in: 'query',
+              schema: {
+                description:
+                  'Beta. Active Priority Intelligence Requirement to count for. articles then counts only articles scored against it, min_relevance applies to its score, and priorities lists only it. Returns a 400 error unless the PIR is active.',
+                type: 'string',
+                format: 'uuid',
+              },
+              required: false,
+            },
+            description:
+              'Beta. Active Priority Intelligence Requirement to count for. articles then counts only articles scored against it, min_relevance applies to its score, and priorities lists only it. Returns a 400 error unless the PIR is active.',
+          }),
         min_relevance: z
           .enum(['low', 'medium', 'high'])
           .exactOptional()
@@ -246173,14 +247126,14 @@ export const getAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesSeverityAgg
               in: 'query',
               schema: {
                 description:
-                  "Beta. Count only articles at or above this relevance band for any active Priority Intelligence Requirement, as the article list's min_relevance does without pir_id. Excludes articles that have not been scored against an active PIR.",
+                  "Beta. Count only articles at or above this relevance band: in articles, for any active Priority Intelligence Requirement, as the article list's min_relevance does without pir_id; in each priority, for that PIR. Excludes articles that have not been scored against an active PIR.",
                 type: 'string',
                 enum: ['low', 'medium', 'high'],
               },
               required: false,
             },
             description:
-              "Beta. Count only articles at or above this relevance band for any active Priority Intelligence Requirement, as the article list's min_relevance does without pir_id. Excludes articles that have not been scored against an active PIR.",
+              "Beta. Count only articles at or above this relevance band: in articles, for any active Priority Intelligence Requirement, as the article list's min_relevance does without pir_id; in each priority, for that PIR. Excludes articles that have not been scored against an active PIR.",
           }),
       }),
     },
@@ -246206,11 +247159,40 @@ export const getAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesSeverityAgg
                       })
                       .openapi({
                         description:
-                          "Beta. Number of articles in each severity band: the severity level nearest the article's severity. Articles without a severity are not counted, and every count is zero when the account has no active Priority Intelligence Requirements.",
+                          "Beta. Number of articles in each severity band, the band reported as the article's severity. Articles without a severity are not counted, and every count is zero when the account has no active Priority Intelligence Requirements.",
                         required: ['informational', 'low', 'medium', 'high', 'critical'],
                       }),
+                    priorities: z
+                      .array(
+                        z
+                          .object({
+                            articles: z
+                              .object({
+                                critical: z.int().min(0),
+                                high: z.int().min(0),
+                                informational: z.int().min(0),
+                                low: z.int().min(0),
+                                medium: z.int().min(0),
+                              })
+                              .openapi({
+                                description:
+                                  'Beta. Number of articles scored against this PIR in each severity band. With min_relevance, only articles whose relevance to this PIR is at or above that band. Articles without a severity are not counted.',
+                                required: ['informational', 'low', 'medium', 'high', 'critical'],
+                              }),
+                            id: z
+                              .uuid()
+                              .openapi({
+                                description: 'Active Priority Intelligence Requirement ID.',
+                              }),
+                          })
+                          .openapi({ required: ['id', 'articles'] }),
+                      )
+                      .openapi({
+                        description:
+                          'Beta. Each active PIR, including PIRs the matcher paused, ordered by ID. Drafts and deleted PIRs are excluded. An article can count toward several PIRs, so these are not parts of articles.',
+                      }),
                   })
-                  .openapi({ required: ['articles'] }),
+                  .openapi({ required: ['articles', 'priorities'] }),
                 success: z.literal(true),
               })
               .openapi({ required: ['result', 'success', 'errors'] }),
@@ -246324,13 +247306,11 @@ export const getAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesArticleIdRo
                       required: ['band', 'pir_id', 'pirs'],
                     }),
                   severity: z
-                    .number()
-                    .min(1)
-                    .max(5)
+                    .enum(['informational', 'low', 'medium', 'high', 'critical'])
                     .nullable()
                     .openapi({
                       description:
-                        'Intrinsic article severity from 1 (informational) to 5 (critical). Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.',
+                        'Beta. Intrinsic article severity band, from informational to critical, independent of any organisation or Priority Intelligence Requirement. Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.',
                     }),
                   skill_version: z.string().nullable().exactOptional(),
                   source_count: z.number(),
@@ -246471,13 +247451,11 @@ export const patchAccountsAccountIdCloudforceOneV2ThreatSignalsArticlesArticleId
                     read: z.boolean(),
                     read_at: z.string().nullable(),
                     severity: z
-                      .number()
-                      .min(1)
-                      .max(5)
+                      .enum(['informational', 'low', 'medium', 'high', 'critical'])
                       .nullable()
                       .openapi({
                         description:
-                          'Intrinsic article severity from 1 (informational) to 5 (critical). Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.',
+                          'Beta. Intrinsic article severity band, from informational to critical, independent of any organisation or Priority Intelligence Requirement. Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.',
                       }),
                     skill_version: z.string().nullable().exactOptional(),
                     source_count: z.number(),
@@ -262812,6 +263790,10 @@ export const patchAccountsAccountIdDevicesPhysicalDevicesDeviceIdRoute = createR
         },
       },
     },
+    409: {
+      description: 'The device tags were modified concurrently. Retry the request.',
+      content: { 'application/json': { schema: TeamsDevicesV4ErrorResponseSchema } },
+    },
     '4XX': {
       description: 'Client error response.',
       content: { 'application/json': { schema: TeamsDevicesV4ErrorResponseSchema } },
@@ -274877,7 +275859,7 @@ export const postAccountsAccountIdDnsSettingsNameserverSetsRoute = createRoute({
   tags: ['Custom Nameserver Sets for an Account'],
   summary: 'Create Custom Nameserver Set',
   description:
-    'Creates an immutable Custom Nameserver Set. To change a set, create a new one, move any zone assignments, and delete the old set.',
+    'Creates a named Custom Nameserver Set. Only the customer-defined name can be changed later. To change nameservers or addresses, create a new set, move any zone assignments, and delete the old set.',
   operationId: 'dns-settings-for-an-account-create-custom-nameserver-set',
   request: {
     params: z.object({
@@ -274982,6 +275964,51 @@ export const deleteAccountsAccountIdDnsSettingsNameserverSetsNameserverSetIdRout
     },
     '4XX': {
       description: 'Returns an error when the Custom Nameserver Set cannot be deleted.',
+      content: { 'application/json': { schema: DnsSettingsApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_token: [] }, { api_email: [], api_key: [] }],
+})
+
+export const patchAccountsAccountIdDnsSettingsNameserverSetsNameserverSetIdRoute = createRoute({
+  method: 'patch',
+  path: '/accounts/{account_id}/dns_settings/nameserver_sets/{nameserver_set_id}',
+  tags: ['Custom Nameserver Sets for an Account'],
+  summary: 'Update Custom Nameserver Set',
+  description:
+    'Renames a Custom Nameserver Set owned by the account. Only name may be supplied; immutable and unknown fields are rejected even if unchanged. An empty object or the existing name is a successful no-op. Requires the account-scoped creation entitlements for the existing set.',
+  operationId: 'dns-settings-for-an-account-update-custom-nameserver-set',
+  request: {
+    params: z.object({
+      account_id: DnsSettingsIdentifierSchema.openapi({
+        param: {
+          name: 'account_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/dns-settings_identifier' },
+        },
+      }),
+      nameserver_set_id: DnsSettingsNameserverSetIdSchema.openapi({
+        param: {
+          name: 'nameserver_set_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/dns-settings_nameserver-set-id' },
+        },
+      }),
+    }),
+    body: {
+      content: { 'application/json': { schema: DnsSettingsNameserverSetPatchSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Returns the complete modified Custom Nameserver Set.',
+      content: { 'application/json': { schema: DnsSettingsNameserverSetResponseSingleSchema } },
+    },
+    '4XX': {
+      description: 'Returns an error when the Custom Nameserver Set cannot be updated.',
       content: { 'application/json': { schema: DnsSettingsApiResponseCommonFailureSchema } },
     },
   },
@@ -284720,6 +285747,108 @@ export const patchAccountsAccountIdFirewallAccessRulesRulesRuleIdRoute = createR
     },
     '4XX': {
       description: 'Update an IP Access rule response failure.',
+      content: { 'application/json': { schema: FirewallApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_email: [], api_key: [], api_token: [] }],
+})
+
+export const getAccountsAccountIdFirewallPayloadLoggingKeyRoute = createRoute({
+  method: 'get',
+  path: '/accounts/{account_id}/firewall/payload_logging/key',
+  tags: ['Payload logging keys for an account'],
+  summary: 'Get the payload logging key',
+  description:
+    'Fetches the public key that payload logging uses to encrypt matched payloads for the account.',
+  operationId: 'payload-logging-keys-for-an-account-get-the-payload-logging-key',
+  request: {
+    params: z.object({
+      account_id: FirewallAccountIdentifierSchema.openapi({
+        param: {
+          name: 'account_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/firewall_account_identifier' },
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Get the payload logging key response.',
+      content: { 'application/json': { schema: FirewallPayloadLoggingKeyResponseSingleSchema } },
+    },
+    '4XX': {
+      description: 'Get the payload logging key response failure.',
+      content: { 'application/json': { schema: FirewallApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_email: [], api_key: [], api_token: [] }],
+})
+
+export const putAccountsAccountIdFirewallPayloadLoggingKeyRoute = createRoute({
+  method: 'put',
+  path: '/accounts/{account_id}/firewall/payload_logging/key',
+  tags: ['Payload logging keys for an account'],
+  summary: 'Set the payload logging key',
+  description:
+    'Creates or replaces the public key that payload logging uses to encrypt matched payloads for the account. It applies to every zone in the account that has no zone key. Requires a plan that includes payload logging (Enterprise); otherwise it returns 403.',
+  operationId: 'payload-logging-keys-for-an-account-set-the-payload-logging-key',
+  request: {
+    params: z.object({
+      account_id: FirewallAccountIdentifierSchema.openapi({
+        param: {
+          name: 'account_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/firewall_account_identifier' },
+        },
+      }),
+    }),
+    body: {
+      content: { 'application/json': { schema: FirewallPayloadLoggingKeySchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Set the payload logging key response.',
+      content: { 'application/json': { schema: FirewallPayloadLoggingKeyResponseSingleSchema } },
+    },
+    '4XX': {
+      description: 'Set the payload logging key response failure.',
+      content: { 'application/json': { schema: FirewallApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_email: [], api_key: [], api_token: [] }],
+})
+
+export const deleteAccountsAccountIdFirewallPayloadLoggingKeyRoute = createRoute({
+  method: 'delete',
+  path: '/accounts/{account_id}/firewall/payload_logging/key',
+  tags: ['Payload logging keys for an account'],
+  summary: 'Delete the payload logging key',
+  description: 'Deletes the payload logging public key of the account.',
+  operationId: 'payload-logging-keys-for-an-account-delete-the-payload-logging-key',
+  request: {
+    params: z.object({
+      account_id: FirewallAccountIdentifierSchema.openapi({
+        param: {
+          name: 'account_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/firewall_account_identifier' },
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Delete the payload logging key response.',
+      content: { 'application/json': { schema: FirewallPayloadLoggingKeyResponseSingleSchema } },
+    },
+    '4XX': {
+      description: 'Delete the payload logging key response failure.',
       content: { 'application/json': { schema: FirewallApiResponseCommonFailureSchema } },
     },
   },
@@ -322219,6 +323348,7 @@ export const getAccountsAccountIdR2CatalogRoute = createRoute({
                 {
                   bucket: 'analytics-bucket',
                   id: '550e8400-e29b-41d4-a716-446655440000',
+                  jurisdiction: 'default',
                   maintenance_config: {
                     compaction: { state: 'enabled', target_size_mb: '128' },
                     snapshot_expiration: {
@@ -322319,6 +323449,7 @@ export const getAccountsAccountIdR2CatalogBucketNameRoute = createRoute({
               bucket: 'analytics-bucket',
               credential_status: 'present',
               id: '550e8400-e29b-41d4-a716-446655440000',
+              jurisdiction: 'default',
               maintenance_config: {
                 compaction: { state: 'enabled', target_size_mb: '128' },
                 snapshot_expiration: {
@@ -322659,6 +323790,14 @@ export const postAccountsAccountIdR2CatalogBucketNameEnableRoute = createRoute({
         },
       }),
     }),
+    body: {
+      content: {
+        'application/json': {
+          schema: R2DataCatalogCatalogActivationRequestSchema,
+          example: { credential: { token: 'your-cloudflare-api-token-here' } },
+        },
+      },
+    },
   },
   responses: {
     200: {
@@ -336224,14 +337363,14 @@ export const getAccountsAccountIdReportingIndustryRoute = createRoute({
             schema: {
               description: 'Cloudflare public account ID (32-character hexadecimal string)',
               type: 'string',
-              example: 'f1234567890abcdef1234567890abcdef',
+              example: '023e105f4ecef8ad9ca31a8372d0c353',
               maxLength: 32,
               minLength: 32,
               pattern: '^[a-f0-9]{32}$',
             },
           },
           description: 'Cloudflare public account ID (32-character hexadecimal string)',
-          example: 'f1234567890abcdef1234567890abcdef',
+          example: '023e105f4ecef8ad9ca31a8372d0c353',
         }),
     }),
   },
@@ -336250,6 +337389,10 @@ export const getAccountsAccountIdReportingIndustryRoute = createRoute({
             .openapi({ required: ['success', 'result'] }),
         },
       },
+    },
+    400: {
+      description: 'Invalid account identifier',
+      content: { 'application/json': { schema: ReportsAccountIndustryErrorResponseSchema } },
     },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
@@ -336276,14 +337419,14 @@ export const patchAccountsAccountIdReportingIndustryRoute = createRoute({
             schema: {
               description: 'Cloudflare public account ID (32-character hexadecimal string)',
               type: 'string',
-              example: 'f1234567890abcdef1234567890abcdef',
+              example: '023e105f4ecef8ad9ca31a8372d0c353',
               maxLength: 32,
               minLength: 32,
               pattern: '^[a-f0-9]{32}$',
             },
           },
           description: 'Cloudflare public account ID (32-character hexadecimal string)',
-          example: 'f1234567890abcdef1234567890abcdef',
+          example: '023e105f4ecef8ad9ca31a8372d0c353',
         }),
     }),
     body: { content: { 'application/json': { schema: ReportsPatchAccountIndustryBodySchema } } },
@@ -336341,14 +337484,14 @@ export const getAccountsAccountIdReportingPoliciesRoute = createRoute({
             schema: {
               description: 'Cloudflare public account ID (32-character hexadecimal string)',
               type: 'string',
-              example: 'f1234567890abcdef1234567890abcdef',
+              example: '023e105f4ecef8ad9ca31a8372d0c353',
               maxLength: 32,
               minLength: 32,
               pattern: '^[a-f0-9]{32}$',
             },
           },
           description: 'Cloudflare public account ID (32-character hexadecimal string)',
-          example: 'f1234567890abcdef1234567890abcdef',
+          example: '023e105f4ecef8ad9ca31a8372d0c353',
         }),
     }),
   },
@@ -336403,14 +337546,14 @@ export const getAccountsAccountIdReportingPoliciesPolicyIdRoute = createRoute({
             schema: {
               description: 'Cloudflare public account ID (32-character hexadecimal string)',
               type: 'string',
-              example: 'f1234567890abcdef1234567890abcdef',
+              example: '023e105f4ecef8ad9ca31a8372d0c353',
               maxLength: 32,
               minLength: 32,
               pattern: '^[a-f0-9]{32}$',
             },
           },
           description: 'Cloudflare public account ID (32-character hexadecimal string)',
-          example: 'f1234567890abcdef1234567890abcdef',
+          example: '023e105f4ecef8ad9ca31a8372d0c353',
         }),
     }),
   },
@@ -336448,14 +337591,14 @@ export const getAccountsAccountIdReportingReportsRoute = createRoute({
             schema: {
               description: 'Cloudflare public account ID (32-character hexadecimal string)',
               type: 'string',
-              example: 'f1234567890abcdef1234567890abcdef',
+              example: '023e105f4ecef8ad9ca31a8372d0c353',
               maxLength: 32,
               minLength: 32,
               pattern: '^[a-f0-9]{32}$',
             },
           },
           description: 'Cloudflare public account ID (32-character hexadecimal string)',
-          example: 'f1234567890abcdef1234567890abcdef',
+          example: '023e105f4ecef8ad9ca31a8372d0c353',
         }),
     }),
   },
@@ -336493,14 +337636,14 @@ export const getAccountsAccountIdReportingReportsReportIdRoute = createRoute({
             schema: {
               description: 'Cloudflare public account ID (32-character hexadecimal string)',
               type: 'string',
-              example: 'f1234567890abcdef1234567890abcdef',
+              example: '023e105f4ecef8ad9ca31a8372d0c353',
               maxLength: 32,
               minLength: 32,
               pattern: '^[a-f0-9]{32}$',
             },
           },
           description: 'Cloudflare public account ID (32-character hexadecimal string)',
-          example: 'f1234567890abcdef1234567890abcdef',
+          example: '023e105f4ecef8ad9ca31a8372d0c353',
         }),
       report_id: z
         .uuid()
@@ -351305,199 +352448,144 @@ export const postAccountsAccountIdUrlscannerScanRoute = createRoute({
             .object({
               country: z
                 .enum([
-                  'AF',
+                  'AE',
                   'AL',
-                  'DZ',
-                  'AD',
-                  'AO',
-                  'AG',
-                  'AR',
                   'AM',
-                  'AU',
+                  'AO',
+                  'AR',
                   'AT',
+                  'AU',
                   'AZ',
-                  'BH',
-                  'BD',
                   'BB',
-                  'BY',
+                  'BD',
                   'BE',
-                  'BZ',
-                  'BJ',
-                  'BM',
-                  'BT',
-                  'BO',
-                  'BA',
-                  'BW',
-                  'BR',
-                  'BN',
-                  'BG',
                   'BF',
-                  'BI',
-                  'KH',
-                  'CM',
+                  'BG',
+                  'BH',
+                  'BN',
+                  'BO',
+                  'BR',
+                  'BT',
+                  'BW',
+                  'BY',
                   'CA',
-                  'CV',
-                  'KY',
-                  'CF',
-                  'TD',
-                  'CL',
-                  'CN',
-                  'CO',
-                  'KM',
-                  'CG',
-                  'CR',
+                  'CD',
+                  'CH',
                   'CI',
-                  'HR',
-                  'CU',
+                  'CL',
+                  'CM',
+                  'CO',
+                  'CR',
+                  'CW',
                   'CY',
                   'CZ',
-                  'CD',
-                  'DK',
-                  'DJ',
-                  'DM',
-                  'DO',
-                  'EC',
-                  'EG',
-                  'SV',
-                  'GQ',
-                  'ER',
-                  'EE',
-                  'SZ',
-                  'ET',
-                  'FJ',
-                  'FI',
-                  'FR',
-                  'GA',
-                  'GE',
                   'DE',
+                  'DJ',
+                  'DK',
+                  'DO',
+                  'DZ',
+                  'EC',
+                  'EE',
+                  'EG',
+                  'ES',
+                  'ET',
+                  'FI',
+                  'FJ',
+                  'FR',
+                  'GB',
+                  'GD',
+                  'GE',
                   'GH',
                   'GR',
-                  'GL',
-                  'GD',
                   'GT',
-                  'GN',
-                  'GW',
+                  'GU',
                   'GY',
-                  'HT',
+                  'HK',
                   'HN',
+                  'HR',
+                  'HT',
                   'HU',
-                  'IS',
-                  'IN',
                   'ID',
-                  'IR',
-                  'IQ',
                   'IE',
                   'IL',
+                  'IN',
+                  'IQ',
+                  'IS',
                   'IT',
                   'JM',
-                  'JP',
                   'JO',
-                  'KZ',
+                  'JP',
                   'KE',
-                  'KI',
-                  'KW',
                   'KG',
+                  'KH',
+                  'KR',
+                  'KW',
+                  'KZ',
                   'LA',
-                  'LV',
                   'LB',
-                  'LS',
+                  'LK',
                   'LR',
-                  'LY',
-                  'LI',
                   'LT',
                   'LU',
-                  'MO',
-                  'MG',
-                  'MW',
-                  'MY',
-                  'MV',
-                  'ML',
-                  'MR',
-                  'MU',
-                  'MX',
-                  'FM',
-                  'MD',
-                  'MC',
-                  'MN',
-                  'MS',
+                  'LV',
                   'MA',
-                  'MZ',
-                  'MM',
-                  'NA',
-                  'NR',
-                  'NP',
-                  'NL',
-                  'NZ',
-                  'NI',
-                  'NE',
-                  'NG',
-                  'KP',
+                  'MD',
+                  'MG',
                   'MK',
+                  'MM',
+                  'MN',
+                  'MO',
+                  'MT',
+                  'MU',
+                  'MV',
+                  'MW',
+                  'MX',
+                  'MY',
+                  'MZ',
+                  'NA',
+                  'NC',
+                  'NG',
+                  'NL',
                   'NO',
+                  'NP',
+                  'NZ',
                   'OM',
-                  'PK',
-                  'PS',
                   'PA',
-                  'PG',
-                  'PY',
                   'PE',
+                  'PF',
                   'PH',
+                  'PK',
                   'PL',
+                  'PR',
+                  'PS',
                   'PT',
+                  'PY',
                   'QA',
+                  'RE',
                   'RO',
+                  'RS',
                   'RU',
                   'RW',
-                  'SH',
-                  'KN',
-                  'LC',
-                  'VC',
-                  'WS',
-                  'SM',
-                  'ST',
                   'SA',
-                  'SN',
-                  'RS',
-                  'SC',
-                  'SL',
-                  'SK',
-                  'SI',
-                  'SB',
-                  'SO',
-                  'ZA',
-                  'KR',
-                  'SS',
-                  'ES',
-                  'LK',
-                  'SD',
-                  'SR',
                   'SE',
-                  'CH',
-                  'SY',
-                  'TW',
-                  'TJ',
-                  'TZ',
+                  'SG',
+                  'SI',
+                  'SK',
+                  'SN',
+                  'SR',
                   'TH',
-                  'BS',
-                  'GM',
-                  'TL',
-                  'TG',
-                  'TO',
-                  'TT',
+                  'TJ',
                   'TN',
                   'TR',
-                  'TM',
-                  'UG',
+                  'TT',
+                  'TW',
+                  'TZ',
                   'UA',
-                  'AE',
-                  'GB',
+                  'UG',
                   'US',
-                  'UY',
                   'UZ',
-                  'VU',
-                  'VE',
                   'VN',
-                  'YE',
+                  'ZA',
                   'ZM',
                   'ZW',
                 ])
@@ -355418,6 +356506,72 @@ export const getAccountsAccountIdUrlscannerV2ResultScanIdRoute = createRoute({
                                       status: z.string().openapi({ example: 'fail' }),
                                     })
                                     .openapi({ required: ['status'] }),
+                                  personalAgentProtocol: z
+                                    .object({
+                                      details: z.object({}).exactOptional(),
+                                      durationMs: z.number().exactOptional(),
+                                      evidence: z
+                                        .array(
+                                          z
+                                            .object({
+                                              action: z.string().openapi({ example: 'fetch' }),
+                                              finding: z
+                                                .object({
+                                                  outcome: z
+                                                    .string()
+                                                    .openapi({ example: 'positive' }),
+                                                  summary: z
+                                                    .string()
+                                                    .openapi({ example: 'Found valid robots.txt' }),
+                                                })
+                                                .exactOptional()
+                                                .openapi({ required: ['outcome', 'summary'] }),
+                                              label: z
+                                                .string()
+                                                .openapi({ example: 'GET /robots.txt' }),
+                                              request: z
+                                                .object({
+                                                  headers: z.object({}).exactOptional(),
+                                                  method: z.string().openapi({ example: 'GET' }),
+                                                  url: z
+                                                    .string()
+                                                    .openapi({
+                                                      example: 'https://example.com/robots.txt',
+                                                    }),
+                                                })
+                                                .exactOptional()
+                                                .openapi({ required: ['url', 'method'] }),
+                                              response: z
+                                                .object({
+                                                  bodyPreview: z.string().exactOptional(),
+                                                  bodySize: z.int().exactOptional(),
+                                                  headers: z.object({}).exactOptional(),
+                                                  redirectedTo: z.string().exactOptional(),
+                                                  status: z.int().openapi({ example: 200 }),
+                                                  statusText: z.string().openapi({ example: 'OK' }),
+                                                })
+                                                .exactOptional()
+                                                .openapi({ required: ['status', 'statusText'] }),
+                                            })
+                                            .openapi({ required: ['action', 'label'] }),
+                                        )
+                                        .exactOptional(),
+                                      message: z.string().exactOptional(),
+                                      messageRef: z
+                                        .object({
+                                          code: z
+                                            .string()
+                                            .openapi({
+                                              description: 'Stable, translatable message code.',
+                                              example: 'check.robotsTxt.valid',
+                                            }),
+                                          params: z.object({}).exactOptional(),
+                                        })
+                                        .exactOptional()
+                                        .openapi({ required: ['code'] }),
+                                      status: z.string().openapi({ example: 'fail' }),
+                                    })
+                                    .openapi({ required: ['status'] }),
                                   webMcp: z
                                     .object({
                                       details: z.object({}).exactOptional(),
@@ -355496,6 +356650,7 @@ export const getAccountsAccountIdUrlscannerV2ResultScanIdRoute = createRoute({
                                     'agentSkills',
                                     'webMcp',
                                     'ard',
+                                    'personalAgentProtocol',
                                   ],
                                 }),
                             })
@@ -356184,199 +357339,144 @@ export const postAccountsAccountIdUrlscannerV2ScanRoute = createRoute({
                 .openapi({ description: 'Enable agent readiness checks.' }),
               country: z
                 .enum([
-                  'AF',
+                  'AE',
                   'AL',
-                  'DZ',
-                  'AD',
-                  'AO',
-                  'AG',
-                  'AR',
                   'AM',
-                  'AU',
+                  'AO',
+                  'AR',
                   'AT',
+                  'AU',
                   'AZ',
-                  'BH',
-                  'BD',
                   'BB',
-                  'BY',
+                  'BD',
                   'BE',
-                  'BZ',
-                  'BJ',
-                  'BM',
-                  'BT',
-                  'BO',
-                  'BA',
-                  'BW',
-                  'BR',
-                  'BN',
-                  'BG',
                   'BF',
-                  'BI',
-                  'KH',
-                  'CM',
+                  'BG',
+                  'BH',
+                  'BN',
+                  'BO',
+                  'BR',
+                  'BT',
+                  'BW',
+                  'BY',
                   'CA',
-                  'CV',
-                  'KY',
-                  'CF',
-                  'TD',
-                  'CL',
-                  'CN',
-                  'CO',
-                  'KM',
-                  'CG',
-                  'CR',
+                  'CD',
+                  'CH',
                   'CI',
-                  'HR',
-                  'CU',
+                  'CL',
+                  'CM',
+                  'CO',
+                  'CR',
+                  'CW',
                   'CY',
                   'CZ',
-                  'CD',
-                  'DK',
-                  'DJ',
-                  'DM',
-                  'DO',
-                  'EC',
-                  'EG',
-                  'SV',
-                  'GQ',
-                  'ER',
-                  'EE',
-                  'SZ',
-                  'ET',
-                  'FJ',
-                  'FI',
-                  'FR',
-                  'GA',
-                  'GE',
                   'DE',
+                  'DJ',
+                  'DK',
+                  'DO',
+                  'DZ',
+                  'EC',
+                  'EE',
+                  'EG',
+                  'ES',
+                  'ET',
+                  'FI',
+                  'FJ',
+                  'FR',
+                  'GB',
+                  'GD',
+                  'GE',
                   'GH',
                   'GR',
-                  'GL',
-                  'GD',
                   'GT',
-                  'GN',
-                  'GW',
+                  'GU',
                   'GY',
-                  'HT',
+                  'HK',
                   'HN',
+                  'HR',
+                  'HT',
                   'HU',
-                  'IS',
-                  'IN',
                   'ID',
-                  'IR',
-                  'IQ',
                   'IE',
                   'IL',
+                  'IN',
+                  'IQ',
+                  'IS',
                   'IT',
                   'JM',
-                  'JP',
                   'JO',
-                  'KZ',
+                  'JP',
                   'KE',
-                  'KI',
-                  'KW',
                   'KG',
+                  'KH',
+                  'KR',
+                  'KW',
+                  'KZ',
                   'LA',
-                  'LV',
                   'LB',
-                  'LS',
+                  'LK',
                   'LR',
-                  'LY',
-                  'LI',
                   'LT',
                   'LU',
-                  'MO',
-                  'MG',
-                  'MW',
-                  'MY',
-                  'MV',
-                  'ML',
-                  'MR',
-                  'MU',
-                  'MX',
-                  'FM',
-                  'MD',
-                  'MC',
-                  'MN',
-                  'MS',
+                  'LV',
                   'MA',
-                  'MZ',
-                  'MM',
-                  'NA',
-                  'NR',
-                  'NP',
-                  'NL',
-                  'NZ',
-                  'NI',
-                  'NE',
-                  'NG',
-                  'KP',
+                  'MD',
+                  'MG',
                   'MK',
+                  'MM',
+                  'MN',
+                  'MO',
+                  'MT',
+                  'MU',
+                  'MV',
+                  'MW',
+                  'MX',
+                  'MY',
+                  'MZ',
+                  'NA',
+                  'NC',
+                  'NG',
+                  'NL',
                   'NO',
+                  'NP',
+                  'NZ',
                   'OM',
-                  'PK',
-                  'PS',
                   'PA',
-                  'PG',
-                  'PY',
                   'PE',
+                  'PF',
                   'PH',
+                  'PK',
                   'PL',
+                  'PR',
+                  'PS',
                   'PT',
+                  'PY',
                   'QA',
+                  'RE',
                   'RO',
+                  'RS',
                   'RU',
                   'RW',
-                  'SH',
-                  'KN',
-                  'LC',
-                  'VC',
-                  'WS',
-                  'SM',
-                  'ST',
                   'SA',
-                  'SN',
-                  'RS',
-                  'SC',
-                  'SL',
-                  'SK',
-                  'SI',
-                  'SB',
-                  'SO',
-                  'ZA',
-                  'KR',
-                  'SS',
-                  'ES',
-                  'LK',
-                  'SD',
-                  'SR',
                   'SE',
-                  'CH',
-                  'SY',
-                  'TW',
-                  'TJ',
-                  'TZ',
+                  'SG',
+                  'SI',
+                  'SK',
+                  'SN',
+                  'SR',
                   'TH',
-                  'BS',
-                  'GM',
-                  'TL',
-                  'TG',
-                  'TO',
-                  'TT',
+                  'TJ',
                   'TN',
                   'TR',
-                  'TM',
-                  'UG',
+                  'TT',
+                  'TW',
+                  'TZ',
                   'UA',
-                  'AE',
-                  'GB',
+                  'UG',
                   'US',
-                  'UY',
                   'UZ',
-                  'VU',
-                  'VE',
                   'VN',
-                  'YE',
+                  'ZA',
                   'ZM',
                   'ZW',
                 ])
@@ -377994,6 +379094,14 @@ export const getAccountsAccountIdWorkflowsRoute = createRoute({
                     created_on: z.iso.datetime({ offset: true }),
                     id: z.uuid(),
                     instances: z.record(z.string(), z.number()),
+                    jurisdiction: z
+                      .enum(['eu', 'fedramp', 'us'])
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Jurisdiction where instances of this workflow run and store data. Set when the workflow is created and cannot be changed.',
+                      }),
                     modified_on: z.iso.datetime({ offset: true }),
                     name: z
                       .string()
@@ -379165,6 +380273,14 @@ export const getAccountsAccountIdWorkflowsWorkflowNameRoute = createRoute({
                   created_on: z.iso.datetime({ offset: true }),
                   id: z.uuid(),
                   instances: z.record(z.string(), z.number()),
+                  jurisdiction: z
+                    .enum(['eu', 'fedramp', 'us'])
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Jurisdiction where instances of this workflow run and store data. Set when the workflow is created and cannot be changed.',
+                    }),
                   modified_on: z.iso.datetime({ offset: true }),
                   name: z
                     .string()
@@ -379347,6 +380463,13 @@ export const putAccountsAccountIdWorkflowsWorkflowNameRoute = createRoute({
                     'Default retention applied to instances of this version when they do not set their own retention.',
                   required: [],
                 }),
+              jurisdiction: z
+                .enum(['eu', 'fedramp', 'us'])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Jurisdiction where instances of this workflow run and store data. Can only be set when the workflow is created and cannot be changed afterwards; omit it to keep the existing jurisdiction.',
+                }),
               limits: z
                 .object({ steps: z.int().min(1).max(9007199254740991).exactOptional() })
                 .exactOptional()
@@ -379391,6 +380514,14 @@ export const putAccountsAccountIdWorkflowsWorkflowNameRoute = createRoute({
                   created_on: z.iso.datetime({ offset: true }),
                   id: z.uuid(),
                   is_deleted: z.number(),
+                  jurisdiction: z
+                    .enum(['eu', 'fedramp', 'us'])
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Jurisdiction where instances of this workflow run and store data. Set when the workflow is created and cannot be changed.',
+                    }),
                   modified_on: z.iso.datetime({ offset: true }),
                   name: z
                     .string()
@@ -384337,252 +385468,6 @@ export const postAccountsAccountIdZtRiskScoringUserIdResetRoute = createRoute({
     },
   },
   security: [{ api_email: [], api_key: [], api_token: [] }],
-})
-
-export const getAccountsAccountTagAnalyticsSqlRoute = createRoute({
-  method: 'get',
-  path: '/accounts/{account_tag}/analytics/sql',
-  tags: ['Analytics SQL'],
-  summary: 'Query analytics datasets',
-  description:
-    'Executes a SQL query scoped to the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account, so an accountTag predicate or JSON scope is not required. Explicit account scope must match the path account. Any zone restrictions must belong to that account. Query parameters, time ranges, output formats, authorization, and responses follow the legacy query endpoint.',
-  operationId: 'sql-api-query-get-account-scoped',
-  request: {
-    params: z.object({
-      account_tag: z
-        .string()
-        .regex(/^[a-f0-9]{32}$/)
-        .openapi({
-          param: {
-            name: 'account_tag',
-            in: 'path',
-            description: 'Account that authorizes and scopes the request.',
-            required: true,
-            schema: { type: 'string', pattern: '^[a-f0-9]{32}$' },
-            example: '0123456789abcdef0123456789abcdef',
-          },
-        }),
-    }),
-    query: z.object({
-      query: z
-        .string()
-        .openapi({
-          param: {
-            name: 'query',
-            in: 'query',
-            description:
-              'SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.\n',
-            required: true,
-            schema: { type: 'string' },
-            example:
-              "SELECT edgeResponseStatus FROM events.httpRequests WHERE datetime > '2026-01-01' LIMIT 10",
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: AnalyticsSqlQuerySuccessResponse,
-    400: AnalyticsSqlMalformedRequestResponse,
-    403: AnalyticsSqlForbiddenResponse,
-    422: AnalyticsSqlUnprocessableQueryResponse,
-    429: AnalyticsSqlQueryLimitExceededResponse,
-    500: AnalyticsSqlInternalErrorResponse,
-    501: AnalyticsSqlNotImplementedResponse,
-    503: AnalyticsSqlServiceUnavailableResponse,
-    507: AnalyticsSqlResourceExhaustedResponse,
-  },
-  security: [{ api_token: [] }],
-})
-
-export const postAccountsAccountTagAnalyticsSqlRoute = createRoute({
-  method: 'post',
-  path: '/accounts/{account_tag}/analytics/sql',
-  tags: ['Analytics SQL'],
-  summary: 'Query analytics datasets',
-  description:
-    'Executes a SQL query scoped to the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account, so an accountTag predicate or JSON scope is not required. Explicit account scope must match the path account. Any zone restrictions must belong to that account. Query parameters, time ranges, output formats, authorization, and responses follow the legacy query endpoint.',
-  operationId: 'sql-api-query-post-account-scoped',
-  request: {
-    params: z.object({
-      account_tag: z
-        .string()
-        .regex(/^[a-f0-9]{32}$/)
-        .openapi({
-          param: {
-            name: 'account_tag',
-            in: 'path',
-            description: 'Account that authorizes and scopes the request.',
-            required: true,
-            schema: { type: 'string', pattern: '^[a-f0-9]{32}$' },
-            example: '0123456789abcdef0123456789abcdef',
-          },
-        }),
-    }),
-    body: {
-      content: {
-        'application/json': { schema: AnalyticsSqlSqlQueryRequestSchema },
-        'text/plain': {
-          schema: z.string(),
-          example:
-            "SELECT edgeResponseStatus FROM events.httpRequests WHERE datetime > '2026-01-01' LIMIT 10",
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: AnalyticsSqlQuerySuccessResponse,
-    400: AnalyticsSqlMalformedRequestResponse,
-    403: AnalyticsSqlForbiddenResponse,
-    422: AnalyticsSqlUnprocessableQueryResponse,
-    429: AnalyticsSqlQueryLimitExceededResponse,
-    500: AnalyticsSqlInternalErrorResponse,
-    501: AnalyticsSqlNotImplementedResponse,
-    503: AnalyticsSqlServiceUnavailableResponse,
-    507: AnalyticsSqlResourceExhaustedResponse,
-  },
-  security: [{ api_token: [] }],
-})
-
-export const getAccountsAccountTagAnalyticsSqlIntrospectionRoute = createRoute({
-  method: 'get',
-  path: '/accounts/{account_tag}/analytics/sql/introspection',
-  tags: ['Analytics SQL'],
-  summary: 'List available analytics datasets',
-  description:
-    'Returns the dataset catalogue for the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account; account_tag is not required as a query parameter. If supplied, it must match the path account. Dataset and column discovery options are identical to the legacy introspection endpoint.',
-  operationId: 'sql-api-introspection-account-scoped',
-  request: {
-    params: z.object({
-      account_tag: z
-        .string()
-        .regex(/^[a-f0-9]{32}$/)
-        .openapi({
-          param: {
-            name: 'account_tag',
-            in: 'path',
-            description: 'Account that authorizes and scopes the request.',
-            required: true,
-            schema: { type: 'string', pattern: '^[a-f0-9]{32}$' },
-            example: '0123456789abcdef0123456789abcdef',
-          },
-        }),
-    }),
-    query: z.object({
-      include_columns: z
-        .stringbool()
-        .default(false)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'include_columns',
-            in: 'query',
-            description: 'Include column metadata for each returned dataset.',
-            schema: { type: 'boolean', default: false },
-            required: false,
-          },
-        }),
-      include_custom_attributes: z
-        .stringbool()
-        .default(false)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'include_custom_attributes',
-            in: 'query',
-            description:
-              'Include a capped set of custom attribute names and types observed during the preceding seven days, as `custom_attributes`. Requires a nonempty dataset_name. Deprecated in favor of `include_attributes`.\n',
-            schema: { type: 'boolean', default: false },
-            required: false,
-          },
-        }),
-      include_attributes: z
-        .stringbool()
-        .default(false)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'include_attributes',
-            in: 'query',
-            description:
-              'Include a capped set of attribute names and types observed during the preceding seven days, as `attributes`. Requires a nonempty dataset_name. Replaces `include_custom_attributes`, which is deprecated.\n',
-            schema: { type: 'boolean', default: false },
-            required: false,
-          },
-        }),
-      include_wae: z
-        .stringbool()
-        .default(true)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'include_wae',
-            in: 'query',
-            description:
-              "Include Workers Analytics Engine datasets, which are discovered from the account's own data. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.\n",
-            schema: { type: 'boolean', default: true },
-            required: false,
-          },
-        }),
-      include_lex: z
-        .stringbool()
-        .default(true)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'include_lex',
-            in: 'query',
-            description:
-              'Include Log Explorer datasets, which are listed only where the account has them. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.\n',
-            schema: { type: 'boolean', default: true },
-            required: false,
-          },
-        }),
-      dataset_name: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'dataset_name',
-            in: 'query',
-            description:
-              "Return only the dataset with this exact name. An empty value is treated as if the parameter had been omitted, and does not filter the catalogue. A name that matches no dataset in this deployment's catalogue is rejected with `422`; a dataset that exists but is not describable here is rejected identically, so the two cases cannot be told apart.\n\nA Workers Analytics Engine dataset is named in full, as `events.analyticsEngine.<dataset_name>`; the namespace on its own returns every such dataset the account has. A `dataset_name` the account does not have is rejected with `422` like any other unknown name.\n",
-            schema: { type: 'string' },
-            example: 'events.httpRequests',
-            required: false,
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Dataset catalogue returned successfully.',
-      content: { 'application/json': { schema: AnalyticsSqlIntrospectionResponseSchema } },
-    },
-    400: AnalyticsSqlMalformedRequestResponse,
-    403: {
-      description:
-        'Authentication failed or the caller does not have Account Analytics Read permission on the specified account.\n',
-      content: { 'text/plain': { schema: z.string(), example: 'Authorization error' } },
-    },
-    422: {
-      description:
-        'The request could not be processed. This is returned when the account tag is invalid or unknown, when `include_custom_attributes` or `include_attributes` is set without a `dataset_name`, when a Workers Analytics Engine `dataset_name` is supplied alongside `include_wae=false` or contains characters a dataset name cannot contain, or when the supplied criteria match no dataset that this deployment can describe — either because no such dataset exists or because it is not describable here. The message names the criteria that matched nothing.\n',
-      content: {
-        'text/plain': {
-          schema: z.string(),
-          example:
-            'Input was invalid: There are no introspectable datasets matching the provided criteria (dataset_name=`events.nonexistent`)',
-        },
-      },
-    },
-    500: AnalyticsSqlInternalErrorResponse,
-    503: {
-      description: 'The authorization service is temporarily unavailable.',
-      content: { 'text/plain': { schema: z.string() } },
-    },
-  },
-  security: [{ api_token: [] }],
 })
 
 export const getAnalyticsSqlRoute = createRoute({
@@ -395515,11 +396400,26 @@ export const getRadarAnnotationsRoute = createRoute({
                         entities: z.array(
                           z
                             .object({
+                              entityLocation: z
+                                .string()
+                                .nullable()
+                                .openapi({
+                                  description:
+                                    'Alpha-2 code of the country the entity belongs to (GEOLOCATION and AS entities only).',
+                                  example: 'PT',
+                                }),
                               entityName: z.string().nullable().openapi({ example: 'GPTBot' }),
                               entityType: z.string().openapi({ example: 'BOT' }),
                               entityValue: z.string().openapi({ example: 'gptbot' }),
                             })
-                            .openapi({ required: ['entityType', 'entityValue', 'entityName'] }),
+                            .openapi({
+                              required: [
+                                'entityType',
+                                'entityValue',
+                                'entityName',
+                                'entityLocation',
+                              ],
+                            }),
                         ),
                         eventType: z.string().openapi({ example: 'OUTAGE' }),
                         geoIds: z.array(z.string().openapi({ example: '2267057' })),
@@ -396365,11 +397265,26 @@ export const getRadarAnnotationsOutagesRoute = createRoute({
                         entities: z.array(
                           z
                             .object({
+                              entityLocation: z
+                                .string()
+                                .nullable()
+                                .openapi({
+                                  description:
+                                    'Alpha-2 code of the country the entity belongs to (GEOLOCATION and AS entities only).',
+                                  example: 'PT',
+                                }),
                               entityName: z.string().nullable().openapi({ example: 'GPTBot' }),
                               entityType: z.string().openapi({ example: 'BOT' }),
                               entityValue: z.string().openapi({ example: 'gptbot' }),
                             })
-                            .openapi({ required: ['entityType', 'entityValue', 'entityName'] }),
+                            .openapi({
+                              required: [
+                                'entityType',
+                                'entityValue',
+                                'entityName',
+                                'entityLocation',
+                              ],
+                            }),
                         ),
                         eventType: z.string().openapi({ example: 'OUTAGE' }),
                         geoIds: z.array(z.string().openapi({ example: '2267057' })),
@@ -396723,11 +397638,21 @@ export const getRadarAnnotationsIdRoute = createRoute({
                       entities: z.array(
                         z
                           .object({
+                            entityLocation: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                description:
+                                  'Alpha-2 code of the country the entity belongs to (GEOLOCATION and AS entities only).',
+                                example: 'PT',
+                              }),
                             entityName: z.string().nullable().openapi({ example: 'GPTBot' }),
                             entityType: z.string().openapi({ example: 'BOT' }),
                             entityValue: z.string().openapi({ example: 'gptbot' }),
                           })
-                          .openapi({ required: ['entityType', 'entityValue', 'entityName'] }),
+                          .openapi({
+                            required: ['entityType', 'entityValue', 'entityName', 'entityLocation'],
+                          }),
                       ),
                       eventType: z.string().openapi({ example: 'OUTAGE' }),
                       geoIds: z.array(z.string().openapi({ example: '2267057' })),
@@ -526222,10 +527147,24 @@ export const getRadarTrafficAnomaliesRoute = createRoute({
                           })
                           .nullable()
                           .openapi({ required: ['origin', 'name'] }),
+                        outageId: z
+                          .string()
+                          .nullable()
+                          .openapi({
+                            description:
+                              'ID of the published outage this anomaly was confirmed as, if any.',
+                            example: '1234',
+                          }),
                         startDate: z.iso
                           .datetime({ offset: true })
                           .openapi({ example: '2023-08-02T23:15:00Z' }),
-                        status: z.string().openapi({ example: 'UNVERIFIED' }),
+                        status: z
+                          .string()
+                          .openapi({
+                            description:
+                              'Verification status: UNVERIFIED (automatically detected, not yet validated by Radar), TP (verified by Radar) or VERIFIED (verified by Radar and a third-party source).',
+                            example: 'UNVERIFIED',
+                          }),
                         type: z.string().openapi({ example: 'LOCATION' }),
                         uuid: z
                           .string()
@@ -526243,6 +527182,7 @@ export const getRadarTrafficAnomaliesRoute = createRoute({
                           'locationDetails',
                           'asnDetails',
                           'originDetails',
+                          'outageId',
                         ],
                       }),
                   ),
@@ -526558,10 +527498,24 @@ export const getRadarTrafficAnomaliesUuidRoute = createRoute({
                         })
                         .nullable()
                         .openapi({ required: ['origin', 'name'] }),
+                      outageId: z
+                        .string()
+                        .nullable()
+                        .openapi({
+                          description:
+                            'ID of the published outage this anomaly was confirmed as, if any.',
+                          example: '1234',
+                        }),
                       startDate: z.iso
                         .datetime({ offset: true })
                         .openapi({ example: '2023-08-02T23:15:00Z' }),
-                      status: z.string().openapi({ example: 'UNVERIFIED' }),
+                      status: z
+                        .string()
+                        .openapi({
+                          description:
+                            'Verification status: UNVERIFIED (automatically detected, not yet validated by Radar), TP (verified by Radar) or VERIFIED (verified by Radar and a third-party source).',
+                          example: 'UNVERIFIED',
+                        }),
                       type: z.string().openapi({ example: 'LOCATION' }),
                       uuid: z.string().openapi({ example: '55a57f33-8bc0-4984-b4df-fdaff72df39d' }),
                       visibleInDataSources: z.array(z.string()).nullable(),
@@ -526577,6 +527531,7 @@ export const getRadarTrafficAnomaliesUuidRoute = createRoute({
                         'locationDetails',
                         'asnDetails',
                         'originDetails',
+                        'outageId',
                       ],
                     }),
                 })
@@ -534968,7 +535923,7 @@ export const putZonesZoneIdAiSecurityCustomTopicsRoute = createRoute({
   tags: ['AI Security for Apps'],
   summary: 'Update the AI Security for Apps custom topics of a zone.',
   description:
-    'Update the custom topic list of the zone, overwriting it entirely with the topics in the request, so include\nevery topic you want to keep. Changes can take up to a minute to propagate.\n\nEach entry has a `label`, used to reference the topic in rule expressions and analytics, and a `topic`\ndescription, which the classifier scores prompts against while AI Security for Apps is enabled. The following\nrules apply:\n\n- A zone can hold at most 20 topics.\n- `label` must be 2–20 characters, using only lowercase letters (a–z), digits (0–9), and hyphens.\n- `topic` must be 2–50 printable ASCII characters.\n- Labels must be unique within the zone, and so must topic descriptions.',
+    'Update the custom topic list of the zone, overwriting it entirely with the topics in the request, so include\nevery topic you want to keep. Changes can take up to a minute to propagate.\n\nEach entry has a `label`, used to reference the topic in rule expressions and analytics, and a `topic`\ndescription, which the classifier scores prompts against while AI Security for Apps is enabled. The following\nrules apply:\n\n- A zone can hold at most 20 topics.\n- `label` must be 2–20 characters, using only lowercase letters (a–z), digits (0–9), and hyphens.\n- `topic` must be 2–50 UTF-8 bytes. Text in any language is supported, including spaces, numbers,\n  punctuation, and symbols. Tabs, line breaks, invalid text, and invisible formatting characters are not allowed.\n- Labels must be unique within the zone, and so must topic descriptions.',
   operationId: 'ai-security-custom-topics-put',
   request: {
     params: z.object({
@@ -537124,13 +538079,7 @@ export const getZonesZoneIdBotManagementRoute = createRoute({
     },
     '4XX': {
       description: 'Bot Management config response failure',
-      content: {
-        'application/json': {
-          schema: BotManagementBotManagementResponseBodySchema.and(
-            BotManagementApiResponseCommonFailureSchema,
-          ),
-        },
-      },
+      content: { 'application/json': { schema: BotManagementApiResponseCommonFailureSchema } },
     },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
@@ -537167,13 +538116,7 @@ export const putZonesZoneIdBotManagementRoute = createRoute({
     },
     '4XX': {
       description: 'Update Bot Management response failure',
-      content: {
-        'application/json': {
-          schema: BotManagementBotManagementResponseBodySchema.and(
-            BotManagementApiResponseCommonFailureSchema,
-          ),
-        },
-      },
+      content: { 'application/json': { schema: BotManagementApiResponseCommonFailureSchema } },
     },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
@@ -547084,6 +548027,108 @@ export const deleteZonesZoneIdFirewallLockdownsLockDownsIdRoute = createRoute({
   security: [{ api_email: [], api_key: [], api_token: [] }],
 })
 
+export const getZonesZoneIdFirewallPayloadLoggingKeyRoute = createRoute({
+  method: 'get',
+  path: '/zones/{zone_id}/firewall/payload_logging/key',
+  tags: ['Payload logging keys for a zone'],
+  summary: 'Get the payload logging key',
+  description:
+    'Fetches the public key that payload logging uses to encrypt matched payloads for the zone.',
+  operationId: 'payload-logging-keys-for-a-zone-get-the-payload-logging-key',
+  request: {
+    params: z.object({
+      zone_id: FirewallIdentifierSchema.openapi({
+        param: {
+          name: 'zone_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/firewall_identifier' },
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Get the payload logging key response.',
+      content: { 'application/json': { schema: FirewallPayloadLoggingKeyResponseSingleSchema } },
+    },
+    '4XX': {
+      description: 'Get the payload logging key response failure.',
+      content: { 'application/json': { schema: FirewallApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_email: [], api_key: [], api_token: [] }],
+})
+
+export const putZonesZoneIdFirewallPayloadLoggingKeyRoute = createRoute({
+  method: 'put',
+  path: '/zones/{zone_id}/firewall/payload_logging/key',
+  tags: ['Payload logging keys for a zone'],
+  summary: 'Set the payload logging key',
+  description:
+    'Creates or replaces the public key that payload logging uses to encrypt matched payloads for the zone. The zone key takes precedence over the account key. Requires a plan that includes payload logging (Enterprise); otherwise it returns 403.',
+  operationId: 'payload-logging-keys-for-a-zone-set-the-payload-logging-key',
+  request: {
+    params: z.object({
+      zone_id: FirewallIdentifierSchema.openapi({
+        param: {
+          name: 'zone_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/firewall_identifier' },
+        },
+      }),
+    }),
+    body: {
+      content: { 'application/json': { schema: FirewallPayloadLoggingKeySchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Set the payload logging key response.',
+      content: { 'application/json': { schema: FirewallPayloadLoggingKeyResponseSingleSchema } },
+    },
+    '4XX': {
+      description: 'Set the payload logging key response failure.',
+      content: { 'application/json': { schema: FirewallApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_email: [], api_key: [], api_token: [] }],
+})
+
+export const deleteZonesZoneIdFirewallPayloadLoggingKeyRoute = createRoute({
+  method: 'delete',
+  path: '/zones/{zone_id}/firewall/payload_logging/key',
+  tags: ['Payload logging keys for a zone'],
+  summary: 'Delete the payload logging key',
+  description: 'Deletes the payload logging public key of the zone.',
+  operationId: 'payload-logging-keys-for-a-zone-delete-the-payload-logging-key',
+  request: {
+    params: z.object({
+      zone_id: FirewallIdentifierSchema.openapi({
+        param: {
+          name: 'zone_id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/firewall_identifier' },
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Delete the payload logging key response.',
+      content: { 'application/json': { schema: FirewallPayloadLoggingKeyResponseSingleSchema } },
+    },
+    '4XX': {
+      description: 'Delete the payload logging key response failure.',
+      content: { 'application/json': { schema: FirewallApiResponseCommonFailureSchema } },
+    },
+  },
+  security: [{ api_email: [], api_key: [], api_token: [] }],
+})
+
 export const getZonesZoneIdFirewallRulesRoute = createRoute({
   method: 'get',
   path: '/zones/{zone_id}/firewall/rules',
@@ -549244,11 +550289,7 @@ export const getZonesZoneIdFraudDetectionSettingsRoute = createRoute({
     },
     '4XX': {
       description: 'Fraud Detection settings response failure',
-      content: {
-        'application/json': {
-          schema: FraudFraudSettingsResponseBodySchema.and(FraudApiResponseCommonFailureSchema),
-        },
-      },
+      content: { 'application/json': { schema: FraudApiResponseCommonFailureSchema } },
     },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],
@@ -549322,11 +550363,7 @@ export const putZonesZoneIdFraudDetectionSettingsRoute = createRoute({
     },
     '4XX': {
       description: 'Update Fraud Detection settings failure',
-      content: {
-        'application/json': {
-          schema: FraudFraudSettingsResponseBodySchema.and(FraudApiResponseCommonFailureSchema),
-        },
-      },
+      content: { 'application/json': { schema: FraudApiResponseCommonFailureSchema } },
     },
   },
   security: [{ api_token: [] }, { api_email: [], api_key: [] }],

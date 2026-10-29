@@ -147,7 +147,7 @@ const APIEntitiesOrbitContextEntitySchema = z
 
 const APIEntitiesOrbitContextSchema = z
   .object({
-    version: z.string().exactOptional().openapi({ example: '1.1.0' }),
+    version: z.string().exactOptional().openapi({ example: '1.3.0' }),
     entities: z.array(APIEntitiesOrbitContextEntitySchema).exactOptional(),
   })
   .openapi({ required: [] })
@@ -279,30 +279,30 @@ const APIEntitiesAiExternalAgentsIdentitySchema = z
 
 const APIEntitiesAiDuoWorkflowsWorkflowSchema = z
   .object({
-    id: z.string().exactOptional(),
+    id: z.int().exactOptional(),
     web_url: z
       .string()
       .exactOptional()
       .openapi({
         example: 'https://gitlab.example.com/group/project/-/automate/agent-sessions/42',
       }),
-    project_id: z.string().exactOptional(),
-    namespace_id: z.string().exactOptional(),
-    agent_privileges: z.string().exactOptional(),
-    agent_privileges_names: z.string().exactOptional(),
-    pre_approved_agent_privileges: z.string().exactOptional(),
-    pre_approved_agent_privileges_names: z.string().exactOptional(),
+    project_id: z.int().exactOptional(),
+    namespace_id: z.int().exactOptional(),
+    agent_privileges: z.array(z.int()).exactOptional(),
+    agent_privileges_names: z.array(z.string()).exactOptional(),
+    pre_approved_agent_privileges: z.array(z.int()).exactOptional(),
+    pre_approved_agent_privileges_names: z.array(z.string()).exactOptional(),
     workflow_definition: z.string().exactOptional(),
     status: z.string().exactOptional(),
     summary: z.string().exactOptional(),
     title: z.string().exactOptional(),
-    allow_agent_to_request_user: z.string().exactOptional(),
+    allow_agent_to_request_user: z.boolean().exactOptional(),
     image: z.string().exactOptional(),
     environment: z.string().exactOptional(),
-    ai_catalog_item_version_id: z.string().exactOptional(),
-    workload: z.string().exactOptional(),
-    mcp_enabled: z.string().exactOptional(),
-    incremental_checkpoints_enabled: z.string().exactOptional(),
+    ai_catalog_item_version_id: z.int().exactOptional(),
+    workload: z.object({}).exactOptional(),
+    mcp_enabled: z.boolean().exactOptional(),
+    incremental_checkpoints_enabled: z.boolean().exactOptional(),
     gitlab_url: z.string().exactOptional(),
   })
   .openapi({ required: [] })
@@ -310,7 +310,7 @@ const APIEntitiesAiDuoWorkflowsWorkflowSchema = z
 
 const APIEntitiesAiDuoWorkflowsBasicCheckpointSchema = z
   .object({
-    id: z.string().exactOptional(),
+    id: z.int().exactOptional(),
     thread_ts: z.string().exactOptional(),
     parent_ts: z.string().exactOptional(),
     checkpoint_ns: z.string().exactOptional(),
@@ -320,10 +320,10 @@ const APIEntitiesAiDuoWorkflowsBasicCheckpointSchema = z
 
 const APIEntitiesAiDuoWorkflowsCheckpointWriteSchema = z
   .object({
-    id: z.string().exactOptional(),
+    id: z.int().exactOptional(),
     thread_ts: z.string().exactOptional(),
     task: z.string().exactOptional(),
-    idx: z.string().exactOptional(),
+    idx: z.int().exactOptional(),
     channel: z.string().exactOptional(),
     write_type: z.string().exactOptional(),
     data: z.string().exactOptional(),
@@ -333,22 +333,22 @@ const APIEntitiesAiDuoWorkflowsCheckpointWriteSchema = z
 
 const APIEntitiesAiDuoWorkflowsCheckpointSchema = z
   .object({
-    id: z.string().exactOptional(),
+    id: z.int().exactOptional(),
     thread_ts: z.string().exactOptional(),
     parent_ts: z.string().exactOptional(),
     checkpoint_ns: z.string().exactOptional(),
-    checkpoint: z.string().exactOptional(),
+    checkpoint: z.object({}).exactOptional(),
     compressed_checkpoint: z.string().exactOptional(),
     checkpoint_writes: z.array(APIEntitiesAiDuoWorkflowsCheckpointWriteSchema).exactOptional(),
-    current_thread: z.string().exactOptional(),
-    metadata: z.string().exactOptional(),
+    current_thread: z.int().exactOptional(),
+    metadata: z.object({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesAiDuoWorkflowsCheckpoint')
 
 const APIEntitiesAiDuoWorkflowsEventSchema = z
   .object({
-    id: z.string().exactOptional(),
+    id: z.int().exactOptional(),
     correlation_id: z.string().exactOptional(),
     event_type: z.string().exactOptional(),
     event_status: z.string().exactOptional(),
@@ -377,8 +377,8 @@ const APIEntitiesIdentitySchema = z
 const APIEntitiesScimIdentitySchema = z
   .object({
     extern_uid: z.string().exactOptional(),
-    group_id: z.string().exactOptional(),
-    active: z.string().exactOptional(),
+    group_id: z.int().exactOptional(),
+    active: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesScimIdentity')
@@ -906,9 +906,9 @@ const APIEntitiesProtectedEnvironmentSchema = z
 
 const APIEntitiesAnalyticsDeploymentFrequencySchema = z
   .object({
-    value: z.string().exactOptional(),
-    from: z.string().exactOptional(),
-    to: z.string().exactOptional(),
+    value: z.int().exactOptional(),
+    from: z.iso.date().exactOptional(),
+    to: z.iso.date().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesAnalyticsDeploymentFrequency')
@@ -1051,7 +1051,7 @@ const APIEntitiesAnalyticsCodeReviewMergeRequestSchema = z
       .int()
       .exactOptional()
       .openapi({ description: 'Review time in hours', example: 6 }),
-    diff_stats: z.string().exactOptional(),
+    diff_stats: z.object({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesAnalyticsCodeReviewMergeRequest')
@@ -2533,8 +2533,8 @@ const APIEntitiesGroupHookSchema = z
 const APIEntitiesIdentityDetailSchema = z
   .object({
     extern_uid: z.string().exactOptional(),
-    user_id: z.string().exactOptional(),
-    active: z.string().exactOptional(),
+    user_id: z.int().exactOptional(),
+    active: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesIdentityDetail')
@@ -2585,6 +2585,7 @@ const APIEntitiesMemberRoleSchema = z
     apply_security_scan_profiles: z.boolean().default(false).exactOptional(),
     admin_merge_request: z.boolean().default(false).exactOptional(),
     archive_project: z.boolean().default(false).exactOptional(),
+    archive_subgroup: z.boolean().default(false).exactOptional(),
     admin_ai_catalog_item_consumer: z.boolean().default(false).exactOptional(),
     create_security_scan_profiles: z.boolean().default(false).exactOptional(),
     destroy_package: z.boolean().default(false).exactOptional(),
@@ -5789,10 +5790,10 @@ const APIEntitiesAdminModelSchema = z
     checksum_information: z
       .object({
         checksum: z.string().exactOptional(),
-        last_checksum: z.string().exactOptional(),
+        last_checksum: z.iso.datetime({ offset: true }).exactOptional(),
         checksum_state: z.string().exactOptional(),
-        checksum_retry_count: z.string().exactOptional(),
-        checksum_retry_at: z.string().exactOptional(),
+        checksum_retry_count: z.int().exactOptional(),
+        checksum_retry_at: z.iso.datetime({ offset: true }).exactOptional(),
         checksum_failure: z.string().exactOptional(),
       })
       .exactOptional()
@@ -7443,6 +7444,7 @@ const APIEntitiesApplicationSettingSchema = z
     minimum_password_length: z.string().exactOptional(),
     mirror_available: z.string().exactOptional(),
     notify_on_unknown_sign_in: z.string().exactOptional(),
+    o11y_provisioner_url: z.string().exactOptional(),
     organization_cluster_agent_authorization_enabled: z.string().exactOptional(),
     pages_domain_verification_enabled: z.string().exactOptional(),
     pages_unique_domain_default_enabled: z.string().exactOptional(),
@@ -7682,6 +7684,7 @@ const APIEntitiesApplicationSettingSchema = z
     users_api_limit_gpg_keys: z.string().exactOptional(),
     users_api_limit_gpg_key: z.string().exactOptional(),
     tags_create_limit: z.string().exactOptional(),
+    todos_list_api_limit: z.string().exactOptional(),
     group_hooks_create_limit: z.string().exactOptional(),
     project_hooks_create_limit: z.string().exactOptional(),
     system_hooks_create_limit: z.string().exactOptional(),
@@ -7835,6 +7838,8 @@ const APIEntitiesApplicationSettingSchema = z
     duo_remote_flows_availability: z.string().exactOptional(),
     duo_foundational_flows_enabled: z.string().exactOptional(),
     duo_foundational_flows_availability: z.string().exactOptional(),
+    duo_scheduled_triggers_enabled: z.string().exactOptional(),
+    duo_scheduled_triggers_availability: z.string().exactOptional(),
     duo_custom_agents_enabled: z.boolean().exactOptional(),
     duo_custom_agents_availability: z.string().exactOptional(),
     duo_custom_flows_enabled: z.boolean().exactOptional(),
@@ -7869,6 +7874,10 @@ const APIEntitiesApplicationSettingSchema = z
     zoekt_initial_indexing_limit: z.string().exactOptional(),
     orbit_auto_index_root_namespace: z.string().exactOptional(),
     orbit_dap_enabled_by_default: z.string().exactOptional(),
+    orbit_query_limit: z.string().exactOptional(),
+    orbit_indexing_status_limit: z.string().exactOptional(),
+    orbit_item_counts_limit: z.string().exactOptional(),
+    orbit_rate_limit_allowlist_raw: z.string().exactOptional(),
     duo_workflow_oauth_application_id: z.string().exactOptional(),
     scan_execution_policies_action_limit: z.string().exactOptional(),
     scan_execution_policies_schedule_limit: z.string().exactOptional(),
@@ -12637,17 +12646,17 @@ const APIEntitiesMemberSchema = z
 
 const APIEntitiesBillableMembershipSchema = z
   .object({
-    id: z.string().exactOptional(),
-    source_id: z.string().exactOptional(),
+    id: z.int().exactOptional(),
+    source_id: z.int().exactOptional(),
     source_full_name: z.string().exactOptional(),
     source_members_url: z.string().exactOptional(),
-    created_at: z.string().exactOptional(),
-    expires_at: z.string().exactOptional(),
+    created_at: z.iso.datetime({ offset: true }).exactOptional(),
+    expires_at: z.iso.date().exactOptional(),
     access_level: z
       .object({
         string_value: z.string().exactOptional(),
-        integer_value: z.string().exactOptional(),
-        custom_role: z.string().exactOptional(),
+        integer_value: z.int().exactOptional(),
+        custom_role: z.object({}).exactOptional(),
       })
       .exactOptional()
       .openapi({ required: [] }),
@@ -15631,6 +15640,13 @@ const APIEntitiesGroupDetailSchema = z
     lock_built_in_project_templates_enabled: z.boolean().exactOptional(),
     require_sha_for_merge: z.boolean().exactOptional(),
     lock_require_sha_for_merge: z.boolean().exactOptional(),
+    require_two_factor_authentication_from_ancestor: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether an ancestor group requires all users to set up two-factor authentication. Members of this group must then set it up even when require_two_factor_authentication is false.',
+      }),
     shared_with_groups: z.array(z.object({})).exactOptional(),
     runners_token: z
       .string()
@@ -16043,6 +16059,7 @@ const APIEntitiesPlanLimitSchema = z
     notification_limit: z.int().exactOptional().openapi({ example: 15000 }),
     npm_max_file_size: z.int().exactOptional().openapi({ example: 524288000 }),
     nuget_max_file_size: z.int().exactOptional().openapi({ example: 524288000 }),
+    organization_hooks: z.int().exactOptional().openapi({ example: 50 }),
     pipeline_hierarchy_size: z.int().exactOptional().openapi({ example: 1000 }),
     pypi_max_file_size: z.int().exactOptional().openapi({ example: 3221225472 }),
     service_desk_outbound_emails_per_hour: z.int().exactOptional().openapi({ example: 100 }),
@@ -16481,9 +16498,7 @@ const PostApiV4RolloutsIdRequestSchema = z
 
 const PostApiV4OrbitQueryRequestSchema = z
   .object({
-    query: z
-      .xor([z.object({}).nullable(), z.string().nullable()])
-      .openapi({ description: 'JSON query object, or GQL text when enabled for the current user' }),
+    query: z.string().nullable().openapi({ description: 'GQL query text' }),
     response_format: z
       .enum(['raw', 'llm', 'gql'])
       .default('raw')
@@ -16526,7 +16541,7 @@ const PostApiV4OrbitContextRequestSchema = z
       .nullable()
       .openapi({
         description:
-          'Exactly one token: Type[id], a GID, an instance URL, path!iid, path#iid, or path&iid (epic)',
+          'Exactly one token: Type[id], a GID, an instance URL, path!iid, path#iid, path&iid (epic), or path@ref (branch or commit)',
       }),
     expand: z
       .xor([z.boolean().default(false)])
@@ -19962,6 +19977,14 @@ const PostApiV4GroupsIdMemberRolesRequestSchema = z
       .default(false)
       .exactOptional()
       .openapi({ description: 'Allows archiving of projects.' }),
+    archive_subgroup: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Ability to archive or unarchive a subgroup. This ability does not allow archiving top-level groups. Archiving unlinks projects from their fork networks and closes their open cross-fork merge requests, and unarchiving does not restore either.',
+      }),
     admin_ai_catalog_item_consumer: z
       .boolean()
       .default(false)
@@ -20281,6 +20304,14 @@ const PostApiV4MemberRolesRequestSchema = z
       .default(false)
       .exactOptional()
       .openapi({ description: 'Allows archiving of projects.' }),
+    archive_subgroup: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Ability to archive or unarchive a subgroup. This ability does not allow archiving top-level groups. Archiving unlinks projects from their fork networks and closes their open cross-fork merge requests, and unarchiving does not restore either.',
+      }),
     admin_ai_catalog_item_consumer: z
       .boolean()
       .default(false)
@@ -24947,6 +24978,21 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Method call is only tracked if it takes longer than this threshold, in milliseconds.',
       }),
+    o11y_provisioner_api_key: z
+      .string()
+      .max(510)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'API key GitLab sends to the Observability provisioner. GitLab.com only. Not returned in responses.',
+      }),
+    o11y_provisioner_url: z
+      .string()
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'URL of the Observability provisioner API. GitLab.com only.' }),
     password_authentication_enabled: z
       .boolean()
       .nullable()
@@ -25733,6 +25779,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       }),
     ai_action_api_rate_limit: z
       .int()
+      .min(1)
       .nullable()
       .exactOptional()
       .openapi({
@@ -27417,6 +27464,38 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Maximum number of requests per minute per user per group to the group audit events API.',
       }),
+    orbit_query_limit: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of GitLab Orbit queries per minute per user. Default: `60`. Set to `0` to disable the rate limit.',
+      }),
+    orbit_indexing_status_limit: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of GitLab Orbit indexing status requests per minute per user. Default: `30`. Set to `0` to disable the rate limit.',
+      }),
+    orbit_item_counts_limit: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of GitLab Orbit item count requests per minute per user. Default: `30`. Set to `0` to disable the rate limit.',
+      }),
+    orbit_rate_limit_allowlist_raw: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Raw newline-, comma-, or whitespace-separated list of usernames excluded from the GitLab Orbit rate limits. Maximum: 100 usernames.',
+      }),
     group_owners_can_manage_default_branch_protection: z
       .boolean()
       .nullable()
@@ -28128,6 +28207,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
     users_api_limit_ssh_keys: z.string().nullable().exactOptional(),
     users_api_limit_ssh_key: z.string().nullable().exactOptional(),
     tags_create_limit: z.string().nullable().exactOptional(),
+    todos_list_api_limit: z.string().nullable().exactOptional(),
     observability_backend_ssl_verification_enabled: z.string().nullable().exactOptional(),
     global_search_snippet_titles_enabled: z.string().nullable().exactOptional(),
     global_search_users_enabled: z.string().nullable().exactOptional(),
@@ -28196,6 +28276,8 @@ const PutApiV4ApplicationSettingsRequestSchema = z
     duo_remote_flows_availability: z.string().nullable().exactOptional(),
     duo_foundational_flows_enabled: z.string().nullable().exactOptional(),
     duo_foundational_flows_availability: z.string().nullable().exactOptional(),
+    duo_scheduled_triggers_enabled: z.string().nullable().exactOptional(),
+    duo_scheduled_triggers_availability: z.string().nullable().exactOptional(),
     duo_custom_agents_availability: z.string().nullable().exactOptional(),
     duo_custom_flows_availability: z.string().nullable().exactOptional(),
     duo_external_agents_availability: z.string().nullable().exactOptional(),
@@ -34440,6 +34522,7 @@ const PostApiV4ProjectsIdPackagesProtectionRulesRequestSchema = z
         'npm',
         'nuget',
         'pypi',
+        'rubygems',
         'terraform_module',
       ])
       .openapi({
@@ -34485,6 +34568,7 @@ const PatchApiV4ProjectsIdPackagesProtectionRulesPackageProtectionRuleIdRequestS
         'npm',
         'nuget',
         'pypi',
+        'rubygems',
         'terraform_module',
       ])
       .nullable()
@@ -53959,6 +54043,14 @@ const PutApiV4ApplicationPlanLimitsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Maximum NuGet package file size in bytes.' }),
+    organization_hooks: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of system hooks per organization, for hooks managed by organization administrators. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/632599) in GitLab 19.6.',
+      }),
     pypi_max_file_size: z
       .int()
       .nullable()
@@ -55221,85 +55313,6 @@ export const postApiV4OrbitContextRoute = createRoute({
   },
 })
 
-export const getApiV4OrbitQueryTemplatesRoute = createRoute({
-  method: 'get',
-  path: '/api/v4/orbit/query/templates',
-  tags: ['Orbit'],
-  summary: 'List named query templates',
-  description:
-    'Lists the server-defined named queries with their query DSL rendered for the current user.',
-  operationId: 'getApiV4OrbitQueryTemplates',
-  responses: { 200: { description: 'OK' }, 400: { description: 'Bad Request' } },
-})
-
-export const getApiV4OrbitSchemaRoute = createRoute({
-  method: 'get',
-  path: '/api/v4/orbit/schema',
-  tags: ['Orbit'],
-  summary: 'Retrieve the schema',
-  description: 'Retrieves the Orbit schema.',
-  operationId: 'getApiV4OrbitSchema',
-  request: {
-    query: z.object({
-      expand: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'expand',
-            required: false,
-            description: 'Comma-separated node names to expand',
-            schema: { type: 'string', nullable: true },
-            in: 'query',
-          },
-        }),
-      response_format: z
-        .enum(['raw', 'llm'])
-        .default('raw')
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'response_format',
-            required: false,
-            description: 'Response format: raw or llm',
-            schema: { type: 'string', enum: ['raw', 'llm'], default: 'raw' },
-            in: 'query',
-          },
-        }),
-    }),
-  },
-  responses: { 200: { description: 'OK' }, 400: { description: 'Bad Request' } },
-})
-
-export const getApiV4OrbitStatusRoute = createRoute({
-  method: 'get',
-  path: '/api/v4/orbit/status',
-  tags: ['Orbit'],
-  summary: 'Retrieve access and cluster health',
-  description:
-    'Returns whether the user can access Orbit, plus cluster health. Always returns 200, regardless of access.',
-  operationId: 'getApiV4OrbitStatus',
-  request: {
-    query: z.object({
-      response_format: z
-        .enum(['raw', 'llm'])
-        .default('raw')
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'response_format',
-            required: false,
-            description: 'Response format: raw or llm',
-            schema: { type: 'string', enum: ['raw', 'llm'], default: 'raw' },
-            in: 'query',
-          },
-        }),
-    }),
-  },
-  responses: { 200: { description: 'OK' }, 400: { description: 'Bad Request' } },
-})
-
 export const getApiV4OrbitSkillsRoute = createRoute({
   method: 'get',
   path: '/api/v4/orbit/skills',
@@ -55397,16 +55410,6 @@ export const getApiV4OrbitSkillsNamePathRoute = createRoute({
     401: { description: 'Unauthorized' },
     404: { description: 'Skill file not found or skills are not available' },
   },
-})
-
-export const getApiV4OrbitToolsRoute = createRoute({
-  method: 'get',
-  path: '/api/v4/orbit/tools',
-  tags: ['Orbit'],
-  summary: 'List all tools',
-  description: 'Lists all available Orbit operations.',
-  operationId: 'getApiV4OrbitTools',
-  responses: { 200: { description: 'OK' }, 400: { description: 'Bad Request' } },
 })
 
 export const postApiV4JobsIdSbomScansAuthorizeRoute = createRoute({
@@ -56028,6 +56031,7 @@ export const postApiV4AiThirdPartyAgentsDirectAccessRoute = createRoute({
     400: { description: 'Bad Request' },
     401: { description: 'Unauthorized' },
     404: { description: 'Not found' },
+    429: { description: 'Too many requests' },
     503: { description: 'Service unavailable' },
   },
 })
@@ -75799,58 +75803,6 @@ export const postApiV4InternalOrgMoverExitMaintenanceRoute = createRoute({
     404: { description: 'Not found' },
     422: { description: 'Unprocessable entity' },
   },
-})
-
-export const getApiV4InternalGitalyObjectPoolMembersRoute = createRoute({
-  method: 'get',
-  path: '/api/v4/internal/gitaly/object_pool_members',
-  summary: 'List Gitaly object pool members',
-  operationId: 'getApiV4InternalGitalyObjectPoolMembers',
-  request: {
-    query: z.object({
-      disk_paths: z
-        .preprocess(
-          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(z.string()),
-        )
-        .nullable()
-        .openapi({
-          param: {
-            name: 'disk_paths',
-            required: true,
-            description: 'On-disk paths of the pool repositories. Limited to 500.',
-            schema: { type: 'array', items: { type: 'string' }, nullable: true },
-            in: 'query',
-          },
-        }),
-      storage: z
-        .string()
-        .nullable()
-        .openapi({
-          param: {
-            name: 'storage',
-            required: true,
-            description: 'Name of the storage shard.',
-            schema: { type: 'string', nullable: true },
-            in: 'query',
-          },
-        }),
-      upstream_only: z
-        .stringbool()
-        .default(false)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'upstream_only',
-            required: false,
-            description: 'If `true`, returns only the upstream repository.',
-            schema: { type: 'boolean', default: false },
-            in: 'query',
-          },
-        }),
-    }),
-  },
-  responses: { 200: { description: 'OK' }, 400: { description: 'Bad Request' } },
 })
 
 export const getApiV4ProjectsIdMlMlflowApi20MlflowArtifactsArtifactsRoute = createRoute({
@@ -108506,71 +108458,6 @@ export const getApiV4ProjectsIdPackagesPypiFilesSha256FileIdentifierRoute = crea
   },
 })
 
-export const getApiV4ProjectsIdPackagesPypiForwardPackageNameUpstreamPathRoute = createRoute({
-  method: 'get',
-  path: '/api/v4/projects/{id}/packages/pypi/forward/{package_name}/{upstream_path}',
-  tags: ['Packages: PyPi'],
-  summary: 'Download a forwarded (proxied) PyPI package file',
-  description: 'Enforces the Dependency Firewall then redirects to the upstream artifact.',
-  operationId: 'getApiV4ProjectsIdPackagesPypiForwardPackageNameUpstreamPath',
-  request: {
-    params: z.object({
-      id: ((schema) =>
-        z.union([
-          z.preprocess(
-            (val) =>
-              typeof val === 'string' &&
-              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                ? Number(val)
-                : val,
-            schema,
-          ),
-          schema,
-        ]))(z.xor([z.string(), z.int()])).openapi({
-        param: {
-          name: 'id',
-          required: true,
-          description: 'ID or URL-encoded path of the project.',
-          schema: { oneOf: [{ type: 'string' }, { type: 'integer' }] },
-          in: 'path',
-        },
-      }),
-      package_name: z
-        .string()
-        .openapi({
-          param: {
-            name: 'package_name',
-            required: true,
-            description: 'The normalized PyPI package name',
-            schema: { type: 'string' },
-            in: 'path',
-            example: 'my.pypi.package',
-          },
-        }),
-      upstream_path: z
-        .string()
-        .openapi({
-          param: {
-            name: 'upstream_path',
-            required: true,
-            description:
-              'The upstream artifact host and path, as emitted by the Simple index rewrite',
-            schema: { type: 'string' },
-            in: 'path',
-          },
-        }),
-    }),
-  },
-  responses: {
-    302: { description: 'Found' },
-    400: { description: 'Bad Request' },
-    401: { description: 'Unauthorized' },
-    403: { description: 'Forbidden' },
-    404: { description: 'Not Found' },
-  },
-})
-
 export const getApiV4ProjectsIdPackagesPypiSimpleRoute = createRoute({
   method: 'get',
   path: '/api/v4/projects/{id}/packages/pypi/simple',
@@ -110676,6 +110563,34 @@ export const getApiV4UsersUserIdStarredProjectsRoute = createRoute({
             description:
               'If `true`, includes project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role.',
             schema: { type: 'boolean', default: false },
+            in: 'query',
+          },
+        }),
+      with_custom_attributes: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'with_custom_attributes',
+            required: false,
+            description:
+              'If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/) in the response. Administrators only.',
+            schema: { type: 'boolean', default: false },
+            in: 'query',
+          },
+        }),
+      custom_attributes: z
+        .object({})
+        .nullable()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'custom_attributes',
+            required: false,
+            description:
+              'Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/) that match all of the specified key and value pairs. Administrators only.',
+            schema: { type: 'object', nullable: true },
             in: 'query',
           },
         }),
@@ -116599,6 +116514,20 @@ export const getApiV4ProjectsIdForksRoute = createRoute({
             required: false,
             description:
               'If `true`, returns only limited fields for each project. Without authentication, only limited fields are returned regardless of this setting.',
+            schema: { type: 'boolean', default: false },
+            in: 'query',
+          },
+        }),
+      statistics: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'statistics',
+            required: false,
+            description:
+              'If `true`, includes project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role.',
             schema: { type: 'boolean', default: false },
             in: 'query',
           },
@@ -199603,22 +199532,6 @@ export const deleteApiV4ProjectsIdAccessRequestsUserIdRoute = createRoute({
   },
 })
 
-export const getApiV4UsageDataServicePingRoute = createRoute({
-  method: 'get',
-  path: '/api/v4/usage_data/service_ping',
-  tags: ['Usage data'],
-  summary: 'Retrieve Service Ping payload',
-  description:
-    'Retrieves the Service Ping payload from the application cache as JSON. If no cached payload is available, returns an empty response. Requires a personal access token with the `read_service_ping` scope. Introduced in GitLab 16.9.',
-  operationId: 'getApiV4UsageDataServicePing',
-  responses: {
-    200: { description: 'OK' },
-    401: { description: '401 Unauthorized' },
-    403: { description: 'Forbidden' },
-    404: { description: 'Not found' },
-  },
-})
-
 export const postApiV4UsageDataTrackEventRoute = createRoute({
   method: 'post',
   path: '/api/v4/usage_data/track_event',
@@ -199641,52 +199554,18 @@ export const postApiV4UsageDataTrackEventRoute = createRoute({
   },
 })
 
-export const getApiV4SwaggerDocRoute = createRoute({
+export const getApiV4UsageDataServicePingRoute = createRoute({
   method: 'get',
-  path: '/api/v4/swagger_doc',
-  summary: 'Swagger compatible API description',
-  operationId: 'getApiV4SwaggerDoc',
-  responses: { 200: { description: 'OK' } },
-})
-
-export const getApiV4SwaggerDocNameRoute = createRoute({
-  method: 'get',
-  path: '/api/v4/swagger_doc/{name}',
-  summary: 'Swagger compatible API description for specific API',
-  operationId: 'getApiV4SwaggerDocName',
-  request: {
-    params: z.object({
-      name: z
-        .string()
-        .openapi({
-          param: {
-            name: 'name',
-            required: true,
-            description: 'Resource name of mounted API',
-            schema: { type: 'string' },
-            in: 'path',
-          },
-        }),
-    }),
-    query: z.object({
-      locale: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'locale',
-            required: false,
-            description: 'Locale of API documentation',
-            schema: { type: 'string', nullable: true },
-            in: 'query',
-          },
-        }),
-    }),
-  },
+  path: '/api/v4/usage_data/service_ping',
+  tags: ['Usage data'],
+  summary: 'Retrieve Service Ping payload',
+  description:
+    'Retrieves the Service Ping payload from the application cache as JSON. If no cached payload is available, returns an empty response. Requires a personal access token with the `read_service_ping` scope. Introduced in GitLab 16.9.',
+  operationId: 'getApiV4UsageDataServicePing',
   responses: {
     200: { description: 'OK' },
-    400: { description: 'Bad Request' },
-    404: { description: 'Not Found' },
+    401: { description: '401 Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not found' },
   },
 })

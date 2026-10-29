@@ -1,4 +1,4 @@
-<h1 id="x-api-v2">X API v2 v2.172</h1>
+<h1 id="x-api-v2">X API v2 v2.173</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -43,6 +43,8 @@ License: <a href="https://developer.x.com/en/developer-terms/agreement-and-polic
 |like.write|Like and unlike Posts on your behalf.|
 |list.read|View Lists, members, and followers of Lists you created or are a member of, including private Lists.|
 |list.write|Create and manage Lists on your behalf.|
+|media.library.read|View your media library, its analytics, and its monetization settings.|
+|media.library.write|Add media to your media library and manage its monetization settings.|
 |media.write|Upload media, such as photos and videos, on your behalf.|
 |mute.read|View accounts you have muted.|
 |mute.write|Mute and unmute accounts on your behalf.|
@@ -342,7 +344,7 @@ curl https://api.x.com/2/account_activity/webhooks/string/subscriptions/all \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read dm.read ), UserToken
 </aside>
 
 ## Create subscription
@@ -596,7 +598,7 @@ Get a list of active subscriptions for XAA. Optional user_id narrows the list to
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |max_results|query|integer(int32)|false|none|
-|pagination_token|query|string|false|A base32hex-encoded pagination token.|
+|pagination_token|query|string|false|A base32hex-encoded pagination token that decodes to 9 bytes.|
 |user_id|query|[UserId](#schemauserid)|false|Only return subscriptions whose filter.user_id matches.|
 
 > Example responses
@@ -655,7 +657,7 @@ Get a list of active subscriptions for XAA. Optional user_id narrows the list to
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read like.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: like.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Create X activity subscription
@@ -3327,7 +3329,7 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read broadcast.read ), UserToken
 </aside>
 
 ## Add a chat moderator
@@ -3410,7 +3412,7 @@ Adds a moderator to the authenticated broadcaster's persistent list and returns 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## Remove a chat moderator
@@ -3476,6 +3478,711 @@ Removes a moderator from the authenticated broadcaster's persistent list and ret
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|The request has succeeded.|[RemoveChatModeratorResponse](#schemaremovechatmoderatorresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+</aside>
+
+## Get muted chat users
+
+<a id="opIdgetChatMutedUsers"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/broadcasts/chat/mutes \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/broadcasts/chat/mutes`
+
+Returns the users muted in the authenticated broadcaster's chat, with the expiry time of timed mutes. Mutes apply to all of their broadcasts. Expired timed mutes are omitted. Use `expansions=user_id` to include the muted users.
+
+<h3 id="get-muted-chat-users-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|max_results|query|integer(int32)|false|none|
+|pagination_token|query|string|false|none|
+|broadcast_chat_mute.fields|query|[string]|false|A comma separated list of BroadcastChatMute fields to display.|
+|expansions|query|[string]|false|A comma separated list of fields to expand.|
+|user.fields|query|[string]|false|A comma separated list of User fields to display.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|broadcast_chat_mute.fields|end_at_ms|
+|expansions|user_id|
+|user.fields|active_follower_count|
+|user.fields|confirmed_email|
+|user.fields|connection_status|
+|user.fields|created_at|
+|user.fields|description|
+|user.fields|entities|
+|user.fields|id|
+|user.fields|is_identity_verified|
+|user.fields|location|
+|user.fields|name|
+|user.fields|parody|
+|user.fields|profile_banner_url|
+|user.fields|profile_image_url|
+|user.fields|protected|
+|user.fields|public_metrics|
+|user.fields|receives_your_dm|
+|user.fields|subscriber_count|
+|user.fields|subscribes_to_you|
+|user.fields|subscription|
+|user.fields|subscription_type|
+|user.fields|url|
+|user.fields|username|
+|user.fields|verified|
+|user.fields|verified_followers_count|
+|user.fields|verified_type|
+|user.fields|withheld|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "end_at_ms": "string",
+      "user_id": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ],
+  "includes": {
+    "calls": [
+      {
+        "conversation_id": "string",
+        "created_at": "string",
+        "host_id": "string",
+        "id": "string",
+        "join_policy": "string",
+        "join_url": "string",
+        "participant_count": 0,
+        "title": "string",
+        "viewer_may_join": true
+      }
+    ],
+    "media": [
+      {
+        "alt_text": "string",
+        "duration_ms": 0,
+        "height": 0,
+        "media_key": "string",
+        "non_public_metrics": {
+          "playback_0_count": 0,
+          "playback_100_count": 0,
+          "playback_25_count": 0,
+          "playback_50_count": 0,
+          "playback_75_count": 0
+        },
+        "organic_metrics": {
+          "playback_0_count": 0,
+          "playback_100_count": 0,
+          "playback_25_count": 0,
+          "playback_50_count": 0,
+          "playback_75_count": 0,
+          "view_count": 0
+        },
+        "preview_image_url": "string",
+        "promoted_metrics": {
+          "playback_0_count": 0,
+          "playback_100_count": 0,
+          "playback_25_count": 0,
+          "playback_50_count": 0,
+          "playback_75_count": 0,
+          "view_count": 0
+        },
+        "public_metrics": {
+          "view_count": 0
+        },
+        "type": "string",
+        "url": "string",
+        "variants": [
+          {
+            "bit_rate": 0,
+            "content_type": "string",
+            "url": "string"
+          }
+        ],
+        "width": 0
+      }
+    ],
+    "places": [
+      {
+        "contained_within": [
+          "string"
+        ],
+        "country": "string",
+        "country_code": "string",
+        "full_name": "string",
+        "geo": {
+          "bbox": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "properties": {},
+          "type": "Feature"
+        },
+        "id": "string",
+        "name": "string",
+        "place_type": "string"
+      }
+    ],
+    "polls": [
+      {
+        "duration_minutes": 0,
+        "end_datetime": "string",
+        "id": "string",
+        "options": [
+          {
+            "label": "string",
+            "position": 0,
+            "votes": 0
+          }
+        ],
+        "voting_status": "string"
+      }
+    ],
+    "posts": [
+      {
+        "article": {},
+        "article_title": {},
+        "attachments": {
+          "media_keys": [
+            "string"
+          ],
+          "media_source_tweet_id": [
+            "string"
+          ],
+          "poll_ids": [
+            "string"
+          ]
+        },
+        "author_id": "string",
+        "card_uri": "string",
+        "community_id": "string",
+        "context_annotations": [
+          {
+            "domain": {
+              "description": "string",
+              "id": "string",
+              "name": "string"
+            },
+            "entity": {
+              "description": "string",
+              "id": "string",
+              "name": "string"
+            }
+          }
+        ],
+        "conversation_id": "string",
+        "created_at": "1970-01-01T00:00:00Z",
+        "display_text_range": [
+          0,
+          0
+        ],
+        "edit_controls": {
+          "editable_until": "string",
+          "edits_remaining": 0,
+          "is_edit_eligible": true
+        },
+        "edit_history_post_ids": [
+          "string"
+        ],
+        "entities": {
+          "cashtags": [
+            {
+              "end": 0,
+              "start": 0,
+              "tag": "string"
+            }
+          ],
+          "hashtags": [
+            {
+              "end": 0,
+              "start": 0,
+              "tag": "string"
+            }
+          ],
+          "mentions": [
+            {
+              "end": 0,
+              "id": "string",
+              "start": 0,
+              "username": "string"
+            }
+          ],
+          "urls": [
+            {
+              "description": "string",
+              "display_url": "string",
+              "end": 0,
+              "expanded_url": "string",
+              "images": [
+                {
+                  "height": 0,
+                  "url": "string",
+                  "width": 0
+                }
+              ],
+              "media_key": "string",
+              "start": 0,
+              "status": 0,
+              "title": "string",
+              "unwound_url": "string",
+              "url": "string"
+            }
+          ]
+        },
+        "geo": {
+          "coordinates": {
+            "coordinates": [
+              0,
+              0
+            ],
+            "type": "Point"
+          },
+          "place_id": "string"
+        },
+        "id": "string",
+        "in_reply_to_user_id": "string",
+        "lang": "string",
+        "matched_media_notes": [
+          {
+            "match_status": "string",
+            "note_id": "string"
+          }
+        ],
+        "media_metadata": [
+          {
+            "alt_text": "string",
+            "description": "string",
+            "media_key": "string",
+            "title": "string"
+          }
+        ],
+        "non_public_metrics": {},
+        "note_post": {
+          "entities": {
+            "cashtags": [
+              {
+                "end": 0,
+                "start": 0,
+                "tag": "string"
+              }
+            ],
+            "hashtags": [
+              {
+                "end": 0,
+                "start": 0,
+                "tag": "string"
+              }
+            ],
+            "mentions": [
+              {
+                "end": 0,
+                "id": "string",
+                "start": 0,
+                "username": "string"
+              }
+            ],
+            "urls": [
+              {
+                "display_url": "string",
+                "end": 0,
+                "expanded_url": "string",
+                "start": 0,
+                "url": "string"
+              }
+            ]
+          },
+          "text": "string"
+        },
+        "note_request_suggestions": [
+          {
+            "source_link": "string",
+            "suggestion": "string",
+            "suggestion_id": "string"
+          }
+        ],
+        "organic_metrics": {},
+        "paid_partnership": true,
+        "possibly_sensitive": true,
+        "promoted_metrics": {},
+        "public_metrics": {
+          "bookmark_count": 0,
+          "impression_count": 0,
+          "like_count": 0,
+          "quote_count": 0,
+          "reply_count": 0,
+          "repost_count": 0
+        },
+        "referenced_posts": [
+          {
+            "id": "string",
+            "type": "retweeted"
+          }
+        ],
+        "reply_settings": "string",
+        "scopes": {
+          "followers": true
+        },
+        "source": "string",
+        "suggested_source_links": [
+          "string"
+        ],
+        "suggested_source_links_with_counts": [
+          {
+            "count": 0,
+            "url": "string"
+          }
+        ],
+        "text": "string",
+        "username": "string",
+        "withheld": {
+          "copyright": true,
+          "country_codes": [
+            "string"
+          ],
+          "scope": "post"
+        }
+      }
+    ],
+    "topics": [
+      {
+        "description": "string",
+        "id": "string",
+        "name": "string"
+      }
+    ],
+    "users": [
+      {
+        "active_follower_count": 0,
+        "affiliation": {
+          "badge_url": "string",
+          "description": "string",
+          "url": "string",
+          "user_id": [
+            "string"
+          ]
+        },
+        "confirmed_email": "string",
+        "connection_status": [
+          "blocking"
+        ],
+        "created_at": "1970-01-01T00:00:00Z",
+        "description": "string",
+        "entities": {
+          "description": {
+            "cashtags": [
+              {
+                "end": 0,
+                "start": 0,
+                "tag": "string"
+              }
+            ],
+            "hashtags": [
+              {
+                "end": 0,
+                "start": 0,
+                "tag": "string"
+              }
+            ],
+            "mentions": [
+              {
+                "end": 0,
+                "id": "string",
+                "start": 0,
+                "username": "string"
+              }
+            ],
+            "urls": [
+              {
+                "description": "string",
+                "display_url": "string",
+                "end": 0,
+                "expanded_url": "string",
+                "images": [
+                  {
+                    "height": 0,
+                    "url": "string",
+                    "width": 0
+                  }
+                ],
+                "media_key": "string",
+                "start": 0,
+                "status": 0,
+                "title": "string",
+                "unwound_url": "string",
+                "url": "string"
+              }
+            ]
+          },
+          "url": {
+            "urls": [
+              {
+                "description": "string",
+                "display_url": "string",
+                "end": 0,
+                "expanded_url": "string",
+                "images": [
+                  {
+                    "height": 0,
+                    "url": "string",
+                    "width": 0
+                  }
+                ],
+                "media_key": "string",
+                "start": 0,
+                "status": 0,
+                "title": "string",
+                "unwound_url": "string",
+                "url": "string"
+              }
+            ]
+          }
+        },
+        "id": "string",
+        "is_identity_verified": true,
+        "location": "string",
+        "most_recent_post_id": "string",
+        "name": "string",
+        "parody": true,
+        "pinned_post_id": "string",
+        "profile_banner_url": "string",
+        "profile_image_url": "string",
+        "protected": true,
+        "public_metrics": {
+          "followers_count": 0,
+          "following_count": 0,
+          "like_count": 0,
+          "listed_count": 0,
+          "media_count": 0,
+          "post_count": 0
+        },
+        "receives_your_dm": true,
+        "subscriber_count": 0,
+        "subscribes_to_you": true,
+        "subscription": {
+          "subscribes_to_you": true
+        },
+        "subscription_type": "string",
+        "url": "string",
+        "username": "string",
+        "verified": true,
+        "verified_followers_count": 0,
+        "verified_type": "string",
+        "withheld": {
+          "country_codes": [
+            "string"
+          ],
+          "scope": "user"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "next_token": "string",
+    "result_count": 0
+  }
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-muted-chat-users-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetChatMutedUsersResponse](#schemagetchatmutedusersresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read ), UserToken
+</aside>
+
+## Mute or time out a user in chat
+
+<a id="opIdmuteChatUser"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/broadcasts/chat/mutes \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "broadcast_id": "string",
+    "end_at_ms": "string",
+    "message_id": "string",
+    "user_id": "string"
+  }'
+```
+
+`POST /2/broadcasts/chat/mutes`
+
+Prevents a user from posting messages in all of a broadcaster's chats. Without `broadcast_id`, the user is muted in the authenticated user's own chats. Moderators pass `broadcast_id` to mute the user in that broadcast host's chats. When `end_at_ms` is provided, the mute expires at that time.
+
+> Body parameter
+
+```json
+{
+  "broadcast_id": "string",
+  "end_at_ms": "string",
+  "message_id": "string",
+  "user_id": "string"
+}
+```
+
+<h3 id="mute-or-time-out-a-user-in-chat-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[MuteChatUserRequest](#schemamutechatuserrequest)|true|none|
+|» broadcast_id|body|string|false|A broadcast whose host's chats the user is muted in. Required with `message_id`.|
+|» end_at_ms|body|string|false|The Unix timestamp in milliseconds when the mute expires. Omit this field to mute indefinitely.|
+|» message_id|body|string|false|A chat message in `broadcast_id` to remove while muting the user.|
+|» user_id|body|string|true|The user to mute.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "muted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="mute-or-time-out-a-user-in-chat-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[MuteChatUserResponse](#schemamutechatuserresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+</aside>
+
+## Unmute a user in chat
+
+<a id="opIdunmuteChatUser"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/broadcasts/chat/mutes/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /2/broadcasts/chat/mutes/{user_id}`
+
+Allows a muted user to post messages in a broadcaster's chats again. Without `broadcast_id`, the user is unmuted in the authenticated user's own chats. Moderators pass `broadcast_id` to unmute the user in that broadcast host's chats.
+
+<h3 id="unmute-a-user-in-chat-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|user_id|path|string|true|A 64-bit signed integer.|
+|broadcast_id|query|string|false|A broadcast whose host's chats the user is unmuted in.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "muted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="unmute-a-user-in-chat-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[UnmuteChatUserResponse](#schemaunmutechatuserresponse)|
 |default|Default|The request has failed.|[Error](#schemaerror)|
 
 <aside class="warning">
@@ -3703,7 +4410,7 @@ Schedules a broadcast for the authenticated user. A `source_id` (ingest) is requ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## Get a scheduled broadcast
@@ -4192,6 +4899,74 @@ Returns a broadcast owned by the authenticated user.
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
+</aside>
+
+## Delete a broadcast
+
+<a id="opIddeleteBroadcast"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/broadcasts/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /2/broadcasts/{id}`
+
+Deletes one of the authenticated user's broadcasts, scheduled or ended, including its replay. A running broadcast must be ended first.
+
+<h3 id="delete-a-broadcast-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "deleted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-broadcast-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[DeleteBroadcastResponse](#schemadeletebroadcastresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## Get broadcast chat history
@@ -4836,7 +5611,7 @@ Posts a chat message to a running broadcast, attributed to the authenticated use
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## Mute or time out a user in a broadcast chat
@@ -5065,6 +5840,148 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
+## End a broadcast
+
+<a id="opIdupdateBroadcastState"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/broadcasts/string/state \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "chat_option": 0,
+    "locale": "string",
+    "should_not_tweet": true,
+    "state": "string",
+    "title": "string"
+  }'
+```
+
+`PUT /2/broadcasts/{id}/state`
+
+Ends one of the authenticated user's broadcasts. Only `state: END` is supported.
+
+> Body parameter
+
+```json
+{
+  "chat_option": 0,
+  "locale": "string",
+  "should_not_tweet": true,
+  "state": "string",
+  "title": "string"
+}
+```
+
+<h3 id="end-a-broadcast-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+|body|body|[UpdateBroadcastStateRequest](#schemaupdatebroadcaststaterequest)|true|none|
+|» chat_option|body|integer|false|Not allowed with `END`.|
+|» locale|body|string|false|Not allowed with `END`.|
+|» should_not_tweet|body|boolean|false|Not allowed with `END`.|
+|» state|body|string|true|`END`. `PUBLISH` is not supported.|
+|» title|body|string|false|Not allowed with `END`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "string",
+    "state": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="end-a-broadcast-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[UpdateBroadcastStateResponse](#schemaupdatebroadcaststateresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+</aside>
+
+## Get the ingest region
+
+<a id="opIdgetRegion"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/region \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/region`
+
+Returns the ingest region nearest the server handling the request. Pass it as `region` when creating a stream source to ingest there.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "region": "us-east-1"
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-the-ingest-region-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetRegionResponse](#schemagetregionresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read ), UserToken
+</aside>
+
 ## List stream sources
 
 <a id="opIdlistSources"></a>
@@ -5079,7 +5996,7 @@ curl https://api.x.com/2/sources \
 
 `GET /2/sources`
 
-Returns the authenticated user's RTMP/RTMPS stream sources (empty array if none). A source's `id` is also its stream key and is the `source_id` a scheduled broadcast binds to.
+Returns the authenticated user's RTMP/RTMPS stream sources. A source's `id` is the `source_id` a scheduled broadcast binds to.
 
 > Example responses
 
@@ -5087,21 +6004,18 @@ Returns the authenticated user's RTMP/RTMPS stream sources (empty array if none)
 
 ```json
 {
-  "data": {
-    "sources": [
-      {
-        "creation_time": 0,
-        "id": "string",
-        "is_stream_active": true,
-        "name": "string",
-        "owner_id": 0,
-        "rtmp_region": "string",
-        "rtmp_stream_key": "string",
-        "rtmp_url": "string",
-        "rtmps_url": "string"
-      }
-    ]
-  },
+  "data": [
+    {
+      "created_at_ms": "string",
+      "id": "string",
+      "is_stream_active": true,
+      "name": "string",
+      "region": "string",
+      "rtmp_url": "string",
+      "rtmps_url": "string",
+      "stream_key": "string"
+    }
+  ],
   "errors": [
     {
       "detail": "string",
@@ -5113,7 +6027,10 @@ Returns the authenticated user's RTMP/RTMPS stream sources (empty array if none)
       "type": "https://api.x.com/2/problems/resource-not-found",
       "value": "string"
     }
-  ]
+  ],
+  "meta": {
+    "result_count": 0
+  }
 }
 ```
 
@@ -5158,7 +6075,7 @@ curl https://api.x.com/2/sources \
 
 `POST /2/sources`
 
-Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an encoder to `rtmps_url` with the source `id` as the stream key.
+Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an encoder to `rtmps_url` with the source's stream key.
 
 > Body parameter
 
@@ -5179,22 +6096,19 @@ Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an
 
 > Example responses
 
-> 200 Response
+> 201 Response
 
 ```json
 {
   "data": {
-    "source": {
-      "creation_time": 0,
-      "id": "string",
-      "is_stream_active": true,
-      "name": "string",
-      "owner_id": 0,
-      "rtmp_region": "string",
-      "rtmp_stream_key": "string",
-      "rtmp_url": "string",
-      "rtmps_url": "string"
-    }
+    "created_at_ms": "string",
+    "id": "string",
+    "is_stream_active": true,
+    "name": "string",
+    "region": "string",
+    "rtmp_url": "string",
+    "rtmps_url": "string",
+    "stream_key": "string"
   },
   "errors": [
     {
@@ -5224,12 +6138,12 @@ Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|The request has succeeded.|[CreateSourceResponse](#schemacreatesourceresponse)|
+|201|Created|The request has succeeded.|[CreateSourceResponse](#schemacreatesourceresponse)|
 |default|Default|The request has failed.|[Error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
 ## Get a stream source
@@ -5246,7 +6160,7 @@ curl https://api.x.com/2/sources/string \
 
 `GET /2/sources/{id}`
 
-Returns one of the authenticated user's stream sources. Poll it after starting an encoder and wait for `is_stream_active` before going live.
+Returns one of the authenticated user's stream sources.
 
 <h3 id="get-a-stream-source-parameters">Parameters</h3>
 
@@ -5261,17 +6175,14 @@ Returns one of the authenticated user's stream sources. Poll it after starting a
 ```json
 {
   "data": {
-    "source": {
-      "creation_time": 0,
-      "id": "string",
-      "is_stream_active": true,
-      "name": "string",
-      "owner_id": 0,
-      "rtmp_region": "string",
-      "rtmp_stream_key": "string",
-      "rtmp_url": "string",
-      "rtmps_url": "string"
-    }
+    "created_at_ms": "string",
+    "id": "string",
+    "is_stream_active": true,
+    "name": "string",
+    "region": "string",
+    "rtmp_url": "string",
+    "rtmps_url": "string",
+    "stream_key": "string"
   },
   "errors": [
     {
@@ -5353,17 +6264,14 @@ Renames one of the authenticated user's stream sources.
 ```json
 {
   "data": {
-    "source": {
-      "creation_time": 0,
-      "id": "string",
-      "is_stream_active": true,
-      "name": "string",
-      "owner_id": 0,
-      "rtmp_region": "string",
-      "rtmp_stream_key": "string",
-      "rtmp_url": "string",
-      "rtmps_url": "string"
-    }
+    "created_at_ms": "string",
+    "id": "string",
+    "is_stream_active": true,
+    "name": "string",
+    "region": "string",
+    "rtmp_url": "string",
+    "rtmps_url": "string",
+    "stream_key": "string"
   },
   "errors": [
     {
@@ -5398,7 +6306,7 @@ Renames one of the authenticated user's stream sources.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
 ## Delete a stream source
@@ -5416,13 +6324,972 @@ curl https://api.x.com/2/sources/string \
 
 `DELETE /2/sources/{id}`
 
-Deletes one of the authenticated user's stream sources. Success is an empty object.
+Deletes one of the authenticated user's stream sources.
 
 <h3 id="delete-a-stream-source-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "deleted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-stream-source-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[DeleteSourceResponse](#schemadeletesourceresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+</aside>
+
+## List a user's broadcasts
+
+<a id="opIdlistUserBroadcasts"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/broadcasts \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/users/{id}/broadcasts`
+
+Returns the authenticated user's broadcasts, 100 per page. `id` must be the authenticated user. Deprecated: use GET /2/broadcasts.
+
+<h3 id="list-a-users-broadcasts-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|pagination_token|query|string|false|`next_token.offset` from the previous page.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "broadcasts": [
+      {
+        "available_for_replay": true,
+        "broadcast_id": "string",
+        "chat_option": 0,
+        "created_at_ms": "string",
+        "end_ms": "string",
+        "height": 0,
+        "id": "string",
+        "image_url": "string",
+        "image_url_medium": "string",
+        "image_url_small": "string",
+        "is_high_latency": true,
+        "language": "string",
+        "media_id": "string",
+        "media_key": "string",
+        "scheduled_end_ms": "string",
+        "scheduled_start_ms": "string",
+        "start_ms": "string",
+        "state": "string",
+        "status": "string",
+        "total_watched": "string",
+        "total_watching": "string",
+        "tweet_id": "string",
+        "twitter_user_id": "string",
+        "updated_at_ms": "string",
+        "width": 0
+      }
+    ],
+    "next_token": {
+      "offset": "string"
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="list-a-users-broadcasts-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[ListUserBroadcastsResponse](#schemalistuserbroadcastsresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read ), UserToken
+</aside>
+
+## Create a broadcast on a user's source
+
+<a id="opIdcreateUserBroadcast"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/broadcasts \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "is_low_latency": true,
+    "region": "string",
+    "source_id": "string"
+  }'
+```
+
+`POST /2/users/{id}/broadcasts`
+
+Creates a broadcast on one of the authenticated user's sources. `id` must be the authenticated user. The broadcast is `NOT_STARTED` and posts nothing until it is published with PUT /2/users/:id/broadcasts/:broadcast_id/state; one that is never published is deleted after 7 days. When the source already has a running broadcast, that broadcast is returned.
+
+> Body parameter
+
+```json
+{
+  "is_low_latency": true,
+  "region": "string",
+  "source_id": "string"
+}
+```
+
+<h3 id="create-a-broadcast-on-a-users-source-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|body|body|[CreateUserBroadcastRequest](#schemacreateuserbroadcastrequest)|true|none|
+|» is_low_latency|body|boolean|false|Ignored.|
+|» region|body|string|false|Ignored: the source sets the region.|
+|» source_id|body|string|true|The source's `rtmp_stream_key`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "broadcast": {
+      "available_for_replay": true,
+      "broadcast_id": "string",
+      "chat_option": 0,
+      "created_at_ms": "string",
+      "end_ms": "string",
+      "height": 0,
+      "id": "string",
+      "image_url": "string",
+      "image_url_medium": "string",
+      "image_url_small": "string",
+      "is_high_latency": true,
+      "language": "string",
+      "media_id": "string",
+      "media_key": "string",
+      "scheduled_end_ms": "string",
+      "scheduled_start_ms": "string",
+      "start_ms": "string",
+      "state": "string",
+      "status": "string",
+      "total_watched": "string",
+      "total_watching": "string",
+      "tweet_id": "string",
+      "twitter_user_id": "string",
+      "updated_at_ms": "string",
+      "width": 0
+    },
+    "share_url": "string",
+    "video_access": {}
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="create-a-broadcast-on-a-users-source-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[CreateUserBroadcastResponse](#schemacreateuserbroadcastresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+</aside>
+
+## Get a user's broadcast
+
+<a id="opIdgetUserBroadcast"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/broadcasts/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/users/{id}/broadcasts/{broadcast_id}`
+
+Returns one of the authenticated user's broadcasts. `id` must be the authenticated user. Deprecated: use GET /2/broadcasts/:id.
+
+<h3 id="get-a-users-broadcast-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|broadcast_id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "broadcast": {
+      "available_for_replay": true,
+      "broadcast_id": "string",
+      "chat_option": 0,
+      "created_at_ms": "string",
+      "end_ms": "string",
+      "height": 0,
+      "id": "string",
+      "image_url": "string",
+      "image_url_medium": "string",
+      "image_url_small": "string",
+      "is_high_latency": true,
+      "language": "string",
+      "media_id": "string",
+      "media_key": "string",
+      "scheduled_end_ms": "string",
+      "scheduled_start_ms": "string",
+      "start_ms": "string",
+      "state": "string",
+      "status": "string",
+      "total_watched": "string",
+      "total_watching": "string",
+      "tweet_id": "string",
+      "twitter_user_id": "string",
+      "updated_at_ms": "string",
+      "width": 0
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-a-users-broadcast-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetUserBroadcastResponse](#schemagetuserbroadcastresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read ), UserToken
+</aside>
+
+## Delete a user's broadcast
+
+<a id="opIddeleteUserBroadcast"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/broadcasts/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /2/users/{id}/broadcasts/{broadcast_id}`
+
+Deletes one of the authenticated user's broadcasts. `id` must be the authenticated user. Deprecated: use DELETE /2/broadcasts/:id.
+
+<h3 id="delete-a-users-broadcast-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|broadcast_id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "success": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="delete-a-users-broadcast-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[DeleteUserBroadcastResponse](#schemadeleteuserbroadcastresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+</aside>
+
+## Publish or end a user's broadcast
+
+<a id="opIdupdateUserBroadcastState"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/broadcasts/string/state \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "chat_option": 0,
+    "locale": "string",
+    "should_not_tweet": true,
+    "state": "string",
+    "title": "string"
+  }'
+```
+
+`PUT /2/users/{id}/broadcasts/{broadcast_id}/state`
+
+Publishes or ends one of the authenticated user's broadcasts. `id` must be the authenticated user. `PUBLISH` takes a broadcast created with POST /2/users/:id/broadcasts live once its source is receiving video, and posts it unless `should_not_tweet` is true. `END` ends the broadcast. Deprecated: use PUT /2/broadcasts/:id/state to end a broadcast.
+
+> Body parameter
+
+```json
+{
+  "chat_option": 0,
+  "locale": "string",
+  "should_not_tweet": true,
+  "state": "string",
+  "title": "string"
+}
+```
+
+<h3 id="publish-or-end-a-users-broadcast-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|broadcast_id|path|string|true|none|
+|body|body|[UpdateUserBroadcastStateRequest](#schemaupdateuserbroadcaststaterequest)|true|none|
+|» chat_option|body|integer|false|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. `PUBLISH` only.|
+|» locale|body|string|false|Broadcast language. `PUBLISH` only.|
+|» should_not_tweet|body|boolean|false|Skip the announcing Post. Unset keeps the broadcast's setting, which defaults to posting. `PUBLISH` only.|
+|» state|body|string|true|`PUBLISH` or `END`.|
+|» title|body|string|false|Broadcast title. `PUBLISH` only.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "broadcast": {
+      "available_for_replay": true,
+      "broadcast_id": "string",
+      "chat_option": 0,
+      "created_at_ms": "string",
+      "end_ms": "string",
+      "height": 0,
+      "id": "string",
+      "image_url": "string",
+      "image_url_medium": "string",
+      "image_url_small": "string",
+      "is_high_latency": true,
+      "language": "string",
+      "media_id": "string",
+      "media_key": "string",
+      "scheduled_end_ms": "string",
+      "scheduled_start_ms": "string",
+      "start_ms": "string",
+      "state": "string",
+      "status": "string",
+      "total_watched": "string",
+      "total_watching": "string",
+      "tweet_id": "string",
+      "twitter_user_id": "string",
+      "updated_at_ms": "string",
+      "width": 0
+    },
+    "success": true,
+    "tweet_error": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="publish-or-end-a-users-broadcast-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[UpdateUserBroadcastStateResponse](#schemaupdateuserbroadcaststateresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+</aside>
+
+## List a user's stream sources
+
+<a id="opIdlistUserSources"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/sources \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/users/{id}/sources`
+
+Returns the authenticated user's RTMP/RTMPS stream sources (empty array if none). `id` must be the authenticated user.
+
+<h3 id="list-a-users-stream-sources-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "sources": [
+      {
+        "creation_origin": {
+          "name": "string",
+          "original_name": "string",
+          "value": 0
+        },
+        "creation_time": 0,
+        "id": "string",
+        "is360": true,
+        "is_stream_active": true,
+        "name": "string",
+        "owner_id": 0,
+        "rtmp_region": "string",
+        "rtmp_stream_key": "string",
+        "rtmp_url": "string",
+        "rtmps_url": "string",
+        "video_service": {
+          "name": "string",
+          "original_name": "string",
+          "value": 0
+        }
+      }
+    ]
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="list-a-users-stream-sources-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[ListUserSourcesResponse](#schemalistusersourcesresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read ), UserToken
+</aside>
+
+## Create a stream source for a user
+
+<a id="opIdcreateUserSource"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/sources \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "region": "string"
+  }'
+```
+
+`POST /2/users/{id}/sources`
+
+Creates a persistent RTMP/RTMPS ingest point for the authenticated user. `id` must be the authenticated user.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "region": "string"
+}
+```
+
+<h3 id="create-a-stream-source-for-a-user-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|body|body|[CreateUserSourceRequest](#schemacreateusersourcerequest)|true|none|
+|» name|body|string|true|Label for the source.|
+|» region|body|string|false|Ingest data center, `atla` or `pdxa` (default). The AWS regions us-west-1 and us-west-2 map to `pdxa`; us-east-1, us-east-2, ca-central-1, sa-east-1, eu-west-1, eu-west-2, eu-west-3, eu-central-1, eu-north-1, ap-south-1, ap-northeast-1, ap-northeast-2, ap-southeast-1 and ap-southeast-2 map to `atla`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "source": {
+      "creation_origin": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      },
+      "creation_time": 0,
+      "id": "string",
+      "is360": true,
+      "is_stream_active": true,
+      "name": "string",
+      "owner_id": 0,
+      "rtmp_region": "string",
+      "rtmp_stream_key": "string",
+      "rtmp_url": "string",
+      "rtmps_url": "string",
+      "video_service": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      }
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="create-a-stream-source-for-a-user-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[CreateUserSourceResponse](#schemacreateusersourceresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+</aside>
+
+## Get a user's stream source
+
+<a id="opIdgetUserSource"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/sources/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/users/{id}/sources/{source_id}`
+
+Returns one of the authenticated user's stream sources. `id` must be the authenticated user.
+
+<h3 id="get-a-users-stream-source-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|source_id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "source": {
+      "creation_origin": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      },
+      "creation_time": 0,
+      "id": "string",
+      "is360": true,
+      "is_stream_active": true,
+      "name": "string",
+      "owner_id": 0,
+      "rtmp_region": "string",
+      "rtmp_stream_key": "string",
+      "rtmp_url": "string",
+      "rtmps_url": "string",
+      "video_service": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      }
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-a-users-stream-source-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetUserSourceResponse](#schemagetusersourceresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read ), UserToken
+</aside>
+
+## Rename a user's stream source
+
+<a id="opIdupdateUserSource"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/sources/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string"
+  }'
+```
+
+`PUT /2/users/{id}/sources/{source_id}`
+
+Renames one of the authenticated user's stream sources. `id` must be the authenticated user.
+
+> Body parameter
+
+```json
+{
+  "name": "string"
+}
+```
+
+<h3 id="rename-a-users-stream-source-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|source_id|path|string|true|none|
+|body|body|[UpdateUserSourceRequest](#schemaupdateusersourcerequest)|true|none|
+|» name|body|string|true|New label for the source.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "source": {
+      "creation_origin": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      },
+      "creation_time": 0,
+      "id": "string",
+      "is360": true,
+      "is_stream_active": true,
+      "name": "string",
+      "owner_id": 0,
+      "rtmp_region": "string",
+      "rtmp_stream_key": "string",
+      "rtmp_url": "string",
+      "rtmps_url": "string",
+      "video_service": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      }
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="rename-a-users-stream-source-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[UpdateUserSourceResponse](#schemaupdateusersourceresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+</aside>
+
+## Delete a user's stream source
+
+<a id="opIddeleteUserSource"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/users/2244994945/sources/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /2/users/{id}/sources/{source_id}`
+
+Deletes one of the authenticated user's stream sources. `id` must be the authenticated user. Success is an empty object.
+
+<h3 id="delete-a-users-stream-source-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|[UserId](#schemauserid)|true|none|
+|source_id|path|string|true|none|
 
 > Example responses
 
@@ -5455,11 +7322,11 @@ Deletes one of the authenticated user's stream sources. Success is an empty obje
 }
 ```
 
-<h3 id="delete-a-stream-source-responses">Responses</h3>
+<h3 id="delete-a-users-stream-source-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|The request has succeeded.|[DeleteSourceResponse](#schemadeletesourceresponse)|
+|200|OK|The request has succeeded.|[DeleteUserSourceResponse](#schemadeleteusersourceresponse)|
 |default|Default|The request has failed.|[Error](#schemaerror)|
 
 <aside class="warning">
@@ -7907,7 +9774,7 @@ Endpoints related to Chat encrypted messaging
 
 <a href="https://developer.x.com/">Find out more</a>
 
-## Get Chat Conversations; unread state via chat_conversation.fields=unread,last_read_event_id,newest_event_id
+## Get Chat Conversations, newest first. All filters must match (AND). A page can hold fewer than max_results while meta.next_token is set: keep paging. Read state: chat_conversation.fields=unread,last_read_event_id,newest_event_id
 
 <a id="opIdgetChatConversations"></a>
 
@@ -7921,17 +9788,30 @@ curl https://api.x.com/2/chat/conversations \
 
 `GET /2/chat/conversations`
 
-Retrieves a list of Chat conversations for the authenticated user's inbox. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and each conversation's latest notifying message. With unread_only=true, only conversations that are unread for you are returned; a page can then hold fewer than max_results, so keep paging while has_more is true.
+Retrieves a list of Chat conversations for the authenticated user's inbox, most recently active first. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and each conversation's latest notifying message.
+
+The filters unread_only, type, is_archived, is_muted, participant_ids, participant_query, start_time and end_time are optional and combine with AND. participant_query keeps conversations where another participant's username, or a word of their display name, starts with the query, ignoring case and accents; with a leading @ it matches usernames only. It considers the 100 people who best match the query, uses only public profile information, and never matches group names, nicknames or messages. start_time and end_time apply to the time of each conversation's latest message. Each page covers max_results conversations and returns those that match, so a page can hold fewer than max_results, or none, while has_more is true: keep paging with next_token. Once a page reaches a conversation whose latest message is older than start_time, has_more is false.
+
+A pagination_token only works with the same filters as the request that returned it; with other filters, the request fails with a 400.
+
+When both are provided, `start_time` must be earlier than `end_time`.
 
 <a href="https://developer.x.com/">External documentation</a>
 
-<h3 id="get-chat-conversations-unread-state-via-chatconversationfieldsunreadlastreadeventidnewesteventid-parameters">Parameters</h3>
+<h3 id="get-chat-conversations-newest-first-all-filters-must-match-and-a-page-can-hold-fewer-than-maxresults-while-metanexttoken-is-set-keep-paging-read-state-chatconversationfieldsunreadlastreadeventidnewesteventid-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|max_results|query|integer(int32)|false|none|
-|pagination_token|query|string|false|none|
+|max_results|query|integer(int32)|false|Conversations covered per page (1-1000, default 200). Filtered pages can return fewer.|
+|pagination_token|query|string|false|meta.next_token from the previous page. Send the same filters with it, or the request fails.|
 |unread_only|query|boolean|false|Return only unread conversations. A page can be short; keep paging while has_more.|
+|type|query|string|false|Only direct (1:1) or only group conversations. Omit for both.|
+|is_archived|query|boolean|false|true: only archived; false: only not archived. Omit for both.|
+|is_muted|query|boolean|false|true: only muted; false: only not muted. Omit for both.|
+|participant_ids|query|[string]|false|Comma-separated numeric user IDs (1-10), all in the chat. Names or @handles: use participant_query.|
+|participant_query|query|string|false|Name or @username prefix (1-50 chars); keeps chats where any other participant matches it.|
+|start_time|query|string(date-time)|false|ISO 8601, e.g. 2026-10-16T00:00:00Z. Chats whose latest message is at or after this time.|
+|end_time|query|string(date-time)|false|ISO 8601, e.g. 2026-10-17T00:00:00Z. Chats whose latest message is before this time.|
 |chat_conversation.fields|query|[string]|false|A comma separated list of ChatConversation fields to display.|
 |expansions|query|[string]|false|A comma separated list of fields to expand.|
 |user.fields|query|[string]|false|A comma separated list of User fields to display.|
@@ -7940,6 +9820,8 @@ Retrieves a list of Chat conversations for the authenticated user's inbox. The u
 
 |Parameter|Value|
 |---|---|
+|type|direct|
+|type|group|
 |chat_conversation.fields|admin_settings|
 |chat_conversation.fields|created_at|
 |chat_conversation.fields|group_avatar_url|
@@ -8507,7 +10389,7 @@ Retrieves a list of Chat conversations for the authenticated user's inbox. The u
 }
 ```
 
-<h3 id="get-chat-conversations-unread-state-via-chatconversationfieldsunreadlastreadeventidnewesteventid-responses">Responses</h3>
+<h3 id="get-chat-conversations-newest-first-all-filters-must-match-and-a-page-can-hold-fewer-than-maxresults-while-metanexttoken-is-set-keep-paging-read-state-chatconversationfieldsunreadlastreadeventidnewesteventid-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -8633,7 +10515,7 @@ Creates a new encrypted Chat group conversation on behalf of the authenticated u
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateChatConversationRequest](#schemacreatechatconversationrequest)|true|none|
-|» action_signatures|body|[[CreateChatConversationActionSignatures](#schemacreatechatconversationactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[CreateChatConversationActionSignatures](#schemacreatechatconversationactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» base64_encoded_key_rotation|body|string|false|Base64-encoded key rotation payload.|
 |» conversation_id|body|string|true|Client-generated conversation ID.|
 |» conversation_key_version|body|string|true|Version of the conversation encryption key.|
@@ -8688,7 +10570,7 @@ Creates a new encrypted Chat group conversation on behalf of the authenticated u
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Initialize Chat Group
@@ -9476,7 +11358,7 @@ Renames an encrypted Chat group conversation, changes its avatar, or sets its de
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[UpdateChatGroupRequest](#schemaupdatechatgrouprequest)|true|none|
-|» action_signatures|body|[[UpdateChatGroupActionSignatures](#schemaupdatechatgroupactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[UpdateChatGroupActionSignatures](#schemaupdatechatgroupactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» base64_encoded_key_rotation|body|string|false|Base64-encoded key rotation payload.|
 |» conversation_key_version|body|string|true|Version of the conversation key the values are encrypted with.|
 |» conversation_participant_keys|body|[[UpdateChatGroupConversationParticipantKeys](#schemaupdatechatgroupconversationparticipantkeys)]|false|Encrypted conversation keys for each participant.|
@@ -9537,7 +11419,7 @@ Renames an encrypted Chat group conversation, changes its avatar, or sets its de
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
 ## Delete a Chat conversation
@@ -9615,7 +11497,7 @@ Deletes a Chat conversation for the authenticated user only; other participants 
 |---|---|---|---|---|
 |id|path|string|true|The ID of the conversation: a group ID starting with `g`, the other user's ID for a 1:1 conversation, or both user IDs of a 1:1 conversation joined by a hyphen.|
 |body|body|[DeleteChatConversationRequest](#schemadeletechatconversationrequest)|true|none|
-|» action_signatures|body|[[DeleteChatConversationActionSignatures](#schemadeletechatconversationactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[DeleteChatConversationActionSignatures](#schemadeletechatconversationactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -9659,7 +11541,7 @@ Deletes a Chat conversation for the authenticated user only; other participants 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Get pending admin requests for a Chat group conversation
@@ -10359,7 +12241,7 @@ Returns the users who have asked to become admins of an encrypted Chat group con
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
 </aside>
 
 ## Request admin permissions in a Chat group conversation
@@ -10437,7 +12319,7 @@ Asks the admins of an encrypted Chat group conversation to make the authenticate
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[CreateChatGroupAdminRequestRequest](#schemacreatechatgroupadminrequestrequest)|true|none|
-|» action_signatures|body|[[CreateChatGroupAdminRequestActionSignatures](#schemacreatechatgroupadminrequestactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[CreateChatGroupAdminRequestActionSignatures](#schemacreatechatgroupadminrequestactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -10481,7 +12363,7 @@ Asks the admins of an encrypted Chat group conversation to make the authenticate
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Approve an admin request in a Chat group conversation
@@ -10560,7 +12442,7 @@ Makes the user who requested admin permissions an admin of an encrypted Chat gro
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |user_id|path|string|true|The ID of the user who requested admin permissions.|
 |body|body|[ApproveChatGroupAdminRequestRequest](#schemaapprovechatgroupadminrequestrequest)|true|none|
-|» action_signatures|body|[[ApproveChatGroupAdminRequestActionSignatures](#schemaapprovechatgroupadminrequestactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[ApproveChatGroupAdminRequestActionSignatures](#schemaapprovechatgroupadminrequestactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -10604,7 +12486,7 @@ Makes the user who requested admin permissions an admin of an encrypted Chat gro
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Reject an admin request in a Chat group conversation
@@ -10683,7 +12565,7 @@ Declines a user's pending request for admin permissions in an encrypted Chat gro
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |user_id|path|string|true|The ID of the user who requested admin permissions.|
 |body|body|[RejectChatGroupAdminRequestRequest](#schemarejectchatgroupadminrequestrequest)|true|none|
-|» action_signatures|body|[[RejectChatGroupAdminRequestActionSignatures](#schemarejectchatgroupadminrequestactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[RejectChatGroupAdminRequestActionSignatures](#schemarejectchatgroupadminrequestactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -10727,7 +12609,7 @@ Declines a user's pending request for admin permissions in an encrypted Chat gro
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Update the admin-only settings of a Chat group conversation
@@ -10817,7 +12699,7 @@ Sets which actions only admins can perform in an existing encrypted Chat group c
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[UpdateChatGroupAdminSettingsRequest](#schemaupdatechatgroupadminsettingsrequest)|true|none|
-|» action_signatures|body|[[UpdateChatGroupAdminSettingsActionSignatures](#schemaupdatechatgroupadminsettingsactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[UpdateChatGroupAdminSettingsActionSignatures](#schemaupdatechatgroupadminsettingsactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» add_member|body|boolean|false|When true, only admins can add members.|
 |» block_screen_capture|body|boolean|false|When true, only admins can change screen capture blocking. Through the API, only admins can change screen capture in a group, whatever this setting says.|
 |» edit_group_info|body|boolean|false|When true, only admins can edit the group name, avatar, and description.|
@@ -10873,7 +12755,7 @@ Sets which actions only admins can perform in an existing encrypted Chat group c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Add admins to a Chat group conversation
@@ -10957,7 +12839,7 @@ Grants admin rights to one or more members of an existing encrypted Chat group c
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[AddChatGroupAdminsRequest](#schemaaddchatgroupadminsrequest)|true|none|
-|» action_signatures|body|[[AddChatGroupAdminsActionSignatures](#schemaaddchatgroupadminsactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[AddChatGroupAdminsActionSignatures](#schemaaddchatgroupadminsactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» user_ids|body|[string]|true|List of member user IDs to make admins.|
 
 > Example responses
@@ -11002,7 +12884,7 @@ Grants admin rights to one or more members of an existing encrypted Chat group c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Remove admins from a Chat group conversation
@@ -11086,7 +12968,7 @@ Revokes admin rights from one or more admins of an existing encrypted Chat group
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[RemoveChatGroupAdminsRequest](#schemaremovechatgroupadminsrequest)|true|none|
-|» action_signatures|body|[[RemoveChatGroupAdminsActionSignatures](#schemaremovechatgroupadminsactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[RemoveChatGroupAdminsActionSignatures](#schemaremovechatgroupadminsactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» user_ids|body|[string]|true|List of admin user IDs to revoke admin rights from.|
 
 > Example responses
@@ -11131,7 +13013,7 @@ Revokes admin rights from one or more admins of an existing encrypted Chat group
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Archive a Chat conversation
@@ -11209,7 +13091,7 @@ Archives a Chat conversation for the authenticated user only. Archiving an archi
 |---|---|---|---|---|
 |id|path|string|true|The ID of the conversation: a group ID starting with `g`, the other user's ID for a 1:1 conversation, or both user IDs of a 1:1 conversation joined by a hyphen.|
 |body|body|[ArchiveChatConversationRequest](#schemaarchivechatconversationrequest)|true|none|
-|» action_signatures|body|[[ArchiveChatConversationActionSignatures](#schemaarchivechatconversationactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[ArchiveChatConversationActionSignatures](#schemaarchivechatconversationactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -11331,7 +13213,7 @@ Unarchives a Chat conversation for the authenticated user only. Unarchiving a co
 |---|---|---|---|---|
 |id|path|string|true|The ID of the conversation: a group ID starting with `g`, the other user's ID for a 1:1 conversation, or both user IDs of a 1:1 conversation joined by a hyphen.|
 |body|body|[UnarchiveChatConversationRequest](#schemaunarchivechatconversationrequest)|true|none|
-|» action_signatures|body|[[UnarchiveChatConversationActionSignatures](#schemaunarchivechatconversationactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[UnarchiveChatConversationActionSignatures](#schemaunarchivechatconversationactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -11375,7 +13257,7 @@ Unarchives a Chat conversation for the authenticated user only. Unarchiving a co
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Get Chat Conversation Events, newest first; unread ones have an id above last_read_event_id
@@ -11481,7 +13363,7 @@ Retrieves the events of a specific Chat conversation, newest first, with paginat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
 </aside>
 
 ## Enable a Chat group invite link
@@ -11573,7 +13455,7 @@ Turns on the invite link for an encrypted Chat group conversation and returns th
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[EnableChatGroupInviteRequest](#schemaenablechatgroupinviterequest)|true|none|
-|» action_signatures|body|[[EnableChatGroupInviteActionSignatures](#schemaenablechatgroupinviteactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[EnableChatGroupInviteActionSignatures](#schemaenablechatgroupinviteactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» affiliate_user_id|body|string|false|ID of the affiliate account to associate with the link.|
 |» decrypted_avatar_url|body|string|false|Group avatar URL (https) to show on the invite preview.|
 |» decrypted_title|body|string|false|Group name to show on the invite preview.|
@@ -11630,7 +13512,7 @@ Turns on the invite link for an encrypted Chat group conversation and returns th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Disable a Chat group invite link
@@ -11708,7 +13590,7 @@ Turns off the invite link for an encrypted Chat group conversation. The existing
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[DisableChatGroupInviteRequest](#schemadisablechatgroupinviterequest)|true|none|
-|» action_signatures|body|[[DisableChatGroupInviteActionSignatures](#schemadisablechatgroupinviteactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[DisableChatGroupInviteActionSignatures](#schemadisablechatgroupinviteactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -11752,7 +13634,7 @@ Turns off the invite link for an encrypted Chat group conversation. The existing
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Get a Chat group invite link
@@ -11925,7 +13807,7 @@ Asks to join an encrypted Chat group conversation through its invite link. The r
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[CreateChatGroupJoinRequestRequest](#schemacreatechatgroupjoinrequestrequest)|true|none|
-|» action_signatures|body|[[CreateChatGroupJoinRequestActionSignatures](#schemacreatechatgroupjoinrequestactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[CreateChatGroupJoinRequestActionSignatures](#schemacreatechatgroupjoinrequestactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» token|body|string|true|The 10-character invite token from the group's invite link.|
 
 > Example responses
@@ -11970,7 +13852,7 @@ Asks to join an encrypted Chat group conversation through its invite link. The r
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Reject join requests for a Chat group conversation
@@ -12054,7 +13936,7 @@ Rejects pending requests to join an encrypted Chat group conversation. Only grou
 |---|---|---|---|---|
 |id|path|string|true|The ID of the group conversation, starting with `g`.|
 |body|body|[RejectChatGroupJoinRequestsRequest](#schemarejectchatgroupjoinrequestsrequest)|true|none|
-|» action_signatures|body|[[RejectChatGroupJoinRequestsActionSignatures](#schemarejectchatgroupjoinrequestsactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[RejectChatGroupJoinRequestsActionSignatures](#schemarejectchatgroupjoinrequestsactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» user_ids|body|[string]|true|List of user IDs whose join requests to reject.|
 
 > Example responses
@@ -12195,7 +14077,7 @@ Adds (initializes or rotates) the encryption keys for a Chat conversation. Call 
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[AddConversationKeysRequest](#schemaaddconversationkeysrequest)|true|none|
-|» action_signatures|body|[[AddConversationKeysActionSignatures](#schemaaddconversationkeysactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[AddConversationKeysActionSignatures](#schemaaddconversationkeysactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» base64_encoded_key_rotation|body|string|false|Base64-encoded key rotation payload for ratchet tree key management.|
 |» conversation_key_version|body|string|true|Version of the conversation encryption key (typically a timestamp in milliseconds).|
 |» conversation_participant_keys|body|[[AddConversationKeysConversationParticipantKeys](#schemaaddconversationkeysconversationparticipantkeys)]|true|Encrypted conversation keys for each participant.|
@@ -12243,7 +14125,7 @@ Adds (initializes or rotates) the encryption keys for a Chat conversation. Call 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Add members to a Chat group conversation
@@ -12347,7 +14229,7 @@ Adds one or more members to an existing encrypted Chat group conversation, rotat
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[AddChatGroupMembersRequest](#schemaaddchatgroupmembersrequest)|true|none|
-|» action_signatures|body|[[AddChatGroupMembersActionSignatures](#schemaaddchatgroupmembersactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[AddChatGroupMembersActionSignatures](#schemaaddchatgroupmembersactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» conversation_key_version|body|string|false|Version of the new rotated conversation key.|
 |» conversation_participant_keys|body|[[AddChatGroupMembersConversationParticipantKeys](#schemaaddchatgroupmembersconversationparticipantkeys)]|false|Encrypted conversation keys for each participant.|
 |» encrypted_avatar_url|body|string|false|Re-encrypted group avatar URL with new conversation key.|
@@ -12596,7 +14478,7 @@ Adds one or more members to an existing encrypted Chat group conversation, rotat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Remove members from a Chat group conversation
@@ -12632,6 +14514,27 @@ curl https://api.x.com/2/chat/conversations/string/members/remove \
         "signature_payload": "string"
       }
     ],
+    "group_key_rotation_data": {
+      "base64_encoded_key_rotation": "string",
+      "conversation_key_version": "string",
+      "conversation_participant_keys": [
+        {
+          "encrypted_conversation_key": "string",
+          "public_key_version": "string",
+          "user_id": "string"
+        }
+      ],
+      "encrypted_avatar": "string",
+      "encrypted_description": "string",
+      "encrypted_title": "string",
+      "rotated_pmk_bundle": [
+        {
+          "base64_encoded_encrypted_pmk": "string",
+          "message_sequence_id": "string",
+          "pme_sequence_id": "string"
+        }
+      ]
+    },
     "user_ids": [
       "string"
     ]
@@ -12640,7 +14543,7 @@ curl https://api.x.com/2/chat/conversations/string/members/remove \
 
 `POST /2/chat/conversations/{id}/members/remove`
 
-Removes one or more members from an existing encrypted Chat group conversation. To leave a group, pass your own user ID. Leaving does not delete the conversation for the caller.
+Removes one or more members from an existing encrypted Chat group conversation. To leave a group, pass your own user ID. Leaving does not delete the conversation for the caller. When the removal rotates the conversation key, send group_key_rotation_data and the action signatures for the removal and the key change, in that order.
 
 <a href="https://developer.x.com/">External documentation</a>
 
@@ -12668,6 +14571,27 @@ Removes one or more members from an existing encrypted Chat group conversation. 
       "signature_payload": "string"
     }
   ],
+  "group_key_rotation_data": {
+    "base64_encoded_key_rotation": "string",
+    "conversation_key_version": "string",
+    "conversation_participant_keys": [
+      {
+        "encrypted_conversation_key": "string",
+        "public_key_version": "string",
+        "user_id": "string"
+      }
+    ],
+    "encrypted_avatar": "string",
+    "encrypted_description": "string",
+    "encrypted_title": "string",
+    "rotated_pmk_bundle": [
+      {
+        "base64_encoded_encrypted_pmk": "string",
+        "message_sequence_id": "string",
+        "pme_sequence_id": "string"
+      }
+    ]
+  },
   "user_ids": [
     "string"
   ]
@@ -12680,7 +14604,8 @@ Removes one or more members from an existing encrypted Chat group conversation. 
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[RemoveChatGroupMembersRequest](#schemaremovechatgroupmembersrequest)|true|none|
-|» action_signatures|body|[[RemoveChatGroupMembersActionSignatures](#schemaremovechatgroupmembersactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[RemoveChatGroupMembersActionSignatures](#schemaremovechatgroupmembersactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
+|» group_key_rotation_data|body|[RemoveChatGroupMembersGroupKeyRotationData](#schemaremovechatgroupmembersgroupkeyrotationdata)|false|Conversation key rotated as part of this removal. Omit it when the removal does not change the key.|
 |» user_ids|body|[string]|true|List of user IDs to remove from the group conversation.|
 
 > Example responses
@@ -12725,7 +14650,7 @@ Removes one or more members from an existing encrypted Chat group conversation. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Turn on disappearing messages in a Chat conversation
@@ -12805,7 +14730,7 @@ Sets how long new messages in a 1:1 or group Chat conversation last before they 
 |---|---|---|---|---|
 |id|path|string|true|The ID of the conversation: a group ID starting with `g`, the other user's ID for a 1:1 conversation, or both user IDs of a 1:1 conversation joined by a hyphen.|
 |body|body|[UpdateChatConversationMessageTtlRequest](#schemaupdatechatconversationmessagettlrequest)|true|none|
-|» action_signatures|body|[[UpdateChatConversationMessageTtlActionSignatures](#schemaupdatechatconversationmessagettlactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[UpdateChatConversationMessageTtlActionSignatures](#schemaupdatechatconversationmessagettlactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 |» message_ttl_ms|body|string|true|How long new messages last, in milliseconds.|
 
 > Example responses
@@ -12928,7 +14853,7 @@ Stops new messages in a 1:1 or group Chat conversation from disappearing, for ev
 |---|---|---|---|---|
 |id|path|string|true|The ID of the conversation: a group ID starting with `g`, the other user's ID for a 1:1 conversation, or both user IDs of a 1:1 conversation joined by a hyphen.|
 |body|body|[DeleteChatConversationMessageTtlRequest](#schemadeletechatconversationmessagettlrequest)|true|none|
-|» action_signatures|body|[[DeleteChatConversationMessageTtlActionSignatures](#schemadeletechatconversationmessagettlactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[DeleteChatConversationMessageTtlActionSignatures](#schemadeletechatconversationmessagettlactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -12972,7 +14897,7 @@ Stops new messages in a 1:1 or group Chat conversation from disappearing, for ev
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Send Chat Message
@@ -13160,7 +15085,7 @@ Deletes one or more messages from a Chat conversation. For 1:1 conversations, pr
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[DeleteChatMessagesRequest](#schemadeletechatmessagesrequest)|true|none|
-|» action_signatures|body|[[DeleteChatMessagesActionSignatures](#schemadeletechatmessagesactionsignatures)]|true|Cryptographic signatures for the action.|
+|» action_signatures|body|[[DeleteChatMessagesActionSignatures](#schemadeletechatmessagesactionsignatures)]|true|Signatures for this action, forwarded in the order they are sent.|
 |» delete_message_action|body|string|true|delete_for_all removes the messages for every participant; delete_for_self removes them only from the authenticated user's view.|
 |» media_hash_keys|body|[string]|false|Hash keys of encrypted media blobs to delete alongside the messages (delete_for_all only).|
 |» sequence_ids|body|[string]|true|Sequence IDs of the messages to delete.|
@@ -13214,7 +15139,7 @@ Deletes one or more messages from a Chat conversation. For 1:1 conversations, pr
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Mute a Chat conversation
@@ -13292,7 +15217,7 @@ Mutes notifications for a Chat conversation for the authenticated user only. Wor
 |---|---|---|---|---|
 |id|path|string|true|The ID of the conversation: a group ID starting with `g`, the other user's ID for a 1:1 conversation, or both user IDs of a 1:1 conversation joined by a hyphen.|
 |body|body|[MuteChatConversationRequest](#schemamutechatconversationrequest)|true|none|
-|» action_signatures|body|[[MuteChatConversationActionSignatures](#schemamutechatconversationactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[MuteChatConversationActionSignatures](#schemamutechatconversationactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -13336,7 +15261,7 @@ Mutes notifications for a Chat conversation for the authenticated user only. Wor
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
 ## Unmute a Chat conversation
@@ -13414,7 +15339,7 @@ Unmutes notifications for a Chat conversation for the authenticated user only. W
 |---|---|---|---|---|
 |id|path|string|true|The ID of the conversation: a group ID starting with `g`, the other user's ID for a 1:1 conversation, or both user IDs of a 1:1 conversation joined by a hyphen.|
 |body|body|[UnmuteChatConversationRequest](#schemaunmutechatconversationrequest)|true|none|
-|» action_signatures|body|[[UnmuteChatConversationActionSignatures](#schemaunmutechatconversationactionsignatures)]|false|Cryptographic signatures for the action.|
+|» action_signatures|body|[[UnmuteChatConversationActionSignatures](#schemaunmutechatconversationactionsignatures)]|false|Signatures for this action, forwarded in the order they are sent.|
 
 > Example responses
 
@@ -13541,7 +15466,7 @@ Retrieves the pinned message events of a Chat conversation with pagination suppo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
 </aside>
 
 ## Mark Conversation as Read
@@ -13663,7 +15588,7 @@ Marks a specific Chat conversation as read on behalf of the authenticated user. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
 ## Update screen capture settings for a Chat conversation
@@ -13786,9 +15711,9 @@ Turns screenshot blocking or screenshot detection on or off in a Chat conversati
 |id|path|string|true|The ID of the conversation: a group ID starting with `g`, the other user's ID for a 1:1 conversation, or both user IDs of a 1:1 conversation joined by a hyphen.|
 |body|body|[UpdateChatConversationScreenCaptureRequest](#schemaupdatechatconversationscreencapturerequest)|true|none|
 |» blocking|body|boolean|false|Whether participants are prevented from taking screenshots.|
-|» blocking_action_signatures|body|[[UpdateChatConversationScreenCaptureBlockingActionSignatures](#schemaupdatechatconversationscreencaptureblockingactionsignatures)]|false|Cryptographic signatures for the screenshot blocking change.|
+|» blocking_action_signatures|body|[[UpdateChatConversationScreenCaptureBlockingActionSignatures](#schemaupdatechatconversationscreencaptureblockingactionsignatures)]|false|Signatures for the screenshot blocking change, forwarded in the order they are sent.|
 |» detection|body|boolean|false|Whether participants are notified when someone takes a screenshot.|
-|» detection_action_signatures|body|[[UpdateChatConversationScreenCaptureDetectionActionSignatures](#schemaupdatechatconversationscreencapturedetectionactionsignatures)]|false|Cryptographic signatures for the screenshot detection change.|
+|» detection_action_signatures|body|[[UpdateChatConversationScreenCaptureDetectionActionSignatures](#schemaupdatechatconversationscreencapturedetectionactionsignatures)]|false|Signatures for the screenshot detection change, forwarded in the order they are sent.|
 |» *anyOf*|body|object|false|none|
 |» *anyOf*|body|object|false|none|
 
@@ -13835,7 +15760,7 @@ Turns screenshot blocking or screenshot detection on or off in a Chat conversati
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
 ## Send Typing Indicator
@@ -13905,7 +15830,7 @@ Sends a typing indicator to a specific Chat conversation on behalf of the authen
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Mark Conversation as Unread
@@ -13975,7 +15900,7 @@ Marks a specific Chat conversation as unread on behalf of the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Initialize Chat Media Upload
@@ -14407,7 +16332,7 @@ Retrieves the authenticated user's pending Chat message requests from one inbox.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
 </aside>
 
 ## Get Chat Message Request
@@ -14497,7 +16422,7 @@ Retrieves the message request state of a 1:1 Chat conversation and its newest me
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
 </aside>
 
 ## Accept a Chat message request
@@ -14567,7 +16492,7 @@ Accepts the other user's pending message request in a 1:1 Chat conversation, whi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Get Chat settings
@@ -14659,7 +16584,7 @@ Returns the authenticated user's Chat privacy settings: who can message them, re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
 </aside>
 
 ## Update Chat settings
@@ -14802,7 +16727,7 @@ Updates the authenticated user's Chat privacy settings: who can message them, re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Add public key
@@ -14901,7 +16826,7 @@ Registers a user's public key for X Chat encryption.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 <h1 id="x-api-v2-communities">Communities</h1>
@@ -15083,7 +17008,7 @@ curl https://api.x.com/2/communities/string \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read list.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read list.read ), UserToken, BearerToken
 </aside>
 
 <h1 id="x-api-v2-community-notes">Community Notes</h1>
@@ -18199,7 +20124,7 @@ Sends a new direct message to a specific participant by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Create Direct Messages by Conversation ID
@@ -18952,7 +20877,7 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
 </aside>
 
 ## Get Direct Messages Events
@@ -19610,7 +21535,7 @@ curl https://api.x.com/2/dm_events \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
 </aside>
 
 ## Get Direct Messages Events by ID
@@ -20256,7 +22181,7 @@ curl https://api.x.com/2/dm_events/string \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
 </aside>
 
 ## Delete DM event
@@ -20324,7 +22249,7 @@ Deletes a specific direct message event by its ID, if owned by the authenticated
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write dm.read ), UserToken
 </aside>
 
 <h1 id="x-api-v2-general">General</h1>
@@ -20455,7 +22380,7 @@ curl https://api.x.com/2/lists \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read list.write list.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read list.read list.write users.read ), UserToken
 </aside>
 
 ## Get Lists by ID
@@ -21004,7 +22929,7 @@ curl https://api.x.com/2/lists/1146654567674912769 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read list.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Update List
@@ -21094,7 +23019,7 @@ Updates the details of a specific List owned by the authenticated user by its ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read list.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read list.write tweet.read ), UserToken
 </aside>
 
 ## Delete List
@@ -21861,7 +23786,7 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read list.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Lists Members
@@ -22558,7 +24483,7 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read list.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Add Lists Member
@@ -22709,7 +24634,7 @@ Removes a User from a List by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read list.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read list.write ), UserToken
 </aside>
 
 ## Get Lists Posts
@@ -24881,7 +26806,7 @@ curl 'https://api.x.com/2/news/search?query=string' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Get news stories by ID
@@ -24982,7 +26907,7 @@ Retrieves news story by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 <h1 id="x-api-v2-posts">Posts</h1>
@@ -26018,7 +27943,7 @@ curl https://api.x.com/2/tweets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read tweet.write users.read ), UserToken
 </aside>
 
 ## Get Posts Analytics
@@ -28811,7 +30736,7 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Delete Posts
@@ -28877,7 +30802,7 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read tweet.write users.read ), UserToken
 </aside>
 
 ## Get Posts Liking Users
@@ -29574,7 +31499,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: like.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read like.read tweet.read ), UserToken
 </aside>
 
 ## Get Posts Quoted Posts
@@ -31903,7 +33828,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Hide reply
@@ -31987,7 +33912,7 @@ Hides or unhides a reply to a conversation owned by the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read tweet.moderate.write users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.moderate.write tweet.read users.read ), UserToken
 </aside>
 
 <h1 id="x-api-v2-spaces">Spaces</h1>
@@ -32574,7 +34499,7 @@ curl 'https://api.x.com/2/spaces?ids=string' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read space.read ), BearerToken
+OAuth2UserToken ( Scopes: space.read users.read tweet.read ), BearerToken
 </aside>
 
 ## Get Spaces by Creator IDs
@@ -33158,7 +35083,7 @@ curl 'https://api.x.com/2/spaces/by/creator_ids?user_ids=string' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read space.read users.read ), BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read space.read ), BearerToken
 </aside>
 
 ## Search Spaces
@@ -33751,7 +35676,7 @@ Retrieves a list of Spaces matching the specified search query.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read space.read ), BearerToken
+OAuth2UserToken ( Scopes: users.read space.read tweet.read ), BearerToken
 </aside>
 
 ## Get Spaces by ID
@@ -35031,7 +36956,7 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read space.read )
+OAuth2UserToken ( Scopes: space.read tweet.read users.read )
 </aside>
 
 ## Get Space Posts
@@ -35850,7 +37775,7 @@ Retrieves a list of Posts shared in a specific Space by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read space.read tweet.read ), BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read space.read ), BearerToken
 </aside>
 
 <h1 id="x-api-v2-stream">Stream</h1>
@@ -44333,7 +46258,7 @@ Returns the active filtered-stream rules for the authenticated app. Provide `ids
 |---|---|---|---|---|
 |ids|query|[string]|false|none|
 |max_results|query|integer(int32)|false|none|
-|pagination_token|query|string|false|A base32hex-encoded pagination token.|
+|pagination_token|query|string|false|A base32hex-encoded pagination token that decodes to 8 bytes.|
 
 > Example responses
 
@@ -45679,7 +47604,7 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users by Usernames
@@ -47057,7 +48982,7 @@ curl https://api.x.com/2/users/by/username/string \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users Me
@@ -47767,8 +49692,8 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|max_results|query|integer(int32)|false|none|
-|pagination_token|query|string|false|A base32hex-encoded pagination token.|
+|max_results|query|integer(int32)|false|The maximum number of users to return.|
+|pagination_token|query|string|false|The next_token or previous_token from a previous response, to fetch that page. A base32hex-encoded pagination token.|
 |user.fields|query|[string]|false|A comma separated list of User fields to display.|
 |expansions|query|[string]|false|A comma separated list of fields to expand.|
 |post.fields|query|[string]|false|A comma separated list of Post fields to display.|
@@ -48465,8 +50390,8 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|max_results|query|integer(int32)|false|none|
-|pagination_token|query|string|false|A base32hex-encoded pagination token.|
+|max_results|query|integer(int32)|false|The maximum number of users to return.|
+|pagination_token|query|string|false|The next_token or previous_token from a previous response, to fetch that page. A base32hex-encoded pagination token.|
 |user.fields|query|[string]|false|A comma separated list of User fields to display.|
 |expansions|query|[string]|false|A comma separated list of fields to expand.|
 |post.fields|query|[string]|false|A comma separated list of Post fields to display.|
@@ -49226,7 +51151,7 @@ Returns registered public keys for X Chat encryption for the specified users.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
 </aside>
 
 ## Get Users Reposts of Me
@@ -50040,7 +51965,7 @@ curl https://api.x.com/2/users/reposts_of_me \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read timeline.read ), UserToken
+OAuth2UserToken ( Scopes: timeline.read tweet.read ), UserToken
 </aside>
 
 ## Search Users
@@ -50736,7 +52661,7 @@ curl 'https://api.x.com/2/users/search?query=string' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
 </aside>
 
 ## Get Users by ID
@@ -51424,7 +53349,7 @@ curl https://api.x.com/2/users/2244994945 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users Affiliates
@@ -52124,7 +54049,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Get Users Blocking
+## Get blocked Users
 
 <a id="opIdgetUsersBlocking"></a>
 
@@ -52138,7 +54063,9 @@ curl https://api.x.com/2/users/2244994945/blocking \
 
 `GET /2/users/{id}/blocking`
 
-<h3 id="get-users-blocking-parameters">Parameters</h3>
+Returns the Users that the given User is blocking.
+
+<h3 id="get-blocked-users-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -52809,7 +54736,7 @@ curl https://api.x.com/2/users/2244994945/blocking \
 }
 ```
 
-<h3 id="get-users-blocking-responses">Responses</h3>
+<h3 id="get-blocked-users-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -52818,10 +54745,10 @@ curl https://api.x.com/2/users/2244994945/blocking \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read block.read ), UserToken
+OAuth2UserToken ( Scopes: block.read tweet.read users.read ), UserToken
 </aside>
 
-## Users ID Block
+## Block User
 
 <a id="opIdusersIdBlock"></a>
 
@@ -52840,6 +54767,8 @@ curl https://api.x.com/2/users/2244994945/blocking \
 
 `POST /2/users/{id}/blocking`
 
+Causes the source User to block the target User.
+
 > Body parameter
 
 ```json
@@ -52848,7 +54777,7 @@ curl https://api.x.com/2/users/2244994945/blocking \
 }
 ```
 
-<h3 id="users-id-block-parameters">Parameters</h3>
+<h3 id="block-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -52889,7 +54818,7 @@ curl https://api.x.com/2/users/2244994945/blocking \
 }
 ```
 
-<h3 id="users-id-block-responses">Responses</h3>
+<h3 id="block-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -53713,7 +55642,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read bookmark.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read bookmark.read ), UserToken
 </aside>
 
 ## Create Bookmark
@@ -53795,7 +55724,7 @@ Adds one or more Posts to the authenticated user's Bookmarks. Supply `tweet_id` 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read bookmark.write )
+OAuth2UserToken ( Scopes: bookmark.write tweet.read users.read )
 </aside>
 
 ## Get Users Bookmark Folders
@@ -53948,7 +55877,7 @@ Creates a new Bookmark folder for the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read bookmark.write )
+OAuth2UserToken ( Scopes: bookmark.write users.read )
 </aside>
 
 ## Get Users Bookmarks by Folder ID
@@ -54018,7 +55947,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks/folders/string \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read bookmark.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read bookmark.read users.read ), UserToken
 </aside>
 
 ## Delete Bookmark
@@ -54089,7 +56018,7 @@ Removes a Post from the authenticated user's Bookmarks by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read bookmark.write )
+OAuth2UserToken ( Scopes: tweet.read bookmark.write users.read )
 </aside>
 
 ## Block Users Dms
@@ -54221,7 +56150,7 @@ curl https://api.x.com/2/users/2244994945/dm/unblock \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Get Users Followed Lists
@@ -54779,7 +56708,7 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Follow List
@@ -54859,7 +56788,7 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read list.write ), UserToken
+OAuth2UserToken ( Scopes: list.write users.read tweet.read ), UserToken
 </aside>
 
 ## Unfollow a List
@@ -54930,7 +56859,7 @@ Causes the authenticated user to unfollow a List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read list.write ), UserToken
 </aside>
 
 ## Get Users Followers
@@ -54952,8 +56881,8 @@ curl https://api.x.com/2/users/2244994945/followers \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|[UserId](#schemauserid)|true|none|
-|max_results|query|integer(int32)|false|none|
-|pagination_token|query|string|false|A base32hex-encoded pagination token.|
+|max_results|query|integer(int32)|false|The maximum number of users to return.|
+|pagination_token|query|string|false|The next_token or previous_token from a previous response, to fetch that page. A base32hex-encoded pagination token.|
 |user.fields|query|[string]|false|A comma separated list of User fields to display.|
 |expansions|query|[string]|false|A comma separated list of fields to expand.|
 |post.fields|query|[string]|false|A comma separated list of Post fields to display.|
@@ -55627,7 +57556,7 @@ curl https://api.x.com/2/users/2244994945/followers \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: follows.read users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read follows.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users Following
@@ -55649,8 +57578,8 @@ curl https://api.x.com/2/users/2244994945/following \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|[UserId](#schemauserid)|true|none|
-|max_results|query|integer(int32)|false|none|
-|pagination_token|query|string|false|A base32hex-encoded pagination token.|
+|max_results|query|integer(int32)|false|The maximum number of users to return.|
+|pagination_token|query|string|false|The next_token or previous_token from a previous response, to fetch that page. A base32hex-encoded pagination token.|
 |user.fields|query|[string]|false|A comma separated list of User fields to display.|
 |expansions|query|[string]|false|A comma separated list of fields to expand.|
 |post.fields|query|[string]|false|A comma separated list of Post fields to display.|
@@ -56324,7 +58253,7 @@ curl https://api.x.com/2/users/2244994945/following \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: follows.read users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read follows.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Follow User
@@ -56405,7 +58334,7 @@ curl https://api.x.com/2/users/2244994945/following \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: follows.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read follows.write users.read ), UserToken
 </aside>
 
 ## Get Users Liked Posts
@@ -57220,7 +59149,7 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: like.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read like.read ), UserToken
 </aside>
 
 ## Like Post
@@ -57300,7 +59229,7 @@ curl https://api.x.com/2/users/2244994945/likes \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read like.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read like.write ), UserToken
 </aside>
 
 ## Unlike Post
@@ -57367,7 +59296,7 @@ curl https://api.x.com/2/users/2244994945/likes/1346889436626259968 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read like.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read like.write ), UserToken
 </aside>
 
 ## Get Users List Memberships
@@ -57925,7 +59854,7 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read list.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read list.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users Mentions
@@ -58748,7 +60677,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users Muting
@@ -59525,7 +61454,7 @@ curl https://api.x.com/2/users/2244994945/muting \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read mute.write ), UserToken
+OAuth2UserToken ( Scopes: users.read mute.write tweet.read ), UserToken
 </aside>
 
 ## Get Users Owned Lists
@@ -60083,7 +62012,7 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read list.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read list.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users Pinned Lists
@@ -60637,7 +62566,7 @@ curl https://api.x.com/2/users/2244994945/pinned_lists \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read list.read ), UserToken
+OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken
 </aside>
 
 ## Pin List
@@ -60721,7 +62650,7 @@ Causes the authenticated user to pin a specific List by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read list.write ), UserToken
 </aside>
 
 ## Unpin a List
@@ -60878,7 +62807,7 @@ Returns a user's registered public keys for X Chat encryption.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
 </aside>
 
 ## Repost Post
@@ -60963,7 +62892,7 @@ Causes the authenticated user to repost a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.write tweet.read ), UserToken
 </aside>
 
 ## Unrepost Post
@@ -61034,7 +62963,7 @@ Causes the authenticated user to unrepost a specific Post by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read tweet.write ), UserToken
 </aside>
 
 ## Get Users Timeline
@@ -62757,7 +64686,7 @@ Causes the source User to unblock the target User.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read block.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read block.write users.read ), UserToken
 </aside>
 
 ## Unfollow User
@@ -62828,7 +64757,7 @@ Causes the authenticated user to unfollow a specific user by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read follows.write ), UserToken
+OAuth2UserToken ( Scopes: follows.write users.read tweet.read ), UserToken
 </aside>
 
 ## Unmute User
@@ -62899,7 +64828,7 @@ Causes the authenticated user to unmute the target user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read mute.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: mute.write tweet.read users.read ), UserToken
 </aside>
 
 <h1 id="x-api-v2-webhooks">Webhooks</h1>
@@ -64162,7 +66091,7 @@ An XAA subscription filter.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[AddChatGroupAdminsActionSignaturesMessageEventSignature](#schemaaddchatgroupadminsactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -64262,7 +66191,7 @@ An XAA subscription filter.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[AddChatGroupAdminsActionSignatures](#schemaaddchatgroupadminsactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[AddChatGroupAdminsActionSignatures](#schemaaddchatgroupadminsactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |user_ids|[string]|true|none|List of member user IDs to make admins.|
 
 <h2 id="tocS_AddChatGroupAdminsResponse">AddChatGroupAdminsResponse</h2>
@@ -64350,7 +66279,7 @@ An XAA subscription filter.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[AddChatGroupMembersActionSignaturesMessageEventSignature](#schemaaddchatgroupmembersactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -64483,7 +66412,7 @@ An XAA subscription filter.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[AddChatGroupMembersActionSignatures](#schemaaddchatgroupmembersactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[AddChatGroupMembersActionSignatures](#schemaaddchatgroupmembersactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |conversation_key_version|string|false|none|Version of the new rotated conversation key.|
 |conversation_participant_keys|[[AddChatGroupMembersConversationParticipantKeys](#schemaaddchatgroupmembersconversationparticipantkeys)]|false|none|Encrypted conversation keys for each participant.|
 |encrypted_avatar_url|string|false|none|Re-encrypted group avatar URL with new conversation key.|
@@ -64832,7 +66761,7 @@ An XAA subscription filter.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[AddConversationKeysActionSignaturesMessageEventSignature](#schemaaddconversationkeysactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -64961,7 +66890,7 @@ An XAA subscription filter.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[AddConversationKeysActionSignatures](#schemaaddconversationkeysactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[AddConversationKeysActionSignatures](#schemaaddconversationkeysactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |base64_encoded_key_rotation|string|false|none|Base64-encoded key rotation payload for ratchet tree key management.|
 |conversation_key_version|string|true|none|Version of the conversation encryption key (typically a timestamp in milliseconds).|
 |conversation_participant_keys|[[AddConversationKeysConversationParticipantKeys](#schemaaddconversationkeysconversationparticipantkeys)]|true|none|Encrypted conversation keys for each participant.|
@@ -65452,7 +67381,7 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[ApproveChatGroupAdminRequestActionSignaturesMessageEventSignature](#schemaapprovechatgroupadminrequestactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -65549,7 +67478,7 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[ApproveChatGroupAdminRequestActionSignatures](#schemaapprovechatgroupadminrequestactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[ApproveChatGroupAdminRequestActionSignatures](#schemaapprovechatgroupadminrequestactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_ApproveChatGroupAdminRequestResponse">ApproveChatGroupAdminRequestResponse</h2>
 <!-- backwards compatibility -->
@@ -65636,7 +67565,7 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[ArchiveChatConversationActionSignaturesMessageEventSignature](#schemaarchivechatconversationactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -65733,7 +67662,7 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[ArchiveChatConversationActionSignatures](#schemaarchivechatconversationactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[ArchiveChatConversationActionSignatures](#schemaarchivechatconversationactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_ArchiveChatConversationResponse">ArchiveChatConversationResponse</h2>
 <!-- backwards compatibility -->
@@ -66686,6 +68615,27 @@ Create a draft Article.
 |id|string|false|none|none|
 |reply_to|string|false|none|none|
 |text|string|false|none|none|
+
+<h2 id="tocS_BroadcastChatMute">BroadcastChatMute</h2>
+<!-- backwards compatibility -->
+<a id="schemabroadcastchatmute"></a>
+<a id="schema_BroadcastChatMute"></a>
+<a id="tocSbroadcastchatmute"></a>
+<a id="tocsbroadcastchatmute"></a>
+
+```json
+{
+  "end_at_ms": "string",
+  "user_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|end_at_ms|string|false|none|The Unix timestamp in milliseconds when the mute expires. Absent for indefinite mutes.|
+|user_id|string|false|none|The muted user's ID.|
 
 <h2 id="tocS_Call">Call</h2>
 <!-- backwards compatibility -->
@@ -68158,7 +70108,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[CreateChatConversationActionSignaturesMessageEventSignature](#schemacreatechatconversationactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -68298,7 +70248,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[CreateChatConversationActionSignatures](#schemacreatechatconversationactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[CreateChatConversationActionSignatures](#schemacreatechatconversationactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |base64_encoded_key_rotation|string|false|none|Base64-encoded key rotation payload.|
 |conversation_id|string|true|none|Client-generated conversation ID.|
 |conversation_key_version|string|true|none|Version of the conversation encryption key.|
@@ -68398,7 +70348,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[CreateChatGroupAdminRequestActionSignaturesMessageEventSignature](#schemacreatechatgroupadminrequestactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -68495,7 +70445,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[CreateChatGroupAdminRequestActionSignatures](#schemacreatechatgroupadminrequestactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[CreateChatGroupAdminRequestActionSignatures](#schemacreatechatgroupadminrequestactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_CreateChatGroupAdminRequestResponse">CreateChatGroupAdminRequestResponse</h2>
 <!-- backwards compatibility -->
@@ -68582,7 +70532,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[CreateChatGroupJoinRequestActionSignaturesMessageEventSignature](#schemacreatechatgroupjoinrequestactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -68680,7 +70630,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[CreateChatGroupJoinRequestActionSignatures](#schemacreatechatgroupjoinrequestactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[CreateChatGroupJoinRequestActionSignatures](#schemacreatechatgroupjoinrequestactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |token|string|true|none|The 10-character invite token from the group's invite link.|
 
 <h2 id="tocS_CreateChatGroupJoinRequestResponse">CreateChatGroupJoinRequestResponse</h2>
@@ -70468,17 +72418,14 @@ At least one of `text`, `attachments` is required.
 ```json
 {
   "data": {
-    "source": {
-      "creation_time": 0,
-      "id": "string",
-      "is_stream_active": true,
-      "name": "string",
-      "owner_id": 0,
-      "rtmp_region": "string",
-      "rtmp_stream_key": "string",
-      "rtmp_url": "string",
-      "rtmps_url": "string"
-    }
+    "created_at_ms": "string",
+    "id": "string",
+    "is_stream_active": true,
+    "name": "string",
+    "region": "string",
+    "rtmp_url": "string",
+    "rtmps_url": "string",
+    "stream_key": "string"
   },
   "errors": [
     {
@@ -70511,16 +72458,348 @@ At least one of `text`, `attachments` is required.
 
 ```json
 {
+  "created_at_ms": "string",
+  "id": "string",
+  "is_stream_active": true,
+  "name": "string",
+  "region": "string",
+  "rtmp_url": "string",
+  "rtmps_url": "string",
+  "stream_key": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
+|id|string|true|none|Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.|
+|name|string|false|none|Label for the source.|
+|region|string|false|none|Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.|
+|rtmp_url|string|false|none|RTMP ingest URL.|
+|rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
+|stream_key|string|false|none|RTMP stream key.|
+
+<h2 id="tocS_CreateUserBroadcastRequest">CreateUserBroadcastRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateuserbroadcastrequest"></a>
+<a id="schema_CreateUserBroadcastRequest"></a>
+<a id="tocScreateuserbroadcastrequest"></a>
+<a id="tocscreateuserbroadcastrequest"></a>
+
+```json
+{
+  "is_low_latency": true,
+  "region": "string",
+  "source_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|is_low_latency|boolean|false|none|Ignored.|
+|region|string|false|none|Ignored: the source sets the region.|
+|source_id|string|true|none|The source's `rtmp_stream_key`.|
+
+<h2 id="tocS_CreateUserBroadcastResponse">CreateUserBroadcastResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateuserbroadcastresponse"></a>
+<a id="schema_CreateUserBroadcastResponse"></a>
+<a id="tocScreateuserbroadcastresponse"></a>
+<a id="tocscreateuserbroadcastresponse"></a>
+
+```json
+{
+  "data": {
+    "broadcast": {
+      "available_for_replay": true,
+      "broadcast_id": "string",
+      "chat_option": 0,
+      "created_at_ms": "string",
+      "end_ms": "string",
+      "height": 0,
+      "id": "string",
+      "image_url": "string",
+      "image_url_medium": "string",
+      "image_url_small": "string",
+      "is_high_latency": true,
+      "language": "string",
+      "media_id": "string",
+      "media_key": "string",
+      "scheduled_end_ms": "string",
+      "scheduled_start_ms": "string",
+      "start_ms": "string",
+      "state": "string",
+      "status": "string",
+      "total_watched": "string",
+      "total_watching": "string",
+      "tweet_id": "string",
+      "twitter_user_id": "string",
+      "updated_at_ms": "string",
+      "width": 0
+    },
+    "share_url": "string",
+    "video_access": {}
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CreateUserBroadcastResponseData](#schemacreateuserbroadcastresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_CreateUserBroadcastResponseData">CreateUserBroadcastResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateuserbroadcastresponsedata"></a>
+<a id="schema_CreateUserBroadcastResponseData"></a>
+<a id="tocScreateuserbroadcastresponsedata"></a>
+<a id="tocscreateuserbroadcastresponsedata"></a>
+
+```json
+{
+  "broadcast": {
+    "available_for_replay": true,
+    "broadcast_id": "string",
+    "chat_option": 0,
+    "created_at_ms": "string",
+    "end_ms": "string",
+    "height": 0,
+    "id": "string",
+    "image_url": "string",
+    "image_url_medium": "string",
+    "image_url_small": "string",
+    "is_high_latency": true,
+    "language": "string",
+    "media_id": "string",
+    "media_key": "string",
+    "scheduled_end_ms": "string",
+    "scheduled_start_ms": "string",
+    "start_ms": "string",
+    "state": "string",
+    "status": "string",
+    "total_watched": "string",
+    "total_watching": "string",
+    "tweet_id": "string",
+    "twitter_user_id": "string",
+    "updated_at_ms": "string",
+    "width": 0
+  },
+  "share_url": "string",
+  "video_access": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|broadcast|[CreateUserBroadcastResponseDataBroadcast](#schemacreateuserbroadcastresponsedatabroadcast)|true|none|none|
+|share_url|string|true|none|The broadcast's watch page.|
+|video_access|[CreateUserBroadcastResponseDataVideoAccess](#schemacreateuserbroadcastresponsedatavideoaccess)|true|none|Always empty.|
+
+<h2 id="tocS_CreateUserBroadcastResponseDataBroadcast">CreateUserBroadcastResponseDataBroadcast</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateuserbroadcastresponsedatabroadcast"></a>
+<a id="schema_CreateUserBroadcastResponseDataBroadcast"></a>
+<a id="tocScreateuserbroadcastresponsedatabroadcast"></a>
+<a id="tocscreateuserbroadcastresponsedatabroadcast"></a>
+
+```json
+{
+  "available_for_replay": true,
+  "broadcast_id": "string",
+  "chat_option": 0,
+  "created_at_ms": "string",
+  "end_ms": "string",
+  "height": 0,
+  "id": "string",
+  "image_url": "string",
+  "image_url_medium": "string",
+  "image_url_small": "string",
+  "is_high_latency": true,
+  "language": "string",
+  "media_id": "string",
+  "media_key": "string",
+  "scheduled_end_ms": "string",
+  "scheduled_start_ms": "string",
+  "start_ms": "string",
+  "state": "string",
+  "status": "string",
+  "total_watched": "string",
+  "total_watching": "string",
+  "tweet_id": "string",
+  "twitter_user_id": "string",
+  "updated_at_ms": "string",
+  "width": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available_for_replay|boolean|false|none|Whether a replay is available.|
+|broadcast_id|string|false|none|Broadcast id.|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
+|end_ms|string|false|none|End time, milliseconds since Unix epoch (decimal string).|
+|height|integer|false|none|Video height in pixels.|
+|id|string|true|none|Broadcast id; equal to `broadcast_id`.|
+|image_url|string|false|none|Thumbnail URL.|
+|image_url_medium|string|false|none|Medium thumbnail URL.|
+|image_url_small|string|false|none|Small thumbnail URL.|
+|is_high_latency|boolean|false|none|Whether the broadcast is high latency.|
+|language|string|false|none|Broadcast language.|
+|media_id|string|false|none|Numeric media id from `media_key`.|
+|media_key|string|false|none|Media key of the broadcast's video.|
+|scheduled_end_ms|string|false|none|Scheduled end time, milliseconds since Unix epoch (decimal string).|
+|scheduled_start_ms|string|false|none|Scheduled start time, milliseconds since Unix epoch (decimal string).|
+|start_ms|string|false|none|Start time, milliseconds since Unix epoch (decimal string).|
+|state|string|false|none|`NOT_STARTED`, `RUNNING`, `TIMED_OUT`, `ENDED`, `PRE_PUBLISHED` or `CANCELED`.|
+|status|string|false|none|Broadcast title.|
+|total_watched|string|false|none|Total viewers (decimal string).|
+|total_watching|string|false|none|Current viewers (decimal string).|
+|tweet_id|string|false|none|Id of the Post announcing the broadcast.|
+|twitter_user_id|string|false|none|Owner's user id.|
+|updated_at_ms|string|false|none|Last update time, milliseconds since Unix epoch (decimal string).|
+|width|integer|false|none|Video width in pixels.|
+
+<h2 id="tocS_CreateUserBroadcastResponseDataVideoAccess">CreateUserBroadcastResponseDataVideoAccess</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateuserbroadcastresponsedatavideoaccess"></a>
+<a id="schema_CreateUserBroadcastResponseDataVideoAccess"></a>
+<a id="tocScreateuserbroadcastresponsedatavideoaccess"></a>
+<a id="tocscreateuserbroadcastresponsedatavideoaccess"></a>
+
+```json
+{}
+```
+
+<h2 id="tocS_CreateUserSourceRequest">CreateUserSourceRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateusersourcerequest"></a>
+<a id="schema_CreateUserSourceRequest"></a>
+<a id="tocScreateusersourcerequest"></a>
+<a id="tocscreateusersourcerequest"></a>
+
+```json
+{
+  "name": "string",
+  "region": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Label for the source.|
+|region|string|false|none|Ingest data center, `atla` or `pdxa` (default). The AWS regions us-west-1 and us-west-2 map to `pdxa`; us-east-1, us-east-2, ca-central-1, sa-east-1, eu-west-1, eu-west-2, eu-west-3, eu-central-1, eu-north-1, ap-south-1, ap-northeast-1, ap-northeast-2, ap-southeast-1 and ap-southeast-2 map to `atla`.|
+
+<h2 id="tocS_CreateUserSourceResponse">CreateUserSourceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateusersourceresponse"></a>
+<a id="schema_CreateUserSourceResponse"></a>
+<a id="tocScreateusersourceresponse"></a>
+<a id="tocscreateusersourceresponse"></a>
+
+```json
+{
+  "data": {
+    "source": {
+      "creation_origin": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      },
+      "creation_time": 0,
+      "id": "string",
+      "is360": true,
+      "is_stream_active": true,
+      "name": "string",
+      "owner_id": 0,
+      "rtmp_region": "string",
+      "rtmp_stream_key": "string",
+      "rtmp_url": "string",
+      "rtmps_url": "string",
+      "video_service": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      }
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CreateUserSourceResponseData](#schemacreateusersourceresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_CreateUserSourceResponseData">CreateUserSourceResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateusersourceresponsedata"></a>
+<a id="schema_CreateUserSourceResponseData"></a>
+<a id="tocScreateusersourceresponsedata"></a>
+<a id="tocscreateusersourceresponsedata"></a>
+
+```json
+{
   "source": {
+    "creation_origin": {
+      "name": "string",
+      "original_name": "string",
+      "value": 0
+    },
     "creation_time": 0,
     "id": "string",
+    "is360": true,
     "is_stream_active": true,
     "name": "string",
     "owner_id": 0,
     "rtmp_region": "string",
     "rtmp_stream_key": "string",
     "rtmp_url": "string",
-    "rtmps_url": "string"
+    "rtmps_url": "string",
+    "video_service": {
+      "name": "string",
+      "original_name": "string",
+      "value": 0
+    }
   }
 }
 ```
@@ -70529,26 +72808,37 @@ At least one of `text`, `attachments` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|source|[CreateSourceResponseDataSource](#schemacreatesourceresponsedatasource)|true|none|none|
+|source|[CreateUserSourceResponseDataSource](#schemacreateusersourceresponsedatasource)|true|none|none|
 
-<h2 id="tocS_CreateSourceResponseDataSource">CreateSourceResponseDataSource</h2>
+<h2 id="tocS_CreateUserSourceResponseDataSource">CreateUserSourceResponseDataSource</h2>
 <!-- backwards compatibility -->
-<a id="schemacreatesourceresponsedatasource"></a>
-<a id="schema_CreateSourceResponseDataSource"></a>
-<a id="tocScreatesourceresponsedatasource"></a>
-<a id="tocscreatesourceresponsedatasource"></a>
+<a id="schemacreateusersourceresponsedatasource"></a>
+<a id="schema_CreateUserSourceResponseDataSource"></a>
+<a id="tocScreateusersourceresponsedatasource"></a>
+<a id="tocscreateusersourceresponsedatasource"></a>
 
 ```json
 {
+  "creation_origin": {
+    "name": "string",
+    "original_name": "string",
+    "value": 0
+  },
   "creation_time": 0,
   "id": "string",
+  "is360": true,
   "is_stream_active": true,
   "name": "string",
   "owner_id": 0,
   "rtmp_region": "string",
   "rtmp_stream_key": "string",
   "rtmp_url": "string",
-  "rtmps_url": "string"
+  "rtmps_url": "string",
+  "video_service": {
+    "name": "string",
+    "original_name": "string",
+    "value": 0
+  }
 }
 ```
 
@@ -70556,15 +72846,64 @@ At least one of `text`, `attachments` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|creation_origin|[CreateUserSourceResponseDataSourceCreationOrigin](#schemacreateusersourceresponsedatasourcecreationorigin)|false|none|Where a source created before the move to on-prem was created, e.g. `{"value": 2, "name": "MediaStudio", "original_name": "MEDIA_STUDIO"}`; omitted for on-prem sources.|
 |creation_time|integer|false|none|Creation time, ms since Unix epoch.|
 |id|string|true|none|Source id; also the RTMP stream key.|
-|is_stream_active|boolean|false|none|Whether the source is currently receiving video.|
+|is360|boolean|false|none|Whether the source streams 360° video.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source.|
 |name|string|false|none|Label for the source.|
 |owner_id|integer|false|none|Owner's numeric user id. Exceeds the exact integer range of many JSON parsers.|
-|rtmp_region|string|false|none|Ingest region, e.g. `us-east-1`.|
+|rtmp_region|string|false|none|Ingest region as an AWS region name, e.g. `us-east-1` or `us-west-2`. Accepted as `region` when creating a source.|
 |rtmp_stream_key|string|false|none|Stream key; equal to `id`.|
 |rtmp_url|string|false|none|RTMP ingest URL.|
 |rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
+|video_service|[CreateUserSourceResponseDataSourceVideoService](#schemacreateusersourceresponsedatasourcevideoservice)|false|none|Video service of a source created before the move to on-prem, e.g. `{"value": 0, "name": "Vidman", "original_name": "VIDMAN"}`; omitted for on-prem sources.|
+
+<h2 id="tocS_CreateUserSourceResponseDataSourceCreationOrigin">CreateUserSourceResponseDataSourceCreationOrigin</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateusersourceresponsedatasourcecreationorigin"></a>
+<a id="schema_CreateUserSourceResponseDataSourceCreationOrigin"></a>
+<a id="tocScreateusersourceresponsedatasourcecreationorigin"></a>
+<a id="tocscreateusersourceresponsedatasourcecreationorigin"></a>
+
+```json
+{
+  "name": "string",
+  "original_name": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name, e.g. `PublicApi`.|
+|original_name|string|false|none|Upper-case name, e.g. `PUBLIC_API`.|
+|value|integer|false|none|Numeric value.|
+
+<h2 id="tocS_CreateUserSourceResponseDataSourceVideoService">CreateUserSourceResponseDataSourceVideoService</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateusersourceresponsedatasourcevideoservice"></a>
+<a id="schema_CreateUserSourceResponseDataSourceVideoService"></a>
+<a id="tocScreateusersourceresponsedatasourcevideoservice"></a>
+<a id="tocscreateusersourceresponsedatasourcevideoservice"></a>
+
+```json
+{
+  "name": "string",
+  "original_name": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name, e.g. `PublicApi`.|
+|original_name|string|false|none|Upper-case name, e.g. `PUBLIC_API`.|
+|value|integer|false|none|Numeric value.|
 
 <h2 id="tocS_CreateUsersBookmarkFolderRequest">CreateUsersBookmarkFolderRequest</h2>
 <!-- backwards compatibility -->
@@ -71250,6 +73589,59 @@ At least one of `tweet_id`, `tweet_ids` is required.
 |---|---|---|---|---|
 |deleted|boolean|true|none|Whether the chat message was removed.|
 
+<h2 id="tocS_DeleteBroadcastResponse">DeleteBroadcastResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadeletebroadcastresponse"></a>
+<a id="schema_DeleteBroadcastResponse"></a>
+<a id="tocSdeletebroadcastresponse"></a>
+<a id="tocsdeletebroadcastresponse"></a>
+
+```json
+{
+  "data": {
+    "deleted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[DeleteBroadcastResponseData](#schemadeletebroadcastresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_DeleteBroadcastResponseData">DeleteBroadcastResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemadeletebroadcastresponsedata"></a>
+<a id="schema_DeleteBroadcastResponseData"></a>
+<a id="tocSdeletebroadcastresponsedata"></a>
+<a id="tocsdeletebroadcastresponsedata"></a>
+
+```json
+{
+  "deleted": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deleted|boolean|true|none|Whether the broadcast was deleted.|
+
 <h2 id="tocS_DeleteChatConversationActionSignatures">DeleteChatConversationActionSignatures</h2>
 <!-- backwards compatibility -->
 <a id="schemadeletechatconversationactionsignatures"></a>
@@ -71282,7 +73674,7 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[DeleteChatConversationActionSignaturesMessageEventSignature](#schemadeletechatconversationactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -71375,7 +73767,7 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[DeleteChatConversationMessageTtlActionSignaturesMessageEventSignature](#schemadeletechatconversationmessagettlactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -71472,7 +73864,7 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[DeleteChatConversationMessageTtlActionSignatures](#schemadeletechatconversationmessagettlactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[DeleteChatConversationMessageTtlActionSignatures](#schemadeletechatconversationmessagettlactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_DeleteChatConversationMessageTtlResponse">DeleteChatConversationMessageTtlResponse</h2>
 <!-- backwards compatibility -->
@@ -71563,7 +73955,7 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[DeleteChatConversationActionSignatures](#schemadeletechatconversationactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[DeleteChatConversationActionSignatures](#schemadeletechatconversationactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_DeleteChatConversationResponse">DeleteChatConversationResponse</h2>
 <!-- backwards compatibility -->
@@ -71650,7 +74042,7 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[DeleteChatMessagesActionSignaturesMessageEventSignature](#schemadeletechatmessagesactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -71754,7 +74146,7 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[DeleteChatMessagesActionSignatures](#schemadeletechatmessagesactionsignatures)]|true|none|Cryptographic signatures for the action.|
+|action_signatures|[[DeleteChatMessagesActionSignatures](#schemadeletechatmessagesactionsignatures)]|true|none|Signatures for this action, forwarded in the order they are sent.|
 |delete_message_action|string|true|none|delete_for_all removes the messages for every participant; delete_for_self removes them only from the authenticated user's view.|
 |media_hash_keys|[string]|false|none|Hash keys of encrypted media blobs to delete alongside the messages (delete_for_all only).|
 |sequence_ids|[string]|true|none|Sequence IDs of the messages to delete.|
@@ -72421,7 +74813,9 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 ```json
 {
-  "data": {},
+  "data": {
+    "deleted": true
+  },
   "errors": [
     {
       "detail": "string",
@@ -72450,6 +74844,110 @@ At least one of `tweet_id`, `tweet_ids` is required.
 <a id="schema_DeleteSourceResponseData"></a>
 <a id="tocSdeletesourceresponsedata"></a>
 <a id="tocsdeletesourceresponsedata"></a>
+
+```json
+{
+  "deleted": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deleted|boolean|true|none|Whether the source was deleted.|
+
+<h2 id="tocS_DeleteUserBroadcastResponse">DeleteUserBroadcastResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadeleteuserbroadcastresponse"></a>
+<a id="schema_DeleteUserBroadcastResponse"></a>
+<a id="tocSdeleteuserbroadcastresponse"></a>
+<a id="tocsdeleteuserbroadcastresponse"></a>
+
+```json
+{
+  "data": {
+    "success": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[DeleteUserBroadcastResponseData](#schemadeleteuserbroadcastresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_DeleteUserBroadcastResponseData">DeleteUserBroadcastResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemadeleteuserbroadcastresponsedata"></a>
+<a id="schema_DeleteUserBroadcastResponseData"></a>
+<a id="tocSdeleteuserbroadcastresponsedata"></a>
+<a id="tocsdeleteuserbroadcastresponsedata"></a>
+
+```json
+{
+  "success": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|true|none|Always `true` on success.|
+
+<h2 id="tocS_DeleteUserSourceResponse">DeleteUserSourceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadeleteusersourceresponse"></a>
+<a id="schema_DeleteUserSourceResponse"></a>
+<a id="tocSdeleteusersourceresponse"></a>
+<a id="tocsdeleteusersourceresponse"></a>
+
+```json
+{
+  "data": {},
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[DeleteUserSourceResponseData](#schemadeleteusersourceresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_DeleteUserSourceResponseData">DeleteUserSourceResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemadeleteusersourceresponsedata"></a>
+<a id="schema_DeleteUserSourceResponseData"></a>
+<a id="tocSdeleteusersourceresponsedata"></a>
+<a id="tocsdeleteusersourceresponsedata"></a>
 
 ```json
 {}
@@ -72646,7 +75144,7 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[DisableChatGroupInviteActionSignaturesMessageEventSignature](#schemadisablechatgroupinviteactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -72743,7 +75241,7 @@ At least one of `tweet_id`, `tweet_ids` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[DisableChatGroupInviteActionSignatures](#schemadisablechatgroupinviteactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[DisableChatGroupInviteActionSignatures](#schemadisablechatgroupinviteactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_DisableChatGroupInviteResponse">DisableChatGroupInviteResponse</h2>
 <!-- backwards compatibility -->
@@ -72834,6 +75332,285 @@ At least one of `tweet_id`, `tweet_ids` is required.
 |Property|Value|
 |---|---|
 |type|https://api.x.com/2/problems/disallowed-resource|
+
+<h2 id="tocS_DmBadAttachmentProblem">DmBadAttachmentProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmbadattachmentproblem"></a>
+<a id="schema_DmBadAttachmentProblem"></a>
+<a id="tocSdmbadattachmentproblem"></a>
+<a id="tocsdmbadattachmentproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-bad-attachment"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-bad-attachment|
+
+<h2 id="tocS_DmBadCtaProblem">DmBadCtaProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmbadctaproblem"></a>
+<a id="schema_DmBadCtaProblem"></a>
+<a id="tocSdmbadctaproblem"></a>
+<a id="tocsdmbadctaproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-bad-cta"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-bad-cta|
+
+<h2 id="tocS_DmBadCustomProfileProblem">DmBadCustomProfileProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmbadcustomprofileproblem"></a>
+<a id="schema_DmBadCustomProfileProblem"></a>
+<a id="tocSdmbadcustomprofileproblem"></a>
+<a id="tocsdmbadcustomprofileproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-bad-custom-profile"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-bad-custom-profile|
+
+<h2 id="tocS_DmBadMediaProblem">DmBadMediaProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmbadmediaproblem"></a>
+<a id="schema_DmBadMediaProblem"></a>
+<a id="tocSdmbadmediaproblem"></a>
+<a id="tocsdmbadmediaproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-bad-media"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-bad-media|
+
+<h2 id="tocS_DmBadQuickReplyProblem">DmBadQuickReplyProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmbadquickreplyproblem"></a>
+<a id="schema_DmBadQuickReplyProblem"></a>
+<a id="tocSdmbadquickreplyproblem"></a>
+<a id="tocsdmbadquickreplyproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-bad-quick-reply"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-bad-quick-reply|
+
+<h2 id="tocS_DmBadUrlProblem">DmBadUrlProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmbadurlproblem"></a>
+<a id="schema_DmBadUrlProblem"></a>
+<a id="tocSdmbadurlproblem"></a>
+<a id="tocsdmbadurlproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-bad-url"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-bad-url|
+
+<h2 id="tocS_DmConversationNameTooLongProblem">DmConversationNameTooLongProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmconversationnametoolongproblem"></a>
+<a id="schema_DmConversationNameTooLongProblem"></a>
+<a id="tocSdmconversationnametoolongproblem"></a>
+<a id="tocsdmconversationnametoolongproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-conversation-name-too-long"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-conversation-name-too-long|
+
+<h2 id="tocS_DmConversationNotFoundProblem">DmConversationNotFoundProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmconversationnotfoundproblem"></a>
+<a id="schema_DmConversationNotFoundProblem"></a>
+<a id="tocSdmconversationnotfoundproblem"></a>
+<a id="tocsdmconversationnotfoundproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-conversation-not-found"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-conversation-not-found|
+
+<h2 id="tocS_DmDuplicateProblem">DmDuplicateProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmduplicateproblem"></a>
+<a id="schema_DmDuplicateProblem"></a>
+<a id="tocSdmduplicateproblem"></a>
+<a id="tocsdmduplicateproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-duplicate"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-duplicate|
 
 <h2 id="tocS_DmEvent">DmEvent</h2>
 <!-- backwards compatibility -->
@@ -73013,6 +75790,1060 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 ]
 ```
 
+<h2 id="tocS_DmInactiveDeviceProblem">DmInactiveDeviceProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadminactivedeviceproblem"></a>
+<a id="schema_DmInactiveDeviceProblem"></a>
+<a id="tocSdminactivedeviceproblem"></a>
+<a id="tocsdminactivedeviceproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-inactive-device"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-inactive-device|
+
+<h2 id="tocS_DmNotDeliveredProblem">DmNotDeliveredProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmnotdeliveredproblem"></a>
+<a id="schema_DmNotDeliveredProblem"></a>
+<a id="tocSdmnotdeliveredproblem"></a>
+<a id="tocsdmnotdeliveredproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-not-delivered"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-not-delivered|
+
+<h2 id="tocS_DmNotFoundProblem">DmNotFoundProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmnotfoundproblem"></a>
+<a id="schema_DmNotFoundProblem"></a>
+<a id="tocSdmnotfoundproblem"></a>
+<a id="tocsdmnotfoundproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-not-found"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-not-found|
+
+<h2 id="tocS_DmNotOwnerProblem">DmNotOwnerProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmnotownerproblem"></a>
+<a id="schema_DmNotOwnerProblem"></a>
+<a id="tocSdmnotownerproblem"></a>
+<a id="tocsdmnotownerproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-not-owner"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-not-owner|
+
+<h2 id="tocS_DmParticipantNotAddedProblem">DmParticipantNotAddedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmparticipantnotaddedproblem"></a>
+<a id="schema_DmParticipantNotAddedProblem"></a>
+<a id="tocSdmparticipantnotaddedproblem"></a>
+<a id="tocsdmparticipantnotaddedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-participant-not-added"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-participant-not-added|
+
+<h2 id="tocS_DmParticipantNotFoundProblem">DmParticipantNotFoundProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmparticipantnotfoundproblem"></a>
+<a id="schema_DmParticipantNotFoundProblem"></a>
+<a id="tocSdmparticipantnotfoundproblem"></a>
+<a id="tocsdmparticipantnotfoundproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-participant-not-found"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-participant-not-found|
+
+<h2 id="tocS_DmParticipantRestrictedProblem">DmParticipantRestrictedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmparticipantrestrictedproblem"></a>
+<a id="schema_DmParticipantRestrictedProblem"></a>
+<a id="tocSdmparticipantrestrictedproblem"></a>
+<a id="tocsdmparticipantrestrictedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-participant-restricted"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-participant-restricted|
+
+<h2 id="tocS_DmParticipantUnavailableProblem">DmParticipantUnavailableProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmparticipantunavailableproblem"></a>
+<a id="schema_DmParticipantUnavailableProblem"></a>
+<a id="tocSdmparticipantunavailableproblem"></a>
+<a id="tocsdmparticipantunavailableproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-participant-unavailable"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-participant-unavailable|
+
+<h2 id="tocS_DmRateLimitedProblem">DmRateLimitedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmratelimitedproblem"></a>
+<a id="schema_DmRateLimitedProblem"></a>
+<a id="tocSdmratelimitedproblem"></a>
+<a id="tocsdmratelimitedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-rate-limited"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-rate-limited|
+
+<h2 id="tocS_DmRecipientBlocksSenderProblem">DmRecipientBlocksSenderProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmrecipientblockssenderproblem"></a>
+<a id="schema_DmRecipientBlocksSenderProblem"></a>
+<a id="tocSdmrecipientblockssenderproblem"></a>
+<a id="tocsdmrecipientblockssenderproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-recipient-blocks-sender"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-recipient-blocks-sender|
+
+<h2 id="tocS_DmRecipientCannotReceiveProblem">DmRecipientCannotReceiveProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmrecipientcannotreceiveproblem"></a>
+<a id="schema_DmRecipientCannotReceiveProblem"></a>
+<a id="tocSdmrecipientcannotreceiveproblem"></a>
+<a id="tocsdmrecipientcannotreceiveproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-recipient-cannot-receive"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-recipient-cannot-receive|
+
+<h2 id="tocS_DmRecipientEncryptedUnavailableProblem">DmRecipientEncryptedUnavailableProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmrecipientencryptedunavailableproblem"></a>
+<a id="schema_DmRecipientEncryptedUnavailableProblem"></a>
+<a id="tocSdmrecipientencryptedunavailableproblem"></a>
+<a id="tocsdmrecipientencryptedunavailableproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-recipient-encrypted-unavailable"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-recipient-encrypted-unavailable|
+
+<h2 id="tocS_DmRecipientNotAcceptingProblem">DmRecipientNotAcceptingProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmrecipientnotacceptingproblem"></a>
+<a id="schema_DmRecipientNotAcceptingProblem"></a>
+<a id="tocSdmrecipientnotacceptingproblem"></a>
+<a id="tocsdmrecipientnotacceptingproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-recipient-not-accepting"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-recipient-not-accepting|
+
+<h2 id="tocS_DmRecipientNotFoundProblem">DmRecipientNotFoundProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmrecipientnotfoundproblem"></a>
+<a id="schema_DmRecipientNotFoundProblem"></a>
+<a id="tocSdmrecipientnotfoundproblem"></a>
+<a id="tocsdmrecipientnotfoundproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-recipient-not-found"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-recipient-not-found|
+
+<h2 id="tocS_DmRecipientRestrictsGroupsProblem">DmRecipientRestrictsGroupsProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmrecipientrestrictsgroupsproblem"></a>
+<a id="schema_DmRecipientRestrictsGroupsProblem"></a>
+<a id="tocSdmrecipientrestrictsgroupsproblem"></a>
+<a id="tocsdmrecipientrestrictsgroupsproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-recipient-restricts-groups"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-recipient-restricts-groups|
+
+<h2 id="tocS_DmRecipientUnavailableProblem">DmRecipientUnavailableProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmrecipientunavailableproblem"></a>
+<a id="schema_DmRecipientUnavailableProblem"></a>
+<a id="tocSdmrecipientunavailableproblem"></a>
+<a id="tocsdmrecipientunavailableproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-recipient-unavailable"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-recipient-unavailable|
+
+<h2 id="tocS_DmRequestInProgressProblem">DmRequestInProgressProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmrequestinprogressproblem"></a>
+<a id="schema_DmRequestInProgressProblem"></a>
+<a id="tocSdmrequestinprogressproblem"></a>
+<a id="tocsdmrequestinprogressproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-request-in-progress"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-request-in-progress|
+
+<h2 id="tocS_DmSafetyLimitedProblem">DmSafetyLimitedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsafetylimitedproblem"></a>
+<a id="schema_DmSafetyLimitedProblem"></a>
+<a id="tocSdmsafetylimitedproblem"></a>
+<a id="tocsdmsafetylimitedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-safety-limited"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-safety-limited|
+
+<h2 id="tocS_DmSafetyRejectedProblem">DmSafetyRejectedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsafetyrejectedproblem"></a>
+<a id="schema_DmSafetyRejectedProblem"></a>
+<a id="tocSdmsafetyrejectedproblem"></a>
+<a id="tocsdmsafetyrejectedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-safety-rejected"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-safety-rejected|
+
+<h2 id="tocS_DmSenderBlocksRecipientProblem">DmSenderBlocksRecipientProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsenderblocksrecipientproblem"></a>
+<a id="schema_DmSenderBlocksRecipientProblem"></a>
+<a id="tocSdmsenderblocksrecipientproblem"></a>
+<a id="tocsdmsenderblocksrecipientproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-blocks-recipient"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-blocks-recipient|
+
+<h2 id="tocS_DmSenderDeclinedDmsProblem">DmSenderDeclinedDmsProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsenderdeclineddmsproblem"></a>
+<a id="schema_DmSenderDeclinedDmsProblem"></a>
+<a id="tocSdmsenderdeclineddmsproblem"></a>
+<a id="tocsdmsenderdeclineddmsproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-declined-dms"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-declined-dms|
+
+<h2 id="tocS_DmSenderDmsClosedProblem">DmSenderDmsClosedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsenderdmsclosedproblem"></a>
+<a id="schema_DmSenderDmsClosedProblem"></a>
+<a id="tocSdmsenderdmsclosedproblem"></a>
+<a id="tocsdmsenderdmsclosedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-dms-closed"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-dms-closed|
+
+<h2 id="tocS_DmSenderEncryptedUnavailableProblem">DmSenderEncryptedUnavailableProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsenderencryptedunavailableproblem"></a>
+<a id="schema_DmSenderEncryptedUnavailableProblem"></a>
+<a id="tocSdmsenderencryptedunavailableproblem"></a>
+<a id="tocsdmsenderencryptedunavailableproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-encrypted-unavailable"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-encrypted-unavailable|
+
+<h2 id="tocS_DmSenderNotInConversationProblem">DmSenderNotInConversationProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsendernotinconversationproblem"></a>
+<a id="schema_DmSenderNotInConversationProblem"></a>
+<a id="tocSdmsendernotinconversationproblem"></a>
+<a id="tocsdmsendernotinconversationproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-not-in-conversation"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-not-in-conversation|
+
+<h2 id="tocS_DmSenderNotPermittedProblem">DmSenderNotPermittedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsendernotpermittedproblem"></a>
+<a id="schema_DmSenderNotPermittedProblem"></a>
+<a id="tocSdmsendernotpermittedproblem"></a>
+<a id="tocsdmsendernotpermittedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-not-permitted"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-not-permitted|
+
+<h2 id="tocS_DmSenderNotVerifiedProblem">DmSenderNotVerifiedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsendernotverifiedproblem"></a>
+<a id="schema_DmSenderNotVerifiedProblem"></a>
+<a id="tocSdmsendernotverifiedproblem"></a>
+<a id="tocsdmsendernotverifiedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-not-verified"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-not-verified|
+
+<h2 id="tocS_DmSenderPhoneRequiredProblem">DmSenderPhoneRequiredProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsenderphonerequiredproblem"></a>
+<a id="schema_DmSenderPhoneRequiredProblem"></a>
+<a id="tocSdmsenderphonerequiredproblem"></a>
+<a id="tocsdmsenderphonerequiredproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-phone-required"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-phone-required|
+
+<h2 id="tocS_DmSenderReadOnlyProblem">DmSenderReadOnlyProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsenderreadonlyproblem"></a>
+<a id="schema_DmSenderReadOnlyProblem"></a>
+<a id="tocSdmsenderreadonlyproblem"></a>
+<a id="tocsdmsenderreadonlyproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-read-only"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-read-only|
+
+<h2 id="tocS_DmSenderUnavailableProblem">DmSenderUnavailableProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmsenderunavailableproblem"></a>
+<a id="schema_DmSenderUnavailableProblem"></a>
+<a id="tocSdmsenderunavailableproblem"></a>
+<a id="tocsdmsenderunavailableproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-sender-unavailable"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-sender-unavailable|
+
+<h2 id="tocS_DmTextEmptyProblem">DmTextEmptyProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmtextemptyproblem"></a>
+<a id="schema_DmTextEmptyProblem"></a>
+<a id="tocSdmtextemptyproblem"></a>
+<a id="tocsdmtextemptyproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-text-empty"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-text-empty|
+
+<h2 id="tocS_DmTextTooLongProblem">DmTextTooLongProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmtexttoolongproblem"></a>
+<a id="schema_DmTextTooLongProblem"></a>
+<a id="tocSdmtexttoolongproblem"></a>
+<a id="tocsdmtexttoolongproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-text-too-long"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-text-too-long|
+
+<h2 id="tocS_DmTooFewParticipantsProblem">DmTooFewParticipantsProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmtoofewparticipantsproblem"></a>
+<a id="schema_DmTooFewParticipantsProblem"></a>
+<a id="tocSdmtoofewparticipantsproblem"></a>
+<a id="tocsdmtoofewparticipantsproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-too-few-participants"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-too-few-participants|
+
+<h2 id="tocS_DmTooManyParticipantsProblem">DmTooManyParticipantsProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmtoomanyparticipantsproblem"></a>
+<a id="schema_DmTooManyParticipantsProblem"></a>
+<a id="tocSdmtoomanyparticipantsproblem"></a>
+<a id="tocsdmtoomanyparticipantsproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-too-many-participants"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-too-many-participants|
+
+<h2 id="tocS_DmUnsupportedMessageProblem">DmUnsupportedMessageProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemadmunsupportedmessageproblem"></a>
+<a id="schema_DmUnsupportedMessageProblem"></a>
+<a id="tocSdmunsupportedmessageproblem"></a>
+<a id="tocsdmunsupportedmessageproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/dm-unsupported-message"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/dm-unsupported-message|
+
 <h2 id="tocS_DuplicateRuleProblem">DuplicateRuleProblem</h2>
 <!-- backwards compatibility -->
 <a id="schemaduplicateruleproblem"></a>
@@ -73078,7 +76909,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[EnableChatGroupInviteActionSignaturesMessageEventSignature](#schemaenablechatgroupinviteactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -73182,7 +77013,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[EnableChatGroupInviteActionSignatures](#schemaenablechatgroupinviteactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[EnableChatGroupInviteActionSignatures](#schemaenablechatgroupinviteactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |affiliate_user_id|string|false|none|ID of the affiliate account to associate with the link.|
 |decrypted_avatar_url|string|false|none|Group avatar URL (https) to show on the invite preview.|
 |decrypted_title|string|false|none|Group name to show on the invite preview.|
@@ -78869,6 +82700,484 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[User](#schemauser)]|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+|includes|[Expansions](#schemaexpansions)|false|none|none|
+|meta|object|false|none|none|
+
+<h2 id="tocS_GetChatMutedUsersResponse">GetChatMutedUsersResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetchatmutedusersresponse"></a>
+<a id="schema_GetChatMutedUsersResponse"></a>
+<a id="tocSgetchatmutedusersresponse"></a>
+<a id="tocsgetchatmutedusersresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "end_at_ms": "string",
+      "user_id": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ],
+  "includes": {
+    "calls": [
+      {
+        "conversation_id": "string",
+        "created_at": "string",
+        "host_id": "string",
+        "id": "string",
+        "join_policy": "string",
+        "join_url": "string",
+        "participant_count": 0,
+        "title": "string",
+        "viewer_may_join": true
+      }
+    ],
+    "media": [
+      {
+        "alt_text": "string",
+        "duration_ms": 0,
+        "height": 0,
+        "media_key": "string",
+        "non_public_metrics": {
+          "playback_0_count": 0,
+          "playback_100_count": 0,
+          "playback_25_count": 0,
+          "playback_50_count": 0,
+          "playback_75_count": 0
+        },
+        "organic_metrics": {
+          "playback_0_count": 0,
+          "playback_100_count": 0,
+          "playback_25_count": 0,
+          "playback_50_count": 0,
+          "playback_75_count": 0,
+          "view_count": 0
+        },
+        "preview_image_url": "string",
+        "promoted_metrics": {
+          "playback_0_count": 0,
+          "playback_100_count": 0,
+          "playback_25_count": 0,
+          "playback_50_count": 0,
+          "playback_75_count": 0,
+          "view_count": 0
+        },
+        "public_metrics": {
+          "view_count": 0
+        },
+        "type": "string",
+        "url": "string",
+        "variants": [
+          {
+            "bit_rate": 0,
+            "content_type": "string",
+            "url": "string"
+          }
+        ],
+        "width": 0
+      }
+    ],
+    "places": [
+      {
+        "contained_within": [
+          "string"
+        ],
+        "country": "string",
+        "country_code": "string",
+        "full_name": "string",
+        "geo": {
+          "bbox": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "properties": {},
+          "type": "Feature"
+        },
+        "id": "string",
+        "name": "string",
+        "place_type": "string"
+      }
+    ],
+    "polls": [
+      {
+        "duration_minutes": 0,
+        "end_datetime": "string",
+        "id": "string",
+        "options": [
+          {
+            "label": "string",
+            "position": 0,
+            "votes": 0
+          }
+        ],
+        "voting_status": "string"
+      }
+    ],
+    "posts": [
+      {
+        "article": {},
+        "article_title": {},
+        "attachments": {
+          "media_keys": [
+            "string"
+          ],
+          "media_source_tweet_id": [
+            "string"
+          ],
+          "poll_ids": [
+            "string"
+          ]
+        },
+        "author_id": "string",
+        "card_uri": "string",
+        "community_id": "string",
+        "context_annotations": [
+          {
+            "domain": {
+              "description": "string",
+              "id": "string",
+              "name": "string"
+            },
+            "entity": {
+              "description": "string",
+              "id": "string",
+              "name": "string"
+            }
+          }
+        ],
+        "conversation_id": "string",
+        "created_at": "1970-01-01T00:00:00Z",
+        "display_text_range": [
+          0,
+          0
+        ],
+        "edit_controls": {
+          "editable_until": "string",
+          "edits_remaining": 0,
+          "is_edit_eligible": true
+        },
+        "edit_history_post_ids": [
+          "string"
+        ],
+        "entities": {
+          "cashtags": [
+            {
+              "end": 0,
+              "start": 0,
+              "tag": "string"
+            }
+          ],
+          "hashtags": [
+            {
+              "end": 0,
+              "start": 0,
+              "tag": "string"
+            }
+          ],
+          "mentions": [
+            {
+              "end": 0,
+              "id": "string",
+              "start": 0,
+              "username": "string"
+            }
+          ],
+          "urls": [
+            {
+              "description": "string",
+              "display_url": "string",
+              "end": 0,
+              "expanded_url": "string",
+              "images": [
+                {
+                  "height": 0,
+                  "url": "string",
+                  "width": 0
+                }
+              ],
+              "media_key": "string",
+              "start": 0,
+              "status": 0,
+              "title": "string",
+              "unwound_url": "string",
+              "url": "string"
+            }
+          ]
+        },
+        "geo": {
+          "coordinates": {
+            "coordinates": [
+              0,
+              0
+            ],
+            "type": "Point"
+          },
+          "place_id": "string"
+        },
+        "id": "string",
+        "in_reply_to_user_id": "string",
+        "lang": "string",
+        "matched_media_notes": [
+          {
+            "match_status": "string",
+            "note_id": "string"
+          }
+        ],
+        "media_metadata": [
+          {
+            "alt_text": "string",
+            "description": "string",
+            "media_key": "string",
+            "title": "string"
+          }
+        ],
+        "non_public_metrics": {},
+        "note_post": {
+          "entities": {
+            "cashtags": [
+              {
+                "end": 0,
+                "start": 0,
+                "tag": "string"
+              }
+            ],
+            "hashtags": [
+              {
+                "end": 0,
+                "start": 0,
+                "tag": "string"
+              }
+            ],
+            "mentions": [
+              {
+                "end": 0,
+                "id": "string",
+                "start": 0,
+                "username": "string"
+              }
+            ],
+            "urls": [
+              {
+                "display_url": "string",
+                "end": 0,
+                "expanded_url": "string",
+                "start": 0,
+                "url": "string"
+              }
+            ]
+          },
+          "text": "string"
+        },
+        "note_request_suggestions": [
+          {
+            "source_link": "string",
+            "suggestion": "string",
+            "suggestion_id": "string"
+          }
+        ],
+        "organic_metrics": {},
+        "paid_partnership": true,
+        "possibly_sensitive": true,
+        "promoted_metrics": {},
+        "public_metrics": {
+          "bookmark_count": 0,
+          "impression_count": 0,
+          "like_count": 0,
+          "quote_count": 0,
+          "reply_count": 0,
+          "repost_count": 0
+        },
+        "referenced_posts": [
+          {
+            "id": "string",
+            "type": "retweeted"
+          }
+        ],
+        "reply_settings": "string",
+        "scopes": {
+          "followers": true
+        },
+        "source": "string",
+        "suggested_source_links": [
+          "string"
+        ],
+        "suggested_source_links_with_counts": [
+          {
+            "count": 0,
+            "url": "string"
+          }
+        ],
+        "text": "string",
+        "username": "string",
+        "withheld": {
+          "copyright": true,
+          "country_codes": [
+            "string"
+          ],
+          "scope": "post"
+        }
+      }
+    ],
+    "topics": [
+      {
+        "description": "string",
+        "id": "string",
+        "name": "string"
+      }
+    ],
+    "users": [
+      {
+        "active_follower_count": 0,
+        "affiliation": {
+          "badge_url": "string",
+          "description": "string",
+          "url": "string",
+          "user_id": [
+            "string"
+          ]
+        },
+        "confirmed_email": "string",
+        "connection_status": [
+          "blocking"
+        ],
+        "created_at": "1970-01-01T00:00:00Z",
+        "description": "string",
+        "entities": {
+          "description": {
+            "cashtags": [
+              {
+                "end": 0,
+                "start": 0,
+                "tag": "string"
+              }
+            ],
+            "hashtags": [
+              {
+                "end": 0,
+                "start": 0,
+                "tag": "string"
+              }
+            ],
+            "mentions": [
+              {
+                "end": 0,
+                "id": "string",
+                "start": 0,
+                "username": "string"
+              }
+            ],
+            "urls": [
+              {
+                "description": "string",
+                "display_url": "string",
+                "end": 0,
+                "expanded_url": "string",
+                "images": [
+                  {
+                    "height": 0,
+                    "url": "string",
+                    "width": 0
+                  }
+                ],
+                "media_key": "string",
+                "start": 0,
+                "status": 0,
+                "title": "string",
+                "unwound_url": "string",
+                "url": "string"
+              }
+            ]
+          },
+          "url": {
+            "urls": [
+              {
+                "description": "string",
+                "display_url": "string",
+                "end": 0,
+                "expanded_url": "string",
+                "images": [
+                  {
+                    "height": 0,
+                    "url": "string",
+                    "width": 0
+                  }
+                ],
+                "media_key": "string",
+                "start": 0,
+                "status": 0,
+                "title": "string",
+                "unwound_url": "string",
+                "url": "string"
+              }
+            ]
+          }
+        },
+        "id": "string",
+        "is_identity_verified": true,
+        "location": "string",
+        "most_recent_post_id": "string",
+        "name": "string",
+        "parody": true,
+        "pinned_post_id": "string",
+        "profile_banner_url": "string",
+        "profile_image_url": "string",
+        "protected": true,
+        "public_metrics": {
+          "followers_count": 0,
+          "following_count": 0,
+          "like_count": 0,
+          "listed_count": 0,
+          "media_count": 0,
+          "post_count": 0
+        },
+        "receives_your_dm": true,
+        "subscriber_count": 0,
+        "subscribes_to_you": true,
+        "subscription": {
+          "subscribes_to_you": true
+        },
+        "subscription_type": "string",
+        "url": "string",
+        "username": "string",
+        "verified": true,
+        "verified_followers_count": 0,
+        "verified_type": "string",
+        "withheld": {
+          "country_codes": [
+            "string"
+          ],
+          "scope": "user"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "next_token": "string",
+    "result_count": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[BroadcastChatMute](#schemabroadcastchatmute)]|false|none|none|
 |errors|[[Problem](#schemaproblem)]|false|none|none|
 |includes|[Expansions](#schemaexpansions)|false|none|none|
 |meta|object|false|none|none|
@@ -88158,6 +92467,32 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |includes|[Expansions](#schemaexpansions)|false|none|none|
 |meta|object|false|none|none|
 
+<h2 id="tocS_GetRegionResponse">GetRegionResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetregionresponse"></a>
+<a id="schema_GetRegionResponse"></a>
+<a id="tocSgetregionresponse"></a>
+<a id="tocsgetregionresponse"></a>
+
+```json
+{
+  "region": "us-east-1"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|region|string|true|none|Ingest region. Pass it as `region` when creating a stream source.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|region|us-east-1|
+|region|us-west-2|
+
 <h2 id="tocS_GetRuleCountsResponse">GetRuleCountsResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemagetrulecountsresponse"></a>
@@ -88940,17 +93275,14 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 ```json
 {
   "data": {
-    "source": {
-      "creation_time": 0,
-      "id": "string",
-      "is_stream_active": true,
-      "name": "string",
-      "owner_id": 0,
-      "rtmp_region": "string",
-      "rtmp_stream_key": "string",
-      "rtmp_url": "string",
-      "rtmps_url": "string"
-    }
+    "created_at_ms": "string",
+    "id": "string",
+    "is_stream_active": true,
+    "name": "string",
+    "region": "string",
+    "rtmp_url": "string",
+    "rtmps_url": "string",
+    "stream_key": "string"
   },
   "errors": [
     {
@@ -88983,44 +93315,14 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 
 ```json
 {
-  "source": {
-    "creation_time": 0,
-    "id": "string",
-    "is_stream_active": true,
-    "name": "string",
-    "owner_id": 0,
-    "rtmp_region": "string",
-    "rtmp_stream_key": "string",
-    "rtmp_url": "string",
-    "rtmps_url": "string"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|source|[GetSourceResponseDataSource](#schemagetsourceresponsedatasource)|true|none|none|
-
-<h2 id="tocS_GetSourceResponseDataSource">GetSourceResponseDataSource</h2>
-<!-- backwards compatibility -->
-<a id="schemagetsourceresponsedatasource"></a>
-<a id="schema_GetSourceResponseDataSource"></a>
-<a id="tocSgetsourceresponsedatasource"></a>
-<a id="tocsgetsourceresponsedatasource"></a>
-
-```json
-{
-  "creation_time": 0,
+  "created_at_ms": "string",
   "id": "string",
   "is_stream_active": true,
   "name": "string",
-  "owner_id": 0,
-  "rtmp_region": "string",
-  "rtmp_stream_key": "string",
+  "region": "string",
   "rtmp_url": "string",
-  "rtmps_url": "string"
+  "rtmps_url": "string",
+  "stream_key": "string"
 }
 ```
 
@@ -89028,15 +93330,14 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|creation_time|integer|false|none|Creation time, ms since Unix epoch.|
-|id|string|true|none|Source id; also the RTMP stream key.|
-|is_stream_active|boolean|false|none|Whether the source is currently receiving video.|
+|created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
+|id|string|true|none|Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.|
 |name|string|false|none|Label for the source.|
-|owner_id|integer|false|none|Owner's numeric user id. Exceeds the exact integer range of many JSON parsers.|
-|rtmp_region|string|false|none|Ingest region, e.g. `us-east-1`.|
-|rtmp_stream_key|string|false|none|Stream key; equal to `id`.|
+|region|string|false|none|Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.|
 |rtmp_url|string|false|none|RTMP ingest URL.|
 |rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
+|stream_key|string|false|none|RTMP stream key.|
 
 <h2 id="tocS_GetSpacesBuyersResponse">GetSpacesBuyersResponse</h2>
 <!-- backwards compatibility -->
@@ -92030,6 +96331,368 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |---|---|---|---|---|
 |data|[Usage](#schemausage)|false|none|none|
 |errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetUserBroadcastResponse">GetUserBroadcastResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetuserbroadcastresponse"></a>
+<a id="schema_GetUserBroadcastResponse"></a>
+<a id="tocSgetuserbroadcastresponse"></a>
+<a id="tocsgetuserbroadcastresponse"></a>
+
+```json
+{
+  "data": {
+    "broadcast": {
+      "available_for_replay": true,
+      "broadcast_id": "string",
+      "chat_option": 0,
+      "created_at_ms": "string",
+      "end_ms": "string",
+      "height": 0,
+      "id": "string",
+      "image_url": "string",
+      "image_url_medium": "string",
+      "image_url_small": "string",
+      "is_high_latency": true,
+      "language": "string",
+      "media_id": "string",
+      "media_key": "string",
+      "scheduled_end_ms": "string",
+      "scheduled_start_ms": "string",
+      "start_ms": "string",
+      "state": "string",
+      "status": "string",
+      "total_watched": "string",
+      "total_watching": "string",
+      "tweet_id": "string",
+      "twitter_user_id": "string",
+      "updated_at_ms": "string",
+      "width": 0
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[GetUserBroadcastResponseData](#schemagetuserbroadcastresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetUserBroadcastResponseData">GetUserBroadcastResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemagetuserbroadcastresponsedata"></a>
+<a id="schema_GetUserBroadcastResponseData"></a>
+<a id="tocSgetuserbroadcastresponsedata"></a>
+<a id="tocsgetuserbroadcastresponsedata"></a>
+
+```json
+{
+  "broadcast": {
+    "available_for_replay": true,
+    "broadcast_id": "string",
+    "chat_option": 0,
+    "created_at_ms": "string",
+    "end_ms": "string",
+    "height": 0,
+    "id": "string",
+    "image_url": "string",
+    "image_url_medium": "string",
+    "image_url_small": "string",
+    "is_high_latency": true,
+    "language": "string",
+    "media_id": "string",
+    "media_key": "string",
+    "scheduled_end_ms": "string",
+    "scheduled_start_ms": "string",
+    "start_ms": "string",
+    "state": "string",
+    "status": "string",
+    "total_watched": "string",
+    "total_watching": "string",
+    "tweet_id": "string",
+    "twitter_user_id": "string",
+    "updated_at_ms": "string",
+    "width": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|broadcast|[GetUserBroadcastResponseDataBroadcast](#schemagetuserbroadcastresponsedatabroadcast)|true|none|none|
+
+<h2 id="tocS_GetUserBroadcastResponseDataBroadcast">GetUserBroadcastResponseDataBroadcast</h2>
+<!-- backwards compatibility -->
+<a id="schemagetuserbroadcastresponsedatabroadcast"></a>
+<a id="schema_GetUserBroadcastResponseDataBroadcast"></a>
+<a id="tocSgetuserbroadcastresponsedatabroadcast"></a>
+<a id="tocsgetuserbroadcastresponsedatabroadcast"></a>
+
+```json
+{
+  "available_for_replay": true,
+  "broadcast_id": "string",
+  "chat_option": 0,
+  "created_at_ms": "string",
+  "end_ms": "string",
+  "height": 0,
+  "id": "string",
+  "image_url": "string",
+  "image_url_medium": "string",
+  "image_url_small": "string",
+  "is_high_latency": true,
+  "language": "string",
+  "media_id": "string",
+  "media_key": "string",
+  "scheduled_end_ms": "string",
+  "scheduled_start_ms": "string",
+  "start_ms": "string",
+  "state": "string",
+  "status": "string",
+  "total_watched": "string",
+  "total_watching": "string",
+  "tweet_id": "string",
+  "twitter_user_id": "string",
+  "updated_at_ms": "string",
+  "width": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available_for_replay|boolean|false|none|Whether a replay is available.|
+|broadcast_id|string|false|none|Broadcast id.|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
+|end_ms|string|false|none|End time, milliseconds since Unix epoch (decimal string).|
+|height|integer|false|none|Video height in pixels.|
+|id|string|true|none|Broadcast id; equal to `broadcast_id`.|
+|image_url|string|false|none|Thumbnail URL.|
+|image_url_medium|string|false|none|Medium thumbnail URL.|
+|image_url_small|string|false|none|Small thumbnail URL.|
+|is_high_latency|boolean|false|none|Whether the broadcast is high latency.|
+|language|string|false|none|Broadcast language.|
+|media_id|string|false|none|Numeric media id from `media_key`.|
+|media_key|string|false|none|Media key of the broadcast's video.|
+|scheduled_end_ms|string|false|none|Scheduled end time, milliseconds since Unix epoch (decimal string).|
+|scheduled_start_ms|string|false|none|Scheduled start time, milliseconds since Unix epoch (decimal string).|
+|start_ms|string|false|none|Start time, milliseconds since Unix epoch (decimal string).|
+|state|string|false|none|`NOT_STARTED`, `RUNNING`, `TIMED_OUT`, `ENDED`, `PRE_PUBLISHED` or `CANCELED`.|
+|status|string|false|none|Broadcast title.|
+|total_watched|string|false|none|Total viewers (decimal string).|
+|total_watching|string|false|none|Current viewers (decimal string).|
+|tweet_id|string|false|none|Id of the Post announcing the broadcast.|
+|twitter_user_id|string|false|none|Owner's user id.|
+|updated_at_ms|string|false|none|Last update time, milliseconds since Unix epoch (decimal string).|
+|width|integer|false|none|Video width in pixels.|
+
+<h2 id="tocS_GetUserSourceResponse">GetUserSourceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetusersourceresponse"></a>
+<a id="schema_GetUserSourceResponse"></a>
+<a id="tocSgetusersourceresponse"></a>
+<a id="tocsgetusersourceresponse"></a>
+
+```json
+{
+  "data": {
+    "source": {
+      "creation_origin": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      },
+      "creation_time": 0,
+      "id": "string",
+      "is360": true,
+      "is_stream_active": true,
+      "name": "string",
+      "owner_id": 0,
+      "rtmp_region": "string",
+      "rtmp_stream_key": "string",
+      "rtmp_url": "string",
+      "rtmps_url": "string",
+      "video_service": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      }
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[GetUserSourceResponseData](#schemagetusersourceresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetUserSourceResponseData">GetUserSourceResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemagetusersourceresponsedata"></a>
+<a id="schema_GetUserSourceResponseData"></a>
+<a id="tocSgetusersourceresponsedata"></a>
+<a id="tocsgetusersourceresponsedata"></a>
+
+```json
+{
+  "source": {
+    "creation_origin": {
+      "name": "string",
+      "original_name": "string",
+      "value": 0
+    },
+    "creation_time": 0,
+    "id": "string",
+    "is360": true,
+    "is_stream_active": true,
+    "name": "string",
+    "owner_id": 0,
+    "rtmp_region": "string",
+    "rtmp_stream_key": "string",
+    "rtmp_url": "string",
+    "rtmps_url": "string",
+    "video_service": {
+      "name": "string",
+      "original_name": "string",
+      "value": 0
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|source|[GetUserSourceResponseDataSource](#schemagetusersourceresponsedatasource)|true|none|none|
+
+<h2 id="tocS_GetUserSourceResponseDataSource">GetUserSourceResponseDataSource</h2>
+<!-- backwards compatibility -->
+<a id="schemagetusersourceresponsedatasource"></a>
+<a id="schema_GetUserSourceResponseDataSource"></a>
+<a id="tocSgetusersourceresponsedatasource"></a>
+<a id="tocsgetusersourceresponsedatasource"></a>
+
+```json
+{
+  "creation_origin": {
+    "name": "string",
+    "original_name": "string",
+    "value": 0
+  },
+  "creation_time": 0,
+  "id": "string",
+  "is360": true,
+  "is_stream_active": true,
+  "name": "string",
+  "owner_id": 0,
+  "rtmp_region": "string",
+  "rtmp_stream_key": "string",
+  "rtmp_url": "string",
+  "rtmps_url": "string",
+  "video_service": {
+    "name": "string",
+    "original_name": "string",
+    "value": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|creation_origin|[GetUserSourceResponseDataSourceCreationOrigin](#schemagetusersourceresponsedatasourcecreationorigin)|false|none|Where a source created before the move to on-prem was created, e.g. `{"value": 2, "name": "MediaStudio", "original_name": "MEDIA_STUDIO"}`; omitted for on-prem sources.|
+|creation_time|integer|false|none|Creation time, ms since Unix epoch.|
+|id|string|true|none|Source id; also the RTMP stream key.|
+|is360|boolean|false|none|Whether the source streams 360° video.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source.|
+|name|string|false|none|Label for the source.|
+|owner_id|integer|false|none|Owner's numeric user id. Exceeds the exact integer range of many JSON parsers.|
+|rtmp_region|string|false|none|Ingest region as an AWS region name, e.g. `us-east-1` or `us-west-2`. Accepted as `region` when creating a source.|
+|rtmp_stream_key|string|false|none|Stream key; equal to `id`.|
+|rtmp_url|string|false|none|RTMP ingest URL.|
+|rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
+|video_service|[GetUserSourceResponseDataSourceVideoService](#schemagetusersourceresponsedatasourcevideoservice)|false|none|Video service of a source created before the move to on-prem, e.g. `{"value": 0, "name": "Vidman", "original_name": "VIDMAN"}`; omitted for on-prem sources.|
+
+<h2 id="tocS_GetUserSourceResponseDataSourceCreationOrigin">GetUserSourceResponseDataSourceCreationOrigin</h2>
+<!-- backwards compatibility -->
+<a id="schemagetusersourceresponsedatasourcecreationorigin"></a>
+<a id="schema_GetUserSourceResponseDataSourceCreationOrigin"></a>
+<a id="tocSgetusersourceresponsedatasourcecreationorigin"></a>
+<a id="tocsgetusersourceresponsedatasourcecreationorigin"></a>
+
+```json
+{
+  "name": "string",
+  "original_name": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name, e.g. `PublicApi`.|
+|original_name|string|false|none|Upper-case name, e.g. `PUBLIC_API`.|
+|value|integer|false|none|Numeric value.|
+
+<h2 id="tocS_GetUserSourceResponseDataSourceVideoService">GetUserSourceResponseDataSourceVideoService</h2>
+<!-- backwards compatibility -->
+<a id="schemagetusersourceresponsedatasourcevideoservice"></a>
+<a id="schema_GetUserSourceResponseDataSourceVideoService"></a>
+<a id="tocSgetusersourceresponsedatasourcevideoservice"></a>
+<a id="tocsgetusersourceresponsedatasourcevideoservice"></a>
+
+```json
+{
+  "name": "string",
+  "original_name": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name, e.g. `PublicApi`.|
+|original_name|string|false|none|Upper-case name, e.g. `PUBLIC_API`.|
+|value|integer|false|none|Numeric value.|
 
 <h2 id="tocS_GetUsersAffiliatesResponse">GetUsersAffiliatesResponse</h2>
 <!-- backwards compatibility -->
@@ -107062,18 +111725,311 @@ The number of members in this List.
 
 ```json
 {
+  "data": [
+    {
+      "created_at_ms": "string",
+      "id": "string",
+      "is_stream_active": true,
+      "name": "string",
+      "region": "string",
+      "rtmp_url": "string",
+      "rtmps_url": "string",
+      "stream_key": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ],
+  "meta": {
+    "result_count": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[ListSourcesResponseData](#schemalistsourcesresponsedata)]|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+|meta|object|false|none|none|
+
+<h2 id="tocS_ListSourcesResponseData">ListSourcesResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemalistsourcesresponsedata"></a>
+<a id="schema_ListSourcesResponseData"></a>
+<a id="tocSlistsourcesresponsedata"></a>
+<a id="tocslistsourcesresponsedata"></a>
+
+```json
+{
+  "created_at_ms": "string",
+  "id": "string",
+  "is_stream_active": true,
+  "name": "string",
+  "region": "string",
+  "rtmp_url": "string",
+  "rtmps_url": "string",
+  "stream_key": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
+|id|string|true|none|Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.|
+|name|string|false|none|Label for the source.|
+|region|string|false|none|Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.|
+|rtmp_url|string|false|none|RTMP ingest URL.|
+|rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
+|stream_key|string|false|none|RTMP stream key.|
+
+<h2 id="tocS_ListUserBroadcastsResponse">ListUserBroadcastsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistuserbroadcastsresponse"></a>
+<a id="schema_ListUserBroadcastsResponse"></a>
+<a id="tocSlistuserbroadcastsresponse"></a>
+<a id="tocslistuserbroadcastsresponse"></a>
+
+```json
+{
+  "data": {
+    "broadcasts": [
+      {
+        "available_for_replay": true,
+        "broadcast_id": "string",
+        "chat_option": 0,
+        "created_at_ms": "string",
+        "end_ms": "string",
+        "height": 0,
+        "id": "string",
+        "image_url": "string",
+        "image_url_medium": "string",
+        "image_url_small": "string",
+        "is_high_latency": true,
+        "language": "string",
+        "media_id": "string",
+        "media_key": "string",
+        "scheduled_end_ms": "string",
+        "scheduled_start_ms": "string",
+        "start_ms": "string",
+        "state": "string",
+        "status": "string",
+        "total_watched": "string",
+        "total_watching": "string",
+        "tweet_id": "string",
+        "twitter_user_id": "string",
+        "updated_at_ms": "string",
+        "width": 0
+      }
+    ],
+    "next_token": {
+      "offset": "string"
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[ListUserBroadcastsResponseData](#schemalistuserbroadcastsresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_ListUserBroadcastsResponseData">ListUserBroadcastsResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemalistuserbroadcastsresponsedata"></a>
+<a id="schema_ListUserBroadcastsResponseData"></a>
+<a id="tocSlistuserbroadcastsresponsedata"></a>
+<a id="tocslistuserbroadcastsresponsedata"></a>
+
+```json
+{
+  "broadcasts": [
+    {
+      "available_for_replay": true,
+      "broadcast_id": "string",
+      "chat_option": 0,
+      "created_at_ms": "string",
+      "end_ms": "string",
+      "height": 0,
+      "id": "string",
+      "image_url": "string",
+      "image_url_medium": "string",
+      "image_url_small": "string",
+      "is_high_latency": true,
+      "language": "string",
+      "media_id": "string",
+      "media_key": "string",
+      "scheduled_end_ms": "string",
+      "scheduled_start_ms": "string",
+      "start_ms": "string",
+      "state": "string",
+      "status": "string",
+      "total_watched": "string",
+      "total_watching": "string",
+      "tweet_id": "string",
+      "twitter_user_id": "string",
+      "updated_at_ms": "string",
+      "width": 0
+    }
+  ],
+  "next_token": {
+    "offset": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|broadcasts|[[ListUserBroadcastsResponseDataBroadcasts](#schemalistuserbroadcastsresponsedatabroadcasts)]|true|none|none|
+|next_token|[ListUserBroadcastsResponseDataNextToken](#schemalistuserbroadcastsresponsedatanexttoken)|false|none|none|
+
+<h2 id="tocS_ListUserBroadcastsResponseDataBroadcasts">ListUserBroadcastsResponseDataBroadcasts</h2>
+<!-- backwards compatibility -->
+<a id="schemalistuserbroadcastsresponsedatabroadcasts"></a>
+<a id="schema_ListUserBroadcastsResponseDataBroadcasts"></a>
+<a id="tocSlistuserbroadcastsresponsedatabroadcasts"></a>
+<a id="tocslistuserbroadcastsresponsedatabroadcasts"></a>
+
+```json
+{
+  "available_for_replay": true,
+  "broadcast_id": "string",
+  "chat_option": 0,
+  "created_at_ms": "string",
+  "end_ms": "string",
+  "height": 0,
+  "id": "string",
+  "image_url": "string",
+  "image_url_medium": "string",
+  "image_url_small": "string",
+  "is_high_latency": true,
+  "language": "string",
+  "media_id": "string",
+  "media_key": "string",
+  "scheduled_end_ms": "string",
+  "scheduled_start_ms": "string",
+  "start_ms": "string",
+  "state": "string",
+  "status": "string",
+  "total_watched": "string",
+  "total_watching": "string",
+  "tweet_id": "string",
+  "twitter_user_id": "string",
+  "updated_at_ms": "string",
+  "width": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available_for_replay|boolean|false|none|Whether a replay is available.|
+|broadcast_id|string|false|none|Broadcast id.|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
+|end_ms|string|false|none|End time, milliseconds since Unix epoch (decimal string).|
+|height|integer|false|none|Video height in pixels.|
+|id|string|true|none|Broadcast id; equal to `broadcast_id`.|
+|image_url|string|false|none|Thumbnail URL.|
+|image_url_medium|string|false|none|Medium thumbnail URL.|
+|image_url_small|string|false|none|Small thumbnail URL.|
+|is_high_latency|boolean|false|none|Whether the broadcast is high latency.|
+|language|string|false|none|Broadcast language.|
+|media_id|string|false|none|Numeric media id from `media_key`.|
+|media_key|string|false|none|Media key of the broadcast's video.|
+|scheduled_end_ms|string|false|none|Scheduled end time, milliseconds since Unix epoch (decimal string).|
+|scheduled_start_ms|string|false|none|Scheduled start time, milliseconds since Unix epoch (decimal string).|
+|start_ms|string|false|none|Start time, milliseconds since Unix epoch (decimal string).|
+|state|string|false|none|`NOT_STARTED`, `RUNNING`, `TIMED_OUT`, `ENDED`, `PRE_PUBLISHED` or `CANCELED`.|
+|status|string|false|none|Broadcast title.|
+|total_watched|string|false|none|Total viewers (decimal string).|
+|total_watching|string|false|none|Current viewers (decimal string).|
+|tweet_id|string|false|none|Id of the Post announcing the broadcast.|
+|twitter_user_id|string|false|none|Owner's user id.|
+|updated_at_ms|string|false|none|Last update time, milliseconds since Unix epoch (decimal string).|
+|width|integer|false|none|Video width in pixels.|
+
+<h2 id="tocS_ListUserBroadcastsResponseDataNextToken">ListUserBroadcastsResponseDataNextToken</h2>
+<!-- backwards compatibility -->
+<a id="schemalistuserbroadcastsresponsedatanexttoken"></a>
+<a id="schema_ListUserBroadcastsResponseDataNextToken"></a>
+<a id="tocSlistuserbroadcastsresponsedatanexttoken"></a>
+<a id="tocslistuserbroadcastsresponsedatanexttoken"></a>
+
+```json
+{
+  "offset": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|offset|string|true|none|Pass as `pagination_token` to read the next page.|
+
+<h2 id="tocS_ListUserSourcesResponse">ListUserSourcesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistusersourcesresponse"></a>
+<a id="schema_ListUserSourcesResponse"></a>
+<a id="tocSlistusersourcesresponse"></a>
+<a id="tocslistusersourcesresponse"></a>
+
+```json
+{
   "data": {
     "sources": [
       {
+        "creation_origin": {
+          "name": "string",
+          "original_name": "string",
+          "value": 0
+        },
         "creation_time": 0,
         "id": "string",
+        "is360": true,
         "is_stream_active": true,
         "name": "string",
         "owner_id": 0,
         "rtmp_region": "string",
         "rtmp_stream_key": "string",
         "rtmp_url": "string",
-        "rtmps_url": "string"
+        "rtmps_url": "string",
+        "video_service": {
+          "name": "string",
+          "original_name": "string",
+          "value": 0
+        }
       }
     ]
   },
@@ -107096,29 +112052,40 @@ The number of members in this List.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|data|[ListSourcesResponseData](#schemalistsourcesresponsedata)|false|none|none|
+|data|[ListUserSourcesResponseData](#schemalistusersourcesresponsedata)|false|none|none|
 |errors|[[Problem](#schemaproblem)]|false|none|none|
 
-<h2 id="tocS_ListSourcesResponseData">ListSourcesResponseData</h2>
+<h2 id="tocS_ListUserSourcesResponseData">ListUserSourcesResponseData</h2>
 <!-- backwards compatibility -->
-<a id="schemalistsourcesresponsedata"></a>
-<a id="schema_ListSourcesResponseData"></a>
-<a id="tocSlistsourcesresponsedata"></a>
-<a id="tocslistsourcesresponsedata"></a>
+<a id="schemalistusersourcesresponsedata"></a>
+<a id="schema_ListUserSourcesResponseData"></a>
+<a id="tocSlistusersourcesresponsedata"></a>
+<a id="tocslistusersourcesresponsedata"></a>
 
 ```json
 {
   "sources": [
     {
+      "creation_origin": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      },
       "creation_time": 0,
       "id": "string",
+      "is360": true,
       "is_stream_active": true,
       "name": "string",
       "owner_id": 0,
       "rtmp_region": "string",
       "rtmp_stream_key": "string",
       "rtmp_url": "string",
-      "rtmps_url": "string"
+      "rtmps_url": "string",
+      "video_service": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      }
     }
   ]
 }
@@ -107128,26 +112095,37 @@ The number of members in this List.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|sources|[[ListSourcesResponseDataSources](#schemalistsourcesresponsedatasources)]|true|none|none|
+|sources|[[ListUserSourcesResponseDataSources](#schemalistusersourcesresponsedatasources)]|true|none|none|
 
-<h2 id="tocS_ListSourcesResponseDataSources">ListSourcesResponseDataSources</h2>
+<h2 id="tocS_ListUserSourcesResponseDataSources">ListUserSourcesResponseDataSources</h2>
 <!-- backwards compatibility -->
-<a id="schemalistsourcesresponsedatasources"></a>
-<a id="schema_ListSourcesResponseDataSources"></a>
-<a id="tocSlistsourcesresponsedatasources"></a>
-<a id="tocslistsourcesresponsedatasources"></a>
+<a id="schemalistusersourcesresponsedatasources"></a>
+<a id="schema_ListUserSourcesResponseDataSources"></a>
+<a id="tocSlistusersourcesresponsedatasources"></a>
+<a id="tocslistusersourcesresponsedatasources"></a>
 
 ```json
 {
+  "creation_origin": {
+    "name": "string",
+    "original_name": "string",
+    "value": 0
+  },
   "creation_time": 0,
   "id": "string",
+  "is360": true,
   "is_stream_active": true,
   "name": "string",
   "owner_id": 0,
   "rtmp_region": "string",
   "rtmp_stream_key": "string",
   "rtmp_url": "string",
-  "rtmps_url": "string"
+  "rtmps_url": "string",
+  "video_service": {
+    "name": "string",
+    "original_name": "string",
+    "value": 0
+  }
 }
 ```
 
@@ -107155,15 +112133,64 @@ The number of members in this List.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|creation_origin|[ListUserSourcesResponseDataSourcesCreationOrigin](#schemalistusersourcesresponsedatasourcescreationorigin)|false|none|Where a source created before the move to on-prem was created, e.g. `{"value": 2, "name": "MediaStudio", "original_name": "MEDIA_STUDIO"}`; omitted for on-prem sources.|
 |creation_time|integer|false|none|Creation time, ms since Unix epoch.|
 |id|string|true|none|Source id; also the RTMP stream key.|
-|is_stream_active|boolean|false|none|Whether the source is currently receiving video.|
+|is360|boolean|false|none|Whether the source streams 360° video.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source.|
 |name|string|false|none|Label for the source.|
 |owner_id|integer|false|none|Owner's numeric user id. Exceeds the exact integer range of many JSON parsers.|
-|rtmp_region|string|false|none|Ingest region, e.g. `us-east-1`.|
+|rtmp_region|string|false|none|Ingest region as an AWS region name, e.g. `us-east-1` or `us-west-2`. Accepted as `region` when creating a source.|
 |rtmp_stream_key|string|false|none|Stream key; equal to `id`.|
 |rtmp_url|string|false|none|RTMP ingest URL.|
 |rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
+|video_service|[ListUserSourcesResponseDataSourcesVideoService](#schemalistusersourcesresponsedatasourcesvideoservice)|false|none|Video service of a source created before the move to on-prem, e.g. `{"value": 0, "name": "Vidman", "original_name": "VIDMAN"}`; omitted for on-prem sources.|
+
+<h2 id="tocS_ListUserSourcesResponseDataSourcesCreationOrigin">ListUserSourcesResponseDataSourcesCreationOrigin</h2>
+<!-- backwards compatibility -->
+<a id="schemalistusersourcesresponsedatasourcescreationorigin"></a>
+<a id="schema_ListUserSourcesResponseDataSourcesCreationOrigin"></a>
+<a id="tocSlistusersourcesresponsedatasourcescreationorigin"></a>
+<a id="tocslistusersourcesresponsedatasourcescreationorigin"></a>
+
+```json
+{
+  "name": "string",
+  "original_name": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name, e.g. `PublicApi`.|
+|original_name|string|false|none|Upper-case name, e.g. `PUBLIC_API`.|
+|value|integer|false|none|Numeric value.|
+
+<h2 id="tocS_ListUserSourcesResponseDataSourcesVideoService">ListUserSourcesResponseDataSourcesVideoService</h2>
+<!-- backwards compatibility -->
+<a id="schemalistusersourcesresponsedatasourcesvideoservice"></a>
+<a id="schema_ListUserSourcesResponseDataSourcesVideoService"></a>
+<a id="tocSlistusersourcesresponsedatasourcesvideoservice"></a>
+<a id="tocslistusersourcesresponsedatasourcesvideoservice"></a>
+
+```json
+{
+  "name": "string",
+  "original_name": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name, e.g. `PublicApi`.|
+|original_name|string|false|none|Upper-case name, e.g. `PUBLIC_API`.|
+|value|integer|false|none|Numeric value.|
 
 <h2 id="tocS_MarkChatConversationReadActionSignatures">MarkChatConversationReadActionSignatures</h2>
 <!-- backwards compatibility -->
@@ -107197,7 +112224,7 @@ The number of members in this List.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[MarkChatConversationReadActionSignaturesMessageEventSignature](#schemamarkchatconversationreadactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -108004,7 +113031,7 @@ Each media object may have multiple display or playback variants, with different
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[MuteChatConversationActionSignaturesMessageEventSignature](#schemamutechatconversationactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -108101,7 +113128,7 @@ Each media object may have multiple display or playback variants, with different
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[MuteChatConversationActionSignatures](#schemamutechatconversationactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[MuteChatConversationActionSignatures](#schemamutechatconversationactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_MuteChatConversationResponse">MuteChatConversationResponse</h2>
 <!-- backwards compatibility -->
@@ -108155,6 +113182,84 @@ Each media object may have multiple display or playback variants, with different
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |muted|boolean|true|none|Whether the conversation is muted for the authenticated user.|
+
+<h2 id="tocS_MuteChatUserRequest">MuteChatUserRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamutechatuserrequest"></a>
+<a id="schema_MuteChatUserRequest"></a>
+<a id="tocSmutechatuserrequest"></a>
+<a id="tocsmutechatuserrequest"></a>
+
+```json
+{
+  "broadcast_id": "string",
+  "end_at_ms": "string",
+  "message_id": "string",
+  "user_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|broadcast_id|string|false|none|A broadcast whose host's chats the user is muted in. Required with `message_id`.|
+|end_at_ms|string|false|none|The Unix timestamp in milliseconds when the mute expires. Omit this field to mute indefinitely.|
+|message_id|string|false|none|A chat message in `broadcast_id` to remove while muting the user.|
+|user_id|string|true|none|The user to mute.|
+
+<h2 id="tocS_MuteChatUserResponse">MuteChatUserResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemamutechatuserresponse"></a>
+<a id="schema_MuteChatUserResponse"></a>
+<a id="tocSmutechatuserresponse"></a>
+<a id="tocsmutechatuserresponse"></a>
+
+```json
+{
+  "data": {
+    "muted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[MuteChatUserResponseData](#schemamutechatuserresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_MuteChatUserResponseData">MuteChatUserResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemamutechatuserresponsedata"></a>
+<a id="schema_MuteChatUserResponseData"></a>
+<a id="tocSmutechatuserresponsedata"></a>
+<a id="tocsmutechatuserresponsedata"></a>
+
+```json
+{
+  "muted": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|muted|boolean|true|none|Whether the user is muted in this broadcast chat.|
 
 <h2 id="tocS_MuteUserRequest">MuteUserRequest</h2>
 <!-- backwards compatibility -->
@@ -110053,6 +115158,49 @@ Withholding details for withheld content.
 |*oneOf*|[DisallowedResourceProblem](#schemadisallowedresourceproblem)|false|none|none|
 |*oneOf*|[RecipientNotMessageableProblem](#schemarecipientnotmessageableproblem)|false|none|none|
 |*oneOf*|[InternalErrorProblem](#schemainternalerrorproblem)|false|none|none|
+|*oneOf*|[DmBadAttachmentProblem](#schemadmbadattachmentproblem)|false|none|none|
+|*oneOf*|[DmBadCtaProblem](#schemadmbadctaproblem)|false|none|none|
+|*oneOf*|[DmBadCustomProfileProblem](#schemadmbadcustomprofileproblem)|false|none|none|
+|*oneOf*|[DmBadMediaProblem](#schemadmbadmediaproblem)|false|none|none|
+|*oneOf*|[DmBadQuickReplyProblem](#schemadmbadquickreplyproblem)|false|none|none|
+|*oneOf*|[DmBadUrlProblem](#schemadmbadurlproblem)|false|none|none|
+|*oneOf*|[DmConversationNameTooLongProblem](#schemadmconversationnametoolongproblem)|false|none|none|
+|*oneOf*|[DmConversationNotFoundProblem](#schemadmconversationnotfoundproblem)|false|none|none|
+|*oneOf*|[DmDuplicateProblem](#schemadmduplicateproblem)|false|none|none|
+|*oneOf*|[DmInactiveDeviceProblem](#schemadminactivedeviceproblem)|false|none|none|
+|*oneOf*|[DmNotDeliveredProblem](#schemadmnotdeliveredproblem)|false|none|none|
+|*oneOf*|[DmNotFoundProblem](#schemadmnotfoundproblem)|false|none|none|
+|*oneOf*|[DmNotOwnerProblem](#schemadmnotownerproblem)|false|none|none|
+|*oneOf*|[DmParticipantNotAddedProblem](#schemadmparticipantnotaddedproblem)|false|none|none|
+|*oneOf*|[DmParticipantNotFoundProblem](#schemadmparticipantnotfoundproblem)|false|none|none|
+|*oneOf*|[DmParticipantRestrictedProblem](#schemadmparticipantrestrictedproblem)|false|none|none|
+|*oneOf*|[DmParticipantUnavailableProblem](#schemadmparticipantunavailableproblem)|false|none|none|
+|*oneOf*|[DmRateLimitedProblem](#schemadmratelimitedproblem)|false|none|none|
+|*oneOf*|[DmRecipientBlocksSenderProblem](#schemadmrecipientblockssenderproblem)|false|none|none|
+|*oneOf*|[DmRecipientCannotReceiveProblem](#schemadmrecipientcannotreceiveproblem)|false|none|none|
+|*oneOf*|[DmRecipientEncryptedUnavailableProblem](#schemadmrecipientencryptedunavailableproblem)|false|none|none|
+|*oneOf*|[DmRecipientNotAcceptingProblem](#schemadmrecipientnotacceptingproblem)|false|none|none|
+|*oneOf*|[DmRecipientNotFoundProblem](#schemadmrecipientnotfoundproblem)|false|none|none|
+|*oneOf*|[DmRecipientRestrictsGroupsProblem](#schemadmrecipientrestrictsgroupsproblem)|false|none|none|
+|*oneOf*|[DmRecipientUnavailableProblem](#schemadmrecipientunavailableproblem)|false|none|none|
+|*oneOf*|[DmRequestInProgressProblem](#schemadmrequestinprogressproblem)|false|none|none|
+|*oneOf*|[DmSafetyLimitedProblem](#schemadmsafetylimitedproblem)|false|none|none|
+|*oneOf*|[DmSafetyRejectedProblem](#schemadmsafetyrejectedproblem)|false|none|none|
+|*oneOf*|[DmSenderBlocksRecipientProblem](#schemadmsenderblocksrecipientproblem)|false|none|none|
+|*oneOf*|[DmSenderDeclinedDmsProblem](#schemadmsenderdeclineddmsproblem)|false|none|none|
+|*oneOf*|[DmSenderDmsClosedProblem](#schemadmsenderdmsclosedproblem)|false|none|none|
+|*oneOf*|[DmSenderEncryptedUnavailableProblem](#schemadmsenderencryptedunavailableproblem)|false|none|none|
+|*oneOf*|[DmSenderNotInConversationProblem](#schemadmsendernotinconversationproblem)|false|none|none|
+|*oneOf*|[DmSenderNotPermittedProblem](#schemadmsendernotpermittedproblem)|false|none|none|
+|*oneOf*|[DmSenderNotVerifiedProblem](#schemadmsendernotverifiedproblem)|false|none|none|
+|*oneOf*|[DmSenderPhoneRequiredProblem](#schemadmsenderphonerequiredproblem)|false|none|none|
+|*oneOf*|[DmSenderReadOnlyProblem](#schemadmsenderreadonlyproblem)|false|none|none|
+|*oneOf*|[DmSenderUnavailableProblem](#schemadmsenderunavailableproblem)|false|none|none|
+|*oneOf*|[DmTextEmptyProblem](#schemadmtextemptyproblem)|false|none|none|
+|*oneOf*|[DmTextTooLongProblem](#schemadmtexttoolongproblem)|false|none|none|
+|*oneOf*|[DmTooFewParticipantsProblem](#schemadmtoofewparticipantsproblem)|false|none|none|
+|*oneOf*|[DmTooManyParticipantsProblem](#schemadmtoomanyparticipantsproblem)|false|none|none|
+|*oneOf*|[DmUnsupportedMessageProblem](#schemadmunsupportedmessageproblem)|false|none|none|
 |*oneOf*|[DuplicateRuleProblem](#schemaduplicateruleproblem)|false|none|none|
 |*oneOf*|[InvalidRuleProblem](#schemainvalidruleproblem)|false|none|none|
 
@@ -110180,7 +115328,7 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[RejectChatGroupAdminRequestActionSignaturesMessageEventSignature](#schemarejectchatgroupadminrequestactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -110277,7 +115425,7 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[RejectChatGroupAdminRequestActionSignatures](#schemarejectchatgroupadminrequestactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[RejectChatGroupAdminRequestActionSignatures](#schemarejectchatgroupadminrequestactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_RejectChatGroupAdminRequestResponse">RejectChatGroupAdminRequestResponse</h2>
 <!-- backwards compatibility -->
@@ -110364,7 +115512,7 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[RejectChatGroupJoinRequestsActionSignaturesMessageEventSignature](#schemarejectchatgroupjoinrequestsactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -110464,7 +115612,7 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[RejectChatGroupJoinRequestsActionSignatures](#schemarejectchatgroupjoinrequestsactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[RejectChatGroupJoinRequestsActionSignatures](#schemarejectchatgroupjoinrequestsactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |user_ids|[string]|true|none|List of user IDs whose join requests to reject.|
 
 <h2 id="tocS_RejectChatGroupJoinRequestsResponse">RejectChatGroupJoinRequestsResponse</h2>
@@ -110552,7 +115700,7 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[RemoveChatGroupAdminsActionSignaturesMessageEventSignature](#schemaremovechatgroupadminsactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -110652,7 +115800,7 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[RemoveChatGroupAdminsActionSignatures](#schemaremovechatgroupadminsactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[RemoveChatGroupAdminsActionSignatures](#schemaremovechatgroupadminsactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |user_ids|[string]|true|none|List of admin user IDs to revoke admin rights from.|
 
 <h2 id="tocS_RemoveChatGroupAdminsResponse">RemoveChatGroupAdminsResponse</h2>
@@ -110740,7 +115888,7 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[RemoveChatGroupMembersActionSignaturesMessageEventSignature](#schemaremovechatgroupmembersactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -110801,6 +115949,95 @@ Unique identifier of a PublicKey
 |public_key_version|string|false|none|The version of the public key.|
 |signing_public_key|string|false|none|The signing public key.|
 
+<h2 id="tocS_RemoveChatGroupMembersGroupKeyRotationData">RemoveChatGroupMembersGroupKeyRotationData</h2>
+<!-- backwards compatibility -->
+<a id="schemaremovechatgroupmembersgroupkeyrotationdata"></a>
+<a id="schema_RemoveChatGroupMembersGroupKeyRotationData"></a>
+<a id="tocSremovechatgroupmembersgroupkeyrotationdata"></a>
+<a id="tocsremovechatgroupmembersgroupkeyrotationdata"></a>
+
+```json
+{
+  "base64_encoded_key_rotation": "string",
+  "conversation_key_version": "string",
+  "conversation_participant_keys": [
+    {
+      "encrypted_conversation_key": "string",
+      "public_key_version": "string",
+      "user_id": "string"
+    }
+  ],
+  "encrypted_avatar": "string",
+  "encrypted_description": "string",
+  "encrypted_title": "string",
+  "rotated_pmk_bundle": [
+    {
+      "base64_encoded_encrypted_pmk": "string",
+      "message_sequence_id": "string",
+      "pme_sequence_id": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|base64_encoded_key_rotation|string|false|none|Base64-encoded key rotation payload.|
+|conversation_key_version|string|false|none|Version of the new rotated conversation key.|
+|conversation_participant_keys|[[RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeys](#schemaremovechatgroupmembersgroupkeyrotationdataconversationparticipantkeys)]|false|none|Encrypted conversation keys for each participant.|
+|encrypted_avatar|string|false|none|Re-encrypted group avatar with new conversation key.|
+|encrypted_description|string|false|none|Re-encrypted group description with new conversation key.|
+|encrypted_title|string|false|none|Re-encrypted group title with new conversation key.|
+|rotated_pmk_bundle|[[RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundle](#schemaremovechatgroupmembersgroupkeyrotationdatarotatedpmkbundle)]|false|none|Message keys re-encrypted with the rotated conversation key.|
+
+<h2 id="tocS_RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeys">RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeys</h2>
+<!-- backwards compatibility -->
+<a id="schemaremovechatgroupmembersgroupkeyrotationdataconversationparticipantkeys"></a>
+<a id="schema_RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeys"></a>
+<a id="tocSremovechatgroupmembersgroupkeyrotationdataconversationparticipantkeys"></a>
+<a id="tocsremovechatgroupmembersgroupkeyrotationdataconversationparticipantkeys"></a>
+
+```json
+{
+  "encrypted_conversation_key": "string",
+  "public_key_version": "string",
+  "user_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|encrypted_conversation_key|string|false|none|Conversation key encrypted with this participant's public key.|
+|public_key_version|string|false|none|Version of the participant's public key used for encryption.|
+|user_id|string|false|none|Participant user ID.|
+
+<h2 id="tocS_RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundle">RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundle</h2>
+<!-- backwards compatibility -->
+<a id="schemaremovechatgroupmembersgroupkeyrotationdatarotatedpmkbundle"></a>
+<a id="schema_RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundle"></a>
+<a id="tocSremovechatgroupmembersgroupkeyrotationdatarotatedpmkbundle"></a>
+<a id="tocsremovechatgroupmembersgroupkeyrotationdatarotatedpmkbundle"></a>
+
+```json
+{
+  "base64_encoded_encrypted_pmk": "string",
+  "message_sequence_id": "string",
+  "pme_sequence_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|base64_encoded_encrypted_pmk|string|true|none|Base64-encoded message key, encrypted with the new conversation key.|
+|message_sequence_id|string|true|none|Sequence ID of the message the key belongs to.|
+|pme_sequence_id|string|false|none|Sequence ID of the key's origin event.|
+
 <h2 id="tocS_RemoveChatGroupMembersRequest">RemoveChatGroupMembersRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemaremovechatgroupmembersrequest"></a>
@@ -110830,6 +116067,27 @@ Unique identifier of a PublicKey
       "signature_payload": "string"
     }
   ],
+  "group_key_rotation_data": {
+    "base64_encoded_key_rotation": "string",
+    "conversation_key_version": "string",
+    "conversation_participant_keys": [
+      {
+        "encrypted_conversation_key": "string",
+        "public_key_version": "string",
+        "user_id": "string"
+      }
+    ],
+    "encrypted_avatar": "string",
+    "encrypted_description": "string",
+    "encrypted_title": "string",
+    "rotated_pmk_bundle": [
+      {
+        "base64_encoded_encrypted_pmk": "string",
+        "message_sequence_id": "string",
+        "pme_sequence_id": "string"
+      }
+    ]
+  },
   "user_ids": [
     "string"
   ]
@@ -110840,7 +116098,8 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[RemoveChatGroupMembersActionSignatures](#schemaremovechatgroupmembersactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[RemoveChatGroupMembersActionSignatures](#schemaremovechatgroupmembersactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
+|group_key_rotation_data|[RemoveChatGroupMembersGroupKeyRotationData](#schemaremovechatgroupmembersgroupkeyrotationdata)|false|none|Conversation key rotated as part of this removal. Omit it when the removal does not change the key.|
 |user_ids|[string]|true|none|List of user IDs to remove from the group conversation.|
 
 <h2 id="tocS_RemoveChatGroupMembersResponse">RemoveChatGroupMembersResponse</h2>
@@ -121923,7 +127182,7 @@ User compliance stream events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[UnarchiveChatConversationActionSignaturesMessageEventSignature](#schemaunarchivechatconversationactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -122020,7 +127279,7 @@ User compliance stream events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[UnarchiveChatConversationActionSignatures](#schemaunarchivechatconversationactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[UnarchiveChatConversationActionSignatures](#schemaunarchivechatconversationactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_UnarchiveChatConversationResponse">UnarchiveChatConversationResponse</h2>
 <!-- backwards compatibility -->
@@ -122396,7 +127655,7 @@ User compliance stream events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[UnmuteChatConversationActionSignaturesMessageEventSignature](#schemaunmutechatconversationactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -122493,7 +127752,7 @@ User compliance stream events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[UnmuteChatConversationActionSignatures](#schemaunmutechatconversationactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[UnmuteChatConversationActionSignatures](#schemaunmutechatconversationactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 
 <h2 id="tocS_UnmuteChatConversationResponse">UnmuteChatConversationResponse</h2>
 <!-- backwards compatibility -->
@@ -122547,6 +127806,59 @@ User compliance stream events.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |muted|boolean|true|none|Whether the conversation is muted for the authenticated user.|
+
+<h2 id="tocS_UnmuteChatUserResponse">UnmuteChatUserResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaunmutechatuserresponse"></a>
+<a id="schema_UnmuteChatUserResponse"></a>
+<a id="tocSunmutechatuserresponse"></a>
+<a id="tocsunmutechatuserresponse"></a>
+
+```json
+{
+  "data": {
+    "muted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[UnmuteChatUserResponseData](#schemaunmutechatuserresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_UnmuteChatUserResponseData">UnmuteChatUserResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaunmutechatuserresponsedata"></a>
+<a id="schema_UnmuteChatUserResponseData"></a>
+<a id="tocSunmutechatuserresponsedata"></a>
+<a id="tocsunmutechatuserresponsedata"></a>
+
+```json
+{
+  "muted": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|muted|boolean|true|none|Whether the user is muted in this broadcast chat.|
 
 <h2 id="tocS_UnmuteUserResponse">UnmuteUserResponse</h2>
 <!-- backwards compatibility -->
@@ -122959,6 +128271,89 @@ User compliance stream events.
 |---|---|---|---|---|
 |updated|boolean|true|none|Whether the bot was updated.|
 
+<h2 id="tocS_UpdateBroadcastStateRequest">UpdateBroadcastStateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatebroadcaststaterequest"></a>
+<a id="schema_UpdateBroadcastStateRequest"></a>
+<a id="tocSupdatebroadcaststaterequest"></a>
+<a id="tocsupdatebroadcaststaterequest"></a>
+
+```json
+{
+  "chat_option": 0,
+  "locale": "string",
+  "should_not_tweet": true,
+  "state": "string",
+  "title": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|chat_option|integer|false|none|Not allowed with `END`.|
+|locale|string|false|none|Not allowed with `END`.|
+|should_not_tweet|boolean|false|none|Not allowed with `END`.|
+|state|string|true|none|`END`. `PUBLISH` is not supported.|
+|title|string|false|none|Not allowed with `END`.|
+
+<h2 id="tocS_UpdateBroadcastStateResponse">UpdateBroadcastStateResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatebroadcaststateresponse"></a>
+<a id="schema_UpdateBroadcastStateResponse"></a>
+<a id="tocSupdatebroadcaststateresponse"></a>
+<a id="tocsupdatebroadcaststateresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "state": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[UpdateBroadcastStateResponseData](#schemaupdatebroadcaststateresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_UpdateBroadcastStateResponseData">UpdateBroadcastStateResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatebroadcaststateresponsedata"></a>
+<a id="schema_UpdateBroadcastStateResponseData"></a>
+<a id="tocSupdatebroadcaststateresponsedata"></a>
+<a id="tocsupdatebroadcaststateresponsedata"></a>
+
+```json
+{
+  "id": "string",
+  "state": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Broadcast id.|
+|state|string|true|none|Always `ENDED`.|
+
 <h2 id="tocS_UpdateChatConversationMessageTtlActionSignatures">UpdateChatConversationMessageTtlActionSignatures</h2>
 <!-- backwards compatibility -->
 <a id="schemaupdatechatconversationmessagettlactionsignatures"></a>
@@ -122991,7 +128386,7 @@ User compliance stream events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[UpdateChatConversationMessageTtlActionSignaturesMessageEventSignature](#schemaupdatechatconversationmessagettlactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -123089,7 +128484,7 @@ User compliance stream events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[UpdateChatConversationMessageTtlActionSignatures](#schemaupdatechatconversationmessagettlactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[UpdateChatConversationMessageTtlActionSignatures](#schemaupdatechatconversationmessagettlactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |message_ttl_ms|string|true|none|How long new messages last, in milliseconds.|
 
 <h2 id="tocS_UpdateChatConversationMessageTtlResponse">UpdateChatConversationMessageTtlResponse</h2>
@@ -123177,7 +128572,7 @@ User compliance stream events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[UpdateChatConversationScreenCaptureBlockingActionSignaturesMessageEventSignature](#schemaupdatechatconversationscreencaptureblockingactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -123270,7 +128665,7 @@ User compliance stream events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[UpdateChatConversationScreenCaptureDetectionActionSignaturesMessageEventSignature](#schemaupdatechatconversationscreencapturedetectionactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -123392,9 +128787,9 @@ At least one of `blocking`, `detection` is required.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |blocking|boolean|false|none|Whether participants are prevented from taking screenshots.|
-|blocking_action_signatures|[[UpdateChatConversationScreenCaptureBlockingActionSignatures](#schemaupdatechatconversationscreencaptureblockingactionsignatures)]|false|none|Cryptographic signatures for the screenshot blocking change.|
+|blocking_action_signatures|[[UpdateChatConversationScreenCaptureBlockingActionSignatures](#schemaupdatechatconversationscreencaptureblockingactionsignatures)]|false|none|Signatures for the screenshot blocking change, forwarded in the order they are sent.|
 |detection|boolean|false|none|Whether participants are notified when someone takes a screenshot.|
-|detection_action_signatures|[[UpdateChatConversationScreenCaptureDetectionActionSignatures](#schemaupdatechatconversationscreencapturedetectionactionsignatures)]|false|none|Cryptographic signatures for the screenshot detection change.|
+|detection_action_signatures|[[UpdateChatConversationScreenCaptureDetectionActionSignatures](#schemaupdatechatconversationscreencapturedetectionactionsignatures)]|false|none|Signatures for the screenshot detection change, forwarded in the order they are sent.|
 |*anyOf*|object|false|none|none|
 |*anyOf*|object|false|none|none|
 
@@ -123486,7 +128881,7 @@ At least one of `blocking`, `detection` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[UpdateChatGroupActionSignaturesMessageEventSignature](#schemaupdatechatgroupactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -123579,7 +128974,7 @@ At least one of `blocking`, `detection` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encoded_message_event_detail|string|true|none|Base64-encoded message event detail.|
+|encoded_message_event_detail|string|true|none|Base64-encoded Thrift MessageEventDetail for the signed action.|
 |message_event_signature|[UpdateChatGroupAdminSettingsActionSignaturesMessageEventSignature](#schemaupdatechatgroupadminsettingsactionsignaturesmessageeventsignature)|true|none|Message event signature supplied with an action signature.|
 |message_id|string|true|none|Client-generated ID of the message being signed.|
 |signature_payload|string|false|none|Payload string the client signed; used only in server-side failure logs.|
@@ -123684,7 +129079,7 @@ At least one of `add_member`, `edit_group_info`, `send_message`, `start_call`, `
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[UpdateChatGroupAdminSettingsActionSignatures](#schemaupdatechatgroupadminsettingsactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[UpdateChatGroupAdminSettingsActionSignatures](#schemaupdatechatgroupadminsettingsactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |add_member|boolean|false|none|When true, only admins can add members.|
 |block_screen_capture|boolean|false|none|When true, only admins can change screen capture blocking. Through the API, only admins can change screen capture in a group, whatever this setting says.|
 |edit_group_info|boolean|false|none|When true, only admins can edit the group name, avatar, and description.|
@@ -123832,7 +129227,7 @@ At least one of `add_member`, `edit_group_info`, `send_message`, `start_call`, `
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|action_signatures|[[UpdateChatGroupActionSignatures](#schemaupdatechatgroupactionsignatures)]|false|none|Cryptographic signatures for the action.|
+|action_signatures|[[UpdateChatGroupActionSignatures](#schemaupdatechatgroupactionsignatures)]|false|none|Signatures for this action, forwarded in the order they are sent.|
 |base64_encoded_key_rotation|string|false|none|Base64-encoded key rotation payload.|
 |conversation_key_version|string|true|none|Version of the conversation key the values are encrypted with.|
 |conversation_participant_keys|[[UpdateChatGroupConversationParticipantKeys](#schemaupdatechatgroupconversationparticipantkeys)]|false|none|Encrypted conversation keys for each participant.|
@@ -124682,17 +130077,14 @@ At least one of `start_time`, `duration_minutes`, `title`, `description`, `invit
 ```json
 {
   "data": {
-    "source": {
-      "creation_time": 0,
-      "id": "string",
-      "is_stream_active": true,
-      "name": "string",
-      "owner_id": 0,
-      "rtmp_region": "string",
-      "rtmp_stream_key": "string",
-      "rtmp_url": "string",
-      "rtmps_url": "string"
-    }
+    "created_at_ms": "string",
+    "id": "string",
+    "is_stream_active": true,
+    "name": "string",
+    "region": "string",
+    "rtmp_url": "string",
+    "rtmps_url": "string",
+    "stream_key": "string"
   },
   "errors": [
     {
@@ -124725,16 +130117,339 @@ At least one of `start_time`, `duration_minutes`, `title`, `description`, `invit
 
 ```json
 {
+  "created_at_ms": "string",
+  "id": "string",
+  "is_stream_active": true,
+  "name": "string",
+  "region": "string",
+  "rtmp_url": "string",
+  "rtmps_url": "string",
+  "stream_key": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
+|id|string|true|none|Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.|
+|name|string|false|none|Label for the source.|
+|region|string|false|none|Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.|
+|rtmp_url|string|false|none|RTMP ingest URL.|
+|rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
+|stream_key|string|false|none|RTMP stream key.|
+
+<h2 id="tocS_UpdateUserBroadcastStateRequest">UpdateUserBroadcastStateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateuserbroadcaststaterequest"></a>
+<a id="schema_UpdateUserBroadcastStateRequest"></a>
+<a id="tocSupdateuserbroadcaststaterequest"></a>
+<a id="tocsupdateuserbroadcaststaterequest"></a>
+
+```json
+{
+  "chat_option": 0,
+  "locale": "string",
+  "should_not_tweet": true,
+  "state": "string",
+  "title": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. `PUBLISH` only.|
+|locale|string|false|none|Broadcast language. `PUBLISH` only.|
+|should_not_tweet|boolean|false|none|Skip the announcing Post. Unset keeps the broadcast's setting, which defaults to posting. `PUBLISH` only.|
+|state|string|true|none|`PUBLISH` or `END`.|
+|title|string|false|none|Broadcast title. `PUBLISH` only.|
+
+<h2 id="tocS_UpdateUserBroadcastStateResponse">UpdateUserBroadcastStateResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateuserbroadcaststateresponse"></a>
+<a id="schema_UpdateUserBroadcastStateResponse"></a>
+<a id="tocSupdateuserbroadcaststateresponse"></a>
+<a id="tocsupdateuserbroadcaststateresponse"></a>
+
+```json
+{
+  "data": {
+    "broadcast": {
+      "available_for_replay": true,
+      "broadcast_id": "string",
+      "chat_option": 0,
+      "created_at_ms": "string",
+      "end_ms": "string",
+      "height": 0,
+      "id": "string",
+      "image_url": "string",
+      "image_url_medium": "string",
+      "image_url_small": "string",
+      "is_high_latency": true,
+      "language": "string",
+      "media_id": "string",
+      "media_key": "string",
+      "scheduled_end_ms": "string",
+      "scheduled_start_ms": "string",
+      "start_ms": "string",
+      "state": "string",
+      "status": "string",
+      "total_watched": "string",
+      "total_watching": "string",
+      "tweet_id": "string",
+      "twitter_user_id": "string",
+      "updated_at_ms": "string",
+      "width": 0
+    },
+    "success": true,
+    "tweet_error": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[UpdateUserBroadcastStateResponseData](#schemaupdateuserbroadcaststateresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_UpdateUserBroadcastStateResponseData">UpdateUserBroadcastStateResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateuserbroadcaststateresponsedata"></a>
+<a id="schema_UpdateUserBroadcastStateResponseData"></a>
+<a id="tocSupdateuserbroadcaststateresponsedata"></a>
+<a id="tocsupdateuserbroadcaststateresponsedata"></a>
+
+```json
+{
+  "broadcast": {
+    "available_for_replay": true,
+    "broadcast_id": "string",
+    "chat_option": 0,
+    "created_at_ms": "string",
+    "end_ms": "string",
+    "height": 0,
+    "id": "string",
+    "image_url": "string",
+    "image_url_medium": "string",
+    "image_url_small": "string",
+    "is_high_latency": true,
+    "language": "string",
+    "media_id": "string",
+    "media_key": "string",
+    "scheduled_end_ms": "string",
+    "scheduled_start_ms": "string",
+    "start_ms": "string",
+    "state": "string",
+    "status": "string",
+    "total_watched": "string",
+    "total_watching": "string",
+    "tweet_id": "string",
+    "twitter_user_id": "string",
+    "updated_at_ms": "string",
+    "width": 0
+  },
+  "success": true,
+  "tweet_error": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|broadcast|[UpdateUserBroadcastStateResponseDataBroadcast](#schemaupdateuserbroadcaststateresponsedatabroadcast)|false|none|The published broadcast, on `PUBLISH`.|
+|success|boolean|false|none|`true` once `END` succeeds.|
+|tweet_error|string|false|none|Why the announcing Post failed, on `PUBLISH`. Omitted when the Post went out or `should_not_tweet` was true.|
+
+<h2 id="tocS_UpdateUserBroadcastStateResponseDataBroadcast">UpdateUserBroadcastStateResponseDataBroadcast</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateuserbroadcaststateresponsedatabroadcast"></a>
+<a id="schema_UpdateUserBroadcastStateResponseDataBroadcast"></a>
+<a id="tocSupdateuserbroadcaststateresponsedatabroadcast"></a>
+<a id="tocsupdateuserbroadcaststateresponsedatabroadcast"></a>
+
+```json
+{
+  "available_for_replay": true,
+  "broadcast_id": "string",
+  "chat_option": 0,
+  "created_at_ms": "string",
+  "end_ms": "string",
+  "height": 0,
+  "id": "string",
+  "image_url": "string",
+  "image_url_medium": "string",
+  "image_url_small": "string",
+  "is_high_latency": true,
+  "language": "string",
+  "media_id": "string",
+  "media_key": "string",
+  "scheduled_end_ms": "string",
+  "scheduled_start_ms": "string",
+  "start_ms": "string",
+  "state": "string",
+  "status": "string",
+  "total_watched": "string",
+  "total_watching": "string",
+  "tweet_id": "string",
+  "twitter_user_id": "string",
+  "updated_at_ms": "string",
+  "width": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available_for_replay|boolean|false|none|Whether a replay is available.|
+|broadcast_id|string|false|none|Broadcast id.|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
+|end_ms|string|false|none|End time, milliseconds since Unix epoch (decimal string).|
+|height|integer|false|none|Video height in pixels.|
+|id|string|true|none|Broadcast id; equal to `broadcast_id`.|
+|image_url|string|false|none|Thumbnail URL.|
+|image_url_medium|string|false|none|Medium thumbnail URL.|
+|image_url_small|string|false|none|Small thumbnail URL.|
+|is_high_latency|boolean|false|none|Whether the broadcast is high latency.|
+|language|string|false|none|Broadcast language.|
+|media_id|string|false|none|Numeric media id from `media_key`.|
+|media_key|string|false|none|Media key of the broadcast's video.|
+|scheduled_end_ms|string|false|none|Scheduled end time, milliseconds since Unix epoch (decimal string).|
+|scheduled_start_ms|string|false|none|Scheduled start time, milliseconds since Unix epoch (decimal string).|
+|start_ms|string|false|none|Start time, milliseconds since Unix epoch (decimal string).|
+|state|string|false|none|`NOT_STARTED`, `RUNNING`, `TIMED_OUT`, `ENDED`, `PRE_PUBLISHED` or `CANCELED`.|
+|status|string|false|none|Broadcast title.|
+|total_watched|string|false|none|Total viewers (decimal string).|
+|total_watching|string|false|none|Current viewers (decimal string).|
+|tweet_id|string|false|none|Id of the Post announcing the broadcast.|
+|twitter_user_id|string|false|none|Owner's user id.|
+|updated_at_ms|string|false|none|Last update time, milliseconds since Unix epoch (decimal string).|
+|width|integer|false|none|Video width in pixels.|
+
+<h2 id="tocS_UpdateUserSourceRequest">UpdateUserSourceRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateusersourcerequest"></a>
+<a id="schema_UpdateUserSourceRequest"></a>
+<a id="tocSupdateusersourcerequest"></a>
+<a id="tocsupdateusersourcerequest"></a>
+
+```json
+{
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|New label for the source.|
+
+<h2 id="tocS_UpdateUserSourceResponse">UpdateUserSourceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateusersourceresponse"></a>
+<a id="schema_UpdateUserSourceResponse"></a>
+<a id="tocSupdateusersourceresponse"></a>
+<a id="tocsupdateusersourceresponse"></a>
+
+```json
+{
+  "data": {
+    "source": {
+      "creation_origin": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      },
+      "creation_time": 0,
+      "id": "string",
+      "is360": true,
+      "is_stream_active": true,
+      "name": "string",
+      "owner_id": 0,
+      "rtmp_region": "string",
+      "rtmp_stream_key": "string",
+      "rtmp_url": "string",
+      "rtmps_url": "string",
+      "video_service": {
+        "name": "string",
+        "original_name": "string",
+        "value": 0
+      }
+    }
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[UpdateUserSourceResponseData](#schemaupdateusersourceresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_UpdateUserSourceResponseData">UpdateUserSourceResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateusersourceresponsedata"></a>
+<a id="schema_UpdateUserSourceResponseData"></a>
+<a id="tocSupdateusersourceresponsedata"></a>
+<a id="tocsupdateusersourceresponsedata"></a>
+
+```json
+{
   "source": {
+    "creation_origin": {
+      "name": "string",
+      "original_name": "string",
+      "value": 0
+    },
     "creation_time": 0,
     "id": "string",
+    "is360": true,
     "is_stream_active": true,
     "name": "string",
     "owner_id": 0,
     "rtmp_region": "string",
     "rtmp_stream_key": "string",
     "rtmp_url": "string",
-    "rtmps_url": "string"
+    "rtmps_url": "string",
+    "video_service": {
+      "name": "string",
+      "original_name": "string",
+      "value": 0
+    }
   }
 }
 ```
@@ -124743,26 +130458,37 @@ At least one of `start_time`, `duration_minutes`, `title`, `description`, `invit
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|source|[UpdateSourceResponseDataSource](#schemaupdatesourceresponsedatasource)|true|none|none|
+|source|[UpdateUserSourceResponseDataSource](#schemaupdateusersourceresponsedatasource)|true|none|none|
 
-<h2 id="tocS_UpdateSourceResponseDataSource">UpdateSourceResponseDataSource</h2>
+<h2 id="tocS_UpdateUserSourceResponseDataSource">UpdateUserSourceResponseDataSource</h2>
 <!-- backwards compatibility -->
-<a id="schemaupdatesourceresponsedatasource"></a>
-<a id="schema_UpdateSourceResponseDataSource"></a>
-<a id="tocSupdatesourceresponsedatasource"></a>
-<a id="tocsupdatesourceresponsedatasource"></a>
+<a id="schemaupdateusersourceresponsedatasource"></a>
+<a id="schema_UpdateUserSourceResponseDataSource"></a>
+<a id="tocSupdateusersourceresponsedatasource"></a>
+<a id="tocsupdateusersourceresponsedatasource"></a>
 
 ```json
 {
+  "creation_origin": {
+    "name": "string",
+    "original_name": "string",
+    "value": 0
+  },
   "creation_time": 0,
   "id": "string",
+  "is360": true,
   "is_stream_active": true,
   "name": "string",
   "owner_id": 0,
   "rtmp_region": "string",
   "rtmp_stream_key": "string",
   "rtmp_url": "string",
-  "rtmps_url": "string"
+  "rtmps_url": "string",
+  "video_service": {
+    "name": "string",
+    "original_name": "string",
+    "value": 0
+  }
 }
 ```
 
@@ -124770,15 +130496,64 @@ At least one of `start_time`, `duration_minutes`, `title`, `description`, `invit
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|creation_origin|[UpdateUserSourceResponseDataSourceCreationOrigin](#schemaupdateusersourceresponsedatasourcecreationorigin)|false|none|Where a source created before the move to on-prem was created, e.g. `{"value": 2, "name": "MediaStudio", "original_name": "MEDIA_STUDIO"}`; omitted for on-prem sources.|
 |creation_time|integer|false|none|Creation time, ms since Unix epoch.|
 |id|string|true|none|Source id; also the RTMP stream key.|
-|is_stream_active|boolean|false|none|Whether the source is currently receiving video.|
+|is360|boolean|false|none|Whether the source streams 360° video.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source.|
 |name|string|false|none|Label for the source.|
 |owner_id|integer|false|none|Owner's numeric user id. Exceeds the exact integer range of many JSON parsers.|
-|rtmp_region|string|false|none|Ingest region, e.g. `us-east-1`.|
+|rtmp_region|string|false|none|Ingest region as an AWS region name, e.g. `us-east-1` or `us-west-2`. Accepted as `region` when creating a source.|
 |rtmp_stream_key|string|false|none|Stream key; equal to `id`.|
 |rtmp_url|string|false|none|RTMP ingest URL.|
 |rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
+|video_service|[UpdateUserSourceResponseDataSourceVideoService](#schemaupdateusersourceresponsedatasourcevideoservice)|false|none|Video service of a source created before the move to on-prem, e.g. `{"value": 0, "name": "Vidman", "original_name": "VIDMAN"}`; omitted for on-prem sources.|
+
+<h2 id="tocS_UpdateUserSourceResponseDataSourceCreationOrigin">UpdateUserSourceResponseDataSourceCreationOrigin</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateusersourceresponsedatasourcecreationorigin"></a>
+<a id="schema_UpdateUserSourceResponseDataSourceCreationOrigin"></a>
+<a id="tocSupdateusersourceresponsedatasourcecreationorigin"></a>
+<a id="tocsupdateusersourceresponsedatasourcecreationorigin"></a>
+
+```json
+{
+  "name": "string",
+  "original_name": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name, e.g. `PublicApi`.|
+|original_name|string|false|none|Upper-case name, e.g. `PUBLIC_API`.|
+|value|integer|false|none|Numeric value.|
+
+<h2 id="tocS_UpdateUserSourceResponseDataSourceVideoService">UpdateUserSourceResponseDataSourceVideoService</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateusersourceresponsedatasourcevideoservice"></a>
+<a id="schema_UpdateUserSourceResponseDataSourceVideoService"></a>
+<a id="tocSupdateusersourceresponsedatasourcevideoservice"></a>
+<a id="tocsupdateusersourceresponsedatasourcevideoservice"></a>
+
+```json
+{
+  "name": "string",
+  "original_name": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Name, e.g. `PublicApi`.|
+|original_name|string|false|none|Upper-case name, e.g. `PUBLIC_API`.|
+|value|integer|false|none|Numeric value.|
 
 <h2 id="tocS_UploadComplianceJobSubmissionRequest">UploadComplianceJobSubmissionRequest</h2>
 <!-- backwards compatibility -->

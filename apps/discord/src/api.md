@@ -25819,6 +25819,188 @@ To perform this operation, you must be authenticated by means of one of the foll
 BotToken
 </aside>
 
+## get_channel_member_permissions
+
+<a id="opIdget_channel_member_permissions"></a>
+
+> Code samples
+
+```bash
+curl https://discord.com/api/v10/channels/string/permissions/member/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}"
+```
+
+`GET /channels/{channel_id}/permissions/member/{user_id}`
+
+Returns the fully cascaded permissions for a member in this channel, applying their roles and the channel's permission overwrites.
+
+<h3 id="getchannelmemberpermissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|implicit|query|boolean|false|none|
+|channel_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "permissions": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "retry_after": 0,
+  "global": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "errors": {
+    "property1": {},
+    "property2": {}
+  }
+}
+```
+
+<h3 id="getchannelmemberpermissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|200 response for get_channel_member_permissions|[PermissionsResponse](#schemapermissionsresponse)|
+|429|Too Many Requests|Client ratelimited response|[RatelimitedResponse](#schemaratelimitedresponse)|
+|4XX|Client Error|Client error response|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|200|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|200|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|200|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|200|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+|429|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|429|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|429|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|429|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|429|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+|4XX|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|4XX|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|4XX|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|4XX|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|4XX|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BotToken
+</aside>
+
+## get_channel_role_permissions
+
+<a id="opIdget_channel_role_permissions"></a>
+
+> Code samples
+
+```bash
+curl https://discord.com/api/v10/channels/string/permissions/role/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}"
+```
+
+`GET /channels/{channel_id}/permissions/role/{role_id}`
+
+Returns the permissions a role grants in this channel, applying the channel's permission overwrites on top of the role's guild-level permissions.
+
+<h3 id="getchannelrolepermissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|implicit|query|boolean|false|none|
+|channel_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|role_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "permissions": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "retry_after": 0,
+  "global": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "errors": {
+    "property1": {},
+    "property2": {}
+  }
+}
+```
+
+<h3 id="getchannelrolepermissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|200 response for get_channel_role_permissions|[PermissionsResponse](#schemapermissionsresponse)|
+|429|Too Many Requests|Client ratelimited response|[RatelimitedResponse](#schemaratelimitedresponse)|
+|4XX|Client Error|Client error response|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|200|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|200|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|200|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|200|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+|429|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|429|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|429|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|429|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|429|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+|4XX|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|4XX|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|4XX|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|4XX|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|4XX|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BotToken
+</aside>
+
 ## set_channel_permission_overwrite
 
 <a id="opIdset_channel_permission_overwrite"></a>
@@ -55405,6 +55587,186 @@ To perform this operation, you must be authenticated by means of one of the foll
 BotToken
 </aside>
 
+## get_guild_member_permissions
+
+<a id="opIdget_guild_member_permissions"></a>
+
+> Code samples
+
+```bash
+curl https://discord.com/api/v10/guilds/string/permissions/member/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}"
+```
+
+`GET /guilds/{guild_id}/permissions/member/{user_id}`
+
+Returns the fully cascaded guild-level permissions for a member, applying all of their roles including @everyone's
+
+<h3 id="getguildmemberpermissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|user_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "permissions": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "retry_after": 0,
+  "global": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "errors": {
+    "property1": {},
+    "property2": {}
+  }
+}
+```
+
+<h3 id="getguildmemberpermissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|200 response for get_guild_member_permissions|[PermissionsResponse](#schemapermissionsresponse)|
+|429|Too Many Requests|Client ratelimited response|[RatelimitedResponse](#schemaratelimitedresponse)|
+|4XX|Client Error|Client error response|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|200|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|200|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|200|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|200|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+|429|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|429|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|429|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|429|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|429|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+|4XX|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|4XX|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|4XX|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|4XX|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|4XX|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BotToken
+</aside>
+
+## get_guild_role_permissions
+
+<a id="opIdget_guild_role_permissions"></a>
+
+> Code samples
+
+```bash
+curl https://discord.com/api/v10/guilds/string/permissions/role/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}"
+```
+
+`GET /guilds/{guild_id}/permissions/role/{role_id}`
+
+Returns the permissions a role grants at the guild level, combining the role's own permissions with @everyone's.
+
+<h3 id="getguildrolepermissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|guild_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+|role_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "permissions": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "retry_after": 0,
+  "global": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "errors": {
+    "property1": {},
+    "property2": {}
+  }
+}
+```
+
+<h3 id="getguildrolepermissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|200 response for get_guild_role_permissions|[PermissionsResponse](#schemapermissionsresponse)|
+|429|Too Many Requests|Client ratelimited response|[RatelimitedResponse](#schemaratelimitedresponse)|
+|4XX|Client Error|Client error response|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|200|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|200|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|200|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|200|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+|429|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|429|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|429|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|429|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|429|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+|4XX|X-RateLimit-Limit|integer||The maximum number of requests that can be made in the current ratelimit window|
+|4XX|X-RateLimit-Remaining|integer||The number of requests remaining in the current ratelimit window|
+|4XX|X-RateLimit-Reset|number||A unix timestamp in seconds at which the current ratelimit window resets|
+|4XX|X-RateLimit-Reset-After|number||The duration in seconds until the current ratelimit window resets|
+|4XX|X-RateLimit-Bucket|string||The bucket that the request belongs to|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BotToken
+</aside>
+
 ## get_guild_preview
 
 <a id="opIdget_guild_preview"></a>
@@ -69879,7 +70241,8 @@ curl https://discord.com/api/v10/lobbies \
       "property2": "string"
     },
     "secret": "string",
-    "flags": 1
+    "flags": 1,
+    "name": "string"
   }'
 ```
 
@@ -69899,7 +70262,8 @@ curl https://discord.com/api/v10/lobbies \
     "property2": "string"
   },
   "secret": "string",
-  "flags": 1
+  "flags": 1,
+  "name": "string"
 }
 ```
 
@@ -69917,6 +70281,7 @@ curl https://discord.com/api/v10/lobbies \
 |» flags|body|null \| integer|false|none|
 |» » *oneOf*|body|null|false|none|
 |» » *oneOf*|body|integer|false|none|
+|» name|body|string \| null|false|none|
 
 #### Enumerated Values
 
@@ -70084,7 +70449,8 @@ curl https://discord.com/api/v10/lobbies \
       "property2": "string"
     },
     "flags": 1,
-    "override_event_webhooks_url": "http://example.com"
+    "override_event_webhooks_url": "http://example.com",
+    "name": "string"
   }'
 ```
 
@@ -70111,7 +70477,8 @@ curl https://discord.com/api/v10/lobbies \
     "property2": "string"
   },
   "flags": 1,
-  "override_event_webhooks_url": "http://example.com"
+  "override_event_webhooks_url": "http://example.com",
+  "name": "string"
 }
 ```
 
@@ -70128,6 +70495,7 @@ curl https://discord.com/api/v10/lobbies \
 |» » *oneOf*|body|null|false|none|
 |» » *oneOf*|body|integer|false|none|
 |» override_event_webhooks_url|body|string \| null(uri)|false|none|
+|» name|body|string \| null|false|none|
 
 #### Enumerated Values
 
@@ -70527,7 +70895,8 @@ curl https://discord.com/api/v10/lobbies/string \
       }
     ],
     "flags": 1,
-    "override_event_webhooks_url": "http://example.com"
+    "override_event_webhooks_url": "http://example.com",
+    "name": "string"
   }'
 ```
 
@@ -70554,7 +70923,8 @@ curl https://discord.com/api/v10/lobbies/string \
     }
   ],
   "flags": 1,
-  "override_event_webhooks_url": "http://example.com"
+  "override_event_webhooks_url": "http://example.com",
+  "name": "string"
 }
 ```
 
@@ -70572,6 +70942,7 @@ curl https://discord.com/api/v10/lobbies/string \
 |» » *oneOf*|body|null|false|none|
 |» » *oneOf*|body|integer|false|none|
 |» override_event_webhooks_url|body|string \| null(uri)|false|none|
+|» name|body|string \| null|false|none|
 
 #### Enumerated Values
 
@@ -99147,6 +99518,25 @@ BotToken
 |---|---|
 |type|17|
 
+<h2 id="tocS_ContentScanMetadataResponse">ContentScanMetadataResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacontentscanmetadataresponse"></a>
+<a id="schema_ContentScanMetadataResponse"></a>
+<a id="tocScontentscanmetadataresponse"></a>
+<a id="tocscontentscanmetadataresponse"></a>
+
+```json
+{
+  "flags": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|flags|integer(int32)|true|none|none|
+
 <h2 id="tocS_CreateEntitlementRequestData">CreateEntitlementRequestData</h2>
 <!-- backwards compatibility -->
 <a id="schemacreateentitlementrequestdata"></a>
@@ -103932,7 +104322,13 @@ BotToken
     "proxy_url": "string",
     "width": 0,
     "height": 0,
+    "placeholder": "string",
+    "placeholder_version": 0,
+    "content_scan_metadata": {
+      "flags": 0
+    },
     "content_type": "string",
+    "flags": 0,
     "attachment_id": "string"
   },
   "name": "string",
@@ -116318,7 +116714,13 @@ BotToken
         "proxy_url": "string",
         "width": 0,
         "height": 0,
+        "placeholder": "string",
+        "placeholder_version": 0,
+        "content_scan_metadata": {
+          "flags": 0
+        },
         "content_type": "string",
+        "flags": 0,
         "attachment_id": "string"
       },
       "description": "string",
@@ -116382,7 +116784,13 @@ BotToken
     "proxy_url": "string",
     "width": 0,
     "height": 0,
+    "placeholder": "string",
+    "placeholder_version": 0,
+    "content_scan_metadata": {
+      "flags": 0
+    },
     "content_type": "string",
+    "flags": 0,
     "attachment_id": "string"
   },
   "description": "string",
@@ -122707,6 +123115,25 @@ BotToken
 |Property|Value|
 |---|---|
 |type|guild_subscription|
+
+<h2 id="tocS_PermissionsResponse">PermissionsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemapermissionsresponse"></a>
+<a id="schema_PermissionsResponse"></a>
+<a id="tocSpermissionsresponse"></a>
+<a id="tocspermissionsresponse"></a>
+
+```json
+{
+  "permissions": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|permissions|string|true|none|The computed permissions, as a stringified bitfield|
 
 <h2 id="tocS_PinnedMessageResponse">PinnedMessageResponse</h2>
 <!-- backwards compatibility -->
@@ -142097,7 +142524,13 @@ BotToken
     "proxy_url": "string",
     "width": 0,
     "height": 0,
+    "placeholder": "string",
+    "placeholder_version": 0,
+    "content_scan_metadata": {
+      "flags": 0
+    },
     "content_type": "string",
+    "flags": 0,
     "attachment_id": "string"
   },
   "description": "string",
@@ -142206,7 +142639,13 @@ BotToken
   "proxy_url": "string",
   "width": 0,
   "height": 0,
+  "placeholder": "string",
+  "placeholder_version": 0,
+  "content_scan_metadata": {
+    "flags": 0
+  },
   "content_type": "string",
+  "flags": 0,
   "attachment_id": "string"
 }
 ```
@@ -142217,10 +142656,14 @@ BotToken
 |---|---|---|---|---|
 |id|[SnowflakeType](#schemasnowflaketype)|true|none|none|
 |url|string|true|none|none|
-|proxy_url|string|true|none|none|
+|proxy_url|string|false|none|none|
 |width|integer \| null(int32)|false|none|none|
 |height|integer \| null(int32)|false|none|none|
+|placeholder|string \| null|false|none|none|
+|placeholder_version|integer \| null(int32)|false|none|none|
+|content_scan_metadata|[ContentScanMetadataResponse](#schemacontentscanmetadataresponse)|false|none|none|
 |content_type|string \| null|false|none|none|
+|flags|integer(int32)|false|none|none|
 |attachment_id|[SnowflakeType](#schemasnowflaketype)|false|none|none|
 
 <h2 id="tocS_UpdateApplicationUserRoleConnectionRequest">UpdateApplicationUserRoleConnectionRequest</h2>

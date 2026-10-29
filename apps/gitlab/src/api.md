@@ -4848,9 +4848,9 @@ Retrieves deployment frequency analytics data for a specific project.
 ```json
 [
   {
-    "value": "string",
-    "from": "string",
-    "to": "string"
+    "value": 0,
+    "from": "1970-01-01",
+    "to": "1970-01-01"
   }
 ]
 ```
@@ -24479,7 +24479,7 @@ Retrieves code review analytics data for a specific project.
   },
   "notes_count": 10,
   "review_time": 6,
-  "diff_stats": "string"
+  "diff_stats": {}
 }
 ```
 
@@ -27583,10 +27583,10 @@ Retrieves information about a specified model record. Only available to administ
   "file_size": 123,
   "checksum_information": {
     "checksum": "string",
-    "last_checksum": "string",
+    "last_checksum": "1970-01-01T00:00:00Z",
     "checksum_state": "string",
-    "checksum_retry_count": "string",
-    "checksum_retry_at": "string",
+    "checksum_retry_count": 0,
+    "checksum_retry_at": "1970-01-01T00:00:00Z",
     "checksum_failure": "string"
   }
 }
@@ -27643,10 +27643,10 @@ Recalculates the checksum of a specified model record. The checksum value is a r
   "file_size": 123,
   "checksum_information": {
     "checksum": "string",
-    "last_checksum": "string",
+    "last_checksum": "1970-01-01T00:00:00Z",
     "checksum_state": "string",
-    "checksum_retry_count": "string",
-    "checksum_retry_at": "string",
+    "checksum_retry_count": 0,
+    "checksum_retry_at": "1970-01-01T00:00:00Z",
     "checksum_failure": "string"
   }
 }
@@ -27720,10 +27720,10 @@ Retrieves information about a data model in an instance. Only available to admin
     "file_size": 123,
     "checksum_information": {
       "checksum": "string",
-      "last_checksum": "string",
+      "last_checksum": "1970-01-01T00:00:00Z",
       "checksum_state": "string",
-      "checksum_retry_count": "string",
-      "checksum_retry_at": "string",
+      "checksum_retry_count": 0,
+      "checksum_retry_at": "1970-01-01T00:00:00Z",
       "checksum_failure": "string"
     }
   }
@@ -27820,10 +27820,10 @@ Recalculates checksums for selected records of a specified model, filtered by `c
   "file_size": 123,
   "checksum_information": {
     "checksum": "string",
-    "last_checksum": "string",
+    "last_checksum": "1970-01-01T00:00:00Z",
     "checksum_state": "string",
-    "checksum_retry_count": "string",
-    "checksum_retry_at": "string",
+    "checksum_retry_count": 0,
+    "checksum_retry_at": "1970-01-01T00:00:00Z",
     "checksum_failure": "string"
   }
 }
@@ -37583,8 +37583,8 @@ Lists all enterprise users for a specified top-level group. Use the `page` and `
     "extra_shared_runners_minutes_limit": "string",
     "scim_identities": {
       "extern_uid": "string",
-      "group_id": "string",
-      "active": "string"
+      "group_id": 0,
+      "active": true
     }
   }
 ]
@@ -37696,8 +37696,8 @@ Retrieves a specified enterprise user.
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   }
 }
 ```
@@ -37861,8 +37861,8 @@ Updates a specified enterprise user.
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   }
 }
 ```
@@ -54562,6 +54562,7 @@ Returns connection details including tokens for accessing third-party agents.
 |400|Bad Request|Bad Request|None|
 |401|Unauthorized|Unauthorized|None|
 |404|Not Found|Not found|None|
+|429|Too Many Requests|Too many requests|None|
 |503|Service Unavailable|Service unavailable|None|
 
 <aside class="warning">
@@ -55145,25 +55146,33 @@ Retrieves detailed information about a specific workflow by its ID.
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "web_url": "https://gitlab.example.com/group/project/-/automate/agent-sessions/42",
-  "project_id": "string",
-  "namespace_id": "string",
-  "agent_privileges": "string",
-  "agent_privileges_names": "string",
-  "pre_approved_agent_privileges": "string",
-  "pre_approved_agent_privileges_names": "string",
+  "project_id": 0,
+  "namespace_id": 0,
+  "agent_privileges": [
+    0
+  ],
+  "agent_privileges_names": [
+    "string"
+  ],
+  "pre_approved_agent_privileges": [
+    0
+  ],
+  "pre_approved_agent_privileges_names": [
+    "string"
+  ],
   "workflow_definition": "string",
   "status": "string",
   "summary": "string",
   "title": "string",
-  "allow_agent_to_request_user": "string",
+  "allow_agent_to_request_user": true,
   "image": "string",
   "environment": "string",
-  "ai_catalog_item_version_id": "string",
-  "workload": "string",
-  "mcp_enabled": "string",
-  "incremental_checkpoints_enabled": "string",
+  "ai_catalog_item_version_id": 0,
+  "workload": {},
+  "mcp_enabled": true,
+  "incremental_checkpoints_enabled": true,
   "gitlab_url": "string"
 }
 ```
@@ -55269,25 +55278,25 @@ Lists all checkpoints associated with a specific workflow.
 ```json
 [
   {
-    "id": "string",
+    "id": 0,
     "thread_ts": "string",
     "parent_ts": "string",
     "checkpoint_ns": "string",
-    "checkpoint": "string",
+    "checkpoint": {},
     "compressed_checkpoint": "string",
     "checkpoint_writes": [
       {
-        "id": "string",
+        "id": 0,
         "thread_ts": "string",
         "task": "string",
-        "idx": "string",
+        "idx": 0,
         "channel": "string",
         "write_type": "string",
         "data": "string"
       }
     ],
-    "current_thread": "string",
-    "metadata": "string"
+    "current_thread": 0,
+    "metadata": {}
   }
 ]
 ```
@@ -55420,7 +55429,7 @@ Creates a new checkpoint state for an active workflow execution.
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "thread_ts": "string",
   "parent_ts": "string",
   "checkpoint_ns": "string"
@@ -55472,25 +55481,25 @@ Retrieves a full workflow checkpoint reconstructed from incremental data blobs.
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "thread_ts": "string",
   "parent_ts": "string",
   "checkpoint_ns": "string",
-  "checkpoint": "string",
+  "checkpoint": {},
   "compressed_checkpoint": "string",
   "checkpoint_writes": [
     {
-      "id": "string",
+      "id": 0,
       "thread_ts": "string",
       "task": "string",
-      "idx": "string",
+      "idx": 0,
       "channel": "string",
       "write_type": "string",
       "data": "string"
     }
   ],
-  "current_thread": "string",
-  "metadata": "string"
+  "current_thread": 0,
+  "metadata": {}
 }
 ```
 
@@ -55539,25 +55548,25 @@ Retrieves detailed information about a specific workflow checkpoint.
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "thread_ts": "string",
   "parent_ts": "string",
   "checkpoint_ns": "string",
-  "checkpoint": "string",
+  "checkpoint": {},
   "compressed_checkpoint": "string",
   "checkpoint_writes": [
     {
-      "id": "string",
+      "id": 0,
       "thread_ts": "string",
       "task": "string",
-      "idx": "string",
+      "idx": 0,
       "channel": "string",
       "write_type": "string",
       "data": "string"
     }
   ],
-  "current_thread": "string",
-  "metadata": "string"
+  "current_thread": 0,
+  "metadata": {}
 }
 ```
 
@@ -55680,7 +55689,7 @@ Retrieves a list of all events associated with a specific workflow.
 ```json
 [
   {
-    "id": "string",
+    "id": 0,
     "correlation_id": "string",
     "event_type": "string",
     "event_status": "string",
@@ -55772,7 +55781,7 @@ Creates a new event for a specified workflow execution.
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "correlation_id": "string",
   "event_type": "string",
   "event_status": "string",
@@ -55846,7 +55855,7 @@ Updates an existing event for a specified workflow.
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "correlation_id": "string",
   "event_type": "string",
   "event_status": "string",
@@ -58214,8 +58223,8 @@ Lists all billable members of a specified top-level group. Includes members in a
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -58230,6 +58239,7 @@ Lists all billable members of a specified top-level group. Includes members in a
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -59807,6 +59817,7 @@ Retrieves a specified group by ID or path.
   "lock_built_in_project_templates_enabled": true,
   "require_sha_for_merge": true,
   "lock_require_sha_for_merge": true,
+  "require_two_factor_authentication_from_ancestor": true,
   "shared_with_groups": [
     {}
   ],
@@ -62887,6 +62898,7 @@ Transfers a specified project to another group. Administrators only.
   "lock_built_in_project_templates_enabled": true,
   "require_sha_for_merge": true,
   "lock_require_sha_for_merge": true,
+  "require_two_factor_authentication_from_ancestor": true,
   "shared_with_groups": [
     {}
   ],
@@ -63844,6 +63856,7 @@ Transfers a group to another organization asynchronously. Requires the Owner rol
   "lock_built_in_project_templates_enabled": true,
   "require_sha_for_merge": true,
   "lock_require_sha_for_merge": true,
+  "require_two_factor_authentication_from_ancestor": true,
   "shared_with_groups": [
     {}
   ],
@@ -64627,6 +64640,7 @@ Adds a group to a group.
   "lock_built_in_project_templates_enabled": true,
   "require_sha_for_merge": true,
   "lock_require_sha_for_merge": true,
+  "require_two_factor_authentication_from_ancestor": true,
   "shared_with_groups": [
     {}
   ],
@@ -65465,8 +65479,8 @@ Lists all SAML users for a specified top-level group. Use the `page` and `per_pa
     "extra_shared_runners_minutes_limit": "string",
     "scim_identities": {
       "extern_uid": "string",
-      "group_id": "string",
-      "active": "string"
+      "group_id": 0,
+      "active": true
     }
   }
 ]
@@ -65585,8 +65599,8 @@ Lists all provisioned users for a specified group.
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   }
 }
 ```
@@ -69510,6 +69524,7 @@ Retrieves the current application settings for this GitLab instance.
   "minimum_password_length": "string",
   "mirror_available": "string",
   "notify_on_unknown_sign_in": "string",
+  "o11y_provisioner_url": "string",
   "organization_cluster_agent_authorization_enabled": "string",
   "pages_domain_verification_enabled": "string",
   "pages_unique_domain_default_enabled": "string",
@@ -69749,6 +69764,7 @@ Retrieves the current application settings for this GitLab instance.
   "users_api_limit_gpg_keys": "string",
   "users_api_limit_gpg_key": "string",
   "tags_create_limit": "string",
+  "todos_list_api_limit": "string",
   "group_hooks_create_limit": "string",
   "project_hooks_create_limit": "string",
   "system_hooks_create_limit": "string",
@@ -69902,6 +69918,8 @@ Retrieves the current application settings for this GitLab instance.
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
+  "duo_scheduled_triggers_enabled": "string",
+  "duo_scheduled_triggers_availability": "string",
   "duo_custom_agents_enabled": true,
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_enabled": true,
@@ -69936,6 +69954,10 @@ Retrieves the current application settings for this GitLab instance.
   "zoekt_initial_indexing_limit": "string",
   "orbit_auto_index_root_namespace": "string",
   "orbit_dap_enabled_by_default": "string",
+  "orbit_query_limit": "string",
+  "orbit_indexing_status_limit": "string",
+  "orbit_item_counts_limit": "string",
+  "orbit_rate_limit_allowlist_raw": "string",
   "duo_workflow_oauth_application_id": "string",
   "scan_execution_policies_action_limit": "string",
   "scan_execution_policies_schedule_limit": "string",
@@ -70187,6 +70209,8 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "max_pages_custom_domains_per_project": 0,
     "max_terraform_state_size_bytes": 0,
     "metrics_method_call_threshold": 0,
+    "o11y_provisioner_api_key": "string",
+    "o11y_provisioner_url": "string",
     "password_authentication_enabled": true,
     "password_authentication_enabled_for_web": true,
     "signin_enabled": true,
@@ -70305,7 +70329,7 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "pipeline_delete_limit_per_user_project": 0,
     "job_erase_limit_per_user_project": 0,
     "job_cancel_limit_per_user_project": 0,
-    "ai_action_api_rate_limit": 0,
+    "ai_action_api_rate_limit": 1,
     "code_suggestions_api_rate_limit": 0,
     "resource_usage_limits": {},
     "code_dropdown_custom_clients": [
@@ -70542,6 +70566,10 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "audit_events_api_limit": 0,
     "project_audit_events_api_limit": 0,
     "group_audit_events_api_limit": 0,
+    "orbit_query_limit": 0,
+    "orbit_indexing_status_limit": 0,
+    "orbit_item_counts_limit": 0,
+    "orbit_rate_limit_allowlist_raw": "string",
     "group_owners_can_manage_default_branch_protection": true,
     "maintenance_mode": true,
     "maintenance_mode_message": "string",
@@ -70720,6 +70748,7 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "users_api_limit_ssh_keys": "string",
     "users_api_limit_ssh_key": "string",
     "tags_create_limit": "string",
+    "todos_list_api_limit": "string",
     "observability_backend_ssl_verification_enabled": "string",
     "global_search_snippet_titles_enabled": "string",
     "global_search_users_enabled": "string",
@@ -70782,6 +70811,8 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "duo_remote_flows_availability": "string",
     "duo_foundational_flows_enabled": "string",
     "duo_foundational_flows_availability": "string",
+    "duo_scheduled_triggers_enabled": "string",
+    "duo_scheduled_triggers_availability": "string",
     "duo_custom_agents_availability": "string",
     "duo_custom_flows_availability": "string",
     "duo_external_agents_availability": "string",
@@ -70956,6 +70987,8 @@ Updates the current application settings for this GitLab instance. At least one 
   "max_pages_custom_domains_per_project": 0,
   "max_terraform_state_size_bytes": 0,
   "metrics_method_call_threshold": 0,
+  "o11y_provisioner_api_key": "string",
+  "o11y_provisioner_url": "string",
   "password_authentication_enabled": true,
   "password_authentication_enabled_for_web": true,
   "signin_enabled": true,
@@ -71074,7 +71107,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "pipeline_delete_limit_per_user_project": 0,
   "job_erase_limit_per_user_project": 0,
   "job_cancel_limit_per_user_project": 0,
-  "ai_action_api_rate_limit": 0,
+  "ai_action_api_rate_limit": 1,
   "code_suggestions_api_rate_limit": 0,
   "resource_usage_limits": {},
   "code_dropdown_custom_clients": [
@@ -71311,6 +71344,10 @@ Updates the current application settings for this GitLab instance. At least one 
   "audit_events_api_limit": 0,
   "project_audit_events_api_limit": 0,
   "group_audit_events_api_limit": 0,
+  "orbit_query_limit": 0,
+  "orbit_indexing_status_limit": 0,
+  "orbit_item_counts_limit": 0,
+  "orbit_rate_limit_allowlist_raw": "string",
   "group_owners_can_manage_default_branch_protection": true,
   "maintenance_mode": true,
   "maintenance_mode_message": "string",
@@ -71489,6 +71526,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "users_api_limit_ssh_keys": "string",
   "users_api_limit_ssh_key": "string",
   "tags_create_limit": "string",
+  "todos_list_api_limit": "string",
   "observability_backend_ssl_verification_enabled": "string",
   "global_search_snippet_titles_enabled": "string",
   "global_search_users_enabled": "string",
@@ -71551,6 +71589,8 @@ Updates the current application settings for this GitLab instance. At least one 
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
+  "duo_scheduled_triggers_enabled": "string",
+  "duo_scheduled_triggers_availability": "string",
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_availability": "string",
   "duo_external_agents_availability": "string",
@@ -71698,6 +71738,8 @@ Updates the current application settings for this GitLab instance. At least one 
 |» max_pages_custom_domains_per_project|body|integer \| null|false|Maximum number of GitLab Pages custom domains per project|
 |» max_terraform_state_size_bytes|body|integer \| null|false|Maximum size of the Terraform state file in bytes. Set to `0` for unlimited size.|
 |» metrics_method_call_threshold|body|integer \| null|false|Method call is only tracked if it takes longer than this threshold, in milliseconds.|
+|» o11y_provisioner_api_key|body|string \| null|false|API key GitLab sends to the Observability provisioner. GitLab.com only. Not returned in responses.|
+|» o11y_provisioner_url|body|string \| null|false|URL of the Observability provisioner API. GitLab.com only.|
 |» password_authentication_enabled|body|boolean \| null|false|Flag indicating if password authentication is enabled for the web interface. Mutually exclusive with `password_authentication_enabled_for_web`, `signin_enabled`.|
 |» password_authentication_enabled_for_web|body|boolean \| null|false|If `true`, enables authentication for the web interface via a GitLab account password. Defaults to `true`. Mutually exclusive with `password_authentication_enabled`, `signin_enabled`.|
 |» signin_enabled|body|boolean \| null|false|If `true`, enables password authentication for the web interface. Deprecated. Use `password_authentication_enabled_for_web` instead. Mutually exclusive with `password_authentication_enabled_for_web`, `password_authentication_enabled`.|
@@ -72039,6 +72081,10 @@ Updates the current application settings for this GitLab instance. At least one 
 |» audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user to the instance audit events API.|
 |» project_audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user per project to the project audit events API.|
 |» group_audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user per group to the group audit events API.|
+|» orbit_query_limit|body|integer \| null|false|Maximum number of GitLab Orbit queries per minute per user. Default: `60`. Set to `0` to disable the rate limit.|
+|» orbit_indexing_status_limit|body|integer \| null|false|Maximum number of GitLab Orbit indexing status requests per minute per user. Default: `30`. Set to `0` to disable the rate limit.|
+|» orbit_item_counts_limit|body|integer \| null|false|Maximum number of GitLab Orbit item count requests per minute per user. Default: `30`. Set to `0` to disable the rate limit.|
+|» orbit_rate_limit_allowlist_raw|body|string \| null|false|Raw newline-, comma-, or whitespace-separated list of usernames excluded from the GitLab Orbit rate limits. Maximum: 100 usernames.|
 |» group_owners_can_manage_default_branch_protection|body|boolean \| null|false|If `true`, allows group owners to manage default branch protection in their groups. If `false`, group owners cannot override the instance default branch protection. GitLab Self-Managed, Premium and Ultimate only.|
 |» maintenance_mode|body|boolean \| null|false|If `true`, puts the instance into maintenance mode. Non-administrator users can sign in with read-only access and make read-only API requests. Premium and Ultimate only.|
 |» maintenance_mode_message|body|string \| null|false|Message displayed when instance is in maintenance mode. Premium and Ultimate only.|
@@ -72207,6 +72253,7 @@ Updates the current application settings for this GitLab instance. At least one 
 |» users_api_limit_ssh_keys|body|string \| null|false|none|
 |» users_api_limit_ssh_key|body|string \| null|false|none|
 |» tags_create_limit|body|string \| null|false|none|
+|» todos_list_api_limit|body|string \| null|false|none|
 |» observability_backend_ssl_verification_enabled|body|string \| null|false|none|
 |» global_search_snippet_titles_enabled|body|string \| null|false|none|
 |» global_search_users_enabled|body|string \| null|false|none|
@@ -72269,6 +72316,8 @@ Updates the current application settings for this GitLab instance. At least one 
 |» duo_remote_flows_availability|body|string \| null|false|none|
 |» duo_foundational_flows_enabled|body|string \| null|false|none|
 |» duo_foundational_flows_availability|body|string \| null|false|none|
+|» duo_scheduled_triggers_enabled|body|string \| null|false|none|
+|» duo_scheduled_triggers_availability|body|string \| null|false|none|
 |» duo_custom_agents_availability|body|string \| null|false|none|
 |» duo_custom_flows_availability|body|string \| null|false|none|
 |» duo_external_agents_availability|body|string \| null|false|none|
@@ -72569,6 +72618,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "minimum_password_length": "string",
   "mirror_available": "string",
   "notify_on_unknown_sign_in": "string",
+  "o11y_provisioner_url": "string",
   "organization_cluster_agent_authorization_enabled": "string",
   "pages_domain_verification_enabled": "string",
   "pages_unique_domain_default_enabled": "string",
@@ -72808,6 +72858,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "users_api_limit_gpg_keys": "string",
   "users_api_limit_gpg_key": "string",
   "tags_create_limit": "string",
+  "todos_list_api_limit": "string",
   "group_hooks_create_limit": "string",
   "project_hooks_create_limit": "string",
   "system_hooks_create_limit": "string",
@@ -72961,6 +73012,8 @@ Updates the current application settings for this GitLab instance. At least one 
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
+  "duo_scheduled_triggers_enabled": "string",
+  "duo_scheduled_triggers_availability": "string",
   "duo_custom_agents_enabled": true,
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_enabled": true,
@@ -72995,6 +73048,10 @@ Updates the current application settings for this GitLab instance. At least one 
   "zoekt_initial_indexing_limit": "string",
   "orbit_auto_index_root_namespace": "string",
   "orbit_dap_enabled_by_default": "string",
+  "orbit_query_limit": "string",
+  "orbit_indexing_status_limit": "string",
+  "orbit_item_counts_limit": "string",
+  "orbit_rate_limit_allowlist_raw": "string",
   "duo_workflow_oauth_application_id": "string",
   "scan_execution_policies_action_limit": "string",
   "scan_execution_policies_schedule_limit": "string",
@@ -97203,8 +97260,8 @@ Retrieves user by SSH key ID. Administrators only.
     "extra_shared_runners_minutes_limit": "string",
     "scim_identities": {
       "extern_uid": "string",
-      "group_id": "string",
-      "active": "string"
+      "group_id": 0,
+      "active": true
     }
   }
 }
@@ -97307,8 +97364,8 @@ Retrieves user by SSH key fingerprint. Administrators only.
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "is_admin": "string",
   "note": "string",
@@ -102498,6 +102555,7 @@ Lists all member roles in a specified group.
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -102584,6 +102642,7 @@ curl https://gitlab.com/api/v4/api/v4/groups/string/member_roles \
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -102643,6 +102702,7 @@ Adds a member role to a group. You can only add member roles at the root level o
   "apply_security_scan_profiles": false,
   "admin_merge_request": false,
   "archive_project": false,
+  "archive_subgroup": false,
   "admin_ai_catalog_item_consumer": false,
   "create_security_scan_profiles": false,
   "destroy_package": false,
@@ -102700,6 +102760,7 @@ Adds a member role to a group. You can only add member roles at the root level o
 |» apply_security_scan_profiles|body|boolean|false|Apply security scan profiles.|
 |» admin_merge_request|body|boolean|false|Allows approval of merge requests.|
 |» archive_project|body|boolean|false|Allows archiving of projects.|
+|» archive_subgroup|body|boolean|false|Ability to archive or unarchive a subgroup. This ability does not allow archiving top-level groups. Archiving unlinks projects from their fork networks and closes their open cross-fork merge requests, and unarchiving does not restore either.|
 |» admin_ai_catalog_item_consumer|body|boolean|false|Enable, disable, and configure custom agents and flows from the AI catalog for a project.|
 |» create_security_scan_profiles|body|boolean|false|Create security scan profiles.|
 |» destroy_package|body|boolean|false|Delete packages and package files in the package registry.|
@@ -102769,6 +102830,7 @@ Adds a member role to a group. You can only add member roles at the root level o
   "apply_security_scan_profiles": false,
   "admin_merge_request": false,
   "archive_project": false,
+  "archive_subgroup": false,
   "admin_ai_catalog_item_consumer": false,
   "create_security_scan_profiles": false,
   "destroy_package": false,
@@ -102896,6 +102958,7 @@ Lists all member roles for this GitLab instance.
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -102981,6 +103044,7 @@ curl https://gitlab.com/api/v4/api/v4/member_roles \
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -103040,6 +103104,7 @@ Creates an instance member role.
   "apply_security_scan_profiles": false,
   "admin_merge_request": false,
   "archive_project": false,
+  "archive_subgroup": false,
   "admin_ai_catalog_item_consumer": false,
   "create_security_scan_profiles": false,
   "destroy_package": false,
@@ -103096,6 +103161,7 @@ Creates an instance member role.
 |» apply_security_scan_profiles|body|boolean|false|Apply security scan profiles.|
 |» admin_merge_request|body|boolean|false|Allows approval of merge requests.|
 |» archive_project|body|boolean|false|Allows archiving of projects.|
+|» archive_subgroup|body|boolean|false|Ability to archive or unarchive a subgroup. This ability does not allow archiving top-level groups. Archiving unlinks projects from their fork networks and closes their open cross-fork merge requests, and unarchiving does not restore either.|
 |» admin_ai_catalog_item_consumer|body|boolean|false|Enable, disable, and configure custom agents and flows from the AI catalog for a project.|
 |» create_security_scan_profiles|body|boolean|false|Create security scan profiles.|
 |» destroy_package|body|boolean|false|Delete packages and package files in the package registry.|
@@ -103165,6 +103231,7 @@ Creates an instance member role.
   "apply_security_scan_profiles": false,
   "admin_merge_request": false,
   "archive_project": false,
+  "archive_subgroup": false,
   "admin_ai_catalog_item_consumer": false,
   "create_security_scan_profiles": false,
   "destroy_package": false,
@@ -103290,6 +103357,7 @@ Retrieves all custom admin roles configured for the instance.
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -103427,6 +103495,7 @@ Creates a new custom admin role with specified permissions.
   "apply_security_scan_profiles": false,
   "admin_merge_request": false,
   "archive_project": false,
+  "archive_subgroup": false,
   "admin_ai_catalog_item_consumer": false,
   "create_security_scan_profiles": false,
   "destroy_package": false,
@@ -103607,8 +103676,8 @@ Lists all direct members of a specified group viewable by the authenticated user
     },
     "group_scim_identity": {
       "extern_uid": "string",
-      "group_id": "string",
-      "active": "string"
+      "group_id": 0,
+      "active": true
     },
     "email": "string",
     "is_using_seat": "string",
@@ -103623,6 +103692,7 @@ Lists all direct members of a specified group viewable by the authenticated user
       "apply_security_scan_profiles": false,
       "admin_merge_request": false,
       "archive_project": false,
+      "archive_subgroup": false,
       "admin_ai_catalog_item_consumer": false,
       "create_security_scan_profiles": false,
       "destroy_package": false,
@@ -103791,8 +103861,8 @@ Adds a member to a specified group.
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -103807,6 +103877,7 @@ Adds a member to a specified group.
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -103951,8 +104022,8 @@ Lists all members of a specified group viewable by the authenticated user. Also 
     },
     "group_scim_identity": {
       "extern_uid": "string",
-      "group_id": "string",
-      "active": "string"
+      "group_id": 0,
+      "active": true
     },
     "email": "string",
     "is_using_seat": "string",
@@ -103967,6 +104038,7 @@ Lists all members of a specified group viewable by the authenticated user. Also 
       "apply_security_scan_profiles": false,
       "admin_merge_request": false,
       "archive_project": false,
+      "archive_subgroup": false,
       "admin_ai_catalog_item_consumer": false,
       "create_security_scan_profiles": false,
       "destroy_package": false,
@@ -104107,8 +104179,8 @@ Retrieves a specified member of a group. Returns only direct members and not inh
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -104123,6 +104195,7 @@ Retrieves a specified member of a group. Returns only direct members and not inh
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -104275,8 +104348,8 @@ Updates a specified member of a group.
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -104291,6 +104364,7 @@ Updates a specified member of a group.
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -104460,8 +104534,8 @@ Retrieves a specified member of a group. Returns direct members and members inhe
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -104476,6 +104550,7 @@ Retrieves a specified member of a group. Returns direct members and members inhe
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -104614,8 +104689,8 @@ Lists all direct members of a specified project viewable by the authenticated us
     },
     "group_scim_identity": {
       "extern_uid": "string",
-      "group_id": "string",
-      "active": "string"
+      "group_id": 0,
+      "active": true
     },
     "email": "string",
     "is_using_seat": "string",
@@ -104630,6 +104705,7 @@ Lists all direct members of a specified project viewable by the authenticated us
       "apply_security_scan_profiles": false,
       "admin_merge_request": false,
       "archive_project": false,
+      "archive_subgroup": false,
       "admin_ai_catalog_item_consumer": false,
       "create_security_scan_profiles": false,
       "destroy_package": false,
@@ -104798,8 +104874,8 @@ Adds a member to a specified project.
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -104814,6 +104890,7 @@ Adds a member to a specified project.
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -104958,8 +105035,8 @@ Lists all members of a specified project viewable by the authenticated user. Als
     },
     "group_scim_identity": {
       "extern_uid": "string",
-      "group_id": "string",
-      "active": "string"
+      "group_id": 0,
+      "active": true
     },
     "email": "string",
     "is_using_seat": "string",
@@ -104974,6 +105051,7 @@ Lists all members of a specified project viewable by the authenticated user. Als
       "apply_security_scan_profiles": false,
       "admin_merge_request": false,
       "archive_project": false,
+      "archive_subgroup": false,
       "admin_ai_catalog_item_consumer": false,
       "create_security_scan_profiles": false,
       "destroy_package": false,
@@ -105114,8 +105192,8 @@ Retrieves a specified member of a project. Returns only direct members and not i
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -105130,6 +105208,7 @@ Retrieves a specified member of a project. Returns only direct members and not i
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -105282,8 +105361,8 @@ Updates a specified member of a project.
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -105298,6 +105377,7 @@ Updates a specified member of a project.
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -105467,8 +105547,8 @@ Retrieves a specified member of a project. Returns direct members and members in
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -105483,6 +105563,7 @@ Retrieves a specified member of a project. Returns direct members and members in
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -105615,8 +105696,8 @@ Sets the override flag for a member of a group. By default, the access level of 
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -105631,6 +105712,7 @@ Sets the override flag for a member of a group. By default, the access level of 
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -105763,8 +105845,8 @@ Removes an LDAP access level override for a member of a group.
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -105779,6 +105861,7 @@ Removes an LDAP access level override for a member of a group.
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -106033,16 +106116,16 @@ Lists all memberships for a specified billable member of a group. The response r
 
 ```json
 {
-  "id": "string",
-  "source_id": "string",
+  "id": 0,
+  "source_id": 0,
   "source_full_name": "string",
   "source_members_url": "string",
-  "created_at": "string",
-  "expires_at": "string",
+  "created_at": "1970-01-01T00:00:00Z",
+  "expires_at": "1970-01-01",
   "access_level": {
     "string_value": "string",
-    "integer_value": "string",
-    "custom_role": "string"
+    "integer_value": 0,
+    "custom_role": {}
   }
 }
 ```
@@ -106091,16 +106174,16 @@ Lists all indirect memberships for a billable member of a group. This operation 
 
 ```json
 {
-  "id": "string",
-  "source_id": "string",
+  "id": 0,
+  "source_id": 0,
   "source_full_name": "string",
   "source_members_url": "string",
-  "created_at": "string",
-  "expires_at": "string",
+  "created_at": "1970-01-01T00:00:00Z",
+  "expires_at": "1970-01-01",
   "access_level": {
     "string_value": "string",
-    "integer_value": "string",
-    "custom_role": "string"
+    "integer_value": 0,
+    "custom_role": {}
   }
 }
 ```
@@ -122642,9 +122725,6 @@ http, oauth2, apiKey
 Use this API to query [GitLab Orbit](https://docs.gitlab.com/orbit/),
 which indexes a group's software development lifecycle.
 
-> [!note]
-> The availability of these endpoints is controlled by a feature flag, and GitLab Orbit is in beta.
-
 <a href="https://docs.gitlab.com/api/orbit/">External documentation</a>
 
 ## Execute a query
@@ -122659,7 +122739,7 @@ curl https://gitlab.com/api/v4/api/v4/orbit/query \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "query": {},
+    "query": "string",
     "response_format": "raw",
     "source_type": "string"
   }'
@@ -122673,7 +122753,7 @@ Executes a query against the Orbit gRPC service.
 
 ```json
 {
-  "query": {},
+  "query": "string",
   "response_format": "raw",
   "source_type": "string"
 }
@@ -122684,9 +122764,7 @@ Executes a query against the Orbit gRPC service.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[postApiV4OrbitQueryRequest](#schemapostapiv4orbitqueryrequest)|true|none|
-|» query|body|object \| null \| string \| null|true|JSON query object, or GQL text when enabled for the current user|
-|» » *oneOf*|body|object \| null|false|none|
-|» » *oneOf*|body|string \| null|false|none|
+|» query|body|string \| null|true|GQL query text|
 |» response_format|body|string|false|Response format: raw, llm, or gql|
 |» source_type|body|string \| null|false|Optional frontend source subtype (e.g. code_intelligence)|
 
@@ -122815,7 +122893,7 @@ Resolves one Orbit token to a PostgreSQL summary and, optionally, its graph neig
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[postApiV4OrbitContextRequest](#schemapostapiv4orbitcontextrequest)|true|none|
-|» tokens|body|[string]|true|Exactly one token: Type[id], a GID, an instance URL, path!iid, path#iid, or path&iid (epic)|
+|» tokens|body|[string]|true|Exactly one token: Type[id], a GID, an instance URL, path!iid, path#iid, path&iid (epic), or path@ref (branch or commit)|
 |» expand|body|boolean|false|Attach the graph neighborhood of the entity|
 |» » *oneOf*|body|boolean|false|none|
 |» response_format|body|string|false|Response format: raw or llm|
@@ -122833,7 +122911,7 @@ Resolves one Orbit token to a PostgreSQL summary and, optionally, its graph neig
 
 ```json
 {
-  "version": "1.1.0",
+  "version": "1.3.0",
   "entities": [
     {
       "token": "MergeRequest[123]",
@@ -122859,114 +122937,6 @@ Resolves one Orbit token to a PostgreSQL summary and, optionally, its graph neig
 |403|Forbidden|Forbidden|None|
 |404|Not Found|Not found|None|
 |429|Too Many Requests|Too many requests|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
-## List named query templates
-
-<a id="opIdgetApiV4OrbitQueryTemplates"></a>
-
-> Code samples
-
-```bash
-curl https://gitlab.com/api/v4/api/v4/orbit/query/templates \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/orbit/query/templates`
-
-Lists the server-defined named queries with their query DSL rendered for the current user.
-
-<h3 id="list-named-query-templates-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|None|
-|400|Bad Request|Bad Request|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
-## Retrieve the schema
-
-<a id="opIdgetApiV4OrbitSchema"></a>
-
-> Code samples
-
-```bash
-curl https://gitlab.com/api/v4/api/v4/orbit/schema \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/orbit/schema`
-
-Retrieves the Orbit schema.
-
-<h3 id="retrieve-the-schema-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|expand|query|string \| null|false|Comma-separated node names to expand|
-|response_format|query|string|false|Response format: raw or llm|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|response_format|raw|
-|response_format|llm|
-
-<h3 id="retrieve-the-schema-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|None|
-|400|Bad Request|Bad Request|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
-## Retrieve access and cluster health
-
-<a id="opIdgetApiV4OrbitStatus"></a>
-
-> Code samples
-
-```bash
-curl https://gitlab.com/api/v4/api/v4/orbit/status \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/orbit/status`
-
-Returns whether the user can access Orbit, plus cluster health. Always returns 200, regardless of access.
-
-<h3 id="retrieve-access-and-cluster-health-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|response_format|query|string|false|Response format: raw or llm|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|response_format|raw|
-|response_format|llm|
-
-<h3 id="retrieve-access-and-cluster-health-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|None|
-|400|Bad Request|Bad Request|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -123106,33 +123076,6 @@ Retrieves a UTF-8 file from a deployed Orbit skill as raw text.
 |400|Bad Request|Bad Request|None|
 |401|Unauthorized|Unauthorized|None|
 |404|Not Found|Skill file not found or skills are not available|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
-## List all tools
-
-<a id="opIdgetApiV4OrbitTools"></a>
-
-> Code samples
-
-```bash
-curl https://gitlab.com/api/v4/api/v4/orbit/tools \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/orbit/tools`
-
-Lists all available Orbit operations.
-
-<h3 id="list-all-tools-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|None|
-|400|Bad Request|Bad Request|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -132952,44 +132895,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 http, oauth2, apiKey
 </aside>
 
-## Download a forwarded (proxied) PyPI package file
-
-<a id="opIdgetApiV4ProjectsIdPackagesPypiForwardPackageNameUpstreamPath"></a>
-
-> Code samples
-
-```bash
-curl https://gitlab.com/api/v4/api/v4/projects/string/packages/pypi/forward/my.pypi.package/string \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/projects/{id}/packages/pypi/forward/{package_name}/{upstream_path}`
-
-Enforces the Dependency Firewall then redirects to the upstream artifact.
-
-<h3 id="download-a-forwarded-proxied-pypi-package-file-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string \| integer|true|ID or URL-encoded path of the project.|
-|package_name|path|string|true|The normalized PyPI package name|
-|upstream_path|path|string|true|The upstream artifact host and path, as emitted by the Simple index rewrite|
-
-<h3 id="download-a-forwarded-proxied-pypi-package-file-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|302|Found|Found|None|
-|400|Bad Request|Bad Request|None|
-|401|Unauthorized|Unauthorized|None|
-|403|Forbidden|Forbidden|None|
-|404|Not Found|Not Found|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
 ## List all packages for a project
 
 <a id="opIdgetApiV4ProjectsIdPackagesPypiSimple"></a>
@@ -136539,6 +136444,7 @@ List the current limits of a plan on the GitLab instance.
   "notification_limit": 15000,
   "npm_max_file_size": 524288000,
   "nuget_max_file_size": 524288000,
+  "organization_hooks": 50,
   "pipeline_hierarchy_size": 1000,
   "pypi_max_file_size": 3221225472,
   "service_desk_outbound_emails_per_hour": 100,
@@ -136599,6 +136505,7 @@ curl https://gitlab.com/api/v4/api/v4/application/plan_limits \
     "notification_limit": 0,
     "npm_max_file_size": 0,
     "nuget_max_file_size": 0,
+    "organization_hooks": 0,
     "pypi_max_file_size": 0,
     "service_desk_outbound_emails_per_hour": 0,
     "service_desk_outbound_emails_per_day": 0,
@@ -136640,6 +136547,7 @@ Modify the limits of a plan on the GitLab instance.
   "notification_limit": 0,
   "npm_max_file_size": 0,
   "nuget_max_file_size": 0,
+  "organization_hooks": 0,
   "pypi_max_file_size": 0,
   "service_desk_outbound_emails_per_hour": 0,
   "service_desk_outbound_emails_per_day": 0,
@@ -136678,6 +136586,7 @@ Modify the limits of a plan on the GitLab instance.
 |» notification_limit|body|integer \| null|false|Maximum storage size for root namespace limit notifications, in MiB.|
 |» npm_max_file_size|body|integer \| null|false|Maximum npm package file size in bytes.|
 |» nuget_max_file_size|body|integer \| null|false|Maximum NuGet package file size in bytes.|
+|» organization_hooks|body|integer \| null|false|Maximum number of system hooks per organization, for hooks managed by organization administrators. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/632599) in GitLab 19.6.|
 |» pypi_max_file_size|body|integer \| null|false|Maximum PyPI package file size in bytes.|
 |» service_desk_outbound_emails_per_hour|body|integer \| null|false|Maximum number of outbound Service Desk emails per hour, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253087) in GitLab 19.4.|
 |» service_desk_outbound_emails_per_day|body|integer \| null|false|Maximum number of outbound Service Desk emails per day, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253087) in GitLab 19.4.|
@@ -136748,6 +136657,7 @@ Modify the limits of a plan on the GitLab instance.
   "notification_limit": 15000,
   "npm_max_file_size": 524288000,
   "nuget_max_file_size": 524288000,
+  "organization_hooks": 50,
   "pipeline_hierarchy_size": 1000,
   "pypi_max_file_size": 3221225472,
   "service_desk_outbound_emails_per_hour": 100,
@@ -141694,6 +141604,8 @@ Lists all visible projects starred by a specified user. Unauthenticated requests
 |per_page|query|integer|false|Number of items to list per page.|
 |simple|query|boolean|false|If `true`, returns only limited fields for each project. Without authentication, only limited fields are returned regardless of this setting.|
 |statistics|query|boolean|false|If `true`, includes project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role.|
+|with_custom_attributes|query|boolean|false|If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/) in the response. Administrators only.|
+|custom_attributes|query|object \| null|false|Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/) that match all of the specified key and value pairs. Administrators only.|
 
 #### Enumerated Values
 
@@ -145452,6 +145364,7 @@ Lists all forks of a project.
 |page|query|integer|false|Page number of results to retrieve.|
 |per_page|query|integer|false|Number of items to list per page.|
 |simple|query|boolean|false|If `true`, returns only limited fields for each project. Without authentication, only limited fields are returned regardless of this setting.|
+|statistics|query|boolean|false|If `true`, includes project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role.|
 |with_custom_attributes|query|boolean|false|If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/) in the response. Administrators only.|
 |custom_attributes|query|object \| null|false|Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/) that match all of the specified key and value pairs. Administrators only.|
 
@@ -148808,6 +148721,7 @@ Creates a package protection rule for a specified project.
 |» package_type|npm|
 |» package_type|nuget|
 |» package_type|pypi|
+|» package_type|rubygems|
 |» package_type|terraform_module|
 |» minimum_access_level_for_delete|owner|
 |» minimum_access_level_for_delete|admin|
@@ -148943,6 +148857,7 @@ Updates a package protection rule for a specified project.
 |» package_type|npm|
 |» package_type|nuget|
 |» package_type|pypi|
+|» package_type|rubygems|
 |» package_type|terraform_module|
 |» minimum_access_level_for_delete|owner|
 |» minimum_access_level_for_delete|admin|
@@ -155190,8 +155105,8 @@ Retrieves SAML identities for a group.
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -155238,8 +155153,8 @@ Retrieves a specified SAML identity.
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -155287,8 +155202,8 @@ Deletes a specified SAML identity.
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -155350,8 +155265,8 @@ Updates the `extern_uid` field for a specified SAML identity.
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -155397,8 +155312,8 @@ Retrieves SCIM identities for a group.
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -155445,8 +155360,8 @@ Retrieves a specified SCIM identity.
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -155494,8 +155409,8 @@ Deletes a specified SCIM identity.
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -155557,8 +155472,8 @@ Updates the `extern_uid` field for a specified SCIM identity.
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -172559,35 +172474,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 http, oauth2, apiKey
 </aside>
 
-## Retrieve Service Ping payload
-
-<a id="opIdgetApiV4UsageDataServicePing"></a>
-
-> Code samples
-
-```bash
-curl https://gitlab.com/api/v4/api/v4/usage_data/service_ping \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/usage_data/service_ping`
-
-Retrieves the Service Ping payload from the application cache as JSON. If no cached payload is available, returns an empty response. Requires a personal access token with the `read_service_ping` scope. Introduced in GitLab 16.9.
-
-<h3 id="retrieve-service-ping-payload-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|None|
-|401|Unauthorized|401 Unauthorized|None|
-|403|Forbidden|Forbidden|None|
-|404|Not Found|Not found|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
 ## Track an internal GitLab event
 
 <a id="opIdpostApiV4UsageDataTrackEvent"></a>
@@ -172651,6 +172537,35 @@ Tracks a GitLab internal event. This action increments Service Ping counters in 
 |200|OK|OK|None|
 |400|Bad Request|Bad Request|None|
 |401|Unauthorized|Unauthorized|None|
+|404|Not Found|Not found|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+http, oauth2, apiKey
+</aside>
+
+## Retrieve Service Ping payload
+
+<a id="opIdgetApiV4UsageDataServicePing"></a>
+
+> Code samples
+
+```bash
+curl https://gitlab.com/api/v4/api/v4/usage_data/service_ping \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v4/usage_data/service_ping`
+
+Retrieves the Service Ping payload from the application cache as JSON. If no cached payload is available, returns an empty response. Requires a personal access token with the `read_service_ping` scope. Introduced in GitLab 16.9.
+
+<h3 id="retrieve-service-ping-payload-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+|401|Unauthorized|401 Unauthorized|None|
+|403|Forbidden|Forbidden|None|
 |404|Not Found|Not found|None|
 
 <aside class="warning">
@@ -173051,8 +172966,8 @@ auditor: true
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "is_admin": "string",
   "note": "string",
@@ -173364,8 +173279,8 @@ auditor: true
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "is_admin": "string",
   "note": "string",
@@ -173888,8 +173803,8 @@ Disables two-factor authentication for a specified user account. Administrators 
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "is_admin": "string",
   "note": "string",
@@ -174019,8 +173934,8 @@ Deletes a user authentication identity using the provider name associated with t
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "is_admin": "string",
   "note": "string",
@@ -174711,8 +174626,8 @@ Retrieves details about your user account.
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   }
 }
 ```
@@ -179449,98 +179364,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 http, oauth2, apiKey
 </aside>
 
-<h1 id="gitlab-rest-api-default">Default</h1>
-
-## List Gitaly object pool members
-
-<a id="opIdgetApiV4InternalGitalyObjectPoolMembers"></a>
-
-> Code samples
-
-```bash
-curl 'https://gitlab.com/api/v4/api/v4/internal/gitaly/object_pool_members?disk_paths=string&storage=string' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/internal/gitaly/object_pool_members`
-
-<h3 id="list-gitaly-object-pool-members-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|disk_paths|query|[string]|true|On-disk paths of the pool repositories. Limited to 500.|
-|storage|query|string \| null|true|Name of the storage shard.|
-|upstream_only|query|boolean|false|If `true`, returns only the upstream repository.|
-
-<h3 id="list-gitaly-object-pool-members-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|None|
-|400|Bad Request|Bad Request|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
-## Swagger compatible API description
-
-<a id="opIdgetApiV4SwaggerDoc"></a>
-
-> Code samples
-
-```bash
-curl https://gitlab.com/api/v4/api/v4/swagger_doc \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/swagger_doc`
-
-<h3 id="swagger-compatible-api-description-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
-## Swagger compatible API description for specific API
-
-<a id="opIdgetApiV4SwaggerDocName"></a>
-
-> Code samples
-
-```bash
-curl https://gitlab.com/api/v4/api/v4/swagger_doc/string \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v4/swagger_doc/{name}`
-
-<h3 id="swagger-compatible-api-description-for-specific-api-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|name|path|string|true|Resource name of mounted API|
-|locale|query|string \| null|false|Locale of API documentation|
-
-<h3 id="swagger-compatible-api-description-for-specific-api-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|None|
-|400|Bad Request|Bad Request|None|
-|404|Not Found|Not Found|None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-http, oauth2, apiKey
-</aside>
-
 # Schemas
 
 <h2 id="tocS_APIEntitiesGitlabSubscription">APIEntitiesGitlabSubscription</h2>
@@ -179775,7 +179598,7 @@ http, oauth2, apiKey
 
 ```json
 {
-  "version": "1.1.0",
+  "version": "1.3.0",
   "entities": [
     {
       "token": "MergeRequest[123]",
@@ -180106,25 +179929,33 @@ http, oauth2, apiKey
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "web_url": "https://gitlab.example.com/group/project/-/automate/agent-sessions/42",
-  "project_id": "string",
-  "namespace_id": "string",
-  "agent_privileges": "string",
-  "agent_privileges_names": "string",
-  "pre_approved_agent_privileges": "string",
-  "pre_approved_agent_privileges_names": "string",
+  "project_id": 0,
+  "namespace_id": 0,
+  "agent_privileges": [
+    0
+  ],
+  "agent_privileges_names": [
+    "string"
+  ],
+  "pre_approved_agent_privileges": [
+    0
+  ],
+  "pre_approved_agent_privileges_names": [
+    "string"
+  ],
   "workflow_definition": "string",
   "status": "string",
   "summary": "string",
   "title": "string",
-  "allow_agent_to_request_user": "string",
+  "allow_agent_to_request_user": true,
   "image": "string",
   "environment": "string",
-  "ai_catalog_item_version_id": "string",
-  "workload": "string",
-  "mcp_enabled": "string",
-  "incremental_checkpoints_enabled": "string",
+  "ai_catalog_item_version_id": 0,
+  "workload": {},
+  "mcp_enabled": true,
+  "incremental_checkpoints_enabled": true,
   "gitlab_url": "string"
 }
 ```
@@ -180133,25 +179964,25 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
+|id|integer|false|none|none|
 |web_url|string|false|none|none|
-|project_id|string|false|none|none|
-|namespace_id|string|false|none|none|
-|agent_privileges|string|false|none|none|
-|agent_privileges_names|string|false|none|none|
-|pre_approved_agent_privileges|string|false|none|none|
-|pre_approved_agent_privileges_names|string|false|none|none|
+|project_id|integer|false|none|none|
+|namespace_id|integer|false|none|none|
+|agent_privileges|[integer]|false|none|none|
+|agent_privileges_names|[string]|false|none|none|
+|pre_approved_agent_privileges|[integer]|false|none|none|
+|pre_approved_agent_privileges_names|[string]|false|none|none|
 |workflow_definition|string|false|none|none|
 |status|string|false|none|none|
 |summary|string|false|none|none|
 |title|string|false|none|none|
-|allow_agent_to_request_user|string|false|none|none|
+|allow_agent_to_request_user|boolean|false|none|none|
 |image|string|false|none|none|
 |environment|string|false|none|none|
-|ai_catalog_item_version_id|string|false|none|none|
-|workload|string|false|none|none|
-|mcp_enabled|string|false|none|none|
-|incremental_checkpoints_enabled|string|false|none|none|
+|ai_catalog_item_version_id|integer|false|none|none|
+|workload|object|false|none|none|
+|mcp_enabled|boolean|false|none|none|
+|incremental_checkpoints_enabled|boolean|false|none|none|
 |gitlab_url|string|false|none|none|
 
 <h2 id="tocS_APIEntitiesAiDuoWorkflowsBasicCheckpoint">APIEntitiesAiDuoWorkflowsBasicCheckpoint</h2>
@@ -180163,7 +179994,7 @@ http, oauth2, apiKey
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "thread_ts": "string",
   "parent_ts": "string",
   "checkpoint_ns": "string"
@@ -180174,7 +180005,7 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
+|id|integer|false|none|none|
 |thread_ts|string|false|none|none|
 |parent_ts|string|false|none|none|
 |checkpoint_ns|string|false|none|none|
@@ -180188,10 +180019,10 @@ http, oauth2, apiKey
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "thread_ts": "string",
   "task": "string",
-  "idx": "string",
+  "idx": 0,
   "channel": "string",
   "write_type": "string",
   "data": "string"
@@ -180202,10 +180033,10 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
+|id|integer|false|none|none|
 |thread_ts|string|false|none|none|
 |task|string|false|none|none|
-|idx|string|false|none|none|
+|idx|integer|false|none|none|
 |channel|string|false|none|none|
 |write_type|string|false|none|none|
 |data|string|false|none|none|
@@ -180219,25 +180050,25 @@ http, oauth2, apiKey
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "thread_ts": "string",
   "parent_ts": "string",
   "checkpoint_ns": "string",
-  "checkpoint": "string",
+  "checkpoint": {},
   "compressed_checkpoint": "string",
   "checkpoint_writes": [
     {
-      "id": "string",
+      "id": 0,
       "thread_ts": "string",
       "task": "string",
-      "idx": "string",
+      "idx": 0,
       "channel": "string",
       "write_type": "string",
       "data": "string"
     }
   ],
-  "current_thread": "string",
-  "metadata": "string"
+  "current_thread": 0,
+  "metadata": {}
 }
 ```
 
@@ -180245,15 +180076,15 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
+|id|integer|false|none|none|
 |thread_ts|string|false|none|none|
 |parent_ts|string|false|none|none|
 |checkpoint_ns|string|false|none|none|
-|checkpoint|string|false|none|none|
+|checkpoint|object|false|none|none|
 |compressed_checkpoint|string|false|none|none|
 |checkpoint_writes|[[APIEntitiesAiDuoWorkflowsCheckpointWrite](#schemaapientitiesaiduoworkflowscheckpointwrite)]|false|none|none|
-|current_thread|string|false|none|none|
-|metadata|string|false|none|none|
+|current_thread|integer|false|none|none|
+|metadata|object|false|none|none|
 
 <h2 id="tocS_APIEntitiesAiDuoWorkflowsEvent">APIEntitiesAiDuoWorkflowsEvent</h2>
 <!-- backwards compatibility -->
@@ -180264,7 +180095,7 @@ http, oauth2, apiKey
 
 ```json
 {
-  "id": "string",
+  "id": 0,
   "correlation_id": "string",
   "event_type": "string",
   "event_status": "string",
@@ -180276,7 +180107,7 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
+|id|integer|false|none|none|
 |correlation_id|string|false|none|none|
 |event_type|string|false|none|none|
 |event_status|string|false|none|none|
@@ -180336,8 +180167,8 @@ http, oauth2, apiKey
 ```json
 {
   "extern_uid": "string",
-  "group_id": "string",
-  "active": "string"
+  "group_id": 0,
+  "active": true
 }
 ```
 
@@ -180346,8 +180177,8 @@ http, oauth2, apiKey
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |extern_uid|string|false|none|none|
-|group_id|string|false|none|none|
-|active|string|false|none|none|
+|group_id|integer|false|none|none|
+|active|boolean|false|none|none|
 
 <h2 id="tocS_APIEntitiesUserPublic">APIEntitiesUserPublic</h2>
 <!-- backwards compatibility -->
@@ -180414,8 +180245,8 @@ http, oauth2, apiKey
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   }
 }
 ```
@@ -180955,9 +180786,9 @@ http, oauth2, apiKey
 
 ```json
 {
-  "value": "string",
-  "from": "string",
-  "to": "string"
+  "value": 0,
+  "from": "1970-01-01",
+  "to": "1970-01-01"
 }
 ```
 
@@ -180965,9 +180796,9 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|value|string|false|none|none|
-|from|string|false|none|none|
-|to|string|false|none|none|
+|value|integer|false|none|none|
+|from|string(date)|false|none|none|
+|to|string(date)|false|none|none|
 
 <h2 id="tocS_APIEntitiesAnalyticsGroupActivityIssuesCount">APIEntitiesAnalyticsGroupActivityIssuesCount</h2>
 <!-- backwards compatibility -->
@@ -181138,7 +180969,7 @@ http, oauth2, apiKey
   },
   "notes_count": 10,
   "review_time": 6,
-  "diff_stats": "string"
+  "diff_stats": {}
 }
 ```
 
@@ -181160,7 +180991,7 @@ http, oauth2, apiKey
 |approved_by|[APIEntitiesUserBasic](#schemaapientitiesuserbasic)|false|none|none|
 |notes_count|integer|false|none|none|
 |review_time|integer|false|none|Review time in hours|
-|diff_stats|string|false|none|none|
+|diff_stats|object|false|none|none|
 
 <h2 id="tocS_DependencyEntityVulnerabilityEntity">DependencyEntityVulnerabilityEntity</h2>
 <!-- backwards compatibility -->
@@ -184851,8 +184682,8 @@ http, oauth2, apiKey
 ```json
 {
   "extern_uid": "string",
-  "user_id": "string",
-  "active": "string"
+  "user_id": 0,
+  "active": true
 }
 ```
 
@@ -184861,8 +184692,8 @@ http, oauth2, apiKey
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |extern_uid|string|false|none|none|
-|user_id|string|false|none|none|
-|active|string|false|none|none|
+|user_id|integer|false|none|none|
+|active|boolean|false|none|none|
 
 <h2 id="tocS_APIEntitiesMemberRole">APIEntitiesMemberRole</h2>
 <!-- backwards compatibility -->
@@ -184881,6 +184712,7 @@ http, oauth2, apiKey
   "apply_security_scan_profiles": false,
   "admin_merge_request": false,
   "archive_project": false,
+  "archive_subgroup": false,
   "admin_ai_catalog_item_consumer": false,
   "create_security_scan_profiles": false,
   "destroy_package": false,
@@ -184938,6 +184770,7 @@ http, oauth2, apiKey
 |apply_security_scan_profiles|boolean|false|none|none|
 |admin_merge_request|boolean|false|none|none|
 |archive_project|boolean|false|none|none|
+|archive_subgroup|boolean|false|none|none|
 |admin_ai_catalog_item_consumer|boolean|false|none|none|
 |create_security_scan_profiles|boolean|false|none|none|
 |destroy_package|boolean|false|none|none|
@@ -191379,10 +191212,10 @@ http, oauth2, apiKey
   "file_size": 123,
   "checksum_information": {
     "checksum": "string",
-    "last_checksum": "string",
+    "last_checksum": "1970-01-01T00:00:00Z",
     "checksum_state": "string",
-    "checksum_retry_count": "string",
-    "checksum_retry_at": "string",
+    "checksum_retry_count": 0,
+    "checksum_retry_at": "1970-01-01T00:00:00Z",
     "checksum_failure": "string"
   }
 }
@@ -192809,8 +192642,8 @@ http, oauth2, apiKey
   "extra_shared_runners_minutes_limit": "string",
   "scim_identities": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "is_admin": "string",
   "note": "string",
@@ -194185,6 +194018,7 @@ http, oauth2, apiKey
   "minimum_password_length": "string",
   "mirror_available": "string",
   "notify_on_unknown_sign_in": "string",
+  "o11y_provisioner_url": "string",
   "organization_cluster_agent_authorization_enabled": "string",
   "pages_domain_verification_enabled": "string",
   "pages_unique_domain_default_enabled": "string",
@@ -194424,6 +194258,7 @@ http, oauth2, apiKey
   "users_api_limit_gpg_keys": "string",
   "users_api_limit_gpg_key": "string",
   "tags_create_limit": "string",
+  "todos_list_api_limit": "string",
   "group_hooks_create_limit": "string",
   "project_hooks_create_limit": "string",
   "system_hooks_create_limit": "string",
@@ -194577,6 +194412,8 @@ http, oauth2, apiKey
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
+  "duo_scheduled_triggers_enabled": "string",
+  "duo_scheduled_triggers_availability": "string",
   "duo_custom_agents_enabled": true,
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_enabled": true,
@@ -194611,6 +194448,10 @@ http, oauth2, apiKey
   "zoekt_initial_indexing_limit": "string",
   "orbit_auto_index_root_namespace": "string",
   "orbit_dap_enabled_by_default": "string",
+  "orbit_query_limit": "string",
+  "orbit_indexing_status_limit": "string",
+  "orbit_item_counts_limit": "string",
+  "orbit_rate_limit_allowlist_raw": "string",
   "duo_workflow_oauth_application_id": "string",
   "scan_execution_policies_action_limit": "string",
   "scan_execution_policies_schedule_limit": "string",
@@ -194891,6 +194732,7 @@ http, oauth2, apiKey
 |minimum_password_length|string|false|none|none|
 |mirror_available|string|false|none|none|
 |notify_on_unknown_sign_in|string|false|none|none|
+|o11y_provisioner_url|string|false|none|none|
 |organization_cluster_agent_authorization_enabled|string|false|none|none|
 |pages_domain_verification_enabled|string|false|none|none|
 |pages_unique_domain_default_enabled|string|false|none|none|
@@ -195130,6 +194972,7 @@ http, oauth2, apiKey
 |users_api_limit_gpg_keys|string|false|none|none|
 |users_api_limit_gpg_key|string|false|none|none|
 |tags_create_limit|string|false|none|none|
+|todos_list_api_limit|string|false|none|none|
 |group_hooks_create_limit|string|false|none|none|
 |project_hooks_create_limit|string|false|none|none|
 |system_hooks_create_limit|string|false|none|none|
@@ -195283,6 +195126,8 @@ http, oauth2, apiKey
 |duo_remote_flows_availability|string|false|none|none|
 |duo_foundational_flows_enabled|string|false|none|none|
 |duo_foundational_flows_availability|string|false|none|none|
+|duo_scheduled_triggers_enabled|string|false|none|none|
+|duo_scheduled_triggers_availability|string|false|none|none|
 |duo_custom_agents_enabled|boolean|false|none|none|
 |duo_custom_agents_availability|string|false|none|none|
 |duo_custom_flows_enabled|boolean|false|none|none|
@@ -195317,6 +195162,10 @@ http, oauth2, apiKey
 |zoekt_initial_indexing_limit|string|false|none|none|
 |orbit_auto_index_root_namespace|string|false|none|none|
 |orbit_dap_enabled_by_default|string|false|none|none|
+|orbit_query_limit|string|false|none|none|
+|orbit_indexing_status_limit|string|false|none|none|
+|orbit_item_counts_limit|string|false|none|none|
+|orbit_rate_limit_allowlist_raw|string|false|none|none|
 |duo_workflow_oauth_application_id|string|false|none|none|
 |scan_execution_policies_action_limit|string|false|none|none|
 |scan_execution_policies_schedule_limit|string|false|none|none|
@@ -203301,8 +203150,8 @@ http, oauth2, apiKey
   },
   "group_scim_identity": {
     "extern_uid": "string",
-    "group_id": "string",
-    "active": "string"
+    "group_id": 0,
+    "active": true
   },
   "email": "string",
   "is_using_seat": "string",
@@ -203317,6 +203166,7 @@ http, oauth2, apiKey
     "apply_security_scan_profiles": false,
     "admin_merge_request": false,
     "archive_project": false,
+    "archive_subgroup": false,
     "admin_ai_catalog_item_consumer": false,
     "create_security_scan_profiles": false,
     "destroy_package": false,
@@ -203399,16 +203249,16 @@ http, oauth2, apiKey
 
 ```json
 {
-  "id": "string",
-  "source_id": "string",
+  "id": 0,
+  "source_id": 0,
   "source_full_name": "string",
   "source_members_url": "string",
-  "created_at": "string",
-  "expires_at": "string",
+  "created_at": "1970-01-01T00:00:00Z",
+  "expires_at": "1970-01-01",
   "access_level": {
     "string_value": "string",
-    "integer_value": "string",
-    "custom_role": "string"
+    "integer_value": 0,
+    "custom_role": {}
   }
 }
 ```
@@ -203417,12 +203267,12 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
-|source_id|string|false|none|none|
+|id|integer|false|none|none|
+|source_id|integer|false|none|none|
 |source_full_name|string|false|none|none|
 |source_members_url|string|false|none|none|
-|created_at|string|false|none|none|
-|expires_at|string|false|none|none|
+|created_at|string(date-time)|false|none|none|
+|expires_at|string(date)|false|none|none|
 |access_level|object|false|none|none|
 
 <h2 id="tocS_APIEntitiesProjectUpload">APIEntitiesProjectUpload</h2>
@@ -203682,8 +203532,8 @@ http, oauth2, apiKey
     "extra_shared_runners_minutes_limit": "string",
     "scim_identities": {
       "extern_uid": "string",
-      "group_id": "string",
-      "active": "string"
+      "group_id": 0,
+      "active": true
     }
   }
 }
@@ -209258,6 +209108,7 @@ http, oauth2, apiKey
   "lock_built_in_project_templates_enabled": true,
   "require_sha_for_merge": true,
   "lock_require_sha_for_merge": true,
+  "require_two_factor_authentication_from_ancestor": true,
   "shared_with_groups": [
     {}
   ],
@@ -209927,6 +209778,7 @@ http, oauth2, apiKey
 |lock_built_in_project_templates_enabled|boolean|false|none|none|
 |require_sha_for_merge|boolean|false|none|none|
 |lock_require_sha_for_merge|boolean|false|none|none|
+|require_two_factor_authentication_from_ancestor|boolean|false|none|Whether an ancestor group requires all users to set up two-factor authentication. Members of this group must then set it up even when require_two_factor_authentication is false.|
 |shared_with_groups|[object]|false|none|none|
 |runners_token|string|false|none|none|
 |enabled_git_access_protocol|string|false|none|none|
@@ -210432,6 +210284,7 @@ http, oauth2, apiKey
   "notification_limit": 15000,
   "npm_max_file_size": 524288000,
   "nuget_max_file_size": 524288000,
+  "organization_hooks": 50,
   "pipeline_hierarchy_size": 1000,
   "pypi_max_file_size": 3221225472,
   "service_desk_outbound_emails_per_hour": 100,
@@ -210469,6 +210322,7 @@ http, oauth2, apiKey
 |notification_limit|integer|false|none|none|
 |npm_max_file_size|integer|false|none|none|
 |nuget_max_file_size|integer|false|none|none|
+|organization_hooks|integer|false|none|none|
 |pipeline_hierarchy_size|integer|false|none|none|
 |pypi_max_file_size|integer|false|none|none|
 |service_desk_outbound_emails_per_hour|integer|false|none|none|
@@ -210843,7 +210697,7 @@ http, oauth2, apiKey
 
 ```json
 {
-  "query": {},
+  "query": "string",
   "response_format": "raw",
   "source_type": "string"
 }
@@ -210853,7 +210707,7 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|query|object \| null \| string \| null|true|none|JSON query object, or GQL text when enabled for the current user|
+|query|string \| null|true|none|GQL query text|
 |response_format|string|false|none|Response format: raw, llm, or gql|
 |source_type|string \| null|false|none|Optional frontend source subtype (e.g. code_intelligence)|
 
@@ -210917,7 +210771,7 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|tokens|[string]|true|none|Exactly one token: Type[id], a GID, an instance URL, path!iid, path#iid, or path&iid (epic)|
+|tokens|[string]|true|none|Exactly one token: Type[id], a GID, an instance URL, path!iid, path#iid, path&iid (epic), or path@ref (branch or commit)|
 |expand|boolean|false|none|Attach the graph neighborhood of the entity|
 |response_format|string|false|none|Response format: raw or llm|
 
@@ -213205,6 +213059,7 @@ http, oauth2, apiKey
   "apply_security_scan_profiles": false,
   "admin_merge_request": false,
   "archive_project": false,
+  "archive_subgroup": false,
   "admin_ai_catalog_item_consumer": false,
   "create_security_scan_profiles": false,
   "destroy_package": false,
@@ -213260,6 +213115,7 @@ http, oauth2, apiKey
 |apply_security_scan_profiles|boolean|false|none|Apply security scan profiles.|
 |admin_merge_request|boolean|false|none|Allows approval of merge requests.|
 |archive_project|boolean|false|none|Allows archiving of projects.|
+|archive_subgroup|boolean|false|none|Ability to archive or unarchive a subgroup. This ability does not allow archiving top-level groups. Archiving unlinks projects from their fork networks and closes their open cross-fork merge requests, and unarchiving does not restore either.|
 |admin_ai_catalog_item_consumer|boolean|false|none|Enable, disable, and configure custom agents and flows from the AI catalog for a project.|
 |create_security_scan_profiles|boolean|false|none|Create security scan profiles.|
 |destroy_package|boolean|false|none|Delete packages and package files in the package registry.|
@@ -213330,6 +213186,7 @@ http, oauth2, apiKey
   "apply_security_scan_profiles": false,
   "admin_merge_request": false,
   "archive_project": false,
+  "archive_subgroup": false,
   "admin_ai_catalog_item_consumer": false,
   "create_security_scan_profiles": false,
   "destroy_package": false,
@@ -213385,6 +213242,7 @@ http, oauth2, apiKey
 |apply_security_scan_profiles|boolean|false|none|Apply security scan profiles.|
 |admin_merge_request|boolean|false|none|Allows approval of merge requests.|
 |archive_project|boolean|false|none|Allows archiving of projects.|
+|archive_subgroup|boolean|false|none|Ability to archive or unarchive a subgroup. This ability does not allow archiving top-level groups. Archiving unlinks projects from their fork networks and closes their open cross-fork merge requests, and unarchiving does not restore either.|
 |admin_ai_catalog_item_consumer|boolean|false|none|Enable, disable, and configure custom agents and flows from the AI catalog for a project.|
 |create_security_scan_profiles|boolean|false|none|Create security scan profiles.|
 |destroy_package|boolean|false|none|Delete packages and package files in the package registry.|
@@ -216522,6 +216380,8 @@ http, oauth2, apiKey
   "max_pages_custom_domains_per_project": 0,
   "max_terraform_state_size_bytes": 0,
   "metrics_method_call_threshold": 0,
+  "o11y_provisioner_api_key": "string",
+  "o11y_provisioner_url": "string",
   "password_authentication_enabled": true,
   "password_authentication_enabled_for_web": true,
   "signin_enabled": true,
@@ -216640,7 +216500,7 @@ http, oauth2, apiKey
   "pipeline_delete_limit_per_user_project": 0,
   "job_erase_limit_per_user_project": 0,
   "job_cancel_limit_per_user_project": 0,
-  "ai_action_api_rate_limit": 0,
+  "ai_action_api_rate_limit": 1,
   "code_suggestions_api_rate_limit": 0,
   "resource_usage_limits": {},
   "code_dropdown_custom_clients": [
@@ -216877,6 +216737,10 @@ http, oauth2, apiKey
   "audit_events_api_limit": 0,
   "project_audit_events_api_limit": 0,
   "group_audit_events_api_limit": 0,
+  "orbit_query_limit": 0,
+  "orbit_indexing_status_limit": 0,
+  "orbit_item_counts_limit": 0,
+  "orbit_rate_limit_allowlist_raw": "string",
   "group_owners_can_manage_default_branch_protection": true,
   "maintenance_mode": true,
   "maintenance_mode_message": "string",
@@ -217055,6 +216919,7 @@ http, oauth2, apiKey
   "users_api_limit_ssh_keys": "string",
   "users_api_limit_ssh_key": "string",
   "tags_create_limit": "string",
+  "todos_list_api_limit": "string",
   "observability_backend_ssl_verification_enabled": "string",
   "global_search_snippet_titles_enabled": "string",
   "global_search_users_enabled": "string",
@@ -217117,6 +216982,8 @@ http, oauth2, apiKey
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
+  "duo_scheduled_triggers_enabled": "string",
+  "duo_scheduled_triggers_availability": "string",
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_availability": "string",
   "duo_external_agents_availability": "string",
@@ -217255,6 +217122,8 @@ http, oauth2, apiKey
 |max_pages_custom_domains_per_project|integer \| null|false|none|Maximum number of GitLab Pages custom domains per project|
 |max_terraform_state_size_bytes|integer \| null|false|none|Maximum size of the Terraform state file in bytes. Set to `0` for unlimited size.|
 |metrics_method_call_threshold|integer \| null|false|none|Method call is only tracked if it takes longer than this threshold, in milliseconds.|
+|o11y_provisioner_api_key|string \| null|false|none|API key GitLab sends to the Observability provisioner. GitLab.com only. Not returned in responses.|
+|o11y_provisioner_url|string \| null|false|none|URL of the Observability provisioner API. GitLab.com only.|
 |password_authentication_enabled|boolean \| null|false|none|Flag indicating if password authentication is enabled for the web interface. Mutually exclusive with `password_authentication_enabled_for_web`, `signin_enabled`.|
 |password_authentication_enabled_for_web|boolean \| null|false|none|If `true`, enables authentication for the web interface via a GitLab account password. Defaults to `true`. Mutually exclusive with `password_authentication_enabled`, `signin_enabled`.|
 |signin_enabled|boolean \| null|false|none|If `true`, enables password authentication for the web interface. Deprecated. Use `password_authentication_enabled_for_web` instead. Mutually exclusive with `password_authentication_enabled_for_web`, `password_authentication_enabled`.|
@@ -217589,6 +217458,10 @@ http, oauth2, apiKey
 |audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user to the instance audit events API.|
 |project_audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user per project to the project audit events API.|
 |group_audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user per group to the group audit events API.|
+|orbit_query_limit|integer \| null|false|none|Maximum number of GitLab Orbit queries per minute per user. Default: `60`. Set to `0` to disable the rate limit.|
+|orbit_indexing_status_limit|integer \| null|false|none|Maximum number of GitLab Orbit indexing status requests per minute per user. Default: `30`. Set to `0` to disable the rate limit.|
+|orbit_item_counts_limit|integer \| null|false|none|Maximum number of GitLab Orbit item count requests per minute per user. Default: `30`. Set to `0` to disable the rate limit.|
+|orbit_rate_limit_allowlist_raw|string \| null|false|none|Raw newline-, comma-, or whitespace-separated list of usernames excluded from the GitLab Orbit rate limits. Maximum: 100 usernames.|
 |group_owners_can_manage_default_branch_protection|boolean \| null|false|none|If `true`, allows group owners to manage default branch protection in their groups. If `false`, group owners cannot override the instance default branch protection. GitLab Self-Managed, Premium and Ultimate only.|
 |maintenance_mode|boolean \| null|false|none|If `true`, puts the instance into maintenance mode. Non-administrator users can sign in with read-only access and make read-only API requests. Premium and Ultimate only.|
 |maintenance_mode_message|string \| null|false|none|Message displayed when instance is in maintenance mode. Premium and Ultimate only.|
@@ -217752,6 +217625,7 @@ http, oauth2, apiKey
 |users_api_limit_ssh_keys|string \| null|false|none|none|
 |users_api_limit_ssh_key|string \| null|false|none|none|
 |tags_create_limit|string \| null|false|none|none|
+|todos_list_api_limit|string \| null|false|none|none|
 |observability_backend_ssl_verification_enabled|string \| null|false|none|none|
 |global_search_snippet_titles_enabled|string \| null|false|none|none|
 |global_search_users_enabled|string \| null|false|none|none|
@@ -217814,6 +217688,8 @@ http, oauth2, apiKey
 |duo_remote_flows_availability|string \| null|false|none|none|
 |duo_foundational_flows_enabled|string \| null|false|none|none|
 |duo_foundational_flows_availability|string \| null|false|none|none|
+|duo_scheduled_triggers_enabled|string \| null|false|none|none|
+|duo_scheduled_triggers_availability|string \| null|false|none|none|
 |duo_custom_agents_availability|string \| null|false|none|none|
 |duo_custom_flows_availability|string \| null|false|none|none|
 |duo_external_agents_availability|string \| null|false|none|none|
@@ -222524,6 +222400,7 @@ http, oauth2, apiKey
 |package_type|npm|
 |package_type|nuget|
 |package_type|pypi|
+|package_type|rubygems|
 |package_type|terraform_module|
 |minimum_access_level_for_delete|owner|
 |minimum_access_level_for_delete|admin|
@@ -222568,6 +222445,7 @@ http, oauth2, apiKey
 |package_type|npm|
 |package_type|nuget|
 |package_type|pypi|
+|package_type|rubygems|
 |package_type|terraform_module|
 |minimum_access_level_for_delete|owner|
 |minimum_access_level_for_delete|admin|
@@ -235046,6 +234924,7 @@ http, oauth2, apiKey
   "notification_limit": 0,
   "npm_max_file_size": 0,
   "nuget_max_file_size": 0,
+  "organization_hooks": 0,
   "pypi_max_file_size": 0,
   "service_desk_outbound_emails_per_hour": 0,
   "service_desk_outbound_emails_per_day": 0,
@@ -235083,6 +234962,7 @@ http, oauth2, apiKey
 |notification_limit|integer \| null|false|none|Maximum storage size for root namespace limit notifications, in MiB.|
 |npm_max_file_size|integer \| null|false|none|Maximum npm package file size in bytes.|
 |nuget_max_file_size|integer \| null|false|none|Maximum NuGet package file size in bytes.|
+|organization_hooks|integer \| null|false|none|Maximum number of system hooks per organization, for hooks managed by organization administrators. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/632599) in GitLab 19.6.|
 |pypi_max_file_size|integer \| null|false|none|Maximum PyPI package file size in bytes.|
 |service_desk_outbound_emails_per_hour|integer \| null|false|none|Maximum number of outbound Service Desk emails per hour, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253087) in GitLab 19.4.|
 |service_desk_outbound_emails_per_day|integer \| null|false|none|Maximum number of outbound Service Desk emails per day, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253087) in GitLab 19.4.|

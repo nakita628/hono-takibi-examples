@@ -1731,7 +1731,9 @@ Report-level appeals are currently available only for DMCA (copyright) reports. 
     "appealable": true,
     "has_appealable_mitigations": true,
     "has_open_appeal": true,
-    "max_appeals": 0
+    "has_pending_notice": true,
+    "max_appeals": 0,
+    "notice_deadline": "2009-11-10T23:00:00Z"
   },
   "success": true
 }
@@ -2234,6 +2236,7 @@ curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c
       ],
       "zip_code": "string"
     },
+    "explanation": "string",
     "type": "counter_notice"
   }'
 ```
@@ -2273,6 +2276,7 @@ Request a review of mitigations applied because of an abuse report, or submit a 
     ],
     "zip_code": "string"
   },
+  "explanation": "string",
   "type": "counter_notice"
 }
 ```
@@ -2286,6 +2290,7 @@ Request a review of mitigations applied because of an abuse report, or submit a 
 |body|body|[abuse-reports_MitigationAppealRequest](#schemaabuse-reports_mitigationappealrequest)|true|none|
 |» appeals|body|[[abuse-reports_MitigationAppeal](#schemaabuse-reports_mitigationappeal)]|false|List of mitigations to appeal.|
 |» data|body|[abuse-reports_DMCACounterNotice](#schemaabuse-reports_dmcacounternotice)|false|Counter-notice details supporting an appeal.|
+|» explanation|body|string|false|Optional explanation for a "content_removed" appeal, such as how the content was removed. Not accepted for other appeal types.|
 |» type|body|[abuse-reports_AppealType](#schemaabuse-reports_appealtype)|false|The type of appeal being submitted.|
 |» *oneOf*|body|object|false|none|
 |» *oneOf*|body|object|false|none|
@@ -6499,6 +6504,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6532,6 +6538,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6585,6 +6592,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6638,6 +6646,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6675,6 +6684,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6705,6 +6715,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6735,6 +6746,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6767,6 +6779,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6793,6 +6806,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6853,6 +6867,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6891,6 +6906,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -6930,6 +6946,7 @@ Adds a new application to Access.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7435,6 +7452,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7468,6 +7486,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7521,6 +7540,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7574,6 +7594,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7611,6 +7632,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7641,6 +7663,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7671,6 +7694,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7703,6 +7727,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7729,6 +7754,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7789,6 +7815,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7827,6 +7854,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -7866,6 +7894,7 @@ Updates an Access application.
 |» » exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» » include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» » name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» » policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» » require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» » approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» » approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -8865,6 +8894,7 @@ Lists Access policies configured for an application. Returns both exclusively sc
       "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "updated_at": "2014-01-01T05:20:00.12345Z",
       "approval_groups": [
@@ -8959,6 +8989,7 @@ curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c
     "exclude": [],
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "approval_groups": [
       {
@@ -9015,6 +9046,7 @@ Creates a policy applying exclusive to a single application that defines the use
   "exclude": [],
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "approval_groups": [
     {
@@ -9084,6 +9116,7 @@ Creates a policy applying exclusive to a single application that defines the use
     "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "updated_at": "2014-01-01T05:20:00.12345Z",
     "approval_groups": [
@@ -9199,6 +9232,7 @@ Fetches a single Access policy configured for an application. Returns both exclu
     "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "updated_at": "2014-01-01T05:20:00.12345Z",
     "approval_groups": [
@@ -9352,6 +9386,7 @@ Updates an Access policy specific to an application. To update a reusable policy
     "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "updated_at": "2014-01-01T05:20:00.12345Z",
     "approval_groups": [
@@ -9544,6 +9579,7 @@ Converts an application-scoped policy to a reusable policy. The policy will no l
       "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "updated_at": "2014-01-01T05:20:00.12345Z",
       "approval_groups": [
@@ -15322,6 +15358,254 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_token, api_email & api_key
 </aside>
 
+## Get Zero Trust organization trust settings
+
+<a id="opIdzero-trust-organization-get-trust-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/organizations/trust_settings \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /accounts/{account_id}/access/organizations/trust_settings`
+
+Returns the trust settings for your Zero Trust organization.
+
+<h3 id="get-zero-trust-organization-trust-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|[access_identifier](#schemaaccess_identifier)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "success": true,
+  "result": {
+    "grant_trust_to_all_accounts_in_org": false,
+    "trusting_accounts": [
+      "023e105f4ecef8ad9ca31a8372d0c353"
+    ]
+  }
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="get-zero-trust-organization-trust-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Zero Trust organization trust settings|[access_trust_settings_response](#schemaaccess_trust_settings_response)|
+|4XX|Client Error|Failed to get Zero Trust organization trust settings|[access_api-response-common-failure](#schemaaccess_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token, api_email & api_key
+</aside>
+
+## Replace Zero Trust organization trust settings
+
+<a id="opIdzero-trust-organization-replace-trust-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/organizations/trust_settings \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "grant_trust_to_all_accounts_in_org": false,
+    "trusting_accounts": [
+      "023e105f4ecef8ad9ca31a8372d0c353"
+    ]
+  }'
+```
+
+`PUT /accounts/{account_id}/access/organizations/trust_settings`
+
+Replaces the trust settings for your Zero Trust organization.
+
+> Body parameter
+
+```json
+{
+  "grant_trust_to_all_accounts_in_org": false,
+  "trusting_accounts": [
+    "023e105f4ecef8ad9ca31a8372d0c353"
+  ]
+}
+```
+
+<h3 id="replace-zero-trust-organization-trust-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|[access_identifier](#schemaaccess_identifier)|true|none|
+|body|body|object|true|none|
+|» grant_trust_to_all_accounts_in_org|body|[access_grant_trust_to_all_accounts_in_org](#schemaaccess_grant_trust_to_all_accounts_in_org)|true|Whether all accounts in the organization are trusted to use this account's cross-account Access resources.|
+|» trusting_accounts|body|[access_trusting_accounts](#schemaaccess_trusting_accounts)|false|Explicit account IDs trusted to use this account's cross-account Access resources. At most 100 unique valid account IDs are accepted. Omitted from responses when empty.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "success": true,
+  "result": {
+    "grant_trust_to_all_accounts_in_org": false,
+    "trusting_accounts": [
+      "023e105f4ecef8ad9ca31a8372d0c353"
+    ]
+  }
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="replace-zero-trust-organization-trust-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Replaced Zero Trust organization trust settings|[access_trust_settings_response](#schemaaccess_trust_settings_response)|
+|4XX|Client Error|Failed to replace Zero Trust organization trust settings|[access_api-response-common-failure](#schemaaccess_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token, api_email & api_key
+</aside>
+
+## Update Zero Trust organization trust settings
+
+<a id="opIdzero-trust-organization-update-trust-settings"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/organizations/trust_settings \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "grant_trust_to_all_accounts_in_org": false,
+    "trusting_accounts": [
+      "023e105f4ecef8ad9ca31a8372d0c353"
+    ]
+  }'
+```
+
+`PATCH /accounts/{account_id}/access/organizations/trust_settings`
+
+Updates the trust settings for your Zero Trust organization.
+
+> Body parameter
+
+```json
+{
+  "grant_trust_to_all_accounts_in_org": false,
+  "trusting_accounts": [
+    "023e105f4ecef8ad9ca31a8372d0c353"
+  ]
+}
+```
+
+<h3 id="update-zero-trust-organization-trust-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|[access_identifier](#schemaaccess_identifier)|true|none|
+|body|body|object|true|none|
+|» grant_trust_to_all_accounts_in_org|body|[access_grant_trust_to_all_accounts_in_org](#schemaaccess_grant_trust_to_all_accounts_in_org)|false|Whether all accounts in the organization are trusted to use this account's cross-account Access resources.|
+|» trusting_accounts|body|[access_trusting_accounts](#schemaaccess_trusting_accounts)|false|Explicit account IDs trusted to use this account's cross-account Access resources. At most 100 unique valid account IDs are accepted. Omitted from responses when empty.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "success": true,
+  "result": {
+    "grant_trust_to_all_accounts_in_org": false,
+    "trusting_accounts": [
+      "023e105f4ecef8ad9ca31a8372d0c353"
+    ]
+  }
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="update-zero-trust-organization-trust-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Updated Zero Trust organization trust settings|[access_trust_settings_response](#schemaaccess_trust_settings_response)|
+|4XX|Client Error|Failed to update Zero Trust organization trust settings|[access_api-response-common-failure](#schemaaccess_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token, api_email & api_key
+</aside>
+
 <h1 id="cloudflare-api-access-reusable-policies">Access reusable policies</h1>
 
 ## List Access reusable policies
@@ -15372,6 +15656,7 @@ Lists Access reusable policies.
       "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "updated_at": "2014-01-01T05:20:00.12345Z",
       "approval_groups": [
@@ -15466,6 +15751,7 @@ curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c
     "exclude": [],
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "approval_groups": [
       {
@@ -15521,6 +15807,7 @@ Creates a new Access reusable policy.
   "exclude": [],
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "approval_groups": [
     {
@@ -15574,6 +15861,7 @@ Creates a new Access reusable policy.
 |» exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -15609,6 +15897,7 @@ Creates a new Access reusable policy.
     "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "updated_at": "2014-01-01T05:20:00.12345Z",
     "approval_groups": [
@@ -15724,6 +16013,7 @@ Fetches a single Access reusable policy.
     "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "updated_at": "2014-01-01T05:20:00.12345Z",
     "approval_groups": [
@@ -15817,6 +16107,7 @@ curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c
     "exclude": [],
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "approval_groups": [
       {
@@ -15872,6 +16163,7 @@ Updates a Access reusable policy.
   "exclude": [],
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "approval_groups": [
     {
@@ -15926,6 +16218,7 @@ Updates a Access reusable policy.
 |» exclude|body|[access_exclude-2](#schemaaccess_exclude-2)|false|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |» include|body|[access_include-2](#schemaaccess_include-2)|true|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |» name|body|[access_name-9](#schemaaccess_name-9)|true|The name of the Access policy.|
+|» policy_resolution_account_id|body|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |» require|body|[access_require-2](#schemaaccess_require-2)|false|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |» approval_groups|body|[access_approval_groups](#schemaaccess_approval_groups)|false|Administrators who can approve a temporary authentication request.|
 |» approval_required|body|[access_approval_required](#schemaaccess_approval_required)|false|Requires the user to request access from an administrator at the start of each session.|
@@ -15961,6 +16254,7 @@ Updates a Access reusable policy.
     "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "updated_at": "2014-01-01T05:20:00.12345Z",
     "approval_groups": [
@@ -16125,6 +16419,7 @@ curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c
         "exclude": [],
         "include": [],
         "name": "Allow devs",
+        "policy_resolution_account_id": "string",
         "require": [],
         "approval_groups": [
           {
@@ -16184,6 +16479,7 @@ Starts an Access policy test.
       "exclude": [],
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "approval_groups": [
         {
@@ -29438,9 +29734,9 @@ Run a web search through a configured AI Gateway.
     }
   ],
   "messages": [
-    null
+    {}
   ],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -29510,11 +29806,8 @@ Status Code **400**
 |errors|[object]|true|none|none|
 |» code|number|true|none|none|
 |» message|string|true|none|none|
-|messages|[object \| null]|true|none|none|
-|result|object \| null \| object|true|none|none|
-|» *anyOf*|object \| null|false|none|none|
-|» *anyOf*|object|false|none|none|
-|» *anyOf*|object \| null|false|none|none|
+|messages|[object]|true|none|none|
+|result|object \| null|true|none|none|
 |success|boolean|true|none|none|
 |*anyOf*|object|false|none|none|
 |error|object|true|none|none|
@@ -32038,11 +32331,14 @@ Lists the AI Gateways in the account. Use `search` to filter by gateway ID.
 {
   "errors": [
     {
-      "message": "string"
+      "code": 7001,
+      "message": "Input Validation Error",
+      "path": [
+        "body"
+      ]
     }
   ],
-  "result": {},
-  "success": false
+  "success": true
 }
 ```
 
@@ -32051,7 +32347,7 @@ Lists the AI Gateways in the account. Use `search` to filter by gateway ID.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|List objects|Inline|
-|400|Bad Request|Bad Request|Inline|
+|400|Bad Request|Input Validation Error|Inline|
 
 <h3 id="list-gateways-responseschema">Response Schema</h3>
 
@@ -32257,8 +32553,9 @@ Status Code **400**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |errors|[object]|true|none|none|
+|» code|number|true|none|none|
 |» message|string|true|none|none|
-|result|object|true|none|none|
+|» path|[string]|true|none|none|
 |success|boolean|true|none|none|
 
 <aside class="warning">
@@ -33191,6 +33488,23 @@ Retrieves the configuration of an AI Gateway.
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7001,
+      "message": "Input Validation Error",
+      "path": [
+        "body"
+      ]
+    }
+  ],
+  "success": true
+}
+```
+
 > 404 Response
 
 ```json
@@ -33210,6 +33524,7 @@ Retrieves the configuration of an AI Gateway.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Returns a single object if found|Inline|
+|400|Bad Request|Input Validation Error|Inline|
 |404|Not Found|Not Found|Inline|
 
 <h3 id="get-a-gateway-responseschema">Response Schema</h3>
@@ -33410,6 +33725,16 @@ Status Code **200**
 |» » » technique|sliding|
 |» workers_ai_billing_mode|postpaid|
 |» workers_ai_billing_mode|unified|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[object]|true|none|none|
+|» code|number|true|none|none|
+|» message|string|true|none|none|
+|» path|[string]|true|none|none|
+|success|boolean|true|none|none|
 
 Status Code **404**
 
@@ -34294,6 +34619,23 @@ Permanently deletes an AI Gateway, its configuration, and its stored logs.
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7001,
+      "message": "Input Validation Error",
+      "path": [
+        "body"
+      ]
+    }
+  ],
+  "success": true
+}
+```
+
 > 404 Response
 
 ```json
@@ -34313,6 +34655,7 @@ Permanently deletes an AI Gateway, its configuration, and its stored logs.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Returns the Object if it was successfully deleted|Inline|
+|400|Bad Request|Input Validation Error|Inline|
 |404|Not Found|Not Found|Inline|
 
 <h3 id="delete-a-gateway-responseschema">Response Schema</h3>
@@ -34513,6 +34856,16 @@ Status Code **200**
 |» » » technique|sliding|
 |» workers_ai_billing_mode|postpaid|
 |» workers_ai_billing_mode|unified|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[object]|true|none|none|
+|» code|number|true|none|none|
+|» message|string|true|none|none|
+|» path|[string]|true|none|none|
+|success|boolean|true|none|none|
 
 Status Code **404**
 
@@ -59670,6 +60023,779 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_token, api_email & api_key
 </aside>
 
+<h1 id="cloudflare-api-analytics-sql">Analytics SQL</h1>
+
+## Query analytics datasets
+
+<a id="opIdsql-api-query-get-account-scoped"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.cloudflare.com/client/v4/accounts/0123456789abcdef0123456789abcdef/analytics/sql?query=SELECT%20edgeResponseStatus%20FROM%20events.httpRequests%20WHERE%20datetime%20%3E%20'\''2026-01-01'\''%20LIMIT%2010' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /accounts/{account_id}/analytics/sql`
+
+Executes a SQL query scoped to the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account, so an accountTag predicate or JSON scope is not required. Explicit account scope must match the path account. Any zone restrictions must belong to that account. Query parameters, time ranges, output formats, authorization, and responses follow the legacy query endpoint.
+
+<h3 id="query-analytics-datasets-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|string|true|Account that authorizes and scopes the request.|
+|query|query|string|true|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {}
+  ],
+  "rows": 0,
+  "statistics": {
+    "bytes_read": 0,
+    "elapsed_ms": 0,
+    "rows_read": 0
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_chain": [
+    {}
+  ],
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```text
+Authorization error
+```
+
+<h3 id="query-analytics-datasets-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Query executed successfully. Columns that the query reaches only through `*` exclude any that the caller is not permitted to read. ClickHouse's default JSON envelope has data, rows, and statistics; explicit FORMAT JSON additionally has typed metadata and rows_before_limit_at_least. Log Explorer's default and FORMAT JSON responses use its existing {data, rows} envelope, without unavailable metadata, pre-limit counts, or statistics. FORMAT JSONEachRow returns newline-delimited JSON objects. FORMAT TabSeparated and TSV return escaped tab-separated rows without a header; Log Explorer serializes nested JSON values as compact JSON text in one field.<br>|Inline|
+|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
+|403|Forbidden|Authentication failed, the caller is not authorized, or the query references a column the caller is not permitted to read.<br>|Inline|
+|422|Unprocessable Entity|The SQL query or its parameters are invalid, including invalid function arguments.|Inline|
+|429|Too Many Requests|The query exceeded a resource or request-rate limit.|Inline|
+|500|Internal Server Error|An internal error occurred.|Inline|
+|501|Not Implemented|The query uses a SQL feature that is not implemented.|Inline|
+|503|Service Unavailable|A required service is temporarily unavailable.|Inline|
+|507|Insufficient Storage|The query exhausted available resources.|Inline|
+
+<h3 id="query-analytics-datasets-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_SqlQueryResponse](#schemaanalytics-sql_sqlqueryresponse)|false|none|none|
+|*oneOf*|[analytics-sql_ClickHouseJsonQueryResponse](#schemaanalytics-sql_clickhousejsonqueryresponse)|false|none|none|
+|*oneOf*|[analytics-sql_LogExplorerQueryResponse](#schemaanalytics-sql_logexplorerqueryresponse)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
+|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer|int64|Seconds to wait before retrying. Present when the account request rate limit is exceeded; omitted for query resource limits.<br>|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token
+</aside>
+
+## Query analytics datasets
+
+<a id="opIdsql-api-query-post-account-scoped"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/0123456789abcdef0123456789abcdef/analytics/sql \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "params": {
+      "status": 404
+    },
+    "query": "SELECT edgeResponseStatus FROM events.httpRequests WHERE edgeResponseStatus = $status LIMIT 10",
+    "scope": {
+      "accountTag": "0123456789abcdef0123456789abcdef"
+    },
+    "time_range": {
+      "end": "2026-01-02T00:00:00Z",
+      "start": "2026-01-01T00:00:00Z"
+    }
+  }'
+```
+
+`POST /accounts/{account_id}/analytics/sql`
+
+Executes a SQL query scoped to the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account, so an accountTag predicate or JSON scope is not required. Explicit account scope must match the path account. Any zone restrictions must belong to that account. Query parameters, time ranges, output formats, authorization, and responses follow the legacy query endpoint.
+
+> Body parameter
+
+```json
+{
+  "params": {
+    "status": 404
+  },
+  "query": "SELECT edgeResponseStatus FROM events.httpRequests WHERE edgeResponseStatus = $status LIMIT 10",
+  "scope": {
+    "accountTag": "0123456789abcdef0123456789abcdef"
+  },
+  "time_range": {
+    "end": "2026-01-02T00:00:00Z",
+    "start": "2026-01-01T00:00:00Z"
+  }
+}
+```
+
+<h3 id="query-analytics-datasets-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|string|true|Account that authorizes and scopes the request.|
+|body|body|[analytics-sql_SqlQueryRequest](#schemaanalytics-sql_sqlqueryrequest)|true|none|
+|» params|body|[string \| null \| number \| boolean] \| object|false|Positional array values for `$1`, `$2`, and similar placeholders, or named object values for placeholders such as `$status`.<br>|
+|» » *oneOf*|body|[string \| null \| number \| boolean]|false|none|
+|» *oneOf*|body|string \| null|false|none|
+|» *oneOf*|body|number|false|none|
+|» *oneOf*|body|boolean|false|none|
+|» » *oneOf*|body|object|false|none|
+|» query|body|string|true|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
+|» scope|body|[analytics-sql_SqlQueryScope](#schemaanalytics-sql_sqlqueryscope)|false|Account or zone scope applied to the query. Include exactly one scope tag. Do not include account or zone tenancy predicates in the SQL query when this field is present.<br>|
+|» time_range|body|object|false|none|
+|» » end|body|string|false|Inclusive upper bound for the dataset's timestamp column.|
+|» » start|body|string|true|Inclusive lower bound for the dataset's timestamp column.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {}
+  ],
+  "rows": 0,
+  "statistics": {
+    "bytes_read": 0,
+    "elapsed_ms": 0,
+    "rows_read": 0
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_chain": [
+    {}
+  ],
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```text
+Authorization error
+```
+
+<h3 id="query-analytics-datasets-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Query executed successfully. Columns that the query reaches only through `*` exclude any that the caller is not permitted to read. ClickHouse's default JSON envelope has data, rows, and statistics; explicit FORMAT JSON additionally has typed metadata and rows_before_limit_at_least. Log Explorer's default and FORMAT JSON responses use its existing {data, rows} envelope, without unavailable metadata, pre-limit counts, or statistics. FORMAT JSONEachRow returns newline-delimited JSON objects. FORMAT TabSeparated and TSV return escaped tab-separated rows without a header; Log Explorer serializes nested JSON values as compact JSON text in one field.<br>|Inline|
+|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
+|403|Forbidden|Authentication failed, the caller is not authorized, or the query references a column the caller is not permitted to read.<br>|Inline|
+|422|Unprocessable Entity|The SQL query or its parameters are invalid, including invalid function arguments.|Inline|
+|429|Too Many Requests|The query exceeded a resource or request-rate limit.|Inline|
+|500|Internal Server Error|An internal error occurred.|Inline|
+|501|Not Implemented|The query uses a SQL feature that is not implemented.|Inline|
+|503|Service Unavailable|A required service is temporarily unavailable.|Inline|
+|507|Insufficient Storage|The query exhausted available resources.|Inline|
+
+<h3 id="query-analytics-datasets-1-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_SqlQueryResponse](#schemaanalytics-sql_sqlqueryresponse)|false|none|none|
+|*oneOf*|[analytics-sql_ClickHouseJsonQueryResponse](#schemaanalytics-sql_clickhousejsonqueryresponse)|false|none|none|
+|*oneOf*|[analytics-sql_LogExplorerQueryResponse](#schemaanalytics-sql_logexplorerqueryresponse)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
+|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer|int64|Seconds to wait before retrying. Present when the account request rate limit is exceeded; omitted for query resource limits.<br>|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token
+</aside>
+
+## List available analytics datasets
+
+<a id="opIdsql-api-introspection-account-scoped"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/0123456789abcdef0123456789abcdef/analytics/sql/introspection \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /accounts/{account_id}/analytics/sql/introspection`
+
+Returns the dataset catalogue for the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account; account_tag is not required as a query parameter. If supplied, it must match the path account. Dataset and column discovery options are identical to the legacy introspection endpoint.
+
+<h3 id="list-available-analytics-datasets-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|string|true|Account that authorizes and scopes the request.|
+|include_columns|query|boolean|false|Include column metadata for each returned dataset.|
+|include_custom_attributes|query|boolean|false|Include a capped set of custom attribute names and types observed during the preceding seven days, as `custom_attributes`. Requires a nonempty dataset_name. Deprecated in favor of `include_attributes`.<br>|
+|include_attributes|query|boolean|false|Include a capped set of attribute names and types observed during the preceding seven days, as `attributes`. Requires a nonempty dataset_name. Replaces `include_custom_attributes`, which is deprecated.<br>|
+|include_wae|query|boolean|false|Include Workers Analytics Engine datasets, which are discovered from the account's own data. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.<br>|
+|include_lex|query|boolean|false|Include Log Explorer datasets, which are listed only where the account has them. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.<br>|
+|dataset_name|query|string|false|Return only the dataset with this exact name. An empty value is treated as if the parameter had been omitted, and does not filter the catalogue. A name that matches no dataset in this deployment's catalogue is rejected with `422`; a dataset that exists but is not describable here is rejected identically, so the two cases cannot be told apart.<br><br>A Workers Analytics Engine dataset is named in full, as `events.analyticsEngine.<dataset_name>`; the namespace on its own returns every such dataset the account has. A `dataset_name` the account does not have is rejected with `422` like any other unknown name.<br>|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "datasets": [
+    {
+      "attributes": [
+        {
+          "data_type": "String",
+          "name": "string"
+        }
+      ],
+      "category": "HTTP Traffic",
+      "columns": [
+        {
+          "data_type": "String",
+          "description": "string",
+          "hidden": true,
+          "name": "clientRequestPath"
+        }
+      ],
+      "custom_attributes": [
+        {
+          "data_type": "String",
+          "name": "string"
+        }
+      ],
+      "description": "string",
+      "hidden": true,
+      "kind": {
+        "availability": [
+          {
+            "scope": "account",
+            "zone": "023e105f4ecef8ad9ca31a8372d0c353"
+          }
+        ],
+        "events": {
+          "sampling": "unsampled"
+        },
+        "logs": {
+          "sampling": "unsampled"
+        },
+        "states": {
+          "sampling": "unsampled",
+          "valid_aggregations": [
+            "count",
+            "max"
+          ]
+        }
+      },
+      "name": "events.httpRequests",
+      "title": "HTTP Requests"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_chain": [
+    {}
+  ],
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```text
+Authorization error
+```
+
+> 422 Response
+
+```text
+Input was invalid: There are no introspectable datasets matching the provided criteria (dataset_name=`events.nonexistent`)
+```
+
+<h3 id="list-available-analytics-datasets-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Dataset catalogue returned successfully.|[analytics-sql_IntrospectionResponse](#schemaanalytics-sql_introspectionresponse)|
+|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
+|403|Forbidden|Authentication failed or the caller does not have Account Analytics Read permission on the specified account.<br>|Inline|
+|422|Unprocessable Entity|The request could not be processed. This is returned when the account tag is invalid or unknown, when `include_custom_attributes` or `include_attributes` is set without a `dataset_name`, when a Workers Analytics Engine `dataset_name` is supplied alongside `include_wae=false` or contains characters a dataset name cannot contain, or when the supplied criteria match no dataset that this deployment can describe — either because no such dataset exists or because it is not describable here. The message names the criteria that matched nothing.<br>|Inline|
+|500|Internal Server Error|An internal error occurred.|Inline|
+|503|Service Unavailable|The authorization service is temporarily unavailable.|Inline|
+
+<h3 id="list-available-analytics-datasets-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
+|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token
+</aside>
+
+## Query analytics datasets
+
+<a id="opIdsql-api-query-get"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.cloudflare.com/client/v4/analytics/sql?query=SELECT%20edgeResponseStatus%20FROM%20events.httpRequests%20WHERE%20accountTag%20%3D%20'\''0123456789abcdef0123456789abcdef'\''%20AND%20datetime%20%3E%20'\''2026-01-01'\''%20LIMIT%2010' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /analytics/sql`
+
+Executes a SQL query against the analytics datasets available to the caller. SQL placeholders can be bound with query parameters named `param_<name>`, such as `param_status=404` for `$status`. A trailing `FORMAT JSON`, `FORMAT JSONEachRow`, `FORMAT TabSeparated`, or `FORMAT TSV` is supported for all datasets. Without FORMAT, each backend retains its existing default JSON response.
+
+
+<h3 id="query-analytics-datasets-2-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|query|query|string|true|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {}
+  ],
+  "rows": 0,
+  "statistics": {
+    "bytes_read": 0,
+    "elapsed_ms": 0,
+    "rows_read": 0
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_chain": [
+    {}
+  ],
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```text
+Authorization error
+```
+
+<h3 id="query-analytics-datasets-2-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Query executed successfully. Columns that the query reaches only through `*` exclude any that the caller is not permitted to read. ClickHouse's default JSON envelope has data, rows, and statistics; explicit FORMAT JSON additionally has typed metadata and rows_before_limit_at_least. Log Explorer's default and FORMAT JSON responses use its existing {data, rows} envelope, without unavailable metadata, pre-limit counts, or statistics. FORMAT JSONEachRow returns newline-delimited JSON objects. FORMAT TabSeparated and TSV return escaped tab-separated rows without a header; Log Explorer serializes nested JSON values as compact JSON text in one field.<br>|Inline|
+|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
+|403|Forbidden|Authentication failed, the caller is not authorized, or the query references a column the caller is not permitted to read.<br>|Inline|
+|422|Unprocessable Entity|The SQL query or its parameters are invalid, including invalid function arguments.|Inline|
+|429|Too Many Requests|The query exceeded a resource or request-rate limit.|Inline|
+|500|Internal Server Error|An internal error occurred.|Inline|
+|501|Not Implemented|The query uses a SQL feature that is not implemented.|Inline|
+|503|Service Unavailable|A required service is temporarily unavailable.|Inline|
+|507|Insufficient Storage|The query exhausted available resources.|Inline|
+
+<h3 id="query-analytics-datasets-2-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_SqlQueryResponse](#schemaanalytics-sql_sqlqueryresponse)|false|none|none|
+|*oneOf*|[analytics-sql_ClickHouseJsonQueryResponse](#schemaanalytics-sql_clickhousejsonqueryresponse)|false|none|none|
+|*oneOf*|[analytics-sql_LogExplorerQueryResponse](#schemaanalytics-sql_logexplorerqueryresponse)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
+|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer|int64|Seconds to wait before retrying. Present when the account request rate limit is exceeded; omitted for query resource limits.<br>|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token
+</aside>
+
+## Query analytics datasets
+
+<a id="opIdsql-api-query-post"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/analytics/sql \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "params": {
+      "status": 404
+    },
+    "query": "SELECT edgeResponseStatus FROM events.httpRequests WHERE edgeResponseStatus = $status LIMIT 10",
+    "scope": {
+      "accountTag": "0123456789abcdef0123456789abcdef"
+    },
+    "time_range": {
+      "end": "2026-01-02T00:00:00Z",
+      "start": "2026-01-01T00:00:00Z"
+    }
+  }'
+```
+
+`POST /analytics/sql`
+
+Executes a SQL query against the analytics datasets available to the caller. Send either raw SQL or a JSON object containing the query and optional positional or named parameters, time range, and account or zone scope. Raw SQL placeholders can also be bound with query parameters named `param_<name>`. A trailing `FORMAT JSON`, `FORMAT JSONEachRow`, `FORMAT TabSeparated`, or `FORMAT TSV` is supported for all datasets. Without FORMAT, each backend retains its existing default JSON response.
+
+
+> Body parameter
+
+```json
+{
+  "params": {
+    "status": 404
+  },
+  "query": "SELECT edgeResponseStatus FROM events.httpRequests WHERE edgeResponseStatus = $status LIMIT 10",
+  "scope": {
+    "accountTag": "0123456789abcdef0123456789abcdef"
+  },
+  "time_range": {
+    "end": "2026-01-02T00:00:00Z",
+    "start": "2026-01-01T00:00:00Z"
+  }
+}
+```
+
+<h3 id="query-analytics-datasets-3-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[analytics-sql_SqlQueryRequest](#schemaanalytics-sql_sqlqueryrequest)|true|none|
+|» params|body|[string \| null \| number \| boolean] \| object|false|Positional array values for `$1`, `$2`, and similar placeholders, or named object values for placeholders such as `$status`.<br>|
+|» » *oneOf*|body|[string \| null \| number \| boolean]|false|none|
+|» *oneOf*|body|string \| null|false|none|
+|» *oneOf*|body|number|false|none|
+|» *oneOf*|body|boolean|false|none|
+|» » *oneOf*|body|object|false|none|
+|» query|body|string|true|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
+|» scope|body|[analytics-sql_SqlQueryScope](#schemaanalytics-sql_sqlqueryscope)|false|Account or zone scope applied to the query. Include exactly one scope tag. Do not include account or zone tenancy predicates in the SQL query when this field is present.<br>|
+|» time_range|body|object|false|none|
+|» » end|body|string|false|Inclusive upper bound for the dataset's timestamp column.|
+|» » start|body|string|true|Inclusive lower bound for the dataset's timestamp column.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {}
+  ],
+  "rows": 0,
+  "statistics": {
+    "bytes_read": 0,
+    "elapsed_ms": 0,
+    "rows_read": 0
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_chain": [
+    {}
+  ],
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```text
+Authorization error
+```
+
+<h3 id="query-analytics-datasets-3-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Query executed successfully. Columns that the query reaches only through `*` exclude any that the caller is not permitted to read. ClickHouse's default JSON envelope has data, rows, and statistics; explicit FORMAT JSON additionally has typed metadata and rows_before_limit_at_least. Log Explorer's default and FORMAT JSON responses use its existing {data, rows} envelope, without unavailable metadata, pre-limit counts, or statistics. FORMAT JSONEachRow returns newline-delimited JSON objects. FORMAT TabSeparated and TSV return escaped tab-separated rows without a header; Log Explorer serializes nested JSON values as compact JSON text in one field.<br>|Inline|
+|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
+|403|Forbidden|Authentication failed, the caller is not authorized, or the query references a column the caller is not permitted to read.<br>|Inline|
+|422|Unprocessable Entity|The SQL query or its parameters are invalid, including invalid function arguments.|Inline|
+|429|Too Many Requests|The query exceeded a resource or request-rate limit.|Inline|
+|500|Internal Server Error|An internal error occurred.|Inline|
+|501|Not Implemented|The query uses a SQL feature that is not implemented.|Inline|
+|503|Service Unavailable|A required service is temporarily unavailable.|Inline|
+|507|Insufficient Storage|The query exhausted available resources.|Inline|
+
+<h3 id="query-analytics-datasets-3-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_SqlQueryResponse](#schemaanalytics-sql_sqlqueryresponse)|false|none|none|
+|*oneOf*|[analytics-sql_ClickHouseJsonQueryResponse](#schemaanalytics-sql_clickhousejsonqueryresponse)|false|none|none|
+|*oneOf*|[analytics-sql_LogExplorerQueryResponse](#schemaanalytics-sql_logexplorerqueryresponse)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
+|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer|int64|Seconds to wait before retrying. Present when the account request rate limit is exceeded; omitted for query resource limits.<br>|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token
+</aside>
+
+## List available analytics datasets
+
+<a id="opIdsql-api-introspection"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.cloudflare.com/client/v4/analytics/sql/introspection?account_tag=0123456789abcdef0123456789abcdef' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /analytics/sql/introspection`
+
+Returns the analytics dataset catalogue. By default, the response contains dataset names, titles, categories, descriptions, kinds, and hidden flags. Set `include_columns` to include each dataset's column names, descriptions, data types, and hidden flags. The caller must have Account Analytics Read permission on the account identified by `account_tag`. Dataset names, descriptions, and columns are the same for every authorized account. When `include_custom_attributes` or `include_attributes` is set, the response also includes attribute names and types discovered from that account's own data, which legitimately differs per caller. `attributes` is a replacement for `custom_attributes` that will eventually be removed; until then, set either flag independently to receive the corresponding field. `hidden` marks catalogue entries a client should de-emphasise. It has no effect on access: hidden datasets and columns are returned here and remain fully queryable.
+
+The catalogue lists the datasets this deployment is able to describe, which is not a fixed list. Some datasets are described by the service that owns them and are listed only where that service is available, so the same account may see a different catalogue in different environments, and datasets may appear or disappear without a change to this API. Clients should query the catalogue rather than hard-coding it, and should not treat a dataset's absence as proof that it does not exist.
+
+Workers Analytics Engine datasets are named by the account that writes them, so they are discovered from that account's own data rather than from a fixed list. They appear as `events.analyticsEngine.<dataset_name>` and differ per account. A dataset is listed for as long as any of its data is retained, so it does not disappear from the catalogue merely because writes have stopped. An account with a very large number of datasets may receive a truncated list. Set `include_wae=false` to omit them.
+
+Log Explorer datasets are listed only where the account has them, so they differ per account and are not part of the static catalogue. Set `include_lex=false` to omit them.
+
+
+<h3 id="list-available-analytics-datasets-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_tag|query|string|true|Account whose available analytics datasets are returned.|
+|include_columns|query|boolean|false|Include column metadata for each returned dataset.|
+|include_custom_attributes|query|boolean|false|Include a capped set of custom attribute names and types observed during the preceding seven days, as `custom_attributes`. Requires a nonempty dataset_name. Deprecated in favor of `include_attributes`.<br>|
+|include_attributes|query|boolean|false|Include a capped set of attribute names and types observed during the preceding seven days, as `attributes`. Requires a nonempty dataset_name. Replaces `include_custom_attributes`, which is deprecated.<br>|
+|include_wae|query|boolean|false|Include Workers Analytics Engine datasets, which are discovered from the account's own data. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.<br>|
+|include_lex|query|boolean|false|Include Log Explorer datasets, which are listed only where the account has them. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.<br>|
+|dataset_name|query|string|false|Return only the dataset with this exact name. An empty value is treated as if the parameter had been omitted, and does not filter the catalogue. A name that matches no dataset in this deployment's catalogue is rejected with `422`; a dataset that exists but is not describable here is rejected identically, so the two cases cannot be told apart.<br><br>A Workers Analytics Engine dataset is named in full, as `events.analyticsEngine.<dataset_name>`; the namespace on its own returns every such dataset the account has. A `dataset_name` the account does not have is rejected with `422` like any other unknown name.<br>|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "datasets": [
+    {
+      "attributes": [
+        {
+          "data_type": "String",
+          "name": "string"
+        }
+      ],
+      "category": "HTTP Traffic",
+      "columns": [
+        {
+          "data_type": "String",
+          "description": "string",
+          "hidden": true,
+          "name": "clientRequestPath"
+        }
+      ],
+      "custom_attributes": [
+        {
+          "data_type": "String",
+          "name": "string"
+        }
+      ],
+      "description": "string",
+      "hidden": true,
+      "kind": {
+        "availability": [
+          {
+            "scope": "account",
+            "zone": "023e105f4ecef8ad9ca31a8372d0c353"
+          }
+        ],
+        "events": {
+          "sampling": "unsampled"
+        },
+        "logs": {
+          "sampling": "unsampled"
+        },
+        "states": {
+          "sampling": "unsampled",
+          "valid_aggregations": [
+            "count",
+            "max"
+          ]
+        }
+      },
+      "name": "events.httpRequests",
+      "title": "HTTP Requests"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": 0,
+  "error_chain": [
+    {}
+  ],
+  "message": "string"
+}
+```
+
+> 403 Response
+
+```text
+Authorization error
+```
+
+> 422 Response
+
+```text
+Input was invalid: There are no introspectable datasets matching the provided criteria (dataset_name=`events.nonexistent`)
+```
+
+<h3 id="list-available-analytics-datasets-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Dataset catalogue returned successfully.|[analytics-sql_IntrospectionResponse](#schemaanalytics-sql_introspectionresponse)|
+|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
+|403|Forbidden|Authentication failed or the caller does not have Account Analytics Read permission on the specified account.<br>|Inline|
+|422|Unprocessable Entity|The request could not be processed. This is returned when the account tag is invalid or unknown, when `include_custom_attributes` or `include_attributes` is set without a `dataset_name`, when a Workers Analytics Engine `dataset_name` is supplied alongside `include_wae=false` or contains characters a dataset name cannot contain, or when the supplied criteria match no dataset that this deployment can describe — either because no such dataset exists or because it is not describable here. The message names the criteria that matched nothing.<br>|Inline|
+|500|Internal Server Error|An internal error occurred.|Inline|
+|503|Service Unavailable|The authorization service is temporarily unavailable.|Inline|
+
+<h3 id="list-available-analytics-datasets-1-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
+|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token
+</aside>
+
 <h1 id="cloudflare-api-analytics-engine">Analytics Engine</h1>
 
 ## Execute an Analytics Engine SQL query via query parameter
@@ -67224,7 +68350,7 @@ curl https://api.cloudflare.com/client/v4/accounts/string/artifacts/namespaces/s
 
 `GET /accounts/{account_id}/artifacts/namespaces/{namespace}/repos/{name}/tree/{hash}`
 
-Returns decoded entries for an immutable Git tree object. Tree responses are cacheable forever by hash.
+Returns decoded entries for an immutable Git tree object. A commit hash returns that commit's root tree; a blob or tag hash returns 422. Tree responses are cacheable forever by hash.
 
 <h3 id="read-a-git-tree-parameters">Parameters</h3>
 
@@ -67394,6 +68520,35 @@ Returns decoded entries for an immutable Git tree object. Tree responses are cac
 }
 ```
 
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": -9007199254740000,
+      "documentation_url": "http://example.com",
+      "message": "string",
+      "source": {
+        "pointer": "string"
+      }
+    }
+  ],
+  "messages": [
+    {
+      "code": -9007199254740000,
+      "documentation_url": "http://example.com",
+      "message": "string",
+      "source": {
+        "pointer": "string"
+      }
+    }
+  ],
+  "result": {},
+  "success": false
+}
+```
+
 > 500 Response
 
 ```json
@@ -67432,6 +68587,7 @@ Returns decoded entries for an immutable Git tree object. Tree responses are cac
 |401|Unauthorized|Authentication required.|Inline|
 |403|Forbidden|Insufficient permissions.|Inline|
 |404|Not Found|Resource not found.|Inline|
+|422|Unprocessable Entity|Unprocessable entity.|Inline|
 |500|Internal Server Error|Internal server error.|Inline|
 
 <h3 id="read-a-git-tree-responseschema">Response Schema</h3>
@@ -67557,6 +68713,31 @@ Status Code **403**
 |success|false|
 
 Status Code **404**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[object]|true|none|none|
+|» code|integer|true|none|none|
+|» documentation_url|string(uri)|false|none|none|
+|» message|string|true|none|none|
+|» source|object|false|none|none|
+|» » pointer|string|false|none|none|
+|messages|[object]|true|none|none|
+|» code|integer|true|none|none|
+|» documentation_url|string(uri)|false|none|none|
+|» message|string|true|none|none|
+|» source|object|false|none|none|
+|» » pointer|string|false|none|none|
+|result|object \| null|true|none|none|
+|success|boolean|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|success|false|
+
+Status Code **422**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
@@ -70743,6 +71924,7 @@ to store Iceberg metadata and data files.
       {
         "bucket": "analytics-bucket",
         "id": "550e8400-e29b-41d4-a716-446655440000",
+        "jurisdiction": "default",
         "maintenance_config": {
           "compaction": {
             "state": "enabled",
@@ -70911,6 +72093,7 @@ Returns catalog status, maintenance configuration, and credential status.
     "bucket": "analytics-bucket",
     "credential_status": "present",
     "id": "550e8400-e29b-41d4-a716-446655440000",
+    "jurisdiction": "default",
     "maintenance_config": {
       "compaction": {
         "state": "enabled",
@@ -71260,8 +72443,14 @@ api_token, api_email & api_key
 ```bash
 curl https://api.cloudflare.com/client/v4/accounts/0123456789abcdef0123456789abcdef/basin-catalog/my-data-bucket/enable \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "credential": {
+      "token": "your-cloudflare-api-token-here"
+    }
+  }'
 ```
 
 `POST /accounts/{account_id}/basin-catalog/{bucket_name}/enable`
@@ -71271,12 +72460,24 @@ the necessary catalog infrastructure and activates the bucket for storing
 Iceberg metadata and data files.
 
 
+> Body parameter
+
+```json
+{
+  "credential": {
+    "token": "your-cloudflare-api-token-here"
+  }
+}
+```
+
 <h3 id="enable-r2-bucket-as-a-catalog-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |account_id|path|[r2-data-catalog_account-id](#schemar2-data-catalog_account-id)|true|Identifies the account.|
 |bucket_name|path|[r2-data-catalog_bucket-name](#schemar2-data-catalog_bucket-name)|true|Specifies the R2 bucket name to enable as catalog.|
+|body|body|[r2-data-catalog_catalog-activation-request](#schemar2-data-catalog_catalog-activation-request)|false|none|
+|» credential|body|[r2-data-catalog_catalog-credential-request](#schemar2-data-catalog_catalog-credential-request)|false|Contains request to store catalog credentials.|
 
 > Example responses
 
@@ -100910,7 +102111,7 @@ Creates an account subscription.
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -101287,7 +102488,7 @@ Updates an account subscription.
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -101557,7 +102758,7 @@ Smartly applies the incoming subscription into the lifecycle of the subscription
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -102679,10 +103880,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -102823,10 +104026,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -102947,10 +104152,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -103072,10 +104279,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -103214,10 +104423,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -103350,10 +104561,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -103451,10 +104664,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -103573,10 +104788,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -103697,10 +104914,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -103796,10 +105015,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -103965,10 +105186,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -104122,10 +105345,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -104261,10 +105486,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -104383,10 +105610,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -104506,10 +105735,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -104646,10 +105877,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -104780,10 +106013,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -104899,10 +106134,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -105013,10 +106250,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -105113,10 +106352,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -115685,6 +116926,112 @@ Status Code **200**
 |---|---|
 |» » resourceType|article|
 |» » system|threat-signals|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token
+</aside>
+
+## Delete indicators in bulk
+
+<a id="opIddelete_IndicatorDeleteBulk"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.cloudflare.com/client/v4/accounts/string/cloudforce-one/events/dataset/string/indicators?indicatorIds=497f6eca-6276-4993-bfeb-53cbbbba6f08' \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators`
+
+Deletes up to 200 indicators from a dataset. Pass the indicator UUIDs in `indicatorIds`; UUIDs that are not found are returned in `missingUUIDs`.
+
+<h3 id="delete-indicators-in-bulk-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|string|true|Account ID.|
+|dataset_id|path|string|true|Dataset ID.|
+|indicatorIds|query|[string(uuid)]|true|Indicator UUIDs to delete, 1-200 per request.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "deletedCount": 0,
+  "missingUUIDs": [
+    "string"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "An error occurred."
+    }
+  ],
+  "result": {},
+  "success": true
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "An error occurred."
+    }
+  ],
+  "result": {},
+  "success": true
+}
+```
+
+<h3 id="delete-indicators-in-bulk-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the number of deleted indicators.|Inline|
+|400|Bad Request|Bad Request.|Inline|
+|404|Not Found|Bad Request.|Inline|
+
+<h3 id="delete-indicators-in-bulk-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deletedCount|integer|true|none|Number of indicators deleted.|
+|missingUUIDs|[string]|false|none|Requested UUIDs that were not found in the dataset. Omitted when every UUID was deleted.|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[object]|true|none|none|
+|» message|string|true|none|none|
+|result|object|true|none|none|
+|success|boolean|true|none|none|
+
+Status Code **404**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[object]|true|none|none|
+|» message|string|true|none|none|
+|result|object|true|none|none|
+|success|boolean|true|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -138441,7 +139788,7 @@ Lists articles from the account's Threat Signals feeds.
             }
           ]
         },
-        "severity": 1,
+        "severity": "informational",
         "summary": "string",
         "tags": [
           {
@@ -138496,7 +139843,7 @@ Status Code **200**
 |» » » pirs|[object]|true|none|Beta. Every active PIR the article was scored against, most relevant first. Draft and deleted PIRs are excluded.|
 |» » » » band|string|true|none|Beta. How relevant the article is to a Priority Intelligence Requirement: high, medium, or low. Cloudflare may change the scores behind each band as relevance scoring is calibrated.|
 |» » » » pir_id|string(uuid)|true|none|none|
-|» » severity|number \| null|true|none|Intrinsic article severity from 1 (informational) to 5 (critical). Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.|
+|» » severity|string \| null|true|none|Beta. Intrinsic article severity band, from informational to critical, independent of any organisation or Priority Intelligence Requirement. Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.|
 |» » summary|string \| null|true|none|Persisted enrichment summary. Null until enrichment produces a summary.|
 |» » tags|[object]|true|none|none|
 |» » » applied_by|string|true|none|none|
@@ -138520,6 +139867,11 @@ Status Code **200**
 |» » » » band|low|
 |» » » » band|medium|
 |» » » » band|high|
+|» » severity|informational|
+|» » severity|low|
+|» » severity|medium|
+|» » severity|high|
+|» » severity|critical|
 |» » » applied_by|ai|
 |» » » applied_by|analyst|
 |» » » applied_by|system|
@@ -138664,7 +140016,7 @@ curl https://api.cloudflare.com/client/v4/accounts/string/cloudforce-one/v2/thre
 
 `GET /accounts/{account_id}/cloudforce-one/v2/threat-signals/articles/relevance/aggregate`
 
-Beta. Counts the account's Threat Signals articles in each relevance band, for each active Priority Intelligence Requirement and across all of them. Uses the same PIRs as article relevance: active PIRs, including those the matcher paused; drafts and deleted PIRs are excluded. Articles not scored against a PIR are not counted for it. The combined counts place each article once, in the band of its best score, so they are not the sum of the per-PIR counts. All counts are read together and are exact.
+Beta. Counts the account's Threat Signals articles in each relevance band, for each active Priority Intelligence Requirement and across all of them. Uses the same PIRs as article relevance: active PIRs, including those the matcher paused; drafts and deleted PIRs are excluded. Articles not scored against a PIR are not counted for it. The combined counts place each article once, in the band of its best score, so they are not the sum of the per-PIR counts. read counts only read or only unread articles. All counts are read together and are exact.
 
 <h3 id="count-threat-signals-articles-by-relevance-band-parameters">Parameters</h3>
 
@@ -138673,6 +140025,7 @@ Beta. Counts the account's Threat Signals articles in each relevance band, for e
 |account_id|path|string|true|none|
 |published_after|query|string(date-time)|false|none|
 |published_before|query|string(date-time)|false|none|
+|read|query|boolean|false|none|
 
 > Example responses
 
@@ -138762,7 +140115,7 @@ curl https://api.cloudflare.com/client/v4/accounts/string/cloudforce-one/v2/thre
 
 `GET /accounts/{account_id}/cloudforce-one/v2/threat-signals/articles/severity/aggregate`
 
-Beta. Counts the account's Threat Signals articles in each intrinsic severity band. An article's band is the severity level nearest its severity, from informational to critical. Articles without a severity are not counted. min_relevance counts only articles at or above a relevance band for any active Priority Intelligence Requirement. Like the article severity field, severity is reported only while the account has an active Priority Intelligence Requirement, including one the matcher paused; otherwise every count is zero. All counts are read together and are exact.
+Beta. Counts the account's Threat Signals articles in each intrinsic severity band. An article's band is the one reported as its severity, from informational to critical. Articles without a severity are not counted. Also counts, for each active Priority Intelligence Requirement, the articles scored against it. min_relevance counts only articles at or above a relevance band: overall, for any active PIR; per PIR, for that PIR, the same rule as the per-PIR relevance counts. pir_id counts for one active PIR only. read counts only read or only unread articles, in both articles and priorities. Like the article severity field, severity is reported only while the account has an active Priority Intelligence Requirement, including one the matcher paused; otherwise every count is zero and priorities is empty. All counts are read together and are exact.
 
 <h3 id="count-threat-signals-articles-by-severity-band-parameters">Parameters</h3>
 
@@ -138771,6 +140124,8 @@ Beta. Counts the account's Threat Signals articles in each intrinsic severity ba
 |account_id|path|string|true|none|
 |published_after|query|string(date-time)|false|none|
 |published_before|query|string(date-time)|false|none|
+|read|query|boolean|false|none|
+|pir_id|query|string(uuid)|false|none|
 |min_relevance|query|string|false|none|
 
 #### Enumerated Values
@@ -138799,7 +140154,19 @@ Beta. Counts the account's Threat Signals articles in each intrinsic severity ba
       "informational": 0,
       "low": 0,
       "medium": 0
-    }
+    },
+    "priorities": [
+      {
+        "articles": {
+          "critical": 0,
+          "high": 0,
+          "informational": 0,
+          "low": 0,
+          "medium": 0
+        },
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+      }
+    ]
   },
   "success": true
 }
@@ -138821,12 +140188,20 @@ Status Code **200**
 |errors|[object]|true|none|none|
 |» message|string|true|none|none|
 |result|object|true|none|none|
-|» articles|object|true|none|Beta. Number of articles in each severity band: the severity level nearest the article's severity. Articles without a severity are not counted, and every count is zero when the account has no active Priority Intelligence Requirements.|
+|» articles|object|true|none|Beta. Number of articles in each severity band, the band reported as the article's severity. Articles without a severity are not counted, and every count is zero when the account has no active Priority Intelligence Requirements.|
 |» » critical|integer|true|none|none|
 |» » high|integer|true|none|none|
 |» » informational|integer|true|none|none|
 |» » low|integer|true|none|none|
 |» » medium|integer|true|none|none|
+|» priorities|[object]|true|none|Beta. Each active PIR, including PIRs the matcher paused, ordered by ID. Drafts and deleted PIRs are excluded. An article can count toward several PIRs, so these are not parts of articles.|
+|» » articles|object|true|none|Beta. Number of articles scored against this PIR in each severity band. With min_relevance, only articles whose relevance to this PIR is at or above that band. Articles without a severity are not counted.|
+|» » » critical|integer|true|none|none|
+|» » » high|integer|true|none|none|
+|» » » informational|integer|true|none|none|
+|» » » low|integer|true|none|none|
+|» » » medium|integer|true|none|none|
+|» » id|string(uuid)|true|none|Active Priority Intelligence Requirement ID.|
 |success|boolean|true|none|none|
 
 #### Enumerated Values
@@ -138901,7 +140276,7 @@ Retrieves a Threat Signals article with its summary, tags, indicator status and 
         }
       ]
     },
-    "severity": 1,
+    "severity": "informational",
     "skill_version": "string",
     "source_count": 0,
     "summary": "string",
@@ -138958,7 +140333,7 @@ Status Code **200**
 |» » pirs|[object]|true|none|Beta. Every active PIR the article was scored against, most relevant first. Draft and deleted PIRs are excluded.|
 |» » » band|string|true|none|Beta. How relevant the article is to a Priority Intelligence Requirement: high, medium, or low. Cloudflare may change the scores behind each band as relevance scoring is calibrated.|
 |» » » pir_id|string(uuid)|true|none|none|
-|» severity|number \| null|true|none|Intrinsic article severity from 1 (informational) to 5 (critical). Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.|
+|» severity|string \| null|true|none|Beta. Intrinsic article severity band, from informational to critical, independent of any organisation or Priority Intelligence Requirement. Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.|
 |» skill_version|string \| null|false|none|none|
 |» source_count|number|true|none|none|
 |» summary|string \| null|true|none|Persisted enrichment summary. Null until enrichment produces a summary.|
@@ -138986,6 +140361,11 @@ Status Code **200**
 |» » » band|low|
 |» » » band|medium|
 |» » » band|high|
+|» severity|informational|
+|» severity|low|
+|» severity|medium|
+|» severity|high|
+|» severity|critical|
 |» » applied_by|ai|
 |» » applied_by|analyst|
 |» » applied_by|system|
@@ -139062,7 +140442,7 @@ Marks a Threat Signals article as read or unread.
     "published_at": "string",
     "read": true,
     "read_at": "string",
-    "severity": 1,
+    "severity": "informational",
     "skill_version": "string",
     "source_count": 0,
     "summary": "string",
@@ -139113,7 +140493,7 @@ Status Code **200**
 |» published_at|string \| null|true|none|none|
 |» read|boolean|true|none|none|
 |» read_at|string \| null|true|none|none|
-|» severity|number \| null|true|none|Intrinsic article severity from 1 (informational) to 5 (critical). Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.|
+|» severity|string \| null|true|none|Beta. Intrinsic article severity band, from informational to critical, independent of any organisation or Priority Intelligence Requirement. Null when the account has no active Priority Intelligence Requirements, scoring has not completed, or a historic article has not entered an automatic rescore window.|
 |» skill_version|string \| null|false|none|none|
 |» source_count|number|true|none|none|
 |» summary|string \| null|true|none|Persisted enrichment summary. Null until enrichment produces a summary.|
@@ -139135,6 +140515,11 @@ Status Code **200**
 |» indicator_extraction_status|complete|
 |» indicator_extraction_status|failed|
 |» indicator_extraction_status|unknown|
+|» severity|informational|
+|» severity|low|
+|» severity|medium|
+|» severity|high|
+|» severity|critical|
 |» » applied_by|ai|
 |» » applied_by|analyst|
 |» » applied_by|system|
@@ -166616,6 +168001,7 @@ Fetches a list of the device settings profiles for an account.
       ],
       "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
       "global_acceleration": {
+        "allow_manual_override": true,
         "api_endpoints": [
           "198.51.100.1:443"
         ],
@@ -166846,6 +168232,7 @@ Fetches the default device settings profile for an account.
     ],
     "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -166953,6 +168340,7 @@ curl https://api.cloudflare.com/client/v4/accounts/699d98642c564d2e855e9661899b7
     ],
     "exclude_office_ips": true,
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -167027,6 +168415,7 @@ Creates a device settings profile to be applied to certain devices matching the 
   ],
   "exclude_office_ips": true,
   "global_acceleration": {
+    "allow_manual_override": true,
     "api_endpoints": [
       "198.51.100.1:443"
     ],
@@ -167238,6 +168627,7 @@ Creates a device settings profile to be applied to certain devices matching the 
     ],
     "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -167349,6 +168739,7 @@ curl https://api.cloudflare.com/client/v4/accounts/699d98642c564d2e855e9661899b7
     ],
     "exclude_office_ips": true,
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -167412,6 +168803,7 @@ Updates the default device settings profile for an account.
   ],
   "exclude_office_ips": true,
   "global_acceleration": {
+    "allow_manual_override": true,
     "api_endpoints": [
       "198.51.100.1:443"
     ],
@@ -167599,6 +168991,7 @@ Updates the default device settings profile for an account.
     ],
     "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -168504,6 +169897,7 @@ Fetches a device settings profile by ID.
     ],
     "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -168735,6 +170129,7 @@ Deletes a device settings profile and fetches a list of the remaining profiles f
       ],
       "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
       "global_acceleration": {
+        "allow_manual_override": true,
         "api_endpoints": [
           "198.51.100.1:443"
         ],
@@ -168860,6 +170255,7 @@ curl https://api.cloudflare.com/client/v4/accounts/699d98642c564d2e855e9661899b7
     ],
     "exclude_office_ips": true,
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -168933,6 +170329,7 @@ Updates a configured device settings profile.
   ],
   "exclude_office_ips": true,
   "global_acceleration": {
+    "allow_manual_override": true,
     "api_endpoints": [
       "198.51.100.1:443"
     ],
@@ -169136,6 +170533,7 @@ Updates a configured device settings profile.
     ],
     "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -172461,6 +173859,7 @@ Lists WARP devices.
       "mac_address": "f5:01:73:cf:12:23",
       "manufacturer": "ACME",
       "model": "Mark VII",
+      "multiuser": true,
       "name": "My Device",
       "os_version": "string",
       "os_version_extra": "string",
@@ -172596,6 +173995,7 @@ Fetches a single WARP device.
     "mac_address": "f5:01:73:cf:12:23",
     "manufacturer": "ACME",
     "model": "Mark VII",
+    "multiuser": true,
     "name": "My Device",
     "os_version": "string",
     "os_version_extra": "string",
@@ -172835,6 +174235,7 @@ Updates properties of a WARP device.
     "mac_address": "f5:01:73:cf:12:23",
     "manufacturer": "ACME",
     "model": "Mark VII",
+    "multiuser": true,
     "name": "My Device",
     "os_version": "string",
     "os_version_extra": "string",
@@ -172847,6 +174248,27 @@ Updates properties of a WARP device.
     "updated_at": "2025-02-14T13:17:00Z"
   },
   "success": true
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 0,
+      "message": "string"
+    }
+  ],
+  "messages": [
+    {
+      "code": 0,
+      "message": "string"
+    }
+  ],
+  "result": {},
+  "success": false
 }
 ```
 
@@ -172876,6 +174298,7 @@ Updates properties of a WARP device.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Returns the updated Device.|Inline|
+|409|Conflict|The device tags were modified concurrently. Retry the request.|[teams-devices_v4_error_response](#schemateams-devices_v4_error_response)|
 |4XX|Client Error|Client error response.|[teams-devices_v4_error_response](#schemateams-devices_v4_error_response)|
 
 <h3 id="update-device-responseschema">Response Schema</h3>
@@ -196795,6 +198218,7 @@ Lists an account's Custom Nameserver Sets.
       "created_on": "2026-09-01T12:00:00Z",
       "id": "0123456789abcdef0123456789abcdef",
       "ip_set": 1,
+      "name": "Production nameservers",
       "advanced": false,
       "nameservers": [
         {
@@ -196864,6 +198288,7 @@ curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c
   -d '{
     "advanced": false,
     "ip_set": 1,
+    "name": "Production nameservers",
     "nameservers": [
       {
         "ip_count": 1,
@@ -196879,7 +198304,7 @@ curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c
 
 `POST /accounts/{account_id}/dns_settings/nameserver_sets`
 
-Creates an immutable Custom Nameserver Set. To change a set, create a new one, move any zone assignments, and delete the old set.
+Creates a named Custom Nameserver Set. Only the customer-defined name can be changed later. To change nameservers or addresses, create a new set, move any zone assignments, and delete the old set.
 
 > Body parameter
 
@@ -196887,6 +198312,7 @@ Creates an immutable Custom Nameserver Set. To change a set, create a new one, m
 {
   "advanced": false,
   "ip_set": 1,
+  "name": "Production nameservers",
   "nameservers": [
     {
       "ip_count": 1,
@@ -196908,6 +198334,7 @@ Creates an immutable Custom Nameserver Set. To change a set, create a new one, m
 |body|body|[dns-settings_nameserver-set-create](#schemadns-settings_nameserver-set-create)|true|none|
 |» advanced|body|boolean|false|Whether to allocate the nameservers from distinct Advanced anycast groups.|
 |» ip_set|body|[dns-settings_nameserver-set-ip-set](#schemadns-settings_nameserver-set-ip-set)|false|Selects the account-specific IP set that supplies the nameserver addresses. Nameserver sets with the same `ip_set` and `advanced` value may reuse addresses; otherwise, they use disjoint address groups.|
+|» name|body|[dns-settings_nameserver-set-name](#schemadns-settings_nameserver-set-name)|true|Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.|
 |» nameservers|body|[[dns-settings_nameserver-set-create-member](#schemadns-settings_nameserver-set-create-member)]|true|Lists each nameserver and the number of addresses to allocate to it. Requires a unique name for each entry in the set.|
 
 > Example responses
@@ -196923,6 +198350,7 @@ Creates an immutable Custom Nameserver Set. To change a set, create a new one, m
     "created_on": "2026-09-01T12:00:00Z",
     "id": "0123456789abcdef0123456789abcdef",
     "ip_set": 1,
+    "name": "Production nameservers",
     "advanced": false,
     "nameservers": [
       {
@@ -197012,6 +198440,7 @@ Gets a Custom Nameserver Set owned by an account.
     "created_on": "2026-09-01T12:00:00Z",
     "id": "0123456789abcdef0123456789abcdef",
     "ip_set": 1,
+    "name": "Production nameservers",
     "advanced": false,
     "nameservers": [
       {
@@ -197126,6 +198555,111 @@ Deletes an unassigned Custom Nameserver Set.
 |---|---|---|---|
 |200|OK|Returns the identifier of the deleted Custom Nameserver Set.|[dns-settings_nameserver_set_delete_response](#schemadns-settings_nameserver_set_delete_response)|
 |4XX|Client Error|Returns an error when the Custom Nameserver Set cannot be deleted.|[dns-settings_api-response-common-failure](#schemadns-settings_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token, api_email & api_key
+</aside>
+
+## Update Custom Nameserver Set
+
+<a id="opIddns-settings-for-an-account-update-custom-nameserver-set"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/dns_settings/nameserver_sets/0123456789abcdef0123456789abcdef \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "Production nameservers"
+  }'
+```
+
+`PATCH /accounts/{account_id}/dns_settings/nameserver_sets/{nameserver_set_id}`
+
+Renames a Custom Nameserver Set owned by the account. Only name may be supplied; immutable and unknown fields are rejected even if unchanged. An empty object or the existing name is a successful no-op. Requires the account-scoped creation entitlements for the existing set.
+
+> Body parameter
+
+```json
+{
+  "name": "Production nameservers"
+}
+```
+
+<h3 id="update-custom-nameserver-set-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|[dns-settings_identifier](#schemadns-settings_identifier)|true|none|
+|nameserver_set_id|path|[dns-settings_nameserver-set-id](#schemadns-settings_nameserver-set-id)|true|none|
+|body|body|[dns-settings_nameserver-set-patch](#schemadns-settings_nameserver-set-patch)|true|none|
+|» name|body|[dns-settings_nameserver-set-name](#schemadns-settings_nameserver-set-name)|false|Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "success": true,
+  "result": {
+    "created_on": "2026-09-01T12:00:00Z",
+    "id": "0123456789abcdef0123456789abcdef",
+    "ip_set": 1,
+    "name": "Production nameservers",
+    "advanced": false,
+    "nameservers": [
+      {
+        "ipv4": [
+          "192.0.2.1"
+        ],
+        "ipv6": [
+          "2001:db8::1"
+        ],
+        "name": "ns1.example.com"
+      },
+      {
+        "ipv4": [
+          "192.0.2.1"
+        ],
+        "ipv6": [
+          "2001:db8::1"
+        ],
+        "name": "ns1.example.com"
+      }
+    ]
+  }
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="update-custom-nameserver-set-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the complete modified Custom Nameserver Set.|[dns-settings_nameserver_set_response_single](#schemadns-settings_nameserver_set_response_single)|
+|4XX|Client Error|Returns an error when the Custom Nameserver Set cannot be updated.|[dns-settings_api-response-common-failure](#schemadns-settings_api-response-common-failure)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -223029,6 +224563,225 @@ Note: This operation will affect all zones in the account.
 |---|---|---|---|
 |200|OK|Update an IP Access rule response.|[firewall_response_single](#schemafirewall_response_single)|
 |4XX|Client Error|Update an IP Access rule response failure.|[firewall_api-response-common-failure](#schemafirewall_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_email & api_key & api_token
+</aside>
+
+<h1 id="cloudflare-api-payload-logging-keys-for-an-account">Payload logging keys for an account</h1>
+
+## Get the payload logging key
+
+<a id="opIdpayload-logging-keys-for-an-account-get-the-payload-logging-key"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/firewall/payload_logging/key \
+  -H 'Accept: application/json' \
+  -H "X-Auth-Email: ${API_KEY}" \
+  -H "X-Auth-Key: ${API_KEY}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /accounts/{account_id}/firewall/payload_logging/key`
+
+Fetches the public key that payload logging uses to encrypt matched payloads for the account.
+
+<h3 id="get-the-payload-logging-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|[firewall_account_identifier](#schemafirewall_account_identifier)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "result": {
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  },
+  "success": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="get-the-payload-logging-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Get the payload logging key response.|[firewall_payload_logging_key_response_single](#schemafirewall_payload_logging_key_response_single)|
+|4XX|Client Error|Get the payload logging key response failure.|[firewall_api-response-common-failure](#schemafirewall_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_email & api_key & api_token
+</aside>
+
+## Set the payload logging key
+
+<a id="opIdpayload-logging-keys-for-an-account-set-the-payload-logging-key"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/firewall/payload_logging/key \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Auth-Email: ${API_KEY}" \
+  -H "X-Auth-Key: ${API_KEY}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  }'
+```
+
+`PUT /accounts/{account_id}/firewall/payload_logging/key`
+
+Creates or replaces the public key that payload logging uses to encrypt matched payloads for the account. It applies to every zone in the account that has no zone key. Requires a plan that includes payload logging (Enterprise); otherwise it returns 403.
+
+> Body parameter
+
+```json
+{
+  "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+}
+```
+
+<h3 id="set-the-payload-logging-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|[firewall_account_identifier](#schemafirewall_account_identifier)|true|none|
+|body|body|[firewall_payload_logging_key](#schemafirewall_payload_logging_key)|true|none|
+|» public_key|body|string|true|Defines the X25519 public key, as standard base64 of exactly 32 bytes, that encrypts matched payloads. Cloudflare stores only the public key; keep the private key to decrypt logged payloads.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "result": {
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  },
+  "success": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="set-the-payload-logging-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Set the payload logging key response.|[firewall_payload_logging_key_response_single](#schemafirewall_payload_logging_key_response_single)|
+|4XX|Client Error|Set the payload logging key response failure.|[firewall_api-response-common-failure](#schemafirewall_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_email & api_key & api_token
+</aside>
+
+## Delete the payload logging key
+
+<a id="opIdpayload-logging-keys-for-an-account-delete-the-payload-logging-key"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/firewall/payload_logging/key \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "X-Auth-Email: ${API_KEY}" \
+  -H "X-Auth-Key: ${API_KEY}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /accounts/{account_id}/firewall/payload_logging/key`
+
+Deletes the payload logging public key of the account.
+
+<h3 id="delete-the-payload-logging-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|[firewall_account_identifier](#schemafirewall_account_identifier)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "result": {
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  },
+  "success": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="delete-the-payload-logging-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Delete the payload logging key response.|[firewall_payload_logging_key_response_single](#schemafirewall_payload_logging_key_response_single)|
+|4XX|Client Error|Delete the payload logging key response failure.|[firewall_api-response-common-failure](#schemafirewall_api-response-common-failure)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -255867,6 +257620,7 @@ Lists all fields available for a dataset. The response result is. an object with
 |---|---|
 |dataset_id|access_requests|
 |dataset_id|account_abuse_protection_events|
+|dataset_id|ai_gateway_events|
 |dataset_id|audit_logs|
 |dataset_id|audit_logs_v2|
 |dataset_id|biso_user_actions|
@@ -256008,6 +257762,7 @@ Lists Logpush jobs for an account for a dataset.
 |---|---|
 |dataset_id|access_requests|
 |dataset_id|account_abuse_protection_events|
+|dataset_id|ai_gateway_events|
 |dataset_id|audit_logs|
 |dataset_id|audit_logs_v2|
 |dataset_id|biso_user_actions|
@@ -256386,6 +258141,7 @@ Creates a new Logpush job for an account.
 |---|---|
 |» dataset|access_requests|
 |» dataset|account_abuse_protection_events|
+|» dataset|ai_gateway_events|
 |» dataset|audit_logs|
 |» dataset|audit_logs_v2|
 |» dataset|biso_user_actions|
@@ -317479,6 +319235,7 @@ to store Iceberg metadata and data files.
       {
         "bucket": "analytics-bucket",
         "id": "550e8400-e29b-41d4-a716-446655440000",
+        "jurisdiction": "default",
         "maintenance_config": {
           "compaction": {
             "state": "enabled",
@@ -317651,6 +319408,7 @@ Returns catalog status, maintenance configuration, and credential status.
     "bucket": "analytics-bucket",
     "credential_status": "present",
     "id": "550e8400-e29b-41d4-a716-446655440000",
+    "jurisdiction": "default",
     "maintenance_config": {
       "compaction": {
         "state": "enabled",
@@ -318008,8 +319766,14 @@ api_token, api_email & api_key
 ```bash
 curl https://api.cloudflare.com/client/v4/accounts/0123456789abcdef0123456789abcdef/r2-catalog/my-data-bucket/enable \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "credential": {
+      "token": "your-cloudflare-api-token-here"
+    }
+  }'
 ```
 
 `POST /accounts/{account_id}/r2-catalog/{bucket_name}/enable`
@@ -318023,12 +319787,24 @@ the necessary catalog infrastructure and activates the bucket for storing
 Iceberg metadata and data files.
 
 
+> Body parameter
+
+```json
+{
+  "credential": {
+    "token": "your-cloudflare-api-token-here"
+  }
+}
+```
+
 <h3 id="enable-r2-bucket-as-a-catalog-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |account_id|path|[r2-data-catalog_account-id](#schemar2-data-catalog_account-id)|true|Identifies the account.|
 |bucket_name|path|[r2-data-catalog_bucket-name](#schemar2-data-catalog_bucket-name)|true|Specifies the R2 bucket name to enable as catalog.|
+|body|body|[r2-data-catalog_catalog-activation-request](#schemar2-data-catalog_catalog-activation-request)|false|none|
+|» credential|body|[r2-data-catalog_catalog-credential-request](#schemar2-data-catalog_catalog-credential-request)|false|Contains request to store catalog credentials.|
 
 > Example responses
 
@@ -331332,7 +333108,7 @@ api_token, api_email & api_key
 > Code samples
 
 ```bash
-curl https://api.cloudflare.com/client/v4/accounts/f1234567890abcdef1234567890abcdef/reporting/industry \
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/reporting/industry \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -331363,11 +333139,28 @@ Gets the industry classification for an account.
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 10000,
+      "message": "Authentication error"
+    }
+  ],
+  "messages": [],
+  "result": {},
+  "success": false
+}
+```
+
 <h3 id="get-an-account-industry-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Account industry retrieved successfully (returns 'unknown' if not set)|Inline|
+|400|Bad Request|Invalid account identifier|[reports_AccountIndustryErrorResponse](#schemareports_accountindustryerrorresponse)|
 
 <h3 id="get-an-account-industry-responseschema">Response Schema</h3>
 
@@ -331398,7 +333191,7 @@ api_token, api_email & api_key
 > Code samples
 
 ```bash
-curl https://api.cloudflare.com/client/v4/accounts/f1234567890abcdef1234567890abcdef/reporting/industry \
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/reporting/industry \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -331630,7 +333423,7 @@ Updates the industry classification for an account.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -331646,7 +333439,7 @@ Updates the industry classification for an account.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -331662,7 +333455,7 @@ Updates the industry classification for an account.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -331705,7 +333498,7 @@ api_token, api_email & api_key
 > Code samples
 
 ```bash
-curl https://api.cloudflare.com/client/v4/accounts/f1234567890abcdef1234567890abcdef/reporting/policies \
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/reporting/policies \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -331755,7 +333548,7 @@ Lists all reporting policies for an account.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -331779,7 +333572,7 @@ api_token, api_email & api_key
 > Code samples
 
 ```bash
-curl https://api.cloudflare.com/client/v4/accounts/f1234567890abcdef1234567890abcdef/reporting/policies/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/reporting/policies/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -331828,7 +333621,7 @@ Gets a reporting policy by identifier.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -331852,7 +333645,7 @@ api_token, api_email & api_key
 > Code samples
 
 ```bash
-curl https://api.cloudflare.com/client/v4/accounts/f1234567890abcdef1234567890abcdef/reporting/reports \
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/reporting/reports \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -331912,7 +333705,7 @@ Lists all generated reports for an account.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -331936,7 +333729,7 @@ api_token, api_email & api_key
 > Code samples
 
 ```bash
-curl https://api.cloudflare.com/client/v4/accounts/f1234567890abcdef1234567890abcdef/reporting/reports/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/reporting/reports/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -332058,7 +333851,7 @@ Gets a generated report by identifier.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -357153,10 +358946,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -357280,10 +359075,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -357392,10 +359189,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -357521,10 +359320,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -357649,10 +359450,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -357761,10 +359564,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -357868,10 +359673,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -357977,10 +359784,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -358105,10 +359914,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -358233,10 +360044,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -358362,10 +360175,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -358488,10 +360303,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -358595,10 +360412,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -358722,10 +360541,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -360668,6 +362489,7 @@ Lists all workflows configured for the account.
         "property1": 0,
         "property2": 0
       },
+      "jurisdiction": "eu",
       "modified_on": "1970-01-01T00:00:00Z",
       "name": "string",
       "schedules": [
@@ -360736,6 +362558,7 @@ Status Code **200**
 |» id|string(uuid)|true|none|none|
 |» instances|object|true|none|none|
 |» » **additionalProperties**|number|false|none|none|
+|» jurisdiction|string \| null|false|none|Jurisdiction where instances of this workflow run and store data. Set when the workflow is created and cannot be changed.|
 |» modified_on|string(date-time)|true|none|none|
 |» name|string|true|none|none|
 |» schedules|[object]|false|none|none|
@@ -360757,6 +362580,9 @@ Status Code **200**
 
 |Property|Value|
 |---|---|
+|» jurisdiction|eu|
+|» jurisdiction|fedramp|
+|» jurisdiction|us|
 |success|true|
 
 Status Code **400**
@@ -362215,6 +364041,7 @@ Retrieves configuration and metadata for a specific workflow.
       "property1": 0,
       "property2": 0
     },
+    "jurisdiction": "eu",
     "modified_on": "1970-01-01T00:00:00Z",
     "name": "string",
     "schedules": [
@@ -362301,6 +364128,7 @@ Status Code **200**
 |» id|string(uuid)|true|none|none|
 |» instances|object|true|none|none|
 |» » **additionalProperties**|number|false|none|none|
+|» jurisdiction|string \| null|false|none|Jurisdiction where instances of this workflow run and store data. Set when the workflow is created and cannot be changed.|
 |» modified_on|string(date-time)|true|none|none|
 |» name|string|true|none|none|
 |» schedules|[object]|false|none|none|
@@ -362322,6 +364150,9 @@ Status Code **200**
 
 |Property|Value|
 |---|---|
+|» jurisdiction|eu|
+|» jurisdiction|fedramp|
+|» jurisdiction|us|
 |success|true|
 
 Status Code **400**
@@ -362388,6 +364219,7 @@ curl https://api.cloudflare.com/client/v4/accounts/string/workflows/string \
       "error_retention": 0,
       "success_retention": 0
     },
+    "jurisdiction": "eu",
     "limits": {
       "steps": 1
     },
@@ -362416,6 +364248,7 @@ Creates a new workflow or updates an existing workflow definition.
     "error_retention": 0,
     "success_retention": 0
   },
+  "jurisdiction": "eu",
   "limits": {
     "steps": 1
   },
@@ -362445,11 +364278,20 @@ Creates a new workflow or updates an existing workflow definition.
 |» » success_retention|body|integer \| string|false|Specifies the duration in milliseconds or as a string like '5 minutes'.|
 |» » » *anyOf*|body|integer|false|Specifies the duration in milliseconds.|
 |» » » *anyOf*|body|string|false|none|
+|» jurisdiction|body|string|false|Jurisdiction where instances of this workflow run and store data. Can only be set when the workflow is created and cannot be changed afterwards; omit it to keep the existing jurisdiction.|
 |» limits|body|object|false|none|
 |» » steps|body|integer|false|none|
 |» schedules|body|[object]|false|none|
 |» » cron|body|string|true|none|
 |» script_name|body|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» jurisdiction|eu|
+|» jurisdiction|fedramp|
+|» jurisdiction|us|
 
 > Example responses
 
@@ -362469,6 +364311,7 @@ Creates a new workflow or updates an existing workflow definition.
     "created_on": "1970-01-01T00:00:00Z",
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "is_deleted": 0,
+    "jurisdiction": "eu",
     "modified_on": "1970-01-01T00:00:00Z",
     "name": "string",
     "script_name": "string",
@@ -362549,6 +364392,7 @@ Status Code **200**
 |» created_on|string(date-time)|true|none|none|
 |» id|string(uuid)|true|none|none|
 |» is_deleted|number|true|none|none|
+|» jurisdiction|string \| null|false|none|Jurisdiction where instances of this workflow run and store data. Set when the workflow is created and cannot be changed.|
 |» modified_on|string(date-time)|true|none|none|
 |» name|string|true|none|none|
 |» script_name|string|true|none|none|
@@ -362568,6 +364412,9 @@ Status Code **200**
 
 |Property|Value|
 |---|---|
+|» jurisdiction|eu|
+|» jurisdiction|fedramp|
+|» jurisdiction|us|
 |success|true|
 
 Status Code **400**
@@ -366486,7 +368333,7 @@ curl https://api.cloudflare.com/client/v4/accounts/string/urlscanner/scan \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "country": "AF",
+    "country": "AE",
     "customHeaders": {
       "property1": "string",
       "property2": "string"
@@ -366511,7 +368358,7 @@ Submit a URL to scan. You can also set some options, like the visibility level a
 
 ```json
 {
-  "country": "AF",
+  "country": "AE",
   "customHeaders": {
     "property1": "string",
     "property2": "string"
@@ -366541,199 +368388,144 @@ Submit a URL to scan. You can also set some options, like the visibility level a
 
 |Parameter|Value|
 |---|---|
-|» country|AF|
+|» country|AE|
 |» country|AL|
-|» country|DZ|
-|» country|AD|
-|» country|AO|
-|» country|AG|
-|» country|AR|
 |» country|AM|
-|» country|AU|
+|» country|AO|
+|» country|AR|
 |» country|AT|
+|» country|AU|
 |» country|AZ|
-|» country|BH|
-|» country|BD|
 |» country|BB|
-|» country|BY|
+|» country|BD|
 |» country|BE|
-|» country|BZ|
-|» country|BJ|
-|» country|BM|
-|» country|BT|
-|» country|BO|
-|» country|BA|
-|» country|BW|
-|» country|BR|
-|» country|BN|
-|» country|BG|
 |» country|BF|
-|» country|BI|
-|» country|KH|
-|» country|CM|
+|» country|BG|
+|» country|BH|
+|» country|BN|
+|» country|BO|
+|» country|BR|
+|» country|BT|
+|» country|BW|
+|» country|BY|
 |» country|CA|
-|» country|CV|
-|» country|KY|
-|» country|CF|
-|» country|TD|
-|» country|CL|
-|» country|CN|
-|» country|CO|
-|» country|KM|
-|» country|CG|
-|» country|CR|
+|» country|CD|
+|» country|CH|
 |» country|CI|
-|» country|HR|
-|» country|CU|
+|» country|CL|
+|» country|CM|
+|» country|CO|
+|» country|CR|
+|» country|CW|
 |» country|CY|
 |» country|CZ|
-|» country|CD|
-|» country|DK|
-|» country|DJ|
-|» country|DM|
-|» country|DO|
-|» country|EC|
-|» country|EG|
-|» country|SV|
-|» country|GQ|
-|» country|ER|
-|» country|EE|
-|» country|SZ|
-|» country|ET|
-|» country|FJ|
-|» country|FI|
-|» country|FR|
-|» country|GA|
-|» country|GE|
 |» country|DE|
+|» country|DJ|
+|» country|DK|
+|» country|DO|
+|» country|DZ|
+|» country|EC|
+|» country|EE|
+|» country|EG|
+|» country|ES|
+|» country|ET|
+|» country|FI|
+|» country|FJ|
+|» country|FR|
+|» country|GB|
+|» country|GD|
+|» country|GE|
 |» country|GH|
 |» country|GR|
-|» country|GL|
-|» country|GD|
 |» country|GT|
-|» country|GN|
-|» country|GW|
+|» country|GU|
 |» country|GY|
-|» country|HT|
+|» country|HK|
 |» country|HN|
+|» country|HR|
+|» country|HT|
 |» country|HU|
-|» country|IS|
-|» country|IN|
 |» country|ID|
-|» country|IR|
-|» country|IQ|
 |» country|IE|
 |» country|IL|
+|» country|IN|
+|» country|IQ|
+|» country|IS|
 |» country|IT|
 |» country|JM|
-|» country|JP|
 |» country|JO|
-|» country|KZ|
+|» country|JP|
 |» country|KE|
-|» country|KI|
-|» country|KW|
 |» country|KG|
+|» country|KH|
+|» country|KR|
+|» country|KW|
+|» country|KZ|
 |» country|LA|
-|» country|LV|
 |» country|LB|
-|» country|LS|
+|» country|LK|
 |» country|LR|
-|» country|LY|
-|» country|LI|
 |» country|LT|
 |» country|LU|
-|» country|MO|
-|» country|MG|
-|» country|MW|
-|» country|MY|
-|» country|MV|
-|» country|ML|
-|» country|MR|
-|» country|MU|
-|» country|MX|
-|» country|FM|
-|» country|MD|
-|» country|MC|
-|» country|MN|
-|» country|MS|
+|» country|LV|
 |» country|MA|
-|» country|MZ|
-|» country|MM|
-|» country|NA|
-|» country|NR|
-|» country|NP|
-|» country|NL|
-|» country|NZ|
-|» country|NI|
-|» country|NE|
-|» country|NG|
-|» country|KP|
+|» country|MD|
+|» country|MG|
 |» country|MK|
+|» country|MM|
+|» country|MN|
+|» country|MO|
+|» country|MT|
+|» country|MU|
+|» country|MV|
+|» country|MW|
+|» country|MX|
+|» country|MY|
+|» country|MZ|
+|» country|NA|
+|» country|NC|
+|» country|NG|
+|» country|NL|
 |» country|NO|
+|» country|NP|
+|» country|NZ|
 |» country|OM|
-|» country|PK|
-|» country|PS|
 |» country|PA|
-|» country|PG|
-|» country|PY|
 |» country|PE|
+|» country|PF|
 |» country|PH|
+|» country|PK|
 |» country|PL|
+|» country|PR|
+|» country|PS|
 |» country|PT|
+|» country|PY|
 |» country|QA|
+|» country|RE|
 |» country|RO|
+|» country|RS|
 |» country|RU|
 |» country|RW|
-|» country|SH|
-|» country|KN|
-|» country|LC|
-|» country|VC|
-|» country|WS|
-|» country|SM|
-|» country|ST|
 |» country|SA|
-|» country|SN|
-|» country|RS|
-|» country|SC|
-|» country|SL|
-|» country|SK|
-|» country|SI|
-|» country|SB|
-|» country|SO|
-|» country|ZA|
-|» country|KR|
-|» country|SS|
-|» country|ES|
-|» country|LK|
-|» country|SD|
-|» country|SR|
 |» country|SE|
-|» country|CH|
-|» country|SY|
-|» country|TW|
-|» country|TJ|
-|» country|TZ|
+|» country|SG|
+|» country|SI|
+|» country|SK|
+|» country|SN|
+|» country|SR|
 |» country|TH|
-|» country|BS|
-|» country|GM|
-|» country|TL|
-|» country|TG|
-|» country|TO|
-|» country|TT|
+|» country|TJ|
 |» country|TN|
 |» country|TR|
-|» country|TM|
-|» country|UG|
+|» country|TT|
+|» country|TW|
+|» country|TZ|
 |» country|UA|
-|» country|AE|
-|» country|GB|
+|» country|UG|
 |» country|US|
-|» country|UY|
 |» country|UZ|
-|» country|VU|
-|» country|VE|
 |» country|VN|
-|» country|YE|
+|» country|ZA|
 |» country|ZM|
 |» country|ZW|
 |» screenshotsResolutions|desktop|
@@ -369710,6 +371502,39 @@ Get URL scan by uuid
               },
               "status": "fail"
             },
+            "personalAgentProtocol": {
+              "details": {},
+              "durationMs": 0,
+              "evidence": [
+                {
+                  "action": "fetch",
+                  "finding": {
+                    "outcome": "positive",
+                    "summary": "Found valid robots.txt"
+                  },
+                  "label": "GET /robots.txt",
+                  "request": {
+                    "headers": {},
+                    "method": "GET",
+                    "url": "https://example.com/robots.txt"
+                  },
+                  "response": {
+                    "bodyPreview": "string",
+                    "bodySize": 0,
+                    "headers": {},
+                    "redirectedTo": "string",
+                    "status": 200,
+                    "statusText": "OK"
+                  }
+                }
+              ],
+              "message": "string",
+              "messageRef": {
+                "code": "check.robotsTxt.valid",
+                "params": {}
+              },
+              "status": "fail"
+            },
             "webMcp": {
               "details": {},
               "durationMs": 0,
@@ -370865,6 +372690,31 @@ Status Code **200**
 |» » » » » » » code|string|true|none|Stable, translatable message code.|
 |» » » » » » » params|object|false|none|none|
 |» » » » » » status|string|true|none|none|
+|» » » » » personalAgentProtocol|object|true|none|none|
+|» » » » » » details|object|false|none|none|
+|» » » » » » durationMs|number|false|none|none|
+|» » » » » » evidence|[object]|false|none|none|
+|» » » » » » » action|string|true|none|none|
+|» » » » » » » finding|object|false|none|none|
+|» » » » » » » » outcome|string|true|none|none|
+|» » » » » » » » summary|string|true|none|none|
+|» » » » » » » label|string|true|none|none|
+|» » » » » » » request|object|false|none|none|
+|» » » » » » » » headers|object|false|none|none|
+|» » » » » » » » method|string|true|none|none|
+|» » » » » » » » url|string|true|none|none|
+|» » » » » » » response|object|false|none|none|
+|» » » » » » » » bodyPreview|string|false|none|none|
+|» » » » » » » » bodySize|integer|false|none|none|
+|» » » » » » » » headers|object|false|none|none|
+|» » » » » » » » redirectedTo|string|false|none|none|
+|» » » » » » » » status|integer|true|none|none|
+|» » » » » » » » statusText|string|true|none|none|
+|» » » » » » message|string|false|none|none|
+|» » » » » » messageRef|object|false|none|none|
+|» » » » » » » code|string|true|none|Stable, translatable message code.|
+|» » » » » » » params|object|false|none|none|
+|» » » » » » status|string|true|none|none|
 |» » » » » webMcp|object|true|none|none|
 |» » » » » » details|object|false|none|none|
 |» » » » » » durationMs|number|false|none|none|
@@ -371156,7 +373006,7 @@ curl https://api.cloudflare.com/client/v4/accounts/string/urlscanner/v2/scan \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "agentReadiness": true,
-    "country": "AF",
+    "country": "AE",
     "customHeaders": {
       "property1": "string",
       "property2": "string"
@@ -371180,7 +373030,7 @@ Submit a URL to scan. Check limits at https://developers.cloudflare.com/security
 ```json
 {
   "agentReadiness": true,
-  "country": "AF",
+  "country": "AE",
   "customHeaders": {
     "property1": "string",
     "property2": "string"
@@ -371215,199 +373065,144 @@ Submit a URL to scan. Check limits at https://developers.cloudflare.com/security
 
 |Parameter|Value|
 |---|---|
-|» country|AF|
+|» country|AE|
 |» country|AL|
-|» country|DZ|
-|» country|AD|
-|» country|AO|
-|» country|AG|
-|» country|AR|
 |» country|AM|
-|» country|AU|
+|» country|AO|
+|» country|AR|
 |» country|AT|
+|» country|AU|
 |» country|AZ|
-|» country|BH|
-|» country|BD|
 |» country|BB|
-|» country|BY|
+|» country|BD|
 |» country|BE|
-|» country|BZ|
-|» country|BJ|
-|» country|BM|
-|» country|BT|
-|» country|BO|
-|» country|BA|
-|» country|BW|
-|» country|BR|
-|» country|BN|
-|» country|BG|
 |» country|BF|
-|» country|BI|
-|» country|KH|
-|» country|CM|
+|» country|BG|
+|» country|BH|
+|» country|BN|
+|» country|BO|
+|» country|BR|
+|» country|BT|
+|» country|BW|
+|» country|BY|
 |» country|CA|
-|» country|CV|
-|» country|KY|
-|» country|CF|
-|» country|TD|
-|» country|CL|
-|» country|CN|
-|» country|CO|
-|» country|KM|
-|» country|CG|
-|» country|CR|
+|» country|CD|
+|» country|CH|
 |» country|CI|
-|» country|HR|
-|» country|CU|
+|» country|CL|
+|» country|CM|
+|» country|CO|
+|» country|CR|
+|» country|CW|
 |» country|CY|
 |» country|CZ|
-|» country|CD|
-|» country|DK|
-|» country|DJ|
-|» country|DM|
-|» country|DO|
-|» country|EC|
-|» country|EG|
-|» country|SV|
-|» country|GQ|
-|» country|ER|
-|» country|EE|
-|» country|SZ|
-|» country|ET|
-|» country|FJ|
-|» country|FI|
-|» country|FR|
-|» country|GA|
-|» country|GE|
 |» country|DE|
+|» country|DJ|
+|» country|DK|
+|» country|DO|
+|» country|DZ|
+|» country|EC|
+|» country|EE|
+|» country|EG|
+|» country|ES|
+|» country|ET|
+|» country|FI|
+|» country|FJ|
+|» country|FR|
+|» country|GB|
+|» country|GD|
+|» country|GE|
 |» country|GH|
 |» country|GR|
-|» country|GL|
-|» country|GD|
 |» country|GT|
-|» country|GN|
-|» country|GW|
+|» country|GU|
 |» country|GY|
-|» country|HT|
+|» country|HK|
 |» country|HN|
+|» country|HR|
+|» country|HT|
 |» country|HU|
-|» country|IS|
-|» country|IN|
 |» country|ID|
-|» country|IR|
-|» country|IQ|
 |» country|IE|
 |» country|IL|
+|» country|IN|
+|» country|IQ|
+|» country|IS|
 |» country|IT|
 |» country|JM|
-|» country|JP|
 |» country|JO|
-|» country|KZ|
+|» country|JP|
 |» country|KE|
-|» country|KI|
-|» country|KW|
 |» country|KG|
+|» country|KH|
+|» country|KR|
+|» country|KW|
+|» country|KZ|
 |» country|LA|
-|» country|LV|
 |» country|LB|
-|» country|LS|
+|» country|LK|
 |» country|LR|
-|» country|LY|
-|» country|LI|
 |» country|LT|
 |» country|LU|
-|» country|MO|
-|» country|MG|
-|» country|MW|
-|» country|MY|
-|» country|MV|
-|» country|ML|
-|» country|MR|
-|» country|MU|
-|» country|MX|
-|» country|FM|
-|» country|MD|
-|» country|MC|
-|» country|MN|
-|» country|MS|
+|» country|LV|
 |» country|MA|
-|» country|MZ|
-|» country|MM|
-|» country|NA|
-|» country|NR|
-|» country|NP|
-|» country|NL|
-|» country|NZ|
-|» country|NI|
-|» country|NE|
-|» country|NG|
-|» country|KP|
+|» country|MD|
+|» country|MG|
 |» country|MK|
+|» country|MM|
+|» country|MN|
+|» country|MO|
+|» country|MT|
+|» country|MU|
+|» country|MV|
+|» country|MW|
+|» country|MX|
+|» country|MY|
+|» country|MZ|
+|» country|NA|
+|» country|NC|
+|» country|NG|
+|» country|NL|
 |» country|NO|
+|» country|NP|
+|» country|NZ|
 |» country|OM|
-|» country|PK|
-|» country|PS|
 |» country|PA|
-|» country|PG|
-|» country|PY|
 |» country|PE|
+|» country|PF|
 |» country|PH|
+|» country|PK|
 |» country|PL|
+|» country|PR|
+|» country|PS|
 |» country|PT|
+|» country|PY|
 |» country|QA|
+|» country|RE|
 |» country|RO|
+|» country|RS|
 |» country|RU|
 |» country|RW|
-|» country|SH|
-|» country|KN|
-|» country|LC|
-|» country|VC|
-|» country|WS|
-|» country|SM|
-|» country|ST|
 |» country|SA|
-|» country|SN|
-|» country|RS|
-|» country|SC|
-|» country|SL|
-|» country|SK|
-|» country|SI|
-|» country|SB|
-|» country|SO|
-|» country|ZA|
-|» country|KR|
-|» country|SS|
-|» country|ES|
-|» country|LK|
-|» country|SD|
-|» country|SR|
 |» country|SE|
-|» country|CH|
-|» country|SY|
-|» country|TW|
-|» country|TJ|
-|» country|TZ|
+|» country|SG|
+|» country|SI|
+|» country|SK|
+|» country|SN|
+|» country|SR|
 |» country|TH|
-|» country|BS|
-|» country|GM|
-|» country|TL|
-|» country|TG|
-|» country|TO|
-|» country|TT|
+|» country|TJ|
 |» country|TN|
 |» country|TR|
-|» country|TM|
-|» country|UG|
+|» country|TT|
+|» country|TW|
+|» country|TZ|
 |» country|UA|
-|» country|AE|
-|» country|GB|
+|» country|UG|
 |» country|US|
-|» country|UY|
 |» country|UZ|
-|» country|VU|
-|» country|VE|
 |» country|VN|
-|» country|YE|
+|» country|ZA|
 |» country|ZM|
 |» country|ZW|
 |» screenshotsResolutions|desktop|
@@ -380800,6 +382595,9 @@ metadata:
 |» » bindings|body|[workers_bindings](#schemaworkers_bindings)|false|List of bindings attached to a Worker. You can find more about bindings on our docs: https://developers.cloudflare.com/workers/configuration/multipart-upload-metadata/#bindings.|
 |» » body_part|body|string|false|Name of the uploaded file that contains the script (e.g. the file adding a listener to the `fetch` event). Indicates a `service worker syntax` Worker.|
 |» » cache_options|body|[workers_cache_options](#schemaworkers_cache_options)|false|Global CacheW configuration for the Worker. When caching is on,<br>the platform provisions a `cloudflare.app` zone for the Worker.<br>A `type: worker` entry in the `exports` map can override this<br>value for a single entrypoint.<br>|
+|» » code_update_strategy|body|[workers_code_update_strategy](#schemaworkers_code_update_strategy) \| object \| null|false|Choose whether to apply Durable Object code updates immediately or defer them. When omitted, the default strategy applies.|
+|» » » *oneOf*|body|[workers_code_update_strategy](#schemaworkers_code_update_strategy)|false|none|
+|» » » *oneOf*|body|object \| null|false|none|
 |» » compatibility_date|body|[workers_compatibility_date](#schemaworkers_compatibility_date)|false|Date indicating targeted support in the Workers runtime. Backwards incompatible fixes to the runtime following this date will not affect this Worker.|
 |» » compatibility_flags|body|[workers_compatibility_flags](#schemaworkers_compatibility_flags)|false|Flags that enable or disable certain features in the Workers runtime. Used to enable upcoming features or opt in or out of specific changes not included in a `compatibility_date`.|
 |» » exports|body|object|false|Declarative exports for the Worker. Worker entrypoint<br>entries (`type: worker`) carry cache configuration for<br>that entrypoint.<br>|
@@ -380841,6 +382639,7 @@ metadata:
 |Parameter|Value|
 |---|---|
 |bindings_inherit|strict|
+|» » » *oneOf*|null|
 |» » usage_model|standard|
 |» » usage_model|bundled|
 |» » usage_model|unbound|
@@ -384076,6 +385875,9 @@ metadata:
 |» » bindings|body|[workers_bindings](#schemaworkers_bindings)|false|List of bindings attached to a Worker. You can find more about bindings on our docs: https://developers.cloudflare.com/workers/configuration/multipart-upload-metadata/#bindings.|
 |» » body_part|body|string|false|Name of the uploaded file that contains the script (e.g. the file adding a listener to the `fetch` event). Indicates a `service worker syntax` Worker.|
 |» » cache_options|body|[workers_cache_options](#schemaworkers_cache_options)|false|Global CacheW configuration for the Worker. When caching is on,<br>the platform provisions a `cloudflare.app` zone for the Worker.<br>A `type: worker` entry in the `exports` map can override this<br>value for a single entrypoint.<br>|
+|» » code_update_strategy|body|[workers_code_update_strategy](#schemaworkers_code_update_strategy) \| object \| null|false|Choose whether to apply Durable Object code updates immediately or defer them. When omitted, the default strategy applies.|
+|» » » *oneOf*|body|[workers_code_update_strategy](#schemaworkers_code_update_strategy)|false|none|
+|» » » *oneOf*|body|object \| null|false|none|
 |» » compatibility_date|body|[workers_compatibility_date](#schemaworkers_compatibility_date)|false|Date indicating targeted support in the Workers runtime. Backwards incompatible fixes to the runtime following this date will not affect this Worker.|
 |» » compatibility_flags|body|[workers_compatibility_flags](#schemaworkers_compatibility_flags)|false|Flags that enable or disable certain features in the Workers runtime. Used to enable upcoming features or opt in or out of specific changes not included in a `compatibility_date`.|
 |» » exports|body|object|false|Declarative exports for the Worker. Worker entrypoint<br>entries (`type: worker`) carry cache configuration for<br>that entrypoint.<br>|
@@ -384113,6 +385915,7 @@ metadata:
 |Parameter|Value|
 |---|---|
 |bindings_inherit|strict|
+|» » » *oneOf*|null|
 |» » usage_model|standard|
 |» » usage_model|bundled|
 |» » usage_model|unbound|
@@ -396364,6 +398167,8 @@ Shared queries store the results of a previously run query, allowing you to shar
             "service": "string",
             "spanId": "string",
             "spanName": "string",
+            "spanStatus": "unset",
+            "spanStatusMessage": "string",
             "stackId": "string",
             "startTime": 0,
             "startTimeNs": "string",
@@ -396465,6 +398270,8 @@ Shared queries store the results of a previously run query, allowing you to shar
             "service": "string",
             "spanId": "string",
             "spanName": "string",
+            "spanStatus": "unset",
+            "spanStatusMessage": "string",
             "stackId": "string",
             "startTime": 0,
             "startTimeNs": "string",
@@ -396534,6 +398341,8 @@ Shared queries store the results of a previously run query, allowing you to shar
             "service": "string",
             "spanId": "string",
             "spanName": "string",
+            "spanStatus": "unset",
+            "spanStatusMessage": "string",
             "stackId": "string",
             "startTime": 0,
             "startTimeNs": "string",
@@ -398164,6 +399973,8 @@ Run a temporary or saved query.
             "service": "string",
             "spanId": "string",
             "spanName": "string",
+            "spanStatus": "unset",
+            "spanStatusMessage": "string",
             "stackId": "string",
             "startTime": 0,
             "startTimeNs": "string",
@@ -398265,6 +400076,8 @@ Run a temporary or saved query.
             "service": "string",
             "spanId": "string",
             "spanName": "string",
+            "spanStatus": "unset",
+            "spanStatusMessage": "string",
             "stackId": "string",
             "startTime": 0,
             "startTimeNs": "string",
@@ -398334,6 +400147,8 @@ Run a temporary or saved query.
             "service": "string",
             "spanId": "string",
             "spanName": "string",
+            "spanStatus": "unset",
+            "spanStatusMessage": "string",
             "stackId": "string",
             "startTime": 0,
             "startTimeNs": "string",
@@ -399701,6 +401516,9 @@ curl https://api.cloudflare.com/client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c
     "annotations": {
       "workers/message": "Deploy bug fix."
     },
+    "code_update_strategy": {
+      "mode": "immediate"
+    },
     "strategy": "percentage",
     "versions": [
       {
@@ -399722,6 +401540,9 @@ Deployments configure how [Worker Versions](https://developers.cloudflare.com/ap
   "annotations": {
     "workers/message": "Deploy bug fix."
   },
+  "code_update_strategy": {
+    "mode": "immediate"
+  },
   "strategy": "percentage",
   "versions": [
     {
@@ -399742,6 +401563,9 @@ Deployments configure how [Worker Versions](https://developers.cloudflare.com/ap
 |body|body|[workers_deployment](#schemaworkers_deployment)|true|none|
 |» annotations|body|object|false|none|
 |» » workers/message|body|string|false|Human-readable message about the deployment. Truncated to 1000 bytes if longer.|
+|» code_update_strategy|body|[workers_code_update_strategy](#schemaworkers_code_update_strategy) \| object \| null|false|Choose whether to apply Durable Object code updates immediately or defer them. When omitted, the default strategy applies.|
+|» » *oneOf*|body|[workers_code_update_strategy](#schemaworkers_code_update_strategy)|false|none|
+|» » *oneOf*|body|object \| null|false|none|
 |» strategy|body|string|true|none|
 |» versions|body|[object]|true|Worker versions included in this deployment. Each object must contain a `version_id` UUID and a `percentage`; percentages across all objects must total 100. In the `cf` CLI, pass the entire array as one JSON value to `--versions`, either inline, for example `--versions '[{"version_id":"023e105f-2a42-4f8b-a1c1-73f6a2a30c0f","percentage":100}]'`, or from a JSON file with `--versions @versions.json`.|
 |» » percentage|body|number|true|Percentage of traffic served by this version.|
@@ -399751,6 +401575,7 @@ Deployments configure how [Worker Versions](https://developers.cloudflare.com/ap
 
 |Parameter|Value|
 |---|---|
+|» » *oneOf*|null|
 |» strategy|percentage|
 
 > Example responses
@@ -406802,10 +408627,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -406930,10 +408757,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -407038,10 +408867,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -407147,10 +408978,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -407276,10 +409109,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -407428,10 +409263,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -407547,10 +409384,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -407687,10 +409526,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -407806,10 +409647,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -407948,10 +409791,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -408092,10 +409937,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -408204,10 +410051,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -408326,10 +410175,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -408470,10 +410321,12 @@ Status Code **4XX**
 |errors|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |messages|object|true|none|none|
 |*anonymous*|[object]|false|none|none|
 |» code|integer|true|none|none|
+|» context|object|false|none|Optional error-specific context.|
 |» message|string|true|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|Whether the API call was successful|
@@ -409609,773 +411462,6 @@ Status Code **200**
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 api_email & api_key & api_token
-</aside>
-
-<h1 id="cloudflare-api-analytics-sql">Analytics SQL</h1>
-
-## Query analytics datasets
-
-<a id="opIdsql-api-query-get-account-scoped"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.cloudflare.com/client/v4/accounts/0123456789abcdef0123456789abcdef/analytics/sql?query=SELECT%20edgeResponseStatus%20FROM%20events.httpRequests%20WHERE%20datetime%20%3E%20'\''2026-01-01'\''%20LIMIT%2010' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /accounts/{account_tag}/analytics/sql`
-
-Executes a SQL query scoped to the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account, so an accountTag predicate or JSON scope is not required. Explicit account scope must match the path account. Any zone restrictions must belong to that account. Query parameters, time ranges, output formats, authorization, and responses follow the legacy query endpoint.
-
-<h3 id="query-analytics-datasets-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|account_tag|path|string|true|Account that authorizes and scopes the request.|
-|query|query|string|true|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {}
-  ],
-  "rows": 0,
-  "statistics": {
-    "bytes_read": 0,
-    "elapsed_ms": 0,
-    "rows_read": 0
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": 0,
-  "error_chain": [
-    {}
-  ],
-  "message": "string"
-}
-```
-
-> 403 Response
-
-```text
-Authorization error
-```
-
-<h3 id="query-analytics-datasets-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Query executed successfully. Columns that the query reaches only through `*` exclude any that the caller is not permitted to read. ClickHouse's default JSON envelope has data, rows, and statistics; explicit FORMAT JSON additionally has typed metadata and rows_before_limit_at_least. Log Explorer's default and FORMAT JSON responses use its existing {data, rows} envelope, without unavailable metadata, pre-limit counts, or statistics. FORMAT JSONEachRow returns newline-delimited JSON objects. FORMAT TabSeparated and TSV return escaped tab-separated rows without a header; Log Explorer serializes nested JSON values as compact JSON text in one field.<br>|Inline|
-|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
-|403|Forbidden|Authentication failed, the caller is not authorized, or the query references a column the caller is not permitted to read.<br>|Inline|
-|422|Unprocessable Entity|The SQL query or its parameters are invalid, including invalid function arguments.|Inline|
-|429|Too Many Requests|The query exceeded a resource or request-rate limit.|Inline|
-|500|Internal Server Error|An internal error occurred.|Inline|
-|501|Not Implemented|The query uses a SQL feature that is not implemented.|Inline|
-|503|Service Unavailable|A required service is temporarily unavailable.|Inline|
-|507|Insufficient Storage|The query exhausted available resources.|Inline|
-
-<h3 id="query-analytics-datasets-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_SqlQueryResponse](#schemaanalytics-sql_sqlqueryresponse)|false|none|none|
-|*oneOf*|[analytics-sql_ClickHouseJsonQueryResponse](#schemaanalytics-sql_clickhousejsonqueryresponse)|false|none|none|
-|*oneOf*|[analytics-sql_LogExplorerQueryResponse](#schemaanalytics-sql_logexplorerqueryresponse)|false|none|none|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
-|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|429|Retry-After|integer|int64|Seconds to wait before retrying. Present when the account request rate limit is exceeded; omitted for query resource limits.<br>|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_token
-</aside>
-
-## Query analytics datasets
-
-<a id="opIdsql-api-query-post-account-scoped"></a>
-
-> Code samples
-
-```bash
-curl https://api.cloudflare.com/client/v4/accounts/0123456789abcdef0123456789abcdef/analytics/sql \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "params": {
-      "status": 404
-    },
-    "query": "SELECT edgeResponseStatus FROM events.httpRequests WHERE edgeResponseStatus = $status LIMIT 10",
-    "scope": {
-      "accountTag": "0123456789abcdef0123456789abcdef"
-    },
-    "time_range": {
-      "end": "2026-01-02T00:00:00Z",
-      "start": "2026-01-01T00:00:00Z"
-    }
-  }'
-```
-
-`POST /accounts/{account_tag}/analytics/sql`
-
-Executes a SQL query scoped to the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account, so an accountTag predicate or JSON scope is not required. Explicit account scope must match the path account. Any zone restrictions must belong to that account. Query parameters, time ranges, output formats, authorization, and responses follow the legacy query endpoint.
-
-> Body parameter
-
-```json
-{
-  "params": {
-    "status": 404
-  },
-  "query": "SELECT edgeResponseStatus FROM events.httpRequests WHERE edgeResponseStatus = $status LIMIT 10",
-  "scope": {
-    "accountTag": "0123456789abcdef0123456789abcdef"
-  },
-  "time_range": {
-    "end": "2026-01-02T00:00:00Z",
-    "start": "2026-01-01T00:00:00Z"
-  }
-}
-```
-
-<h3 id="query-analytics-datasets-1-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|account_tag|path|string|true|Account that authorizes and scopes the request.|
-|body|body|[analytics-sql_SqlQueryRequest](#schemaanalytics-sql_sqlqueryrequest)|true|none|
-|» params|body|[object] \| object|false|Positional array values for `$1`, `$2`, and similar placeholders, or named object values for placeholders such as `$status`.<br>|
-|» » *oneOf*|body|[object]|false|none|
-|» » *oneOf*|body|object|false|none|
-|» query|body|string|true|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
-|» scope|body|[analytics-sql_SqlQueryScope](#schemaanalytics-sql_sqlqueryscope)|false|Account or zone scope applied to the query. Include exactly one scope tag. Do not include account or zone tenancy predicates in the SQL query when this field is present.<br>|
-|» time_range|body|object|false|none|
-|» » end|body|string|false|Inclusive upper bound for the dataset's timestamp column.|
-|» » start|body|string|true|Inclusive lower bound for the dataset's timestamp column.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {}
-  ],
-  "rows": 0,
-  "statistics": {
-    "bytes_read": 0,
-    "elapsed_ms": 0,
-    "rows_read": 0
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": 0,
-  "error_chain": [
-    {}
-  ],
-  "message": "string"
-}
-```
-
-> 403 Response
-
-```text
-Authorization error
-```
-
-<h3 id="query-analytics-datasets-1-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Query executed successfully. Columns that the query reaches only through `*` exclude any that the caller is not permitted to read. ClickHouse's default JSON envelope has data, rows, and statistics; explicit FORMAT JSON additionally has typed metadata and rows_before_limit_at_least. Log Explorer's default and FORMAT JSON responses use its existing {data, rows} envelope, without unavailable metadata, pre-limit counts, or statistics. FORMAT JSONEachRow returns newline-delimited JSON objects. FORMAT TabSeparated and TSV return escaped tab-separated rows without a header; Log Explorer serializes nested JSON values as compact JSON text in one field.<br>|Inline|
-|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
-|403|Forbidden|Authentication failed, the caller is not authorized, or the query references a column the caller is not permitted to read.<br>|Inline|
-|422|Unprocessable Entity|The SQL query or its parameters are invalid, including invalid function arguments.|Inline|
-|429|Too Many Requests|The query exceeded a resource or request-rate limit.|Inline|
-|500|Internal Server Error|An internal error occurred.|Inline|
-|501|Not Implemented|The query uses a SQL feature that is not implemented.|Inline|
-|503|Service Unavailable|A required service is temporarily unavailable.|Inline|
-|507|Insufficient Storage|The query exhausted available resources.|Inline|
-
-<h3 id="query-analytics-datasets-1-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_SqlQueryResponse](#schemaanalytics-sql_sqlqueryresponse)|false|none|none|
-|*oneOf*|[analytics-sql_ClickHouseJsonQueryResponse](#schemaanalytics-sql_clickhousejsonqueryresponse)|false|none|none|
-|*oneOf*|[analytics-sql_LogExplorerQueryResponse](#schemaanalytics-sql_logexplorerqueryresponse)|false|none|none|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
-|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|429|Retry-After|integer|int64|Seconds to wait before retrying. Present when the account request rate limit is exceeded; omitted for query resource limits.<br>|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_token
-</aside>
-
-## List available analytics datasets
-
-<a id="opIdsql-api-introspection-account-scoped"></a>
-
-> Code samples
-
-```bash
-curl https://api.cloudflare.com/client/v4/accounts/0123456789abcdef0123456789abcdef/analytics/sql/introspection \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /accounts/{account_tag}/analytics/sql/introspection`
-
-Returns the dataset catalogue for the account in the request path. API Gateway preserves the account path, and SQL API requires it to match the signed JWT account; account_tag is not required as a query parameter. If supplied, it must match the path account. Dataset and column discovery options are identical to the legacy introspection endpoint.
-
-<h3 id="list-available-analytics-datasets-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|account_tag|path|string|true|Account that authorizes and scopes the request.|
-|include_columns|query|boolean|false|Include column metadata for each returned dataset.|
-|include_custom_attributes|query|boolean|false|Include a capped set of custom attribute names and types observed during the preceding seven days, as `custom_attributes`. Requires a nonempty dataset_name. Deprecated in favor of `include_attributes`.<br>|
-|include_attributes|query|boolean|false|Include a capped set of attribute names and types observed during the preceding seven days, as `attributes`. Requires a nonempty dataset_name. Replaces `include_custom_attributes`, which is deprecated.<br>|
-|include_wae|query|boolean|false|Include Workers Analytics Engine datasets, which are discovered from the account's own data. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.<br>|
-|include_lex|query|boolean|false|Include Log Explorer datasets, which are listed only where the account has them. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.<br>|
-|dataset_name|query|string|false|Return only the dataset with this exact name. An empty value is treated as if the parameter had been omitted, and does not filter the catalogue. A name that matches no dataset in this deployment's catalogue is rejected with `422`; a dataset that exists but is not describable here is rejected identically, so the two cases cannot be told apart.<br><br>A Workers Analytics Engine dataset is named in full, as `events.analyticsEngine.<dataset_name>`; the namespace on its own returns every such dataset the account has. A `dataset_name` the account does not have is rejected with `422` like any other unknown name.<br>|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "datasets": [
-    {
-      "attributes": [
-        {
-          "data_type": "String",
-          "name": "string"
-        }
-      ],
-      "category": "HTTP Traffic",
-      "columns": [
-        {
-          "data_type": "String",
-          "description": "string",
-          "hidden": true,
-          "name": "clientRequestPath"
-        }
-      ],
-      "custom_attributes": [
-        {
-          "data_type": "String",
-          "name": "string"
-        }
-      ],
-      "description": "string",
-      "hidden": true,
-      "kind": {
-        "availability": [
-          {
-            "scope": "account",
-            "zone": "023e105f4ecef8ad9ca31a8372d0c353"
-          }
-        ],
-        "events": {
-          "sampling": "unsampled"
-        },
-        "logs": {
-          "sampling": "unsampled"
-        },
-        "states": {
-          "sampling": "unsampled",
-          "valid_aggregations": [
-            "count",
-            "max"
-          ]
-        }
-      },
-      "name": "events.httpRequests",
-      "title": "HTTP Requests"
-    }
-  ]
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": 0,
-  "error_chain": [
-    {}
-  ],
-  "message": "string"
-}
-```
-
-> 403 Response
-
-```text
-Authorization error
-```
-
-> 422 Response
-
-```text
-Input was invalid: There are no introspectable datasets matching the provided criteria (dataset_name=`events.nonexistent`)
-```
-
-<h3 id="list-available-analytics-datasets-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Dataset catalogue returned successfully.|[analytics-sql_IntrospectionResponse](#schemaanalytics-sql_introspectionresponse)|
-|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
-|403|Forbidden|Authentication failed or the caller does not have Account Analytics Read permission on the specified account.<br>|Inline|
-|422|Unprocessable Entity|The request could not be processed. This is returned when the account tag is invalid or unknown, when `include_custom_attributes` or `include_attributes` is set without a `dataset_name`, when a Workers Analytics Engine `dataset_name` is supplied alongside `include_wae=false` or contains characters a dataset name cannot contain, or when the supplied criteria match no dataset that this deployment can describe — either because no such dataset exists or because it is not describable here. The message names the criteria that matched nothing.<br>|Inline|
-|500|Internal Server Error|An internal error occurred.|Inline|
-|503|Service Unavailable|The authorization service is temporarily unavailable.|Inline|
-
-<h3 id="list-available-analytics-datasets-responseschema">Response Schema</h3>
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
-|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_token
-</aside>
-
-## Query analytics datasets
-
-<a id="opIdsql-api-query-get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.cloudflare.com/client/v4/analytics/sql?query=SELECT%20edgeResponseStatus%20FROM%20events.httpRequests%20WHERE%20accountTag%20%3D%20'\''0123456789abcdef0123456789abcdef'\''%20AND%20datetime%20%3E%20'\''2026-01-01'\''%20LIMIT%2010' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /analytics/sql`
-
-Executes a SQL query against the analytics datasets available to the caller. SQL placeholders can be bound with query parameters named `param_<name>`, such as `param_status=404` for `$status`. A trailing `FORMAT JSON`, `FORMAT JSONEachRow`, `FORMAT TabSeparated`, or `FORMAT TSV` is supported for all datasets. Without FORMAT, each backend retains its existing default JSON response.
-
-
-<h3 id="query-analytics-datasets-2-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|query|query|string|true|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {}
-  ],
-  "rows": 0,
-  "statistics": {
-    "bytes_read": 0,
-    "elapsed_ms": 0,
-    "rows_read": 0
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": 0,
-  "error_chain": [
-    {}
-  ],
-  "message": "string"
-}
-```
-
-> 403 Response
-
-```text
-Authorization error
-```
-
-<h3 id="query-analytics-datasets-2-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Query executed successfully. Columns that the query reaches only through `*` exclude any that the caller is not permitted to read. ClickHouse's default JSON envelope has data, rows, and statistics; explicit FORMAT JSON additionally has typed metadata and rows_before_limit_at_least. Log Explorer's default and FORMAT JSON responses use its existing {data, rows} envelope, without unavailable metadata, pre-limit counts, or statistics. FORMAT JSONEachRow returns newline-delimited JSON objects. FORMAT TabSeparated and TSV return escaped tab-separated rows without a header; Log Explorer serializes nested JSON values as compact JSON text in one field.<br>|Inline|
-|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
-|403|Forbidden|Authentication failed, the caller is not authorized, or the query references a column the caller is not permitted to read.<br>|Inline|
-|422|Unprocessable Entity|The SQL query or its parameters are invalid, including invalid function arguments.|Inline|
-|429|Too Many Requests|The query exceeded a resource or request-rate limit.|Inline|
-|500|Internal Server Error|An internal error occurred.|Inline|
-|501|Not Implemented|The query uses a SQL feature that is not implemented.|Inline|
-|503|Service Unavailable|A required service is temporarily unavailable.|Inline|
-|507|Insufficient Storage|The query exhausted available resources.|Inline|
-
-<h3 id="query-analytics-datasets-2-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_SqlQueryResponse](#schemaanalytics-sql_sqlqueryresponse)|false|none|none|
-|*oneOf*|[analytics-sql_ClickHouseJsonQueryResponse](#schemaanalytics-sql_clickhousejsonqueryresponse)|false|none|none|
-|*oneOf*|[analytics-sql_LogExplorerQueryResponse](#schemaanalytics-sql_logexplorerqueryresponse)|false|none|none|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
-|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|429|Retry-After|integer|int64|Seconds to wait before retrying. Present when the account request rate limit is exceeded; omitted for query resource limits.<br>|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_token
-</aside>
-
-## Query analytics datasets
-
-<a id="opIdsql-api-query-post"></a>
-
-> Code samples
-
-```bash
-curl https://api.cloudflare.com/client/v4/analytics/sql \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "params": {
-      "status": 404
-    },
-    "query": "SELECT edgeResponseStatus FROM events.httpRequests WHERE edgeResponseStatus = $status LIMIT 10",
-    "scope": {
-      "accountTag": "0123456789abcdef0123456789abcdef"
-    },
-    "time_range": {
-      "end": "2026-01-02T00:00:00Z",
-      "start": "2026-01-01T00:00:00Z"
-    }
-  }'
-```
-
-`POST /analytics/sql`
-
-Executes a SQL query against the analytics datasets available to the caller. Send either raw SQL or a JSON object containing the query and optional positional or named parameters, time range, and account or zone scope. Raw SQL placeholders can also be bound with query parameters named `param_<name>`. A trailing `FORMAT JSON`, `FORMAT JSONEachRow`, `FORMAT TabSeparated`, or `FORMAT TSV` is supported for all datasets. Without FORMAT, each backend retains its existing default JSON response.
-
-
-> Body parameter
-
-```json
-{
-  "params": {
-    "status": 404
-  },
-  "query": "SELECT edgeResponseStatus FROM events.httpRequests WHERE edgeResponseStatus = $status LIMIT 10",
-  "scope": {
-    "accountTag": "0123456789abcdef0123456789abcdef"
-  },
-  "time_range": {
-    "end": "2026-01-02T00:00:00Z",
-    "start": "2026-01-01T00:00:00Z"
-  }
-}
-```
-
-<h3 id="query-analytics-datasets-3-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[analytics-sql_SqlQueryRequest](#schemaanalytics-sql_sqlqueryrequest)|true|none|
-|» params|body|[object] \| object|false|Positional array values for `$1`, `$2`, and similar placeholders, or named object values for placeholders such as `$status`.<br>|
-|» » *oneOf*|body|[object]|false|none|
-|» » *oneOf*|body|object|false|none|
-|» query|body|string|true|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
-|» scope|body|[analytics-sql_SqlQueryScope](#schemaanalytics-sql_sqlqueryscope)|false|Account or zone scope applied to the query. Include exactly one scope tag. Do not include account or zone tenancy predicates in the SQL query when this field is present.<br>|
-|» time_range|body|object|false|none|
-|» » end|body|string|false|Inclusive upper bound for the dataset's timestamp column.|
-|» » start|body|string|true|Inclusive lower bound for the dataset's timestamp column.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {}
-  ],
-  "rows": 0,
-  "statistics": {
-    "bytes_read": 0,
-    "elapsed_ms": 0,
-    "rows_read": 0
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": 0,
-  "error_chain": [
-    {}
-  ],
-  "message": "string"
-}
-```
-
-> 403 Response
-
-```text
-Authorization error
-```
-
-<h3 id="query-analytics-datasets-3-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Query executed successfully. Columns that the query reaches only through `*` exclude any that the caller is not permitted to read. ClickHouse's default JSON envelope has data, rows, and statistics; explicit FORMAT JSON additionally has typed metadata and rows_before_limit_at_least. Log Explorer's default and FORMAT JSON responses use its existing {data, rows} envelope, without unavailable metadata, pre-limit counts, or statistics. FORMAT JSONEachRow returns newline-delimited JSON objects. FORMAT TabSeparated and TSV return escaped tab-separated rows without a header; Log Explorer serializes nested JSON values as compact JSON text in one field.<br>|Inline|
-|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
-|403|Forbidden|Authentication failed, the caller is not authorized, or the query references a column the caller is not permitted to read.<br>|Inline|
-|422|Unprocessable Entity|The SQL query or its parameters are invalid, including invalid function arguments.|Inline|
-|429|Too Many Requests|The query exceeded a resource or request-rate limit.|Inline|
-|500|Internal Server Error|An internal error occurred.|Inline|
-|501|Not Implemented|The query uses a SQL feature that is not implemented.|Inline|
-|503|Service Unavailable|A required service is temporarily unavailable.|Inline|
-|507|Insufficient Storage|The query exhausted available resources.|Inline|
-
-<h3 id="query-analytics-datasets-3-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_SqlQueryResponse](#schemaanalytics-sql_sqlqueryresponse)|false|none|none|
-|*oneOf*|[analytics-sql_ClickHouseJsonQueryResponse](#schemaanalytics-sql_clickhousejsonqueryresponse)|false|none|none|
-|*oneOf*|[analytics-sql_LogExplorerQueryResponse](#schemaanalytics-sql_logexplorerqueryresponse)|false|none|none|
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
-|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|429|Retry-After|integer|int64|Seconds to wait before retrying. Present when the account request rate limit is exceeded; omitted for query resource limits.<br>|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_token
-</aside>
-
-## List available analytics datasets
-
-<a id="opIdsql-api-introspection"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.cloudflare.com/client/v4/analytics/sql/introspection?account_tag=0123456789abcdef0123456789abcdef' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /analytics/sql/introspection`
-
-Returns the analytics dataset catalogue. By default, the response contains dataset names, titles, categories, descriptions, kinds, and hidden flags. Set `include_columns` to include each dataset's column names, descriptions, data types, and hidden flags. The caller must have Account Analytics Read permission on the account identified by `account_tag`. Dataset names, descriptions, and columns are the same for every authorized account. When `include_custom_attributes` or `include_attributes` is set, the response also includes attribute names and types discovered from that account's own data, which legitimately differs per caller. `attributes` is a replacement for `custom_attributes` that will eventually be removed; until then, set either flag independently to receive the corresponding field. `hidden` marks catalogue entries a client should de-emphasise. It has no effect on access: hidden datasets and columns are returned here and remain fully queryable.
-
-The catalogue lists the datasets this deployment is able to describe, which is not a fixed list. Some datasets are described by the service that owns them and are listed only where that service is available, so the same account may see a different catalogue in different environments, and datasets may appear or disappear without a change to this API. Clients should query the catalogue rather than hard-coding it, and should not treat a dataset's absence as proof that it does not exist.
-
-Workers Analytics Engine datasets are named by the account that writes them, so they are discovered from that account's own data rather than from a fixed list. They appear as `events.analyticsEngine.<dataset_name>` and differ per account. A dataset is listed for as long as any of its data is retained, so it does not disappear from the catalogue merely because writes have stopped. An account with a very large number of datasets may receive a truncated list. Set `include_wae=false` to omit them.
-
-Log Explorer datasets are listed only where the account has them, so they differ per account and are not part of the static catalogue. Set `include_lex=false` to omit them.
-
-
-<h3 id="list-available-analytics-datasets-1-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|account_tag|query|string|true|Account whose available analytics datasets are returned.|
-|include_columns|query|boolean|false|Include column metadata for each returned dataset.|
-|include_custom_attributes|query|boolean|false|Include a capped set of custom attribute names and types observed during the preceding seven days, as `custom_attributes`. Requires a nonempty dataset_name. Deprecated in favor of `include_attributes`.<br>|
-|include_attributes|query|boolean|false|Include a capped set of attribute names and types observed during the preceding seven days, as `attributes`. Requires a nonempty dataset_name. Replaces `include_custom_attributes`, which is deprecated.<br>|
-|include_wae|query|boolean|false|Include Workers Analytics Engine datasets, which are discovered from the account's own data. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.<br>|
-|include_lex|query|boolean|false|Include Log Explorer datasets, which are listed only where the account has them. Set to `false` to return only datasets described from the static catalogue, which avoids that lookup.<br>|
-|dataset_name|query|string|false|Return only the dataset with this exact name. An empty value is treated as if the parameter had been omitted, and does not filter the catalogue. A name that matches no dataset in this deployment's catalogue is rejected with `422`; a dataset that exists but is not describable here is rejected identically, so the two cases cannot be told apart.<br><br>A Workers Analytics Engine dataset is named in full, as `events.analyticsEngine.<dataset_name>`; the namespace on its own returns every such dataset the account has. A `dataset_name` the account does not have is rejected with `422` like any other unknown name.<br>|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "datasets": [
-    {
-      "attributes": [
-        {
-          "data_type": "String",
-          "name": "string"
-        }
-      ],
-      "category": "HTTP Traffic",
-      "columns": [
-        {
-          "data_type": "String",
-          "description": "string",
-          "hidden": true,
-          "name": "clientRequestPath"
-        }
-      ],
-      "custom_attributes": [
-        {
-          "data_type": "String",
-          "name": "string"
-        }
-      ],
-      "description": "string",
-      "hidden": true,
-      "kind": {
-        "availability": [
-          {
-            "scope": "account",
-            "zone": "023e105f4ecef8ad9ca31a8372d0c353"
-          }
-        ],
-        "events": {
-          "sampling": "unsampled"
-        },
-        "logs": {
-          "sampling": "unsampled"
-        },
-        "states": {
-          "sampling": "unsampled",
-          "valid_aggregations": [
-            "count",
-            "max"
-          ]
-        }
-      },
-      "name": "events.httpRequests",
-      "title": "HTTP Requests"
-    }
-  ]
-}
-```
-
-> 400 Response
-
-```json
-{
-  "code": 0,
-  "error_chain": [
-    {}
-  ],
-  "message": "string"
-}
-```
-
-> 403 Response
-
-```text
-Authorization error
-```
-
-> 422 Response
-
-```text
-Input was invalid: There are no introspectable datasets matching the provided criteria (dataset_name=`events.nonexistent`)
-```
-
-<h3 id="list-available-analytics-datasets-1-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Dataset catalogue returned successfully.|[analytics-sql_IntrospectionResponse](#schemaanalytics-sql_introspectionresponse)|
-|400|Bad Request|The request is malformed, or authentication was rejected by the API gateway before the request reached the SQL service.<br>|Inline|
-|403|Forbidden|Authentication failed or the caller does not have Account Analytics Read permission on the specified account.<br>|Inline|
-|422|Unprocessable Entity|The request could not be processed. This is returned when the account tag is invalid or unknown, when `include_custom_attributes` or `include_attributes` is set without a `dataset_name`, when a Workers Analytics Engine `dataset_name` is supplied alongside `include_wae=false` or contains characters a dataset name cannot contain, or when the supplied criteria match no dataset that this deployment can describe — either because no such dataset exists or because it is not describable here. The message names the criteria that matched nothing.<br>|Inline|
-|500|Internal Server Error|An internal error occurred.|Inline|
-|503|Service Unavailable|The authorization service is temporarily unavailable.|Inline|
-
-<h3 id="list-available-analytics-datasets-1-responseschema">Response Schema</h3>
-
-Status Code **400**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[analytics-sql_ApiErrorResponse](#schemaanalytics-sql_apierrorresponse)|false|none|none|
-|*oneOf*|[analytics-sql_GatewayApiErrorResponse](#schemaanalytics-sql_gatewayapierrorresponse)|false|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-api_token
 </aside>
 
 <h1 id="cloudflare-api-rate-plans">Rate Plans</h1>
@@ -418083,6 +419169,7 @@ Retrieves the latest annotations.
         "endDate": "2022-09-08T10:00:28Z",
         "entities": [
           {
+            "entityLocation": "PT",
             "entityName": "GPTBot",
             "entityType": "BOT",
             "entityValue": "gptbot"
@@ -418168,6 +419255,7 @@ Status Code **200**
 |» » description|string \| null|true|none|none|
 |» » endDate|string \| null|true|none|none|
 |» » entities|[object]|true|none|none|
+|» » » entityLocation|string \| null|true|none|Alpha-2 code of the country the entity belongs to (GEOLOCATION and AS entities only).|
 |» » » entityName|string \| null|true|none|none|
 |» » » entityType|string|true|none|none|
 |» » » entityValue|string|true|none|none|
@@ -418423,6 +419511,7 @@ Retrieves the latest Internet outages and anomalies.
         "endDate": "1970-01-01T00:00:00Z",
         "entities": [
           {
+            "entityLocation": "PT",
             "entityName": "GPTBot",
             "entityType": "BOT",
             "entityValue": "gptbot"
@@ -418508,6 +419597,7 @@ Status Code **200**
 |» » description|string \| null|true|none|none|
 |» » endDate|string(date-time) \| null|true|none|none|
 |» » entities|[object]|true|none|none|
+|» » » entityLocation|string \| null|true|none|Alpha-2 code of the country the entity belongs to (GEOLOCATION and AS entities only).|
 |» » » entityName|string \| null|true|none|none|
 |» » » entityType|string|true|none|none|
 |» » » entityValue|string|true|none|none|
@@ -418705,6 +419795,7 @@ Retrieves a single annotation by ID.
       "endDate": "1970-01-01T00:00:00Z",
       "entities": [
         {
+          "entityLocation": "PT",
           "entityName": "GPTBot",
           "entityType": "BOT",
           "entityValue": "gptbot"
@@ -418783,6 +419874,7 @@ Status Code **200**
 |» » description|string \| null|true|none|none|
 |» » endDate|string(date-time) \| null|true|none|none|
 |» » entities|[object]|true|none|none|
+|» » » entityLocation|string \| null|true|none|Alpha-2 code of the country the entity belongs to (GEOLOCATION and AS entities only).|
 |» » » entityName|string \| null|true|none|none|
 |» » » entityType|string|true|none|none|
 |» » » entityValue|string|true|none|none|
@@ -476849,6 +477941,7 @@ Retrieves the latest Internet traffic anomalies, which are signals that might in
           "name": "us-east-1 Amazon Web Services",
           "origin": "amazon-us-east-1"
         },
+        "outageId": "1234",
         "startDate": "2023-08-02T23:15:00Z",
         "status": "UNVERIFIED",
         "type": "LOCATION",
@@ -476905,8 +477998,9 @@ Status Code **200**
 |» » originDetails|object \| null|true|none|none|
 |» » » name|string \| null|true|none|none|
 |» » » origin|string|true|none|none|
+|» » outageId|string \| null|true|none|ID of the published outage this anomaly was confirmed as, if any.|
 |» » startDate|string(date-time)|true|none|none|
-|» » status|string|true|none|none|
+|» » status|string|true|none|Verification status: UNVERIFIED (automatically detected, not yet validated by Radar), TP (verified by Radar) or VERIFIED (verified by Radar and a third-party source).|
 |» » type|string|true|none|none|
 |» » uuid|string|true|none|none|
 |» » visibleInDataSources|[string]|true|none|none|
@@ -477088,6 +478182,7 @@ Retrieves a single Internet traffic anomaly by UUID.
         "name": "us-east-1 Amazon Web Services",
         "origin": "amazon-us-east-1"
       },
+      "outageId": "1234",
       "startDate": "2023-08-02T23:15:00Z",
       "status": "UNVERIFIED",
       "type": "LOCATION",
@@ -477137,8 +478232,9 @@ Status Code **200**
 |» » originDetails|object \| null|true|none|none|
 |» » » name|string \| null|true|none|none|
 |» » » origin|string|true|none|none|
+|» » outageId|string \| null|true|none|ID of the published outage this anomaly was confirmed as, if any.|
 |» » startDate|string(date-time)|true|none|none|
-|» » status|string|true|none|none|
+|» » status|string|true|none|Verification status: UNVERIFIED (automatically detected, not yet validated by Radar), TP (verified by Radar) or VERIFIED (verified by Radar and a third-party source).|
 |» » type|string|true|none|none|
 |» » uuid|string|true|none|none|
 |» » visibleInDataSources|[string]|true|none|none|
@@ -483930,7 +485026,7 @@ Creates a user subscription.
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -484070,7 +485166,7 @@ Updates a user's subscriptions.
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -493942,7 +495038,8 @@ rules apply:
 
 - A zone can hold at most 20 topics.
 - `label` must be 2–20 characters, using only lowercase letters (a–z), digits (0–9), and hyphens.
-- `topic` must be 2–50 printable ASCII characters.
+- `topic` must be 2–50 UTF-8 bytes. Text in any language is supported, including spaces, numbers,
+  punctuation, and symbols. Tabs, line breaks, invalid text, and invisible formatting characters are not allowed.
 - Labels must be unique within the zone, and so must topic descriptions.
 
 > Body parameter
@@ -499973,8 +501070,8 @@ Retrieve a zone's Bot Management Config
     }
   ],
   "messages": [],
-  "success": false,
-  "result": null
+  "result": null,
+  "success": false
 }
 ```
 
@@ -499983,46 +501080,7 @@ Retrieve a zone's Bot Management Config
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Bot Management config response|[bot-management_bot_management_response_body](#schemabot-management_bot_management_response_body)|
-|4XX|Client Error|Bot Management config response failure|Inline|
-
-<h3 id="get-zone-bot-management-config-responseschema">Response Schema</h3>
-
-Status Code **4XX**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|errors|[bot-management_messages](#schemabot-management_messages)|true|none|none|
-|messages|[bot-management_messages](#schemabot-management_messages)|true|none|none|
-|success|boolean|true|none|Whether the API call was successful.|
-|result|[bot-management_bot_fight_mode_config](#schemabot-management_bot_fight_mode_config) \| [bot-management_sbfm_definitely_config](#schemabot-management_sbfm_definitely_config) \| [bot-management_sbfm_likely_config](#schemabot-management_sbfm_likely_config) \| [bot-management_bm_subscription_config](#schemabot-management_bm_subscription_config)|true|none|none|
-|» *oneOf*|[bot-management_bot_fight_mode_config](#schemabot-management_bot_fight_mode_config)|false|none|none|
-|» *oneOf*|[bot-management_sbfm_definitely_config](#schemabot-management_sbfm_definitely_config)|false|none|none|
-|» *oneOf*|[bot-management_sbfm_likely_config](#schemabot-management_sbfm_likely_config)|false|none|none|
-|» *oneOf*|[bot-management_bm_subscription_config](#schemabot-management_bm_subscription_config)|false|none|none|
-|errors|object|true|none|none|
-|*anonymous*|[object]|false|none|none|
-|» code|integer|true|none|none|
-|» documentation_url|string|false|none|none|
-|» message|string|true|none|none|
-|» source|object|false|none|none|
-|» » pointer|string|false|none|none|
-|messages|object|true|none|none|
-|*anonymous*|[object]|false|none|none|
-|» code|integer|true|none|none|
-|» documentation_url|string|false|none|none|
-|» message|string|true|none|none|
-|» source|object|false|none|none|
-|» » pointer|string|false|none|none|
-|result|object \| null|true|none|none|
-|success|boolean|true|none|Whether the API call was successful.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|success|true|
-|result|null|
-|success|false|
+|4XX|Client Error|Bot Management config response failure|[bot-management_api-response-common-failure](#schemabot-management_api-response-common-failure)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -500187,8 +501245,8 @@ It is strongly recommended that you ensure you have [custom rules](https://devel
     }
   ],
   "messages": [],
-  "success": false,
-  "result": null
+  "result": null,
+  "success": false
 }
 ```
 
@@ -500197,46 +501255,7 @@ It is strongly recommended that you ensure you have [custom rules](https://devel
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Update Bot Management response|[bot-management_bot_management_response_body](#schemabot-management_bot_management_response_body)|
-|4XX|Client Error|Update Bot Management response failure|Inline|
-
-<h3 id="update-zone-bot-management-config-responseschema">Response Schema</h3>
-
-Status Code **4XX**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|errors|[bot-management_messages](#schemabot-management_messages)|true|none|none|
-|messages|[bot-management_messages](#schemabot-management_messages)|true|none|none|
-|success|boolean|true|none|Whether the API call was successful.|
-|result|[bot-management_bot_fight_mode_config](#schemabot-management_bot_fight_mode_config) \| [bot-management_sbfm_definitely_config](#schemabot-management_sbfm_definitely_config) \| [bot-management_sbfm_likely_config](#schemabot-management_sbfm_likely_config) \| [bot-management_bm_subscription_config](#schemabot-management_bm_subscription_config)|true|none|none|
-|» *oneOf*|[bot-management_bot_fight_mode_config](#schemabot-management_bot_fight_mode_config)|false|none|none|
-|» *oneOf*|[bot-management_sbfm_definitely_config](#schemabot-management_sbfm_definitely_config)|false|none|none|
-|» *oneOf*|[bot-management_sbfm_likely_config](#schemabot-management_sbfm_likely_config)|false|none|none|
-|» *oneOf*|[bot-management_bm_subscription_config](#schemabot-management_bm_subscription_config)|false|none|none|
-|errors|object|true|none|none|
-|*anonymous*|[object]|false|none|none|
-|» code|integer|true|none|none|
-|» documentation_url|string|false|none|none|
-|» message|string|true|none|none|
-|» source|object|false|none|none|
-|» » pointer|string|false|none|none|
-|messages|object|true|none|none|
-|*anonymous*|[object]|false|none|none|
-|» code|integer|true|none|none|
-|» documentation_url|string|false|none|none|
-|» message|string|true|none|none|
-|» source|object|false|none|none|
-|» » pointer|string|false|none|none|
-|result|object \| null|true|none|none|
-|success|boolean|true|none|Whether the API call was successful.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|success|true|
-|result|null|
-|success|false|
+|4XX|Client Error|Update Bot Management response failure|[bot-management_api-response-common-failure](#schemabot-management_api-response-common-failure)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -517768,6 +518787,225 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_email & api_key & api_token
 </aside>
 
+<h1 id="cloudflare-api-payload-logging-keys-for-a-zone">Payload logging keys for a zone</h1>
+
+## Get the payload logging key
+
+<a id="opIdpayload-logging-keys-for-a-zone-get-the-payload-logging-key"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/zones/023e105f4ecef8ad9ca31a8372d0c353/firewall/payload_logging/key \
+  -H 'Accept: application/json' \
+  -H "X-Auth-Email: ${API_KEY}" \
+  -H "X-Auth-Key: ${API_KEY}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /zones/{zone_id}/firewall/payload_logging/key`
+
+Fetches the public key that payload logging uses to encrypt matched payloads for the zone.
+
+<h3 id="get-the-payload-logging-key-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|zone_id|path|[firewall_identifier](#schemafirewall_identifier)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "result": {
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  },
+  "success": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="get-the-payload-logging-key-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Get the payload logging key response.|[firewall_payload_logging_key_response_single](#schemafirewall_payload_logging_key_response_single)|
+|4XX|Client Error|Get the payload logging key response failure.|[firewall_api-response-common-failure](#schemafirewall_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_email & api_key & api_token
+</aside>
+
+## Set the payload logging key
+
+<a id="opIdpayload-logging-keys-for-a-zone-set-the-payload-logging-key"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/zones/023e105f4ecef8ad9ca31a8372d0c353/firewall/payload_logging/key \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Auth-Email: ${API_KEY}" \
+  -H "X-Auth-Key: ${API_KEY}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  }'
+```
+
+`PUT /zones/{zone_id}/firewall/payload_logging/key`
+
+Creates or replaces the public key that payload logging uses to encrypt matched payloads for the zone. The zone key takes precedence over the account key. Requires a plan that includes payload logging (Enterprise); otherwise it returns 403.
+
+> Body parameter
+
+```json
+{
+  "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+}
+```
+
+<h3 id="set-the-payload-logging-key-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|zone_id|path|[firewall_identifier](#schemafirewall_identifier)|true|none|
+|body|body|[firewall_payload_logging_key](#schemafirewall_payload_logging_key)|true|none|
+|» public_key|body|string|true|Defines the X25519 public key, as standard base64 of exactly 32 bytes, that encrypts matched payloads. Cloudflare stores only the public key; keep the private key to decrypt logged payloads.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "result": {
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  },
+  "success": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="set-the-payload-logging-key-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Set the payload logging key response.|[firewall_payload_logging_key_response_single](#schemafirewall_payload_logging_key_response_single)|
+|4XX|Client Error|Set the payload logging key response failure.|[firewall_api-response-common-failure](#schemafirewall_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_email & api_key & api_token
+</aside>
+
+## Delete the payload logging key
+
+<a id="opIdpayload-logging-keys-for-a-zone-delete-the-payload-logging-key"></a>
+
+> Code samples
+
+```bash
+curl https://api.cloudflare.com/client/v4/zones/023e105f4ecef8ad9ca31a8372d0c353/firewall/payload_logging/key \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "X-Auth-Email: ${API_KEY}" \
+  -H "X-Auth-Key: ${API_KEY}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /zones/{zone_id}/firewall/payload_logging/key`
+
+Deletes the payload logging public key of the zone.
+
+<h3 id="delete-the-payload-logging-key-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|zone_id|path|[firewall_identifier](#schemafirewall_identifier)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "result": {
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  },
+  "success": true
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "errors": [
+    {
+      "code": 7003,
+      "message": "No route for the URI"
+    }
+  ],
+  "messages": [],
+  "result": null,
+  "success": false
+}
+```
+
+<h3 id="delete-the-payload-logging-key-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Delete the payload logging key response.|[firewall_payload_logging_key_response_single](#schemafirewall_payload_logging_key_response_single)|
+|4XX|Client Error|Delete the payload logging key response failure.|[firewall_api-response-common-failure](#schemafirewall_api-response-common-failure)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_email & api_key & api_token
+</aside>
+
 <h1 id="cloudflare-api-firewall-rules">Firewall rules</h1>
 
 ## List firewall rules
@@ -520723,8 +521961,8 @@ Retrieve Fraud Detection settings for a zone.
     }
   ],
   "messages": [],
-  "success": false,
-  "result": null
+  "result": null,
+  "success": false
 }
 ```
 
@@ -520733,42 +521971,7 @@ Retrieve Fraud Detection settings for a zone.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Fraud Detection settings response|[fraud_fraud_settings_response_body](#schemafraud_fraud_settings_response_body)|
-|4XX|Client Error|Fraud Detection settings response failure|Inline|
-
-<h3 id="get-fraud-detection-settings-responseschema">Response Schema</h3>
-
-Status Code **4XX**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|errors|[fraud_messages](#schemafraud_messages)|true|none|none|
-|messages|[fraud_messages](#schemafraud_messages)|true|none|none|
-|success|boolean|true|none|Whether the API call was successful.|
-|result|[fraud_fraud_settings](#schemafraud_fraud_settings)|true|none|none|
-|errors|object|true|none|none|
-|*anonymous*|[object]|false|none|none|
-|» code|integer|true|none|none|
-|» documentation_url|string|false|none|none|
-|» message|string|true|none|none|
-|» source|object|false|none|none|
-|» » pointer|string|false|none|none|
-|messages|object|true|none|none|
-|*anonymous*|[object]|false|none|none|
-|» code|integer|true|none|none|
-|» documentation_url|string|false|none|none|
-|» message|string|true|none|none|
-|» source|object|false|none|none|
-|» » pointer|string|false|none|none|
-|result|object \| null|true|none|none|
-|success|boolean|true|none|Whether the API call was successful.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|success|true|
-|result|null|
-|success|false|
+|4XX|Client Error|Fraud Detection settings response failure|[fraud_api-response-common-failure](#schemafraud_api-response-common-failure)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -520872,8 +522075,8 @@ Notes on `username_expressions` behavior:
     }
   ],
   "messages": [],
-  "success": false,
-  "result": null
+  "result": null,
+  "success": false
 }
 ```
 
@@ -520882,42 +522085,7 @@ Notes on `username_expressions` behavior:
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Updated Fraud Detection settings response|[fraud_fraud_settings_response_body](#schemafraud_fraud_settings_response_body)|
-|4XX|Client Error|Update Fraud Detection settings failure|Inline|
-
-<h3 id="update-fraud-detection-settings-responseschema">Response Schema</h3>
-
-Status Code **4XX**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|errors|[fraud_messages](#schemafraud_messages)|true|none|none|
-|messages|[fraud_messages](#schemafraud_messages)|true|none|none|
-|success|boolean|true|none|Whether the API call was successful.|
-|result|[fraud_fraud_settings](#schemafraud_fraud_settings)|true|none|none|
-|errors|object|true|none|none|
-|*anonymous*|[object]|false|none|none|
-|» code|integer|true|none|none|
-|» documentation_url|string|false|none|none|
-|» message|string|true|none|none|
-|» source|object|false|none|none|
-|» » pointer|string|false|none|none|
-|messages|object|true|none|none|
-|*anonymous*|[object]|false|none|none|
-|» code|integer|true|none|none|
-|» documentation_url|string|false|none|none|
-|» message|string|true|none|none|
-|» source|object|false|none|none|
-|» » pointer|string|false|none|none|
-|result|object \| null|true|none|none|
-|success|boolean|true|none|Whether the API call was successful.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|success|true|
-|result|null|
-|success|false|
+|4XX|Client Error|Update Fraud Detection settings failure|[fraud_api-response-common-failure](#schemafraud_api-response-common-failure)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -528462,6 +529630,7 @@ Lists all fields available for a dataset. The response result is. an object with
 |---|---|
 |dataset_id|access_requests|
 |dataset_id|account_abuse_protection_events|
+|dataset_id|ai_gateway_events|
 |dataset_id|audit_logs|
 |dataset_id|audit_logs_v2|
 |dataset_id|biso_user_actions|
@@ -528603,6 +529772,7 @@ Lists Logpush jobs for a zone for a dataset.
 |---|---|
 |dataset_id|access_requests|
 |dataset_id|account_abuse_protection_events|
+|dataset_id|ai_gateway_events|
 |dataset_id|audit_logs|
 |dataset_id|audit_logs_v2|
 |dataset_id|biso_user_actions|
@@ -528981,6 +530151,7 @@ Creates a new Logpush job for a zone.
 |---|---|
 |» dataset|access_requests|
 |» dataset|account_abuse_protection_events|
+|» dataset|ai_gateway_events|
 |» dataset|audit_logs|
 |» dataset|audit_logs_v2|
 |» dataset|biso_user_actions|
@@ -556580,7 +557751,7 @@ Updates zone subscriptions, either plan or add-ons.
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -556754,7 +557925,7 @@ Create a zone subscription, either plan or add-ons.
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -557022,7 +558193,7 @@ Updates zone subscriptions, either plan or add-ons. Retained for audit-log cover
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -557196,7 +558367,7 @@ Create a zone subscription, either plan or add-ons. Retained for audit-log cover
 |» component_values|body|[bill-subs-api_component_values](#schemabill-subs-api_component_values)|false|Configurable component values for the subscription.|
 |» frequency|body|[bill-subs-api_frequency](#schemabill-subs-api_frequency)|false|How often the subscription is renewed automatically.|
 |» rate_plan|body|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|The rate plan applied to the subscription.|
-|» zone|body|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|A simple zone object. May have null properties if not a zone subscription.|
+|» zone|body|object|false|none|
 
 #### Enumerated Values
 
@@ -565455,7 +566626,9 @@ The unique identifier of a webhook
   "appealable": true,
   "has_appealable_mitigations": true,
   "has_open_appeal": true,
-  "max_appeals": 0
+  "has_pending_notice": true,
+  "max_appeals": 0,
+  "notice_deadline": "2009-11-10T23:00:00Z"
 }
 ```
 
@@ -565467,7 +566640,9 @@ The unique identifier of a webhook
 |appealable|boolean|true|none|Whether the report can currently be appealed under the policy applied to it.|
 |has_appealable_mitigations|boolean|true|none|Whether the report has at least one mitigation an appeal could reverse.|
 |has_open_appeal|boolean|true|none|Whether the report already has an open (undecided) appeal.|
+|has_pending_notice|boolean|true|none|Whether the report is in its Notice and Takedown notice period. No mitigation is applied yet, but one will be applied at `notice_deadline` unless the report is resolved first.|
 |max_appeals|integer|true|none|Maximum number of appeals allowed per report.|
+|notice_deadline|string(date-time)|false|none|When the notice period ends and the mitigation is applied. Present only when `has_pending_notice` is true. Time in RFC 3339 format (https://www.rfc-editor.org/rfc/rfc3339.html)|
 
 <h2 id="tocS_abuse-reports_AppealReason">abuse-reports_AppealReason</h2>
 <!-- backwards compatibility -->
@@ -566336,11 +567511,12 @@ The type of entity targeted by a mitigation.
     ],
     "zip_code": "string"
   },
+  "explanation": "string",
   "type": "counter_notice"
 }
 ```
 
-Submit an appeal for a report. Provide either a list of mitigations to appeal, or an appeal type with its supporting details, but not both. When type is "counter_notice", the counter-notice details are required.
+Submit an appeal for a report. Provide either a list of mitigations to appeal, or an appeal type with its supporting details, but not both. When type is "counter_notice", the counter-notice details are required. A "content_removed" appeal takes an optional explanation instead and is accepted only while the report is in its Notice and Takedown notice period (`has_pending_notice` on the eligibility response). Reports that allow a single appeal (`max_appeals` of 1) never have a notice period and accept it whenever `appealable` is true.
 
 ### Properties
 
@@ -566348,6 +567524,7 @@ Submit an appeal for a report. Provide either a list of mitigations to appeal, o
 |---|---|---|---|---|
 |appeals|[[abuse-reports_MitigationAppeal](#schemaabuse-reports_mitigationappeal)]|false|none|List of mitigations to appeal.|
 |data|[abuse-reports_DMCACounterNotice](#schemaabuse-reports_dmcacounternotice)|false|none|Counter-notice details supporting an appeal.|
+|explanation|string|false|none|Optional explanation for a "content_removed" appeal, such as how the content was removed. Not accepted for other appeal types.|
 |type|[abuse-reports_AppealType](#schemaabuse-reports_appealtype)|false|none|The type of appeal being submitted.|
 |*oneOf*|object|false|none|none|
 |*oneOf*|object|false|none|none|
@@ -568503,6 +569680,7 @@ A JSON that links a reusable policy to an application.
   "exclude": [],
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "approval_groups": [
     {
@@ -568555,6 +569733,7 @@ A JSON that links a reusable policy to an application.
 |exclude|[access_exclude-2](#schemaaccess_exclude-2)|false|none|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |include|[access_include-2](#schemaaccess_include-2)|true|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|true|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |approval_groups|[access_approval_groups](#schemaaccess_approval_groups)|false|none|Administrators who can approve a temporary authentication request.|
 |approval_required|[access_approval_required](#schemaaccess_approval_required)|false|none|Requires the user to request access from an administrator at the start of each session.|
@@ -568589,6 +569768,7 @@ A JSON that links a reusable policy to an application.
   "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "updated_at": "2014-01-01T05:20:00.12345Z",
   "approval_groups": [
@@ -568645,6 +569825,7 @@ A JSON that links a reusable policy to an application.
 |id|[access_uuid-2](#schemaaccess_uuid-2)|false|none|The UUID of the policy|
 |include|[access_include-2](#schemaaccess_include-2)|false|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|false|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |updated_at|[access_timestamp](#schemaaccess_timestamp)|false|none|none|
 |approval_groups|[access_approval_groups](#schemaaccess_approval_groups)|false|none|Administrators who can approve a temporary authentication request.|
@@ -568682,6 +569863,7 @@ A JSON that links a reusable policy to an application.
   "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "updated_at": "2014-01-01T05:20:00.12345Z",
   "approval_groups": [
@@ -568749,6 +569931,7 @@ A JSON that links a reusable policy to an application.
   "exclude": [],
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "approval_groups": [
     {
@@ -569286,6 +570469,7 @@ A JSON that links a reusable policy to an application.
       "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "updated_at": "2014-01-01T05:20:00.12345Z",
       "approval_groups": [
@@ -570753,6 +571937,7 @@ Requires an Azure identity provider.
   "exclude": [],
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": []
 }
 ```
@@ -570765,6 +571950,7 @@ Requires an Azure identity provider.
 |exclude|[access_exclude-2](#schemaaccess_exclude-2)|false|none|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |include|[access_include-2](#schemaaccess_include-2)|true|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|true|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 
 #### Enumerated Values
@@ -570791,6 +571977,7 @@ Requires an Azure identity provider.
   "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "updated_at": "2014-01-01T05:20:00.12345Z"
 }
@@ -570806,6 +571993,7 @@ Requires an Azure identity provider.
 |id|[access_uuid-2](#schemaaccess_uuid-2)|false|none|The UUID of the policy|
 |include|[access_include-2](#schemaaccess_include-2)|false|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|false|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |updated_at|[access_timestamp](#schemaaccess_timestamp)|false|none|none|
 
@@ -574533,6 +575721,19 @@ Requires a Github identity provider.
 |type|yandex|
 |type|cloudflare|
 
+<h2 id="tocS_access_grant_trust_to_all_accounts_in_org">access_grant_trust_to_all_accounts_in_org</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccess_grant_trust_to_all_accounts_in_org"></a>
+<a id="schema_access_grant_trust_to_all_accounts_in_org"></a>
+<a id="tocSaccess_grant_trust_to_all_accounts_in_org"></a>
+<a id="tocsaccess_grant_trust_to_all_accounts_in_org"></a>
+
+```json
+false
+```
+
+Whether all accounts in the organization are trusted to use this account's cross-account Access resources.
+
 <h2 id="tocS_access_group_details">access_group_details</h2>
 <!-- backwards compatibility -->
 <a id="schemaaccess_group_details"></a>
@@ -575652,6 +576853,7 @@ Rules evaluated with an OR logical operator. A user needs to meet only one of th
       "exclude": [],
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "connection_rules": {
         "ssh": {
@@ -575698,6 +576900,7 @@ Rules evaluated with an OR logical operator. A user needs to meet only one of th
       "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "updated_at": "2014-01-01T05:20:00.12345Z",
       "connection_rules": {
@@ -575778,6 +576981,7 @@ Configures multi-factor authentication (MFA) settings for infrastructure applica
   "exclude": [],
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "connection_rules": {
     "ssh": {
@@ -575807,6 +577011,7 @@ Configures multi-factor authentication (MFA) settings for infrastructure applica
 |exclude|[access_exclude-2](#schemaaccess_exclude-2)|false|none|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |include|[access_include-2](#schemaaccess_include-2)|true|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|true|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |connection_rules|[access_connection_rules_infra](#schemaaccess_connection_rules_infra)|false|none|The rules that define how users may connect to the targets secured by your application.|
 |mfa_config|[access_infra_mfa_config](#schemaaccess_infra_mfa_config)|false|none|Configures multi-factor authentication (MFA) settings for infrastructure applications.|
@@ -575835,6 +577040,7 @@ Configures multi-factor authentication (MFA) settings for infrastructure applica
   "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "updated_at": "2014-01-01T05:20:00.12345Z",
   "connection_rules": {
@@ -575867,6 +577073,7 @@ Configures multi-factor authentication (MFA) settings for infrastructure applica
 |id|[access_uuid-2](#schemaaccess_uuid-2)|false|none|The UUID of the policy|
 |include|[access_include-2](#schemaaccess_include-2)|false|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|false|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |updated_at|[access_timestamp](#schemaaccess_timestamp)|false|none|none|
 |connection_rules|[access_connection_rules_infra](#schemaaccess_connection_rules_infra)|false|none|The rules that define how users may connect to the targets secured by your application.|
@@ -579081,6 +580288,7 @@ The percentage of users processed so far (of the entire user base).
       "exclude": [],
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "approval_groups": [
         {
@@ -579179,6 +580387,7 @@ The percentage of users processed so far (of the entire user base).
   "exclude": [],
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "approval_groups": [
     {
@@ -579230,6 +580439,7 @@ The percentage of users processed so far (of the entire user base).
 |exclude|[access_exclude-2](#schemaaccess_exclude-2)|false|none|Rules evaluated with a NOT logical operator. To match the policy, a user cannot meet any of the Exclude rules.|
 |include|[access_include-2](#schemaaccess_include-2)|true|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|true|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |approval_groups|[access_approval_groups](#schemaaccess_approval_groups)|false|none|Administrators who can approve a temporary authentication request.|
 |approval_required|[access_approval_required](#schemaaccess_approval_required)|false|none|Requires the user to request access from an administrator at the start of each session.|
@@ -579249,6 +580459,19 @@ The percentage of users processed so far (of the entire user base).
 |decision|non_identity|
 |decision|bypass|
 
+<h2 id="tocS_access_policy_resolution_account_id">access_policy_resolution_account_id</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccess_policy_resolution_account_id"></a>
+<a id="schema_access_policy_resolution_account_id"></a>
+<a id="tocSaccess_policy_resolution_account_id"></a>
+<a id="tocsaccess_policy_resolution_account_id"></a>
+
+```json
+"string"
+```
+
+The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.
+
 <h2 id="tocS_access_policy_resp">access_policy_resp</h2>
 <!-- backwards compatibility -->
 <a id="schemaaccess_policy_resp"></a>
@@ -579264,6 +580487,7 @@ The percentage of users processed so far (of the entire user base).
   "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "updated_at": "2014-01-01T05:20:00.12345Z",
   "approval_groups": [
@@ -579318,6 +580542,7 @@ The percentage of users processed so far (of the entire user base).
 |id|[access_uuid-2](#schemaaccess_uuid-2)|false|none|The UUID of the policy|
 |include|[access_include-2](#schemaaccess_include-2)|false|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|false|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |updated_at|[access_timestamp](#schemaaccess_timestamp)|false|none|none|
 |approval_groups|[access_approval_groups](#schemaaccess_approval_groups)|false|none|Administrators who can approve a temporary authentication request.|
@@ -580173,6 +581398,7 @@ emails in one request.
       "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "updated_at": "2014-01-01T05:20:00.12345Z",
       "approval_groups": [
@@ -581534,6 +582760,7 @@ emails in one request.
       "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
       "include": [],
       "name": "Allow devs",
+      "policy_resolution_account_id": "string",
       "require": [],
       "updated_at": "2014-01-01T05:20:00.12345Z",
       "approval_groups": [
@@ -581799,6 +583026,7 @@ emails in one request.
   "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
   "include": [],
   "name": "Allow devs",
+  "policy_resolution_account_id": "string",
   "require": [],
   "updated_at": "2014-01-01T05:20:00.12345Z",
   "approval_groups": [
@@ -581856,6 +583084,7 @@ emails in one request.
 |id|[access_uuid-2](#schemaaccess_uuid-2)|false|none|The UUID of the policy|
 |include|[access_include-2](#schemaaccess_include-2)|false|none|Rules evaluated with an OR logical operator. A user needs to meet only one of the Include rules.|
 |name|[access_name-9](#schemaaccess_name-9)|false|none|The name of the Access policy.|
+|policy_resolution_account_id|[access_policy_resolution_account_id](#schemaaccess_policy_resolution_account_id)|false|none|The account ID used to resolve policy resources and identity for cross-account WARP authentication. The account must be trusted by the account that owns this policy.|
 |require|[access_require-2](#schemaaccess_require-2)|false|none|Rules evaluated with an AND logical operator. To match the policy, a user must meet all of the Require rules.|
 |updated_at|[access_timestamp](#schemaaccess_timestamp)|false|none|none|
 |approval_groups|[access_approval_groups](#schemaaccess_approval_groups)|false|none|Administrators who can approve a temporary authentication request.|
@@ -584327,6 +585556,7 @@ the timestamp of the earliest update log.
     "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "updated_at": "2014-01-01T05:20:00.12345Z",
     "approval_groups": [
@@ -584408,6 +585638,7 @@ the timestamp of the earliest update log.
     "id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
     "include": [],
     "name": "Allow devs",
+    "policy_resolution_account_id": "string",
     "require": [],
     "updated_at": "2014-01-01T05:20:00.12345Z",
     "approval_groups": [
@@ -586373,6 +587604,57 @@ The title shown on the landing page.
 ```
 
 The total number of users in the user base.
+
+<h2 id="tocS_access_trust_settings_response">access_trust_settings_response</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccess_trust_settings_response"></a>
+<a id="schema_access_trust_settings_response"></a>
+<a id="tocSaccess_trust_settings_response"></a>
+<a id="tocsaccess_trust_settings_response"></a>
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "success": true,
+  "result": {
+    "grant_trust_to_all_accounts_in_org": false,
+    "trusting_accounts": [
+      "023e105f4ecef8ad9ca31a8372d0c353"
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[access_messages](#schemaaccess_messages)|true|none|none|
+|messages|[access_messages](#schemaaccess_messages)|true|none|none|
+|success|boolean|true|none|Whether the API call was successful.|
+|result|object|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|success|true|
+
+<h2 id="tocS_access_trusting_accounts">access_trusting_accounts</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccess_trusting_accounts"></a>
+<a id="schema_access_trusting_accounts"></a>
+<a id="tocSaccess_trusting_accounts"></a>
+<a id="tocsaccess_trusting_accounts"></a>
+
+```json
+[
+  "023e105f4ecef8ad9ca31a8372d0c353"
+]
+```
+
+Explicit account IDs trusted to use this account's cross-account Access resources. At most 100 unique valid account IDs are accepted. Omitted from responses when empty.
 
 <h2 id="tocS_access_type">access_type</h2>
 <!-- backwards compatibility -->
@@ -592685,7 +593967,7 @@ Whether the dataset is sampled. `unsampled` means every row is recorded. `adapti
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|params|[object] \| object|false|none|Positional array values for `$1`, `$2`, and similar placeholders, or named object values for placeholders such as `$status`.<br>|
+|params|[string \| null \| number \| boolean] \| object|false|none|Positional array values for `$1`, `$2`, and similar placeholders, or named object values for placeholders such as `$status`.<br>|
 |query|string|true|none|SQL query to execute. A trailing FORMAT selects JSON, JSONEachRow, TabSeparated, or TSV output on any dataset.<br>|
 |scope|[analytics-sql_SqlQueryScope](#schemaanalytics-sql_sqlqueryscope)|false|none|Account or zone scope applied to the query. Include exactly one scope tag. Do not include account or zone tenancy predicates in the SQL query when this field is present.<br>|
 |time_range|object|false|none|none|
@@ -599961,7 +601243,7 @@ The state that the subscription is in.
 |price|[bill-subs-api_price](#schemabill-subs-api_price)|false|read-only|The price of the subscription that will be billed, in US dollars.|
 |rate_plan|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|none|The rate plan applied to the subscription.|
 |state|[bill-subs-api_state](#schemabill-subs-api_state)|false|read-only|The state that the subscription is in.|
-|zone|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|none|A simple zone object. May have null properties if not a zone subscription.|
+|zone|object|false|none|none|
 
 #### Enumerated Values
 
@@ -600038,7 +601320,7 @@ The state that the subscription is in.
 |price|[bill-subs-api_price](#schemabill-subs-api_price)|false|read-only|The price of the subscription that will be billed, in US dollars.|
 |rate_plan|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|none|The rate plan applied to the subscription.|
 |state|[bill-subs-api_state](#schemabill-subs-api_state)|false|read-only|The state that the subscription is in.|
-|zone|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|none|A simple zone object. May have null properties if not a zone subscription.|
+|zone|object|false|none|none|
 
 #### Enumerated Values
 
@@ -600115,7 +601397,7 @@ The state that the subscription is in.
 |price|[bill-subs-api_price](#schemabill-subs-api_price)|false|read-only|The price of the subscription that will be billed, in US dollars.|
 |rate_plan|[bill-subs-api_rate_plan](#schemabill-subs-api_rate_plan)|false|none|The rate plan applied to the subscription.|
 |state|[bill-subs-api_state](#schemabill-subs-api_state)|false|read-only|The state that the subscription is in.|
-|zone|[bill-subs-api_zone](#schemabill-subs-api_zone)|false|none|A simple zone object. May have null properties if not a zone subscription.|
+|zone|object|false|none|none|
 |frequency|[bill-subs-api_frequency_response](#schemabill-subs-api_frequency_response)|false|read-only|How often the subscription is renewed automatically (computed field).|
 
 #### Enumerated Values
@@ -640358,6 +641640,7 @@ Advanced anycast group for each address in the corresponding address array. Entr
   "created_on": "2026-09-01T12:00:00Z",
   "id": "0123456789abcdef0123456789abcdef",
   "ip_set": 1,
+  "name": "Production nameservers",
   "advanced": true,
   "nameservers": [
     {
@@ -640401,6 +641684,7 @@ Advanced anycast group for each address in the corresponding address array. Entr
 |created_on|string(date-time)|true|read-only|When the nameserver set was created.|
 |id|[dns-settings_nameserver-set-id](#schemadns-settings_nameserver-set-id)|true|none|Identifier for a nameserver set.|
 |ip_set|[dns-settings_nameserver-set-ip-set](#schemadns-settings_nameserver-set-ip-set)|true|none|Selects the account-specific IP set that supplies the nameserver addresses. Nameserver sets with the same `ip_set` and `advanced` value may reuse addresses; otherwise, they use disjoint address groups.|
+|name|[dns-settings_nameserver-set-name](#schemadns-settings_nameserver-set-name)|true|none|Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.|
 |advanced|boolean|true|none|Whether the nameserver set uses Advanced anycast groups.|
 |nameservers|[[dns-settings_nameserver-set-advanced-response-member](#schemadns-settings_nameserver-set-advanced-response-member)]|true|none|none|
 
@@ -640467,6 +641751,7 @@ Advanced anycast group for each address in the corresponding address array. Entr
 {
   "advanced": false,
   "ip_set": 1,
+  "name": "Production nameservers",
   "nameservers": [
     {
       "ip_count": 1,
@@ -640486,6 +641771,7 @@ Advanced anycast group for each address in the corresponding address array. Entr
 |---|---|---|---|---|
 |advanced|boolean|false|none|Whether to allocate the nameservers from distinct Advanced anycast groups.|
 |ip_set|[dns-settings_nameserver-set-ip-set](#schemadns-settings_nameserver-set-ip-set)|false|none|Selects the account-specific IP set that supplies the nameserver addresses. Nameserver sets with the same `ip_set` and `advanced` value may reuse addresses; otherwise, they use disjoint address groups.|
+|name|[dns-settings_nameserver-set-name](#schemadns-settings_nameserver-set-name)|true|none|Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.|
 |nameservers|[[dns-settings_nameserver-set-create-member](#schemadns-settings_nameserver-set-create-member)]|true|none|Lists each nameserver and the number of addresses to allocate to it. Requires a unique name for each entry in the set.|
 
 <h2 id="tocS_dns-settings_nameserver-set-create-member">dns-settings_nameserver-set-create-member</h2>
@@ -640578,6 +641864,40 @@ IPv4 addresses assigned to the nameserver.
 
 IPv6 addresses assigned to the nameserver.
 
+<h2 id="tocS_dns-settings_nameserver-set-name">dns-settings_nameserver-set-name</h2>
+<!-- backwards compatibility -->
+<a id="schemadns-settings_nameserver-set-name"></a>
+<a id="schema_dns-settings_nameserver-set-name"></a>
+<a id="tocSdns-settings_nameserver-set-name"></a>
+<a id="tocsdns-settings_nameserver-set-name"></a>
+
+```json
+"Production nameservers"
+```
+
+Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.
+
+<h2 id="tocS_dns-settings_nameserver-set-patch">dns-settings_nameserver-set-patch</h2>
+<!-- backwards compatibility -->
+<a id="schemadns-settings_nameserver-set-patch"></a>
+<a id="schema_dns-settings_nameserver-set-patch"></a>
+<a id="tocSdns-settings_nameserver-set-patch"></a>
+<a id="tocsdns-settings_nameserver-set-patch"></a>
+
+```json
+{
+  "name": "Production nameservers"
+}
+```
+
+Updates only the customer-defined name. All other fields are rejected, even if unchanged. An empty object or the current name succeeds without changing the set. A null name is invalid. Requires the account-scoped creation entitlements, including eligibility for the set's current IP set and the Advanced entitlement for an Advanced set.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|[dns-settings_nameserver-set-name](#schemadns-settings_nameserver-set-name)|false|none|Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.|
+
 <h2 id="tocS_dns-settings_nameserver-set-response">dns-settings_nameserver-set-response</h2>
 <!-- backwards compatibility -->
 <a id="schemadns-settings_nameserver-set-response"></a>
@@ -640590,6 +641910,7 @@ IPv6 addresses assigned to the nameserver.
   "created_on": "2026-09-01T12:00:00Z",
   "id": "0123456789abcdef0123456789abcdef",
   "ip_set": 1,
+  "name": "Production nameservers",
   "advanced": false,
   "nameservers": [
     {
@@ -640632,7 +641953,8 @@ IPv6 addresses assigned to the nameserver.
 {
   "created_on": "2026-09-01T12:00:00Z",
   "id": "0123456789abcdef0123456789abcdef",
-  "ip_set": 1
+  "ip_set": 1,
+  "name": "Production nameservers"
 }
 ```
 
@@ -640643,6 +641965,7 @@ IPv6 addresses assigned to the nameserver.
 |created_on|string(date-time)|true|read-only|When the nameserver set was created.|
 |id|[dns-settings_nameserver-set-id](#schemadns-settings_nameserver-set-id)|true|none|Identifier for a nameserver set.|
 |ip_set|[dns-settings_nameserver-set-ip-set](#schemadns-settings_nameserver-set-ip-set)|true|none|Selects the account-specific IP set that supplies the nameserver addresses. Nameserver sets with the same `ip_set` and `advanced` value may reuse addresses; otherwise, they use disjoint address groups.|
+|name|[dns-settings_nameserver-set-name](#schemadns-settings_nameserver-set-name)|true|none|Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.|
 
 <h2 id="tocS_dns-settings_nameserver-set-response-member">dns-settings_nameserver-set-response-member</h2>
 <!-- backwards compatibility -->
@@ -640683,6 +642006,7 @@ IPv6 addresses assigned to the nameserver.
   "created_on": "2026-09-01T12:00:00Z",
   "id": "0123456789abcdef0123456789abcdef",
   "ip_set": 1,
+  "name": "Production nameservers",
   "advanced": false,
   "nameservers": [
     {
@@ -640714,6 +642038,7 @@ IPv6 addresses assigned to the nameserver.
 |created_on|string(date-time)|true|read-only|When the nameserver set was created.|
 |id|[dns-settings_nameserver-set-id](#schemadns-settings_nameserver-set-id)|true|none|Identifier for a nameserver set.|
 |ip_set|[dns-settings_nameserver-set-ip-set](#schemadns-settings_nameserver-set-ip-set)|true|none|Selects the account-specific IP set that supplies the nameserver addresses. Nameserver sets with the same `ip_set` and `advanced` value may reuse addresses; otherwise, they use disjoint address groups.|
+|name|[dns-settings_nameserver-set-name](#schemadns-settings_nameserver-set-name)|true|none|Customer-defined name, unique within the account by exact string equality (case-sensitive, with no Unicode normalization). Must be valid UTF-8 and at most 255 UTF-8 bytes, not 255 characters. Only graphical Unicode characters are allowed; leading or trailing whitespace is rejected. The name can be changed without changing the set's nameservers or addresses.|
 |advanced|boolean|true|none|Whether the nameserver set uses Advanced anycast groups.|
 |nameservers|[[dns-settings_nameserver-set-response-member](#schemadns-settings_nameserver-set-response-member)]|true|none|none|
 
@@ -640780,6 +642105,7 @@ IPv6 addresses assigned to the nameserver.
       "created_on": "2026-09-01T12:00:00Z",
       "id": "0123456789abcdef0123456789abcdef",
       "ip_set": 1,
+      "name": "Production nameservers",
       "advanced": false,
       "nameservers": [
         {
@@ -640838,6 +642164,7 @@ IPv6 addresses assigned to the nameserver.
     "created_on": "2026-09-01T12:00:00Z",
     "id": "0123456789abcdef0123456789abcdef",
     "ip_set": 1,
+    "name": "Production nameservers",
     "advanced": false,
     "nameservers": [
       {
@@ -653691,6 +655018,59 @@ Defines a package identifier.
 |success|boolean|true|none|Defines whether the API call was successful.|
 |result|object \| null \| string \| null|true|none|none|
 |result|object|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|success|true|
+
+<h2 id="tocS_firewall_payload_logging_key">firewall_payload_logging_key</h2>
+<!-- backwards compatibility -->
+<a id="schemafirewall_payload_logging_key"></a>
+<a id="schema_firewall_payload_logging_key"></a>
+<a id="tocSfirewall_payload_logging_key"></a>
+<a id="tocsfirewall_payload_logging_key"></a>
+
+```json
+{
+  "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|public_key|string|true|none|Defines the X25519 public key, as standard base64 of exactly 32 bytes, that encrypts matched payloads. Cloudflare stores only the public key; keep the private key to decrypt logged payloads.|
+
+<h2 id="tocS_firewall_payload_logging_key_response_single">firewall_payload_logging_key_response_single</h2>
+<!-- backwards compatibility -->
+<a id="schemafirewall_payload_logging_key_response_single"></a>
+<a id="schema_firewall_payload_logging_key_response_single"></a>
+<a id="tocSfirewall_payload_logging_key_response_single"></a>
+<a id="tocsfirewall_payload_logging_key_response_single"></a>
+
+```json
+{
+  "errors": [],
+  "messages": [],
+  "result": {
+    "public_key": "Ycig/Zr/pZmklmFUN99nr+taURlYItL91g+NcHGYpB8="
+  },
+  "success": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[firewall_messages](#schemafirewall_messages)|true|none|none|
+|messages|[firewall_messages](#schemafirewall_messages)|true|none|none|
+|result|object \| [object] \| string|true|none|none|
+|success|boolean|true|none|Defines whether the API call was successful.|
+|result|[firewall_payload_logging_key](#schemafirewall_payload_logging_key)|true|none|none|
 
 #### Enumerated Values
 
@@ -676808,6 +678188,7 @@ This field is deprecated. Use `output_options` instead. Configuration string. It
 |---|---|
 |dataset|access_requests|
 |dataset|account_abuse_protection_events|
+|dataset|ai_gateway_events|
 |dataset|audit_logs|
 |dataset|audit_logs_v2|
 |dataset|biso_user_actions|
@@ -718745,6 +720126,7 @@ Specifies the R2 bucket name.
   "bucket": "my-data-bucket",
   "credential_status": {},
   "id": "550e8400-e29b-41d4-a716-446655440000",
+  "jurisdiction": "default",
   "maintenance_config": {
     "compaction": {
       "state": "enabled",
@@ -718771,6 +720153,7 @@ Contains catalog information.
 |bucket|string|true|none|Specifies the associated R2 bucket name.|
 |credential_status|string \| null|false|none|Shows the credential configuration status.|
 |id|string(uuid)|true|none|Use this to uniquely identify the catalog.|
+|jurisdiction|string|false|none|Specifies the data-locality jurisdiction of the catalog. The first enable sets it, and it cannot change. Currently always `default`.|
 |maintenance_config|object \| null|false|none|Configures maintenance for the catalog.|
 |name|string|true|none|Specifies the catalog name (generated from account and bucket name).|
 |status|[r2-data-catalog_catalog-status](#schemar2-data-catalog_catalog-status)|true|none|Indicates the status of the catalog.|
@@ -718781,6 +720164,32 @@ Contains catalog information.
 |---|---|
 |status|active|
 |status|inactive|
+
+<h2 id="tocS_r2-data-catalog_catalog-activation-request">r2-data-catalog_catalog-activation-request</h2>
+<!-- backwards compatibility -->
+<a id="schemar2-data-catalog_catalog-activation-request"></a>
+<a id="schema_r2-data-catalog_catalog-activation-request"></a>
+<a id="tocSr2-data-catalog_catalog-activation-request"></a>
+<a id="tocsr2-data-catalog_catalog-activation-request"></a>
+
+```json
+{
+  "credential": {
+    "token": "your-cloudflare-api-token-here"
+  }
+}
+```
+
+Contains the optional request to enable a catalog. Send an empty body
+to keep the defaults. If you include `credential`, the service checks
+that the token can access the bucket, then stores it as the catalog's
+maintenance credential, like the store credentials operation.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|credential|[r2-data-catalog_catalog-credential-request](#schemar2-data-catalog_catalog-credential-request)|false|none|Contains request to store catalog credentials.|
 
 <h2 id="tocS_r2-data-catalog_catalog-activation-response">r2-data-catalog_catalog-activation-response</h2>
 <!-- backwards compatibility -->
@@ -718874,6 +720283,7 @@ Contains request to store catalog credentials.
       "bucket": "my-data-bucket",
       "credential_status": {},
       "id": "550e8400-e29b-41d4-a716-446655440000",
+      "jurisdiction": "default",
       "maintenance_config": {
         "compaction": {
           "state": "enabled",
@@ -730497,7 +731907,7 @@ The zipcode or postal code where the user lives.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -730507,7 +731917,7 @@ The zipcode or postal code where the user lives.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |errors|[[reports_Error](#schemareports_error)]|true|none|none|
-|messages|[object \| null]|false|none|none|
+|messages|[[reports_Message](#schemareports_message)]|false|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|none|
 
@@ -730949,7 +732359,7 @@ The zipcode or postal code where the user lives.
     }
   ],
   "messages": [],
-  "result": null,
+  "result": {},
   "success": false
 }
 ```
@@ -730959,7 +732369,7 @@ The zipcode or postal code where the user lives.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |errors|[[reports_Error](#schemareports_error)]|true|none|none|
-|messages|[object \| null]|false|none|none|
+|messages|[[reports_Message](#schemareports_message)]|false|none|none|
 |result|object \| null|true|none|none|
 |success|boolean|true|none|none|
 
@@ -752973,6 +754383,7 @@ Whether the policy is the account default. WARP group profiles cannot set this f
   ],
   "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
   "global_acceleration": {
+    "allow_manual_override": true,
     "api_endpoints": [
       "198.51.100.1:443"
     ],
@@ -753172,6 +754583,7 @@ Whether the policy is the account default. WARP group profiles cannot set this f
     ],
     "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -753831,6 +755243,7 @@ The name of the device managed network. This name must be unique.
   ],
   "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
   "global_acceleration": {
+    "allow_manual_override": true,
     "api_endpoints": [
       "198.51.100.1:443"
     ],
@@ -754054,6 +755467,7 @@ The name of the device managed network. This name must be unique.
     ],
     "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
     "global_acceleration": {
+      "allow_manual_override": true,
       "api_endpoints": [
         "198.51.100.1:443"
       ],
@@ -754251,6 +755665,7 @@ The name of the device managed network. This name must be unique.
       ],
       "gateway_unique_id": "699d98642c564d2e855e9661899b7252",
       "global_acceleration": {
+        "allow_manual_override": true,
         "api_endpoints": [
           "198.51.100.1:443"
         ],
@@ -755091,6 +756506,7 @@ Sets the expiration time for a posture check result. If empty, the result remain
 
 ```json
 {
+  "allow_manual_override": true,
   "api_endpoints": [
     "198.51.100.1:443"
   ],
@@ -755111,6 +756527,7 @@ Global Acceleration settings for China. When configured, WARP clients connect to
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|allow_manual_override|boolean|false|none|Whether WARP users may manually override the automatic Global Acceleration decision. Defaults to true when not provided.|
 |api_endpoints|[string]|true|none|IP:port entries for the API endpoints.|
 |autoswitch|boolean|false|none|Automatically switch Global Acceleration regions based on device location. Defaults to false when not provided.|
 |enabled|boolean|true|none|Global acceleration settings are used only when "enabled".|
@@ -756226,6 +757643,7 @@ List of paths to check for client certificate on linux.
   "mac_address": "f5:01:73:cf:12:23",
   "manufacturer": "ACME",
   "model": "Mark VII",
+  "multiuser": true,
   "name": "My Device",
   "os_version": "string",
   "os_version_extra": "string",
@@ -756258,6 +757676,7 @@ A WARP Device.
 |mac_address|string \| null|false|none|The device MAC address.|
 |manufacturer|string \| null|false|none|The device manufacturer.|
 |model|string \| null|false|none|The model name of the device.|
+|multiuser|boolean|false|none|True if this device is in [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/).|
 |name|string|true|none|The name of the device.|
 |os_version|string \| null|false|none|The device operating system version number.|
 |os_version_extra|string \| null|false|none|Additional operating system version details. For Windows, the UBR (Update Build Revision). For Mac or iOS, the Product Version Extra. For Linux, the distribution name and version.|
@@ -772829,7 +774248,7 @@ Defines the custom content extraction expression used to reach content objects i
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |label|string|true|none|Unique label identifier. Must contain only lowercase letters (a–z), digits (0–9), and hyphens.|
-|topic|string|true|none|Description of the topic category. Must contain only printable ASCII characters.|
+|topic|string|true|none|Description of the topic category. Must contain 2–50 UTF-8 bytes. Text in any language is supported, including spaces, numbers, punctuation, and symbols. Tabs, line breaks, invalid text, and invisible formatting characters are not allowed.|
 
 <h2 id="tocS_waf-product-api-bundle_custom-topics">waf-product-api-bundle_custom-topics</h2>
 <!-- backwards compatibility -->
@@ -777491,6 +778910,8 @@ Query performance statistics from the database. Includes execution time, rows sc
           "service": "string",
           "spanId": "string",
           "spanName": "string",
+          "spanStatus": "unset",
+          "spanStatusMessage": "string",
           "stackId": "string",
           "startTime": 0,
           "startTimeNs": "string",
@@ -777592,6 +779013,8 @@ Query performance statistics from the database. Includes execution time, rows sc
           "service": "string",
           "spanId": "string",
           "spanName": "string",
+          "spanStatus": "unset",
+          "spanStatusMessage": "string",
           "stackId": "string",
           "startTime": 0,
           "startTimeNs": "string",
@@ -777661,6 +779084,8 @@ Query performance statistics from the database. Includes execution time, rows sc
           "service": "string",
           "spanId": "string",
           "spanName": "string",
+          "spanStatus": "unset",
+          "spanStatusMessage": "string",
           "stackId": "string",
           "startTime": 0,
           "startTimeNs": "string",
@@ -777963,6 +779388,8 @@ Represents a single execution of a query against Workers Observability data, inc
     "service": "string",
     "spanId": "string",
     "spanName": "string",
+    "spanStatus": "unset",
+    "spanStatusMessage": "string",
     "stackId": "string",
     "startTime": 0,
     "startTimeNs": "string",
@@ -780820,9 +782247,9 @@ A K2 stream binding. Available only to accounts enabled for K2.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|identity|string|false|none|Enables Gateway identity for the binding. Requires network_id to be "cf1:network" and cannot be combined with tunnel_id.<br>|
+|identity|string|false|none|Enables Gateway identity for the binding. Requires network_id to be "cf1:network" and cannot be combined with tunnel_id or an explicit "cf1:vnet:<UUID>" network_id.<br>|
 |name|[workers_binding_name](#schemaworkers_binding_name)|true|none|A JavaScript variable name for the binding.|
-|network_id|string|false|none|Identifier of the network to bind to. Only "cf1:network" is currently supported. Mutually exclusive with tunnel_id.<br>|
+|network_id|string|false|none|Identifier of the network to bind to. Use "cf1:network" to select the account's default virtual network at runtime, or "cf1:vnet:<UUID>" to select an explicit virtual network in the Worker's account. Mutually exclusive with tunnel_id.<br>|
 |tunnel_id|string|false|none|UUID of the Cloudflare Tunnel to bind to. Mutually exclusive with network_id.<br>|
 |type|string|true|none|The kind of resource that the binding provides.|
 
@@ -780981,6 +782408,36 @@ value for a single entrypoint.
 |---|---|---|---|---|
 |cross_version_cache|boolean|false|none|Whether cached responses are shared across Worker version<br>uploads. This is independent of `enabled`. It can stay true<br>while caching is off, so the preference survives turning<br>caching off and back on.<br>|
 |enabled|boolean|true|none|Whether caching is enabled for this Worker.|
+
+<h2 id="tocS_workers_code_update_strategy">workers_code_update_strategy</h2>
+<!-- backwards compatibility -->
+<a id="schemaworkers_code_update_strategy"></a>
+<a id="schema_workers_code_update_strategy"></a>
+<a id="tocSworkers_code_update_strategy"></a>
+<a id="tocsworkers_code_update_strategy"></a>
+
+```json
+{
+  "mode": "immediate"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|mode|string|true|none|Apply Durable Object code updates immediately.|
+|*oneOf*|object|false|none|none|
+|max_delay|number \| null|false|none|Set the maximum number of seconds to wait before forcing the update. When omitted, the default maximum delay applies.|
+|mode|string|true|none|Allow active Durable Objects to hibernate before updating their code.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|mode|immediate|
+|mode|deferred|
 
 <h2 id="tocS_workers_compatibility_date">workers_compatibility_date</h2>
 <!-- backwards compatibility -->
@@ -781200,6 +782657,9 @@ Opaque token indicating the position from which to continue when requesting the 
     "workers/triggered_by": "deployment"
   },
   "author_email": "user@example.com",
+  "code_update_strategy": {
+    "mode": "immediate"
+  },
   "created_on": "1970-01-01T00:00:00Z",
   "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "source": "api",
@@ -781219,6 +782679,7 @@ Opaque token indicating the position from which to continue when requesting the 
 |---|---|---|---|---|
 |annotations|object|false|none|none|
 |author_email|string(email)|false|read-only|none|
+|code_update_strategy|[workers_code_update_strategy](#schemaworkers_code_update_strategy) \| object \| null|false|write-only|Choose whether to apply Durable Object code updates immediately or defer them. When omitted, the default strategy applies.|
 |created_on|string(date-time)|true|read-only|none|
 |id|string(uuid)|true|read-only|none|
 |source|string|true|read-only|none|

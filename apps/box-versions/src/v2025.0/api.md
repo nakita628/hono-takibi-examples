@@ -2253,1003 +2253,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-<h1 id="box-platform-api-external-users">External Users</h1>
-
-External users are collaborators from outside of your enterprise.
-
-## Submit job to delete external users
-
-<a id="opIdpost_external_users_submit_delete_job_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/external_users/submit_delete_job \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0' \
-  -d '{
-    "external_users": [
-      {
-        "type": "user",
-        "id": "12345"
-      }
-    ]
-  }'
-```
-
-`POST /external_users/submit_delete_job`
-
-Delete external users from current user enterprise. This will remove each
-external user from all invited collaborations within the current enterprise.
-
-> Body parameter
-
-```json
-{
-  "external_users": [
-    {
-      "type": "user",
-      "id": "12345"
-    }
-  ]
-}
-```
-
-<h3 id="submit-job-to-delete-external-users-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|box-version|header|string|true|Version header.|
-|body|body|[ExternalUsersSubmitDeleteJobRequest](#schemaexternaluserssubmitdeletejobrequest)|true|none|
-|» external_users|body|[[UserReference](#schemauserreference)]|true|List of external users to delete.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-
-> Example responses
-
-> 207 Response
-
-```json
-{
-  "entries": [
-    {
-      "user_id": "12345",
-      "status": 202,
-      "detail": "string"
-    }
-  ]
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="submit-job-to-delete-external-users-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|207|Multi-Status|Multi-status response containing the result for each external user deletion request.|[ExternalUsersSubmitDeleteJobResponse](#schemaexternaluserssubmitdeletejobresponse)|
-|404|Not Found|Returns an error if the listed external users are not found, or the authenticated<br>user does not have the right permissions to delete external users.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-<h1 id="box-platform-api-box-hubs">Box Hubs</h1>
-
-A set of endpoints used to manage Box Hubs.
-
-## List all Box Hubs
-
-<a id="opIdget_hubs_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/hubs \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0'
-```
-
-`GET /hubs`
-
-Retrieves all Box Hubs for requesting user.
-
-<h3 id="list-all-box-hubs-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|query|query|string|false|The query string to search for Box Hubs.|
-|scope|query|string|false|The scope of the Box Hubs to retrieve. Possible values include `editable`,<br>`view_only`, and `all`. Default is `all`.|
-|sort|query|string|false|The field to sort results by. <br>Possible values include `name`, `updated_at`,<br>`last_accessed_at`, `view_count`, and `relevance`.<br>Default is `relevance`.|
-|direction|query|string|false|The direction to sort results in. This can be either in alphabetical ascending<br>(`ASC`) or descending (`DESC`) order.|
-|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.|
-|limit|query|integer(int64)|false|The maximum number of items to return per page.|
-|box-version|header|string|true|Version header.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|direction|ASC|
-|direction|DESC|
-|box-version|2025.0|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "entries": [
-    {
-      "id": "12345",
-      "type": "hubs",
-      "title": "Contracts",
-      "description": "All the contracts for the company.",
-      "created_at": "2012-12-12T10:53:43Z",
-      "updated_at": "2012-12-12T10:53:43Z",
-      "created_by": {
-        "id": "11446498",
-        "type": "user",
-        "name": "Aaron Levie",
-        "login": "ceo@example.com"
-      },
-      "updated_by": {
-        "id": "11446498",
-        "type": "user",
-        "name": "Aaron Levie",
-        "login": "ceo@example.com"
-      },
-      "view_count": 506,
-      "is_ai_enabled": true,
-      "is_collaboration_restricted_to_enterprise": true,
-      "can_non_owners_invite": true,
-      "can_shared_link_be_created": true,
-      "can_public_shared_link_be_created": true,
-      "copy_hub_access": "company"
-    }
-  ],
-  "limit": 1000,
-  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="list-all-box-hubs-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns all Box Hubs for the given user or enterprise.|[Hubs](#schemahubs)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Create Box Hub
-
-<a id="opIdpost_hubs_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/hubs \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0' \
-  -d '{
-    "title": "Hub Title",
-    "description": "This is a description of the Box Hub."
-  }'
-```
-
-`POST /hubs`
-
-Creates a new Box Hub.
-
-> Body parameter
-
-```json
-{
-  "title": "Hub Title",
-  "description": "This is a description of the Box Hub."
-}
-```
-
-<h3 id="create-box-hub-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|box-version|header|string|true|Version header.|
-|body|body|[HubCreateRequest](#schemahubcreaterequest)|true|none|
-|» title|body|string|true|Title of the Box Hub. It cannot be empty and should be less than 50 characters.|
-|» description|body|string|false|Description of the Box Hub.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "id": "12345",
-  "type": "hubs",
-  "title": "Contracts",
-  "description": "All the contracts for the company.",
-  "created_at": "2012-12-12T10:53:43Z",
-  "updated_at": "2012-12-12T10:53:43Z",
-  "created_by": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "updated_by": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "view_count": 506,
-  "is_ai_enabled": true,
-  "is_collaboration_restricted_to_enterprise": true,
-  "can_non_owners_invite": true,
-  "can_shared_link_be_created": true,
-  "can_public_shared_link_be_created": true,
-  "copy_hub_access": "company"
-}
-```
-
-> 400 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="create-box-hub-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created|Returns a new Hub object.|[Hub](#schemahub)|
-|400|Bad Request|Returned if any of the request parameters are not valid.|[ClientError](#schemaclienterror)|
-|403|Forbidden|Returns an error when the user does not have the<br>right permissions to create a Hub.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## List all Box Hubs for requesting enterprise
-
-<a id="opIdget_enterprise_hubs_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/enterprise_hubs \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0'
-```
-
-`GET /enterprise_hubs`
-
-Retrieves all Box Hubs for a given enterprise.
-
-Admins or Hub Co-admins of an enterprise
-with GCM scope can make this call.
-
-<h3 id="list-all-box-hubs-for-requesting-enterprise-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|query|query|string|false|The query string to search for Box Hubs.|
-|sort|query|string|false|The field to sort results by.<br>Possible values include `name`, `updated_at`,<br>`last_accessed_at`, `view_count`, and `relevance`.<br>Default is `relevance`.|
-|direction|query|string|false|The direction to sort results in. This can be either in alphabetical ascending<br>(`ASC`) or descending (`DESC`) order.|
-|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.|
-|limit|query|integer(int64)|false|The maximum number of items to return per page.|
-|box-version|header|string|true|Version header.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|direction|ASC|
-|direction|DESC|
-|box-version|2025.0|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "entries": [
-    {
-      "id": "12345",
-      "type": "hubs",
-      "title": "Contracts",
-      "description": "All the contracts for the company.",
-      "created_at": "2012-12-12T10:53:43Z",
-      "updated_at": "2012-12-12T10:53:43Z",
-      "created_by": {
-        "id": "11446498",
-        "type": "user",
-        "name": "Aaron Levie",
-        "login": "ceo@example.com"
-      },
-      "updated_by": {
-        "id": "11446498",
-        "type": "user",
-        "name": "Aaron Levie",
-        "login": "ceo@example.com"
-      },
-      "view_count": 506,
-      "is_ai_enabled": true,
-      "is_collaboration_restricted_to_enterprise": true,
-      "can_non_owners_invite": true,
-      "can_shared_link_be_created": true,
-      "can_public_shared_link_be_created": true,
-      "copy_hub_access": "company"
-    }
-  ],
-  "limit": 1000,
-  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="list-all-box-hubs-for-requesting-enterprise-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns all Box Hubs for the given user or enterprise.|[Hubs](#schemahubs)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Get Box Hub information by ID
-
-<a id="opIdget_hubs_id_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/hubs/12345 \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0'
-```
-
-`GET /hubs/{hub_id}`
-
-Retrieves details for a Box Hub by its ID.
-
-<h3 id="get-box-hub-information-by-id-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|hub_id|path|string|true|The unique identifier that represent a hub.<br><br>The ID for any hub can be determined<br>by visiting this hub in the web application<br>and copying the ID from the URL. For example,<br>for the URL `https://*.app.box.com/hubs/123`<br>the `hub_id` is `123`.|
-|box-version|header|string|true|Version header.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "12345",
-  "type": "hubs",
-  "title": "Contracts",
-  "description": "All the contracts for the company.",
-  "created_at": "2012-12-12T10:53:43Z",
-  "updated_at": "2012-12-12T10:53:43Z",
-  "created_by": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "updated_by": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "view_count": 506,
-  "is_ai_enabled": true,
-  "is_collaboration_restricted_to_enterprise": true,
-  "can_non_owners_invite": true,
-  "can_shared_link_be_created": true,
-  "can_public_shared_link_be_created": true,
-  "copy_hub_access": "company"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="get-box-hub-information-by-id-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a hub object.|[Hub](#schemahub)|
-|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
-|404|Not Found|Returned if the hub is not found, or the user does not<br>have access to the hub.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Update Box Hub information by ID
-
-<a id="opIdput_hubs_id_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/hubs/12345 \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0' \
-  -d '{
-    "title": "Hub Title",
-    "description": "This is a description of the Box Hub.",
-    "is_ai_enabled": true,
-    "is_collaboration_restricted_to_enterprise": true,
-    "can_non_owners_invite": true,
-    "can_shared_link_be_created": true,
-    "can_public_shared_link_be_created": true,
-    "copy_hub_access": "company"
-  }'
-```
-
-`PUT /hubs/{hub_id}`
-
-Updates a Box Hub. Can be used to change title, description, or Box Hub settings.
-
-> Body parameter
-
-```json
-{
-  "title": "Hub Title",
-  "description": "This is a description of the Box Hub.",
-  "is_ai_enabled": true,
-  "is_collaboration_restricted_to_enterprise": true,
-  "can_non_owners_invite": true,
-  "can_shared_link_be_created": true,
-  "can_public_shared_link_be_created": true,
-  "copy_hub_access": "company"
-}
-```
-
-<h3 id="update-box-hub-information-by-id-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|hub_id|path|string|true|The unique identifier that represent a hub.<br><br>The ID for any hub can be determined<br>by visiting this hub in the web application<br>and copying the ID from the URL. For example,<br>for the URL `https://*.app.box.com/hubs/123`<br>the `hub_id` is `123`.|
-|box-version|header|string|true|Version header.|
-|body|body|[HubUpdateRequest](#schemahubupdaterequest)|true|none|
-|» title|body|string|false|Title of the Box Hub. It cannot be empty and should be less than 50 characters.|
-|» description|body|string|false|Description of the Box Hub.|
-|» is_ai_enabled|body|boolean|false|Indicates if AI features are enabled for the Box Hub.|
-|» is_collaboration_restricted_to_enterprise|body|boolean|false|Indicates if collaboration is restricted to the enterprise.|
-|» can_non_owners_invite|body|boolean|false|Indicates if non-owners can invite others to the Box Hub.|
-|» can_shared_link_be_created|body|boolean|false|Indicates if a shared link can be created for the Box Hub.|
-|» can_public_shared_link_be_created|body|boolean|false|Indicates if a public shared link can be created for the Box Hub.|
-|» copy_hub_access|body|string|false|Specifies who is allowed to copy the Box Hub.<br><br>* `all` - Any user with access to the Hub can copy it.<br>* `company` - Only users within the same enterprise as the Hub can copy it.<br>* `none` - No one can copy the Hub.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-|» copy_hub_access|all|
-|» copy_hub_access|company|
-|» copy_hub_access|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "12345",
-  "type": "hubs",
-  "title": "Contracts",
-  "description": "All the contracts for the company.",
-  "created_at": "2012-12-12T10:53:43Z",
-  "updated_at": "2012-12-12T10:53:43Z",
-  "created_by": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "updated_by": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "view_count": 506,
-  "is_ai_enabled": true,
-  "is_collaboration_restricted_to_enterprise": true,
-  "can_non_owners_invite": true,
-  "can_shared_link_be_created": true,
-  "can_public_shared_link_be_created": true,
-  "copy_hub_access": "company"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="update-box-hub-information-by-id-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a Hub object.|[Hub](#schemahub)|
-|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
-|404|Not Found|Returned if the Hub is not found, or the user does not<br>have access to the Hub.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Delete Box Hub
-
-<a id="opIddelete_hubs_id_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/hubs/12345 \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0'
-```
-
-`DELETE /hubs/{hub_id}`
-
-Deletes a single Box Hub.
-
-<h3 id="delete-box-hub-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|hub_id|path|string|true|The unique identifier that represent a hub.<br><br>The ID for any hub can be determined<br>by visiting this hub in the web application<br>and copying the ID from the URL. For example,<br>for the URL `https://*.app.box.com/hubs/123`<br>the `hub_id` is `123`.|
-|box-version|header|string|true|Version header.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-
-> Example responses
-
-> 401 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="delete-box-hub-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|A blank response is returned if the hub was<br>successfully deleted.|None|
-|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
-|404|Not Found|Returned if the hub is not found or has already been deleted, or the user<br>does not have access to the hub.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Copy Box Hub
-
-<a id="opIdpost_hubs_id_copy_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/hubs/12345/copy \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0' \
-  -d '{
-    "title": "Hub Title",
-    "description": "This is a description of the Box Hub.",
-    "include_items": true
-  }'
-```
-
-`POST /hubs/{hub_id}/copy`
-
-Creates a copy of a Box Hub.
-
-The original Box Hub will not be modified.
-
-> Body parameter
-
-```json
-{
-  "title": "Hub Title",
-  "description": "This is a description of the Box Hub.",
-  "include_items": true
-}
-```
-
-<h3 id="copy-box-hub-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|hub_id|path|string|true|The unique identifier that represent a hub.<br><br>The ID for any hub can be determined<br>by visiting this hub in the web application<br>and copying the ID from the URL. For example,<br>for the URL `https://*.app.box.com/hubs/123`<br>the `hub_id` is `123`.|
-|box-version|header|string|true|Version header.|
-|body|body|[HubCopyRequest](#schemahubcopyrequest)|true|none|
-|» title|body|string|false|Title of the Box Hub. It cannot be empty and should be less than 50 characters.|
-|» description|body|string|false|Description of the Box Hub.|
-|» include_items|body|boolean|false|If true, the items which the user has Editor or Owner access to in the original Box Hub will be copied to the new Box Hub.<br>Defaults to false.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "id": "12345",
-  "type": "hubs",
-  "title": "Contracts",
-  "description": "All the contracts for the company.",
-  "created_at": "2012-12-12T10:53:43Z",
-  "updated_at": "2012-12-12T10:53:43Z",
-  "created_by": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "updated_by": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "view_count": 506,
-  "is_ai_enabled": true,
-  "is_collaboration_restricted_to_enterprise": true,
-  "can_non_owners_invite": true,
-  "can_shared_link_be_created": true,
-  "can_public_shared_link_be_created": true,
-  "copy_hub_access": "company"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="copy-box-hub-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created|Returns a new Hub object.|[Hub](#schemahub)|
-|403|Forbidden|Returns an error when the user does not have the<br>right permissions to create a Hub.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
 <h1 id="box-platform-api-box-hub-collaborations">Box Hub Collaborations</h1>
 
 A set of endpoints used to manage collaborations within a Box Hub.
@@ -4402,39 +3405,45 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-<h1 id="box-platform-api-shield-lists">Shield lists</h1>
+<h1 id="box-platform-api-box-hubs">Box Hubs</h1>
 
-Shield List allow an administrator to create a list
-which will be shared between different
-Shield Smart Access and Threat Detection rules.
+A set of endpoints used to manage Box Hubs.
 
-## Get all shield lists in enterprise
+## List all Box Hubs
 
-<a id="opIdget_shield_lists_v2025.0"></a>
+<a id="opIdget_hubs_v2025.0"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_lists \
+curl https://api.box.com/2.0/hubs \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H 'box-version: 2025.0'
 ```
 
-`GET /shield_lists`
+`GET /hubs`
 
-Retrieves all shield lists in the enterprise.
+Retrieves all Box Hubs for requesting user.
 
-<h3 id="get-all-shield-lists-in-enterprise-parameters">Parameters</h3>
+<h3 id="list-all-box-hubs-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|query|query|string|false|The query string to search for Box Hubs.|
+|scope|query|string|false|The scope of the Box Hubs to retrieve. Possible values include `editable`,<br>`view_only`, and `all`. Default is `all`.|
+|sort|query|string|false|The field to sort results by. <br>Possible values include `name`, `updated_at`,<br>`last_accessed_at`, `view_count`, and `relevance`.<br>Default is `relevance`.|
+|direction|query|string|false|The direction to sort results in. This can be either in alphabetical ascending<br>(`ASC`) or descending (`DESC`) order.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
 |box-version|header|string|true|Version header.|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
+|direction|ASC|
+|direction|DESC|
 |box-version|2025.0|
 
 > Example responses
@@ -4445,87 +3454,106 @@ Retrieves all shield lists in the enterprise.
 {
   "entries": [
     {
-      "id": "12345678-1234-1234-1234-123456789012",
-      "type": "shield_list",
-      "name": "My Shield List",
-      "content": {
-        "type": "country_code"
-      }
+      "id": "12345",
+      "type": "hubs",
+      "title": "Contracts",
+      "description": "All the contracts for the company.",
+      "created_at": "2012-12-12T10:53:43Z",
+      "updated_at": "2012-12-12T10:53:43Z",
+      "created_by": {
+        "id": "11446498",
+        "type": "user",
+        "name": "Aaron Levie",
+        "login": "ceo@example.com"
+      },
+      "updated_by": {
+        "id": "11446498",
+        "type": "user",
+        "name": "Aaron Levie",
+        "login": "ceo@example.com"
+      },
+      "view_count": 506,
+      "is_ai_enabled": true,
+      "is_collaboration_restricted_to_enterprise": true,
+      "can_non_owners_invite": true,
+      "can_shared_link_be_created": true,
+      "can_public_shared_link_be_created": true,
+      "copy_hub_access": "company"
     }
-  ]
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii"
 }
 ```
 
-<h3 id="get-all-shield-lists-in-enterprise-responses">Responses</h3>
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-all-box-hubs-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Returns the list of shield list objects.|[ShieldLists](#schemashieldlists)|
+|200|OK|Returns all Box Hubs for the given user or enterprise.|[Hubs](#schemahubs)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2Security
 </aside>
 
-## Create shield list
+## Create Box Hub
 
-<a id="opIdpost_shield_lists_v2025.0"></a>
+<a id="opIdpost_hubs_v2025.0"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_lists \
+curl https://api.box.com/2.0/hubs \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H 'box-version: 2025.0' \
   -d '{
-    "name": "My Shield List",
-    "description": "A list of things that are shielded",
-    "content": {
-      "type": "country",
-      "country_codes": [
-        "US",
-        "PL"
-      ]
-    }
+    "title": "Hub Title",
+    "description": "This is a description of the Box Hub."
   }'
 ```
 
-`POST /shield_lists`
+`POST /hubs`
 
-Creates a shield list.
+Creates a new Box Hub.
 
 > Body parameter
 
 ```json
 {
-  "name": "My Shield List",
-  "description": "A list of things that are shielded",
-  "content": {
-    "type": "country",
-    "country_codes": [
-      "US",
-      "PL"
-    ]
-  }
+  "title": "Hub Title",
+  "description": "This is a description of the Box Hub."
 }
 ```
 
-<h3 id="create-shield-list-parameters">Parameters</h3>
+<h3 id="create-box-hub-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |box-version|header|string|true|Version header.|
-|body|body|[ShieldListsCreate](#schemashieldlistscreate)|true|none|
-|» name|body|string|true|The name of the shield list.|
-|» description|body|string|false|Optional description of Shield List.|
-|» content|body|object|true|none|
-|» » *oneOf*|body|[ShieldListContentCountry](#schemashieldlistcontentcountry)|false|Representation of content of a Shield List that contains countries data.|
-|» » *oneOf*|body|[ShieldListContentDomain](#schemashieldlistcontentdomain)|false|Representation of content of a Shield List that contains domains data.|
-|» » *oneOf*|body|[ShieldListContentEmail](#schemashieldlistcontentemail)|false|Representation of content of a Shield List that contains email addresses data.|
-|» » *oneOf*|body|[ShieldListContentIp](#schemashieldlistcontentip)|false|Representation of content of a Shield List that contains ip addresses data.|
+|body|body|[HubCreateRequest](#schemahubcreaterequest)|true|none|
+|» title|body|string|true|Title of the Box Hub. It cannot be empty and should be less than 50 characters.|
+|» description|body|string|false|Description of the Box Hub.|
 
 #### Enumerated Values
 
@@ -4535,312 +3563,37 @@ Creates a shield list.
 
 > Example responses
 
-> 200 Response
+> 201 Response
 
 ```json
 {
-  "id": "90fb0e17-c332-40ed-b4f9-fa8908fbbb24",
-  "type": "shield_list",
-  "name": "Shield List Name",
-  "enterprise": {
-    "id": "1910967",
-    "type": "enterprise"
+  "id": "12345",
+  "type": "hubs",
+  "title": "Contracts",
+  "description": "All the contracts for the company.",
+  "created_at": "2012-12-12T10:53:43Z",
+  "updated_at": "2012-12-12T10:53:43Z",
+  "created_by": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
   },
-  "description": "A list of things that are shielded",
-  "created_at": "2025-01-13T15:31:01.896Z",
-  "updated_at": "2025-01-13T15:31:01.896Z",
-  "content": {
-    "type": "country",
-    "country_codes": [
-      "US",
-      "PL"
-    ]
-  }
-}
-```
-
-> 409 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
+  "updated_by": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
   },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
+  "view_count": 506,
+  "is_ai_enabled": true,
+  "is_collaboration_restricted_to_enterprise": true,
+  "can_non_owners_invite": true,
+  "can_shared_link_be_created": true,
+  "can_public_shared_link_be_created": true,
+  "copy_hub_access": "company"
 }
 ```
-
-<h3 id="create-shield-list-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the shield list object.|[ShieldList](#schemashieldlist)|
-|409|Conflict|The shield list with this name already exists.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Get single shield list by shield list id
-
-<a id="opIdget_shield_lists_id_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/shield_lists/90fb0e17-c332-40ed-b4f9-fa8908fbbb24%20 \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0'
-```
-
-`GET /shield_lists/{shield_list_id}`
-
-Retrieves a single shield list by its ID.
-
-<h3 id="get-single-shield-list-by-shield-list-id-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|box-version|header|string|true|Version header.|
-|shield_list_id|path|string|true|The unique identifier that represents a shield list.<br>The ID for any Shield List can be determined by the response from the endpoint<br>fetching all shield lists for the enterprise.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "90fb0e17-c332-40ed-b4f9-fa8908fbbb24",
-  "type": "shield_list",
-  "name": "Shield List Name",
-  "enterprise": {
-    "id": "1910967",
-    "type": "enterprise"
-  },
-  "description": "A list of things that are shielded",
-  "created_at": "2025-01-13T15:31:01.896Z",
-  "updated_at": "2025-01-13T15:31:01.896Z",
-  "content": {
-    "type": "country",
-    "country_codes": [
-      "US",
-      "PL"
-    ]
-  }
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="get-single-shield-list-by-shield-list-id-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the shield list object.|[ShieldList](#schemashieldlist)|
-|404|Not Found|The shield list was not found.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Update shield list
-
-<a id="opIdput_shield_lists_id_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/shield_lists/90fb0e17-c332-40ed-b4f9-fa8908fbbb24%20 \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0' \
-  -d '{
-    "name": "My Shield List",
-    "description": "A list of things that are shielded",
-    "content": {
-      "type": "country",
-      "country_codes": [
-        "US",
-        "PL"
-      ]
-    }
-  }'
-```
-
-`PUT /shield_lists/{shield_list_id}`
-
-Updates a shield list.
-
-> Body parameter
-
-```json
-{
-  "name": "My Shield List",
-  "description": "A list of things that are shielded",
-  "content": {
-    "type": "country",
-    "country_codes": [
-      "US",
-      "PL"
-    ]
-  }
-}
-```
-
-<h3 id="update-shield-list-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|box-version|header|string|true|Version header.|
-|shield_list_id|path|string|true|The unique identifier that represents a shield list.<br>The ID for any Shield List can be determined by the response from the endpoint<br>fetching all shield lists for the enterprise.|
-|body|body|[ShieldListsUpdate](#schemashieldlistsupdate)|false|none|
-|» name|body|string|true|The name of the shield list.|
-|» description|body|string|false|Optional description of Shield List.|
-|» content|body|object|true|none|
-|» » *oneOf*|body|[ShieldListContentCountry](#schemashieldlistcontentcountry)|false|Representation of content of a Shield List that contains countries data.|
-|» » *oneOf*|body|[ShieldListContentDomain](#schemashieldlistcontentdomain)|false|Representation of content of a Shield List that contains domains data.|
-|» » *oneOf*|body|[ShieldListContentEmail](#schemashieldlistcontentemail)|false|Representation of content of a Shield List that contains email addresses data.|
-|» » *oneOf*|body|[ShieldListContentIp](#schemashieldlistcontentip)|false|Representation of content of a Shield List that contains ip addresses data.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "90fb0e17-c332-40ed-b4f9-fa8908fbbb24",
-  "type": "shield_list",
-  "name": "Shield List Name",
-  "enterprise": {
-    "id": "1910967",
-    "type": "enterprise"
-  },
-  "description": "A list of things that are shielded",
-  "created_at": "2025-01-13T15:31:01.896Z",
-  "updated_at": "2025-01-13T15:31:01.896Z",
-  "content": {
-    "type": "country",
-    "country_codes": [
-      "US",
-      "PL"
-    ]
-  }
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="update-shield-list-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the shield list object.|[ShieldList](#schemashieldlist)|
-|404|Not Found|The shield list was not found.|[ClientError](#schemaclienterror)|
-|409|Conflict|The shield list with this name already exists.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Delete single shield list by shield list id
-
-<a id="opIddelete_shield_lists_id_v2025.0"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/shield_lists/90fb0e17-c332-40ed-b4f9-fa8908fbbb24%20 \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'box-version: 2025.0'
-```
-
-`DELETE /shield_lists/{shield_list_id}`
-
-Delete a single shield list by its ID.
-
-<h3 id="delete-single-shield-list-by-shield-list-id-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|box-version|header|string|true|Version header.|
-|shield_list_id|path|string|true|The unique identifier that represents a shield list.<br>The ID for any Shield List can be determined by the response from the endpoint<br>fetching all shield lists for the enterprise.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|box-version|2025.0|
-
-> Example responses
 
 > 400 Response
 
@@ -4858,6 +3611,239 @@ Delete a single shield list by its ID.
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-box-hub-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns a new Hub object.|[Hub](#schemahub)|
+|400|Bad Request|Returned if any of the request parameters are not valid.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returns an error when the user does not have the<br>right permissions to create a Hub.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List all Box Hubs for requesting enterprise
+
+<a id="opIdget_enterprise_hubs_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/enterprise_hubs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0'
+```
+
+`GET /enterprise_hubs`
+
+Retrieves all Box Hubs for a given enterprise.
+
+Admins or Hub Co-admins of an enterprise
+with GCM scope can make this call.
+
+<h3 id="list-all-box-hubs-for-requesting-enterprise-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|query|query|string|false|The query string to search for Box Hubs.|
+|sort|query|string|false|The field to sort results by.<br>Possible values include `name`, `updated_at`,<br>`last_accessed_at`, `view_count`, and `relevance`.<br>Default is `relevance`.|
+|direction|query|string|false|The direction to sort results in. This can be either in alphabetical ascending<br>(`ASC`) or descending (`DESC`) order.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+|box-version|header|string|true|Version header.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|direction|ASC|
+|direction|DESC|
+|box-version|2025.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "12345",
+      "type": "hubs",
+      "title": "Contracts",
+      "description": "All the contracts for the company.",
+      "created_at": "2012-12-12T10:53:43Z",
+      "updated_at": "2012-12-12T10:53:43Z",
+      "created_by": {
+        "id": "11446498",
+        "type": "user",
+        "name": "Aaron Levie",
+        "login": "ceo@example.com"
+      },
+      "updated_by": {
+        "id": "11446498",
+        "type": "user",
+        "name": "Aaron Levie",
+        "login": "ceo@example.com"
+      },
+      "view_count": 506,
+      "is_ai_enabled": true,
+      "is_collaboration_restricted_to_enterprise": true,
+      "can_non_owners_invite": true,
+      "can_shared_link_be_created": true,
+      "can_public_shared_link_be_created": true,
+      "copy_hub_access": "company"
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-all-box-hubs-for-requesting-enterprise-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns all Box Hubs for the given user or enterprise.|[Hubs](#schemahubs)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get Box Hub information by ID
+
+<a id="opIdget_hubs_id_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/hubs/12345 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0'
+```
+
+`GET /hubs/{hub_id}`
+
+Retrieves details for a Box Hub by its ID.
+
+<h3 id="get-box-hub-information-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|hub_id|path|string|true|The unique identifier that represent a hub.<br><br>The ID for any hub can be determined<br>by visiting this hub in the web application<br>and copying the ID from the URL. For example,<br>for the URL `https://*.app.box.com/hubs/123`<br>the `hub_id` is `123`.|
+|box-version|header|string|true|Version header.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "12345",
+  "type": "hubs",
+  "title": "Contracts",
+  "description": "All the contracts for the company.",
+  "created_at": "2012-12-12T10:53:43Z",
+  "updated_at": "2012-12-12T10:53:43Z",
+  "created_by": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "updated_by": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "view_count": 506,
+  "is_ai_enabled": true,
+  "is_collaboration_restricted_to_enterprise": true,
+  "can_non_owners_invite": true,
+  "can_shared_link_be_created": true,
+  "can_public_shared_link_be_created": true,
+  "copy_hub_access": "company"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
 > 404 Response
 
 ```json
@@ -4874,20 +3860,431 @@ Delete a single shield list by its ID.
 }
 ```
 
-<h3 id="delete-single-shield-list-by-shield-list-id-responses">Responses</h3>
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-box-hub-information-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|No Content|Shield List correctly removed. No content in response.|None|
-|400|Bad Request|The shield list is assigned to some rules and cannot be removed.|[ClientError](#schemaclienterror)|
-|404|Not Found|The shield list was not found.|[ClientError](#schemaclienterror)|
+|200|OK|Returns a hub object.|[Hub](#schemahub)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned if the hub is not found, or the user does not<br>have access to the hub.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2Security
 </aside>
 
-<h1 id="box-platform-api-default">Default</h1>
+## Update Box Hub information by ID
+
+<a id="opIdput_hubs_id_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/hubs/12345 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0' \
+  -d '{
+    "title": "Hub Title",
+    "description": "This is a description of the Box Hub.",
+    "is_ai_enabled": true,
+    "is_collaboration_restricted_to_enterprise": true,
+    "can_non_owners_invite": true,
+    "can_shared_link_be_created": true,
+    "can_public_shared_link_be_created": true,
+    "copy_hub_access": "company"
+  }'
+```
+
+`PUT /hubs/{hub_id}`
+
+Updates a Box Hub. Can be used to change title, description, or Box Hub settings.
+
+> Body parameter
+
+```json
+{
+  "title": "Hub Title",
+  "description": "This is a description of the Box Hub.",
+  "is_ai_enabled": true,
+  "is_collaboration_restricted_to_enterprise": true,
+  "can_non_owners_invite": true,
+  "can_shared_link_be_created": true,
+  "can_public_shared_link_be_created": true,
+  "copy_hub_access": "company"
+}
+```
+
+<h3 id="update-box-hub-information-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|hub_id|path|string|true|The unique identifier that represent a hub.<br><br>The ID for any hub can be determined<br>by visiting this hub in the web application<br>and copying the ID from the URL. For example,<br>for the URL `https://*.app.box.com/hubs/123`<br>the `hub_id` is `123`.|
+|box-version|header|string|true|Version header.|
+|body|body|[HubUpdateRequest](#schemahubupdaterequest)|true|none|
+|» title|body|string|false|Title of the Box Hub. It cannot be empty and should be less than 50 characters.|
+|» description|body|string|false|Description of the Box Hub.|
+|» is_ai_enabled|body|boolean|false|Indicates if AI features are enabled for the Box Hub.|
+|» is_collaboration_restricted_to_enterprise|body|boolean|false|Indicates if collaboration is restricted to the enterprise.|
+|» can_non_owners_invite|body|boolean|false|Indicates if non-owners can invite others to the Box Hub.|
+|» can_shared_link_be_created|body|boolean|false|Indicates if a shared link can be created for the Box Hub.|
+|» can_public_shared_link_be_created|body|boolean|false|Indicates if a public shared link can be created for the Box Hub.|
+|» copy_hub_access|body|string|false|Specifies who is allowed to copy the Box Hub.<br><br>* `all` - Any user with access to the Hub can copy it.<br>* `company` - Only users within the same enterprise as the Hub can copy it.<br>* `none` - No one can copy the Hub.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+|» copy_hub_access|all|
+|» copy_hub_access|company|
+|» copy_hub_access|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "12345",
+  "type": "hubs",
+  "title": "Contracts",
+  "description": "All the contracts for the company.",
+  "created_at": "2012-12-12T10:53:43Z",
+  "updated_at": "2012-12-12T10:53:43Z",
+  "created_by": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "updated_by": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "view_count": 506,
+  "is_ai_enabled": true,
+  "is_collaboration_restricted_to_enterprise": true,
+  "can_non_owners_invite": true,
+  "can_shared_link_be_created": true,
+  "can_public_shared_link_be_created": true,
+  "copy_hub_access": "company"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-box-hub-information-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a Hub object.|[Hub](#schemahub)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned if the Hub is not found, or the user does not<br>have access to the Hub.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete Box Hub
+
+<a id="opIddelete_hubs_id_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/hubs/12345 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0'
+```
+
+`DELETE /hubs/{hub_id}`
+
+Deletes a single Box Hub.
+
+<h3 id="delete-box-hub-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|hub_id|path|string|true|The unique identifier that represent a hub.<br><br>The ID for any hub can be determined<br>by visiting this hub in the web application<br>and copying the ID from the URL. For example,<br>for the URL `https://*.app.box.com/hubs/123`<br>the `hub_id` is `123`.|
+|box-version|header|string|true|Version header.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-box-hub-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|A blank response is returned if the hub was<br>successfully deleted.|None|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned if the hub is not found or has already been deleted, or the user<br>does not have access to the hub.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Copy Box Hub
+
+<a id="opIdpost_hubs_id_copy_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/hubs/12345/copy \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0' \
+  -d '{
+    "title": "Hub Title",
+    "description": "This is a description of the Box Hub.",
+    "include_items": true
+  }'
+```
+
+`POST /hubs/{hub_id}/copy`
+
+Creates a copy of a Box Hub.
+
+The original Box Hub will not be modified.
+
+> Body parameter
+
+```json
+{
+  "title": "Hub Title",
+  "description": "This is a description of the Box Hub.",
+  "include_items": true
+}
+```
+
+<h3 id="copy-box-hub-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|hub_id|path|string|true|The unique identifier that represent a hub.<br><br>The ID for any hub can be determined<br>by visiting this hub in the web application<br>and copying the ID from the URL. For example,<br>for the URL `https://*.app.box.com/hubs/123`<br>the `hub_id` is `123`.|
+|box-version|header|string|true|Version header.|
+|body|body|[HubCopyRequest](#schemahubcopyrequest)|true|none|
+|» title|body|string|false|Title of the Box Hub. It cannot be empty and should be less than 50 characters.|
+|» description|body|string|false|Description of the Box Hub.|
+|» include_items|body|boolean|false|If true, the items which the user has Editor or Owner access to in the original Box Hub will be copied to the new Box Hub.<br>Defaults to false.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "12345",
+  "type": "hubs",
+  "title": "Contracts",
+  "description": "All the contracts for the company.",
+  "created_at": "2012-12-12T10:53:43Z",
+  "updated_at": "2012-12-12T10:53:43Z",
+  "created_by": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "updated_by": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "view_count": 506,
+  "is_ai_enabled": true,
+  "is_collaboration_restricted_to_enterprise": true,
+  "can_non_owners_invite": true,
+  "can_shared_link_be_created": true,
+  "can_public_shared_link_be_created": true,
+  "copy_hub_access": "company"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="copy-box-hub-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns a new Hub object.|[Hub](#schemahub)|
+|403|Forbidden|Returns an error when the user does not have the<br>right permissions to create a Hub.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+<h1 id="box-platform-api-enterprise-configurations">Enterprise Configurations</h1>
+
+Enterprise configurations admins interact with to drive Box product behavior.
 
 ## Get enterprise configuration
 
@@ -5480,6 +4877,611 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
+<h1 id="box-platform-api-external-users">External Users</h1>
+
+External users are collaborators from outside of your enterprise.
+
+## Submit job to delete external users
+
+<a id="opIdpost_external_users_submit_delete_job_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/external_users/submit_delete_job \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0' \
+  -d '{
+    "external_users": [
+      {
+        "type": "user",
+        "id": "12345"
+      }
+    ]
+  }'
+```
+
+`POST /external_users/submit_delete_job`
+
+Delete external users from current user enterprise. This will remove each
+external user from all invited collaborations within the current enterprise.
+
+> Body parameter
+
+```json
+{
+  "external_users": [
+    {
+      "type": "user",
+      "id": "12345"
+    }
+  ]
+}
+```
+
+<h3 id="submit-job-to-delete-external-users-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ExternalUsersSubmitDeleteJobRequest](#schemaexternaluserssubmitdeletejobrequest)|true|none|
+|» external_users|body|[[UserReference](#schemauserreference)]|true|List of external users to delete.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 207 Response
+
+```json
+{
+  "entries": [
+    {
+      "user_id": "12345",
+      "status": 202,
+      "detail": "string"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="submit-job-to-delete-external-users-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|207|Multi-Status|Multi-status response containing the result for each external user deletion request.|[ExternalUsersSubmitDeleteJobResponse](#schemaexternaluserssubmitdeletejobresponse)|
+|404|Not Found|Returns an error if the listed external users are not found, or the authenticated<br>user does not have the right permissions to delete external users.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+<h1 id="box-platform-api-shield-lists">Shield lists</h1>
+
+Shield List allow an administrator to create a list
+which will be shared between different
+Shield Smart Access and Threat Detection rules.
+
+## Get all shield lists in enterprise
+
+<a id="opIdget_shield_lists_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_lists \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0'
+```
+
+`GET /shield_lists`
+
+Retrieves all shield lists in the enterprise.
+
+<h3 id="get-all-shield-lists-in-enterprise-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "12345678-1234-1234-1234-123456789012",
+      "type": "shield_list",
+      "name": "My Shield List",
+      "content": {
+        "type": "country_code"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="get-all-shield-lists-in-enterprise-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the list of shield list objects.|[ShieldLists](#schemashieldlists)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shield list
+
+<a id="opIdpost_shield_lists_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_lists \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0' \
+  -d '{
+    "name": "My Shield List",
+    "description": "A list of things that are shielded",
+    "content": {
+      "type": "country",
+      "country_codes": [
+        "US",
+        "PL"
+      ]
+    }
+  }'
+```
+
+`POST /shield_lists`
+
+Creates a shield list.
+
+> Body parameter
+
+```json
+{
+  "name": "My Shield List",
+  "description": "A list of things that are shielded",
+  "content": {
+    "type": "country",
+    "country_codes": [
+      "US",
+      "PL"
+    ]
+  }
+}
+```
+
+<h3 id="create-shield-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShieldListsCreate](#schemashieldlistscreate)|true|none|
+|» name|body|string|true|The name of the shield list.|
+|» description|body|string|false|Optional description of Shield List.|
+|» content|body|object|true|none|
+|» » *oneOf*|body|[ShieldListContentCountry](#schemashieldlistcontentcountry)|false|Representation of content of a Shield List that contains countries data.|
+|» » *oneOf*|body|[ShieldListContentDomain](#schemashieldlistcontentdomain)|false|Representation of content of a Shield List that contains domains data.|
+|» » *oneOf*|body|[ShieldListContentEmail](#schemashieldlistcontentemail)|false|Representation of content of a Shield List that contains email addresses data.|
+|» » *oneOf*|body|[ShieldListContentIp](#schemashieldlistcontentip)|false|Representation of content of a Shield List that contains ip addresses data.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "90fb0e17-c332-40ed-b4f9-fa8908fbbb24",
+  "type": "shield_list",
+  "name": "Shield List Name",
+  "enterprise": {
+    "id": "1910967",
+    "type": "enterprise"
+  },
+  "description": "A list of things that are shielded",
+  "created_at": "2025-01-13T15:31:01.896Z",
+  "updated_at": "2025-01-13T15:31:01.896Z",
+  "content": {
+    "type": "country",
+    "country_codes": [
+      "US",
+      "PL"
+    ]
+  }
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shield-list-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shield list object.|[ShieldList](#schemashieldlist)|
+|409|Conflict|The shield list with this name already exists.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get single shield list by shield list id
+
+<a id="opIdget_shield_lists_id_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_lists/90fb0e17-c332-40ed-b4f9-fa8908fbbb24%20 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0'
+```
+
+`GET /shield_lists/{shield_list_id}`
+
+Retrieves a single shield list by its ID.
+
+<h3 id="get-single-shield-list-by-shield-list-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shield_list_id|path|string|true|The unique identifier that represents a shield list.<br>The ID for any Shield List can be determined by the response from the endpoint<br>fetching all shield lists for the enterprise.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "90fb0e17-c332-40ed-b4f9-fa8908fbbb24",
+  "type": "shield_list",
+  "name": "Shield List Name",
+  "enterprise": {
+    "id": "1910967",
+    "type": "enterprise"
+  },
+  "description": "A list of things that are shielded",
+  "created_at": "2025-01-13T15:31:01.896Z",
+  "updated_at": "2025-01-13T15:31:01.896Z",
+  "content": {
+    "type": "country",
+    "country_codes": [
+      "US",
+      "PL"
+    ]
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-single-shield-list-by-shield-list-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shield list object.|[ShieldList](#schemashieldlist)|
+|404|Not Found|The shield list was not found.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Update shield list
+
+<a id="opIdput_shield_lists_id_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_lists/90fb0e17-c332-40ed-b4f9-fa8908fbbb24%20 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0' \
+  -d '{
+    "name": "My Shield List",
+    "description": "A list of things that are shielded",
+    "content": {
+      "type": "country",
+      "country_codes": [
+        "US",
+        "PL"
+      ]
+    }
+  }'
+```
+
+`PUT /shield_lists/{shield_list_id}`
+
+Updates a shield list.
+
+> Body parameter
+
+```json
+{
+  "name": "My Shield List",
+  "description": "A list of things that are shielded",
+  "content": {
+    "type": "country",
+    "country_codes": [
+      "US",
+      "PL"
+    ]
+  }
+}
+```
+
+<h3 id="update-shield-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shield_list_id|path|string|true|The unique identifier that represents a shield list.<br>The ID for any Shield List can be determined by the response from the endpoint<br>fetching all shield lists for the enterprise.|
+|body|body|[ShieldListsUpdate](#schemashieldlistsupdate)|false|none|
+|» name|body|string|true|The name of the shield list.|
+|» description|body|string|false|Optional description of Shield List.|
+|» content|body|object|true|none|
+|» » *oneOf*|body|[ShieldListContentCountry](#schemashieldlistcontentcountry)|false|Representation of content of a Shield List that contains countries data.|
+|» » *oneOf*|body|[ShieldListContentDomain](#schemashieldlistcontentdomain)|false|Representation of content of a Shield List that contains domains data.|
+|» » *oneOf*|body|[ShieldListContentEmail](#schemashieldlistcontentemail)|false|Representation of content of a Shield List that contains email addresses data.|
+|» » *oneOf*|body|[ShieldListContentIp](#schemashieldlistcontentip)|false|Representation of content of a Shield List that contains ip addresses data.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "90fb0e17-c332-40ed-b4f9-fa8908fbbb24",
+  "type": "shield_list",
+  "name": "Shield List Name",
+  "enterprise": {
+    "id": "1910967",
+    "type": "enterprise"
+  },
+  "description": "A list of things that are shielded",
+  "created_at": "2025-01-13T15:31:01.896Z",
+  "updated_at": "2025-01-13T15:31:01.896Z",
+  "content": {
+    "type": "country",
+    "country_codes": [
+      "US",
+      "PL"
+    ]
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-shield-list-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shield list object.|[ShieldList](#schemashieldlist)|
+|404|Not Found|The shield list was not found.|[ClientError](#schemaclienterror)|
+|409|Conflict|The shield list with this name already exists.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete single shield list by shield list id
+
+<a id="opIddelete_shield_lists_id_v2025.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_lists/90fb0e17-c332-40ed-b4f9-fa8908fbbb24%20 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2025.0'
+```
+
+`DELETE /shield_lists/{shield_list_id}`
+
+Delete a single shield list by its ID.
+
+<h3 id="delete-single-shield-list-by-shield-list-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shield_list_id|path|string|true|The unique identifier that represents a shield list.<br>The ID for any Shield List can be determined by the response from the endpoint<br>fetching all shield lists for the enterprise.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2025.0|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-single-shield-list-by-shield-list-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Shield List correctly removed. No content in response.|None|
+|400|Bad Request|The shield list is assigned to some rules and cannot be removed.|[ClientError](#schemaclienterror)|
+|404|Not Found|The shield list was not found.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
 # Schemas
 
 <h2 id="tocS_Archive">Archive</h2>
@@ -5516,8 +5518,8 @@ To use this feature, you must request GCM scope for your Box application.
 |type|string|true|none|The value is always `archive`.|
 |name|string|true|none|The name of the archive.<br><br>The following restrictions to the archive name apply: names containing<br>non-printable ASCII characters, forward and backward slashes<br>(`/`, `\`), names with trailing spaces, and names `.` and `..` are<br>not allowed.|
 |size|integer(int64)|true|none|The size of the archive in bytes.|
-|description|string \| null|false|none|The description of the archive.|
-|owned_by|object|false|none|The part of an archive API response that describes the user who owns the archive.|
+|description|string \| null|true|none|The description of the archive.|
+|owned_by|object|true|none|The part of an archive API response that describes the user who owns the archive.|
 
 #### Enumerated Values
 

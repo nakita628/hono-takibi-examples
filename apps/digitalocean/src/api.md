@@ -32783,7 +32783,7 @@ To create a model evaluation run, send a POST request to `/v2/genai/model_evalua
 |» candidate_model_source|body|[apiCandidateModelSource](#schemaapicandidatemodelsource)|false|Whether the candidate is a served model (serverless platform, a dedicated<br>deployment, or a model router) or an OHS-hosted agent config.|
 |» candidate_model_uuid|body|string|false|UUID of the candidate model to evaluate.|
 |» dataset_uuid|body|string|false|UUID of the dataset to use for evaluation.|
-|» epochs|body|integer(int64)|false|Number of times to evaluate each dataset row (n-pass/epochs), so the<br>result reports avg@k/pass@k/cons@k instead of a single score. Defaults<br>to 1 when unset. Capped at 3 until throughput/sharding work lands, since<br>each extra epoch roughly multiplies wall-clock run time. Not persisted<br>on presets.|
+|» epochs|body|integer(int64)|false|How many times each dataset row is evaluated. Defaults to 1, maximum 10.<br>When more than 1, the results show how consistent the model is across<br>attempts (avg@k, pass@k, cons@k). Each extra attempt makes the run take<br>longer. Not saved in presets.|
 |» eval_preset_uuid|body|string|false|none|
 |» judge_model_uuid|body|string|false|UUID of the judge model used to score responses.|
 |» metric_uuids|body|[string]|false|UUIDs of metrics to evaluate (selected from ListModelEvaluationMetrics).|
@@ -95515,6 +95515,7 @@ Droplet is not co-located any other Droplets associated with your account.
         ],
         "gpu_info": {
           "count": 1,
+          "fabric": true,
           "model": "nvidia_h100",
           "vram": {
             "amount": 25,
@@ -95579,6 +95580,7 @@ Droplet is not co-located any other Droplets associated with your account.
       "subnet_uuid": "9c7a0d63-3c4e-4d3d-9f56-3b0fb0e5e4a1",
       "gpu_info": {
         "count": 1,
+        "fabric": true,
         "model": "nvidia_h100",
         "vram": {
           "amount": 25,
@@ -139701,6 +139703,7 @@ records. When filtered, the response also echoes the `source`.
       "team_id": 39449946,
       "source": "agent",
       "agent_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
+      "environment_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
       "enabled": true,
       "updated_at": "2026-08-10T10:09:25.738533Z"
     },
@@ -139709,6 +139712,7 @@ records. When filtered, the response also echoes the `source`.
       "team_id": 39449946,
       "source": "agent",
       "agent_id": "019fb6b1-aad4-7d54-a74e-c5570d768148",
+      "environment_id": "019fb6b1-aad4-7d54-a74e-c5570d768148",
       "enabled": true,
       "updated_at": "2026-08-07T10:10:16.385447Z"
     },
@@ -139836,7 +139840,7 @@ made by your team.
 
 To revoke consent, send the same request with `enabled` set to `false`.
 The `source` query parameter is required. Per-environment consent for Harness
-Runtime environments is managed with `PUT /v1/consent/{agent_id}` instead.
+Runtime environments is managed with `PUT /v1/consent/{environment_id}` instead.
 
 
 > Body parameter
@@ -139851,7 +139855,7 @@ Runtime environments is managed with `PUT /v1/consent/{agent_id}` instead.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|source|query|string|true|The consent source to update. Only team-level sources are accepted on this endpoint; currently `inference` (Serverless Inference chat completions). Per-environment consent (`agent`) is managed with `PUT /v1/consent/{agent_id}` instead.|
+|source|query|string|true|The consent source to update. Only team-level sources are accepted on this endpoint; currently `inference` (Serverless Inference chat completions). Per-environment consent (`agent`) is managed with `PUT /v1/consent/{environment_id}` instead.|
 |body|body|object|true|none|
 |» enabled|body|boolean|true|Whether to enable signals collection for this source.|
 
@@ -139983,10 +139987,10 @@ curl https://api.digitalocean.com/v1/consent/019fb3d2-8a56-72cc-8bf9-9d21510b2a9
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /v1/consent/{agent_id}`
+`GET /v1/consent/{environment_id}`
 
 To retrieve the consent record for a specific environment, send a GET
-request to `/v1/consent/{agent_id}`. The response includes an `enabled`
+request to `/v1/consent/{environment_id}`. The response includes an `enabled`
 field indicating whether signals collection is on for this environment.
 
 This endpoint only serves per-environment (`source: agent`) records. Team-level
@@ -139997,7 +140001,7 @@ inference consent is read from `GET /v1/consent?source=inference`.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|agent_id|path|string(uuid)|true|A unique identifier for an environment. For Harness Runtime, this is the Environment Config ID.|
+|environment_id|path|string(uuid)|true|A unique identifier for an environment. For Harness Runtime, this is the Environment Config ID. Formerly named agent_id.|
 
 > Example responses
 
@@ -140009,6 +140013,7 @@ inference consent is read from `GET /v1/consent?source=inference`.
   "team_id": 39449946,
   "source": "agent",
   "agent_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
+  "environment_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
   "enabled": true,
   "updated_at": "2026-08-10T10:09:25.738533Z"
 }
@@ -140129,10 +140134,10 @@ curl https://api.digitalocean.com/v1/consent/019fb3d2-8a56-72cc-8bf9-9d21510b2a9
   }'
 ```
 
-`PUT /v1/consent/{agent_id}`
+`PUT /v1/consent/{environment_id}`
 
 To enable or disable signals collection for a specific environment, send a
-PUT request to `/v1/consent/{agent_id}` with an `enabled` boolean in the
+PUT request to `/v1/consent/{environment_id}` with an `enabled` boolean in the
 request body.
 
 This endpoint only manages per-environment (`source: agent`) consent. To manage
@@ -140152,7 +140157,7 @@ team-level consent for Serverless Inference, use
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|agent_id|path|string(uuid)|true|A unique identifier for an environment. For Harness Runtime, this is the Environment Config ID.|
+|environment_id|path|string(uuid)|true|A unique identifier for an environment. For Harness Runtime, this is the Environment Config ID. Formerly named agent_id.|
 |body|body|object|true|none|
 |» enabled|body|boolean|true|Whether to enable signals collection for this environment.|
 
@@ -140167,6 +140172,7 @@ team-level consent for Serverless Inference, use
     "team_id": 39449946,
     "source": "agent",
     "agent_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
+    "environment_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
     "enabled": true,
     "updated_at": "2026-10-07T11:06:32.280572Z"
   }
@@ -140291,10 +140297,10 @@ curl https://api.digitalocean.com/v1/signals/agents/019fb3d2-8a56-72cc-8bf9-9d21
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /v1/signals/agents/{agent_id}/sessions`
+`GET /v1/signals/agents/{environment_id}/sessions`
 
 To list signals sessions for a specific environment, send a GET request to
-`/v1/signals/agents/{agent_id}/sessions`. Results are paginated using cursor-based
+`/v1/signals/agents/{environment_id}/sessions`. Results are paginated using cursor-based
 pagination with `limit` and `after` parameters.
 
 
@@ -140302,7 +140308,7 @@ pagination with `limit` and `after` parameters.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|agent_id|path|string(uuid)|true|A unique identifier for an environment. For Harness Runtime, this is the Environment Config ID.|
+|environment_id|path|string(uuid)|true|A unique identifier for an environment. For Harness Runtime, this is the Environment Config ID. Formerly named agent_id.|
 |limit|query|integer|false|Maximum number of items to return per page.|
 |after|query|string|false|An opaque cursor string returned from a previous page. Pass this value to retrieve the next page of results.|
 |start_time|query|string(date-time)|false|Filter results to those occurring at or after this timestamp (RFC 3339).|
@@ -140605,6 +140611,8 @@ with `limit` and `after` parameters.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|environment_id|query|string(uuid)|false|Optional filter by environment ID.|
+|agent_id|query|string(uuid)|false|**Deprecated.** Deprecated alias for environment_id. Accepted for backward compatibility; must equal environment_id when both are set. Both set and different returns 400.|
 |limit|query|integer|false|Maximum number of items to return per page.|
 |after|query|string|false|An opaque cursor string returned from a previous page. Pass this value to retrieve the next page of results.|
 
@@ -140621,6 +140629,7 @@ with `limit` and `after` parameters.
         "export_id": "9f13c09c-c877-436b-9863-dcc39c9dd737",
         "type": "agent",
         "agent_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
+        "environment_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
         "status": "complete",
         "filters": {
           "signal_type": [
@@ -140739,7 +140748,7 @@ curl https://api.digitalocean.com/v1/signals/exports \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "agent_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
+    "environment_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
     "signal_type": [
       "ExecutionFailureToolNotFound"
     ]
@@ -140750,9 +140759,10 @@ curl https://api.digitalocean.com/v1/signals/exports \
 
 To create a new signals data export, send a POST request to
 `/v1/signals/exports`. To export one Harness Runtime environment, include its
-`agent_id` (`type` defaults to `agent`). To export the team's Serverless
-Inference Signals conversations, set `type` to `inference` and omit
-`agent_id`. You may optionally filter the export by `signal_type`,
+`environment_id` (`type` defaults to `agent`). Deprecated `agent_id` is still
+accepted. To export the team's Serverless Inference Signals conversations, set
+`type` to `inference` and omit `environment_id` and `agent_id`. You may
+optionally filter the export by `signal_type`,
 `session_ids`, `start_time`, and `end_time`. Use the export options endpoint
 to discover available signal types.
 
@@ -140765,7 +140775,7 @@ pre-signed URL.
 
 ```json
 {
-  "agent_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
+  "environment_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
   "signal_type": [
     "ExecutionFailureToolNotFound"
   ]
@@ -140777,8 +140787,9 @@ pre-signed URL.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[create_export_request](#schemacreate_export_request)|true|none|
-|» type|body|string|false|The scope of the export. `agent` exports Signals conversations for one Harness Runtime environment and requires `agent_id`. `inference` exports Serverless Inference Signals conversations for the whole team (team-wide; omit `agent_id`). Defaults to `agent` when `agent_id` is provided and to `inference` when it is omitted.|
-|» agent_id|body|string(uuid)|false|The environment whose data should be exported. For Harness Runtime, this is the Environment Config ID. Required when `type` is `agent`; must be omitted when `type` is `inference`.|
+|» type|body|string|false|The scope of the export. `agent` exports Signals conversations for one Harness Runtime environment and requires `environment_id` (or deprecated `agent_id`). `inference` exports Serverless Inference Signals conversations for the whole team (team-wide; omit `environment_id` and `agent_id`). Defaults to `agent` when `environment_id` or `agent_id` is provided and to `inference` when both are omitted.|
+|» environment_id|body|string(uuid)|false|The environment whose data should be exported. For Harness Runtime, this is the Environment Config ID. Required when `type` is `agent` if `agent_id` is omitted; must be omitted when `type` is `inference`. Prefer this over `agent_id`.|
+|» agent_id|body|string(uuid)|false|**Deprecated.** Deprecated alias for `environment_id`. Accepted for backward compatibility; must equal `environment_id` when both are set. Both set and different returns 400. Required when `type` is `agent` if `environment_id` is omitted; must be omitted when `type` is `inference`.|
 |» signal_type|body|[string]|false|Filter the export to only include the specified signal types. Use the export options endpoint to list available values.|
 |» session_ids|body|[string(uuid)]|false|Optional list of specific session IDs to include in the export.|
 |» start_time|body|string(date-time)|false|Include only sessions that started at or after this timestamp.|
@@ -140800,6 +140811,7 @@ pre-signed URL.
   "export_id": "9f13c09c-c877-436b-9863-dcc39c9dd737",
   "type": "agent",
   "agent_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
+  "environment_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
   "status": "complete",
   "filters": {
     "signal_type": [
@@ -141062,6 +141074,7 @@ request to `/v1/signals/exports/{export_id}`.
   "export_id": "9f13c09c-c877-436b-9863-dcc39c9dd737",
   "type": "agent",
   "agent_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
+  "environment_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
   "status": "complete",
   "filters": {
     "signal_type": [
@@ -141322,6 +141335,7 @@ cursor-based pagination with `limit` and `after` parameters.
         "deletion_id": "01J9ZX0N5Q7M2K3R4S5T6V7W8X",
         "type": "agent",
         "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
+        "environment_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
         "status": "running",
         "error_message": null,
         "created_at": 1791036405,
@@ -141462,7 +141476,7 @@ curl https://api.digitalocean.com/v1/signals/deletions \
   -d '{
     "type": "agent",
     "team_id": 12345678,
-    "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3"
+    "environment_id": "01a10d3f-2c09-764f-99f8-458e521627f3"
   }'
 ```
 
@@ -141474,15 +141488,16 @@ To permanently delete Signals conversation data, send a POST request to
 Two deletion types are supported:
 
 - `agent` — deletes Signals conversations for one Harness Runtime environment and
-  turns off collection for that environment. Requires `agent_id`, which is the
-  environment's Environment Config ID (the environment's `agent_id`). On create, matching
-  conversations are hidden from Signals reads immediately. Wait until the
+  turns off collection for that environment. Requires `environment_id` (the
+  environment's Environment Config ID). Deprecated `agent_id` is still accepted;
+  both set and equal is accepted, both set and different returns 400. On create,
+  matching conversations are hidden from Signals reads immediately. Wait until the
   job is `complete` before enabling Signals for the environment again.
 - `inference` — deletes Serverless Inference Signals conversations for your
   whole team (team-wide; not limited to one endpoint or model) that were
   collected at or before the deletion request, and turns off team inference
-  collection (`source=inference`). Do not send `agent_id`. On create,
-  matching conversations are hidden from Signals reads immediately.
+  collection (`source=inference`). Do not send `environment_id` or `agent_id`.
+  On create, matching conversations are hidden from Signals reads immediately.
 
 The job runs asynchronously; poll the get endpoint until `status` is
 `complete` or `failed`. DigitalOcean may retry transient processing errors
@@ -141508,7 +141523,7 @@ requests beyond that limit return `429 Too Many Requests`.
 {
   "type": "agent",
   "team_id": 12345678,
-  "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3"
+  "environment_id": "01a10d3f-2c09-764f-99f8-458e521627f3"
 }
 ```
 
@@ -141517,9 +141532,10 @@ requests beyond that limit return `429 Too Many Requests`.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[create_deletion_request](#schemacreate_deletion_request)|true|none|
-|» type|body|string|true|The scope of the deletion. `agent` deletes Signals conversations for one Harness Runtime environment and requires `agent_id`. `inference` deletes Serverless Inference Signals conversations for the whole team (team-wide; omit `agent_id`).|
+|» type|body|string|true|The scope of the deletion. `agent` deletes Signals conversations for one Harness Runtime environment and requires `environment_id` (or deprecated `agent_id`). `inference` deletes Serverless Inference Signals conversations for the whole team (team-wide; omit `environment_id` and `agent_id`).|
 |» team_id|body|integer(int64)|true|The team whose data should be deleted. Must match the authenticated team.|
-|» agent_id|body|string(uuid)|false|The Harness Runtime Environment Config ID of the environment whose conversations should be deleted. This is the environment's `agent_id`. Required when `type` is `agent`; must be omitted when `type` is `inference`.|
+|» environment_id|body|string(uuid)|false|The Harness Runtime Environment Config ID of the environment whose conversations should be deleted. Required when `type` is `agent` if `agent_id` is omitted; must be omitted when `type` is `inference`. Prefer this over `agent_id`.|
+|» agent_id|body|string(uuid)|false|**Deprecated.** Deprecated alias for `environment_id`. Accepted for backward compatibility; must equal `environment_id` when both are set. Both set and different returns 400. Required when `type` is `agent` if `environment_id` is omitted; must be omitted when `type` is `inference`.|
 
 #### Enumerated Values
 
@@ -141538,6 +141554,7 @@ requests beyond that limit return `429 Too Many Requests`.
   "deletion_id": "01J9ZX0N5Q7M2K3R4S5T6V7W8X",
   "type": "agent",
   "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
+  "environment_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
   "status": "running",
   "error_message": null,
   "created_at": 1791036405,
@@ -141554,6 +141571,7 @@ requests beyond that limit return `429 Too Many Requests`.
   "deletion_id": "01J9ZX0N5Q7M2K3R4S5T6V7W8X",
   "type": "agent",
   "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
+  "environment_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
   "status": "queued",
   "error_message": null,
   "created_at": 1791036405,
@@ -141711,6 +141729,7 @@ to `/v1/signals/deletions/{deletion_id}`.
   "deletion_id": "01J9ZX0N5Q7M2K3R4S5T6V7W8X",
   "type": "agent",
   "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
+  "environment_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
   "status": "running",
   "error_message": null,
   "created_at": 1791036405,
@@ -153793,7 +153812,7 @@ curl https://api.digitalocean.com/v1/images/generations \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "prompt": "A cute baby sea otter floating on its back in calm blue water",
-    "model": "openai-gpt-image-1",
+    "model": "openai-gpt-image-2",
     "moderation": "auto",
     "background": "auto",
     "output_format": "png",
@@ -153809,14 +153828,14 @@ curl https://api.digitalocean.com/v1/images/generations \
 
 `POST /v1/images/generations`
 
-Creates a high-quality image from a text prompt using GPT-IMAGE-1, the latest image generation model with automatic prompt optimization and enhanced visual capabilities.
+Creates a high-quality image from a text prompt using GPT-IMAGE-2, the latest image generation model with automatic prompt optimization and enhanced visual capabilities.
 
 > Body parameter
 
 ```json
 {
   "prompt": "A cute baby sea otter floating on its back in calm blue water",
-  "model": "openai-gpt-image-1",
+  "model": "openai-gpt-image-2",
   "moderation": "auto",
   "background": "auto",
   "output_format": "png",
@@ -153843,7 +153862,7 @@ Creates a high-quality image from a text prompt using GPT-IMAGE-1, the latest im
 |» output_compression|body|integer \| null|false|The output compression level for the image generation (0-100).<br>|
 |» n|body|integer|true|The number of images to generate. Must be between 1 and 10.<br>|
 |» quality|body|string \| null|false|The quality of the image that will be generated. Supported values: auto, high, medium, low.<br>|
-|» size|body|string|false|The size of the generated images. GPT-IMAGE-1 supports: auto (automatically select best size), 1536x1024 (landscape), 1024x1536 (portrait).<br>|
+|» size|body|string|false|The size of the generated images. GPT-IMAGE-2 supports: auto (automatically select best size), 1536x1024 (landscape), 1024x1536 (portrait).<br>|
 |» stream|body|boolean \| null|false|If set to true, partial image data will be streamed as the image is being generated. The response will be sent as server-sent events with partial image chunks. When stream is true, partial_images must be greater than 0.<br>|
 |» partial_images|body|integer \| null|false|The number of partial image chunks to return during streaming generation. Defaults to 0. When stream=true, this must be greater than 0 to receive progressive updates of the image as it is being generated.<br>|
 |» user|body|string \| null|false|A unique identifier representing your end-user, which can help DigitalOcean to monitor and detect abuse.<br>|
@@ -192236,6 +192255,7 @@ A flat array of tag names as strings to be applied to the resource. Tag names ma
 ```json
 {
   "count": 1,
+  "fabric": true,
   "model": "nvidia_h100",
   "vram": {
     "amount": 25,
@@ -192251,6 +192271,7 @@ An object containing information about the GPU capabilities of Droplets created 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |count|integer|false|none|The number of GPUs allocated to the Droplet.|
+|fabric|boolean|false|none|If GPU fabric networking is enabled.|
 |model|string|false|none|The model of the GPU.|
 |vram|object|false|none|none|
 
@@ -192298,6 +192319,7 @@ An object containing information about the GPU capabilities of Droplets created 
   ],
   "gpu_info": {
     "count": 1,
+    "fabric": true,
     "model": "nvidia_h100",
     "vram": {
       "amount": 25,
@@ -192494,6 +192516,7 @@ An object containing information about the GPU capabilities of Droplets created 
     ],
     "gpu_info": {
       "count": 1,
+      "fabric": true,
       "model": "nvidia_h100",
       "vram": {
         "amount": 25,
@@ -192558,6 +192581,7 @@ An object containing information about the GPU capabilities of Droplets created 
   "subnet_uuid": "9c7a0d63-3c4e-4d3d-9f56-3b0fb0e5e4a1",
   "gpu_info": {
     "count": 1,
+    "fabric": true,
     "model": "nvidia_h100",
     "vram": {
       "amount": 25,
@@ -198474,6 +198498,7 @@ Request body for updating a resource's signal enablement. At least one of `metri
   "team_id": 39449946,
   "source": "agent",
   "agent_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
+  "environment_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
   "enabled": true,
   "updated_at": "2026-08-10T10:09:25.738533Z"
 }
@@ -198489,6 +198514,7 @@ A consent record indicating whether signals collection is enabled for a source. 
 |team_id|integer|true|none|The team ID that owns this consent record.|
 |source|string|true|none|The source this consent applies to. `agent` is per-environment consent for Harness Runtime; `inference` is team-level consent for Serverless Inference chat completions.|
 |agent_id|string|true|none|The unique identifier of the environment. For Harness Runtime, this is the Environment Config ID. Empty for team-level records (`source: inference`), which are not tied to an environment.|
+|environment_id|string|false|none|Same as agent_id when present. Dual-emitted during the rename; omitted when agent_id is empty.|
 |enabled|boolean|true|none|Whether signals collection is enabled for this source.|
 |updated_at|string(date-time)|true|none|A time value given in ISO8601 combined date and time format.|
 
@@ -198514,6 +198540,7 @@ A consent record indicating whether signals collection is enabled for a source. 
       "team_id": 39449946,
       "source": "agent",
       "agent_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
+      "environment_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
       "enabled": true,
       "updated_at": "2026-08-10T10:09:25.738533Z"
     }
@@ -198551,6 +198578,7 @@ A wrapper for a list of consent records.
   "team_id": 39449946,
   "source": "agent",
   "agent_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
+  "environment_id": "019fb3d2-8a56-72cc-8bf9-9d21510b2a99",
   "enabled": true,
   "updated_at": "2026-08-10T10:09:25.738533Z"
 }
@@ -198566,6 +198594,7 @@ Consent details for a specific environment.
 |team_id|integer|true|none|The team ID that owns this consent record.|
 |source|string|true|none|The source this consent applies to. Always `agent` for per-environment records returned by this endpoint.|
 |agent_id|string(uuid)|true|none|The unique identifier of the environment. For Harness Runtime, this is the Environment Config ID.|
+|environment_id|string(uuid)|true|none|Same as agent_id. Dual-emitted during the rename.|
 |enabled|boolean|true|none|Whether signals collection is enabled for this environment.|
 |updated_at|string(date-time)|false|none|A time value given in ISO8601 combined date and time format.|
 
@@ -198647,6 +198676,7 @@ A dialogue entry within a session, representing a single turn of conversation.
   "export_id": "9f13c09c-c877-436b-9863-dcc39c9dd737",
   "type": "agent",
   "agent_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
+  "environment_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
   "status": "complete",
   "filters": {
     "signal_type": [
@@ -198671,9 +198701,10 @@ An export job that produces a downloadable archive of signals data.
 |---|---|---|---|---|
 |export_id|string(uuid)|true|none|The unique identifier for the export job.|
 |type|string|false|none|The scope of the export. `agent` covers one Harness Runtime environment; `inference` covers the team's Serverless Inference Signals conversations.|
-|agent_id|string(uuid)|true|none|The environment whose data is being exported. For Harness Runtime, this is the Environment Config ID. Not meaningful for `inference` exports; use `type` to distinguish the export scope.|
+|agent_id|string(uuid)|false|none|The environment whose data is being exported. For Harness Runtime, this is the Environment Config ID. Not meaningful for `inference` exports; use `type` to distinguish the export scope.|
+|environment_id|string(uuid)|false|none|Same as agent_id. Dual-emitted during the rename.|
 |status|string|true|none|The current status of the export job.|
-|filters|object|false|none|The filters applied to this export.|
+|filters|object|true|none|The filters applied to this export.|
 |created_at|integer|true|none|Unix timestamp when the export was created.|
 |completed_at|integer \| null|false|none|Unix timestamp when the export completed, or null if still in progress.|
 |expires_at|integer \| null|false|none|Unix timestamp when the export download link expires.|
@@ -198700,6 +198731,7 @@ An export job that produces a downloadable archive of signals data.
 ```json
 {
   "type": "agent",
+  "environment_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
   "agent_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d",
   "signal_type": [
     "ExecutionFailureToolNotFound"
@@ -198718,8 +198750,9 @@ Request body to create a new signals data export.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|false|none|The scope of the export. `agent` exports Signals conversations for one Harness Runtime environment and requires `agent_id`. `inference` exports Serverless Inference Signals conversations for the whole team (team-wide; omit `agent_id`). Defaults to `agent` when `agent_id` is provided and to `inference` when it is omitted.|
-|agent_id|string(uuid)|false|none|The environment whose data should be exported. For Harness Runtime, this is the Environment Config ID. Required when `type` is `agent`; must be omitted when `type` is `inference`.|
+|type|string|false|none|The scope of the export. `agent` exports Signals conversations for one Harness Runtime environment and requires `environment_id` (or deprecated `agent_id`). `inference` exports Serverless Inference Signals conversations for the whole team (team-wide; omit `environment_id` and `agent_id`). Defaults to `agent` when `environment_id` or `agent_id` is provided and to `inference` when both are omitted.|
+|environment_id|string(uuid)|false|none|The environment whose data should be exported. For Harness Runtime, this is the Environment Config ID. Required when `type` is `agent` if `agent_id` is omitted; must be omitted when `type` is `inference`. Prefer this over `agent_id`.|
+|agent_id|string(uuid)|false|none|**Deprecated.** Deprecated alias for `environment_id`. Accepted for backward compatibility; must equal `environment_id` when both are set. Both set and different returns 400. Required when `type` is `agent` if `environment_id` is omitted; must be omitted when `type` is `inference`.|
 |signal_type|[string]|false|none|Filter the export to only include the specified signal types. Use the export options endpoint to list available values.|
 |session_ids|[string(uuid)]|false|none|Optional list of specific session IDs to include in the export.|
 |start_time|string(date-time)|false|none|Include only sessions that started at or after this timestamp.|
@@ -198804,6 +198837,7 @@ A pre-signed download URL for a completed export.
   "deletion_id": "01J9ZX0N5Q7M2K3R4S5T6V7W8X",
   "type": "agent",
   "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
+  "environment_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
   "status": "running",
   "error_message": null,
   "created_at": 1791036405,
@@ -198822,6 +198856,7 @@ A deletion job that permanently removes Signals conversations for one Harness Ru
 |deletion_id|string|true|none|The unique identifier for the deletion job (ULID).|
 |type|string|true|none|The scope of the deletion. `agent` deletes Signals conversations for one Harness Runtime environment. `inference` deletes Serverless Inference Signals conversations for the whole team.|
 |agent_id|string(uuid)|false|none|The Harness Runtime Environment Config ID (agent UUID) whose conversations are being deleted. Only present for `agent` deletions.|
+|environment_id|string(uuid)|false|none|Same as agent_id when present. Dual-emitted during the rename; omitted when agent_id is omitted.|
 |status|string|true|none|The current status of the deletion job.|
 |error_message|string \| null|false|none|Error message if the deletion failed, or null otherwise.|
 |created_at|integer(int64)|true|none|Unix timestamp when the deletion job was created.|
@@ -198850,6 +198885,7 @@ A deletion job that permanently removes Signals conversations for one Harness Ru
 {
   "type": "agent",
   "team_id": 12345678,
+  "environment_id": "01a10d3f-2c09-764f-99f8-458e521627f3",
   "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3"
 }
 ```
@@ -198860,9 +198896,10 @@ Request body to create a new signals data deletion job.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|true|none|The scope of the deletion. `agent` deletes Signals conversations for one Harness Runtime environment and requires `agent_id`. `inference` deletes Serverless Inference Signals conversations for the whole team (team-wide; omit `agent_id`).|
+|type|string|true|none|The scope of the deletion. `agent` deletes Signals conversations for one Harness Runtime environment and requires `environment_id` (or deprecated `agent_id`). `inference` deletes Serverless Inference Signals conversations for the whole team (team-wide; omit `environment_id` and `agent_id`).|
 |team_id|integer(int64)|true|none|The team whose data should be deleted. Must match the authenticated team.|
-|agent_id|string(uuid)|false|none|The Harness Runtime Environment Config ID of the environment whose conversations should be deleted. This is the environment's `agent_id`. Required when `type` is `agent`; must be omitted when `type` is `inference`.|
+|environment_id|string(uuid)|false|none|The Harness Runtime Environment Config ID of the environment whose conversations should be deleted. Required when `type` is `agent` if `agent_id` is omitted; must be omitted when `type` is `inference`. Prefer this over `agent_id`.|
+|agent_id|string(uuid)|false|none|**Deprecated.** Deprecated alias for `environment_id`. Accepted for backward compatibility; must equal `environment_id` when both are set. Both set and different returns 400. Required when `type` is `agent` if `environment_id` is omitted; must be omitted when `type` is `inference`.|
 
 #### Enumerated Values
 
@@ -229466,7 +229503,7 @@ Model Evaluation Run Summary - lightweight view used in run history list.
 |candidate_model_source|[apiCandidateModelSource](#schemaapicandidatemodelsource)|false|none|Whether the candidate is a served model (serverless platform, a dedicated<br>deployment, or a model router) or an OHS-hosted agent config.|
 |candidate_model_uuid|string|false|none|UUID of the candidate model to evaluate.|
 |dataset_uuid|string|false|none|UUID of the dataset to use for evaluation.|
-|epochs|integer(int64)|false|none|Number of times to evaluate each dataset row (n-pass/epochs), so the<br>result reports avg@k/pass@k/cons@k instead of a single score. Defaults<br>to 1 when unset. Capped at 3 until throughput/sharding work lands, since<br>each extra epoch roughly multiplies wall-clock run time. Not persisted<br>on presets.|
+|epochs|integer(int64)|false|none|How many times each dataset row is evaluated. Defaults to 1, maximum 10.<br>When more than 1, the results show how consistent the model is across<br>attempts (avg@k, pass@k, cons@k). Each extra attempt makes the run take<br>longer. Not saved in presets.|
 |eval_preset_uuid|string|false|none|none|
 |judge_model_uuid|string|false|none|UUID of the judge model used to score responses.|
 |metric_uuids|[string]|false|none|UUIDs of metrics to evaluate (selected from ListModelEvaluationMetrics).|
@@ -240038,7 +240075,7 @@ OpenAI-style embeddings response.
 ```json
 {
   "prompt": "A cute baby sea otter floating on its back in calm blue water",
-  "model": "openai-gpt-image-1",
+  "model": "openai-gpt-image-2",
   "moderation": "auto",
   "background": "auto",
   "output_format": "png",
@@ -240066,7 +240103,7 @@ Request body for image generation.
 |output_compression|integer \| null|false|none|The output compression level for the image generation (0-100).<br>|
 |n|integer|true|none|The number of images to generate. Must be between 1 and 10.<br>|
 |quality|string \| null|false|none|The quality of the image that will be generated. Supported values: auto, high, medium, low.<br>|
-|size|string|false|none|The size of the generated images. GPT-IMAGE-1 supports: auto (automatically select best size), 1536x1024 (landscape), 1024x1536 (portrait).<br>|
+|size|string|false|none|The size of the generated images. GPT-IMAGE-2 supports: auto (automatically select best size), 1536x1024 (landscape), 1024x1536 (portrait).<br>|
 |stream|boolean \| null|false|none|If set to true, partial image data will be streamed as the image is being generated. The response will be sent as server-sent events with partial image chunks. When stream is true, partial_images must be greater than 0.<br>|
 |partial_images|integer \| null|false|none|The number of partial image chunks to return during streaming generation. Defaults to 0. When stream=true, this must be greater than 0 to receive progressive updates of the image as it is being generated.<br>|
 |user|string \| null|false|none|A unique identifier representing your end-user, which can help DigitalOcean to monitor and detect abuse.<br>|

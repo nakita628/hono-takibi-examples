@@ -467,6 +467,25 @@ const DealCreateParamsSchema = z
       )
       .exactOptional()
       .openapi({ description: 'ファイルボックス（証憑ファイル）ID（配列）' }),
+    parent_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description:
+          '作成した取引を紐付ける各種申請のID。承認済みの各種申請を元に取引を作成する場合に指定します。作成した取引は指定した各種申請に紐付き、各種申請APIのレスポンスのdeal_idで確認できます。存在しない・閲覧権限のない各種申請、承認されていない各種申請、すでに取引・振替伝票と紐付いている各種申請を指定した場合はエラーになり、取引は作成されません。指定するには、各種申請を利用できるプランであること、各種申請を閲覧する権限、アプリに read または accounting:approval_requests:read のスコープが必要です (満たさない場合は 403 になります)。',
+        example: 1,
+      }),
   })
   .openapi({ required: ['company_id', 'details', 'issue_date', 'type'] })
   .openapi('DealCreateParams')
@@ -1108,6 +1127,25 @@ const ManualJournalCreateParamsSchema = z
       .openapi({
         description:
           '振替伝票に添付するファイルボックス（証憑ファイル）IDの一覧。操作ユーザーが参照可能なファイルを指定してください。',
+      }),
+    parent_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description:
+          '作成した振替伝票を紐付ける各種申請のID。承認済みの各種申請を元に振替伝票を作成する場合に指定します。作成した振替伝票は指定した各種申請に紐付き、各種申請APIのレスポンスのmanual_journal_idで確認できます。存在しない・閲覧権限のない各種申請、承認されていない各種申請、すでに取引・振替伝票と紐付いている各種申請を指定した場合はエラーになり、振替伝票は作成されません。指定するには、各種申請を利用できるプランであること、各種申請を閲覧する権限、アプリに read または accounting:approval_requests:read のスコープが必要です (満たさない場合は 403 になります)。',
+        example: 1,
       }),
   })
   .openapi({ required: ['company_id', 'details', 'issue_date'] })
@@ -2327,7 +2365,7 @@ const WalletTxnReconcileAdjustmentDealSchema = z
                 z.int64(),
               )
               .openapi({ type: 'integer', format: 'int64' })
-              .refine((val) => ![0].includes(val))
+              .refine((val) => ![0n].includes(val))
               .openapi({
                 type: 'integer',
                 format: 'int64',
@@ -2527,7 +2565,7 @@ const WalletTxnDealLineSchema = z
         z.int64(),
       )
       .openapi({ type: 'integer', format: 'int64' })
-      .refine((val) => ![0].includes(val))
+      .refine((val) => ![0n].includes(val))
       .openapi({
         type: 'integer',
         format: 'int64',
@@ -3931,7 +3969,7 @@ const ExpenseApplicationUpdateParamsSchema = z
         type: 'integer',
         format: 'int64',
         minimum: 1,
-        description: '部門ID',
+        description: '部門ID<br>\n未指定の場合は部門なしで更新されます。',
         example: 101,
       }),
     tag_ids: z
@@ -3949,7 +3987,7 @@ const ExpenseApplicationUpdateParamsSchema = z
           .openapi({ type: 'integer', format: 'int64', minimum: 1, example: 202 }),
       )
       .exactOptional()
-      .openapi({ description: 'メモタグID' }),
+      .openapi({ description: 'メモタグID<br>\n未指定の場合はメモタグなしで更新されます。' }),
     purchase_lines: z
       .array(
         z
@@ -4338,7 +4376,7 @@ const ExpenseApplicationUpdateParamsSchema = z
         format: 'int64',
         minimum: 1,
         description:
-          'セグメント１タグID<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+          'セグメント１タグID<br>\n未指定の場合はセグメント１タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
         example: 1,
       }),
     segment_2_tag_id: z
@@ -4357,7 +4395,7 @@ const ExpenseApplicationUpdateParamsSchema = z
         format: 'int64',
         minimum: 1,
         description:
-          'セグメント２タグID<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+          'セグメント２タグID<br>\n未指定の場合はセグメント２タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
         example: 2,
       }),
     segment_3_tag_id: z
@@ -4376,7 +4414,7 @@ const ExpenseApplicationUpdateParamsSchema = z
         format: 'int64',
         minimum: 1,
         description:
-          'セグメント３タグID<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+          'セグメント３タグID<br>\n未指定の場合はセグメント３タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
         example: 3,
       }),
   })
@@ -52005,6 +52043,26 @@ export const postApi1DealsRoute = createRoute({
                 )
                 .exactOptional()
                 .openapi({ description: 'ファイルボックス（証憑ファイル）ID（配列）' }),
+              parent_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64().min(1n))
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  description:
+                    '作成した取引を紐付ける各種申請のID。承認済みの各種申請を元に取引を作成する場合に指定します。作成した取引は指定した各種申請に紐付き、各種申請APIのレスポンスのdeal_idで確認できます。存在しない・閲覧権限のない各種申請、承認されていない各種申請、すでに取引・振替伝票と紐付いている各種申請を指定した場合はエラーになり、取引は作成されません。指定するには、各種申請を利用できるプランであること、各種申請を閲覧する権限、アプリに read または accounting:approval_requests:read のスコープが必要です (満たさない場合は 403 になります)。',
+                  example: 1,
+                }),
             })
             .openapi({ required: ['company_id', 'details', 'issue_date', 'type'] }),
         },
@@ -54460,6 +54518,26 @@ export const postApi1ManualJournalsRoute = createRoute({
                 .openapi({
                   description:
                     '振替伝票に添付するファイルボックス（証憑ファイル）IDの一覧。操作ユーザーが参照可能なファイルを指定してください。',
+                }),
+              parent_id: z
+                .preprocess((val) => {
+                  if (
+                    typeof val !== 'string' ||
+                    !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                  )
+                    return val
+                  if (/^-?\d+$/.test(val)) return BigInt(val)
+                  const num = Number(val)
+                  return Number.isSafeInteger(num) ? BigInt(num) : val
+                }, z.int64().min(1n))
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  description:
+                    '作成した振替伝票を紐付ける各種申請のID。承認済みの各種申請を元に振替伝票を作成する場合に指定します。作成した振替伝票は指定した各種申請に紐付き、各種申請APIのレスポンスのmanual_journal_idで確認できます。存在しない・閲覧権限のない各種申請、承認されていない各種申請、すでに取引・振替伝票と紐付いている各種申請を指定した場合はエラーになり、振替伝票は作成されません。指定するには、各種申請を利用できるプランであること、各種申請を閲覧する権限、アプリに read または accounting:approval_requests:read のスコープが必要です (満たさない場合は 403 になります)。',
+                  example: 1,
                 }),
             })
             .openapi({ required: ['company_id', 'details', 'issue_date'] }),
@@ -67111,7 +67189,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
   tags: ['Expense applications'],
   summary: '経費申請の更新',
   description:
-    '\n<h2 id="">概要</h2>\n\n<p>指定した事業所の経費申請を更新する</p>\n\n<p>経費精算APIの使い方については、<a href="https://developer.freee.co.jp/tips/accounting-expense-applications" target="_blank">freee会計経費精算APIの使い方</a>をご参照ください</p>\n\n<h2 id="_2">注意点</h2>\n<ul>\n  <li>本APIでは、経費申請を更新することができます。</li>\n  <li>本APIでは、status(申請ステータス): draft:下書き, feedback:差戻しのみ更新可能です。</li>\n  <li>\n    申請ステータス(下書き、申請中)の指定と変更、及び承認操作（承認する、却下する、申請者へ差し戻す、特権承認する、承認済み・却下済みを取り消す）は以下を参考にして行ってください。\n    <ul>\n      <li>\n        承認操作は申請ステータスが申請中、承認済み、却下のものだけが対象です。\n        <ul>\n          <li>\n            初回申請の場合\n            <ul><li>申請の作成（POST）</li></ul>\n          </li>\n          <li>\n            作成済みの申請の申請ステータス変更・更新する場合\n            <ul><li>申請の更新（PUT）</li></ul>\n          </li>\n          <li>\n            申請中、承認済み、却下の申請の承認操作を行う場合\n            <ul><li>承認操作の実行（POST）</li></ul>\n          </li>\n        </ul>\n      </li>\n      <li>申請の削除（DELETE）が可能なのは申請ステータスが下書き、差戻しの場合のみです</li>\n    </ul>\n  </li>\n  <li>\n    承認者の指定に部門役職データ連携を活用した、以下のいずれかの承認ステップを含む申請経路にも対応しています。\n    <ul>\n      <li>役職指定（申請者の所属部門）</li>\n      <li>役職指定（申請時に部門指定）</li>\n      <li>部門および役職指定</li>\n    </ul>\n    申請者がどの所属部門として申請するかは applicant_group_id で指定します。申請者が複数の部門に所属している場合は必須です。1段階目の承認ステップが部門選択型の場合は approval_flow_group_id を指定してください。\n  </li>\n  <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>\n  <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は更新できません。</li>\n  <li>本APIは条件分岐を含む申請経路にも対応しています。</li>\n</ul>',
+    '\n<h2 id="">概要</h2>\n\n<p>指定した事業所の経費申請を更新する</p>\n\n<p>経費精算APIの使い方については、<a href="https://developer.freee.co.jp/tips/accounting-expense-applications" target="_blank">freee会計経費精算APIの使い方</a>をご参照ください</p>\n\n<h2 id="_2">注意点</h2>\n<ul>\n  <li>本APIでは、経費申請を更新することができます。</li>\n  <li>本APIでは、status(申請ステータス): draft:下書き, feedback:差戻しのみ更新可能です。</li>\n  <li>\n    申請ステータス(下書き、申請中)の指定と変更、及び承認操作（承認する、却下する、申請者へ差し戻す、特権承認する、承認済み・却下済みを取り消す）は以下を参考にして行ってください。\n    <ul>\n      <li>\n        承認操作は申請ステータスが申請中、承認済み、却下のものだけが対象です。\n        <ul>\n          <li>\n            初回申請の場合\n            <ul><li>申請の作成（POST）</li></ul>\n          </li>\n          <li>\n            作成済みの申請の申請ステータス変更・更新する場合\n            <ul><li>申請の更新（PUT）</li></ul>\n          </li>\n          <li>\n            申請中、承認済み、却下の申請の承認操作を行う場合\n            <ul><li>承認操作の実行（POST）</li></ul>\n          </li>\n        </ul>\n      </li>\n      <li>申請の削除（DELETE）が可能なのは申請ステータスが下書き、差戻しの場合のみです</li>\n    </ul>\n  </li>\n  <li>\n    承認者の指定に部門役職データ連携を活用した、以下のいずれかの承認ステップを含む申請経路にも対応しています。\n    <ul>\n      <li>役職指定（申請者の所属部門）</li>\n      <li>役職指定（申請時に部門指定）</li>\n      <li>部門および役職指定</li>\n    </ul>\n    申請者がどの所属部門として申請するかは applicant_group_id で指定します。申請者が複数の部門に所属している場合は必須です。1段階目の承認ステップが部門選択型の場合は approval_flow_group_id を指定してください。\n  </li>\n  <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>\n  <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は更新できません。</li>\n  <li>申請全体のsection_id・tag_ids・segment_1〜3_tag_idは、指定した内容で置き換えられます。未指定の項目は削除されます。</li>\n  <li>本APIは条件分岐を含む申請経路にも対応しています。</li>\n</ul>',
   operationId: 'update_expense_application',
   request: {
     params: z.object({
@@ -67190,7 +67268,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   type: 'integer',
                   format: 'int64',
                   minimum: 1,
-                  description: '部門ID',
+                  description: '部門ID<br>\n未指定の場合は部門なしで更新されます。',
                   example: 101,
                 }),
               tag_ids: z
@@ -67212,7 +67290,9 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   ),
                 )
                 .exactOptional()
-                .openapi({ description: 'メモタグID' }),
+                .openapi({
+                  description: 'メモタグID<br>\n未指定の場合はメモタグなしで更新されます。',
+                }),
               purchase_lines: z
                 .preprocess(
                   (val) => (val === undefined || Array.isArray(val) ? val : [val]),
@@ -67674,7 +67754,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   format: 'int64',
                   minimum: 1,
                   description:
-                    'セグメント１タグID<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+                    'セグメント１タグID<br>\n未指定の場合はセグメント１タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
                   example: 1,
                 }),
               segment_2_tag_id: z
@@ -67694,7 +67774,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   format: 'int64',
                   minimum: 1,
                   description:
-                    'セグメント２タグID<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+                    'セグメント２タグID<br>\n未指定の場合はセグメント２タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
                   example: 2,
                 }),
               segment_3_tag_id: z
@@ -67714,7 +67794,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   format: 'int64',
                   minimum: 1,
                   description:
-                    'セグメント３タグID<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+                    'セグメント３タグID<br>\n未指定の場合はセグメント３タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
                   example: 3,
                 }),
             })

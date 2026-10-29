@@ -1,8 +1,8 @@
 import { defineConfig } from 'hono-takibi'
 
 export default defineConfig({
-  // Mistral AI API (mistralai/platform-docs-public)
-  input: 'https://raw.githubusercontent.com/mistralai/platform-docs-public/main/openapi.yaml',
+  // Mistral AI API (docs.mistral.ai)
+  input: 'https://docs.mistral.ai/openapi.yaml',
   output: './src/routes.ts',
   docs: {
     output: './src/api.md',

@@ -1028,6 +1028,49 @@ const DeployFilesSchema = z
             description:
               'The runtime version the server was built for, such as `nodejs24.x`. A\ndefault version is used when absent.\n',
           }),
+        scale: z
+          .object({
+            min: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64().min(0n),
+              )
+              .nullable()
+              .exactOptional()
+              .openapi({
+                type: ['integer', 'null'],
+                format: 'int64',
+                minimum: 0,
+                description:
+                  'The minimum number of instances the server keeps running. Defaults to 0\nwhen absent.\n',
+              }),
+            max: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64().min(1n),
+              )
+              .nullable()
+              .exactOptional()
+              .openapi({
+                type: ['integer', 'null'],
+                format: 'int64',
+                minimum: 1,
+                description:
+                  "The maximum number of instances the server scales to. Defaults to the\nhighest the account's plan allows when absent.\n",
+              }),
+          })
+          .exactOptional()
+          .openapi({ description: 'How many instances of the server run.', required: [] }),
       })
       .exactOptional()
       .openapi({

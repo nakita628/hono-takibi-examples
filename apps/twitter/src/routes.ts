@@ -1020,6 +1020,436 @@ const InternalErrorProblemSchema = z
   .openapi({ required: ['type', 'title', 'detail'] })
   .openapi('InternalErrorProblem')
 
+const DmBadAttachmentProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-attachment'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadAttachmentProblem')
+
+const DmBadCtaProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-cta'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadCtaProblem')
+
+const DmBadCustomProfileProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-custom-profile'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadCustomProfileProblem')
+
+const DmBadMediaProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-media'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadMediaProblem')
+
+const DmBadQuickReplyProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-quick-reply'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadQuickReplyProblem')
+
+const DmBadUrlProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-bad-url'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmBadUrlProblem')
+
+const DmConversationNameTooLongProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-conversation-name-too-long'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmConversationNameTooLongProblem')
+
+const DmConversationNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-conversation-not-found'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmConversationNotFoundProblem')
+
+const DmDuplicateProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-duplicate'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmDuplicateProblem')
+
+const DmInactiveDeviceProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-inactive-device'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmInactiveDeviceProblem')
+
+const DmNotDeliveredProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-not-delivered'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmNotDeliveredProblem')
+
+const DmNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-not-found'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmNotFoundProblem')
+
+const DmNotOwnerProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-not-owner'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmNotOwnerProblem')
+
+const DmParticipantNotAddedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-participant-not-added'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmParticipantNotAddedProblem')
+
+const DmParticipantNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-participant-not-found'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmParticipantNotFoundProblem')
+
+const DmParticipantRestrictedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-participant-restricted'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmParticipantRestrictedProblem')
+
+const DmParticipantUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-participant-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmParticipantUnavailableProblem')
+
+const DmRateLimitedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-rate-limited'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRateLimitedProblem')
+
+const DmRecipientBlocksSenderProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-blocks-sender'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientBlocksSenderProblem')
+
+const DmRecipientCannotReceiveProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-cannot-receive'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientCannotReceiveProblem')
+
+const DmRecipientEncryptedUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-encrypted-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientEncryptedUnavailableProblem')
+
+const DmRecipientNotAcceptingProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-not-accepting'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientNotAcceptingProblem')
+
+const DmRecipientNotFoundProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-not-found'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientNotFoundProblem')
+
+const DmRecipientRestrictsGroupsProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-restricts-groups'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientRestrictsGroupsProblem')
+
+const DmRecipientUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-recipient-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRecipientUnavailableProblem')
+
+const DmRequestInProgressProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-request-in-progress'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmRequestInProgressProblem')
+
+const DmSafetyLimitedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-safety-limited'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSafetyLimitedProblem')
+
+const DmSafetyRejectedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-safety-rejected'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSafetyRejectedProblem')
+
+const DmSenderBlocksRecipientProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-blocks-recipient'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderBlocksRecipientProblem')
+
+const DmSenderDeclinedDmsProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-declined-dms'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderDeclinedDmsProblem')
+
+const DmSenderDmsClosedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-dms-closed'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderDmsClosedProblem')
+
+const DmSenderEncryptedUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-encrypted-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderEncryptedUnavailableProblem')
+
+const DmSenderNotInConversationProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-not-in-conversation'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderNotInConversationProblem')
+
+const DmSenderNotPermittedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-not-permitted'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderNotPermittedProblem')
+
+const DmSenderNotVerifiedProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-not-verified'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderNotVerifiedProblem')
+
+const DmSenderPhoneRequiredProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-phone-required'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderPhoneRequiredProblem')
+
+const DmSenderReadOnlyProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-read-only'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderReadOnlyProblem')
+
+const DmSenderUnavailableProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-sender-unavailable'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmSenderUnavailableProblem')
+
+const DmTextEmptyProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-text-empty'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmTextEmptyProblem')
+
+const DmTextTooLongProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-text-too-long'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmTextTooLongProblem')
+
+const DmTooFewParticipantsProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-too-few-participants'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmTooFewParticipantsProblem')
+
+const DmTooManyParticipantsProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-too-many-participants'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmTooManyParticipantsProblem')
+
+const DmUnsupportedMessageProblemSchema = z
+  .object({
+    detail: z.string(),
+    status: z.int().exactOptional(),
+    title: z.string(),
+    type: z.literal('https://api.x.com/2/problems/dm-unsupported-message'),
+  })
+  .openapi({ required: ['type', 'title', 'detail'] })
+  .openapi('DmUnsupportedMessageProblem')
+
 const DuplicateRuleProblemSchema = z
   .object({
     detail: z.string().exactOptional(),
@@ -1053,6 +1483,49 @@ type ProblemType =
   | z.infer<typeof DisallowedResourceProblemSchema>
   | z.infer<typeof RecipientNotMessageableProblemSchema>
   | z.infer<typeof InternalErrorProblemSchema>
+  | z.infer<typeof DmBadAttachmentProblemSchema>
+  | z.infer<typeof DmBadCtaProblemSchema>
+  | z.infer<typeof DmBadCustomProfileProblemSchema>
+  | z.infer<typeof DmBadMediaProblemSchema>
+  | z.infer<typeof DmBadQuickReplyProblemSchema>
+  | z.infer<typeof DmBadUrlProblemSchema>
+  | z.infer<typeof DmConversationNameTooLongProblemSchema>
+  | z.infer<typeof DmConversationNotFoundProblemSchema>
+  | z.infer<typeof DmDuplicateProblemSchema>
+  | z.infer<typeof DmInactiveDeviceProblemSchema>
+  | z.infer<typeof DmNotDeliveredProblemSchema>
+  | z.infer<typeof DmNotFoundProblemSchema>
+  | z.infer<typeof DmNotOwnerProblemSchema>
+  | z.infer<typeof DmParticipantNotAddedProblemSchema>
+  | z.infer<typeof DmParticipantNotFoundProblemSchema>
+  | z.infer<typeof DmParticipantRestrictedProblemSchema>
+  | z.infer<typeof DmParticipantUnavailableProblemSchema>
+  | z.infer<typeof DmRateLimitedProblemSchema>
+  | z.infer<typeof DmRecipientBlocksSenderProblemSchema>
+  | z.infer<typeof DmRecipientCannotReceiveProblemSchema>
+  | z.infer<typeof DmRecipientEncryptedUnavailableProblemSchema>
+  | z.infer<typeof DmRecipientNotAcceptingProblemSchema>
+  | z.infer<typeof DmRecipientNotFoundProblemSchema>
+  | z.infer<typeof DmRecipientRestrictsGroupsProblemSchema>
+  | z.infer<typeof DmRecipientUnavailableProblemSchema>
+  | z.infer<typeof DmRequestInProgressProblemSchema>
+  | z.infer<typeof DmSafetyLimitedProblemSchema>
+  | z.infer<typeof DmSafetyRejectedProblemSchema>
+  | z.infer<typeof DmSenderBlocksRecipientProblemSchema>
+  | z.infer<typeof DmSenderDeclinedDmsProblemSchema>
+  | z.infer<typeof DmSenderDmsClosedProblemSchema>
+  | z.infer<typeof DmSenderEncryptedUnavailableProblemSchema>
+  | z.infer<typeof DmSenderNotInConversationProblemSchema>
+  | z.infer<typeof DmSenderNotPermittedProblemSchema>
+  | z.infer<typeof DmSenderNotVerifiedProblemSchema>
+  | z.infer<typeof DmSenderPhoneRequiredProblemSchema>
+  | z.infer<typeof DmSenderReadOnlyProblemSchema>
+  | z.infer<typeof DmSenderUnavailableProblemSchema>
+  | z.infer<typeof DmTextEmptyProblemSchema>
+  | z.infer<typeof DmTextTooLongProblemSchema>
+  | z.infer<typeof DmTooFewParticipantsProblemSchema>
+  | z.infer<typeof DmTooManyParticipantsProblemSchema>
+  | z.infer<typeof DmUnsupportedMessageProblemSchema>
   | z.infer<typeof DuplicateRuleProblemSchema>
   | z.infer<typeof InvalidRuleProblemSchema>
 
@@ -1239,6 +1712,49 @@ const ProblemSchema: z.ZodType<ProblemType> = z
         DisallowedResourceProblemSchema,
         RecipientNotMessageableProblemSchema,
         InternalErrorProblemSchema,
+        DmBadAttachmentProblemSchema,
+        DmBadCtaProblemSchema,
+        DmBadCustomProfileProblemSchema,
+        DmBadMediaProblemSchema,
+        DmBadQuickReplyProblemSchema,
+        DmBadUrlProblemSchema,
+        DmConversationNameTooLongProblemSchema,
+        DmConversationNotFoundProblemSchema,
+        DmDuplicateProblemSchema,
+        DmInactiveDeviceProblemSchema,
+        DmNotDeliveredProblemSchema,
+        DmNotFoundProblemSchema,
+        DmNotOwnerProblemSchema,
+        DmParticipantNotAddedProblemSchema,
+        DmParticipantNotFoundProblemSchema,
+        DmParticipantRestrictedProblemSchema,
+        DmParticipantUnavailableProblemSchema,
+        DmRateLimitedProblemSchema,
+        DmRecipientBlocksSenderProblemSchema,
+        DmRecipientCannotReceiveProblemSchema,
+        DmRecipientEncryptedUnavailableProblemSchema,
+        DmRecipientNotAcceptingProblemSchema,
+        DmRecipientNotFoundProblemSchema,
+        DmRecipientRestrictsGroupsProblemSchema,
+        DmRecipientUnavailableProblemSchema,
+        DmRequestInProgressProblemSchema,
+        DmSafetyLimitedProblemSchema,
+        DmSafetyRejectedProblemSchema,
+        DmSenderBlocksRecipientProblemSchema,
+        DmSenderDeclinedDmsProblemSchema,
+        DmSenderDmsClosedProblemSchema,
+        DmSenderEncryptedUnavailableProblemSchema,
+        DmSenderNotInConversationProblemSchema,
+        DmSenderNotPermittedProblemSchema,
+        DmSenderNotVerifiedProblemSchema,
+        DmSenderPhoneRequiredProblemSchema,
+        DmSenderReadOnlyProblemSchema,
+        DmSenderUnavailableProblemSchema,
+        DmTextEmptyProblemSchema,
+        DmTextTooLongProblemSchema,
+        DmTooFewParticipantsProblemSchema,
+        DmTooManyParticipantsProblemSchema,
+        DmUnsupportedMessageProblemSchema,
         DuplicateRuleProblemSchema,
         InvalidRuleProblemSchema,
       ])
@@ -1252,6 +1768,85 @@ const ProblemSchema: z.ZodType<ProblemType> = z
               '#/components/schemas/InvalidRuleProblem',
             'https://api.x.com/2/problems/disallowed-resource':
               '#/components/schemas/DisallowedResourceProblem',
+            'https://api.x.com/2/problems/dm-bad-attachment':
+              '#/components/schemas/DmBadAttachmentProblem',
+            'https://api.x.com/2/problems/dm-bad-cta': '#/components/schemas/DmBadCtaProblem',
+            'https://api.x.com/2/problems/dm-bad-custom-profile':
+              '#/components/schemas/DmBadCustomProfileProblem',
+            'https://api.x.com/2/problems/dm-bad-media': '#/components/schemas/DmBadMediaProblem',
+            'https://api.x.com/2/problems/dm-bad-quick-reply':
+              '#/components/schemas/DmBadQuickReplyProblem',
+            'https://api.x.com/2/problems/dm-bad-url': '#/components/schemas/DmBadUrlProblem',
+            'https://api.x.com/2/problems/dm-conversation-name-too-long':
+              '#/components/schemas/DmConversationNameTooLongProblem',
+            'https://api.x.com/2/problems/dm-conversation-not-found':
+              '#/components/schemas/DmConversationNotFoundProblem',
+            'https://api.x.com/2/problems/dm-duplicate': '#/components/schemas/DmDuplicateProblem',
+            'https://api.x.com/2/problems/dm-inactive-device':
+              '#/components/schemas/DmInactiveDeviceProblem',
+            'https://api.x.com/2/problems/dm-not-delivered':
+              '#/components/schemas/DmNotDeliveredProblem',
+            'https://api.x.com/2/problems/dm-not-found': '#/components/schemas/DmNotFoundProblem',
+            'https://api.x.com/2/problems/dm-not-owner': '#/components/schemas/DmNotOwnerProblem',
+            'https://api.x.com/2/problems/dm-participant-not-added':
+              '#/components/schemas/DmParticipantNotAddedProblem',
+            'https://api.x.com/2/problems/dm-participant-not-found':
+              '#/components/schemas/DmParticipantNotFoundProblem',
+            'https://api.x.com/2/problems/dm-participant-restricted':
+              '#/components/schemas/DmParticipantRestrictedProblem',
+            'https://api.x.com/2/problems/dm-participant-unavailable':
+              '#/components/schemas/DmParticipantUnavailableProblem',
+            'https://api.x.com/2/problems/dm-rate-limited':
+              '#/components/schemas/DmRateLimitedProblem',
+            'https://api.x.com/2/problems/dm-recipient-blocks-sender':
+              '#/components/schemas/DmRecipientBlocksSenderProblem',
+            'https://api.x.com/2/problems/dm-recipient-cannot-receive':
+              '#/components/schemas/DmRecipientCannotReceiveProblem',
+            'https://api.x.com/2/problems/dm-recipient-encrypted-unavailable':
+              '#/components/schemas/DmRecipientEncryptedUnavailableProblem',
+            'https://api.x.com/2/problems/dm-recipient-not-accepting':
+              '#/components/schemas/DmRecipientNotAcceptingProblem',
+            'https://api.x.com/2/problems/dm-recipient-not-found':
+              '#/components/schemas/DmRecipientNotFoundProblem',
+            'https://api.x.com/2/problems/dm-recipient-restricts-groups':
+              '#/components/schemas/DmRecipientRestrictsGroupsProblem',
+            'https://api.x.com/2/problems/dm-recipient-unavailable':
+              '#/components/schemas/DmRecipientUnavailableProblem',
+            'https://api.x.com/2/problems/dm-request-in-progress':
+              '#/components/schemas/DmRequestInProgressProblem',
+            'https://api.x.com/2/problems/dm-safety-limited':
+              '#/components/schemas/DmSafetyLimitedProblem',
+            'https://api.x.com/2/problems/dm-safety-rejected':
+              '#/components/schemas/DmSafetyRejectedProblem',
+            'https://api.x.com/2/problems/dm-sender-blocks-recipient':
+              '#/components/schemas/DmSenderBlocksRecipientProblem',
+            'https://api.x.com/2/problems/dm-sender-declined-dms':
+              '#/components/schemas/DmSenderDeclinedDmsProblem',
+            'https://api.x.com/2/problems/dm-sender-dms-closed':
+              '#/components/schemas/DmSenderDmsClosedProblem',
+            'https://api.x.com/2/problems/dm-sender-encrypted-unavailable':
+              '#/components/schemas/DmSenderEncryptedUnavailableProblem',
+            'https://api.x.com/2/problems/dm-sender-not-in-conversation':
+              '#/components/schemas/DmSenderNotInConversationProblem',
+            'https://api.x.com/2/problems/dm-sender-not-permitted':
+              '#/components/schemas/DmSenderNotPermittedProblem',
+            'https://api.x.com/2/problems/dm-sender-not-verified':
+              '#/components/schemas/DmSenderNotVerifiedProblem',
+            'https://api.x.com/2/problems/dm-sender-phone-required':
+              '#/components/schemas/DmSenderPhoneRequiredProblem',
+            'https://api.x.com/2/problems/dm-sender-read-only':
+              '#/components/schemas/DmSenderReadOnlyProblem',
+            'https://api.x.com/2/problems/dm-sender-unavailable':
+              '#/components/schemas/DmSenderUnavailableProblem',
+            'https://api.x.com/2/problems/dm-text-empty': '#/components/schemas/DmTextEmptyProblem',
+            'https://api.x.com/2/problems/dm-text-too-long':
+              '#/components/schemas/DmTextTooLongProblem',
+            'https://api.x.com/2/problems/dm-too-few-participants':
+              '#/components/schemas/DmTooFewParticipantsProblem',
+            'https://api.x.com/2/problems/dm-too-many-participants':
+              '#/components/schemas/DmTooManyParticipantsProblem',
+            'https://api.x.com/2/problems/dm-unsupported-message':
+              '#/components/schemas/DmUnsupportedMessageProblem',
             'https://api.x.com/2/problems/field-hydration-failure':
               '#/components/schemas/FieldHydrationFailureProblem',
             'https://api.x.com/2/problems/field-unauthorized':
@@ -2845,7 +3440,7 @@ const AddChatGroupAdminsActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature: AddChatGroupAdminsActionSignaturesMessageEventSignatureSchema.openapi({
       description: 'Message event signature supplied with an action signature.',
     }),
@@ -2868,7 +3463,9 @@ const AddChatGroupAdminsRequestSchema = z
     action_signatures: z
       .array(AddChatGroupAdminsActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     user_ids: z
       .array(z.string().regex(/^[0-9]{1,19}$/))
       .min(1)
@@ -2943,7 +3540,7 @@ const AddChatGroupMembersActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature: AddChatGroupMembersActionSignaturesMessageEventSignatureSchema.openapi(
       { description: 'Message event signature supplied with an action signature.' },
     ),
@@ -2981,7 +3578,9 @@ const AddChatGroupMembersRequestSchema = z
     action_signatures: z
       .array(AddChatGroupMembersActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     conversation_key_version: z
       .string()
       .exactOptional()
@@ -3090,7 +3689,7 @@ const AddConversationKeysActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature: AddConversationKeysActionSignaturesMessageEventSignatureSchema.openapi(
       { description: 'Message event signature supplied with an action signature.' },
     ),
@@ -3128,7 +3727,9 @@ const AddConversationKeysRequestSchema = z
     action_signatures: z
       .array(AddConversationKeysActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     base64_encoded_key_rotation: z
       .string()
       .exactOptional()
@@ -3659,7 +4260,7 @@ const ApproveChatGroupAdminRequestActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       ApproveChatGroupAdminRequestActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -3683,7 +4284,9 @@ const ApproveChatGroupAdminRequestRequestSchema = z
     action_signatures: z
       .array(ApproveChatGroupAdminRequestActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ApproveChatGroupAdminRequestRequest')
@@ -3759,7 +4362,7 @@ const ArchiveChatConversationActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       ArchiveChatConversationActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -3783,7 +4386,9 @@ const ArchiveChatConversationRequestSchema = z
     action_signatures: z
       .array(ArchiveChatConversationActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ArchiveChatConversationRequest')
@@ -4128,6 +4733,20 @@ const BroadcastChatMessageSchema = z
   })
   .openapi({ required: [] })
   .openapi('BroadcastChatMessage')
+
+const BroadcastChatMuteSchema = z
+  .object({
+    end_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Unix timestamp in milliseconds when the mute expires. Absent for indefinite mutes.',
+      }),
+    user_id: z.string().exactOptional().openapi({ description: "The muted user's ID." }),
+  })
+  .openapi({ required: [] })
+  .openapi('BroadcastChatMute')
 
 const CancelScheduledCallResponseDataSchema = z
   .strictObject({
@@ -5097,7 +5716,7 @@ const CreateChatConversationActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       CreateChatConversationActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -5136,7 +5755,9 @@ const CreateChatConversationRequestSchema = z
     action_signatures: z
       .array(CreateChatConversationActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     base64_encoded_key_rotation: z
       .string()
       .exactOptional()
@@ -5261,7 +5882,7 @@ const CreateChatGroupAdminRequestActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       CreateChatGroupAdminRequestActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -5285,7 +5906,9 @@ const CreateChatGroupAdminRequestRequestSchema = z
     action_signatures: z
       .array(CreateChatGroupAdminRequestActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('CreateChatGroupAdminRequestRequest')
@@ -5361,7 +5984,7 @@ const CreateChatGroupJoinRequestActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       CreateChatGroupJoinRequestActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -5385,7 +6008,9 @@ const CreateChatGroupJoinRequestRequestSchema = z
     action_signatures: z
       .array(CreateChatGroupJoinRequestActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     token: z
       .string()
       .regex(/^[A-Za-z0-9_-]{10}$/)
@@ -6270,17 +6895,234 @@ const CreateSourceRequestSchema = z
   .openapi({ required: ['name', 'region'] })
   .openapi('CreateSourceRequest')
 
-const CreateSourceResponseDataSourceSchema = z
+const CreateSourceResponseDataSchema = z
+  .object({
+    created_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation time, milliseconds since Unix epoch (decimal string).' }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.',
+      }),
+    is_stream_active: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.',
+      }),
+    rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
+    rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
+    stream_key: z.string().exactOptional().openapi({ description: 'RTMP stream key.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('CreateSourceResponseData')
+
+const CreateSourceResponseSchema = z
+  .object({
+    data: CreateSourceResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateSourceResponse')
+
+const CreateUserBroadcastRequestSchema = z
+  .object({
+    is_low_latency: z.boolean().exactOptional().openapi({ description: 'Ignored.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Ignored: the source sets the region.' }),
+    source_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]{1,32}$/)
+      .openapi({ description: "The source's `rtmp_stream_key`." }),
+  })
+  .openapi({ required: ['source_id'] })
+  .openapi('CreateUserBroadcastRequest')
+
+const CreateUserBroadcastResponseDataBroadcastSchema = z
   .strictObject({
+    available_for_replay: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether a replay is available.' }),
+    broadcast_id: z.string().exactOptional().openapi({ description: 'Broadcast id.' }),
+    chat_option: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.",
+      }),
+    created_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation time, milliseconds since Unix epoch (decimal string).' }),
+    end_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'End time, milliseconds since Unix epoch (decimal string).' }),
+    height: z.int().exactOptional().openapi({ description: 'Video height in pixels.' }),
+    id: z.string().openapi({ description: 'Broadcast id; equal to `broadcast_id`.' }),
+    image_url: z.string().exactOptional().openapi({ description: 'Thumbnail URL.' }),
+    image_url_medium: z.string().exactOptional().openapi({ description: 'Medium thumbnail URL.' }),
+    image_url_small: z.string().exactOptional().openapi({ description: 'Small thumbnail URL.' }),
+    is_high_latency: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the broadcast is high latency.' }),
+    language: z.string().exactOptional().openapi({ description: 'Broadcast language.' }),
+    media_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Numeric media id from `media_key`.' }),
+    media_key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Media key of the broadcast's video." }),
+    scheduled_end_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Scheduled end time, milliseconds since Unix epoch (decimal string).',
+      }),
+    scheduled_start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Scheduled start time, milliseconds since Unix epoch (decimal string).',
+      }),
+    start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start time, milliseconds since Unix epoch (decimal string).' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '`NOT_STARTED`, `RUNNING`, `TIMED_OUT`, `ENDED`, `PRE_PUBLISHED` or `CANCELED`.',
+      }),
+    status: z.string().exactOptional().openapi({ description: 'Broadcast title.' }),
+    total_watched: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total viewers (decimal string).' }),
+    total_watching: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Current viewers (decimal string).' }),
+    tweet_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Id of the Post announcing the broadcast.' }),
+    twitter_user_id: z.string().exactOptional().openapi({ description: "Owner's user id." }),
+    updated_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last update time, milliseconds since Unix epoch (decimal string).',
+      }),
+    width: z.int().exactOptional().openapi({ description: 'Video width in pixels.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('CreateUserBroadcastResponseDataBroadcast')
+
+const CreateUserBroadcastResponseDataVideoAccessSchema = z
+  .strictObject({})
+  .openapi('CreateUserBroadcastResponseDataVideoAccess')
+
+const CreateUserBroadcastResponseDataSchema = z
+  .object({
+    broadcast: CreateUserBroadcastResponseDataBroadcastSchema,
+    share_url: z.string().openapi({ description: "The broadcast's watch page." }),
+    video_access: CreateUserBroadcastResponseDataVideoAccessSchema.openapi({
+      description: 'Always empty.',
+    }),
+  })
+  .openapi({ required: ['broadcast', 'video_access', 'share_url'] })
+  .openapi('CreateUserBroadcastResponseData')
+
+const CreateUserBroadcastResponseSchema = z
+  .object({
+    data: CreateUserBroadcastResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateUserBroadcastResponse')
+
+const CreateUserSourceRequestSchema = z
+  .strictObject({
+    name: z.string().min(1).openapi({ description: 'Label for the source.' }),
+    region: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Ingest data center, `atla` or `pdxa` (default). The AWS regions us-west-1 and us-west-2 map to `pdxa`; us-east-1, us-east-2, ca-central-1, sa-east-1, eu-west-1, eu-west-2, eu-west-3, eu-central-1, eu-north-1, ap-south-1, ap-northeast-1, ap-northeast-2, ap-southeast-1 and ap-southeast-2 map to `atla`.',
+      }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('CreateUserSourceRequest')
+
+const CreateUserSourceResponseDataSourceCreationOriginSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'Name, e.g. `PublicApi`.' }),
+    original_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Upper-case name, e.g. `PUBLIC_API`.' }),
+    value: z.int().exactOptional().openapi({ description: 'Numeric value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateUserSourceResponseDataSourceCreationOrigin')
+
+const CreateUserSourceResponseDataSourceVideoServiceSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'Name, e.g. `PublicApi`.' }),
+    original_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Upper-case name, e.g. `PUBLIC_API`.' }),
+    value: z.int().exactOptional().openapi({ description: 'Numeric value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateUserSourceResponseDataSourceVideoService')
+
+const CreateUserSourceResponseDataSourceSchema = z
+  .strictObject({
+    creation_origin: CreateUserSourceResponseDataSourceCreationOriginSchema.exactOptional().openapi(
+      {
+        description:
+          'Where a source created before the move to on-prem was created, e.g. `{"value": 2, "name": "MediaStudio", "original_name": "MEDIA_STUDIO"}`; omitted for on-prem sources.',
+      },
+    ),
     creation_time: z
       .int()
       .exactOptional()
       .openapi({ description: 'Creation time, ms since Unix epoch.' }),
     id: z.string().openapi({ description: 'Source id; also the RTMP stream key.' }),
+    is360: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the source streams 360° video.' }),
     is_stream_active: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether the source is currently receiving video.' }),
+      .openapi({ description: 'Whether an encoder is currently sending video to the source.' }),
     name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
     owner_id: z
       .int()
@@ -6292,29 +7134,36 @@ const CreateSourceResponseDataSourceSchema = z
     rtmp_region: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Ingest region, e.g. `us-east-1`.' }),
+      .openapi({
+        description:
+          'Ingest region as an AWS region name, e.g. `us-east-1` or `us-west-2`. Accepted as `region` when creating a source.',
+      }),
     rtmp_stream_key: z
       .string()
       .exactOptional()
       .openapi({ description: 'Stream key; equal to `id`.' }),
     rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
     rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
+    video_service: CreateUserSourceResponseDataSourceVideoServiceSchema.exactOptional().openapi({
+      description:
+        'Video service of a source created before the move to on-prem, e.g. `{"value": 0, "name": "Vidman", "original_name": "VIDMAN"}`; omitted for on-prem sources.',
+    }),
   })
   .openapi({ required: ['id'] })
-  .openapi('CreateSourceResponseDataSource')
+  .openapi('CreateUserSourceResponseDataSource')
 
-const CreateSourceResponseDataSchema = z
-  .object({ source: CreateSourceResponseDataSourceSchema })
+const CreateUserSourceResponseDataSchema = z
+  .object({ source: CreateUserSourceResponseDataSourceSchema })
   .openapi({ required: ['source'] })
-  .openapi('CreateSourceResponseData')
+  .openapi('CreateUserSourceResponseData')
 
-const CreateSourceResponseSchema = z
+const CreateUserSourceResponseSchema = z
   .object({
-    data: CreateSourceResponseDataSchema.exactOptional(),
+    data: CreateUserSourceResponseDataSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('CreateSourceResponse')
+  .openapi('CreateUserSourceResponse')
 
 const CreateUsersBookmarkFolderRequestSchema = z
   .strictObject({
@@ -6685,6 +7534,19 @@ const DeleteBroadcastChatMessageResponseSchema = z
   .openapi({ required: [] })
   .openapi('DeleteBroadcastChatMessageResponse')
 
+const DeleteBroadcastResponseDataSchema = z
+  .object({ deleted: z.boolean().openapi({ description: 'Whether the broadcast was deleted.' }) })
+  .openapi({ required: ['deleted'] })
+  .openapi('DeleteBroadcastResponseData')
+
+const DeleteBroadcastResponseSchema = z
+  .object({
+    data: DeleteBroadcastResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteBroadcastResponse')
+
 const DeleteChatConversationActionSignaturesMessageEventSignatureMessageSigningKeyInfoListSchema = z
   .object({
     member_id: z
@@ -6738,7 +7600,7 @@ const DeleteChatConversationActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       DeleteChatConversationActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -6813,7 +7675,7 @@ const DeleteChatConversationMessageTtlActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       DeleteChatConversationMessageTtlActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -6837,7 +7699,9 @@ const DeleteChatConversationMessageTtlRequestSchema = z
     action_signatures: z
       .array(DeleteChatConversationMessageTtlActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DeleteChatConversationMessageTtlRequest')
@@ -6862,7 +7726,9 @@ const DeleteChatConversationRequestSchema = z
     action_signatures: z
       .array(DeleteChatConversationActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DeleteChatConversationRequest')
@@ -6933,7 +7799,7 @@ const DeleteChatMessagesActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature: DeleteChatMessagesActionSignaturesMessageEventSignatureSchema.openapi({
       description: 'Message event signature supplied with an action signature.',
     }),
@@ -6955,7 +7821,9 @@ const DeleteChatMessagesRequestSchema = z
   .object({
     action_signatures: z
       .array(DeleteChatMessagesActionSignaturesSchema)
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     delete_message_action: z
       .enum(['delete_for_all', 'delete_for_self'])
       .openapi({
@@ -7168,7 +8036,10 @@ const DeleteScheduledBroadcastResponseSchema = z
   .openapi({ required: [] })
   .openapi('DeleteScheduledBroadcastResponse')
 
-const DeleteSourceResponseDataSchema = z.object({}).openapi('DeleteSourceResponseData')
+const DeleteSourceResponseDataSchema = z
+  .object({ deleted: z.boolean().openapi({ description: 'Whether the source was deleted.' }) })
+  .openapi({ required: ['deleted'] })
+  .openapi('DeleteSourceResponseData')
 
 const DeleteSourceResponseSchema = z
   .object({
@@ -7177,6 +8048,29 @@ const DeleteSourceResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('DeleteSourceResponse')
+
+const DeleteUserBroadcastResponseDataSchema = z
+  .object({ success: z.boolean().openapi({ description: 'Always `true` on success.' }) })
+  .openapi({ required: ['success'] })
+  .openapi('DeleteUserBroadcastResponseData')
+
+const DeleteUserBroadcastResponseSchema = z
+  .object({
+    data: DeleteUserBroadcastResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteUserBroadcastResponse')
+
+const DeleteUserSourceResponseDataSchema = z.object({}).openapi('DeleteUserSourceResponseData')
+
+const DeleteUserSourceResponseSchema = z
+  .object({
+    data: DeleteUserSourceResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteUserSourceResponse')
 
 const DeleteUsersBookmarkResponseDataSchema = z
   .object({ bookmarked: z.boolean().openapi({ description: 'Whether the Post is bookmarked.' }) })
@@ -7276,7 +8170,7 @@ const DisableChatGroupInviteActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       DisableChatGroupInviteActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -7300,7 +8194,9 @@ const DisableChatGroupInviteRequestSchema = z
     action_signatures: z
       .array(DisableChatGroupInviteActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DisableChatGroupInviteRequest')
@@ -7594,7 +8490,7 @@ const EnableChatGroupInviteActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       EnableChatGroupInviteActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -7618,7 +8514,9 @@ const EnableChatGroupInviteRequestSchema = z
     action_signatures: z
       .array(EnableChatGroupInviteActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     affiliate_user_id: z
       .string()
       .regex(/^[0-9]{1,19}$/)
@@ -8228,6 +9126,28 @@ const GetChatModeratorsResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('GetChatModeratorsResponse')
+
+const GetChatMutedUsersResponseSchema = z
+  .object({
+    data: z.array(BroadcastChatMuteSchema).exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+    includes: ExpansionsSchema.exactOptional(),
+    meta: z
+      .object({
+        next_token: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Pagination token for the next page of results.' }),
+        result_count: z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Number of items in the data array.' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetChatMutedUsersResponse')
 
 const GetChatSettingsResponseSchema = z
   .object({
@@ -9110,6 +10030,17 @@ const GetPostsRepostsResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetPostsRepostsResponse')
 
+const GetRegionResponseSchema = z
+  .object({
+    region: z
+      .enum(['us-east-1', 'us-west-2'])
+      .openapi({
+        description: 'Ingest region. Pass it as `region` when creating a stream source.',
+      }),
+  })
+  .openapi({ required: ['region'] })
+  .openapi('GetRegionResponse')
+
 const GetRuleCountsResponseDataAllProjectClientAppsSchema = z
   .strictObject({
     client_app_id: z
@@ -9371,42 +10302,38 @@ const GetScheduledCallResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetScheduledCallResponse')
 
-const GetSourceResponseDataSourceSchema = z
-  .strictObject({
-    creation_time: z
-      .int()
+const GetSourceResponseDataSchema = z
+  .object({
+    created_at_ms: z
+      .string()
       .exactOptional()
-      .openapi({ description: 'Creation time, ms since Unix epoch.' }),
-    id: z.string().openapi({ description: 'Source id; also the RTMP stream key.' }),
+      .openapi({ description: 'Creation time, milliseconds since Unix epoch (decimal string).' }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.',
+      }),
     is_stream_active: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether the source is currently receiving video.' }),
+      .openapi({
+        description:
+          'Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.',
+      }),
     name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
-    owner_id: z
-      .int()
+    region: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          "Owner's numeric user id. Exceeds the exact integer range of many JSON parsers.",
+          'Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.',
       }),
-    rtmp_region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Ingest region, e.g. `us-east-1`.' }),
-    rtmp_stream_key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Stream key; equal to `id`.' }),
     rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
     rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
+    stream_key: z.string().exactOptional().openapi({ description: 'RTMP stream key.' }),
   })
   .openapi({ required: ['id'] })
-  .openapi('GetSourceResponseDataSource')
-
-const GetSourceResponseDataSchema = z
-  .object({ source: GetSourceResponseDataSourceSchema })
-  .openapi({ required: ['source'] })
   .openapi('GetSourceResponseData')
 
 const GetSourceResponseSchema = z
@@ -9648,6 +10575,192 @@ const GetUsageResponseSchema = z
   .object({ data: UsageSchema.exactOptional(), errors: z.array(ProblemSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('GetUsageResponse')
+
+const GetUserBroadcastResponseDataBroadcastSchema = z
+  .strictObject({
+    available_for_replay: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether a replay is available.' }),
+    broadcast_id: z.string().exactOptional().openapi({ description: 'Broadcast id.' }),
+    chat_option: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.",
+      }),
+    created_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation time, milliseconds since Unix epoch (decimal string).' }),
+    end_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'End time, milliseconds since Unix epoch (decimal string).' }),
+    height: z.int().exactOptional().openapi({ description: 'Video height in pixels.' }),
+    id: z.string().openapi({ description: 'Broadcast id; equal to `broadcast_id`.' }),
+    image_url: z.string().exactOptional().openapi({ description: 'Thumbnail URL.' }),
+    image_url_medium: z.string().exactOptional().openapi({ description: 'Medium thumbnail URL.' }),
+    image_url_small: z.string().exactOptional().openapi({ description: 'Small thumbnail URL.' }),
+    is_high_latency: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the broadcast is high latency.' }),
+    language: z.string().exactOptional().openapi({ description: 'Broadcast language.' }),
+    media_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Numeric media id from `media_key`.' }),
+    media_key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Media key of the broadcast's video." }),
+    scheduled_end_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Scheduled end time, milliseconds since Unix epoch (decimal string).',
+      }),
+    scheduled_start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Scheduled start time, milliseconds since Unix epoch (decimal string).',
+      }),
+    start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start time, milliseconds since Unix epoch (decimal string).' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '`NOT_STARTED`, `RUNNING`, `TIMED_OUT`, `ENDED`, `PRE_PUBLISHED` or `CANCELED`.',
+      }),
+    status: z.string().exactOptional().openapi({ description: 'Broadcast title.' }),
+    total_watched: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total viewers (decimal string).' }),
+    total_watching: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Current viewers (decimal string).' }),
+    tweet_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Id of the Post announcing the broadcast.' }),
+    twitter_user_id: z.string().exactOptional().openapi({ description: "Owner's user id." }),
+    updated_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last update time, milliseconds since Unix epoch (decimal string).',
+      }),
+    width: z.int().exactOptional().openapi({ description: 'Video width in pixels.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('GetUserBroadcastResponseDataBroadcast')
+
+const GetUserBroadcastResponseDataSchema = z
+  .object({ broadcast: GetUserBroadcastResponseDataBroadcastSchema })
+  .openapi({ required: ['broadcast'] })
+  .openapi('GetUserBroadcastResponseData')
+
+const GetUserBroadcastResponseSchema = z
+  .object({
+    data: GetUserBroadcastResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GetUserBroadcastResponse')
+
+const GetUserSourceResponseDataSourceCreationOriginSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'Name, e.g. `PublicApi`.' }),
+    original_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Upper-case name, e.g. `PUBLIC_API`.' }),
+    value: z.int().exactOptional().openapi({ description: 'Numeric value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetUserSourceResponseDataSourceCreationOrigin')
+
+const GetUserSourceResponseDataSourceVideoServiceSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'Name, e.g. `PublicApi`.' }),
+    original_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Upper-case name, e.g. `PUBLIC_API`.' }),
+    value: z.int().exactOptional().openapi({ description: 'Numeric value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetUserSourceResponseDataSourceVideoService')
+
+const GetUserSourceResponseDataSourceSchema = z
+  .strictObject({
+    creation_origin: GetUserSourceResponseDataSourceCreationOriginSchema.exactOptional().openapi({
+      description:
+        'Where a source created before the move to on-prem was created, e.g. `{"value": 2, "name": "MediaStudio", "original_name": "MEDIA_STUDIO"}`; omitted for on-prem sources.',
+    }),
+    creation_time: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Creation time, ms since Unix epoch.' }),
+    id: z.string().openapi({ description: 'Source id; also the RTMP stream key.' }),
+    is360: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the source streams 360° video.' }),
+    is_stream_active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether an encoder is currently sending video to the source.' }),
+    name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
+    owner_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Owner's numeric user id. Exceeds the exact integer range of many JSON parsers.",
+      }),
+    rtmp_region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ingest region as an AWS region name, e.g. `us-east-1` or `us-west-2`. Accepted as `region` when creating a source.',
+      }),
+    rtmp_stream_key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Stream key; equal to `id`.' }),
+    rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
+    rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
+    video_service: GetUserSourceResponseDataSourceVideoServiceSchema.exactOptional().openapi({
+      description:
+        'Video service of a source created before the move to on-prem, e.g. `{"value": 0, "name": "Vidman", "original_name": "VIDMAN"}`; omitted for on-prem sources.',
+    }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('GetUserSourceResponseDataSource')
+
+const GetUserSourceResponseDataSchema = z
+  .object({ source: GetUserSourceResponseDataSourceSchema })
+  .openapi({ required: ['source'] })
+  .openapi('GetUserSourceResponseData')
+
+const GetUserSourceResponseSchema = z
+  .object({
+    data: GetUserSourceResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GetUserSourceResponse')
 
 const GetUsersAffiliatesResponseSchema = z
   .object({
@@ -10731,17 +11844,215 @@ const ListScheduledCallsResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListScheduledCallsResponse')
 
-const ListSourcesResponseDataSourcesSchema = z
+const ListSourcesResponseDataSchema = z
+  .object({
+    created_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation time, milliseconds since Unix epoch (decimal string).' }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.',
+      }),
+    is_stream_active: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.',
+      }),
+    rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
+    rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
+    stream_key: z.string().exactOptional().openapi({ description: 'RTMP stream key.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('ListSourcesResponseData')
+
+const ListSourcesResponseSchema = z
+  .object({
+    data: z.array(ListSourcesResponseDataSchema).exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+    meta: z
+      .object({
+        result_count: z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Number of items in the data array.' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('ListSourcesResponse')
+
+const ListUserBroadcastsResponseDataBroadcastsSchema = z
   .strictObject({
+    available_for_replay: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether a replay is available.' }),
+    broadcast_id: z.string().exactOptional().openapi({ description: 'Broadcast id.' }),
+    chat_option: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.",
+      }),
+    created_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation time, milliseconds since Unix epoch (decimal string).' }),
+    end_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'End time, milliseconds since Unix epoch (decimal string).' }),
+    height: z.int().exactOptional().openapi({ description: 'Video height in pixels.' }),
+    id: z.string().openapi({ description: 'Broadcast id; equal to `broadcast_id`.' }),
+    image_url: z.string().exactOptional().openapi({ description: 'Thumbnail URL.' }),
+    image_url_medium: z.string().exactOptional().openapi({ description: 'Medium thumbnail URL.' }),
+    image_url_small: z.string().exactOptional().openapi({ description: 'Small thumbnail URL.' }),
+    is_high_latency: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the broadcast is high latency.' }),
+    language: z.string().exactOptional().openapi({ description: 'Broadcast language.' }),
+    media_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Numeric media id from `media_key`.' }),
+    media_key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Media key of the broadcast's video." }),
+    scheduled_end_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Scheduled end time, milliseconds since Unix epoch (decimal string).',
+      }),
+    scheduled_start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Scheduled start time, milliseconds since Unix epoch (decimal string).',
+      }),
+    start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start time, milliseconds since Unix epoch (decimal string).' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '`NOT_STARTED`, `RUNNING`, `TIMED_OUT`, `ENDED`, `PRE_PUBLISHED` or `CANCELED`.',
+      }),
+    status: z.string().exactOptional().openapi({ description: 'Broadcast title.' }),
+    total_watched: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total viewers (decimal string).' }),
+    total_watching: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Current viewers (decimal string).' }),
+    tweet_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Id of the Post announcing the broadcast.' }),
+    twitter_user_id: z.string().exactOptional().openapi({ description: "Owner's user id." }),
+    updated_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last update time, milliseconds since Unix epoch (decimal string).',
+      }),
+    width: z.int().exactOptional().openapi({ description: 'Video width in pixels.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('ListUserBroadcastsResponseDataBroadcasts')
+
+const ListUserBroadcastsResponseDataNextTokenSchema = z
+  .strictObject({
+    offset: z
+      .string()
+      .openapi({ description: 'Pass as `pagination_token` to read the next page.' }),
+  })
+  .openapi({ required: ['offset'] })
+  .openapi('ListUserBroadcastsResponseDataNextToken')
+
+const ListUserBroadcastsResponseDataSchema = z
+  .object({
+    broadcasts: z.array(ListUserBroadcastsResponseDataBroadcastsSchema),
+    next_token: ListUserBroadcastsResponseDataNextTokenSchema.exactOptional(),
+  })
+  .openapi({ required: ['broadcasts'] })
+  .openapi('ListUserBroadcastsResponseData')
+
+const ListUserBroadcastsResponseSchema = z
+  .object({
+    data: ListUserBroadcastsResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ListUserBroadcastsResponse')
+
+const ListUserSourcesResponseDataSourcesCreationOriginSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'Name, e.g. `PublicApi`.' }),
+    original_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Upper-case name, e.g. `PUBLIC_API`.' }),
+    value: z.int().exactOptional().openapi({ description: 'Numeric value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ListUserSourcesResponseDataSourcesCreationOrigin')
+
+const ListUserSourcesResponseDataSourcesVideoServiceSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'Name, e.g. `PublicApi`.' }),
+    original_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Upper-case name, e.g. `PUBLIC_API`.' }),
+    value: z.int().exactOptional().openapi({ description: 'Numeric value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ListUserSourcesResponseDataSourcesVideoService')
+
+const ListUserSourcesResponseDataSourcesSchema = z
+  .strictObject({
+    creation_origin: ListUserSourcesResponseDataSourcesCreationOriginSchema.exactOptional().openapi(
+      {
+        description:
+          'Where a source created before the move to on-prem was created, e.g. `{"value": 2, "name": "MediaStudio", "original_name": "MEDIA_STUDIO"}`; omitted for on-prem sources.',
+      },
+    ),
     creation_time: z
       .int()
       .exactOptional()
       .openapi({ description: 'Creation time, ms since Unix epoch.' }),
     id: z.string().openapi({ description: 'Source id; also the RTMP stream key.' }),
+    is360: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the source streams 360° video.' }),
     is_stream_active: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether the source is currently receiving video.' }),
+      .openapi({ description: 'Whether an encoder is currently sending video to the source.' }),
     name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
     owner_id: z
       .int()
@@ -10753,29 +12064,36 @@ const ListSourcesResponseDataSourcesSchema = z
     rtmp_region: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Ingest region, e.g. `us-east-1`.' }),
+      .openapi({
+        description:
+          'Ingest region as an AWS region name, e.g. `us-east-1` or `us-west-2`. Accepted as `region` when creating a source.',
+      }),
     rtmp_stream_key: z
       .string()
       .exactOptional()
       .openapi({ description: 'Stream key; equal to `id`.' }),
     rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
     rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
+    video_service: ListUserSourcesResponseDataSourcesVideoServiceSchema.exactOptional().openapi({
+      description:
+        'Video service of a source created before the move to on-prem, e.g. `{"value": 0, "name": "Vidman", "original_name": "VIDMAN"}`; omitted for on-prem sources.',
+    }),
   })
   .openapi({ required: ['id'] })
-  .openapi('ListSourcesResponseDataSources')
+  .openapi('ListUserSourcesResponseDataSources')
 
-const ListSourcesResponseDataSchema = z
-  .object({ sources: z.array(ListSourcesResponseDataSourcesSchema) })
+const ListUserSourcesResponseDataSchema = z
+  .object({ sources: z.array(ListUserSourcesResponseDataSourcesSchema) })
   .openapi({ required: ['sources'] })
-  .openapi('ListSourcesResponseData')
+  .openapi('ListUserSourcesResponseData')
 
-const ListSourcesResponseSchema = z
+const ListUserSourcesResponseSchema = z
   .object({
-    data: ListSourcesResponseDataSchema.exactOptional(),
+    data: ListUserSourcesResponseDataSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('ListSourcesResponse')
+  .openapi('ListUserSourcesResponse')
 
 const MarkChatConversationReadActionSignaturesMessageEventSignatureMessageSigningKeyInfoListSchema =
   z
@@ -10833,7 +12151,7 @@ const MarkChatConversationReadActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       MarkChatConversationReadActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -11088,7 +12406,7 @@ const MuteChatConversationActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       MuteChatConversationActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -11112,7 +12430,9 @@ const MuteChatConversationRequestSchema = z
     action_signatures: z
       .array(MuteChatConversationActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('MuteChatConversationRequest')
@@ -11133,6 +12453,56 @@ const MuteChatConversationResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('MuteChatConversationResponse')
+
+const MuteChatUserRequestSchema = z
+  .strictObject({
+    broadcast_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]{1,24}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          "A broadcast whose host's chats the user is muted in. Required with `message_id`.",
+      }),
+    end_at_ms: z
+      .string()
+      .regex(/^[1-9][0-9]{0,18}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The Unix timestamp in milliseconds when the mute expires. Omit this field to mute indefinitely.',
+      }),
+    message_id: z
+      .string()
+      .regex(/^[1-9][0-9]{0,18}$/)
+      .exactOptional()
+      .openapi({
+        description: 'A chat message in `broadcast_id` to remove while muting the user.',
+      }),
+    user_id: z
+      .string()
+      .regex(/^[1-9][0-9]{0,18}$/)
+      .openapi({ description: 'The user to mute.' }),
+  })
+  .openapi({ required: ['user_id'] })
+  .openapi('MuteChatUserRequest')
+
+const MuteChatUserResponseDataSchema = z
+  .object({
+    muted: z
+      .boolean()
+      .openapi({ description: 'Whether the user is muted in this broadcast chat.' }),
+  })
+  .openapi({ required: ['muted'] })
+  .openapi('MuteChatUserResponseData')
+
+const MuteChatUserResponseSchema = z
+  .object({
+    data: MuteChatUserResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MuteChatUserResponse')
 
 const MuteUserRequestSchema = z
   .strictObject({ target_user_id: z.string().regex(/^[0-9]{1,19}$/) })
@@ -11784,7 +13154,7 @@ const RejectChatGroupAdminRequestActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       RejectChatGroupAdminRequestActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -11808,7 +13178,9 @@ const RejectChatGroupAdminRequestRequestSchema = z
     action_signatures: z
       .array(RejectChatGroupAdminRequestActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('RejectChatGroupAdminRequestRequest')
@@ -11884,7 +13256,7 @@ const RejectChatGroupJoinRequestsActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       RejectChatGroupJoinRequestsActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -11908,7 +13280,9 @@ const RejectChatGroupJoinRequestsRequestSchema = z
     action_signatures: z
       .array(RejectChatGroupJoinRequestsActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     user_ids: z
       .array(z.string().regex(/^[0-9]{1,19}$/))
       .min(1)
@@ -11985,7 +13359,7 @@ const RemoveChatGroupAdminsActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       RemoveChatGroupAdminsActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -12009,7 +13383,9 @@ const RemoveChatGroupAdminsRequestSchema = z
     action_signatures: z
       .array(RemoveChatGroupAdminsActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     user_ids: z
       .array(z.string().regex(/^[0-9]{1,19}$/))
       .min(1)
@@ -12084,7 +13460,7 @@ const RemoveChatGroupMembersActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       RemoveChatGroupMembersActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -12103,12 +13479,86 @@ const RemoveChatGroupMembersActionSignaturesSchema = z
   .openapi({ required: ['message_id', 'encoded_message_event_detail', 'message_event_signature'] })
   .openapi('RemoveChatGroupMembersActionSignatures')
 
+const RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeysSchema = z
+  .object({
+    encrypted_conversation_key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Conversation key encrypted with this participant's public key." }),
+    public_key_version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Version of the participant's public key used for encryption." }),
+    user_id: z.string().exactOptional().openapi({ description: 'Participant user ID.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeys')
+
+const RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundleSchema = z
+  .object({
+    base64_encoded_encrypted_pmk: z
+      .string()
+      .openapi({
+        description: 'Base64-encoded message key, encrypted with the new conversation key.',
+      }),
+    message_sequence_id: z
+      .string()
+      .openapi({ description: 'Sequence ID of the message the key belongs to.' }),
+    pme_sequence_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Sequence ID of the key's origin event." }),
+  })
+  .openapi({ required: ['base64_encoded_encrypted_pmk', 'message_sequence_id'] })
+  .openapi('RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundle')
+
+const RemoveChatGroupMembersGroupKeyRotationDataSchema = z
+  .object({
+    base64_encoded_key_rotation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Base64-encoded key rotation payload.' }),
+    conversation_key_version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the new rotated conversation key.' }),
+    conversation_participant_keys: z
+      .array(RemoveChatGroupMembersGroupKeyRotationDataConversationParticipantKeysSchema)
+      .exactOptional()
+      .openapi({ description: 'Encrypted conversation keys for each participant.' }),
+    encrypted_avatar: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Re-encrypted group avatar with new conversation key.' }),
+    encrypted_description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Re-encrypted group description with new conversation key.' }),
+    encrypted_title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Re-encrypted group title with new conversation key.' }),
+    rotated_pmk_bundle: z
+      .array(RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundleSchema)
+      .exactOptional()
+      .openapi({ description: 'Message keys re-encrypted with the rotated conversation key.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('RemoveChatGroupMembersGroupKeyRotationData')
+
 const RemoveChatGroupMembersRequestSchema = z
   .object({
     action_signatures: z
       .array(RemoveChatGroupMembersActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
+    group_key_rotation_data:
+      RemoveChatGroupMembersGroupKeyRotationDataSchema.exactOptional().openapi({
+        description:
+          'Conversation key rotated as part of this removal. Omit it when the removal does not change the key.',
+      }),
     user_ids: z
       .array(z.string())
       .min(1)
@@ -13036,7 +14486,7 @@ const UnarchiveChatConversationActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       UnarchiveChatConversationActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -13060,7 +14510,9 @@ const UnarchiveChatConversationRequestSchema = z
     action_signatures: z
       .array(UnarchiveChatConversationActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('UnarchiveChatConversationRequest')
@@ -13212,7 +14664,7 @@ const UnmuteChatConversationActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       UnmuteChatConversationActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -13236,7 +14688,9 @@ const UnmuteChatConversationRequestSchema = z
     action_signatures: z
       .array(UnmuteChatConversationActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('UnmuteChatConversationRequest')
@@ -13257,6 +14711,23 @@ const UnmuteChatConversationResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('UnmuteChatConversationResponse')
+
+const UnmuteChatUserResponseDataSchema = z
+  .object({
+    muted: z
+      .boolean()
+      .openapi({ description: 'Whether the user is muted in this broadcast chat.' }),
+  })
+  .openapi({ required: ['muted'] })
+  .openapi('UnmuteChatUserResponseData')
+
+const UnmuteChatUserResponseSchema = z
+  .object({
+    data: UnmuteChatUserResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UnmuteChatUserResponse')
 
 const UnmuteUserResponseDataSchema = z
   .object({ muting: z.boolean().openapi({ description: 'Whether the user is muted.' }) })
@@ -13429,6 +14900,36 @@ const UpdateBotResponseSchema = z
   .openapi({ required: [] })
   .openapi('UpdateBotResponse')
 
+const UpdateBroadcastStateRequestSchema = z
+  .object({
+    chat_option: z.int().exactOptional().openapi({ description: 'Not allowed with `END`.' }),
+    locale: z.string().exactOptional().openapi({ description: 'Not allowed with `END`.' }),
+    should_not_tweet: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Not allowed with `END`.' }),
+    state: z.string().openapi({ description: '`END`. `PUBLISH` is not supported.' }),
+    title: z.string().exactOptional().openapi({ description: 'Not allowed with `END`.' }),
+  })
+  .openapi({ required: ['state'] })
+  .openapi('UpdateBroadcastStateRequest')
+
+const UpdateBroadcastStateResponseDataSchema = z
+  .object({
+    id: z.string().openapi({ description: 'Broadcast id.' }),
+    state: z.string().openapi({ description: 'Always `ENDED`.' }),
+  })
+  .openapi({ required: ['id', 'state'] })
+  .openapi('UpdateBroadcastStateResponseData')
+
+const UpdateBroadcastStateResponseSchema = z
+  .object({
+    data: UpdateBroadcastStateResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateBroadcastStateResponse')
+
 const UpdateChatConversationMessageTtlActionSignaturesMessageEventSignatureMessageSigningKeyInfoListSchema =
   z
     .object({
@@ -13485,7 +14986,7 @@ const UpdateChatConversationMessageTtlActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       UpdateChatConversationMessageTtlActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -13509,7 +15010,9 @@ const UpdateChatConversationMessageTtlRequestSchema = z
     action_signatures: z
       .array(UpdateChatConversationMessageTtlActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     message_ttl_ms: z
       .string()
       .regex(/^[0-9]{1,19}$/)
@@ -13589,7 +15092,7 @@ const UpdateChatConversationScreenCaptureBlockingActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       UpdateChatConversationScreenCaptureBlockingActionSignaturesMessageEventSignatureSchema.openapi(
         { description: 'Message event signature supplied with an action signature.' },
@@ -13664,7 +15167,7 @@ const UpdateChatConversationScreenCaptureDetectionActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       UpdateChatConversationScreenCaptureDetectionActionSignaturesMessageEventSignatureSchema.openapi(
         { description: 'Message event signature supplied with an action signature.' },
@@ -13716,7 +15219,10 @@ const UpdateChatConversationScreenCaptureRequestSchema = z
         blocking_action_signatures: z
           .array(UpdateChatConversationScreenCaptureBlockingActionSignaturesSchema)
           .exactOptional()
-          .openapi({ description: 'Cryptographic signatures for the screenshot blocking change.' }),
+          .openapi({
+            description:
+              'Signatures for the screenshot blocking change, forwarded in the order they are sent.',
+          }),
         detection: z
           .boolean()
           .exactOptional()
@@ -13727,7 +15233,8 @@ const UpdateChatConversationScreenCaptureRequestSchema = z
           .array(UpdateChatConversationScreenCaptureDetectionActionSignaturesSchema)
           .exactOptional()
           .openapi({
-            description: 'Cryptographic signatures for the screenshot detection change.',
+            description:
+              'Signatures for the screenshot detection change, forwarded in the order they are sent.',
           }),
       })
       .openapi({ required: [] }),
@@ -13808,7 +15315,7 @@ const UpdateChatGroupActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature: UpdateChatGroupActionSignaturesMessageEventSignatureSchema.openapi({
       description: 'Message event signature supplied with an action signature.',
     }),
@@ -13882,7 +15389,7 @@ const UpdateChatGroupAdminSettingsActionSignaturesSchema = z
       .string()
       .regex(/^[A-Za-z0-9+\/=_-]+$/)
       .min(1)
-      .openapi({ description: 'Base64-encoded message event detail.' }),
+      .openapi({ description: 'Base64-encoded Thrift MessageEventDetail for the signed action.' }),
     message_event_signature:
       UpdateChatGroupAdminSettingsActionSignaturesMessageEventSignatureSchema.openapi({
         description: 'Message event signature supplied with an action signature.',
@@ -13970,7 +15477,9 @@ const UpdateChatGroupAdminSettingsRequestSchema = z
         action_signatures: z
           .array(UpdateChatGroupAdminSettingsActionSignaturesSchema)
           .exactOptional()
-          .openapi({ description: 'Cryptographic signatures for the action.' }),
+          .openapi({
+            description: 'Signatures for this action, forwarded in the order they are sent.',
+          }),
         add_member: z
           .boolean()
           .exactOptional()
@@ -14064,7 +15573,9 @@ const UpdateChatGroupRequestSchema = z
     action_signatures: z
       .array(UpdateChatGroupActionSignaturesSchema)
       .exactOptional()
-      .openapi({ description: 'Cryptographic signatures for the action.' }),
+      .openapi({
+        description: 'Signatures for this action, forwarded in the order they are sent.',
+      }),
     base64_encoded_key_rotation: z
       .string()
       .exactOptional()
@@ -14726,17 +16237,237 @@ const UpdateSourceRequestSchema = z
   .openapi({ required: ['name'] })
   .openapi('UpdateSourceRequest')
 
-const UpdateSourceResponseDataSourceSchema = z
+const UpdateSourceResponseDataSchema = z
+  .object({
+    created_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation time, milliseconds since Unix epoch (decimal string).' }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.',
+      }),
+    is_stream_active: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.',
+      }),
+    rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
+    rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
+    stream_key: z.string().exactOptional().openapi({ description: 'RTMP stream key.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('UpdateSourceResponseData')
+
+const UpdateSourceResponseSchema = z
+  .object({
+    data: UpdateSourceResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateSourceResponse')
+
+const UpdateUserBroadcastStateRequestSchema = z
+  .object({
+    chat_option: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. `PUBLISH` only.",
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Broadcast language. `PUBLISH` only.' }),
+    should_not_tweet: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Skip the announcing Post. Unset keeps the broadcast's setting, which defaults to posting. `PUBLISH` only.",
+      }),
+    state: z.string().openapi({ description: '`PUBLISH` or `END`.' }),
+    title: z.string().exactOptional().openapi({ description: 'Broadcast title. `PUBLISH` only.' }),
+  })
+  .openapi({ required: ['state'] })
+  .openapi('UpdateUserBroadcastStateRequest')
+
+const UpdateUserBroadcastStateResponseDataBroadcastSchema = z
   .strictObject({
+    available_for_replay: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether a replay is available.' }),
+    broadcast_id: z.string().exactOptional().openapi({ description: 'Broadcast id.' }),
+    chat_option: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.",
+      }),
+    created_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creation time, milliseconds since Unix epoch (decimal string).' }),
+    end_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'End time, milliseconds since Unix epoch (decimal string).' }),
+    height: z.int().exactOptional().openapi({ description: 'Video height in pixels.' }),
+    id: z.string().openapi({ description: 'Broadcast id; equal to `broadcast_id`.' }),
+    image_url: z.string().exactOptional().openapi({ description: 'Thumbnail URL.' }),
+    image_url_medium: z.string().exactOptional().openapi({ description: 'Medium thumbnail URL.' }),
+    image_url_small: z.string().exactOptional().openapi({ description: 'Small thumbnail URL.' }),
+    is_high_latency: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the broadcast is high latency.' }),
+    language: z.string().exactOptional().openapi({ description: 'Broadcast language.' }),
+    media_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Numeric media id from `media_key`.' }),
+    media_key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Media key of the broadcast's video." }),
+    scheduled_end_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Scheduled end time, milliseconds since Unix epoch (decimal string).',
+      }),
+    scheduled_start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Scheduled start time, milliseconds since Unix epoch (decimal string).',
+      }),
+    start_ms: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start time, milliseconds since Unix epoch (decimal string).' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '`NOT_STARTED`, `RUNNING`, `TIMED_OUT`, `ENDED`, `PRE_PUBLISHED` or `CANCELED`.',
+      }),
+    status: z.string().exactOptional().openapi({ description: 'Broadcast title.' }),
+    total_watched: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total viewers (decimal string).' }),
+    total_watching: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Current viewers (decimal string).' }),
+    tweet_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Id of the Post announcing the broadcast.' }),
+    twitter_user_id: z.string().exactOptional().openapi({ description: "Owner's user id." }),
+    updated_at_ms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last update time, milliseconds since Unix epoch (decimal string).',
+      }),
+    width: z.int().exactOptional().openapi({ description: 'Video width in pixels.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('UpdateUserBroadcastStateResponseDataBroadcast')
+
+const UpdateUserBroadcastStateResponseDataSchema = z
+  .object({
+    broadcast: UpdateUserBroadcastStateResponseDataBroadcastSchema.exactOptional().openapi({
+      description: 'The published broadcast, on `PUBLISH`.',
+    }),
+    success: z.boolean().exactOptional().openapi({ description: '`true` once `END` succeeds.' }),
+    tweet_error: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Why the announcing Post failed, on `PUBLISH`. Omitted when the Post went out or `should_not_tweet` was true.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateUserBroadcastStateResponseData')
+
+const UpdateUserBroadcastStateResponseSchema = z
+  .object({
+    data: UpdateUserBroadcastStateResponseDataSchema.exactOptional(),
+    errors: z.array(ProblemSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateUserBroadcastStateResponse')
+
+const UpdateUserSourceRequestSchema = z
+  .strictObject({ name: z.string().min(1).openapi({ description: 'New label for the source.' }) })
+  .openapi({ required: ['name'] })
+  .openapi('UpdateUserSourceRequest')
+
+const UpdateUserSourceResponseDataSourceCreationOriginSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'Name, e.g. `PublicApi`.' }),
+    original_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Upper-case name, e.g. `PUBLIC_API`.' }),
+    value: z.int().exactOptional().openapi({ description: 'Numeric value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateUserSourceResponseDataSourceCreationOrigin')
+
+const UpdateUserSourceResponseDataSourceVideoServiceSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'Name, e.g. `PublicApi`.' }),
+    original_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Upper-case name, e.g. `PUBLIC_API`.' }),
+    value: z.int().exactOptional().openapi({ description: 'Numeric value.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UpdateUserSourceResponseDataSourceVideoService')
+
+const UpdateUserSourceResponseDataSourceSchema = z
+  .strictObject({
+    creation_origin: UpdateUserSourceResponseDataSourceCreationOriginSchema.exactOptional().openapi(
+      {
+        description:
+          'Where a source created before the move to on-prem was created, e.g. `{"value": 2, "name": "MediaStudio", "original_name": "MEDIA_STUDIO"}`; omitted for on-prem sources.',
+      },
+    ),
     creation_time: z
       .int()
       .exactOptional()
       .openapi({ description: 'Creation time, ms since Unix epoch.' }),
     id: z.string().openapi({ description: 'Source id; also the RTMP stream key.' }),
+    is360: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the source streams 360° video.' }),
     is_stream_active: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether the source is currently receiving video.' }),
+      .openapi({ description: 'Whether an encoder is currently sending video to the source.' }),
     name: z.string().exactOptional().openapi({ description: 'Label for the source.' }),
     owner_id: z
       .int()
@@ -14748,29 +16479,36 @@ const UpdateSourceResponseDataSourceSchema = z
     rtmp_region: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Ingest region, e.g. `us-east-1`.' }),
+      .openapi({
+        description:
+          'Ingest region as an AWS region name, e.g. `us-east-1` or `us-west-2`. Accepted as `region` when creating a source.',
+      }),
     rtmp_stream_key: z
       .string()
       .exactOptional()
       .openapi({ description: 'Stream key; equal to `id`.' }),
     rtmp_url: z.string().exactOptional().openapi({ description: 'RTMP ingest URL.' }),
     rtmps_url: z.string().exactOptional().openapi({ description: 'RTMPS ingest URL (port 443).' }),
+    video_service: UpdateUserSourceResponseDataSourceVideoServiceSchema.exactOptional().openapi({
+      description:
+        'Video service of a source created before the move to on-prem, e.g. `{"value": 0, "name": "Vidman", "original_name": "VIDMAN"}`; omitted for on-prem sources.',
+    }),
   })
   .openapi({ required: ['id'] })
-  .openapi('UpdateSourceResponseDataSource')
+  .openapi('UpdateUserSourceResponseDataSource')
 
-const UpdateSourceResponseDataSchema = z
-  .object({ source: UpdateSourceResponseDataSourceSchema })
+const UpdateUserSourceResponseDataSchema = z
+  .object({ source: UpdateUserSourceResponseDataSourceSchema })
   .openapi({ required: ['source'] })
-  .openapi('UpdateSourceResponseData')
+  .openapi('UpdateUserSourceResponseData')
 
-const UpdateSourceResponseSchema = z
+const UpdateUserSourceResponseSchema = z
   .object({
-    data: UpdateSourceResponseDataSchema.exactOptional(),
+    data: UpdateUserSourceResponseDataSchema.exactOptional(),
     errors: z.array(ProblemSchema).exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('UpdateSourceResponse')
+  .openapi('UpdateUserSourceResponse')
 
 const UploadComplianceJobSubmissionRequestSchema = z
   .strictObject({
@@ -15062,6 +16800,84 @@ const BroadcastChatMessageFieldsParameterParamsSchema = z
       style: 'form',
     },
     description: 'The fields available for a BroadcastChatMessage object.',
+  })
+
+const BroadcastChatMuteExpansionsParameterParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z
+      .array(z.literal('user_id'))
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      }),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'expansions',
+      in: 'query',
+      description: 'A comma separated list of fields to expand.',
+      required: false,
+      schema: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: { type: 'string', enum: ['user_id'] },
+      },
+      explode: false,
+      style: 'form',
+    },
+  })
+
+const BroadcastChatMuteFieldsParameterParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z
+      .array(z.literal('end_at_ms'))
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      }),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'broadcast_chat_mute.fields',
+      in: 'query',
+      description: 'A comma separated list of BroadcastChatMute fields to display.',
+      required: false,
+      schema: {
+        type: 'array',
+        description: 'The fields available for a BroadcastChatMute object.',
+        minItems: 1,
+        uniqueItems: true,
+        items: { type: 'string', enum: ['end_at_ms'] },
+      },
+      explode: false,
+      style: 'form',
+    },
+    description: 'The fields available for a BroadcastChatMute object.',
   })
 
 const BroadcastFieldsParameterParamsSchema = z
@@ -17405,6 +19221,10 @@ const OAuth2UserTokenSecurityScheme = {
         'list.read':
           'View Lists, members, and followers of Lists you created or are a member of, including private Lists.',
         'list.write': 'Create and manage Lists on your behalf.',
+        'media.library.read':
+          'View your media library, its analytics, and its monetization settings.',
+        'media.library.write':
+          'Add media to your media library and manage its monetization settings.',
         'media.write': 'Upload media, such as photos and videos, on your behalf.',
         'mute.read': 'View accounts you have muted.',
         'mute.write': 'Mute and unmute accounts on your behalf.',
@@ -17540,7 +19360,7 @@ export const get2AccountActivityWebhooksWebhookIdSubscriptionsAllRoute = createR
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'dm.read', 'dm.write', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read', 'dm.read'] },
     { UserToken: [] },
   ],
 })
@@ -17787,7 +19607,7 @@ export const get2ActivitySubscriptionsRoute = createRoute({
           param: {
             name: 'pagination_token',
             in: 'query',
-            description: 'A base32hex-encoded pagination token.',
+            description: 'A base32hex-encoded pagination token that decodes to 9 bytes.',
             required: false,
             schema: { type: 'string', minLength: 16 },
             style: 'form',
@@ -17819,7 +19639,7 @@ export const get2ActivitySubscriptionsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'like.read'] },
+    { OAuth2UserToken: ['like.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -18398,7 +20218,7 @@ export const get2BroadcastsChatModeratorsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['broadcast.read', 'users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read', 'broadcast.read'] },
     { UserToken: [] },
   ],
 })
@@ -18430,7 +20250,7 @@ export const post2BroadcastsChatModeratorsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const delete2BroadcastsChatModeratorsUserIdRoute = createRoute({
@@ -18462,6 +20282,157 @@ export const delete2BroadcastsChatModeratorsUserIdRoute = createRoute({
     200: {
       description: 'The request has succeeded.',
       content: { 'application/json': { schema: RemoveChatModeratorResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+})
+
+export const get2BroadcastsChatMutesRoute = createRoute({
+  method: 'get',
+  path: '/2/broadcasts/chat/mutes',
+  tags: ['Broadcasts'],
+  summary: 'Get muted chat users',
+  description:
+    "Returns the users muted in the authenticated broadcaster's chat, with the expiry time of timed mutes. Mutes apply to all of their broadcasts. Expired timed mutes are omitted. Use `expansions=user_id` to include the muted users.",
+  operationId: 'getChatMutedUsers',
+  request: {
+    query: z.object({
+      max_results: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_results',
+            in: 'query',
+            required: false,
+            schema: { type: 'integer', minimum: 1, maximum: 100, format: 'int32' },
+            style: 'form',
+          },
+        }),
+      pagination_token: z
+        .string()
+        .min(1)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'pagination_token',
+            in: 'query',
+            required: false,
+            schema: { type: 'string', minLength: 1 },
+            style: 'form',
+          },
+        }),
+      'broadcast_chat_mute.fields': BroadcastChatMuteFieldsParameterParamsSchema,
+      expansions: BroadcastChatMuteExpansionsParameterParamsSchema,
+      'user.fields': UserFieldsParameterParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetChatMutedUsersResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
+})
+
+export const post2BroadcastsChatMutesRoute = createRoute({
+  method: 'post',
+  path: '/2/broadcasts/chat/mutes',
+  tags: ['Broadcasts'],
+  summary: 'Mute or time out a user in chat',
+  description:
+    "Prevents a user from posting messages in all of a broadcaster's chats. Without `broadcast_id`, the user is muted in the authenticated user's own chats. Moderators pass `broadcast_id` to mute the user in that broadcast host's chats. When `end_at_ms` is provided, the mute expires at that time.",
+  operationId: 'muteChatUser',
+  request: {
+    body: {
+      content: { 'application/json': { schema: MuteChatUserRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: MuteChatUserResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+})
+
+export const delete2BroadcastsChatMutesUserIdRoute = createRoute({
+  method: 'delete',
+  path: '/2/broadcasts/chat/mutes/{user_id}',
+  tags: ['Broadcasts'],
+  summary: 'Unmute a user in chat',
+  description:
+    "Allows a muted user to post messages in a broadcaster's chats again. Without `broadcast_id`, the user is unmuted in the authenticated user's own chats. Moderators pass `broadcast_id` to unmute the user in that broadcast host's chats.",
+  operationId: 'unmuteChatUser',
+  request: {
+    params: z.object({
+      user_id: z
+        .string()
+        .regex(/^[1-9][0-9]{0,18}$/)
+        .openapi({
+          param: {
+            name: 'user_id',
+            in: 'path',
+            description: 'A 64-bit signed integer.',
+            required: true,
+            schema: { type: 'string', pattern: '^[1-9][0-9]{0,18}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+    query: z.object({
+      broadcast_id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'broadcast_id',
+            in: 'query',
+            description: "A broadcast whose host's chats the user is unmuted in.",
+            required: false,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
+            style: 'form',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: UnmuteChatUserResponseSchema } },
     },
     default: {
       description: 'The request has failed.',
@@ -18584,7 +20555,7 @@ export const post2BroadcastsScheduledRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const get2BroadcastsScheduledIdRoute = createRoute({
@@ -18805,6 +20776,46 @@ export const get2BroadcastsIdRoute = createRoute({
   security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
 })
 
+export const delete2BroadcastsIdRoute = createRoute({
+  method: 'delete',
+  path: '/2/broadcasts/{id}',
+  tags: ['Broadcasts'],
+  summary: 'Delete a broadcast',
+  description:
+    "Deletes one of the authenticated user's broadcasts, scheduled or ended, including its replay. A running broadcast must be ended first.",
+  operationId: 'deleteBroadcast',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: DeleteBroadcastResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+})
+
 export const get2BroadcastsIdChatRoute = createRoute({
   method: 'get',
   path: '/2/broadcasts/{id}/chat',
@@ -18924,7 +20935,7 @@ export const post2BroadcastsIdChatRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const post2BroadcastsIdChatMutesRoute = createRoute({
@@ -19064,6 +21075,49 @@ export const delete2BroadcastsIdChatMessageIdRoute = createRoute({
     200: {
       description: 'The request has succeeded.',
       content: { 'application/json': { schema: DeleteBroadcastChatMessageResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+})
+
+export const put2BroadcastsIdStateRoute = createRoute({
+  method: 'put',
+  path: '/2/broadcasts/{id}/state',
+  tags: ['Broadcasts'],
+  summary: 'End a broadcast',
+  description: "Ends one of the authenticated user's broadcasts. Only `state: END` is supported.",
+  operationId: 'updateBroadcastState',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
+        .openapi({
+          param: {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: UpdateBroadcastStateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: UpdateBroadcastStateResponseSchema } },
     },
     default: {
       description: 'The request has failed.',
@@ -19562,9 +21616,9 @@ export const get2ChatConversationsRoute = createRoute({
   path: '/2/chat/conversations',
   tags: ['Chat'],
   summary:
-    'Get Chat Conversations; unread state via chat_conversation.fields=unread,last_read_event_id,newest_event_id',
+    'Get Chat Conversations, newest first. All filters must match (AND). A page can hold fewer than max_results while meta.next_token is set: keep paging. Read state: chat_conversation.fields=unread,last_read_event_id,newest_event_id',
   description:
-    "Retrieves a list of Chat conversations for the authenticated user's inbox. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and each conversation's latest notifying message. With unread_only=true, only conversations that are unread for you are returned; a page can then hold fewer than max_results, so keep paging while has_more is true.",
+    "Retrieves a list of Chat conversations for the authenticated user's inbox, most recently active first. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and each conversation's latest notifying message.\n\nThe filters unread_only, type, is_archived, is_muted, participant_ids, participant_query, start_time and end_time are optional and combine with AND. participant_query keeps conversations where another participant's username, or a word of their display name, starts with the query, ignoring case and accents; with a leading @ it matches usernames only. It considers the 100 people who best match the query, uses only public profile information, and never matches group names, nicknames or messages. start_time and end_time apply to the time of each conversation's latest message. Each page covers max_results conversations and returns those that match, so a page can hold fewer than max_results, or none, while has_more is true: keep paging with next_token. Once a page reaches a conversation whose latest message is older than start_time, has_more is false.\n\nA pagination_token only works with the same filters as the request that returned it; with other filters, the request fails with a 400.\n\nWhen both are provided, `start_time` must be earlier than `end_time`.",
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'getChatConversations',
   request: {
@@ -19585,6 +21639,8 @@ export const get2ChatConversationsRoute = createRoute({
           param: {
             name: 'max_results',
             in: 'query',
+            description:
+              'Conversations covered per page (1-1000, default 200). Filtered pages can return fewer.',
             required: false,
             schema: { type: 'integer', minimum: 1, maximum: 1000, format: 'int32', default: 200 },
             style: 'form',
@@ -19597,6 +21653,8 @@ export const get2ChatConversationsRoute = createRoute({
           param: {
             name: 'pagination_token',
             in: 'query',
+            description:
+              'meta.next_token from the previous page. Send the same filters with it, or the request fails.',
             required: false,
             schema: { type: 'string' },
             style: 'form',
@@ -19614,6 +21672,129 @@ export const get2ChatConversationsRoute = createRoute({
               'Return only unread conversations. A page can be short; keep paging while has_more.',
             required: false,
             schema: { type: 'boolean', default: false },
+            style: 'form',
+          },
+        }),
+      type: z
+        .enum(['direct', 'group'])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'type',
+            in: 'query',
+            description: 'Only direct (1:1) or only group conversations. Omit for both.',
+            required: false,
+            schema: { type: 'string', enum: ['direct', 'group'] },
+            style: 'form',
+          },
+        }),
+      is_archived: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'is_archived',
+            in: 'query',
+            description: 'true: only archived; false: only not archived. Omit for both.',
+            required: false,
+            schema: { type: 'boolean' },
+            style: 'form',
+          },
+        }),
+      is_muted: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'is_muted',
+            in: 'query',
+            description: 'true: only muted; false: only not muted. Omit for both.',
+            required: false,
+            schema: { type: 'boolean' },
+            style: 'form',
+          },
+        }),
+      participant_ids: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z
+            .array(z.string().regex(/^[0-9]{1,19}$/))
+            .min(1)
+            .max(10)
+            .superRefine((items, ctx) => {
+              const seen = new Map()
+              for (const [i, val] of items.entries()) {
+                const key = JSON.stringify(val)
+                if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                else seen.set(key, i)
+              }
+            }),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'participant_ids',
+            in: 'query',
+            description:
+              'Comma-separated numeric user IDs (1-10), all in the chat. Names or @handles: use participant_query.',
+            required: false,
+            schema: {
+              type: 'array',
+              minItems: 1,
+              maxItems: 10,
+              uniqueItems: true,
+              items: { type: 'string', pattern: '^[0-9]{1,19}$' },
+            },
+            explode: false,
+            style: 'form',
+          },
+        }),
+      participant_query: z
+        .string()
+        .min(1)
+        .max(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'participant_query',
+            in: 'query',
+            description:
+              'Name or @username prefix (1-50 chars); keeps chats where any other participant matches it.',
+            required: false,
+            schema: { type: 'string', minLength: 1, maxLength: 50 },
+            style: 'form',
+          },
+        }),
+      start_time: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'start_time',
+            in: 'query',
+            description:
+              'ISO 8601, e.g. 2026-10-16T00:00:00Z. Chats whose latest message is at or after this time.',
+            required: false,
+            schema: { type: 'string', format: 'date-time' },
+            style: 'form',
+          },
+        }),
+      end_time: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'end_time',
+            in: 'query',
+            description:
+              'ISO 8601, e.g. 2026-10-17T00:00:00Z. Chats whose latest message is before this time.',
+            required: false,
+            schema: { type: 'string', format: 'date-time' },
             style: 'form',
           },
         }),
@@ -19666,7 +21847,7 @@ export const post2ChatConversationsGroupRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsGroupInitializeRoute = createRoute({
@@ -19787,7 +21968,7 @@ export const put2ChatConversationsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdRoute = createRoute({
@@ -19837,7 +22018,7 @@ export const delete2ChatConversationsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdAdminRequestsRoute = createRoute({
@@ -19897,7 +22078,7 @@ export const get2ChatConversationsIdAdminRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminRequestsRoute = createRoute({
@@ -19943,7 +22124,7 @@ export const post2ChatConversationsIdAdminRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminRequestsUserIdApproveRoute = createRoute({
@@ -20002,7 +22183,7 @@ export const post2ChatConversationsIdAdminRequestsUserIdApproveRoute = createRou
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminRequestsUserIdRejectRoute = createRoute({
@@ -20061,7 +22242,7 @@ export const post2ChatConversationsIdAdminRequestsUserIdRejectRoute = createRout
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdAdminSettingsRoute = createRoute({
@@ -20107,7 +22288,7 @@ export const put2ChatConversationsIdAdminSettingsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminsRoute = createRoute({
@@ -20153,7 +22334,7 @@ export const post2ChatConversationsIdAdminsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdAdminsRemoveRoute = createRoute({
@@ -20199,7 +22380,7 @@ export const post2ChatConversationsIdAdminsRemoveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdArchiveRoute = createRoute({
@@ -20299,7 +22480,7 @@ export const delete2ChatConversationsIdArchiveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdEventsRoute = createRoute({
@@ -20382,7 +22563,7 @@ export const get2ChatConversationsIdEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdInviteRoute = createRoute({
@@ -20428,7 +22609,7 @@ export const post2ChatConversationsIdInviteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdInviteRoute = createRoute({
@@ -20474,7 +22655,7 @@ export const delete2ChatConversationsIdInviteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2ChatConversationsIdInvitesTokenRoute = createRoute({
@@ -20576,7 +22757,7 @@ export const post2ChatConversationsIdJoinRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdJoinRequestsRejectRoute = createRoute({
@@ -20670,7 +22851,7 @@ export const post2ChatConversationsIdKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMembersRoute = createRoute({
@@ -20718,7 +22899,7 @@ export const post2ChatConversationsIdMembersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMembersRemoveRoute = createRoute({
@@ -20727,7 +22908,7 @@ export const post2ChatConversationsIdMembersRemoveRoute = createRoute({
   tags: ['Chat'],
   summary: 'Remove members from a Chat group conversation',
   description:
-    'Removes one or more members from an existing encrypted Chat group conversation. To leave a group, pass your own user ID. Leaving does not delete the conversation for the caller.',
+    'Removes one or more members from an existing encrypted Chat group conversation. To leave a group, pass your own user ID. Leaving does not delete the conversation for the caller. When the removal rotates the conversation key, send group_key_rotation_data and the action signatures for the removal and the key change, in that order.',
   externalDocs: { url: 'https://developer.x.com/' },
   operationId: 'removeChatGroupMembers',
   request: {
@@ -20766,7 +22947,7 @@ export const post2ChatConversationsIdMembersRemoveRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdMessageTtlRoute = createRoute({
@@ -20866,7 +23047,7 @@ export const delete2ChatConversationsIdMessageTtlRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMessagesRoute = createRoute({
@@ -20962,7 +23143,7 @@ export const post2ChatConversationsIdMessagesDeleteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdMuteRoute = createRoute({
@@ -21012,7 +23193,7 @@ export const post2ChatConversationsIdMuteRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2ChatConversationsIdMuteRoute = createRoute({
@@ -21125,7 +23306,7 @@ export const get2ChatConversationsIdPinnedMessagesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdReadRoute = createRoute({
@@ -21173,7 +23354,7 @@ export const post2ChatConversationsIdReadRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatConversationsIdScreenCaptureRoute = createRoute({
@@ -21225,7 +23406,7 @@ export const put2ChatConversationsIdScreenCaptureRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'dm.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdTypingRoute = createRoute({
@@ -21269,7 +23450,7 @@ export const post2ChatConversationsIdTypingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2ChatConversationsIdUnreadRoute = createRoute({
@@ -21313,7 +23494,7 @@ export const post2ChatConversationsIdUnreadRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatMediaUploadInitializeRoute = createRoute({
@@ -21605,7 +23786,7 @@ export const get2ChatMessageRequestsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatMessageRequestsIdRoute = createRoute({
@@ -21650,7 +23831,7 @@ export const get2ChatMessageRequestsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const post2ChatMessageRequestsIdAcceptRoute = createRoute({
@@ -21692,7 +23873,7 @@ export const post2ChatMessageRequestsIdAcceptRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2ChatSettingsRoute = createRoute({
@@ -21718,7 +23899,7 @@ export const get2ChatSettingsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const put2ChatSettingsRoute = createRoute({
@@ -21749,7 +23930,7 @@ export const put2ChatSettingsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'dm.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2CommunitiesSearchRoute = createRoute({
@@ -21873,7 +24054,7 @@ export const get2CommunitiesIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'list.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read', 'list.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -22710,7 +24891,7 @@ export const post2DmConversationsWithParticipantIdMessagesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2DmConversationsDmConversationIdMessagesRoute = createRoute({
@@ -22878,7 +25059,7 @@ export const get2DmConversationsIdDmEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const get2DmEventsRoute = createRoute({
@@ -22985,7 +25166,7 @@ export const get2DmEventsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const get2DmEventsEventIdRoute = createRoute({
@@ -23030,7 +25211,7 @@ export const get2DmEventsEventIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const delete2DmEventsEventIdRoute = createRoute({
@@ -23070,7 +25251,7 @@ export const delete2DmEventsEventIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.write', 'dm.read'] }, { UserToken: [] }],
 })
 
 export const get2LikesComplianceStreamRoute = createRoute({
@@ -24112,7 +26293,7 @@ export const post2ListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.write', 'list.read'] },
+    { OAuth2UserToken: ['tweet.read', 'list.read', 'list.write', 'users.read'] },
     { UserToken: [] },
   ],
 })
@@ -24155,7 +26336,7 @@ export const get2ListsIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'list.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -24198,7 +26379,7 @@ export const put2ListsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'list.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'list.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2ListsIdRoute = createRoute({
@@ -24312,7 +26493,7 @@ export const get2ListsIdFollowersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'list.read', 'users.read'] },
+    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -24390,7 +26571,7 @@ export const get2ListsIdMembersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.read'] },
+    { OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -24480,7 +26661,7 @@ export const delete2ListsIdMembersUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'list.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'list.write'] }, { UserToken: [] }],
 })
 
 export const get2ListsIdTweetsRoute = createRoute({
@@ -25136,7 +27317,7 @@ export const get2NewsSearchRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -25181,7 +27362,7 @@ export const get2NewsIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -25455,13 +27636,37 @@ export const get2OpenapiJsonRoute = createRoute({
   },
 })
 
+export const get2RegionRoute = createRoute({
+  method: 'get',
+  path: '/2/region',
+  tags: ['Broadcasts'],
+  summary: 'Get the ingest region',
+  description:
+    'Returns the ingest region nearest the server handling the request. Pass it as `region` when creating a stream source to ingest there.',
+  operationId: 'getRegion',
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetRegionResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
+})
+
 export const get2SourcesRoute = createRoute({
   method: 'get',
   path: '/2/sources',
   tags: ['Broadcasts'],
   summary: 'List stream sources',
   description:
-    "Returns the authenticated user's RTMP/RTMPS stream sources (empty array if none). A source's `id` is also its stream key and is the `source_id` a scheduled broadcast binds to.",
+    "Returns the authenticated user's RTMP/RTMPS stream sources. A source's `id` is the `source_id` a scheduled broadcast binds to.",
   operationId: 'listSources',
   responses: {
     200: {
@@ -25485,7 +27690,7 @@ export const post2SourcesRoute = createRoute({
   tags: ['Broadcasts'],
   summary: 'Create a stream source',
   description:
-    'Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an encoder to `rtmps_url` with the source `id` as the stream key.',
+    "Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an encoder to `rtmps_url` with the source's stream key.",
   operationId: 'createSource',
   request: {
     body: {
@@ -25494,7 +27699,7 @@ export const post2SourcesRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    201: {
       description: 'The request has succeeded.',
       content: { 'application/json': { schema: CreateSourceResponseSchema } },
     },
@@ -25506,7 +27711,7 @@ export const post2SourcesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const get2SourcesIdRoute = createRoute({
@@ -25514,8 +27719,7 @@ export const get2SourcesIdRoute = createRoute({
   path: '/2/sources/{id}',
   tags: ['Broadcasts'],
   summary: 'Get a stream source',
-  description:
-    "Returns one of the authenticated user's stream sources. Poll it after starting an encoder and wait for `is_stream_active` before going live.",
+  description: "Returns one of the authenticated user's stream sources.",
   operationId: 'getSource',
   request: {
     params: z.object({
@@ -25589,7 +27793,7 @@ export const put2SourcesIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const delete2SourcesIdRoute = createRoute({
@@ -25597,8 +27801,7 @@ export const delete2SourcesIdRoute = createRoute({
   path: '/2/sources/{id}',
   tags: ['Broadcasts'],
   summary: 'Delete a stream source',
-  description:
-    "Deletes one of the authenticated user's stream sources. Success is an empty object.",
+  description: "Deletes one of the authenticated user's stream sources.",
   operationId: 'deleteSource',
   request: {
     params: z.object({
@@ -25687,7 +27890,7 @@ export const get2SpacesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'space.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['space.read', 'users.read', 'tweet.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesByCreatorIdsRoute = createRoute({
@@ -25745,7 +27948,7 @@ export const get2SpacesByCreatorIdsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'space.read', 'users.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'space.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesSearchRoute = createRoute({
@@ -25826,7 +28029,7 @@ export const get2SpacesSearchRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'space.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'space.read', 'tweet.read'] }, { BearerToken: [] }],
 })
 
 export const get2SpacesIdRoute = createRoute({
@@ -25952,7 +28155,7 @@ export const get2SpacesIdBuyersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'space.read'] }],
+  security: [{ OAuth2UserToken: ['space.read', 'tweet.read', 'users.read'] }],
 })
 
 export const get2SpacesIdTweetsRoute = createRoute({
@@ -26036,7 +28239,7 @@ export const get2SpacesIdTweetsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'space.read', 'tweet.read'] }, { BearerToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'space.read'] }, { BearerToken: [] }],
 })
 
 export const get2TrendsByWoeidWoeidRoute = createRoute({
@@ -26191,7 +28394,7 @@ export const post2TweetsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'tweet.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2TweetsAnalyticsRoute = createRoute({
@@ -31436,7 +33639,7 @@ export const get2TweetsSearchStreamRulesRoute = createRoute({
           param: {
             name: 'pagination_token',
             in: 'query',
-            description: 'A base32hex-encoded pagination token.',
+            description: 'A base32hex-encoded pagination token that decodes to 8 bytes.',
             required: false,
             schema: { type: 'string', minLength: 16, maxLength: 16 },
             style: 'form',
@@ -31699,7 +33902,7 @@ export const get2TweetsIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -31737,7 +33940,7 @@ export const delete2TweetsIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'tweet.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2TweetsIdLikingUsersRoute = createRoute({
@@ -31812,7 +34015,7 @@ export const get2TweetsIdLikingUsersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['like.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'like.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2TweetsIdQuoteTweetsRoute = createRoute({
@@ -32088,7 +34291,7 @@ export const get2TweetsIdRetweetsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -32135,7 +34338,7 @@ export const put2TweetsTweetIdHiddenRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'tweet.moderate.write', 'users.read'] },
+    { OAuth2UserToken: ['tweet.moderate.write', 'tweet.read', 'users.read'] },
     { UserToken: [] },
   ],
 })
@@ -32264,7 +34467,7 @@ export const get2UsersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -32372,7 +34575,7 @@ export const get2UsersByUsernameUsernameRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -32527,6 +34730,7 @@ export const get2UsersMeFollowersRoute = createRoute({
           param: {
             name: 'max_results',
             in: 'query',
+            description: 'The maximum number of users to return.',
             required: false,
             schema: { type: 'integer', minimum: 1, maximum: 1000, format: 'int32' },
             style: 'form',
@@ -32540,7 +34744,8 @@ export const get2UsersMeFollowersRoute = createRoute({
           param: {
             name: 'pagination_token',
             in: 'query',
-            description: 'A base32hex-encoded pagination token.',
+            description:
+              'The next_token or previous_token from a previous response, to fetch that page. A base32hex-encoded pagination token.',
             required: false,
             schema: { type: 'string', minLength: 16 },
             style: 'form',
@@ -32591,6 +34796,7 @@ export const get2UsersMeFollowingRoute = createRoute({
           param: {
             name: 'max_results',
             in: 'query',
+            description: 'The maximum number of users to return.',
             required: false,
             schema: { type: 'integer', minimum: 1, maximum: 1000, format: 'int32' },
             style: 'form',
@@ -32604,7 +34810,8 @@ export const get2UsersMeFollowingRoute = createRoute({
           param: {
             name: 'pagination_token',
             in: 'query',
-            description: 'A base32hex-encoded pagination token.',
+            description:
+              'The next_token or previous_token from a previous response, to fetch that page. A base32hex-encoded pagination token.',
             required: false,
             schema: { type: 'string', minLength: 16 },
             style: 'form',
@@ -32707,7 +34914,7 @@ export const get2UsersPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'dm.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersRepostsOfMeRoute = createRoute({
@@ -32774,7 +34981,7 @@ export const get2UsersRepostsOfMeRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'timeline.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['timeline.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersSearchRoute = createRoute({
@@ -32849,7 +35056,7 @@ export const get2UsersSearchRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdRoute = createRoute({
@@ -32890,7 +35097,7 @@ export const get2UsersIdRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -32977,7 +35184,8 @@ export const get2UsersIdBlockingRoute = createRoute({
   method: 'get',
   path: '/2/users/{id}/blocking',
   tags: ['Users'],
-  summary: 'Get Users Blocking',
+  summary: 'Get blocked Users',
+  description: 'Returns the Users that the given User is blocking.',
   operationId: 'getUsersBlocking',
   request: {
     params: z.object({
@@ -33043,14 +35251,15 @@ export const get2UsersIdBlockingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'block.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['block.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdBlockingRoute = createRoute({
   method: 'post',
   path: '/2/users/{id}/blocking',
   tags: ['Users'],
-  summary: 'Users ID Block',
+  summary: 'Block User',
+  description: 'Causes the source User to block the target User.',
   operationId: 'usersIdBlock',
   request: {
     params: z.object({
@@ -33159,7 +35368,7 @@ export const get2UsersIdBookmarksRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'bookmark.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'bookmark.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdBookmarksRoute = createRoute({
@@ -33200,7 +35409,7 @@ export const post2UsersIdBookmarksRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'bookmark.write'] }],
+  security: [{ OAuth2UserToken: ['bookmark.write', 'tweet.read', 'users.read'] }],
 })
 
 export const get2UsersIdBookmarksFoldersRoute = createRoute({
@@ -33311,7 +35520,7 @@ export const post2UsersIdBookmarksFoldersRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'bookmark.write'] }],
+  security: [{ OAuth2UserToken: ['bookmark.write', 'users.read'] }],
 })
 
 export const get2UsersIdBookmarksFoldersFolderIdRoute = createRoute({
@@ -33393,7 +35602,7 @@ export const get2UsersIdBookmarksFoldersFolderIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'bookmark.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'bookmark.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdBookmarksTweetIdRoute = createRoute({
@@ -33441,7 +35650,252 @@ export const delete2UsersIdBookmarksTweetIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'bookmark.write'] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'bookmark.write', 'users.read'] }],
+})
+
+export const get2UsersIdBroadcastsRoute = createRoute({
+  method: 'get',
+  path: '/2/users/{id}/broadcasts',
+  tags: ['Broadcasts'],
+  summary: "List a user's broadcasts",
+  description:
+    "Returns the authenticated user's broadcasts, 100 per page. `id` must be the authenticated user. Deprecated: use GET /2/broadcasts.",
+  operationId: 'listUserBroadcasts',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+    }),
+    query: z.object({
+      pagination_token: z
+        .string()
+        .min(1)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'pagination_token',
+            in: 'query',
+            description: '`next_token.offset` from the previous page.',
+            required: false,
+            schema: { type: 'string', minLength: 1 },
+            style: 'form',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: ListUserBroadcastsResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
+})
+
+export const post2UsersIdBroadcastsRoute = createRoute({
+  method: 'post',
+  path: '/2/users/{id}/broadcasts',
+  tags: ['Broadcasts'],
+  summary: "Create a broadcast on a user's source",
+  description:
+    "Creates a broadcast on one of the authenticated user's sources. `id` must be the authenticated user. The broadcast is `NOT_STARTED` and posts nothing until it is published with PUT /2/users/:id/broadcasts/:broadcast_id/state; one that is never published is deleted after 7 days. When the source already has a running broadcast, that broadcast is returned.",
+  operationId: 'createUserBroadcast',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+    }),
+    body: {
+      content: { 'application/json': { schema: CreateUserBroadcastRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CreateUserBroadcastResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+})
+
+export const get2UsersIdBroadcastsBroadcastIdRoute = createRoute({
+  method: 'get',
+  path: '/2/users/{id}/broadcasts/{broadcast_id}',
+  tags: ['Broadcasts'],
+  summary: "Get a user's broadcast",
+  description:
+    "Returns one of the authenticated user's broadcasts. `id` must be the authenticated user. Deprecated: use GET /2/broadcasts/:id.",
+  operationId: 'getUserBroadcast',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+      broadcast_id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
+        .openapi({
+          param: {
+            name: 'broadcast_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetUserBroadcastResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
+})
+
+export const delete2UsersIdBroadcastsBroadcastIdRoute = createRoute({
+  method: 'delete',
+  path: '/2/users/{id}/broadcasts/{broadcast_id}',
+  tags: ['Broadcasts'],
+  summary: "Delete a user's broadcast",
+  description:
+    "Deletes one of the authenticated user's broadcasts. `id` must be the authenticated user. Deprecated: use DELETE /2/broadcasts/:id.",
+  operationId: 'deleteUserBroadcast',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+      broadcast_id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
+        .openapi({
+          param: {
+            name: 'broadcast_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: DeleteUserBroadcastResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+})
+
+export const put2UsersIdBroadcastsBroadcastIdStateRoute = createRoute({
+  method: 'put',
+  path: '/2/users/{id}/broadcasts/{broadcast_id}/state',
+  tags: ['Broadcasts'],
+  summary: "Publish or end a user's broadcast",
+  description:
+    "Publishes or ends one of the authenticated user's broadcasts. `id` must be the authenticated user. `PUBLISH` takes a broadcast created with POST /2/users/:id/broadcasts live once its source is receiving video, and posts it unless `should_not_tweet` is true. `END` ends the broadcast. Deprecated: use PUT /2/broadcasts/:id/state to end a broadcast.",
+  operationId: 'updateUserBroadcastState',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+      broadcast_id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,24}$/)
+        .openapi({
+          param: {
+            name: 'broadcast_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,24}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: UpdateUserBroadcastStateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: UpdateUserBroadcastStateResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdDmBlockRoute = createRoute({
@@ -33511,7 +35965,7 @@ export const post2UsersIdDmUnblockRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdFollowedListsRoute = createRoute({
@@ -33586,7 +36040,7 @@ export const get2UsersIdFollowedListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['list.read', 'users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -33625,7 +36079,7 @@ export const post2UsersIdFollowedListsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'list.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['list.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdFollowedListsListIdRoute = createRoute({
@@ -33673,7 +36127,7 @@ export const delete2UsersIdFollowedListsListIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['list.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'list.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdFollowersRoute = createRoute({
@@ -33710,6 +36164,7 @@ export const get2UsersIdFollowersRoute = createRoute({
           param: {
             name: 'max_results',
             in: 'query',
+            description: 'The maximum number of users to return.',
             required: false,
             schema: { type: 'integer', minimum: 1, maximum: 1000, format: 'int32' },
             style: 'form',
@@ -33723,7 +36178,8 @@ export const get2UsersIdFollowersRoute = createRoute({
           param: {
             name: 'pagination_token',
             in: 'query',
-            description: 'A base32hex-encoded pagination token.',
+            description:
+              'The next_token or previous_token from a previous response, to fetch that page. A base32hex-encoded pagination token.',
             required: false,
             schema: { type: 'string', minLength: 16 },
             style: 'form',
@@ -33748,7 +36204,7 @@ export const get2UsersIdFollowersRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['follows.read', 'users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['users.read', 'follows.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -33788,6 +36244,7 @@ export const get2UsersIdFollowingRoute = createRoute({
           param: {
             name: 'max_results',
             in: 'query',
+            description: 'The maximum number of users to return.',
             required: false,
             schema: { type: 'integer', minimum: 1, maximum: 1000, format: 'int32' },
             style: 'form',
@@ -33801,7 +36258,8 @@ export const get2UsersIdFollowingRoute = createRoute({
           param: {
             name: 'pagination_token',
             in: 'query',
-            description: 'A base32hex-encoded pagination token.',
+            description:
+              'The next_token or previous_token from a previous response, to fetch that page. A base32hex-encoded pagination token.',
             required: false,
             schema: { type: 'string', minLength: 16 },
             style: 'form',
@@ -33826,7 +36284,7 @@ export const get2UsersIdFollowingRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['follows.read', 'users.read', 'tweet.read'] },
+    { OAuth2UserToken: ['users.read', 'follows.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -33865,7 +36323,7 @@ export const post2UsersIdFollowingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['follows.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'follows.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdLikedTweetsRoute = createRoute({
@@ -33942,7 +36400,7 @@ export const get2UsersIdLikedTweetsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['like.read', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'like.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdLikesRoute = createRoute({
@@ -33978,7 +36436,7 @@ export const post2UsersIdLikesRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'like.write', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'like.write'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdLikesTweetIdRoute = createRoute({
@@ -34022,7 +36480,7 @@ export const delete2UsersIdLikesTweetIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'like.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'like.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdListMembershipsRoute = createRoute({
@@ -34096,7 +36554,7 @@ export const get2UsersIdListMembershipsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'tweet.read', 'list.read'] },
+    { OAuth2UserToken: ['users.read', 'list.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -34231,7 +36689,7 @@ export const get2UsersIdMentionsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['tweet.read', 'users.read'] },
+    { OAuth2UserToken: ['users.read', 'tweet.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -34343,7 +36801,7 @@ export const post2UsersIdMutingRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'mute.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'mute.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdOwnedListsRoute = createRoute({
@@ -34418,7 +36876,7 @@ export const get2UsersIdOwnedListsRoute = createRoute({
     },
   },
   security: [
-    { OAuth2UserToken: ['users.read', 'list.read', 'tweet.read'] },
+    { OAuth2UserToken: ['tweet.read', 'users.read', 'list.read'] },
     { UserToken: [] },
     { BearerToken: [] },
   ],
@@ -34461,7 +36919,7 @@ export const get2UsersIdPinnedListsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'list.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['list.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdPinnedListsRoute = createRoute({
@@ -34501,7 +36959,7 @@ export const post2UsersIdPinnedListsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['list.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'list.write'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdPinnedListsListIdRoute = createRoute({
@@ -34587,7 +37045,7 @@ export const get2UsersIdPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'dm.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['dm.read', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdPublicKeysRoute = createRoute({
@@ -34628,7 +37086,7 @@ export const post2UsersIdPublicKeysRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['dm.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'dm.write'] }, { UserToken: [] }],
 })
 
 export const post2UsersIdRetweetsRoute = createRoute({
@@ -34668,7 +37126,7 @@ export const post2UsersIdRetweetsRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.write', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersIdRetweetsSourceTweetIdRoute = createRoute({
@@ -34719,7 +37177,236 @@ export const delete2UsersIdRetweetsSourceTweetIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'tweet.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['users.read', 'tweet.read', 'tweet.write'] }, { UserToken: [] }],
+})
+
+export const get2UsersIdSourcesRoute = createRoute({
+  method: 'get',
+  path: '/2/users/{id}/sources',
+  tags: ['Broadcasts'],
+  summary: "List a user's stream sources",
+  description:
+    "Returns the authenticated user's RTMP/RTMPS stream sources (empty array if none). `id` must be the authenticated user.",
+  operationId: 'listUserSources',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: ListUserSourcesResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
+})
+
+export const post2UsersIdSourcesRoute = createRoute({
+  method: 'post',
+  path: '/2/users/{id}/sources',
+  tags: ['Broadcasts'],
+  summary: 'Create a stream source for a user',
+  description:
+    'Creates a persistent RTMP/RTMPS ingest point for the authenticated user. `id` must be the authenticated user.',
+  operationId: 'createUserSource',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+    }),
+    body: {
+      content: { 'application/json': { schema: CreateUserSourceRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: CreateUserSourceResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
+})
+
+export const get2UsersIdSourcesSourceIdRoute = createRoute({
+  method: 'get',
+  path: '/2/users/{id}/sources/{source_id}',
+  tags: ['Broadcasts'],
+  summary: "Get a user's stream source",
+  description:
+    "Returns one of the authenticated user's stream sources. `id` must be the authenticated user.",
+  operationId: 'getUserSource',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+      source_id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,32}$/)
+        .openapi({
+          param: {
+            name: 'source_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,32}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: GetUserSourceResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read'] }, { UserToken: [] }],
+})
+
+export const put2UsersIdSourcesSourceIdRoute = createRoute({
+  method: 'put',
+  path: '/2/users/{id}/sources/{source_id}',
+  tags: ['Broadcasts'],
+  summary: "Rename a user's stream source",
+  description:
+    "Renames one of the authenticated user's stream sources. `id` must be the authenticated user.",
+  operationId: 'updateUserSource',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+      source_id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,32}$/)
+        .openapi({
+          param: {
+            name: 'source_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,32}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: UpdateUserSourceRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: UpdateUserSourceResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.write', 'broadcast.read'] }, { UserToken: [] }],
+})
+
+export const delete2UsersIdSourcesSourceIdRoute = createRoute({
+  method: 'delete',
+  path: '/2/users/{id}/sources/{source_id}',
+  tags: ['Broadcasts'],
+  summary: "Delete a user's stream source",
+  description:
+    "Deletes one of the authenticated user's stream sources. `id` must be the authenticated user. Success is an empty object.",
+  operationId: 'deleteUserSource',
+  request: {
+    params: z.object({
+      id: UserIdSchema.openapi({
+        param: {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { $ref: '#/components/schemas/UserId' },
+          style: 'simple',
+        },
+      }),
+      source_id: z
+        .string()
+        .regex(/^[a-zA-Z0-9]{1,32}$/)
+        .openapi({
+          param: {
+            name: 'source_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', pattern: '^[a-zA-Z0-9]{1,32}$' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The request has succeeded.',
+      content: { 'application/json': { schema: DeleteUserSourceResponseSchema } },
+    },
+    default: {
+      description: 'The request has failed.',
+      content: {
+        'application/json': { schema: ErrorSchema },
+        'application/problem+json': { schema: ProblemSchema },
+      },
+    },
+  },
+  security: [{ OAuth2UserToken: ['broadcast.read', 'broadcast.write'] }, { UserToken: [] }],
 })
 
 export const get2UsersIdTimelinesReverseChronologicalRoute = createRoute({
@@ -35101,7 +37788,7 @@ export const delete2UsersSourceUserIdBlockingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'block.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['tweet.read', 'block.write', 'users.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersSourceUserIdFollowingTargetUserIdRoute = createRoute({
@@ -35149,7 +37836,7 @@ export const delete2UsersSourceUserIdFollowingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['tweet.read', 'users.read', 'follows.write'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['follows.write', 'users.read', 'tweet.read'] }, { UserToken: [] }],
 })
 
 export const delete2UsersSourceUserIdMutingTargetUserIdRoute = createRoute({
@@ -35197,7 +37884,7 @@ export const delete2UsersSourceUserIdMutingTargetUserIdRoute = createRoute({
       },
     },
   },
-  security: [{ OAuth2UserToken: ['users.read', 'mute.write', 'tweet.read'] }, { UserToken: [] }],
+  security: [{ OAuth2UserToken: ['mute.write', 'tweet.read', 'users.read'] }, { UserToken: [] }],
 })
 
 export const get2WebhooksRoute = createRoute({

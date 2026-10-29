@@ -12277,6 +12277,32 @@ const AnalysisFixSchema = z
   })
   .openapi('AnalysisFix')
 
+const AnalysisRequestOptionsSchema = z
+  .object({
+    log_output: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to capture the output logged by rules during execution. Ignored by this operation.',
+        example: true,
+      }),
+    use_tree_sitter: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to use tree-sitter to parse the source code. Ignored by this operation.',
+        example: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Analyzer options sent by browser-based clients. Accepted but ignored: the API always runs\nthe analysis with tree-sitter enabled and rule output logged.',
+    required: [],
+  })
+  .openapi('AnalysisRequestOptions')
+
 const AnalysisRequestRuleArgumentSchema = z
   .object({
     description: z
@@ -12564,6 +12590,7 @@ const AnalysisRequestDataAttributesSchema = z
     language: z
       .string()
       .openapi({ description: 'The programming language of the source code.', example: 'python' }),
+    options: AnalysisRequestOptionsSchema.exactOptional(),
     rules: z
       .array(AnalysisRequestRuleSchema)
       .openapi({ description: 'The list of static analysis rules to apply during analysis.' }),
@@ -17032,6 +17059,73 @@ const ArchiveSearchResponseDataSchema = z
   })
   .openapi({ description: 'Archive Search object.', required: ['id', 'type', 'attributes'] })
   .openapi('ArchiveSearchResponseData')
+
+const ArchiveSearchListResponseMetaSchema = z
+  .object({
+    truncated: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether more Archive Searches exist beyond the ones returned.',
+        example: false,
+      }),
+  })
+  .openapi({ description: 'Metadata of the Archive Searches response.', required: [] })
+  .openapi('ArchiveSearchListResponseMeta')
+
+const ArchiveSearchListResponseSchema = z
+  .object({
+    data: z
+      .array(ArchiveSearchResponseDataSchema)
+      .openapi({ description: 'Array of Archive Searches.' }),
+    meta: ArchiveSearchListResponseMetaSchema.exactOptional(),
+  })
+  .openapi({ description: 'Response containing multiple Archive Searches.', required: ['data'] })
+  .openapi('ArchiveSearchListResponse')
+
+const ArchiveSearchRehydrateRequestRehydrationSchema = z
+  .object({
+    retention_days: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of days the rehydrated logs are retained for.',
+        example: 15,
+      }),
+    tier: ArchiveSearchRehydrationTierSchema,
+  })
+  .openapi({ description: 'Rehydration settings to apply.', required: ['retention_days', 'tier'] })
+  .openapi('ArchiveSearchRehydrateRequestRehydration')
+
+const ArchiveSearchRehydrateRequestAttributesSchema = z
+  .object({ rehydration: ArchiveSearchRehydrateRequestRehydrationSchema })
+  .openapi({
+    description: 'Attributes accepted when rehydrating an Archive Search.',
+    required: ['rehydration'],
+  })
+  .openapi('ArchiveSearchRehydrateRequestAttributes')
+
+const ArchiveSearchRehydrateRequestDataSchema = z
+  .object({
+    attributes: ArchiveSearchRehydrateRequestAttributesSchema,
+    type: ArchiveSearchTypeSchema,
+  })
+  .openapi({ description: 'Archive Search object to rehydrate.', required: ['type', 'attributes'] })
+  .openapi('ArchiveSearchRehydrateRequestData')
+
+const ArchiveSearchRehydrateRequestSchema = z
+  .object({ data: ArchiveSearchRehydrateRequestDataSchema })
+  .openapi({ description: 'Request to rehydrate an Archive Search.', required: ['data'] })
+  .openapi('ArchiveSearchRehydrateRequest')
 
 const ArchiveSearchResponseSchema = z
   .object({ data: ArchiveSearchResponseDataSchema })
@@ -25071,6 +25165,25 @@ const CaseInsightsRequestSchema = z
   })
   .openapi('CaseInsightsRequest')
 
+const CaseInvestigationNotebookResourceTypeSchema = z
+  .literal('notebook')
+  .openapi({
+    description: 'Case investigation notebook resource type.',
+    example: 'notebook',
+    'x-enum-varnames': ['NOTEBOOK'],
+  })
+  .openapi('CaseInvestigationNotebookResourceType')
+
+const CaseInvestigationNotebookCreateDataSchema = z
+  .object({ type: CaseInvestigationNotebookResourceTypeSchema })
+  .openapi({ description: 'Case investigation notebook creation data.', required: ['type'] })
+  .openapi('CaseInvestigationNotebookCreateData')
+
+const CaseInvestigationNotebookCreateRequestSchema = z
+  .object({ data: CaseInvestigationNotebookCreateDataSchema })
+  .openapi({ description: 'Case investigation notebook creation request.', required: ['data'] })
+  .openapi('CaseInvestigationNotebookCreateRequest')
+
 const CaseLinkAttributesSchema = z
   .object({
     child_entity_id: z
@@ -29696,154 +29809,6 @@ const ComponentGridSchema = z
     required: ['name', 'type', 'properties'],
   })
   .openapi('ComponentGrid')
-
-const CpuSchema = z
-  .object({
-    max: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Maximum CPU usage observed for the job, expressed in millicores. This represents the upper bound of usage.',
-      }),
-    p75: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          '75th percentile of CPU usage (millicores). Represents a cost-saving configuration while covering most workloads.',
-      }),
-    p95: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          '95th percentile of CPU usage (millicores). Balances performance and cost, providing a safer margin than p75.',
-      }),
-  })
-  .openapi({
-    description:
-      'CPU usage statistics derived from historical Spark job metrics. Provides multiple estimates so users can choose between conservative and cost-saving risk profiles.',
-    'x-model-simple-name': 'SpaCpu',
-    required: [],
-  })
-  .openapi('Cpu')
-
-const EstimationSchema = z
-  .object({
-    cpu: CpuSchema.exactOptional(),
-    ephemeral_storage: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Recommended ephemeral storage allocation (in MiB). Derived from job temporary storage patterns.',
-      }),
-    heap: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Recommended JVM heap size (in MiB).',
-      }),
-    memory: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Recommended total memory allocation (in MiB). Includes both heap and overhead.',
-      }),
-    overhead: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Recommended JVM overhead (in MiB). Computed as total memory - heap.',
-      }),
-  })
-  .openapi({
-    description:
-      'Recommended resource values for a Spark driver or executor, derived from recent real usage metrics. Used by SPA to propose more efficient pod sizing.',
-    required: [],
-  })
-  .openapi('Estimation')
-
-const ComponentRecommendationSchema = z
-  .object({ estimation: EstimationSchema })
-  .openapi({
-    description:
-      'Resource recommendation for a single Spark component (driver or executor). Contains estimation data used to patch Spark job specs.',
-    required: ['estimation'],
-  })
-  .openapi('ComponentRecommendation')
 
 const ScheduleTargetPositionSchema = z
   .enum(['previous', 'current', 'next'])
@@ -41706,6 +41671,123 @@ const CustomRuleSchema = z
   })
   .openapi('CustomRule')
 
+const CustomRuleNullableRevisionEmbeddedSchema = z
+  .object({
+    arguments: z.array(ArgumentSchema).nullable().openapi({ description: 'Rule arguments' }),
+    category: CustomRuleRevisionAttributesCategorySchema,
+    checksum: z
+      .string()
+      .openapi({
+        description: 'Code checksum',
+        example: '8a66c4e4e631099ad71be3c1ea3ea8fc2d57193e56db2c296e2dd8a508b26b99',
+      }),
+    code: z
+      .string()
+      .openapi({
+        description: 'Rule code',
+        example: 'Y29uZHVjdG9yOgogICAgLSBkZXBsb3lfb25seTogdHJ1ZQ==',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Creation timestamp', example: '2026-01-09T13:00:57.473141Z' }),
+    created_by: z.string().openapi({ description: 'Creator identifier', example: 'foobarbaz' }),
+    creation_message: z
+      .string()
+      .openapi({ description: 'Revision creation message', example: 'Initial revision' }),
+    cve: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Associated CVE. Omitted when the revision has no associated CVE.',
+        example: 'CVE-2024-1234',
+      }),
+    cwe: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Associated CWE. Omitted when the revision has no associated CWE.',
+        example: 'CWE-79',
+      }),
+    description: z
+      .string()
+      .openapi({ description: 'Full description', example: 'bG9uZyBkZXNjcmlwdGlvbg==' }),
+    documentation_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Documentation URL. Omitted when the revision has no documentation URL.',
+        example: 'https://docs.example.com/rules/my-rule',
+      }),
+    id: z.string().openapi({ description: 'Revision identifier', example: 'revision-123' }),
+    is_published: z
+      .boolean()
+      .openapi({ description: 'Whether the revision is published', example: false }),
+    is_testing: z
+      .boolean()
+      .openapi({ description: 'Whether this is a testing revision', example: false }),
+    language: LanguageSchema,
+    severity: CustomRuleRevisionAttributesSeveritySchema,
+    short_description: z
+      .string()
+      .openapi({ description: 'Short description', example: 'c2hvcnQgZGVzY3JpcHRpb24=' }),
+    should_use_ai_fix: z
+      .boolean()
+      .openapi({ description: 'Whether to use AI for fixes', example: false }),
+    tags: z
+      .array(z.string().openapi({ description: 'A tag attached to the rule.' }))
+      .nullable()
+      .openapi({ description: 'Rule tags', example: ['security', 'custom'] }),
+    tests: z.array(CustomRuleRevisionTestSchema).nullable().openapi({ description: 'Rule tests' }),
+    tree_sitter_query: z
+      .string()
+      .openapi({
+        description: 'Tree-sitter query',
+        example: 'Y29uZHVjdG9yOgogICAgLSBkZXBsb3lfb25seTogdHJ1ZQ==',
+      }),
+    version_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Monotonically increasing version number of the revision.',
+        example: 1,
+      }),
+  })
+  .nullable()
+  .openapi({
+    description: 'The most recent revision of the rule, or null when the rule has no revisions.',
+    required: [
+      'id',
+      'version_id',
+      'creation_message',
+      'short_description',
+      'description',
+      'code',
+      'checksum',
+      'language',
+      'tree_sitter_query',
+      'created_at',
+      'created_by',
+      'severity',
+      'category',
+      'arguments',
+      'tests',
+      'tags',
+      'is_published',
+      'should_use_ai_fix',
+      'is_testing',
+    ],
+  })
+  .openapi('CustomRuleNullableRevisionEmbedded')
+
 const CustomRuleRevisionEmbeddedSchema = z
   .object({
     arguments: z.array(ArgumentSchema).nullable().openapi({ description: 'Rule arguments' }),
@@ -41829,9 +41911,7 @@ const CustomRuleAttributesSchema = z
       .datetime({ offset: true })
       .openapi({ description: 'Creation timestamp', example: '2026-01-09T13:00:57.473141Z' }),
     created_by: z.string().openapi({ description: 'Creator identifier', example: 'foobarbaz' }),
-    last_revision: CustomRuleRevisionEmbeddedSchema.nullable().openapi({
-      description: 'Most recent revision of the rule, or null when the rule has no revisions.',
-    }),
+    last_revision: CustomRuleNullableRevisionEmbeddedSchema,
     name: z.string().openapi({ description: 'Rule name', example: 'my-rule' }),
     revisions: z
       .array(CustomRuleRevisionEmbeddedSchema)
@@ -42212,9 +42292,7 @@ const CustomRulesetRuleEmbeddedSchema = z
         description: 'Rule identifier, which is the same as the rule name.',
         example: 'my-rule',
       }),
-    last_revision: CustomRuleRevisionEmbeddedSchema.nullable().openapi({
-      description: 'Most recent revision of the rule, or null when the rule has no revisions.',
-    }),
+    last_revision: CustomRuleNullableRevisionEmbeddedSchema,
     name: z.string().openapi({ description: 'Rule name', example: 'my-rule' }),
     revisions: z
       .array(CustomRuleRevisionEmbeddedSchema)
@@ -56508,6 +56586,63 @@ const ExperimentsCreateExperimentMetricGroupV2RequestSchema = z
   })
   .openapi('ExperimentsCreateExperimentMetricGroupV2Request')
 
+const ExperimentsCreateExperimentProtocolRequestDataAttributesSchema = z
+  .object({
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Optional text that explains the protocol.' }),
+    migration_metadata: z
+      .record(z.string(), z.any())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata for imported resources. Must encode to at most 4096 bytes. Null clears it; omission preserves it on update.',
+      }),
+    name: z
+      .string()
+      .regex(/.*\S.*/)
+      .min(1)
+      .openapi({
+        description:
+          'Protocol name. Leading and trailing spaces are removed. The trimmed name must contain 1 to 255 characters.',
+        example: 'Checkout conversion',
+      }),
+  })
+  .openapi({
+    description: 'Create a draft protocol with the organization default subject type.',
+    required: ['name'],
+  })
+  .openapi('ExperimentsCreateExperimentProtocolRequestDataAttributes')
+
+const ExperimentsPublicProtocolResponseDataTypeSchema = z
+  .literal('protocols')
+  .default('protocols')
+  .openapi({
+    description: 'Protocols resource type.',
+    example: 'protocols',
+    'x-enum-varnames': ['PROTOCOLS'],
+  })
+  .openapi('ExperimentsPublicProtocolResponseDataType')
+
+const ExperimentsCreateExperimentProtocolRequestDataSchema = z
+  .object({
+    attributes: ExperimentsCreateExperimentProtocolRequestDataAttributesSchema,
+    type: ExperimentsPublicProtocolResponseDataTypeSchema,
+  })
+  .openapi({ description: 'JSON:API protocol request resource.', required: ['type', 'attributes'] })
+  .openapi('ExperimentsCreateExperimentProtocolRequestData')
+
+const ExperimentsCreateExperimentProtocolRequestSchema = z
+  .object({ data: ExperimentsCreateExperimentProtocolRequestDataSchema })
+  .openapi({
+    description: 'Create a draft protocol with the organization default subject type.',
+    required: ['data'],
+  })
+  .openapi('ExperimentsCreateExperimentProtocolRequest')
+
 const ExperimentsDatadogEntryPointFilterColumnTypeSchema = z
   .enum([
     'varchar',
@@ -62070,6 +62205,644 @@ const ExperimentsPatchExperimentMetricGroupV2RequestSchema = z
   })
   .openapi('ExperimentsPatchExperimentMetricGroupV2Request')
 
+const ExperimentsPatchProtocolAnalysisPlanInputSchema = z
+  .object({
+    compute_cuped: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Whether to use pre-experiment data to reduce variance with CUPED.',
+      }),
+    confidence_interval_method: z
+      .string()
+      .regex(/^(Sequential|FixedSample|Bayesian|SequentialFixedHybrid)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Confidence interval method: `Sequential`, `FixedSample`, `Bayesian`, or `SequentialFixedHybrid`. An empty string leaves the method unset.',
+      }),
+    confidence_level: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Confidence level used by the statistical analysis.' }),
+    multiple_testing_correction_method: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Method used to adjust for testing multiple metrics.' }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Partial statistical settings. Omitted fields remain unchanged. Null clears the whole plan. Null clears nullable fields; null or an empty string clears confidence_interval_method.',
+    required: [],
+  })
+  .openapi('ExperimentsPatchProtocolAnalysisPlanInput')
+
+const ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItemsSchema =
+  z
+    .object({
+      column_name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Source column that supplies this assignment property.' }),
+      column_type: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Data type of the source column.' }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Display name of the assignment source property.' }),
+    })
+    .openapi({
+      description: "A default property supplied by the protocol's assignment source.",
+      required: [],
+    })
+    .openapi(
+      'ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItems',
+    )
+
+const ExperimentsPatchProtocolEnforcementInputSchema = z
+  .object({
+    confidence_interval_method: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always `LOCKED`. The server keeps this setting locked regardless of the supplied value.',
+      }),
+    confidence_level: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'LOCKED prevents changes to confidence level. EDITABLE permits changes.',
+      }),
+    cuped_calculation: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'LOCKED prevents changes to CUPED variance reduction. EDITABLE permits changes.',
+      }),
+    default_duration: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'LOCKED prevents changes to default duration. EDITABLE permits changes.',
+      }),
+    environment: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'LOCKED prevents changes to environment. EDITABLE permits changes.',
+      }),
+    flag_source: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always LOCKED. The server keeps this setting locked regardless of the supplied value.',
+      }),
+    multiple_testing_correction: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'LOCKED prevents changes to multiple testing correction. EDITABLE permits changes.',
+      }),
+    notifications: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'LOCKED prevents changes to notifications. EDITABLE permits changes.',
+      }),
+    primary_metric: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'LOCKED prevents changes to primary metric. EDITABLE permits changes.',
+      }),
+    secondary_metrics: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'LOCKED prevents changes to secondary metrics. EDITABLE permits changes.',
+      }),
+    split_by_exploration_dimensions: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'LOCKED prevents changes to result exploration dimensions. EDITABLE permits changes.',
+      }),
+    subject_type: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Always LOCKED. The server keeps this setting locked regardless of the supplied value.',
+      }),
+    targeting_rules: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'LOCKED prevents changes to targeting rules. EDITABLE permits changes.',
+      }),
+    traffic_exposure: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'LOCKED prevents changes to traffic exposure. EDITABLE permits changes.',
+      }),
+    warehouse_exposure_source: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'LOCKED prevents changes to warehouse exposure source. EDITABLE permits changes.',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Partial lock map. Omitted fields remain unchanged. Null clears the whole map. Empty or null field values become `EDITABLE`, except `subject_type`, `flag_source`, and `confidence_interval_method`, which remain `LOCKED`.',
+    required: [],
+  })
+  .openapi('ExperimentsPatchProtocolEnforcementInput')
+
+const ExperimentsProtocolExposureStepInputSchema = z
+  .object({
+    exposure_ratio: z
+      .float64()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({ description: 'Fraction of traffic exposed during this rollout step.' }),
+    grouped_step_index: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description: 'Index of the group that contains this rollout step.',
+      }),
+    interval_ms: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description: 'Duration of this rollout step, in milliseconds.',
+      }),
+    is_pause_record: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this schedule entry represents a pause.' }),
+    order_position: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 0,
+        description: 'Position of this entry in the ordered configuration.',
+      }),
+  })
+  .openapi({ description: 'A traffic exposure step in the protocol template.', required: [] })
+  .openapi('ExperimentsProtocolExposureStepInput')
+
+const ExperimentsPatchProtocolExposureScheduleInputSchema = z
+  .object({
+    autostart: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether the exposure schedule starts automatically.' }),
+    guardrail_triggered_action: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Action taken when a guardrail triggers during the exposure schedule.',
+      }),
+    rollout_steps: z
+      .array(ExperimentsProtocolExposureStepInputSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Rollout steps, replaced when supplied.' }),
+    selection_interval_ms: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description: 'Interval between traffic selections, in milliseconds.',
+      }),
+    strategy: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Method used to increase traffic exposure over the schedule.' }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Partial traffic schedule. Omitted fields remain unchanged. Null clears the whole schedule. Null clears nullable fields and rollout_steps; null sets strategy to an empty string and `autostart` to false.',
+    required: [],
+  })
+  .openapi('ExperimentsPatchProtocolExposureScheduleInput')
+
+const ExperimentsProtocolMetricInputSchema = z
+  .object({
+    metric_id: z
+      .uuid()
+      .openapi({ description: 'Metric UUID.', example: '550e8400-e29b-41d4-a716-446655440000' }),
+  })
+  .openapi({
+    description:
+      'A metric included in a protocol. Select the primary metric with `primary_metric_id`, not `is_primary`.',
+    required: ['metric_id'],
+  })
+  .openapi('ExperimentsProtocolMetricInput')
+
+const ExperimentsProtocolMetricGroupInputSchema = z
+  .object({
+    is_decision: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this group contains decision metrics.' }),
+    metrics: z
+      .array(ExperimentsProtocolMetricInputSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Metrics in the group.' }),
+    name: z.string().exactOptional().openapi({ description: 'Metric group name.' }),
+  })
+  .openapi({
+    description: 'A metric group supplied by the protocol. Empty decision groups are removed.',
+    required: [],
+  })
+  .openapi('ExperimentsProtocolMetricGroupInput')
+
+const ExperimentsProtocolConditionInputSchema = z
+  .object({
+    attribute: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Subject attribute evaluated by the targeting condition.' }),
+    operator: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Comparison applied to the subject attribute.' }),
+    order_position: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 0,
+        description: 'Position of this entry in the ordered configuration.',
+      }),
+    saved_filter_id: z
+      .string()
+      .regex(/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Saved filter UUID. Null selects an inline condition. An empty string skips the saved-filter lookup.',
+      }),
+    value: z
+      .array(z.string().openapi({ description: 'One value compared with the subject attribute.' }))
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Values compared with the subject attribute in this condition.' }),
+  })
+  .openapi({
+    description:
+      'Protocol targeting condition. Publishing and replacement require a saved filter or a valid inline attribute, operator, and values.',
+    required: [],
+  })
+  .openapi('ExperimentsProtocolConditionInput')
+
+const ExperimentsProtocolTargetingRuleInputSchema = z
+  .object({
+    conditions: z
+      .array(ExperimentsProtocolConditionInputSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Conditions in this rule.' }),
+  })
+  .openapi({ description: 'A targeting rule in the protocol template.', required: [] })
+  .openapi('ExperimentsProtocolTargetingRuleInput')
+
+const ExperimentsPatchExperimentProtocolRequestDataAttributesSchema = z
+  .object({
+    analysis_plan: ExperimentsPatchProtocolAnalysisPlanInputSchema.exactOptional(),
+    assignment_source_default_properties: z
+      .array(
+        ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItemsSchema,
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Assignment properties. Omission or null preserves them; an array replaces them.',
+      }),
+    assignment_source_id: z
+      .string()
+      .regex(/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the assignment source selected by the protocol. Omission or null keeps the current value. An empty string clears it.',
+      }),
+    default_duration_days: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description:
+          'Default experiment duration supplied by the protocol, in days. Omission preserves it; null clears it. Sets analysis_plan.target_duration_days on experiments created from this protocol.',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Description. Empty string clears it; omission or null preserves it.',
+      }),
+    enforcement: ExperimentsPatchProtocolEnforcementInputSchema.exactOptional(),
+    environment_id: z
+      .string()
+      .regex(/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the feature flag environment used by the experiment. Omission or null keeps the current value. An empty string clears it.',
+      }),
+    exposure_schedule: ExperimentsPatchProtocolExposureScheduleInputSchema.exactOptional(),
+    is_duration_required_to_start: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the protocol requires a duration before an experiment can start. Omission or null preserves it.',
+        example: false,
+      }),
+    is_equal_split_enforced: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the protocol requires equal traffic allocation across variants. Omission or null preserves it.',
+        example: false,
+      }),
+    is_metric_limit_enabled: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the protocol limits the number of metrics. Omission or null preserves it.',
+        example: false,
+      }),
+    is_minimum_duration_enabled: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the protocol enforces a minimum experiment duration. Omission or null preserves it.',
+        example: false,
+      }),
+    metric_groups: z
+      .array(ExperimentsProtocolMetricGroupInputSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Metric groups. Omission or null preserves them; an array replaces them.',
+      }),
+    metric_limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description:
+          'Maximum number of metrics allowed by the protocol. Omission preserves it; null clears it.',
+      }),
+    migration_metadata: z
+      .record(z.string(), z.any())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata for imported resources. Must encode to at most 4096 bytes. Null clears it; omission preserves it on update.',
+      }),
+    minimum_duration_unit: z
+      .string()
+      .regex(/^(DAYS|WEEKS)?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum duration unit, `DAYS` or `WEEKS`. Empty string clears it. Omission or null preserves it.',
+      }),
+    minimum_duration_value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description:
+          'Minimum experiment duration in the specified unit. Omission preserves it; null clears it.',
+      }),
+    name: z
+      .string()
+      .regex(/.*\S.*/)
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Protocol name. Leading and trailing spaces are removed. The trimmed name must contain 1 to 255 characters.',
+        example: 'Checkout conversion',
+      }),
+    primary_metric_id: z
+      .string()
+      .regex(/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the primary metric supplied by the protocol. Omission or null keeps the current value. An empty string clears it.',
+      }),
+    subject_type_id: z
+      .string()
+      .regex(/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?$/)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the subject type used by this configuration. Omission or null keeps the current value. An empty string clears it.',
+      }),
+    targeting_rules: z
+      .array(ExperimentsProtocolTargetingRuleInputSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Targeting rules. Omission or null preserves them; an array replaces them.',
+      }),
+  })
+  .openapi({
+    description:
+      'Partial protocol update. Omitted attributes remain unchanged. Published protocols accept only name, description, and migration_metadata; archived protocols reject updates.',
+    required: [],
+  })
+  .openapi('ExperimentsPatchExperimentProtocolRequestDataAttributes')
+
+const ExperimentsPatchExperimentProtocolRequestDataSchema = z
+  .object({
+    attributes: ExperimentsPatchExperimentProtocolRequestDataAttributesSchema.exactOptional(),
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'Protocol ID. If supplied, must match the path protocol_id.',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+      }),
+    type: ExperimentsPublicProtocolResponseDataTypeSchema,
+  })
+  .openapi({ description: 'JSON:API protocol request resource.', required: ['type'] })
+  .openapi('ExperimentsPatchExperimentProtocolRequestData')
+
+const ExperimentsPatchExperimentProtocolRequestSchema = z
+  .object({ data: ExperimentsPatchExperimentProtocolRequestDataSchema })
+  .openapi({
+    description:
+      'Partial protocol update. Omitted attributes remain unchanged. Published protocols accept only name, description, and migration_metadata; archived protocols reject updates.',
+    required: ['data'],
+  })
+  .openapi('ExperimentsPatchExperimentProtocolRequest')
+
 const ExperimentsPatchExperimentV2RequestDataAttributesDatadogFlagConfigurationSchema = z
   .object({
     entry_point:
@@ -62548,6 +63321,93 @@ const ExperimentsPatchSubjectTypeV2RequestSchema = z
   })
   .openapi('ExperimentsPatchSubjectTypeV2Request')
 
+const ExperimentsProtocolAnalysisPlanInputSchema = z
+  .object({
+    compute_cuped: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Whether to use pre-experiment data to reduce variance with CUPED.',
+      }),
+    confidence_interval_method: z
+      .string()
+      .regex(/^(Sequential|FixedSample|Bayesian|SequentialFixedHybrid)?$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Confidence interval method: `Sequential`, `FixedSample`, `Bayesian`, or `SequentialFixedHybrid`. An empty string leaves the method unset.',
+      }),
+    confidence_level: z
+      .float64()
+      .min(0)
+      .max(1)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Confidence level used by the statistical analysis.' }),
+    multiple_testing_correction_method: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Method used to adjust for testing multiple metrics.' }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Statistical settings. Use `default_duration_days` for duration; `target_duration_days` is not accepted here.',
+    required: [],
+  })
+  .openapi('ExperimentsProtocolAnalysisPlanInput')
+
+const ExperimentsProtocolExposureScheduleInputSchema = z
+  .object({
+    autostart: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the exposure schedule starts automatically.' }),
+    guardrail_triggered_action: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Action taken when a guardrail triggers during the exposure schedule.',
+      }),
+    rollout_steps: z
+      .array(ExperimentsProtocolExposureStepInputSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Rollout steps, replaced when supplied.' }),
+    selection_interval_ms: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description: 'Interval between traffic selections, in milliseconds.',
+      }),
+    strategy: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Method used to increase traffic exposure over the schedule.' }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Traffic schedule. Publishing and replacement require `NO_ROLLOUT` with exactly one step, or `UNIFORM_INTERVALS` with a positive selection interval and at least one step. Requires `environment_id`.',
+    required: [],
+  })
+  .openapi('ExperimentsProtocolExposureScheduleInput')
+
 const ExperimentsPublicProtocolResponseDataAttributesSubjectTypeSchema = z
   .object({
     id: z.string().exactOptional().openapi({ description: 'ID of the subject type.' }),
@@ -62571,6 +63431,24 @@ const ExperimentsPublicProtocolListResponseDataAttributesSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Text that explains the protocol.' }),
+    experiment_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 0,
+        description:
+          'Number of experiments in the organization that use this protocol, excluding deleted experiments.',
+        example: 0,
+      }),
     name: z
       .string()
       .openapi({ description: 'Display name of the protocol.', example: 'Checkout conversion' }),
@@ -62590,25 +63468,15 @@ const ExperimentsPublicProtocolListResponseDataAttributesSchema = z
       .string()
       .openapi({
         description:
-          'RFC3339 update time. Preserve all fractional seconds when passing this value as expected_updated_at.',
+          'RFC3339 update time. Preserve all fractional seconds when passing this value as\n`expected_updated_at`.',
         example: '2026-01-01T00:00:00Z',
       }),
   })
   .openapi({
     description: 'Summary of the protocol and its selected subject type and primary metric.',
-    required: ['name', 'status', 'updated_at'],
+    required: ['experiment_count', 'name', 'status', 'updated_at'],
   })
   .openapi('ExperimentsPublicProtocolListResponseDataAttributes')
-
-const ExperimentsPublicProtocolResponseDataTypeSchema = z
-  .literal('protocols')
-  .default('protocols')
-  .openapi({
-    description: 'Protocols resource type.',
-    example: 'protocols',
-    'x-enum-varnames': ['PROTOCOLS'],
-  })
-  .openapi('ExperimentsPublicProtocolResponseDataType')
 
 const ExperimentsPublicProtocolListResponseDataSchema = z
   .object({
@@ -62665,30 +63533,6 @@ const ExperimentsPublicProtocolResponseDataAttributesAnalysisPlanSchema = z
   .openapi({ description: 'Default statistical settings supplied by the protocol.', required: [] })
   .openapi('ExperimentsPublicProtocolResponseDataAttributesAnalysisPlan')
 
-const ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItemsSchema =
-  z
-    .object({
-      column_name: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Source column that supplies this assignment property.' }),
-      column_type: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Data type of the source column.' }),
-      name: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Display name of the assignment source property.' }),
-    })
-    .openapi({
-      description: "A default property supplied by the protocol's assignment source.",
-      required: [],
-    })
-    .openapi(
-      'ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItems',
-    )
-
 const ExperimentsPublicProtocolResponseDataAttributesEnforcementSchema = z
   .object({
     confidence_interval_method: z
@@ -62696,7 +63540,7 @@ const ExperimentsPublicProtocolResponseDataAttributesEnforcementSchema = z
       .exactOptional()
       .openapi({
         description:
-          'LOCKED prevents changes to confidence interval method. EDITABLE permits changes.',
+          'Always LOCKED. The server keeps this setting locked regardless of the supplied value.',
       }),
     confidence_level: z
       .string()
@@ -62727,7 +63571,8 @@ const ExperimentsPublicProtocolResponseDataAttributesEnforcementSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'LOCKED prevents changes to feature flag source. EDITABLE permits changes.',
+        description:
+          'Always LOCKED. The server keeps this setting locked regardless of the supplied value.',
       }),
     multiple_testing_correction: z
       .string()
@@ -62765,7 +63610,8 @@ const ExperimentsPublicProtocolResponseDataAttributesEnforcementSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'LOCKED prevents changes to subject type. EDITABLE permits changes.',
+        description:
+          'Always LOCKED. The server keeps this setting locked regardless of the supplied value.',
       }),
     targeting_rules: z
       .string()
@@ -62968,6 +63814,13 @@ const ExperimentsPublicProtocolResponseDataAttributesSchema = z
   .object({
     analysis_plan:
       ExperimentsPublicProtocolResponseDataAttributesAnalysisPlanSchema.exactOptional(),
+    archived_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Time when the protocol was archived. Omitted if it has not been archived.',
+        example: '2026-07-31T14:00:00Z',
+      }),
     assignment_source_default_properties: z
       .array(
         ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItemsSchema,
@@ -62978,6 +63831,12 @@ const ExperimentsPublicProtocolResponseDataAttributesSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'ID of the assignment source selected by the protocol.' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Time when the protocol was created.',
+        example: '2026-07-31T12:00:00Z',
+      }),
     default_duration_days: z
       .preprocess(
         (val) =>
@@ -63003,6 +63862,25 @@ const ExperimentsPublicProtocolResponseDataAttributesSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'ID of the feature flag environment used by the experiment.' }),
+    experiment_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 0,
+        description:
+          'Number of experiments in the organization that use this protocol, excluding deleted experiments. Omitted if the count cannot be retrieved. An omitted count does not mean zero.',
+        example: 0,
+      }),
     exposure_schedule:
       ExperimentsPublicProtocolResponseDataAttributesExposureScheduleSchema.exactOptional(),
     is_duration_required_to_start: z
@@ -63099,13 +63977,14 @@ const ExperimentsPublicProtocolResponseDataAttributesSchema = z
       .string()
       .openapi({
         description:
-          'RFC3339 update time. Preserve all fractional seconds when passing this value as expected_updated_at.',
+          'RFC3339 update time. Preserve all fractional seconds when passing this value as\n`expected_updated_at`.',
         example: '2026-01-01T00:00:00Z',
       }),
   })
   .openapi({
     description: 'Settings and defaults supplied by the protocol.',
     required: [
+      'created_at',
       'is_duration_required_to_start',
       'is_equal_split_enforced',
       'is_metric_limit_enabled',
@@ -63256,6 +64135,323 @@ const ExperimentsRefreshExperimentResultsV2DTOArraySchema = z
   })
   .openapi({ description: 'List of experiment refresh result resources.', required: ['data'] })
   .openapi('ExperimentsRefreshExperimentResultsV2DTOArray')
+
+const ExperimentsReplaceProtocolEnforcementInputSchema = z
+  .object({
+    confidence_interval_method: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description:
+          'Always LOCKED. The server keeps this setting locked regardless of the supplied value.',
+        example: 'LOCKED',
+      }),
+    confidence_level: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description: 'LOCKED prevents changes to confidence level. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    cuped_calculation: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description:
+          'LOCKED prevents changes to CUPED variance reduction. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    default_duration: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description: 'LOCKED prevents changes to default duration. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    environment: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description: 'LOCKED prevents changes to environment. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    flag_source: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description:
+          'Always LOCKED. The server keeps this setting locked regardless of the supplied value.',
+        example: 'LOCKED',
+      }),
+    multiple_testing_correction: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description:
+          'LOCKED prevents changes to multiple testing correction. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    notifications: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description: 'LOCKED prevents changes to notifications. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    primary_metric: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description: 'LOCKED prevents changes to primary metric. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    secondary_metrics: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description: 'LOCKED prevents changes to secondary metrics. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    split_by_exploration_dimensions: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description:
+          'LOCKED prevents changes to result exploration dimensions. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    subject_type: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description:
+          'Always LOCKED. The server keeps this setting locked regardless of the supplied value.',
+        example: 'LOCKED',
+      }),
+    targeting_rules: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description: 'LOCKED prevents changes to targeting rules. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    traffic_exposure: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description: 'LOCKED prevents changes to traffic exposure. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+    warehouse_exposure_source: z
+      .string()
+      .regex(/^(LOCKED|EDITABLE)$/)
+      .openapi({
+        description:
+          'LOCKED prevents changes to warehouse exposure source. EDITABLE permits changes.',
+        example: 'EDITABLE',
+      }),
+  })
+  .openapi({
+    description:
+      'Complete lock map. Omit this object to preserve current locks. Null is rejected; every field is required.',
+    required: [
+      'confidence_interval_method',
+      'confidence_level',
+      'cuped_calculation',
+      'default_duration',
+      'environment',
+      'flag_source',
+      'multiple_testing_correction',
+      'notifications',
+      'primary_metric',
+      'secondary_metrics',
+      'split_by_exploration_dimensions',
+      'subject_type',
+      'targeting_rules',
+      'traffic_exposure',
+      'warehouse_exposure_source',
+    ],
+  })
+  .openapi('ExperimentsReplaceProtocolEnforcementInput')
+
+const ExperimentsReplaceExperimentProtocolRequestDataAttributesSchema = z
+  .object({
+    analysis_plan: ExperimentsProtocolAnalysisPlanInputSchema.exactOptional(),
+    assignment_source_default_properties: z
+      .array(
+        ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItemsSchema,
+      )
+      .exactOptional()
+      .openapi({ description: 'Assignment properties.' }),
+    assignment_source_id: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the assignment source selected by the protocol.',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+      }),
+    default_duration_days: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description: 'Default experiment duration supplied by the protocol, in days.',
+      }),
+    enforcement: ExperimentsReplaceProtocolEnforcementInputSchema.exactOptional(),
+    environment_id: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the feature flag environment used by the experiment.',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+      }),
+    exposure_schedule: ExperimentsProtocolExposureScheduleInputSchema.exactOptional(),
+    is_duration_required_to_start: z
+      .boolean()
+      .openapi({
+        description: 'Whether the protocol requires a duration before an experiment can start.',
+        example: false,
+      }),
+    is_equal_split_enforced: z
+      .boolean()
+      .openapi({
+        description: 'Whether the protocol requires equal traffic allocation across variants.',
+        example: false,
+      }),
+    is_metric_limit_enabled: z
+      .boolean()
+      .openapi({
+        description: 'Whether the protocol limits the number of metrics.',
+        example: false,
+      }),
+    is_minimum_duration_enabled: z
+      .boolean()
+      .openapi({
+        description: 'Whether the protocol enforces a minimum experiment duration.',
+        example: false,
+      }),
+    metric_groups: z
+      .array(ExperimentsProtocolMetricGroupInputSchema)
+      .openapi({ description: 'Metric groups.', example: [] }),
+    metric_limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description: 'Maximum number of metrics allowed by the protocol.',
+      }),
+    migration_metadata: z
+      .record(z.string(), z.any())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata for imported resources. Must encode to at most 4096 bytes. Null clears it; omission preserves it on update.',
+      }),
+    minimum_duration_unit: z
+      .string()
+      .regex(/^(DAYS|WEEKS)$/)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Minimum duration unit, DAYS or WEEKS.' }),
+    minimum_duration_value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(0n),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 0,
+        description: 'Minimum experiment duration in the specified unit.',
+      }),
+    primary_metric_id: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the primary metric supplied by the protocol.',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+      }),
+    subject_type_id: z
+      .uuid()
+      .openapi({
+        description: 'ID of the subject type used by this configuration.',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+      }),
+    targeting_rules: z
+      .array(ExperimentsProtocolTargetingRuleInputSchema)
+      .exactOptional()
+      .openapi({ description: 'Targeting rules.' }),
+  })
+  .openapi({
+    description:
+      'Replace a published protocol template. Omitted optional template fields are cleared. Omitted enforcement and migration_metadata are preserved. Enabled limits require their values; allocation settings require environment_id.',
+    required: [
+      'subject_type_id',
+      'is_equal_split_enforced',
+      'is_minimum_duration_enabled',
+      'is_duration_required_to_start',
+      'is_metric_limit_enabled',
+      'metric_groups',
+    ],
+  })
+  .openapi('ExperimentsReplaceExperimentProtocolRequestDataAttributes')
+
+const ExperimentsReplaceExperimentProtocolRequestDataSchema = z
+  .object({
+    attributes: ExperimentsReplaceExperimentProtocolRequestDataAttributesSchema,
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'Protocol ID. If supplied, must match the path protocol_id.',
+        example: '550e8400-e29b-41d4-a716-446655440000',
+      }),
+    type: ExperimentsPublicProtocolResponseDataTypeSchema,
+  })
+  .openapi({ description: 'JSON:API protocol request resource.', required: ['type', 'attributes'] })
+  .openapi('ExperimentsReplaceExperimentProtocolRequestData')
+
+const ExperimentsReplaceExperimentProtocolRequestSchema = z
+  .object({ data: ExperimentsReplaceExperimentProtocolRequestDataSchema })
+  .openapi({
+    description:
+      'Replace a published protocol template. Omitted optional template fields are cleared. Omitted enforcement and migration_metadata are preserved. Enabled limits require their values; allocation settings require environment_id.',
+    required: ['data'],
+  })
+  .openapi('ExperimentsReplaceExperimentProtocolRequest')
 
 const ExperimentsStartExperimentV2RequestDataTypeSchema = z
   .literal('start-experiment-request')
@@ -72008,11 +73204,11 @@ const GetIoCIndicatorResponseSchema = z
   .openapi('GetIoCIndicatorResponse')
 
 const GetIssueIncludeQueryParameterItemSchema = z
-  .enum(['assignee', 'case', 'team_owners'])
+  .enum(['assignee', 'case', 'team_owners', 'samples'])
   .openapi({
     description: 'Relationship object that should be included in the response.',
     example: 'case',
-    'x-enum-varnames': ['ASSIGNEE', 'CASE', 'TEAM_OWNERS'],
+    'x-enum-varnames': ['ASSIGNEE', 'CASE', 'TEAM_OWNERS', 'SAMPLES'],
   })
   .openapi('GetIssueIncludeQueryParameterItem')
 
@@ -73205,6 +74401,33 @@ const SecurityMonitoringStandardRuleQuerySchema = z
       .exactOptional()
       .openapi({ description: 'Query extension to append to the logs query.', example: 'a > 3' }),
     dataSource: SecurityMonitoringStandardDataSourceSchema.exactOptional(),
+    datasetIds: z
+      .array(z.string().openapi({ description: 'Dataset ID.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'IDs of the datasets queried by the rule. Only used when `queryLanguage` is `sql`.',
+      }),
+    datasetVersions: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', description: 'Dataset version.' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Version of each dataset used by the rule, keyed by dataset ID. Only used when `queryLanguage` is `sql`.',
+      }),
     distinctFields: z
       .array(z.string().openapi({ description: 'Field.' }))
       .exactOptional()
@@ -73256,6 +74479,14 @@ const SecurityMonitoringStandardRuleQuerySchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Query to run on logs.', example: 'a > 3' }),
+    queryLanguage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Language of the query. Use `sql` for SQL-based rules over datasets. Defaults to `event_query`.',
+        example: 'sql',
+      }),
   })
   .openapi({ description: 'Query for matching rule.', required: [] })
   .openapi('SecurityMonitoringStandardRuleQuery')
@@ -77284,6 +78515,38 @@ const HistoricalJobDataTypeSchema = z
   .openapi({ description: 'Type of payload.', 'x-enum-varnames': ['HISTORICALDETECTIONSJOB'] })
   .openapi('HistoricalJobDataType')
 
+const HistoricalJobFailureReasonSchema = z
+  .enum(['rule_configuration', 'query_too_expensive', 'internal_error'])
+  .openapi({
+    description: 'The reason why the job failed.',
+    example: 'query_too_expensive',
+    'x-enum-descriptions': [
+      "The rule, or the dataset it references, can't run as written.",
+      'The query scans too much data.',
+      'An internal error occurred. These are usually temporary.',
+    ],
+    'x-enum-varnames': ['RULE_CONFIGURATION', 'QUERY_TOO_EXPENSIVE', 'INTERNAL_ERROR'],
+  })
+  .openapi('HistoricalJobFailureReason')
+
+const HistoricalJobFailureSchema = z
+  .object({
+    hint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A suggestion to fix the failure.',
+        example: 'Narrow the time range or reduce the data scanned.',
+      }),
+    reason: HistoricalJobFailureReasonSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      "Details about why the job failed. Only present when the job has failed and won't be retried.",
+    required: [],
+  })
+  .openapi('HistoricalJobFailure')
+
 const HistoricalJobListMetaSchema = z
   .object({
     totalCount: z
@@ -77561,6 +78824,7 @@ const HistoricalJobResponseAttributesSchema = z
       .openapi({
         description: 'ID of the rule used to create the job (if it is created from a rule).',
       }),
+    failure: HistoricalJobFailureSchema.exactOptional(),
     jobDefinition: JobDefinitionSchema.exactOptional(),
     jobName: z.string().exactOptional().openapi({ description: 'Job name.' }),
     jobStatus: z.string().exactOptional().openapi({ description: 'Job status.' }),
@@ -81887,6 +83151,131 @@ const IncidentResponderDataResponseSchema = z
   })
   .openapi('IncidentResponderDataResponse')
 
+const IncidentRoleAssignmentDataAttributesResponseSchema = z
+  .object({
+    created: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp when the role assignment was created.',
+        example: '2024-01-01T00:00:00.000Z',
+      }),
+    deleted: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp when the role assignment was deleted, or the zero timestamp if it has not been deleted.',
+        example: '0001-01-01T00:00:00Z',
+      }),
+    modified: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Timestamp when the role assignment was last modified.',
+        example: '2024-01-01T00:00:00.000Z',
+      }),
+    responder_type: z
+      .string()
+      .openapi({ description: 'The type of the responder.', example: 'user' }),
+    role: z
+      .string()
+      .openapi({ description: 'The name of the assigned role.', example: 'commander' }),
+  })
+  .openapi({
+    description: 'Attributes of an incident role assignment.',
+    required: ['role', 'responder_type', 'created', 'modified'],
+  })
+  .openapi('IncidentRoleAssignmentDataAttributesResponse')
+
+const IncidentRoleAssignmentResponderRelationshipDataSchema = z
+  .object({
+    id: z
+      .uuid()
+      .openapi({
+        description: 'The responder identifier.',
+        example: '00000000-0000-0000-0000-000000000000',
+      }),
+    type: z.string().openapi({ description: 'The responder resource type.', example: 'users' }),
+  })
+  .openapi({ description: 'Responder relationship data.', required: ['id', 'type'] })
+  .openapi('IncidentRoleAssignmentResponderRelationshipData')
+
+const IncidentRoleAssignmentResponderRelationshipSchema = z
+  .object({ data: IncidentRoleAssignmentResponderRelationshipDataSchema })
+  .openapi({ description: 'Relationship to a responder.', required: ['data'] })
+  .openapi('IncidentRoleAssignmentResponderRelationship')
+
+const IncidentRoleAssignmentRoleRelationshipDataSchema = z
+  .object({
+    id: z
+      .uuid()
+      .openapi({
+        description: 'The role identifier.',
+        example: '00000000-0000-0000-0000-000000000000',
+      }),
+    type: z
+      .string()
+      .openapi({ description: 'The role resource type.', example: 'incident_reserved_roles' }),
+  })
+  .nullable()
+  .openapi({ description: 'Role relationship data.', required: ['id', 'type'] })
+  .openapi('IncidentRoleAssignmentRoleRelationshipData')
+
+const IncidentRoleAssignmentRoleRelationshipSchema = z
+  .object({ data: IncidentRoleAssignmentRoleRelationshipDataSchema.exactOptional() })
+  .openapi({ description: 'Relationship to a role.', required: [] })
+  .openapi('IncidentRoleAssignmentRoleRelationship')
+
+const IncidentRoleAssignmentRelationshipsResponseSchema = z
+  .object({
+    created_by_user: IncidentRoleAssignmentResponderRelationshipSchema.exactOptional(),
+    last_modified_by_user: IncidentRoleAssignmentResponderRelationshipSchema.exactOptional(),
+    reserved_role: IncidentRoleAssignmentRoleRelationshipSchema.exactOptional(),
+    responder: IncidentRoleAssignmentResponderRelationshipSchema,
+    user_defined_role: IncidentRoleAssignmentRoleRelationshipSchema.exactOptional(),
+  })
+  .openapi({ description: 'Relationships of a role assignment.', required: ['responder'] })
+  .openapi('IncidentRoleAssignmentRelationshipsResponse')
+
+const IncidentRoleAssignmentTypeSchema = z
+  .literal('incident_role_assignments')
+  .openapi({
+    description: 'Incident role assignment resource type.',
+    example: 'incident_role_assignments',
+    'x-enum-varnames': ['INCIDENT_ROLE_ASSIGNMENTS'],
+  })
+  .openapi('IncidentRoleAssignmentType')
+
+const IncidentRoleAssignmentDataResponseSchema = z
+  .object({
+    attributes: IncidentRoleAssignmentDataAttributesResponseSchema,
+    id: z
+      .uuid()
+      .openapi({
+        description: 'The role assignment identifier.',
+        example: '00000000-0000-0000-0000-000000000000',
+      }),
+    relationships: IncidentRoleAssignmentRelationshipsResponseSchema.exactOptional(),
+    type: IncidentRoleAssignmentTypeSchema,
+  })
+  .openapi({
+    description: 'Role assignment data in a response.',
+    required: ['id', 'type', 'attributes'],
+  })
+  .openapi('IncidentRoleAssignmentDataResponse')
+
+const IncidentResponderIncludedItemSchema = z
+  .xor([IncidentUserDataSchema, IncidentRoleAssignmentDataResponseSchema])
+  .openapi({ description: 'A user or role assignment related to an incident responder.' })
+  .openapi('IncidentResponderIncludedItem')
+
+const IncidentResponderRelatedObjectSchema = z
+  .enum(['users', 'role_assignments'])
+  .openapi({
+    description: 'Object related to an incident responder.',
+    'x-enum-varnames': ['USERS', 'ROLE_ASSIGNMENTS'],
+  })
+  .openapi('IncidentResponderRelatedObject')
+
 const IncidentResponderRequestSchema = z
   .object({ data: IncidentResponderDataRequestSchema })
   .openapi({
@@ -81906,15 +83295,186 @@ const IncidentResponderResponseSchema = z
   .openapi({ description: 'Response with a single incident responder.', required: ['data'] })
   .openapi('IncidentResponderResponse')
 
+const IncidentRespondersPaginationSchema = z
+  .object({
+    first_offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The offset of the first page.',
+        example: 0,
+      }),
+    last_offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The offset of the last page, if available.',
+        example: 25,
+      }),
+    limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The maximum number of elements returned per page.',
+        example: 25,
+      }),
+    next_offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The offset of the next page, if available.',
+        example: 25,
+      }),
+    offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The index of the first element in the current page.',
+        example: 0,
+      }),
+    prev_offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The offset of the previous page, if available.',
+        example: 0,
+      }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The total number of elements, when available.',
+        example: 1,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The pagination type.', example: 'offset_limit' }),
+  })
+  .openapi({ description: 'Offset-based pagination for incident responders.', required: [] })
+  .openapi('IncidentRespondersPagination')
+
+const IncidentRespondersResponseMetaPageSchema = z
+  .object({
+    total_filtered_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of responders matching the query, before pagination.',
+        example: 1,
+      }),
+  })
+  .openapi({
+    description: 'Total count for the responder list.',
+    required: ['total_filtered_count'],
+  })
+  .openapi('IncidentRespondersResponseMetaPage')
+
+const IncidentRespondersResponseMetaSchema = z
+  .object({
+    page: IncidentRespondersResponseMetaPageSchema.exactOptional(),
+    pagination: IncidentRespondersPaginationSchema.exactOptional(),
+  })
+  .openapi({ description: 'Pagination metadata for the responder list.', required: [] })
+  .openapi('IncidentRespondersResponseMeta')
+
 const IncidentRespondersResponseSchema = z
   .object({
     data: z
       .array(IncidentResponderDataResponseSchema)
       .openapi({ description: 'List of incident responders.' }),
     included: z
-      .array(IncidentUserDataSchema)
+      .array(IncidentResponderIncludedItemSchema)
       .exactOptional()
       .openapi({ description: 'Included related resources.', readOnly: true }),
+    links: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Links to pages of incident responders.' }),
+    meta: IncidentRespondersResponseMetaSchema.exactOptional(),
   })
   .openapi({ description: 'Response with a list of incident responders.', required: ['data'] })
   .openapi('IncidentRespondersResponse')
@@ -82167,6 +83727,7 @@ const IncidentResponseRelationshipsSchema = z
     created_by_user: RelationshipToUserSchema.exactOptional(),
     declared_by_user: RelationshipToUserSchema.exactOptional(),
     impacts: RelationshipToIncidentImpactsSchema.exactOptional(),
+    incident_type: RelationshipToIncidentTypeSchema.exactOptional(),
     integrations: RelationshipToIncidentIntegrationMetadatasSchema.exactOptional(),
     last_modified_by_user: RelationshipToUserSchema.exactOptional(),
     responders: RelationshipToIncidentRespondersSchema.exactOptional(),
@@ -85261,6 +86822,41 @@ const IssueCaseRelationshipSchema = z
   .openapi({ description: 'Relationship between the issue and case.', required: ['data'] })
   .openapi('IssueCaseRelationship')
 
+const IssueSampleTypeSchema = z
+  .literal('error_tracking_issue_sample')
+  .openapi({
+    description: 'Type of the object.',
+    example: 'error_tracking_issue_sample',
+    'x-enum-varnames': ['ERROR_TRACKING_ISSUE_SAMPLE'],
+  })
+  .openapi('IssueSampleType')
+
+const IssueSampleReferenceSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'Sample identifier.',
+        example:
+          'AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA',
+      }),
+    type: IssueSampleTypeSchema,
+  })
+  .openapi({ description: 'A curated error sample of the issue.', required: ['id', 'type'] })
+  .openapi('IssueSampleReference')
+
+const IssueSamplesRelationshipSchema = z
+  .object({
+    data: z
+      .array(IssueSampleReferenceSchema)
+      .openapi({ description: 'Array of curated error samples of the issue.' }),
+  })
+  .openapi({
+    description: 'Relationship between the issue and its curated error samples.',
+    required: ['data'],
+  })
+  .openapi('IssueSamplesRelationship')
+
 const IssueTeamTypeSchema = z
   .literal('team')
   .openapi({ description: 'Type of the object.', example: 'team', 'x-enum-varnames': ['TEAM'] })
@@ -85292,6 +86888,7 @@ const IssueRelationshipsSchema = z
   .object({
     assignee: IssueAssigneeRelationshipSchema.exactOptional(),
     case: IssueCaseRelationshipSchema.exactOptional(),
+    samples: IssueSamplesRelationshipSchema.exactOptional(),
     team_owners: IssueTeamOwnersRelationshipSchema.exactOptional(),
   })
   .openapi({
@@ -85621,8 +87218,392 @@ const IssueTeamSchema = z
   .openapi({ description: 'A team that owns an issue.', required: ['id', 'type', 'attributes'] })
   .openapi('IssueTeam')
 
+const IssueSampleBiasSchema = z
+  .enum(['latest', 'git_metadata', 'trace', 'session_replay', 'exception_replay'])
+  .openapi({
+    description:
+      'Criterion used to pick a sample. `latest` picks the most recent error. `git_metadata` picks the most\nrecent error with source code metadata, whose stack trace is parsed. `trace` picks the most recent error\nwith an APM trace. `session_replay` picks the most recent error with a RUM session replay.\n`exception_replay` picks the most recent error with an Exception Replay snapshot.',
+    example: 'latest',
+    'x-enum-varnames': ['LATEST', 'GIT_METADATA', 'TRACE', 'SESSION_REPLAY', 'EXCEPTION_REPLAY'],
+  })
+  .openapi('IssueSampleBias')
+
+const IssueSampleDataSourceSchema = z
+  .enum(['APM', 'LOGS', 'RUM', 'LLMOBS', 'SYNTHETICS', 'NONE'])
+  .openapi({
+    description:
+      'Product that reported the error. The value is `NONE` when the error has no known origin.',
+    example: 'APM',
+    'x-enum-varnames': ['APM', 'LOGS', 'RUM', 'LLMOBS', 'SYNTHETICS', 'NONE'],
+  })
+  .openapi('IssueSampleDataSource')
+
+const IssueSampleCodeSnippetSchema = z
+  .object({
+    lines: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Lines of source code.',
+        example: ['def filter_forbidden_tags(tags):', '    return len(tags)'],
+      }),
+    offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Line number of the first line of the snippet, starting at 1.',
+        example: 37,
+      }),
+  })
+  .openapi({
+    description: 'Source code around a stack frame. Empty when the source code is unavailable.',
+    required: [],
+  })
+  .openapi('IssueSampleCodeSnippet')
+
+const IssueSampleGitFileLocationSchema = z
+  .object({
+    column: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Column of the location, starting at 1.',
+        example: 13,
+      }),
+    filepath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Path of the file in the repository.',
+        example: 'conduit/apps/core/utils.py',
+      }),
+    first_line: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'First line of the location, starting at 1.',
+        example: 42,
+      }),
+    last_line: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Last line of the location, starting at 1.',
+        example: 42,
+      }),
+    ref: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Git reference of the file, usually a commit SHA.',
+        example: 'b6199f80b6199f80b6199f80b6199f80b6199f80',
+      }),
+    repo_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Repository identifier.',
+        example: 'github.com/company/email-api-py',
+      }),
+  })
+  .openapi({
+    description:
+      'Location of a stack frame in a repository file. Empty when the source code is unavailable.',
+    required: [],
+  })
+  .openapi('IssueSampleGitFileLocation')
+
+const IssueSampleStackFrameSchema = z
+  .object({
+    code_snippet: IssueSampleCodeSnippetSchema.exactOptional(),
+    git_file_location: IssueSampleGitFileLocationSchema.exactOptional(),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Text of the frame, as it appears in the stack trace.',
+        example: 'main.handler(0xc000123456)\n\t/go/src/app/main.go:42 +0x1d',
+      }),
+  })
+  .openapi({ description: 'A stack frame.', required: [] })
+  .openapi('IssueSampleStackFrame')
+
+const IssueSampleErrorStackSchema = z
+  .object({
+    frames: z
+      .array(IssueSampleStackFrameSchema)
+      .exactOptional()
+      .openapi({ description: 'Stack frames, from the top of the stack.' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Programming language used to parse the stack trace.',
+        example: 'go',
+      }),
+  })
+  .openapi({
+    description:
+      'Parsed stack trace of the error. Only the sample picked by the `git_metadata` bias has frames.',
+    required: [],
+  })
+  .openapi('IssueSampleErrorStack')
+
+const IssueSampleEventSchema = z
+  .record(z.string(), z.any())
+  .openapi({
+    description:
+      'Raw error event, as stored by its data source. Its fields differ between APM, logs, and RUM.',
+  })
+  .openapi('IssueSampleEvent')
+
+const IssueSampleFrameLinkSchema = z
+  .object({
+    code_location: IssueSampleGitFileLocationSchema,
+    frame_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Index of the frame in the stack trace, starting at 0.',
+        example: 1,
+      }),
+  })
+  .openapi({
+    description: 'Source code location of a stack frame.',
+    required: ['frame_id', 'code_location'],
+  })
+  .openapi('IssueSampleFrameLink')
+
+const IssueSampleAttributesSchema = z
+  .object({
+    application_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'RUM application identifier of the error.',
+        example: '40d8ca4b-2ac0-481f-b16e-f110699ecff6',
+      }),
+    biases: z
+      .array(IssueSampleBiasSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Biases the sample satisfies. A single error can satisfy several biases.',
+        example: ['latest', 'git_metadata'],
+      }),
+    build_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Build identifier of the mobile application.', example: 'a1b2c3' }),
+    bundle_version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Bundle version of the mobile application.', example: '42' }),
+    data_source: IssueSampleDataSourceSchema.exactOptional(),
+    debug_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Debug identifier used to resolve the stack trace of the error to source code.',
+        example: '9d8c7b6a-5f4e-3d2c-1b0a-9f8e7d6c5b4a',
+      }),
+    debug_info_captured: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether an Exception Replay snapshot was captured for the error.',
+        example: false,
+      }),
+    error_source_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Source type set by the SDK or tracer that reported the error, such as `browser` for RUM browser errors\nor `Crashtracking` for backend crash reports. Usually not set for APM and logs errors.',
+        example: 'browser',
+      }),
+    error_stack: IssueSampleErrorStackSchema,
+    event: IssueSampleEventSchema.exactOptional(),
+    git_commit_sha: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Git commit SHA of the service version.',
+        example: 'b6199f80b6199f80b6199f80b6199f80b6199f80',
+      }),
+    git_repository_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Git repository identifier of the service.',
+        example: 'github.com/company/email-api-py',
+      }),
+    git_repository_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Git repository URL of the service.',
+        example: 'https://github.com/company/email-api-py',
+      }),
+    has_session_replay: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether a RUM session replay is available for the error.',
+        example: true,
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Programming language of the service.', example: 'python' }),
+    links: z
+      .array(IssueSampleFrameLinkSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Source code locations of the stack frames that resolve to a repository file.',
+      }),
+    os_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Operating system of the device that reported the error.',
+        example: 'iOS',
+      }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Service name.', example: 'email-api-py' }),
+    session_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'RUM session identifier of the error.',
+        example: '72d11fa0-7f59-408a-95ff-9af7d4f8d7db',
+      }),
+    session_replay_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'URL of the RUM session replay of the error.',
+        example:
+          'https://app.datadoghq.com/rum/replay/sessions/72d11fa0-7f59-408a-95ff-9af7d4f8d7db',
+      }),
+    snapshot_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Identifier of the Exception Replay snapshot of the error.',
+        example: '0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d',
+      }),
+    span_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'APM span identifier of the error.',
+        example: '3906394766563720946',
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Timestamp of the error.', example: '2024-01-01T10:00:00Z' }),
+    trace_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'APM trace identifier of the error.',
+        example: '6730183925457637287',
+      }),
+    variant: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Build variant of the mobile application.', example: 'release' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the service.', example: '1.2.3' }),
+    view_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'RUM view identifier of the error.',
+        example: 'c5c02423-c03a-400a-993f-731bebf1732b',
+      }),
+  })
+  .openapi({
+    description: 'Object containing the information of a sample.',
+    required: ['timestamp', 'error_stack'],
+  })
+  .openapi('IssueSampleAttributes')
+
+const IssueSampleSchema = z
+  .object({
+    attributes: IssueSampleAttributesSchema,
+    id: z
+      .string()
+      .openapi({
+        description: 'Sample identifier.',
+        example:
+          'AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA',
+      }),
+    type: IssueSampleTypeSchema,
+  })
+  .openapi({
+    description:
+      'An error event of the issue, picked because it satisfies one or more sample biases.',
+    required: ['id', 'type', 'attributes'],
+  })
+  .openapi('IssueSample')
+
 const IssueIncludedSchema = z
-  .xor([IssueCaseSchema, IssueUserSchema, IssueTeamSchema])
+  .xor([IssueCaseSchema, IssueUserSchema, IssueTeamSchema, IssueSampleSchema])
   .openapi({
     description:
       'An array of related resources, returned when the `include` query parameter is used.',
@@ -98232,14 +100213,12 @@ const ObservabilityPipelineAzureDataExplorerDestinationBatchSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(4000000n),
+        z.int64(),
       )
       .exactOptional()
       .openapi({
         type: 'integer',
         format: 'int64',
-        minimum: 1,
-        maximum: 4000000,
         description: 'Maximum batch size in bytes.',
         example: 2000000,
       }),
@@ -98251,13 +100230,12 @@ const ObservabilityPipelineAzureDataExplorerDestinationBatchSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n),
+        z.int64(),
       )
       .exactOptional()
       .openapi({
         type: 'integer',
         format: 'int64',
-        minimum: 1,
         description: 'Maximum number of events per batch before it is flushed.',
         example: 1000,
       }),
@@ -98269,13 +100247,12 @@ const ObservabilityPipelineAzureDataExplorerDestinationBatchSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n),
+        z.int64(),
       )
       .exactOptional()
       .openapi({
         type: 'integer',
         format: 'int64',
-        minimum: 1,
         description: 'Maximum number of seconds to wait before flushing a partial batch.',
         example: 1,
       }),
@@ -98285,6 +100262,17 @@ const ObservabilityPipelineAzureDataExplorerDestinationBatchSchema = z
     required: [],
   })
   .openapi('ObservabilityPipelineAzureDataExplorerDestinationBatch')
+
+const ObservabilityPipelineAzureDataExplorerDestinationIngestionModeSchema = z
+  .enum(['streaming', 'queue'])
+  .default('streaming')
+  .openapi({
+    description:
+      'The ingestion method used to send data to Azure Data Explorer.\n\n- `streaming`: Sends events directly to the table using streaming ingestion.\n- `queue`: Sends events through queued (batched) ingestion.\n\nDefaults to `streaming`.',
+    example: 'queue',
+    'x-enum-varnames': ['STREAMING', 'QUEUE'],
+  })
+  .openapi('ObservabilityPipelineAzureDataExplorerDestinationIngestionMode')
 
 const ObservabilityPipelineAzureDataExplorerDestinationTypeSchema = z
   .literal('azure_data_explorer')
@@ -98323,6 +100311,8 @@ const ObservabilityPipelineAzureDataExplorerDestinationSchema = z
           'Name of the environment variable or secret that holds the Azure Data Explorer ingestion endpoint URL.\nDefaults to `DESTINATION_AZURE_DATA_EXPLORER_INGESTION_ENDPOINT` (prefixed with `DD_OP_` at runtime).',
         example: 'AZURE_DATA_EXPLORER_INGESTION_ENDPOINT',
       }),
+    ingestion_mode:
+      ObservabilityPipelineAzureDataExplorerDestinationIngestionModeSchema.exactOptional(),
     inputs: z
       .array(
         z
@@ -102216,6 +104206,208 @@ const ObservabilityPipelineRenameFieldsProcessorSchema = z
   })
   .openapi('ObservabilityPipelineRenameFieldsProcessor')
 
+const ObservabilityPipelineSpikeProtectionProcessorActionWhenMissingPartitionsSchema = z
+  .enum(['ignore', 'default_bucket'])
+  .default('ignore')
+  .openapi({
+    description:
+      'How to handle logs that are missing one of the `partition_fields`. Options:\n- `ignore`: Forward the event without applying spike protection.\n- `default_bucket`: Assign the event to a default partition.',
+    example: 'ignore',
+    'x-enum-varnames': ['IGNORE', 'DEFAULT_BUCKET'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorActionWhenMissingPartitions')
+
+const ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesTypeSchema = z
+  .literal('threshold')
+  .default('threshold')
+  .openapi({
+    description: 'The minimal threshold type. The value should always be `threshold`.',
+    example: 'threshold',
+    'x-enum-varnames': ['THRESHOLD'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesType')
+
+const ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesSchema = z
+  .object({
+    bytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The minimal threshold, in bytes, for the matching partition.',
+        example: 107374182400,
+      }),
+    type: ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesTypeSchema,
+  })
+  .openapi({
+    description: 'Sets a specific byte threshold for the matching partition.',
+    required: ['type', 'bytes'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytes')
+
+const ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepTypeSchema = z
+  .literal('always_keep')
+  .default('always_keep')
+  .openapi({
+    description: 'The minimal threshold type. The value should always be `always_keep`.',
+    example: 'always_keep',
+    'x-enum-varnames': ['ALWAYS_KEEP'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepType')
+
+const ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepSchema = z
+  .object({
+    type: ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepTypeSchema,
+  })
+  .openapi({
+    description:
+      'Never activates spike protection for the matching partition, regardless of volume.',
+    required: ['type'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeep')
+
+const ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdSchema = z
+  .xor([
+    ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesSchema,
+    ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepSchema,
+  ])
+  .openapi({ description: 'The minimal threshold to apply to the matching partition.' })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorMinimalThreshold')
+
+const ObservabilityPipelineSpikeProtectionProcessorThresholdOverrideSchema = z
+  .object({
+    fields: z
+      .array(ObservabilityPipelineFieldValueSchema)
+      .openapi({
+        description:
+          'The set of field matchers that identifies the partition this override applies to. Every field name listed must also appear in `partition_fields`.',
+      }),
+    minimal_threshold: ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdSchema,
+  })
+  .openapi({
+    description:
+      'Defines a minimal threshold that applies to a specific partition instead of the processor-wide `minimal_threshold`.',
+    required: ['fields', 'minimal_threshold'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorThresholdOverride')
+
+const ObservabilityPipelineSpikeProtectionProcessorSpikeActionSchema = z
+  .enum(['drop', 'no_action', 'overflow_routing'])
+  .openapi({
+    description:
+      'The action to take with matching logs while spike protection is active. Options:\n- `drop`: Drop the event.\n- `no_action`: Let the event pass through.\n- `overflow_routing`: Route to an overflow destination.\n\nWhen `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events.',
+    example: 'drop',
+    'x-enum-varnames': ['DROP', 'NO_ACTION', 'OVERFLOW_ROUTING'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorSpikeAction')
+
+const ObservabilityPipelineSpikeProtectionProcessorTypeSchema = z
+  .literal('spike_protection')
+  .default('spike_protection')
+  .openapi({
+    description: 'The processor type. The value should always be `spike_protection`.',
+    example: 'spike_protection',
+    'x-enum-varnames': ['SPIKE_PROTECTION'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessorType')
+
+const ObservabilityPipelineSpikeProtectionProcessorSchema = z
+  .object({
+    action_when_missing_partitions:
+      ObservabilityPipelineSpikeProtectionProcessorActionWhenMissingPartitionsSchema.exactOptional(),
+    display_name: ObservabilityPipelineComponentDisplayNameSchema.exactOptional(),
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Indicates whether the processor is enabled.', example: true }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The unique identifier for this component. Used in other parts of the pipeline to reference this component (for example, as the `input` to downstream components).',
+        example: 'spike-protection-processor',
+      }),
+    include: z
+      .string()
+      .openapi({
+        description: 'A Datadog search query used to determine which logs this processor targets.',
+        example: 'service:my-service',
+      }),
+    minimal_threshold: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The minimum volume, in bytes, that must be observed within 24 hours before spike protection can activate. Defaults to 100 GiB.',
+        example: 107374182400,
+      }),
+    minimal_threshold_overrides: z
+      .array(ObservabilityPipelineSpikeProtectionProcessorThresholdOverrideSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of per-partition overrides for the minimal threshold, identified by matching field values. Requires `partition_fields` to be set.',
+      }),
+    name: z
+      .string()
+      .openapi({ description: 'Name of the spike protection rule.', example: 'MySpikeProtection' }),
+    partition_fields: z
+      .array(
+        z
+          .string()
+          .max(128)
+          .openapi({ description: 'The name of a log field used to partition spike detection.' }),
+      )
+      .max(5)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of fields used to segment log traffic. Volume is learned and evaluated independently for each unique combination of these field values. A maximum of five fields is supported.',
+      }),
+    spike_action: ObservabilityPipelineSpikeProtectionProcessorSpikeActionSchema,
+    spike_threshold: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of standard deviations above the learned mean volume that must be exceeded before a spike is detected. Defaults to `5`.',
+        example: 5,
+      }),
+    type: ObservabilityPipelineSpikeProtectionProcessorTypeSchema,
+  })
+  .openapi({
+    description:
+      'The `spike_protection` processor learns the normal ingestion volume for the logs that match a specified filter and takes action when the volume spikes unexpectedly.\n\n**Supported pipeline types:** logs',
+    required: ['id', 'type', 'include', 'name', 'spike_action', 'enabled'],
+    'x-pipeline-types': ['logs'],
+  })
+  .openapi('ObservabilityPipelineSpikeProtectionProcessor')
+
 const ObservabilityPipelineSplitArrayProcessorArrayConfigSchema = z
   .object({
     field: z
@@ -102454,7 +104646,6 @@ const ObservabilityPipelineGenerateMetricsV2ProcessorSchema = z
       .openapi({ description: 'Indicates whether the processor is enabled.', example: true }),
     enabled_metric_aggregation: z
       .boolean()
-      .default(true)
       .exactOptional()
       .openapi({
         description:
@@ -103707,6 +105898,7 @@ const ObservabilityPipelineConfigProcessorItemSchema = z
     ObservabilityPipelineReduceProcessorSchema,
     ObservabilityPipelineRemoveFieldsProcessorSchema,
     ObservabilityPipelineRenameFieldsProcessorSchema,
+    ObservabilityPipelineSpikeProtectionProcessorSchema,
     ObservabilityPipelineSplitArrayProcessorSchema,
     ObservabilityPipelineThrottleProcessorSchema,
     ObservabilityPipelineCustomProcessorSchema,
@@ -114620,25 +116812,6 @@ const NodeTypesResponseSchema = z
   })
   .openapi('NodeTypesResponse')
 
-const NotebookResourceTypeSchema = z
-  .literal('notebook')
-  .openapi({
-    description: 'Notebook resource type',
-    example: 'notebook',
-    'x-enum-varnames': ['NOTEBOOK'],
-  })
-  .openapi('NotebookResourceType')
-
-const NotebookCreateDataSchema = z
-  .object({ type: NotebookResourceTypeSchema })
-  .openapi({ description: 'Notebook creation data', required: ['type'] })
-  .openapi('NotebookCreateData')
-
-const NotebookCreateRequestSchema = z
-  .object({ data: NotebookCreateDataSchema })
-  .openapi({ description: 'Notebook creation request', required: ['data'] })
-  .openapi('NotebookCreateRequest')
-
 const NotificationChannelSchema = z
   .object({ data: NotificationChannelDataSchema.exactOptional() })
   .openapi({
@@ -116165,11 +118338,11 @@ const OrgConfigWriteRequestSchema = z
   .openapi('OrgConfigWriteRequest')
 
 const OrgConnectionTypeEnumSchema = z
-  .enum(['logs', 'metrics', 'audit'])
+  .enum(['logs', 'metrics', 'audit', 'ci_pipelines', 'ci_tests'])
   .openapi({
     description: 'Available connection types between organizations.',
     example: 'logs',
-    'x-enum-varnames': ['LOGS', 'METRICS', 'AUDIT'],
+    'x-enum-varnames': ['LOGS', 'METRICS', 'AUDIT', 'CI_PIPELINES', 'CI_TESTS'],
   })
   .openapi('OrgConnectionTypeEnum')
 
@@ -126836,14 +129009,22 @@ const RUMAggregateRequestSchema = z
   })
   .openapi('RUMAggregateRequest')
 
+const RUMBucketGroupByValueSchema = z
+  .xor([z.string(), z.float64()])
+  .openapi({
+    description:
+      'The value of a group-by facet for this bucket. A string for string facets, a number for numeric facets and histograms.',
+  })
+  .openapi('RUMBucketGroupByValue')
+
 const RUMBucketResponseSchema = z
   .object({
     by: z
-      .record(z.string(), z.string().openapi({ description: 'The values for each group-by.' }))
+      .record(z.string(), RUMBucketGroupByValueSchema)
       .exactOptional()
       .openapi({
         description: 'The key-value pairs for each group-by.',
-        example: { '@session.type': 'user', '@type': 'view' },
+        example: { '@session.type': 'user', '@view.time_spent': 1000000000 },
       }),
     computes: z
       .record(z.string(), RUMAggregateBucketValueSchema)
@@ -127081,6 +129262,22 @@ const RUMApplicationAttributesSchema = z
         description: 'ID of the API key associated with the application.',
         example: 123456789,
       }),
+    apm_rum_flat_sampling_replay_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if flat sampling of Session Replay for APM-correlated RUM sessions is enabled.',
+        example: false,
+      }),
+    apm_rum_flat_sampling_replay_sample_rate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sample rate (0-100) of Session Replay for APM-correlated RUM sessions when flat sampling is enabled.',
+        example: 0,
+      }),
     application_id: z
       .string()
       .openapi({
@@ -127112,6 +129309,48 @@ const RUMApplicationAttributesSchema = z
     created_by_handle: z
       .string()
       .openapi({ description: 'Handle of the creator user.', example: 'john.doe' }),
+    disabled_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Timestamp in ms of the date the RUM application was disabled. Only present if the application was disabled.',
+        example: 1659479836169,
+      }),
+    disabled_by_handle: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Handle of the user who disabled the RUM application. Only present if the application was disabled.',
+        example: 'jane.doe',
+      }),
+    error_tracking_exclusion_filter_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if Error Tracking exclusion filters are enabled for the application.',
+        example: false,
+      }),
+    external_feeds: z
+      .array(z.string().openapi({ description: 'External feed name.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Non-native ingestion paths the RUM application sends its data through. `otel` means the application sends RUM data through OpenTelemetry instead of the Datadog RUM SDK.',
+        example: ['otel'],
+      }),
     hash: z
       .string()
       .exactOptional()
@@ -127123,10 +129362,34 @@ const RUMApplicationAttributesSchema = z
     name: z
       .string()
       .openapi({ description: 'Name of the RUM application.', example: 'my_rum_application' }),
+    ootb_metrics_installed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the out-of-the-box RUM metrics are installed for the application.',
+        example: true,
+      }),
     org_id: z
       .int32()
       .max(2147483647)
       .openapi({ description: 'Org ID of the RUM application.', example: 999 }),
+    product_analytics_preview_disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the Product Analytics preview is disabled for the application. Only present (and `true`) when the Product Analytics retention state is not preview.',
+        example: true,
+      }),
+    product_analytics_replay_sample_rate: z
+      .int32()
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description: 'Sample rate (0-100) of Session Replay for Product Analytics sessions.',
+        example: 0,
+      }),
     product_scales: RUMProductScalesSchema.exactOptional(),
     remote_config_id: z
       .string()
@@ -127134,6 +129397,20 @@ const RUMApplicationAttributesSchema = z
       .openapi({
         description: 'ID of the RUM SDK remote configuration for the application, if one exists.',
         example: 'abc12345-1234-5678-abcd-ef1234567890',
+      }),
+    short_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Short name of the RUM application.',
+        example: 'my_rum_application',
+      }),
+    tags: z
+      .array(z.string().openapi({ description: 'Tag associated with the RUM application.' }))
+      .exactOptional()
+      .openapi({
+        description: 'List of tags associated with the RUM application.',
+        example: ['team:rum'],
       }),
     type: z
       .string()
@@ -127204,6 +129481,15 @@ const RUMApplicationSchema = z
 
 const RUMApplicationCreateAttributesSchema = z
   .object({
+    create_default_retention_filters: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether to create the default retention filters when the application is created: `Sessions with errors` and `Sessions`, each with a 100% retention rate.\nSet to `false` to create the application without them, for example when you add your own retention filters right after creating it. Until you add retention filters, the application only retains sessions matched by its [permanent retention filters](https://docs.datadoghq.com/real_user_monitoring/rum_without_limits/retention_filters/#permanent-retention-filters).\nThis setting doesn't affect permanent retention filters (sessions with forced replays, Synthetics sessions and RUM-APM flat sampling).",
+        example: false,
+      }),
     name: z
       .string()
       .openapi({ description: 'Name of the RUM application.', example: 'my_new_rum_application' }),
@@ -127246,6 +129532,30 @@ const RUMApplicationCreateRequestSchema = z
 
 const RUMApplicationListAttributesSchema = z
   .object({
+    api_key_id: z
+      .int32()
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description: 'ID of the API key associated with the application.',
+        example: 123456789,
+      }),
+    apm_rum_flat_sampling_replay_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if flat sampling of Session Replay for APM-correlated RUM sessions is enabled.',
+        example: false,
+      }),
+    apm_rum_flat_sampling_replay_sample_rate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sample rate (0-100) of Session Replay for APM-correlated RUM sessions when flat sampling is enabled.',
+        example: 0,
+      }),
     application_id: z
       .string()
       .openapi({
@@ -127271,6 +129581,48 @@ const RUMApplicationListAttributesSchema = z
     created_by_handle: z
       .string()
       .openapi({ description: 'Handle of the creator user.', example: 'john.doe' }),
+    disabled_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Timestamp in ms of the date the RUM application was disabled. Only present if the application was disabled.',
+        example: 1659479836169,
+      }),
+    disabled_by_handle: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Handle of the user who disabled the RUM application. Only present if the application was disabled.',
+        example: 'jane.doe',
+      }),
+    error_tracking_exclusion_filter_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if Error Tracking exclusion filters are enabled for the application.',
+        example: false,
+      }),
+    external_feeds: z
+      .array(z.string().openapi({ description: 'External feed name.' }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Non-native ingestion paths the RUM application sends its data through. `otel` means the application sends RUM data through OpenTelemetry instead of the Datadog RUM SDK.',
+        example: ['otel'],
+      }),
     hash: z
       .string()
       .exactOptional()
@@ -127282,11 +129634,56 @@ const RUMApplicationListAttributesSchema = z
     name: z
       .string()
       .openapi({ description: 'Name of the RUM application.', example: 'my_rum_application' }),
+    ootb_metrics_installed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the out-of-the-box RUM metrics are installed for the application.',
+        example: true,
+      }),
     org_id: z
       .int32()
       .max(2147483647)
       .openapi({ description: 'Org ID of the RUM application.', example: 999 }),
+    product_analytics_preview_disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the Product Analytics preview is disabled for the application. Only present (and `true`) when the Product Analytics retention state is not preview.',
+        example: true,
+      }),
+    product_analytics_replay_sample_rate: z
+      .int32()
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description: 'Sample rate (0-100) of Session Replay for Product Analytics sessions.',
+        example: 0,
+      }),
     product_scales: RUMProductScalesSchema.exactOptional(),
+    remote_config_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the RUM SDK remote configuration for the application, if one exists.',
+        example: 'abc12345-1234-5678-abcd-ef1234567890',
+      }),
+    short_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Short name of the RUM application.',
+        example: 'my_rum_application',
+      }),
+    tags: z
+      .array(z.string().openapi({ description: 'Tag associated with the RUM application.' }))
+      .exactOptional()
+      .openapi({
+        description: 'List of tags associated with the RUM application.',
+        example: ['team:rum'],
+      }),
     type: z
       .string()
       .openapi({
@@ -128262,118 +130659,6 @@ const RecentlyUpdatedEntitiesResponseSchema = z
     required: ['data'],
   })
   .openapi('RecentlyUpdatedEntitiesResponse')
-
-const RecommendationAttributesSchema = z
-  .object({
-    confidence_level: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The confidence level of the recommendation, expressed as a value between 0.0 (low confidence) and 1.0 (high confidence).',
-      }),
-    driver: ComponentRecommendationSchema,
-    executor: ComponentRecommendationSchema,
-    matched_params: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Only returned by the v2 endpoint. The job parameters whose values the recommendation was matched on, as `parameter=value` pairs joined by `|`.\nAn empty string means the service-wide (coarse) recommendation was used.',
-        example: 'detailed_metrics=false|Region=US1',
-      }),
-  })
-  .openapi({
-    description:
-      'Attributes of the SPA Recommendation resource. Contains recommendations for both driver and executor components.',
-    required: ['driver', 'executor'],
-  })
-  .openapi('RecommendationAttributes')
-
-const RecommendationTypeSchema = z
-  .literal('recommendation')
-  .default('recommendation')
-  .openapi({
-    description:
-      'JSON:API resource type for Spark Pod Autosizing recommendations. Identifies the Recommendation resource returned by SPA.',
-    example: 'recommendation',
-    'x-enum-varnames': ['RECOMMENDATION'],
-  })
-  .openapi('RecommendationType')
-
-const RecommendationDataSchema = z
-  .object({
-    attributes: RecommendationAttributesSchema,
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Resource identifier for the recommendation. Optional in responses.',
-      }),
-    type: RecommendationTypeSchema,
-  })
-  .openapi({
-    description:
-      'JSON:API resource object for SPA Recommendation. Includes type, optional ID, and resource attributes with structured recommendations.',
-    required: ['type', 'attributes'],
-  })
-  .openapi('RecommendationData')
-
-const RecommendationDocumentSchema = z
-  .object({ data: RecommendationDataSchema })
-  .openapi({
-    description:
-      'JSON:API document containing a single Recommendation resource. Returned by SPA when the Spark Gateway requests recommendations.',
-    required: ['data'],
-  })
-  .openapi('RecommendationDocument')
-
-const RecommendationV2RequestAttributesSchema = z
-  .object({
-    arguments: z
-      .array(z.string())
-      .openapi({
-        description:
-          'Raw, unfiltered Spark job arguments as submitted (for example, `--org_id=2`).\nSPA determines which arguments are relevant for the given service.',
-        example: [''],
-      }),
-  })
-  .openapi({
-    description:
-      "Attributes for requesting SPA recommendations by forwarding a Spark job's raw arguments\ninstead of a pre-computed shard.",
-    required: ['arguments'],
-  })
-  .openapi('RecommendationV2RequestAttributes')
-
-const RecommendationV2RequestTypeSchema = z
-  .literal('recommendation_v2_request')
-  .default('recommendation_v2_request')
-  .openapi({
-    description: 'JSON:API resource type for the SPA v2 recommendation request.',
-    example: 'recommendation_v2_request',
-    'x-enum-varnames': ['RECOMMENDATION_V2_REQUEST'],
-  })
-  .openapi('RecommendationV2RequestType')
-
-const RecommendationV2RequestDataSchema = z
-  .object({
-    attributes: RecommendationV2RequestAttributesSchema,
-    type: RecommendationV2RequestTypeSchema,
-  })
-  .openapi({
-    description: 'JSON:API resource object for the SPA v2 recommendation request.',
-    required: ['type', 'attributes'],
-  })
-  .openapi('RecommendationV2RequestData')
-
-const RecommendationV2RequestBodySchema = z
-  .object({ data: RecommendationV2RequestDataSchema })
-  .openapi({
-    description:
-      "Request body for retrieving SPA recommendations by forwarding a Spark job's raw arguments\ninstead of a pre-computed shard.",
-    required: ['data'],
-  })
-  .openapi('RecommendationV2RequestBody')
 
 const RecommendationsFilterRequestScopeSchema = z
   .enum(['ccm', 'experiment', '*'])
@@ -143984,10 +146269,17 @@ const SensitiveDataScannerSuppressionsSchema = z
           'List of strings to use for suppression of matches starting with these strings.',
         example: ['admin', 'user'],
       }),
+    use_recommended_suppressions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Should the rule use the underlying standard pattern suppression configuration. If set to `true`, the rule must be tied\nto a standard pattern. If set to `false`, the specified suppressions are applied.',
+      }),
   })
   .openapi({
     description:
-      'Object describing the suppressions for a rule. There are three types of suppressions, `starts_with`, `ends_with`, and `exact_match`.\nSuppressed matches are not obfuscated, counted in metrics, or displayed in the Findings page.',
+      'Object describing suppressions for a rule, or the recommended suppression lists published by a standard pattern.\nThere are three types of suppressions, `starts_with`, `ends_with`, and `exact_match`.\nRules based on the Datadog library can use recommended or custom suppressions. Custom rules can only use custom suppressions.\nSuppressed matches are not obfuscated, counted in metrics, or displayed in the Findings page.',
     required: [],
   })
   .openapi('SensitiveDataScannerSuppressions')
@@ -144458,6 +146750,7 @@ const SensitiveDataScannerStandardPatternAttributesSchema = z
         maximum: 5,
         description: 'Integer from 1 (high) to 5 (low) indicating standard pattern issue severity.',
       }),
+    suppressions: SensitiveDataScannerSuppressionsSchema.exactOptional(),
     tags: z
       .array(z.string().openapi({ description: 'A tag associated with the standard pattern.' }))
       .exactOptional()
@@ -149379,7 +151672,8 @@ const SpansComputeSchema = z
     type: SpansComputeTypeSchema.exactOptional(),
   })
   .openapi({
-    description: 'A compute rule to compute metrics or timeseries.',
+    description:
+      'A compute rule to compute metrics or timeseries.\nAll computes in a request must have the same `type`, and `timeseries` computes must use the same `interval`.\nTo get both totals and timeseries, send separate requests.',
     required: ['aggregation'],
   })
   .openapi('SpansCompute')
@@ -149492,8 +151786,9 @@ const SpansAggregateSortSchema = z
     type: SpansAggregateSortTypeSchema.exactOptional(),
   })
   .openapi({
-    description: 'A sort rule.',
-    example: { aggregation: 'count', order: 'asc' },
+    description:
+      'A sort rule. With `type: alphabetical` (the default), buckets are sorted by facet value\nand only `order` is allowed. With `type: measure`, buckets are sorted by a computed value:\nset `aggregation`, and set `metric` unless the aggregation is `count`.',
+    example: { aggregation: 'pc90', metric: '@duration', order: 'desc', type: 'measure' },
     required: [],
   })
   .openapi('SpansAggregateSort')
@@ -149547,7 +151842,8 @@ const SpansGroupBySchema = z
         type: 'integer',
         format: 'int64',
         default: 10,
-        description: 'The maximum buckets to return for this group by.',
+        description:
+          'The maximum buckets to return for this group by.\nA request can generate at most 10,000 groups. Nested `group_by` entries multiply, so the\nproduct of their limits must stay within that bound. For example, two entries with a limit of 100 each\nproduce up to 10,000 groups. With a `timeseries` compute, the number of groups multiplied by\nthe number of time buckets must not exceed 400,000.',
       }),
     missing: SpansGroupByMissingSchema.exactOptional(),
     sort: SpansAggregateSortSchema.exactOptional(),
@@ -156101,6 +158397,71 @@ const TagIndexingRuleExemptionResponseSchema = z
   })
   .openapi('TagIndexingRuleExemptionResponse')
 
+const TagIndexingRuleExemptionSortSchema = z
+  .enum(['name', '-name', 'estimated_change_in_volume', '-estimated_change_in_volume'])
+  .default('estimated_change_in_volume')
+  .openapi({
+    description: 'Sort field for tag indexing rule exemptions.',
+    example: 'estimated_change_in_volume',
+    'x-enum-varnames': [
+      'NAME',
+      'NAME_DESCENDING',
+      'ESTIMATED_CHANGE_IN_VOLUME',
+      'ESTIMATED_CHANGE_IN_VOLUME_DESCENDING',
+    ],
+  })
+  .openapi('TagIndexingRuleExemptionSort')
+
+const TagIndexingRuleExemptionUpdateAttributesSchema = z
+  .object({
+    reason: z
+      .string()
+      .openapi({
+        description: 'The updated reason the metric is exempt from tag indexing rules.',
+        example: 'This metric must remain exempt because of its query requirements.',
+      }),
+  })
+  .openapi({
+    description: 'Attributes for updating a tag indexing rule exemption.',
+    required: ['reason'],
+  })
+  .openapi('TagIndexingRuleExemptionUpdateAttributes')
+
+const TagIndexingRuleExemptionUpdateDataSchema = z
+  .object({
+    attributes: TagIndexingRuleExemptionUpdateAttributesSchema,
+    type: TagIndexingRuleExemptionTypeSchema,
+  })
+  .openapi({
+    description: 'Data object for updating a tag indexing rule exemption.',
+    required: ['type', 'attributes'],
+  })
+  .openapi('TagIndexingRuleExemptionUpdateData')
+
+const TagIndexingRuleExemptionUpdateRequestSchema = z
+  .object({ data: TagIndexingRuleExemptionUpdateDataSchema })
+  .openapi({
+    description: 'Request body for updating a tag indexing rule exemption.',
+    required: ['data'],
+  })
+  .openapi('TagIndexingRuleExemptionUpdateRequest')
+
+const TagIndexingRuleExemptionsResponseSchema = z
+  .object({
+    data: z
+      .array(TagIndexingRuleExemptionDataSchema)
+      .exactOptional()
+      .openapi({ description: 'Array of tag indexing rule exemption objects.' }),
+    links: MetricsListResponseLinksSchema.exactOptional(),
+    meta: MetricPaginationMetaSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Response containing a page of tag indexing rule exemptions.',
+    readOnly: true,
+    required: [],
+  })
+  .openapi('TagIndexingRuleExemptionsResponse')
+
 const TagIndexingRuleOrderAttributesSchema = z
   .object({
     rule_ids: z
@@ -157491,6 +159852,534 @@ const TeamHierarchyLinksResponseSchema = z
   })
   .openapi({ description: 'Team hierarchy links response', required: [] })
   .openapi('TeamHierarchyLinksResponse')
+
+const TeamHierarchyMemberAttributesSchema = z
+  .object({
+    direct_role: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Role on the requested team: admin or member. Null for inherited members.',
+        example: 'member',
+      }),
+    is_direct: z
+      .boolean()
+      .openapi({
+        description: 'Whether the user belongs directly to the requested team.',
+        example: true,
+      }),
+    provisioned_by: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Membership provisioner. Null for inherited members.',
+        example: 'manual',
+      }),
+    provisioned_by_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Identifier supplied by the membership provisioner. Null when unavailable or for inherited members.',
+        example: '00000000-0000-0000-0000-000000000003',
+      }),
+  })
+  .openapi({
+    description: 'Membership attributes relative to the requested team.',
+    required: ['is_direct', 'direct_role', 'provisioned_by', 'provisioned_by_id'],
+  })
+  .openapi('TeamHierarchyMemberAttributes')
+
+const TeamHierarchyMemberTeamTypeSchema = z
+  .literal('teams')
+  .default('teams')
+  .openapi({
+    description: 'Requested team resource type.',
+    example: 'teams',
+    'x-enum-varnames': ['TEAMS'],
+  })
+  .openapi('TeamHierarchyMemberTeamType')
+
+const TeamHierarchyMemberTeamDataSchema = z
+  .object({
+    id: z
+      .uuid()
+      .openapi({
+        description: 'UUID of the team.',
+        example: '692e8073-12c4-4c71-8408-5090bd44c9c8',
+      }),
+    type: TeamHierarchyMemberTeamTypeSchema,
+  })
+  .openapi({ description: 'Team resource identifier.', required: ['id', 'type'] })
+  .openapi('TeamHierarchyMemberTeamData')
+
+const TeamHierarchyMemberTeamRelationshipSchema = z
+  .object({ data: TeamHierarchyMemberTeamDataSchema })
+  .openapi({ description: 'Linkage to the requested team.', required: ['data'] })
+  .openapi('TeamHierarchyMemberTeamRelationship')
+
+const TeamHierarchyMemberUserDataSchema = z
+  .object({
+    id: z
+      .uuid()
+      .openapi({
+        description: 'UUID of the user.',
+        example: '00000000-0000-0000-0000-000000000001',
+      }),
+    type: UsersTypeSchema,
+  })
+  .openapi({ description: 'User resource identifier.', required: ['id', 'type'] })
+  .openapi('TeamHierarchyMemberUserData')
+
+const TeamHierarchyMemberUserRelationshipSchema = z
+  .object({ data: TeamHierarchyMemberUserDataSchema })
+  .openapi({ description: 'Linkage to the user.', required: ['data'] })
+  .openapi('TeamHierarchyMemberUserRelationship')
+
+const TeamHierarchyMemberRelationshipsSchema = z
+  .object({
+    team: TeamHierarchyMemberTeamRelationshipSchema,
+    user: TeamHierarchyMemberUserRelationshipSchema,
+  })
+  .openapi({ description: 'User and requested team linkage.', required: ['user', 'team'] })
+  .openapi('TeamHierarchyMemberRelationships')
+
+const TeamHierarchyMemberTypeSchema = z
+  .literal('user_team_relationship')
+  .default('user_team_relationship')
+  .openapi({
+    description: 'Team hierarchy membership resource type.',
+    example: 'user_team_relationship',
+    'x-enum-varnames': ['USER_TEAM_RELATIONSHIP'],
+  })
+  .openapi('TeamHierarchyMemberType')
+
+const TeamHierarchyMemberSchema = z
+  .object({
+    attributes: TeamHierarchyMemberAttributesSchema,
+    id: z
+      .string()
+      .openapi({
+        description: 'Relationship identifier containing the team UUID and user UUID.',
+        example:
+          'UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000001',
+      }),
+    relationships: TeamHierarchyMemberRelationshipsSchema,
+    type: TeamHierarchyMemberTypeSchema,
+  })
+  .openapi({
+    description: 'A user relationship to the requested team.',
+    required: ['id', 'type', 'attributes', 'relationships'],
+  })
+  .openapi('TeamHierarchyMember')
+
+const TeamHierarchyMemberUserSchema = z
+  .object({
+    attributes: UserAttributesSchema,
+    id: z
+      .uuid()
+      .openapi({
+        description: 'UUID of the user.',
+        example: '00000000-0000-0000-0000-000000000001',
+      }),
+    type: UsersTypeSchema,
+  })
+  .openapi({
+    description: 'A user included in the hierarchy members response.',
+    required: ['id', 'type', 'attributes'],
+  })
+  .openapi('TeamHierarchyMemberUser')
+
+const TeamHierarchyMemberTeamAttributesSchema = z
+  .object({
+    handle: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Handle of the team.', example: 'platform' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the team.', example: 'Platform' }),
+  })
+  .openapi({ description: 'Available attributes of the requested team.', required: [] })
+  .openapi('TeamHierarchyMemberTeamAttributes')
+
+const TeamHierarchyMemberTeamSchema = z
+  .object({
+    attributes: TeamHierarchyMemberTeamAttributesSchema.exactOptional(),
+    id: z
+      .uuid()
+      .openapi({
+        description: 'UUID of the requested team.',
+        example: '692e8073-12c4-4c71-8408-5090bd44c9c8',
+      }),
+    type: TeamHierarchyMemberTeamTypeSchema,
+  })
+  .openapi({
+    description: 'The requested team, included at most once. Descendant teams are not included.',
+    required: ['id', 'type'],
+  })
+  .openapi('TeamHierarchyMemberTeam')
+
+const TeamHierarchyMemberIncludedSchema = z
+  .xor([TeamHierarchyMemberUserSchema, TeamHierarchyMemberTeamSchema])
+  .openapi({
+    description: 'An included user or the requested team, distinguished by resource type.',
+  })
+  .openapi('TeamHierarchyMemberIncluded')
+
+const TeamHierarchyMembersNumberPageTypeSchema = z
+  .literal('number_size')
+  .default('number_size')
+  .openapi({
+    description: 'Pagination mode.',
+    example: 'number_size',
+    'x-enum-varnames': ['NUMBER_SIZE'],
+  })
+  .openapi('TeamHierarchyMembersNumberPageType')
+
+const TeamHierarchyMembersNumberPageSchema = z
+  .object({
+    first_number: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'First page number.', example: 0 }),
+    last_number: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Last page number. Null when unavailable.',
+        example: 0,
+      }),
+    next_number: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Next page number. Null when unavailable.',
+        example: null,
+      }),
+    number: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Current zero-based page number.',
+        example: 0,
+      }),
+    prev_number: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Previous page number. Null when unavailable.',
+        example: null,
+      }),
+    size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Maximum number of members per page.',
+        example: 100,
+      }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of members matching the filters.',
+        example: 2,
+      }),
+    type: TeamHierarchyMembersNumberPageTypeSchema,
+  })
+  .openapi({
+    description: 'Pagination metadata using number and size.',
+    required: [
+      'type',
+      'number',
+      'size',
+      'total',
+      'first_number',
+      'prev_number',
+      'next_number',
+      'last_number',
+    ],
+  })
+  .openapi('TeamHierarchyMembersNumberPage')
+
+const TeamHierarchyMembersOffsetPageTypeSchema = z
+  .literal('offset_limit')
+  .default('offset_limit')
+  .openapi({
+    description: 'Pagination mode.',
+    example: 'offset_limit',
+    'x-enum-varnames': ['OFFSET_LIMIT'],
+  })
+  .openapi('TeamHierarchyMembersOffsetPageType')
+
+const TeamHierarchyMembersOffsetPageSchema = z
+  .object({
+    first_offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'First offset.', example: 0 }),
+    last_offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Last offset. Null when unavailable.',
+        example: 0,
+      }),
+    limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Maximum number of members per page.',
+        example: 100,
+      }),
+    next_offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Next offset. Null when unavailable.',
+        example: null,
+      }),
+    offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Current offset.', example: 0 }),
+    prev_offset: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Previous offset. Null when unavailable.',
+        example: null,
+      }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total number of members matching the filters.',
+        example: 2,
+      }),
+    type: TeamHierarchyMembersOffsetPageTypeSchema,
+  })
+  .openapi({
+    description: 'Pagination metadata using offset and limit.',
+    required: [
+      'type',
+      'offset',
+      'limit',
+      'total',
+      'first_offset',
+      'prev_offset',
+      'next_offset',
+      'last_offset',
+    ],
+  })
+  .openapi('TeamHierarchyMembersOffsetPage')
+
+const TeamHierarchyMembersPageSchema = z
+  .xor([TeamHierarchyMembersOffsetPageSchema, TeamHierarchyMembersNumberPageSchema])
+  .openapi({ description: 'Pagination metadata for the selected pagination mode.' })
+  .openapi('TeamHierarchyMembersPage')
+
+const TeamHierarchyMembersResponseLinksSchema = z
+  .object({
+    first: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'First page URL.',
+        example:
+          'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+      }),
+    last: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Last page URL.',
+        example:
+          'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+      }),
+    next: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Next page URL.',
+        example:
+          'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+      }),
+    prev: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Previous page URL.',
+        example:
+          'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+      }),
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Current page URL.',
+        example:
+          'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+      }),
+  })
+  .openapi({ description: 'Page navigation links. Unavailable links are omitted.', required: [] })
+  .openapi('TeamHierarchyMembersResponseLinks')
+
+const TeamHierarchyMembersResponseMetaSchema = z
+  .object({ page: TeamHierarchyMembersPageSchema })
+  .openapi({ description: 'Pagination metadata for the filtered members.', required: ['page'] })
+  .openapi('TeamHierarchyMembersResponseMeta')
+
+const TeamHierarchyMembersResponseSchema = z
+  .object({
+    data: z
+      .array(TeamHierarchyMemberSchema)
+      .openapi({
+        description:
+          'Membership relationships for users who belong to the requested team or inherit membership through its descendant teams. Each user appears once, even if they belong to multiple teams in the hierarchy. Each relationship identifies the user and requested team, and indicates whether the user is a direct member of the requested team.',
+      }),
+    included: z
+      .array(TeamHierarchyMemberIncludedSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Requested users and the team. May be absent when the result is empty, even if requested.',
+      }),
+    links: TeamHierarchyMembersResponseLinksSchema,
+    meta: TeamHierarchyMembersResponseMetaSchema,
+  })
+  .openapi({
+    description: 'Direct and inherited members of the requested team.',
+    required: ['data', 'meta', 'links'],
+  })
+  .openapi('TeamHierarchyMembersResponse')
 
 const TeamLinkAttributesSchema = z
   .object({
@@ -163887,6 +166776,17 @@ const UpdateFeatureFlagAttributesSchema = z
         description: 'The name of the feature flag.',
         example: 'Updated Feature Flag XYZ789',
       }),
+    tags: z
+      .array(
+        z.string().max(200).openapi({ description: 'A tag associated with the feature flag.' }),
+      )
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'Tags associated with the feature flag. This field replaces the full set of\nexisting tags; omit it to leave tags unchanged, or pass an empty array to\nclear all tags. The owning team is set by including a tag of the form\n`team:<team-handle>` in this array.',
+        example: ['team:feature-flagging'],
+      }),
   })
   .openapi({ description: 'Attributes for updating a feature flag.', required: [] })
   .openapi('UpdateFeatureFlagAttributes')
@@ -168805,7 +171705,7 @@ const GetIssueIncludeQueryParameterParamsSchema = z
   .openapi({
     param: {
       description:
-        'Comma-separated list of relationship objects that should be included in the response. Possible values are `assignee`, `case`, and `team_owners`.',
+        'Comma-separated list of relationship objects that should be included in the response.\nPossible values are `assignee`, `case`, `team_owners`, and `samples`.',
       explode: false,
       in: 'query',
       name: 'include',
@@ -168814,6 +171714,29 @@ const GetIssueIncludeQueryParameterParamsSchema = z
         items: { $ref: '#/components/schemas/GetIssueIncludeQueryParameterItem' },
         type: 'array',
       },
+    },
+  })
+
+const GetIssueSamplesBiasesFilterParameterParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z.array(IssueSampleBiasSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      description:
+        'Comma-separated list of biases used to pick the samples returned with `include=samples`.\nRequires `include=samples`. Defaults to all biases.',
+      explode: false,
+      in: 'query',
+      name: 'filter[samples.biases]',
+      required: false,
+      schema: { items: { $ref: '#/components/schemas/IssueSampleBias' }, type: 'array' },
     },
   })
 
@@ -169154,6 +172077,74 @@ const IncidentResponderIDPathParameterParamsSchema = z
       required: true,
       schema: { format: 'uuid', type: 'string' },
     },
+  })
+
+const IncidentResponderIncludeQueryParameterParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z.array(IncidentResponderRelatedObjectSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      description:
+        'Comma-separated related resource types to include. Supported values are `users` and `role_assignments`.',
+      explode: false,
+      in: 'query',
+      name: 'include',
+      required: false,
+      schema: {
+        example: ['users', 'role_assignments'],
+        items: { $ref: '#/components/schemas/IncidentResponderRelatedObject' },
+        type: 'array',
+      },
+      style: 'form',
+    },
+    example: ['users', 'role_assignments'],
+  })
+
+const IncidentResponderPageLimitParameterParamsSchema = z
+  .preprocess((val) => {
+    if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)) return val
+    if (/^-?\d+$/.test(val)) return BigInt(val)
+    const num = Number(val)
+    return Number.isSafeInteger(num) ? BigInt(num) : val
+  }, z.int64().max(1000n))
+  .default(25n)
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'Maximum number of responders to return per page.',
+      in: 'query',
+      name: 'page[limit]',
+      required: false,
+      schema: { default: 25, example: 25, format: 'int64', maximum: 1000, type: 'integer' },
+    },
+    example: 25,
+  })
+
+const IncidentResponderPageOffsetParameterParamsSchema = z
+  .preprocess((val) => {
+    if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)) return val
+    if (/^-?\d+$/.test(val)) return BigInt(val)
+    const num = Number(val)
+    return Number.isSafeInteger(num) ? BigInt(num) : val
+  }, z.int64())
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'The offset of the first responder to return.',
+      in: 'query',
+      name: 'page[offset]',
+      required: false,
+      schema: { example: 0, format: 'int64', type: 'integer' },
+    },
+    example: 0,
   })
 
 const IncidentRuleIDPathParameterParamsSchema = z
@@ -171415,15 +174406,16 @@ const ToTimestampParamsSchema = z
 
 const TraceIDPathParameterParamsSchema = z
   .string()
+  .regex(/^([0-9a-fA-F]{1,32}|[0-9]{1,39})$/)
   .openapi({
     param: {
       description:
-        'The trace ID. Accepts either a 32-character hexadecimal string (128-bit trace ID)\nor a decimal string of up to 39 digits.',
+        'The trace ID. Accepts either a hexadecimal string of up to 32 characters (128-bit trace ID)\nor a decimal string of up to 39 digits. Hexadecimal IDs are case-insensitive, and shorter\nvalues are left-padded with zeros.\nUse the `trace_id` attribute of a span returned by the Search spans or Get a list of spans endpoints.\nValues in any other format, such as UUIDs, return `400 Bad Request`. A well-formed ID with\nno matching trace returns `404 Not Found`.',
       example: '0000000000000000abc1230000000000',
       in: 'path',
       name: 'trace_id',
       required: true,
-      schema: { type: 'string' },
+      schema: { pattern: '^([0-9a-fA-F]{1,32}|[0-9]{1,39})$', type: 'string' },
     },
   })
 
@@ -182454,10 +185446,10 @@ export const postApiV2CasesCaseIdRelationshipsNotebookRoute = createRoute({
   request: {
     params: z.object({ case_id: CaseIDPathParameterParamsSchema }),
     body: {
-      description: 'Notebook creation request',
+      description: 'Case investigation notebook creation request.',
       content: {
         'application/json': {
-          schema: NotebookCreateRequestSchema,
+          schema: CaseInvestigationNotebookCreateRequestSchema,
           examples: { default: { value: { data: { type: 'notebook' } } } },
         },
       },
@@ -185312,594 +188304,6 @@ export const postApiV2CilogsRoute = createRoute({
       },
     },
   ],
-})
-
-export const getApiV2CloudAuthAwsPersonaMappingRoute = createRoute({
-  method: 'get',
-  path: '/api/v2/cloud_auth/aws/persona_mapping',
-  tags: ['Cloud Authentication'],
-  summary: 'List AWS cloud authentication persona mappings',
-  description:
-    'List all AWS cloud authentication persona mappings. This endpoint retrieves all configured persona mappings that associate AWS IAM principals with Datadog users.',
-  operationId: 'ListAWSCloudAuthPersonaMappings',
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: AWSCloudAuthPersonaMappingsResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: [
-                  {
-                    attributes: {
-                      account_identifier: 'test@example.com',
-                      account_uuid: '00000000-0000-0000-0000-000000000001',
-                      arn_pattern: 'arn:aws:iam::123456789012:user/testuser',
-                    },
-                    id: 'abc-123',
-                    type: 'aws_cloud_auth_config',
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      description: 'Bad Request',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const postApiV2CloudAuthAwsPersonaMappingRoute = createRoute({
-  method: 'post',
-  path: '/api/v2/cloud_auth/aws/persona_mapping',
-  tags: ['Cloud Authentication'],
-  summary: 'Create an AWS cloud authentication persona mapping',
-  description:
-    'Create an AWS cloud authentication persona mapping. This endpoint associates an AWS IAM principal with a Datadog user.',
-  operationId: 'CreateAWSCloudAuthPersonaMapping',
-  request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: AWSCloudAuthPersonaMappingCreateRequestSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    account_identifier: 'test@test.com',
-                    arn_pattern: 'arn:aws:iam::123456789012:user/testuser',
-                  },
-                  type: 'aws_cloud_auth_config',
-                },
-              },
-            },
-          },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    201: {
-      description: 'Created',
-      content: {
-        'application/json': {
-          schema: AWSCloudAuthPersonaMappingResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    account_identifier: 'test@example.com',
-                    account_uuid: '00000000-0000-0000-0000-000000000001',
-                    arn_pattern: 'arn:aws:iam::123456789012:user/testuser',
-                  },
-                  id: 'abc-123',
-                  type: 'aws_cloud_auth_config',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      description: 'Bad Request',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    409: {
-      description: 'Conflict',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const getApiV2CloudAuthAwsPersonaMappingPersonaMappingIdRoute = createRoute({
-  method: 'get',
-  path: '/api/v2/cloud_auth/aws/persona_mapping/{persona_mapping_id}',
-  tags: ['Cloud Authentication'],
-  summary: 'Get an AWS cloud authentication persona mapping',
-  description:
-    'Get a specific AWS cloud authentication persona mapping by ID. This endpoint retrieves a single configured persona mapping that associates an AWS IAM principal with a Datadog user.',
-  operationId: 'GetAWSCloudAuthPersonaMapping',
-  request: { params: z.object({ persona_mapping_id: PersonaMappingIDParamsSchema }) },
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: AWSCloudAuthPersonaMappingResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    account_identifier: 'test@example.com',
-                    account_uuid: '00000000-0000-0000-0000-000000000001',
-                    arn_pattern: 'arn:aws:iam::123456789012:user/testuser',
-                  },
-                  id: 'abc-123',
-                  type: 'aws_cloud_auth_config',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    404: {
-      description: 'Not Found',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const deleteApiV2CloudAuthAwsPersonaMappingPersonaMappingIdRoute = createRoute({
-  method: 'delete',
-  path: '/api/v2/cloud_auth/aws/persona_mapping/{persona_mapping_id}',
-  tags: ['Cloud Authentication'],
-  summary: 'Delete an AWS cloud authentication persona mapping',
-  description:
-    'Delete an AWS cloud authentication persona mapping by ID. This removes the association between an AWS IAM principal and a Datadog user.',
-  operationId: 'DeleteAWSCloudAuthPersonaMapping',
-  request: { params: z.object({ persona_mapping_id: PersonaMappingIDParamsSchema }) },
-  responses: {
-    204: { description: 'No Content' },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    404: {
-      description: 'Not Found',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const getApiV2CloudAuthGithubIntakeMappingRoute = createRoute({
-  method: 'get',
-  path: '/api/v2/cloud_auth/github/intake_mapping',
-  tags: ['Cloud Authentication'],
-  summary: 'List GitHub cloud authentication intake mappings',
-  description:
-    'List all GitHub cloud authentication intake mappings. This endpoint retrieves all configured intake mappings that entitle matching GitHub Actions OIDC principals to request Datadog API keys.',
-  operationId: 'ListGitHubCloudAuthIntakeMappings',
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: GitHubCloudAuthIntakeMappingsResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: [
-                  {
-                    attributes: {
-                      claim_matchers: {
-                        ref: 'refs/heads/main',
-                        repository: 'test_owner/test_repo',
-                        repository_owner: 'test_owner',
-                        sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
-                      },
-                    },
-                    id: 'd6d869d7-29d3-5595-bf40-57c95235cf5b',
-                    type: 'github_oidc_auth_intake_mapping',
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      description: 'Bad Request',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const postApiV2CloudAuthGithubIntakeMappingRoute = createRoute({
-  method: 'post',
-  path: '/api/v2/cloud_auth/github/intake_mapping',
-  tags: ['Cloud Authentication'],
-  summary: 'Create a GitHub cloud auth intake mapping',
-  description:
-    'Create a GitHub cloud authentication intake mapping. This endpoint entitles a matching GitHub Actions OIDC principal to request Datadog API keys.',
-  operationId: 'CreateGitHubCloudAuthIntakeMapping',
-  request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: GitHubCloudAuthIntakeMappingCreateRequestSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    claim_matchers: {
-                      ref: 'refs/heads/main',
-                      repository: 'test_owner/test_repo',
-                      repository_owner: 'test_owner',
-                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
-                    },
-                  },
-                  type: 'github_oidc_auth_intake_mapping',
-                },
-              },
-            },
-          },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    201: {
-      description: 'Created',
-      content: {
-        'application/json': {
-          schema: GitHubCloudAuthIntakeMappingResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    claim_matchers: {
-                      ref: 'refs/heads/main',
-                      repository: 'test_owner/test_repo',
-                      repository_owner: 'test_owner',
-                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
-                    },
-                  },
-                  id: 'd6d869d7-29d3-5595-bf40-57c95235cf5b',
-                  type: 'github_oidc_auth_intake_mapping',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      description: 'Bad Request',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    409: {
-      description: 'Conflict',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const getApiV2CloudAuthGithubIntakeMappingIntakeMappingIdRoute = createRoute({
-  method: 'get',
-  path: '/api/v2/cloud_auth/github/intake_mapping/{intake_mapping_id}',
-  tags: ['Cloud Authentication'],
-  summary: 'Get a GitHub cloud authentication intake mapping',
-  description:
-    'Get a specific GitHub cloud authentication intake mapping by ID. This endpoint retrieves a single configured intake mapping that entitles a matching GitHub Actions OIDC principal to request Datadog API keys.',
-  operationId: 'GetGitHubCloudAuthIntakeMapping',
-  request: { params: z.object({ intake_mapping_id: IntakeMappingIDParamsSchema }) },
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: GitHubCloudAuthIntakeMappingResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    claim_matchers: {
-                      ref: 'refs/heads/main',
-                      repository: 'test_owner/test_repo',
-                      repository_owner: 'test_owner',
-                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
-                    },
-                  },
-                  id: 'd6d869d7-29d3-5595-bf40-57c95235cf5b',
-                  type: 'github_oidc_auth_intake_mapping',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    404: {
-      description: 'Not Found',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const deleteApiV2CloudAuthGithubIntakeMappingIntakeMappingIdRoute = createRoute({
-  method: 'delete',
-  path: '/api/v2/cloud_auth/github/intake_mapping/{intake_mapping_id}',
-  tags: ['Cloud Authentication'],
-  summary: 'Delete a GitHub cloud auth intake mapping',
-  description:
-    "Delete a GitHub cloud authentication intake mapping by ID. This removes a GitHub Actions OIDC principal's entitlement to request Datadog API keys.",
-  operationId: 'DeleteGitHubCloudAuthIntakeMapping',
-  request: { params: z.object({ intake_mapping_id: IntakeMappingIDParamsSchema }) },
-  responses: {
-    204: { description: 'No Content' },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    404: {
-      description: 'Not Found',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const getApiV2CloudAuthGithubPersonaMappingRoute = createRoute({
-  method: 'get',
-  path: '/api/v2/cloud_auth/github/persona_mapping',
-  tags: ['Cloud Authentication'],
-  summary: 'List GitHub cloud authentication persona mappings',
-  description:
-    'List all GitHub cloud authentication persona mappings. This endpoint retrieves all configured persona mappings that associate GitHub Actions OpenID Connect (OIDC) principals with Datadog users. Mapped principals can request impersonation tokens.',
-  operationId: 'ListGitHubCloudAuthPersonaMappings',
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: GitHubCloudAuthPersonaMappingsResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: [
-                  {
-                    attributes: {
-                      account_identifier: 'test@example.com',
-                      account_uuid: '12bbdc5c-5966-47e0-8733-285f9e44bcf4',
-                      claim_matchers: {
-                        ref: 'refs/heads/main',
-                        repository: 'test_owner/test_repo',
-                        repository_owner: 'test_owner',
-                        sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
-                      },
-                    },
-                    id: 'c5c758c6-18c2-4484-ae3f-46b84128404a',
-                    type: 'github_oidc_auth_config',
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      description: 'Bad Request',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const postApiV2CloudAuthGithubPersonaMappingRoute = createRoute({
-  method: 'post',
-  path: '/api/v2/cloud_auth/github/persona_mapping',
-  tags: ['Cloud Authentication'],
-  summary: 'Create a GitHub cloud auth persona mapping',
-  description:
-    'Create a GitHub cloud authentication persona mapping. This endpoint associates a GitHub Actions OIDC principal with a Datadog user. The mapped principal can request an impersonation token.',
-  operationId: 'CreateGitHubCloudAuthPersonaMapping',
-  request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: GitHubCloudAuthPersonaMappingCreateRequestSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    account_identifier: 'test@example.com',
-                    claim_matchers: {
-                      ref: 'refs/heads/main',
-                      repository: 'test_owner/test_repo',
-                      repository_owner: 'test_owner',
-                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
-                    },
-                  },
-                  type: 'github_oidc_auth_config',
-                },
-              },
-            },
-          },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    201: {
-      description: 'Created',
-      content: {
-        'application/json': {
-          schema: GitHubCloudAuthPersonaMappingResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    account_identifier: 'test@example.com',
-                    account_uuid: '12bbdc5c-5966-47e0-8733-285f9e44bcf4',
-                    claim_matchers: {
-                      ref: 'refs/heads/main',
-                      repository: 'test_owner/test_repo',
-                      repository_owner: 'test_owner',
-                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
-                    },
-                  },
-                  id: 'c5c758c6-18c2-4484-ae3f-46b84128404a',
-                  type: 'github_oidc_auth_config',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    400: {
-      description: 'Bad Request',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    409: {
-      description: 'Conflict',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const getApiV2CloudAuthGithubPersonaMappingPersonaMappingIdRoute = createRoute({
-  method: 'get',
-  path: '/api/v2/cloud_auth/github/persona_mapping/{persona_mapping_id}',
-  tags: ['Cloud Authentication'],
-  summary: 'Get a GitHub cloud authentication persona mapping',
-  description:
-    'Get a specific GitHub cloud authentication persona mapping by ID. This endpoint retrieves a single configured persona mapping that associates a GitHub Actions OIDC principal with a Datadog user. The mapped principal can request an impersonation token.',
-  operationId: 'GetGitHubCloudAuthPersonaMapping',
-  request: { params: z.object({ persona_mapping_id: PersonaMappingIDParamsSchema }) },
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: GitHubCloudAuthPersonaMappingResponseSchema,
-          examples: {
-            default: {
-              value: {
-                data: {
-                  attributes: {
-                    account_identifier: 'test@example.com',
-                    account_uuid: '12bbdc5c-5966-47e0-8733-285f9e44bcf4',
-                    claim_matchers: {
-                      ref: 'refs/heads/main',
-                      repository: 'test_owner/test_repo',
-                      repository_owner: 'test_owner',
-                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
-                    },
-                  },
-                  id: 'c5c758c6-18c2-4484-ae3f-46b84128404a',
-                  type: 'github_oidc_auth_config',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    404: {
-      description: 'Not Found',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
-})
-
-export const deleteApiV2CloudAuthGithubPersonaMappingPersonaMappingIdRoute = createRoute({
-  method: 'delete',
-  path: '/api/v2/cloud_auth/github/persona_mapping/{persona_mapping_id}',
-  tags: ['Cloud Authentication'],
-  summary: 'Delete a GitHub cloud auth persona mapping',
-  description:
-    'Delete a GitHub cloud authentication persona mapping by ID. This removes the association between a GitHub Actions OIDC principal and a Datadog user.',
-  operationId: 'DeleteGitHubCloudAuthPersonaMapping',
-  request: { params: z.object({ persona_mapping_id: PersonaMappingIDParamsSchema }) },
-  responses: {
-    204: { description: 'No Content' },
-    403: {
-      description: 'Forbidden',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    404: {
-      description: 'Not Found',
-      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
-    },
-    429: TooManyRequestsResponseResponse,
-  },
 })
 
 export const postApiV2CloudSecurityManagementCustomFrameworksRoute = createRoute({
@@ -199595,7 +201999,10 @@ export const getApiV2ErrorTrackingIssuesIssueIdRoute = createRoute({
   operationId: 'GetIssue',
   request: {
     params: z.object({ issue_id: IssueIDPathParameterParamsSchema }),
-    query: z.object({ include: GetIssueIncludeQueryParameterParamsSchema }),
+    query: z.object({
+      include: GetIssueIncludeQueryParameterParamsSchema,
+      'filter[samples.biases]': GetIssueSamplesBiasesFilterParameterParamsSchema,
+    }),
   },
   responses: {
     200: {
@@ -203304,7 +205711,24 @@ export const getApiV2ExperimentsProtocolsRoute = createRoute({
       content: {
         'application/json': {
           schema: ExperimentsPublicProtocolListResponseArraySchema,
-          examples: { default: { value: { data: [] } } },
+          examples: {
+            default: {
+              value: {
+                data: [
+                  {
+                    attributes: {
+                      experiment_count: 0,
+                      name: 'Checkout protocol',
+                      status: 'DRAFT',
+                      updated_at: '2026-07-31T12:00:00Z',
+                    },
+                    id: 'e4d5f6a7-0000-0000-0000-000000000000',
+                    type: 'protocols',
+                  },
+                ],
+              },
+            },
+          },
         },
       },
     },
@@ -203323,6 +205747,120 @@ export const getApiV2ExperimentsProtocolsRoute = createRoute({
     429: TooManyRequestsResponseResponse,
   },
   security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['product_analytics_experiments_read'] }],
+})
+
+export const postApiV2ExperimentsProtocolsRoute = createRoute({
+  method: 'post',
+  path: '/api/v2/experiments/protocols',
+  tags: ['Experiments'],
+  summary: 'Create experiment protocol',
+  description:
+    "Create a draft protocol with a name and optional description and migration metadata. The organization's default subject type is selected. Use PATCH to configure the draft, then publish it before creating experiments from it.",
+  operationId: 'CreateExperimentProtocol',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: ExperimentsCreateExperimentProtocolRequestSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    description: 'Defaults for checkout experiments.',
+                    name: 'Checkout protocol',
+                  },
+                  type: 'protocols',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: ExperimentsPublicProtocolResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    created_at: '2026-07-31T12:00:00Z',
+                    description: 'Defaults for checkout experiments.',
+                    enforcement: {
+                      confidence_interval_method: 'LOCKED',
+                      confidence_level: 'EDITABLE',
+                      cuped_calculation: 'EDITABLE',
+                      default_duration: 'EDITABLE',
+                      environment: 'EDITABLE',
+                      flag_source: 'LOCKED',
+                      multiple_testing_correction: 'EDITABLE',
+                      notifications: 'EDITABLE',
+                      primary_metric: 'EDITABLE',
+                      secondary_metrics: 'EDITABLE',
+                      split_by_exploration_dimensions: 'EDITABLE',
+                      subject_type: 'LOCKED',
+                      targeting_rules: 'EDITABLE',
+                      traffic_exposure: 'EDITABLE',
+                      warehouse_exposure_source: 'EDITABLE',
+                    },
+                    experiment_count: 0,
+                    is_duration_required_to_start: false,
+                    is_equal_split_enforced: false,
+                    is_metric_limit_enabled: false,
+                    is_minimum_duration_enabled: false,
+                    metric_groups: [],
+                    name: 'Checkout protocol',
+                    status: 'DRAFT',
+                    subject_type: { id: 'c2b3d4e5-0000-0000-0000-000000000000', name: 'User' },
+                    subject_type_id: 'c2b3d4e5-0000-0000-0000-000000000000',
+                    updated_at: '2026-07-31T12:00:00Z',
+                  },
+                  id: 'e4d5f6a7-0000-0000-0000-000000000000',
+                  type: 'protocols',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request or protocol settings.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    401: {
+      description: 'Missing or invalid authentication.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'The caller lacks the product_analytics_experiments_write permission.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description: 'A protocol with this name already exists.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    415: {
+      description: 'Unsupported request content type.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+    500: {
+      description: 'Internal Server Error',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+  },
+  security: [
+    { apiKeyAuth: [], appKeyAuth: [] },
+    { AuthZ: ['product_analytics_experiments_write'] },
+  ],
 })
 
 export const getApiV2ExperimentsProtocolsProtocolIdRoute = createRoute({
@@ -203365,6 +205903,7 @@ export const getApiV2ExperimentsProtocolsProtocolIdRoute = createRoute({
               value: {
                 data: {
                   attributes: {
+                    created_at: '2026-07-31T12:00:00Z',
                     description: 'Default settings for checkout experiments.',
                     enforcement: {
                       confidence_interval_method: 'LOCKED',
@@ -203383,6 +205922,7 @@ export const getApiV2ExperimentsProtocolsProtocolIdRoute = createRoute({
                       traffic_exposure: 'EDITABLE',
                       warehouse_exposure_source: 'EDITABLE',
                     },
+                    experiment_count: 0,
                     is_duration_required_to_start: false,
                     is_equal_split_enforced: false,
                     is_metric_limit_enabled: false,
@@ -203428,6 +205968,623 @@ export const getApiV2ExperimentsProtocolsProtocolIdRoute = createRoute({
     429: TooManyRequestsResponseResponse,
   },
   security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['product_analytics_experiments_read'] }],
+})
+
+export const putApiV2ExperimentsProtocolsProtocolIdRoute = createRoute({
+  method: 'put',
+  path: '/api/v2/experiments/protocols/{protocol_id}',
+  tags: ['Experiments'],
+  summary: 'Replace experiment protocol',
+  description:
+    'Replace the template of a published protocol. Draft and archived protocols return 409. Send subject_type_id, all four required boolean settings, and metric_groups. Omitted optional template fields are cleared. Omitted enforcement keeps the existing locks.\n\nUse primary_metric_id to select the primary metric. Use default_duration_days to set target_duration_days on experiments created from the protocol. The nested metric is_primary and analysis_plan.target_duration_days fields are rejected. An unchanged GET response can be sent as the request body. Response-only fields are ignored.\n\nIndependent configuration errors are returned together in the JSON:API errors array. Each error identifies the field in source.pointer. Earlier request and reference checks can stop on the first error. A failed request leaves the protocol unchanged. Changes apply to future experiments; existing experiments keep their settings.',
+  operationId: 'ReplaceExperimentProtocol',
+  request: {
+    params: z.object({
+      protocol_id: z
+        .uuid()
+        .openapi({
+          param: {
+            description: 'The UUID of the protocol.',
+            in: 'path',
+            name: 'protocol_id',
+            required: true,
+            schema: {
+              description: 'The UUID of the protocol.',
+              example: '550e8400-e29b-41d4-a716-446655440000',
+              format: 'uuid',
+              type: 'string',
+            },
+          },
+          description: 'The UUID of the protocol.',
+          example: '550e8400-e29b-41d4-a716-446655440000',
+        }),
+    }),
+    query: z.object({
+      expected_updated_at: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The updated_at value from the last read. Include the full timestamp, with fractional seconds. Returns 409 if another write changed the protocol. Omit to skip this check.',
+            in: 'query',
+            name: 'expected_updated_at',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: ExperimentsReplaceExperimentProtocolRequestSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    is_duration_required_to_start: false,
+                    is_equal_split_enforced: false,
+                    is_metric_limit_enabled: false,
+                    is_minimum_duration_enabled: false,
+                    metric_groups: [],
+                    subject_type_id: 'c2b3d4e5-0000-0000-0000-000000000000',
+                  },
+                  type: 'protocols',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: ExperimentsPublicProtocolResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    created_at: '2026-07-31T12:00:00Z',
+                    description: 'Defaults for checkout experiments.',
+                    enforcement: {
+                      confidence_interval_method: 'LOCKED',
+                      confidence_level: 'EDITABLE',
+                      cuped_calculation: 'EDITABLE',
+                      default_duration: 'EDITABLE',
+                      environment: 'EDITABLE',
+                      flag_source: 'LOCKED',
+                      multiple_testing_correction: 'EDITABLE',
+                      notifications: 'EDITABLE',
+                      primary_metric: 'EDITABLE',
+                      secondary_metrics: 'EDITABLE',
+                      split_by_exploration_dimensions: 'EDITABLE',
+                      subject_type: 'LOCKED',
+                      targeting_rules: 'EDITABLE',
+                      traffic_exposure: 'EDITABLE',
+                      warehouse_exposure_source: 'EDITABLE',
+                    },
+                    experiment_count: 0,
+                    is_duration_required_to_start: false,
+                    is_equal_split_enforced: false,
+                    is_metric_limit_enabled: false,
+                    is_minimum_duration_enabled: false,
+                    metric_groups: [],
+                    name: 'Checkout protocol',
+                    published_at: '2026-07-31T12:00:00Z',
+                    status: 'PUBLISHED',
+                    subject_type: { id: 'c2b3d4e5-0000-0000-0000-000000000000', name: 'User' },
+                    subject_type_id: 'c2b3d4e5-0000-0000-0000-000000000000',
+                    updated_at: '2026-07-31T12:00:00Z',
+                  },
+                  id: 'e4d5f6a7-0000-0000-0000-000000000000',
+                  type: 'protocols',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request or protocol settings.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    401: {
+      description: 'Missing or invalid authentication.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'The caller lacks the product_analytics_experiments_write permission.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'No protocol with this ID exists in the organization.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description: 'The protocol is not published or expected_updated_at is stale.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    415: {
+      description: 'Unsupported request content type.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+    500: {
+      description: 'Internal Server Error',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+  },
+  security: [
+    { apiKeyAuth: [], appKeyAuth: [] },
+    { AuthZ: ['product_analytics_experiments_write'] },
+  ],
+})
+
+export const deleteApiV2ExperimentsProtocolsProtocolIdRoute = createRoute({
+  method: 'delete',
+  path: '/api/v2/experiments/protocols/{protocol_id}',
+  tags: ['Experiments'],
+  summary: 'Delete experiment protocol',
+  description:
+    'Delete a protocol with no linked experiments. Draft, published, and archived protocols can be deleted. Returns 204 with no response body.',
+  operationId: 'DeleteExperimentProtocol',
+  request: {
+    params: z.object({
+      protocol_id: z
+        .uuid()
+        .openapi({
+          param: {
+            description: 'The UUID of the protocol.',
+            in: 'path',
+            name: 'protocol_id',
+            required: true,
+            schema: {
+              description: 'The UUID of the protocol.',
+              example: '550e8400-e29b-41d4-a716-446655440000',
+              format: 'uuid',
+              type: 'string',
+            },
+          },
+          description: 'The UUID of the protocol.',
+          example: '550e8400-e29b-41d4-a716-446655440000',
+        }),
+    }),
+    query: z.object({
+      expected_updated_at: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The updated_at value from the last read. Include the full timestamp, with fractional seconds. Returns 409 if another write changed the protocol. Omit to skip this check.',
+            in: 'query',
+            name: 'expected_updated_at',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    400: {
+      description: 'Invalid request or protocol settings.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    401: {
+      description: 'Missing or invalid authentication.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'The caller lacks the product_analytics_experiments_write permission.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'No protocol with this ID exists in the organization.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description: 'The protocol has linked experiments or expected_updated_at is stale.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+    500: {
+      description: 'Internal Server Error',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+  },
+  security: [
+    { apiKeyAuth: [], appKeyAuth: [] },
+    { AuthZ: ['product_analytics_experiments_write'] },
+  ],
+})
+
+export const patchApiV2ExperimentsProtocolsProtocolIdRoute = createRoute({
+  method: 'patch',
+  path: '/api/v2/experiments/protocols/{protocol_id}',
+  tags: ['Experiments'],
+  summary: 'Update experiment protocol',
+  description:
+    'Update the supplied fields of a draft protocol. Published protocols accept only name, description, and migration_metadata changes through PATCH. Use PUT to replace their settings. Archived protocols cannot be edited.\n\nOmitted fields keep their current values, including fields inside analysis_plan, exposure_schedule, and enforcement. Arrays replace the stored arrays. Supported null values clear fields; see the request schema. Use primary_metric_id to select the primary metric and default_duration_days to set the experiment analysis duration. Nested metric is_primary and analysis_plan.target_duration_days fields are rejected.',
+  operationId: 'PatchExperimentProtocol',
+  request: {
+    params: z.object({
+      protocol_id: z
+        .uuid()
+        .openapi({
+          param: {
+            description: 'The UUID of the protocol.',
+            in: 'path',
+            name: 'protocol_id',
+            required: true,
+            schema: {
+              description: 'The UUID of the protocol.',
+              example: '550e8400-e29b-41d4-a716-446655440000',
+              format: 'uuid',
+              type: 'string',
+            },
+          },
+          description: 'The UUID of the protocol.',
+          example: '550e8400-e29b-41d4-a716-446655440000',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: ExperimentsPatchExperimentProtocolRequestSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: { description: 'Updated defaults for checkout experiments.' },
+                  type: 'protocols',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: ExperimentsPublicProtocolResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    created_at: '2026-07-31T12:00:00Z',
+                    description: 'Updated defaults for checkout experiments.',
+                    enforcement: {
+                      confidence_interval_method: 'LOCKED',
+                      confidence_level: 'EDITABLE',
+                      cuped_calculation: 'EDITABLE',
+                      default_duration: 'EDITABLE',
+                      environment: 'EDITABLE',
+                      flag_source: 'LOCKED',
+                      multiple_testing_correction: 'EDITABLE',
+                      notifications: 'EDITABLE',
+                      primary_metric: 'EDITABLE',
+                      secondary_metrics: 'EDITABLE',
+                      split_by_exploration_dimensions: 'EDITABLE',
+                      subject_type: 'LOCKED',
+                      targeting_rules: 'EDITABLE',
+                      traffic_exposure: 'EDITABLE',
+                      warehouse_exposure_source: 'EDITABLE',
+                    },
+                    experiment_count: 0,
+                    is_duration_required_to_start: false,
+                    is_equal_split_enforced: false,
+                    is_metric_limit_enabled: false,
+                    is_minimum_duration_enabled: false,
+                    metric_groups: [],
+                    name: 'Checkout protocol',
+                    status: 'DRAFT',
+                    subject_type: { id: 'c2b3d4e5-0000-0000-0000-000000000000', name: 'User' },
+                    subject_type_id: 'c2b3d4e5-0000-0000-0000-000000000000',
+                    updated_at: '2026-07-31T12:00:00Z',
+                  },
+                  id: 'e4d5f6a7-0000-0000-0000-000000000000',
+                  type: 'protocols',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request or protocol settings.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    401: {
+      description: 'Missing or invalid authentication.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'The caller lacks the product_analytics_experiments_write permission.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'No protocol with this ID exists in the organization.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description:
+        'The protocol is archived, a published protocol receives settings changes, or the name is already in use.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    415: {
+      description: 'Unsupported request content type.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+    500: {
+      description: 'Internal Server Error',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+  },
+  security: [
+    { apiKeyAuth: [], appKeyAuth: [] },
+    { AuthZ: ['product_analytics_experiments_write'] },
+  ],
+})
+
+export const postApiV2ExperimentsProtocolsProtocolIdArchiveRoute = createRoute({
+  method: 'post',
+  path: '/api/v2/experiments/protocols/{protocol_id}/archive',
+  tags: ['Experiments'],
+  summary: 'Archive experiment protocol',
+  description:
+    'Archive a draft or published protocol. Archived protocols cannot be edited or used to create new experiments. Existing experiments keep their settings. Archiving an already archived protocol returns 409.',
+  operationId: 'ArchiveExperimentProtocol',
+  request: {
+    params: z.object({
+      protocol_id: z
+        .uuid()
+        .openapi({
+          param: {
+            description: 'The UUID of the protocol.',
+            in: 'path',
+            name: 'protocol_id',
+            required: true,
+            schema: {
+              description: 'The UUID of the protocol.',
+              example: '550e8400-e29b-41d4-a716-446655440000',
+              format: 'uuid',
+              type: 'string',
+            },
+          },
+          description: 'The UUID of the protocol.',
+          example: '550e8400-e29b-41d4-a716-446655440000',
+        }),
+    }),
+    query: z.object({
+      expected_updated_at: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The updated_at value from the last read. Include the full timestamp, with fractional seconds. Returns 409 if another write changed the protocol. Omit to skip this check.',
+            in: 'query',
+            name: 'expected_updated_at',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: ExperimentsPublicProtocolResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    archived_at: '2026-07-31T14:00:00Z',
+                    created_at: '2026-07-31T12:00:00Z',
+                    description: 'Defaults for checkout experiments.',
+                    enforcement: {
+                      confidence_interval_method: 'LOCKED',
+                      confidence_level: 'EDITABLE',
+                      cuped_calculation: 'EDITABLE',
+                      default_duration: 'EDITABLE',
+                      environment: 'EDITABLE',
+                      flag_source: 'LOCKED',
+                      multiple_testing_correction: 'EDITABLE',
+                      notifications: 'EDITABLE',
+                      primary_metric: 'EDITABLE',
+                      secondary_metrics: 'EDITABLE',
+                      split_by_exploration_dimensions: 'EDITABLE',
+                      subject_type: 'LOCKED',
+                      targeting_rules: 'EDITABLE',
+                      traffic_exposure: 'EDITABLE',
+                      warehouse_exposure_source: 'EDITABLE',
+                    },
+                    experiment_count: 0,
+                    is_duration_required_to_start: false,
+                    is_equal_split_enforced: false,
+                    is_metric_limit_enabled: false,
+                    is_minimum_duration_enabled: false,
+                    metric_groups: [],
+                    name: 'Checkout protocol',
+                    published_at: '2026-07-31T12:00:00Z',
+                    status: 'ARCHIVED',
+                    subject_type: { id: 'c2b3d4e5-0000-0000-0000-000000000000', name: 'User' },
+                    subject_type_id: 'c2b3d4e5-0000-0000-0000-000000000000',
+                    updated_at: '2026-07-31T14:00:00Z',
+                  },
+                  id: 'e4d5f6a7-0000-0000-0000-000000000000',
+                  type: 'protocols',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request or protocol settings.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    401: {
+      description: 'Missing or invalid authentication.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'The caller lacks the product_analytics_experiments_write permission.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'No protocol with this ID exists in the organization.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description: 'The protocol is already archived or expected_updated_at is stale.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+    500: {
+      description: 'Internal Server Error',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+  },
+  security: [
+    { apiKeyAuth: [], appKeyAuth: [] },
+    { AuthZ: ['product_analytics_experiments_write'] },
+  ],
+})
+
+export const postApiV2ExperimentsProtocolsProtocolIdPublishRoute = createRoute({
+  method: 'post',
+  path: '/api/v2/experiments/protocols/{protocol_id}/publish',
+  tags: ['Experiments'],
+  summary: 'Publish experiment protocol',
+  description:
+    'Publish a valid draft protocol. The protocol must have a name and subject type. Supplied references and settings must be valid. An exposure schedule or targeting rules require an environment. Enabled limits require their values. Configurable template fields must have a value before they can be locked.\n\nIndependent configuration errors are returned together in the JSON:API errors array with source.pointer values that identify the fields. Earlier request and reference checks can stop on the first error. A failed request leaves the protocol unchanged.',
+  operationId: 'PublishExperimentProtocol',
+  request: {
+    params: z.object({
+      protocol_id: z
+        .uuid()
+        .openapi({
+          param: {
+            description: 'The UUID of the protocol.',
+            in: 'path',
+            name: 'protocol_id',
+            required: true,
+            schema: {
+              description: 'The UUID of the protocol.',
+              example: '550e8400-e29b-41d4-a716-446655440000',
+              format: 'uuid',
+              type: 'string',
+            },
+          },
+          description: 'The UUID of the protocol.',
+          example: '550e8400-e29b-41d4-a716-446655440000',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: ExperimentsPublicProtocolResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    created_at: '2026-07-31T12:00:00Z',
+                    description: 'Defaults for checkout experiments.',
+                    enforcement: {
+                      confidence_interval_method: 'LOCKED',
+                      confidence_level: 'EDITABLE',
+                      cuped_calculation: 'EDITABLE',
+                      default_duration: 'EDITABLE',
+                      environment: 'EDITABLE',
+                      flag_source: 'LOCKED',
+                      multiple_testing_correction: 'EDITABLE',
+                      notifications: 'EDITABLE',
+                      primary_metric: 'EDITABLE',
+                      secondary_metrics: 'EDITABLE',
+                      split_by_exploration_dimensions: 'EDITABLE',
+                      subject_type: 'LOCKED',
+                      targeting_rules: 'EDITABLE',
+                      traffic_exposure: 'EDITABLE',
+                      warehouse_exposure_source: 'EDITABLE',
+                    },
+                    experiment_count: 0,
+                    is_duration_required_to_start: false,
+                    is_equal_split_enforced: false,
+                    is_metric_limit_enabled: false,
+                    is_minimum_duration_enabled: false,
+                    metric_groups: [],
+                    name: 'Checkout protocol',
+                    published_at: '2026-07-31T12:00:00Z',
+                    status: 'PUBLISHED',
+                    subject_type: { id: 'c2b3d4e5-0000-0000-0000-000000000000', name: 'User' },
+                    subject_type_id: 'c2b3d4e5-0000-0000-0000-000000000000',
+                    updated_at: '2026-07-31T12:00:00Z',
+                  },
+                  id: 'e4d5f6a7-0000-0000-0000-000000000000',
+                  type: 'protocols',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Invalid request or protocol settings.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    401: {
+      description: 'Missing or invalid authentication.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'The caller lacks the product_analytics_experiments_write permission.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'No protocol with this ID exists in the organization.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description: 'Only draft protocols can be published.',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+    500: {
+      description: 'Internal Server Error',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+  },
+  security: [
+    { apiKeyAuth: [], appKeyAuth: [] },
+    { AuthZ: ['product_analytics_experiments_write'] },
+  ],
 })
 
 export const postApiV2ExperimentsResultsRefreshRoute = createRoute({
@@ -207233,7 +210390,7 @@ export const putApiV2FeatureFlagsFeatureFlagIdRoute = createRoute({
   tags: ['Feature Flags'],
   summary: 'Update a feature flag',
   description:
-    "Updates an existing feature flag's metadata such as\n name and description. Does not modify targeting rules or allocations.",
+    "Updates an existing feature flag's metadata such as\n name and description. Does not modify targeting rules or allocations.\n\nTo change the owning team, update `tags` and include a tag of the form\n`team:<team-handle>` in the array. `tags` is a full replacement of the\nexisting tag set (including any `team:` tag), so include every tag you\nwant to keep, not just the ones you're adding.",
   operationId: 'UpdateFeatureFlag',
   request: {
     params: z.object({ feature_flag_id: FeatureFlagIdParamsSchema }),
@@ -207249,6 +210406,7 @@ export const putApiV2FeatureFlagsFeatureFlagIdRoute = createRoute({
                     description: 'Updated description for the feature flag',
                     enabled: true,
                     name: 'Updated Feature Flag XYZ789',
+                    tags: ['team:feature-flagging'],
                   },
                   type: 'feature-flags',
                 },
@@ -217248,7 +220406,14 @@ export const getApiV2IncidentsIncidentIdRespondersRoute = createRoute({
   summary: 'List incident responders',
   description: 'List all responders for an incident.',
   operationId: 'ListIncidentResponders',
-  request: { params: z.object({ incident_id: IncidentIDPathParameterParamsSchema }) },
+  request: {
+    params: z.object({ incident_id: IncidentIDPathParameterParamsSchema }),
+    query: z.object({
+      include: IncidentResponderIncludeQueryParameterParamsSchema,
+      'page[limit]': IncidentResponderPageLimitParameterParamsSchema,
+      'page[offset]': IncidentResponderPageOffsetParameterParamsSchema,
+    }),
+  },
   responses: {
     200: {
       description: 'OK',
@@ -232132,6 +235297,58 @@ export const postApiV2LogsAnalyticsAggregateRoute = createRoute({
   security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['logs_read_data'] }],
 })
 
+export const getApiV2LogsArchiveSearchesRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/logs/archive_searches',
+  tags: ['Logs Archive Searches'],
+  summary: 'List Archive Searches',
+  description:
+    "List the organization's Archive Searches that haven't expired, up to 5,000. When more\nexist, `meta.truncated` is `true`.",
+  operationId: 'ListArchiveSearches',
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: ArchiveSearchListResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: [
+                  {
+                    attributes: {
+                      archive_id: 'mhmyYmyLTOaFYKvhNadu1w',
+                      bytes_scanned: 0,
+                      created_at: '2026-01-02T12:00:00Z',
+                      description: 'Investigating the checkout latency spike.',
+                      events_scanned: 0,
+                      expected_duration: 120,
+                      from: '2026-01-01T00:00:00Z',
+                      name: 'checkout-latency-investigation',
+                      query: 'service:checkout status:error',
+                      status: 'RUNNING',
+                      to: '2026-01-02T00:00:00Z',
+                    },
+                    id: 'nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq',
+                    type: 'archive_search',
+                  },
+                ],
+                meta: { truncated: false },
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+  security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: [] }],
+})
+
 export const postApiV2LogsArchiveSearchesRoute = createRoute({
   method: 'post',
   path: '/api/v2/logs/archive_searches',
@@ -232245,6 +235462,164 @@ export const getApiV2LogsArchiveSearchesArchiveSearchIdRoute = createRoute({
                       tier: 'standard',
                     },
                     status: 'COMPLETED',
+                    to: '2026-01-02T00:00:00Z',
+                  },
+                  id: 'nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq',
+                  type: 'archive_search',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+  security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: [] }],
+})
+
+export const patchApiV2LogsArchiveSearchesArchiveSearchIdRoute = createRoute({
+  method: 'patch',
+  path: '/api/v2/logs/archive_searches/{archive_search_id}',
+  tags: ['Logs Archive Searches'],
+  summary: 'Rehydrate an Archive Search',
+  description:
+    'Turn a plain Archive Search into a Search & Rehydration by indexing the matched logs into a\nretained historical view. Rehydration is the only thing this endpoint can change, and it only\napplies to a search that has already finished scanning.',
+  operationId: 'RehydrateArchiveSearch',
+  request: {
+    params: z.object({
+      archive_search_id: z
+        .string()
+        .openapi({
+          param: {
+            description: 'Unique identifier of the Archive Search.',
+            example: 'nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq',
+            in: 'path',
+            name: 'archive_search_id',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: ArchiveSearchRehydrateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: ArchiveSearchResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    archive_id: 'mhmyYmyLTOaFYKvhNadu1w',
+                    bytes_scanned: 402764439,
+                    created_at: '2026-01-02T12:00:00Z',
+                    description: 'Investigating the checkout latency spike.',
+                    events_scanned: 1500,
+                    from: '2026-01-01T00:00:00Z',
+                    name: 'checkout-latency-investigation',
+                    query: 'service:checkout status:error',
+                    rehydration: {
+                      max_rehydrated_events: 100000,
+                      retention_days: 15,
+                      tier: 'standard',
+                    },
+                    status: 'RUNNING',
+                    to: '2026-01-02T00:00:00Z',
+                  },
+                  id: 'nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq',
+                  type: 'archive_search',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    412: {
+      description: 'Precondition Failed',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+  security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: [] }],
+})
+
+export const postApiV2LogsArchiveSearchesArchiveSearchIdCancelRoute = createRoute({
+  method: 'post',
+  path: '/api/v2/logs/archive_searches/{archive_search_id}/cancel',
+  tags: ['Logs Archive Searches'],
+  summary: 'Cancel an Archive Search',
+  description:
+    'Cancel a running Archive Search. Cancelling an Archive Search that has already finished is a\nno-op: it returns the resource unchanged instead of returning an error.',
+  operationId: 'CancelArchiveSearch',
+  request: {
+    params: z.object({
+      archive_search_id: z
+        .string()
+        .openapi({
+          param: {
+            description: 'Unique identifier of the Archive Search.',
+            example: 'nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq',
+            in: 'path',
+            name: 'archive_search_id',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: ArchiveSearchResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    archive_id: 'mhmyYmyLTOaFYKvhNadu1w',
+                    bytes_scanned: 102400,
+                    completed_at: '2026-01-02T12:05:00Z',
+                    created_at: '2026-01-02T12:00:00Z',
+                    description: 'Investigating the checkout latency spike.',
+                    events_scanned: 500,
+                    from: '2026-01-01T00:00:00Z',
+                    name: 'checkout-latency-investigation',
+                    query: 'service:checkout status:error',
+                    status: 'CANCELLED',
                     to: '2026-01-02T00:00:00Z',
                   },
                   id: 'nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq',
@@ -235215,6 +238590,172 @@ export const deleteApiV2MetricsHistoricalMetricsConfigurationsMetricNameRoute = 
   security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['late_metrics_config_write'] }],
 })
 
+export const getApiV2MetricsListTagIndexingRuleExemptionsRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/metrics/list-tag-indexing-rule-exemptions',
+  tags: ['Metrics'],
+  summary: 'List tag indexing rule exemptions',
+  description:
+    'Returns explicit exemptions and legacy tag configurations that exclude metrics from tag indexing rules.\nYou can filter results by metric name prefix, whether an exemption is safe to remove, or the UUID of a matching\ntag indexing rule. You can sort results by metric name or by estimated change in indexed volume.',
+  operationId: 'ListTagIndexingRuleExemptions',
+  request: {
+    query: z.object({
+      'filter[metric_prefix]': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter exemptions to metrics whose names start with this literal prefix.\nMatching is case-sensitive. Wildcard characters are treated literally.',
+            example: 'dd.test.',
+            in: 'query',
+            name: 'filter[metric_prefix]',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      'filter[safe]': z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter exemptions by whether they are safe to remove. An exemption is considered safe when a fresh, usable\nestimate indicates that removing it would not increase indexed volume and would not drop tags used to query\nthe metric in monitors, dashboards, notebooks, or SLOs. Set to `true` to return safe-to-remove exemptions,\nor `false` to return all other exemptions, including those with unavailable or stale estimates.',
+            example: true,
+            in: 'query',
+            name: 'filter[safe]',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
+      'filter[tag_indexing_rule_id]': z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter exemptions to metrics matched by the tag indexing rule with this UUID.',
+            example: '00000000-0000-0000-0000-000000000001',
+            in: 'query',
+            name: 'filter[tag_indexing_rule_id]',
+            schema: { format: 'uuid', type: 'string' },
+            required: false,
+          },
+        }),
+      sort: TagIndexingRuleExemptionSortSchema.openapi({
+        param: {
+          description:
+            'Sort field. Prefix the field with `-` for descending order. The default is `estimated_change_in_volume` in ascending order, with the largest reductions (most negative values) first.',
+          example: 'estimated_change_in_volume',
+          in: 'query',
+          name: 'sort',
+          schema: { $ref: '#/components/schemas/TagIndexingRuleExemptionSort' },
+          required: false,
+        },
+      }).exactOptional(),
+      'page[size]': z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1).max(10000),
+        )
+        .default(10000)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Maximum number of results per page. Defaults to 10000; accepts values from 1 to 10000. If\n`meta.pagination.next_cursor` is non-null, request the next page by passing that value as `page[cursor]`.\nContinue until `next_cursor` is null.',
+            example: 100,
+            in: 'query',
+            name: 'page[size]',
+            required: false,
+            schema: {
+              default: 10000,
+              format: 'int32',
+              maximum: 10000,
+              minimum: 1,
+              type: 'integer',
+            },
+          },
+        }),
+      'page[cursor]': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Cursor for pagination. Use `page[size]` to opt-in to pagination and get the first page; for subsequent pages, use the value from `meta.pagination.next_cursor` in the response. Pagination is complete when `next_cursor` is null.',
+            in: 'query',
+            name: 'page[cursor]',
+            required: false,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: TagIndexingRuleExemptionsResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: [
+                  {
+                    attributes: {
+                      created_at: '2024-01-15T12:00:00.000Z',
+                      created_by_handle: 'user@datadoghq.com',
+                      estimated_change_in_volume: 45,
+                      kind: 'exemption',
+                      missing_indexed_tags: ['service'],
+                      reason: 'This metric has a pre-existing tag configuration.',
+                      volume_status: 'ok',
+                    },
+                    id: 'dd.test.metric',
+                    type: 'tag_indexing_rule_exemptions',
+                  },
+                ],
+                links: {
+                  first: '/api/v2/metrics/list-tag-indexing-rule-exemptions?page[size]=100',
+                  next: '/api/v2/metrics/list-tag-indexing-rule-exemptions?page[size]=100&page[cursor]=next-page-cursor',
+                  self: '/api/v2/metrics/list-tag-indexing-rule-exemptions?page[size]=100',
+                },
+                meta: {
+                  pagination: {
+                    cursor: null,
+                    limit: 1,
+                    next_cursor: 'next-page-cursor',
+                    type: 'cursor_limit',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: {
+      description: 'Too Many Requests',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+  },
+  security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['metrics_read'] }],
+})
+
 export const getApiV2MetricsTagIndexingRulesRoute = createRoute({
   method: 'get',
   path: '/api/v2/metrics/tag-indexing-rules',
@@ -236175,6 +239716,85 @@ export const getApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute = createRou
     },
   },
   security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['metrics_read'] }],
+})
+
+export const putApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute = createRoute({
+  method: 'put',
+  path: '/api/v2/metrics/{metric_name}/tag-indexing-rule-exemptions',
+  tags: ['Metrics'],
+  summary: 'Update a tag indexing rule exemption',
+  description:
+    "Update the reason for an explicit tag indexing rule exemption. The exemption's `created_at` and\n`created_by_handle` values remain unchanged. Returns 404 when the metric has no explicit exemption or has\nonly a legacy tag configuration. Requires the `Manage Tags for Metrics` permission.",
+  operationId: 'UpdateTagIndexingRuleExemption',
+  request: {
+    params: z.object({ metric_name: MetricNameParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: TagIndexingRuleExemptionUpdateRequestSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    reason: 'This metric must remain exempt because of its query requirements.',
+                  },
+                  type: 'tag_indexing_rule_exemptions',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: TagIndexingRuleExemptionResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    created_at: '2024-01-15T12:00:00.000Z',
+                    created_by_handle: 'user@datadoghq.com',
+                    estimated_change_in_volume: null,
+                    kind: 'exemption',
+                    missing_indexed_tags: [],
+                    reason: 'This metric must remain exempt because of its query requirements.',
+                    volume_status: 'unavailable',
+                  },
+                  id: 'dd.test.metric',
+                  type: 'tag_indexing_rule_exemptions',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: {
+      description: 'Too Many Requests',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+  },
+  security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['metric_tags_write'] }],
 })
 
 export const postApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute = createRoute({
@@ -249246,7 +252866,7 @@ export const getApiV2PrunedTraceTraceIdRoute = createRoute({
   tags: ['APM Trace'],
   summary: 'Get a pruned trace by ID',
   description:
-    'Retrieve a pruned, hierarchical view of an APM trace by its trace ID.\nThe trace is summarized as a tree of spans rooted at the trace root and reduced in size\nto keep rendering large traces in the UI practical.\nThis endpoint is rate limited to `60` requests per minute per organization.',
+    'Retrieve a pruned, hierarchical view of an APM trace by its trace ID.\nThe trace is summarized as a tree of spans rooted at the trace root and reduced in size\nto keep rendering large traces in the UI practical.\nA `400 Bad Request` response means the trace ID is malformed. A `404 Not Found` response means\nno trace with this ID is available, such as when the trace is outside the retention period.\nThis endpoint is rate limited to `60` requests per minute per organization.',
   operationId: 'GetPrunedTraceByID',
   request: {
     params: z.object({ trace_id: TraceIDPathParameterParamsSchema }),
@@ -249415,6 +253035,10 @@ export const getApiV2PrunedTraceTraceIdRoute = createRoute({
           },
         },
       },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
     },
     403: {
       description: 'Forbidden',
@@ -254170,8 +257794,8 @@ export const postApiV2RumApplicationsRoute = createRoute({
     },
   },
   responses: {
-    200: {
-      description: 'OK',
+    201: {
+      description: 'Created',
       content: {
         'application/json': {
           schema: RUMApplicationResponseSchema,
@@ -255012,7 +258636,10 @@ export const getApiV2RumApplicationsIdRoute = createRoute({
         },
       },
     },
-    404: NotFoundResponseResponse,
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
     429: TooManyRequestsResponseResponse,
   },
 })
@@ -255041,7 +258668,10 @@ export const deleteApiV2RumApplicationsIdRoute = createRoute({
   },
   responses: {
     204: { description: 'No Content' },
-    404: NotFoundResponseResponse,
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
     429: TooManyRequestsResponseResponse,
   },
 })
@@ -255123,7 +258753,10 @@ export const patchApiV2RumApplicationsIdRoute = createRoute({
       },
     },
     400: BadRequestResponseResponse,
-    404: NotFoundResponseResponse,
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
     422: {
       description: 'Unprocessable Entity.',
       content: { 'application/json': { schema: APIErrorResponseSchema } },
@@ -276856,254 +280489,13 @@ export const postApiV2SourcemapsServiceRepositoryInfoRoute = createRoute({
   },
 })
 
-export const postApiV2SpaRecommendationsV2ServiceRoute = createRoute({
-  method: 'post',
-  path: '/api/v2/spa/recommendations-v2/{service}',
-  tags: ['Spa'],
-  summary: 'Get SPA recommendations v2',
-  description:
-    "This endpoint is experimental and restricted to Datadog internal use only.\nRetrieve resource recommendations for a Spark job. The caller (Spark Gateway) provides\na service name and the job's raw arguments. SPA determines which arguments are relevant\nfor the service and returns structured recommendations for driver and executor resources.",
-  operationId: 'GetSPARecommendationsV2',
-  request: {
-    params: z.object({
-      service: z
-        .string()
-        .openapi({
-          param: {
-            description: 'The service name for a Spark job',
-            in: 'path',
-            name: 'service',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-    body: {
-      content: { 'application/json': { schema: RecommendationV2RequestBodySchema } },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: RecommendationDocumentSchema,
-          example: {
-            data: {
-              attributes: {
-                driver: {
-                  estimation: {
-                    cpu: { max: 1500, p75: 1000, p95: 1200 },
-                    ephemeral_storage: 896,
-                    heap: 6144,
-                    memory: 7168,
-                    overhead: 1024,
-                  },
-                },
-                executor: {
-                  estimation: {
-                    cpu: { max: 2000, p75: 1200, p95: 1500 },
-                    ephemeral_storage: 512,
-                    heap: 3072,
-                    memory: 4096,
-                    overhead: 1024,
-                  },
-                },
-                matched_params: 'detailed_metrics=false',
-              },
-              id: 'dedupeactivecontexts:adp_dedupeactivecontexts_org2',
-              type: 'recommendation',
-            },
-          },
-        },
-      },
-    },
-    400: BadRequestResponseResponse,
-    403: NotAuthorizedResponseResponse,
-    404: NotFoundResponseResponse,
-    429: TooManyRequestsResponseResponse,
-  },
-  security: [{ AuthZ: [] }],
-})
-
-export const getApiV2SpaRecommendationsServiceRoute = createRoute({
-  method: 'get',
-  path: '/api/v2/spa/recommendations/{service}',
-  tags: ['Spa'],
-  summary: 'Get SPA Recommendations',
-  description:
-    'This endpoint is currently experimental and restricted to Datadog internal use only. Retrieve resource recommendations for a Spark job. The caller (Spark Gateway or DJM UI) provides a service name and SPA returns structured recommendations for driver and executor resources. The version with a shard should be preferred, where possible, as it gives more accurate results.',
-  operationId: 'GetSPARecommendations',
-  request: {
-    query: z.object({
-      bypass_cache: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            description: 'The recommendation service should not use its metrics cache.',
-            in: 'query',
-            name: 'bypass_cache',
-            schema: { type: 'string' },
-            required: false,
-          },
-        }),
-    }),
-    params: z.object({
-      service: z
-        .string()
-        .openapi({
-          param: {
-            description: 'The service name for a spark job.',
-            in: 'path',
-            name: 'service',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: RecommendationDocumentSchema,
-          example: {
-            data: {
-              attributes: {
-                driver: {
-                  estimation: {
-                    cpu: { max: 1500, p75: 1000, p95: 1200 },
-                    ephemeral_storage: 896,
-                    heap: 6144,
-                    memory: 7168,
-                    overhead: 1024,
-                  },
-                },
-                executor: {
-                  estimation: {
-                    cpu: { max: 2000, p75: 1200, p95: 1500 },
-                    ephemeral_storage: 512,
-                    heap: 3072,
-                    memory: 4096,
-                    overhead: 1024,
-                  },
-                },
-              },
-              id: 'dedupeactivecontexts:adp_dedupeactivecontexts_org2',
-              type: 'recommendation',
-            },
-          },
-        },
-      },
-    },
-    400: BadRequestResponseResponse,
-    403: NotAuthorizedResponseResponse,
-    429: TooManyRequestsResponseResponse,
-  },
-  security: [{ AuthZ: [] }],
-})
-
-export const getApiV2SpaRecommendationsServiceShardRoute = createRoute({
-  method: 'get',
-  path: '/api/v2/spa/recommendations/{service}/{shard}',
-  tags: ['Spa'],
-  summary: 'Get SPA Recommendations with a shard parameter',
-  description:
-    'This endpoint is currently experimental and restricted to Datadog internal use only. Retrieve resource recommendations for a Spark job. The caller (Spark Gateway or DJM UI) provides a service name and shard identifier, and SPA returns structured recommendations for driver and executor resources.',
-  operationId: 'GetSPARecommendationsWithShard',
-  request: {
-    params: z.object({
-      shard: z
-        .string()
-        .openapi({
-          param: {
-            description:
-              'The shard tag for a spark job, which differentiates jobs within the same service that have different resource needs',
-            in: 'path',
-            name: 'shard',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-      service: z
-        .string()
-        .openapi({
-          param: {
-            description: 'The service name for a spark job',
-            in: 'path',
-            name: 'service',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-    query: z.object({
-      bypass_cache: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            description: 'The recommendation service should not use its metrics cache.',
-            in: 'query',
-            name: 'bypass_cache',
-            schema: { type: 'string' },
-            required: false,
-          },
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'OK',
-      content: {
-        'application/json': {
-          schema: RecommendationDocumentSchema,
-          example: {
-            data: {
-              attributes: {
-                driver: {
-                  estimation: {
-                    cpu: { max: 1500, p75: 1000, p95: 1200 },
-                    ephemeral_storage: 896,
-                    heap: 6144,
-                    memory: 7168,
-                    overhead: 1024,
-                  },
-                },
-                executor: {
-                  estimation: {
-                    cpu: { max: 2000, p75: 1200, p95: 1500 },
-                    ephemeral_storage: 512,
-                    heap: 3072,
-                    memory: 4096,
-                    overhead: 1024,
-                  },
-                },
-              },
-              id: 'dedupeactivecontexts:adp_dedupeactivecontexts_org2',
-              type: 'recommendation',
-            },
-          },
-        },
-      },
-    },
-    400: BadRequestResponseResponse,
-    403: NotAuthorizedResponseResponse,
-    429: TooManyRequestsResponseResponse,
-  },
-  security: [{ AuthZ: [] }],
-})
-
 export const postApiV2SpansAnalyticsAggregateRoute = createRoute({
   method: 'post',
   path: '/api/v2/spans/analytics/aggregate',
   tags: ['Spans'],
   summary: 'Aggregate spans',
   description:
-    'The API endpoint to aggregate spans into buckets and compute metrics and timeseries.\nThis endpoint is rate limited to `300` requests per hour.',
+    'The API endpoint to aggregate spans into buckets and compute metrics and timeseries.\nThis endpoint is rate limited to `300` requests per hour.\n\nA request can generate at most 10,000 groups across all `group_by` entries, or 400,000 groups\nincluding time buckets when a `timeseries` compute is used. Set `limit` on each `group_by` entry\nto stay within these bounds. Requests over long time ranges or with many groups are more resource-intensive\nand can fail. To reduce load, narrow the time range or lower the `limit` on each `group_by` entry.',
   operationId: 'AggregateSpans',
   request: {
     body: {
@@ -277130,9 +280522,14 @@ export const postApiV2SpansAnalyticsAggregateRoute = createRoute({
                     },
                     group_by: [
                       {
-                        facet: 'host',
-                        histogram: { interval: 10, max: 100, min: 50 },
-                        sort: { aggregation: 'count', order: 'asc' },
+                        facet: 'service',
+                        limit: 20,
+                        sort: {
+                          aggregation: 'pc90',
+                          metric: '@duration',
+                          order: 'desc',
+                          type: 'measure',
+                        },
                       },
                     ],
                     options: { timezone: 'GMT' },
@@ -288048,6 +291445,334 @@ export const patchApiV2TeamTeamIdLinksLinkIdRoute = createRoute({
   security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['teams_read'] }],
 })
 
+export const getApiV2TeamTeamIdMembersRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/team/{team_id}/members',
+  tags: ['Teams'],
+  summary: 'Get team hierarchy members',
+  description:
+    'List the direct and inherited members of a team, deduplicated by user.\nMembers of descendant teams are included unless `filter[is_direct_only]` is true.\nDatadog support users are always excluded.\n\nUse `page[number]` and `page[size]` to paginate through the results.\nInvalid query parameters return a JSON:API error with status 400.\nInvalid or unknown team UUIDs return status 404.',
+  operationId: 'ListTeamHierarchyMembers',
+  request: {
+    params: z.object({
+      team_id: z
+        .string()
+        .openapi({
+          param: {
+            description: 'UUID of the requested root team.',
+            in: 'path',
+            name: 'team_id',
+            required: true,
+            schema: { example: '692e8073-12c4-4c71-8408-5090bd44c9c8', type: 'string' },
+          },
+          example: '692e8073-12c4-4c71-8408-5090bd44c9c8',
+        }),
+    }),
+    query: z.object({
+      'filter[is_direct_only]': z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Return only direct members. By default, members inherited from descendant teams are also returned.',
+            in: 'query',
+            name: 'filter[is_direct_only]',
+            required: false,
+            schema: { default: false, example: false, type: 'boolean' },
+          },
+          example: false,
+        }),
+      'filter[include_service_accounts]': z
+        .stringbool()
+        .default(true)
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Include service accounts. Datadog support users are always excluded.',
+            in: 'query',
+            name: 'filter[include_service_accounts]',
+            required: false,
+            schema: { default: true, example: true, type: 'boolean' },
+          },
+          example: true,
+        }),
+      'filter[keyword]': z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter by a case-insensitive substring of the user name, handle, or email.',
+            in: 'query',
+            name: 'filter[keyword]',
+            required: false,
+            schema: { example: 'alice', type: 'string' },
+          },
+          example: 'alice',
+        }),
+      include: z
+        .string()
+        .regex(/^\s*((user|team)\s*)?(,\s*((user|team)\s*)?)*$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Comma-separated resources to include: `user` and `team`. The included team is the requested team. Whitespace is trimmed, and duplicate or empty entries are ignored.',
+            in: 'query',
+            name: 'include',
+            required: false,
+            schema: {
+              example: 'user,team',
+              pattern: '^\\s*((user|team)\\s*)?(,\\s*((user|team)\\s*)?)*$',
+              type: 'string',
+            },
+          },
+          example: 'user,team',
+        }),
+      sort: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Comma-separated sort fields: `name`, `handle`, `is_direct`, and `provisioned_by`. Fields are applied in order, each optionally prefixed with `-` for descending order. By default, team admins come first, followed by other direct members, then inherited members, sorted by name within each group.',
+            in: 'query',
+            name: 'sort',
+            required: false,
+            schema: { example: 'is_direct,-name', type: 'string' },
+          },
+          example: 'is_direct,-name',
+        }),
+      'page[number]': z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .default(0n)
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Zero-based page number. Negative values become 0. Defaults to 0.',
+            in: 'query',
+            name: 'page[number]',
+            required: false,
+            schema: { default: 0, example: 0, format: 'int64', type: 'integer' },
+          },
+          example: 0,
+        }),
+      'page[size]': z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64())
+        .default(100n)
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Requested number of members per page. Defaults to and maxes out at 100.',
+            in: 'query',
+            name: 'page[size]',
+            required: false,
+            schema: { default: 100, example: 100, format: 'int64', type: 'integer' },
+          },
+          example: 100,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: TeamHierarchyMembersResponseSchema,
+          examples: {
+            default: {
+              summary: 'Direct and inherited members with number pagination',
+              value: {
+                data: [
+                  {
+                    attributes: {
+                      direct_role: 'admin',
+                      is_direct: true,
+                      provisioned_by: 'manual',
+                      provisioned_by_id: null,
+                    },
+                    id: 'UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000001',
+                    relationships: {
+                      team: { data: { id: '692e8073-12c4-4c71-8408-5090bd44c9c8', type: 'teams' } },
+                      user: { data: { id: '00000000-0000-0000-0000-000000000001', type: 'users' } },
+                    },
+                    type: 'user_team_relationship',
+                  },
+                  {
+                    attributes: {
+                      direct_role: null,
+                      is_direct: false,
+                      provisioned_by: null,
+                      provisioned_by_id: null,
+                    },
+                    id: 'UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000002',
+                    relationships: {
+                      team: { data: { id: '692e8073-12c4-4c71-8408-5090bd44c9c8', type: 'teams' } },
+                      user: { data: { id: '00000000-0000-0000-0000-000000000002', type: 'users' } },
+                    },
+                    type: 'user_team_relationship',
+                  },
+                ],
+                links: {
+                  first:
+                    'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                  last: 'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                  self: 'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                },
+                meta: {
+                  page: {
+                    first_number: 0,
+                    last_number: 0,
+                    next_number: null,
+                    number: 0,
+                    prev_number: null,
+                    size: 100,
+                    total: 2,
+                    type: 'number_size',
+                  },
+                },
+              },
+            },
+            empty: {
+              summary: 'No matching members, with included resources omitted',
+              value: {
+                data: [],
+                links: {
+                  first:
+                    'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                  last: 'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                  self: 'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                },
+                meta: {
+                  page: {
+                    first_number: 0,
+                    last_number: 0,
+                    next_number: null,
+                    number: 0,
+                    prev_number: null,
+                    size: 100,
+                    total: 0,
+                    type: 'number_size',
+                  },
+                },
+              },
+            },
+            included_resources: {
+              summary: 'Users and the team with number pagination',
+              value: {
+                data: [
+                  {
+                    attributes: {
+                      direct_role: 'admin',
+                      is_direct: true,
+                      provisioned_by: 'manual',
+                      provisioned_by_id: null,
+                    },
+                    id: 'UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000001',
+                    relationships: {
+                      team: { data: { id: '692e8073-12c4-4c71-8408-5090bd44c9c8', type: 'teams' } },
+                      user: { data: { id: '00000000-0000-0000-0000-000000000001', type: 'users' } },
+                    },
+                    type: 'user_team_relationship',
+                  },
+                  {
+                    attributes: {
+                      direct_role: null,
+                      is_direct: false,
+                      provisioned_by: null,
+                      provisioned_by_id: null,
+                    },
+                    id: 'UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000002',
+                    relationships: {
+                      team: { data: { id: '692e8073-12c4-4c71-8408-5090bd44c9c8', type: 'teams' } },
+                      user: { data: { id: '00000000-0000-0000-0000-000000000002', type: 'users' } },
+                    },
+                    type: 'user_team_relationship',
+                  },
+                ],
+                included: [
+                  {
+                    attributes: {
+                      email: 'alice@example.com',
+                      handle: 'alice@example.com',
+                      name: 'Alice',
+                      title: null,
+                    },
+                    id: '00000000-0000-0000-0000-000000000001',
+                    type: 'users',
+                  },
+                  {
+                    attributes: {
+                      email: 'bob@example.com',
+                      handle: 'bob@example.com',
+                      name: null,
+                      title: null,
+                    },
+                    id: '00000000-0000-0000-0000-000000000002',
+                    type: 'users',
+                  },
+                  {
+                    attributes: { handle: 'platform', name: 'Platform' },
+                    id: '692e8073-12c4-4c71-8408-5090bd44c9c8',
+                    type: 'teams',
+                  },
+                ],
+                links: {
+                  first:
+                    'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?include=user%2Cteam&page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                  last: 'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?include=user%2Cteam&page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                  self: 'https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?include=user%2Cteam&page%5Bnumber%5D=0&page%5Bsize%5D=100',
+                },
+                meta: {
+                  page: {
+                    first_number: 0,
+                    last_number: 0,
+                    next_number: null,
+                    number: 0,
+                    prev_number: null,
+                    size: 100,
+                    total: 2,
+                    type: 'number_size',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: ForbiddenResponseResponse,
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+  security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: ['teams_read'] }],
+})
+
 export const getApiV2TeamTeamIdMembershipsRoute = createRoute({
   method: 'get',
   path: '/api/v2/team/{team_id}/memberships',
@@ -289086,7 +292811,7 @@ export const getApiV2TraceTraceIdRoute = createRoute({
   tags: ['APM Trace'],
   summary: 'Get a trace by ID',
   description:
-    'Retrieve a full APM trace by its trace ID, including every span in the trace.\nTraces are returned from live storage when available and fall back to longer-term storage.\nThis endpoint is rate limited to `60` requests per minute per organization.',
+    'Retrieve a full APM trace by its trace ID, including every span in the trace.\nTraces are returned from live storage when available and fall back to longer-term storage.\nA `400 Bad Request` response means the trace ID is malformed. A `404 Not Found` response means\nno trace with this ID is available, such as when the trace is outside the retention period.\nThis endpoint is rate limited to `60` requests per minute per organization.',
   operationId: 'GetTraceByID',
   request: {
     params: z.object({ trace_id: TraceIDPathParameterParamsSchema }),
@@ -289101,7 +292826,7 @@ export const getApiV2TraceTraceIdRoute = createRoute({
           param: {
             description:
               'List of span fields to include in the response. When omitted, every available field is returned.\nValues may be passed as repeated query parameters or as a single comma-separated value.',
-            example: ['service', 'resource_name'],
+            example: ['service', 'resource'],
             in: 'query',
             name: 'include_fields',
             required: false,
@@ -289149,6 +292874,10 @@ export const getApiV2TraceTraceIdRoute = createRoute({
           },
         },
       },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
     },
     403: {
       description: 'Forbidden',
@@ -292327,6 +296056,594 @@ export const deleteApiV2WidgetsExperienceTypeUuidRoute = createRoute({
     429: TooManyRequestsResponseResponse,
   },
   security: [{ apiKeyAuth: [], appKeyAuth: [] }, { AuthZ: [] }],
+})
+
+export const getApiV2WifAwsPersonaMappingRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/wif/aws/persona_mapping',
+  tags: ['Cloud Authentication'],
+  summary: 'List AWS cloud authentication persona mappings',
+  description:
+    'List all AWS cloud authentication persona mappings. This endpoint retrieves all configured persona mappings that associate AWS IAM principals with Datadog users.',
+  operationId: 'ListAWSCloudAuthPersonaMappings',
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: AWSCloudAuthPersonaMappingsResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: [
+                  {
+                    attributes: {
+                      account_identifier: 'test@example.com',
+                      account_uuid: '00000000-0000-0000-0000-000000000001',
+                      arn_pattern: 'arn:aws:iam::123456789012:user/testuser',
+                    },
+                    id: 'abc-123',
+                    type: 'aws_cloud_auth_config',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const postApiV2WifAwsPersonaMappingRoute = createRoute({
+  method: 'post',
+  path: '/api/v2/wif/aws/persona_mapping',
+  tags: ['Cloud Authentication'],
+  summary: 'Create an AWS cloud authentication persona mapping',
+  description:
+    'Create an AWS cloud authentication persona mapping. This endpoint associates an AWS IAM principal with a Datadog user.',
+  operationId: 'CreateAWSCloudAuthPersonaMapping',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: AWSCloudAuthPersonaMappingCreateRequestSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    account_identifier: 'test@test.com',
+                    arn_pattern: 'arn:aws:iam::123456789012:user/testuser',
+                  },
+                  type: 'aws_cloud_auth_config',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: AWSCloudAuthPersonaMappingResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    account_identifier: 'test@example.com',
+                    account_uuid: '00000000-0000-0000-0000-000000000001',
+                    arn_pattern: 'arn:aws:iam::123456789012:user/testuser',
+                  },
+                  id: 'abc-123',
+                  type: 'aws_cloud_auth_config',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description: 'Conflict',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const getApiV2WifAwsPersonaMappingPersonaMappingIdRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/wif/aws/persona_mapping/{persona_mapping_id}',
+  tags: ['Cloud Authentication'],
+  summary: 'Get an AWS cloud authentication persona mapping',
+  description:
+    'Get a specific AWS cloud authentication persona mapping by ID. This endpoint retrieves a single configured persona mapping that associates an AWS IAM principal with a Datadog user.',
+  operationId: 'GetAWSCloudAuthPersonaMapping',
+  request: { params: z.object({ persona_mapping_id: PersonaMappingIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: AWSCloudAuthPersonaMappingResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    account_identifier: 'test@example.com',
+                    account_uuid: '00000000-0000-0000-0000-000000000001',
+                    arn_pattern: 'arn:aws:iam::123456789012:user/testuser',
+                  },
+                  id: 'abc-123',
+                  type: 'aws_cloud_auth_config',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const deleteApiV2WifAwsPersonaMappingPersonaMappingIdRoute = createRoute({
+  method: 'delete',
+  path: '/api/v2/wif/aws/persona_mapping/{persona_mapping_id}',
+  tags: ['Cloud Authentication'],
+  summary: 'Delete an AWS cloud authentication persona mapping',
+  description:
+    'Delete an AWS cloud authentication persona mapping by ID. This removes the association between an AWS IAM principal and a Datadog user.',
+  operationId: 'DeleteAWSCloudAuthPersonaMapping',
+  request: { params: z.object({ persona_mapping_id: PersonaMappingIDParamsSchema }) },
+  responses: {
+    204: { description: 'No Content' },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const getApiV2WifGithubIntakeMappingRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/wif/github/intake_mapping',
+  tags: ['Cloud Authentication'],
+  summary: 'List GitHub cloud authentication intake mappings',
+  description:
+    'List all GitHub cloud authentication intake mappings. This endpoint retrieves all configured intake mappings that entitle matching GitHub Actions OIDC principals to request Datadog API keys.',
+  operationId: 'ListGitHubCloudAuthIntakeMappings',
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: GitHubCloudAuthIntakeMappingsResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: [
+                  {
+                    attributes: {
+                      claim_matchers: {
+                        ref: 'refs/heads/main',
+                        repository: 'test_owner/test_repo',
+                        repository_owner: 'test_owner',
+                        sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
+                      },
+                    },
+                    id: 'd6d869d7-29d3-5595-bf40-57c95235cf5b',
+                    type: 'github_oidc_auth_intake_mapping',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const postApiV2WifGithubIntakeMappingRoute = createRoute({
+  method: 'post',
+  path: '/api/v2/wif/github/intake_mapping',
+  tags: ['Cloud Authentication'],
+  summary: 'Create a GitHub cloud auth intake mapping',
+  description:
+    'Create a GitHub cloud authentication intake mapping. This endpoint entitles a matching GitHub Actions OIDC principal to request Datadog API keys.',
+  operationId: 'CreateGitHubCloudAuthIntakeMapping',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: GitHubCloudAuthIntakeMappingCreateRequestSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    claim_matchers: {
+                      ref: 'refs/heads/main',
+                      repository: 'test_owner/test_repo',
+                      repository_owner: 'test_owner',
+                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
+                    },
+                  },
+                  type: 'github_oidc_auth_intake_mapping',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: GitHubCloudAuthIntakeMappingResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    claim_matchers: {
+                      ref: 'refs/heads/main',
+                      repository: 'test_owner/test_repo',
+                      repository_owner: 'test_owner',
+                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
+                    },
+                  },
+                  id: 'd6d869d7-29d3-5595-bf40-57c95235cf5b',
+                  type: 'github_oidc_auth_intake_mapping',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description: 'Conflict',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const getApiV2WifGithubIntakeMappingIntakeMappingIdRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/wif/github/intake_mapping/{intake_mapping_id}',
+  tags: ['Cloud Authentication'],
+  summary: 'Get a GitHub cloud authentication intake mapping',
+  description:
+    'Get a specific GitHub cloud authentication intake mapping by ID. This endpoint retrieves a single configured intake mapping that entitles a matching GitHub Actions OIDC principal to request Datadog API keys.',
+  operationId: 'GetGitHubCloudAuthIntakeMapping',
+  request: { params: z.object({ intake_mapping_id: IntakeMappingIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: GitHubCloudAuthIntakeMappingResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    claim_matchers: {
+                      ref: 'refs/heads/main',
+                      repository: 'test_owner/test_repo',
+                      repository_owner: 'test_owner',
+                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
+                    },
+                  },
+                  id: 'd6d869d7-29d3-5595-bf40-57c95235cf5b',
+                  type: 'github_oidc_auth_intake_mapping',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const deleteApiV2WifGithubIntakeMappingIntakeMappingIdRoute = createRoute({
+  method: 'delete',
+  path: '/api/v2/wif/github/intake_mapping/{intake_mapping_id}',
+  tags: ['Cloud Authentication'],
+  summary: 'Delete a GitHub cloud auth intake mapping',
+  description:
+    "Delete a GitHub cloud authentication intake mapping by ID. This removes a GitHub Actions OIDC principal's entitlement to request Datadog API keys.",
+  operationId: 'DeleteGitHubCloudAuthIntakeMapping',
+  request: { params: z.object({ intake_mapping_id: IntakeMappingIDParamsSchema }) },
+  responses: {
+    204: { description: 'No Content' },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const getApiV2WifGithubPersonaMappingRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/wif/github/persona_mapping',
+  tags: ['Cloud Authentication'],
+  summary: 'List GitHub cloud authentication persona mappings',
+  description:
+    'List all GitHub cloud authentication persona mappings. This endpoint retrieves all configured persona mappings that associate GitHub Actions OpenID Connect (OIDC) principals with Datadog users. Mapped principals can request impersonation tokens.',
+  operationId: 'ListGitHubCloudAuthPersonaMappings',
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: GitHubCloudAuthPersonaMappingsResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: [
+                  {
+                    attributes: {
+                      account_identifier: 'test@example.com',
+                      account_uuid: '12bbdc5c-5966-47e0-8733-285f9e44bcf4',
+                      claim_matchers: {
+                        ref: 'refs/heads/main',
+                        repository: 'test_owner/test_repo',
+                        repository_owner: 'test_owner',
+                        sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
+                      },
+                    },
+                    id: 'c5c758c6-18c2-4484-ae3f-46b84128404a',
+                    type: 'github_oidc_auth_config',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const postApiV2WifGithubPersonaMappingRoute = createRoute({
+  method: 'post',
+  path: '/api/v2/wif/github/persona_mapping',
+  tags: ['Cloud Authentication'],
+  summary: 'Create a GitHub cloud auth persona mapping',
+  description:
+    'Create a GitHub cloud authentication persona mapping. This endpoint associates a GitHub Actions OIDC principal with a Datadog user. The mapped principal can request an impersonation token.',
+  operationId: 'CreateGitHubCloudAuthPersonaMapping',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: GitHubCloudAuthPersonaMappingCreateRequestSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    account_identifier: 'test@example.com',
+                    claim_matchers: {
+                      ref: 'refs/heads/main',
+                      repository: 'test_owner/test_repo',
+                      repository_owner: 'test_owner',
+                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
+                    },
+                  },
+                  type: 'github_oidc_auth_config',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: GitHubCloudAuthPersonaMappingResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    account_identifier: 'test@example.com',
+                    account_uuid: '12bbdc5c-5966-47e0-8733-285f9e44bcf4',
+                    claim_matchers: {
+                      ref: 'refs/heads/main',
+                      repository: 'test_owner/test_repo',
+                      repository_owner: 'test_owner',
+                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
+                    },
+                  },
+                  id: 'c5c758c6-18c2-4484-ae3f-46b84128404a',
+                  type: 'github_oidc_auth_config',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    409: {
+      description: 'Conflict',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const getApiV2WifGithubPersonaMappingPersonaMappingIdRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/wif/github/persona_mapping/{persona_mapping_id}',
+  tags: ['Cloud Authentication'],
+  summary: 'Get a GitHub cloud authentication persona mapping',
+  description:
+    'Get a specific GitHub cloud authentication persona mapping by ID. This endpoint retrieves a single configured persona mapping that associates a GitHub Actions OIDC principal with a Datadog user. The mapped principal can request an impersonation token.',
+  operationId: 'GetGitHubCloudAuthPersonaMapping',
+  request: { params: z.object({ persona_mapping_id: PersonaMappingIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: GitHubCloudAuthPersonaMappingResponseSchema,
+          examples: {
+            default: {
+              value: {
+                data: {
+                  attributes: {
+                    account_identifier: 'test@example.com',
+                    account_uuid: '12bbdc5c-5966-47e0-8733-285f9e44bcf4',
+                    claim_matchers: {
+                      ref: 'refs/heads/main',
+                      repository: 'test_owner/test_repo',
+                      repository_owner: 'test_owner',
+                      sub: 'repo:test_owner/test_repo:(ref:refs/heads/main|pull_request)',
+                    },
+                  },
+                  id: 'c5c758c6-18c2-4484-ae3f-46b84128404a',
+                  type: 'github_oidc_auth_config',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
+})
+
+export const deleteApiV2WifGithubPersonaMappingPersonaMappingIdRoute = createRoute({
+  method: 'delete',
+  path: '/api/v2/wif/github/persona_mapping/{persona_mapping_id}',
+  tags: ['Cloud Authentication'],
+  summary: 'Delete a GitHub cloud auth persona mapping',
+  description:
+    'Delete a GitHub cloud authentication persona mapping by ID. This removes the association between a GitHub Actions OIDC principal and a Datadog user.',
+  operationId: 'DeleteGitHubCloudAuthPersonaMapping',
+  request: { params: z.object({ persona_mapping_id: PersonaMappingIDParamsSchema }) },
+  responses: {
+    204: { description: 'No Content' },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: JSONAPIErrorResponseSchema } },
+    },
+    429: TooManyRequestsResponseResponse,
+  },
 })
 
 export const getApiV2WorkflowsRoute = createRoute({

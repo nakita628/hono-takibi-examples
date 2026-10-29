@@ -7072,6 +7072,8 @@ const EventSchema = z
         'RENAME',
         'RETENTION_POLICY_ASSIGNMENT_ADD',
         'SHARE',
+        'SHARED_LINK_ONE_TIME_PASSCODE_ACCESS',
+        'SHARED_LINK_ONE_TIME_PASSCODE_CHALLENGE',
         'SHARED_LINK_REDIRECT_OUT_OF_SHARED_CONTEXT',
         'SHARED_LINK_SEND',
         'SHARE_EXPIRATION',
@@ -7082,6 +7084,7 @@ const EventSchema = z
         'SHIELD_DOWNLOAD_BLOCKED',
         'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED',
         'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION',
+        'SHIELD_EXTERNAL_COLLAB_ACCESS_JUSTIFIED',
         'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED',
         'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION',
         'SHIELD_EXTERNAL_COLLAB_INVITE_JUSTIFIED',
@@ -13310,7 +13313,8 @@ const SignRequestCreateSignerSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'If true, no emails about the sign request will be sent.',
+        description:
+          'If true, no emails about the sign request are sent.\nThe `embed_url_external_user_id` parameter is required when using\n`suppress_notifications` for a signer.',
         example: false,
       }),
     language: z
@@ -31870,7 +31874,7 @@ export const putUsersUserIdRoute = createRoute({
     },
     400: {
       description:
-        'Returns an error if some of the parameters are missing or\nnot valid.\n\n* `invalid_parameter` when a parameter is formatted incorrectly,\n  for example when the `notification_email` has an incorrectly formatted\n  email address.',
+        "Returns an error if some of the parameters are missing or\nnot valid.\n\n* `invalid_parameter` when a parameter is formatted incorrectly,\n  for example when the `notification_email` has an incorrectly formatted\n  email address.\n* `user_must_not_have_retained_content` when rolling the user out of the enterprise is blocked\n  because they own content and the enterprise has a retention policy or legal hold. Transfer the user's content to\n  another user first. For the steps for resolution, see\n  [User cannot be deleted due to retention policies](https://support.box.com/hc/en-us/articles/33282413279635-API-Content-User-cannot-be-deleted-due-to-retention-policies-Please-transfer-user-content-first).",
       content: { 'application/json': { schema: ClientErrorSchema } },
     },
     403: {
@@ -32807,7 +32811,7 @@ export const postGroupsTerminateSessionsRoute = createRoute({
     },
     400: {
       description:
-        'Returns an error if some of the parameters are\nnot valid.\n\n* `Groups can not be NULL or EMPTY` when no value is provided.\n* `group id format is string` when the provided group id format\nis incorrect.\n* `Supported payload format is JSON` when the provided payload\nformat is incorrect.',
+        'Returns an error if some of the parameters are\nnot valid.\n\n* `Groups can not be NULL or EMPTY` when no value is provided.\n* `group id format is string` when the provided group id format\nis incorrect.\n* `Supported payload format is JSON` when the provided payload\nformat is incorrect.\n* `Too many users included for this request` when more than 10,000 unique users exist across all specified groups.',
       content: { 'application/json': { schema: ClientErrorSchema } },
     },
     403: {
@@ -34228,14 +34232,18 @@ export const getEventsRoute = createRoute({
                 'RENAME',
                 'RETENTION_POLICY_ASSIGNMENT_ADD',
                 'SHARE',
+                'SHARED_LINK_ONE_TIME_PASSCODE_ACCESS',
+                'SHARED_LINK_ONE_TIME_PASSCODE_CHALLENGE',
                 'SHARED_LINK_SEND',
                 'SHARE_EXPIRATION',
                 'SHIELD_ALERT',
                 'SHIELD_DOWNLOAD_BLOCKED',
                 'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED',
                 'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION',
+                'SHIELD_EXTERNAL_COLLAB_ACCESS_JUSTIFIED',
                 'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED',
                 'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION',
+                'SHIELD_EXTERNAL_COLLAB_INVITE_JUSTIFIED',
                 'SHIELD_JUSTIFICATION_APPROVAL',
                 'SHIELD_PREVIEW_BLOCKED',
                 'SHIELD_SHARED_LINK_ACCESS_BLOCKED',
@@ -34379,14 +34387,18 @@ export const getEventsRoute = createRoute({
                   'RENAME',
                   'RETENTION_POLICY_ASSIGNMENT_ADD',
                   'SHARE',
+                  'SHARED_LINK_ONE_TIME_PASSCODE_ACCESS',
+                  'SHARED_LINK_ONE_TIME_PASSCODE_CHALLENGE',
                   'SHARED_LINK_SEND',
                   'SHARE_EXPIRATION',
                   'SHIELD_ALERT',
                   'SHIELD_DOWNLOAD_BLOCKED',
                   'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED',
                   'SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION',
+                  'SHIELD_EXTERNAL_COLLAB_ACCESS_JUSTIFIED',
                   'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED',
                   'SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION',
+                  'SHIELD_EXTERNAL_COLLAB_INVITE_JUSTIFIED',
                   'SHIELD_JUSTIFICATION_APPROVAL',
                   'SHIELD_PREVIEW_BLOCKED',
                   'SHIELD_SHARED_LINK_ACCESS_BLOCKED',

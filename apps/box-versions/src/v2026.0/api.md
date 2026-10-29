@@ -1714,6 +1714,6798 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
+<h1 id="box-platform-api-shuttle">Shuttle</h1>
+
+Endpoints for managing Box Shuttle, the service that migrates content into
+Box from external sources. Use these endpoints to manage the systems that
+Shuttle migrates content from and the migration jobs that Shuttle runs.
+
+## List shuttle systems
+
+<a id="opIdget_shuttle_systems_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_systems \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_systems`
+
+Returns a paginated list of shuttle systems accessible to the
+authenticated user.
+
+<h3 id="list-shuttle-systems-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a315c0754833bfc5df067bf",
+      "type": "shuttle_system",
+      "name": "BoxProd",
+      "system_type": "box",
+      "label": "Box (Production)",
+      "state": "connected"
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-systems-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle systems.|[ShuttleSystems](#schemashuttlesystems)|
+|400|Bad Request|Returned when the user has passed in a malformed `marker` or `limit`<br>value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shuttle system
+
+<a id="opIdpost_shuttle_systems_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_systems \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "name": "NYC File Server",
+    "system_type": "windows"
+  }'
+```
+
+`POST /shuttle_systems`
+
+Creates a new shuttle system. Only Windows agent systems can be created
+through the public API; other system types must be configured through the
+Shuttle application.
+
+> Body parameter
+
+```json
+{
+  "name": "NYC File Server",
+  "system_type": "windows"
+}
+```
+
+<h3 id="create-shuttle-system-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShuttleSystemCreateRequest](#schemashuttlesystemcreaterequest)|true|none|
+|» name|body|string|true|The display name for the new shuttle system.|
+|» system_type|body|string|true|The public system type identifier for the new shuttle system. Only<br>`windows` is currently supported through the public API.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|» system_type|windows|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "6a315c0754833bfc5df067bf",
+  "type": "shuttle_system",
+  "name": "BoxProd",
+  "system_type": "box",
+  "label": "Box (Production)",
+  "state": "connected"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shuttle-system-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns the newly created shuttle system.|[ShuttleSystem](#schemashuttlesystem)|
+|400|Bad Request|Returned when the request body is malformed or required fields are<br>missing.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get shuttle system by ID
+
+<a id="opIdget_shuttle_systems_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_systems/6a315c0754833bfc5df067bf \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_systems/{shuttle_system_id}`
+
+Returns details for a single shuttle system identified by its ID,
+including its type and connection state.
+
+<h3 id="get-shuttle-system-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_system_id|path|string|true|The unique identifier for the shuttle system.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a315c0754833bfc5df067bf",
+  "type": "shuttle_system",
+  "name": "BoxProd",
+  "system_type": "box",
+  "label": "Box (Production)",
+  "state": "connected"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shuttle-system-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shuttle system.|[ShuttleSystem](#schemashuttlesystem)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle system is not found or the user does not<br>have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Update shuttle system
+
+<a id="opIdput_shuttle_systems_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_systems/6a315c0754833bfc5df067bf \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "name": "NYC File Server (Primary)"
+  }'
+```
+
+`PUT /shuttle_systems/{shuttle_system_id}`
+
+Updates the mutable properties of an existing shuttle system identified by
+its ID. Only the fields supplied in the request body are changed.
+
+> Body parameter
+
+```json
+{
+  "name": "NYC File Server (Primary)"
+}
+```
+
+<h3 id="update-shuttle-system-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_system_id|path|string|true|The unique identifier for the shuttle system.|
+|body|body|[ShuttleSystemUpdateRequest](#schemashuttlesystemupdaterequest)|true|none|
+|» name|body|string|false|The updated display name for the shuttle system.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a315c0754833bfc5df067bf",
+  "type": "shuttle_system",
+  "name": "BoxProd",
+  "system_type": "box",
+  "label": "Box (Production)",
+  "state": "connected"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-shuttle-system-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the updated shuttle system.|[ShuttleSystem](#schemashuttlesystem)|
+|400|Bad Request|Returned when the request body is malformed, empty, or fails<br>validation.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle system is not found or the user does not<br>have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete shuttle system
+
+<a id="opIddelete_shuttle_systems_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_systems/6a315c0754833bfc5df067bf \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`DELETE /shuttle_systems/{shuttle_system_id}`
+
+Permanently deletes the shuttle system identified by its ID. This does not
+affect content that has already been migrated.
+
+<h3 id="delete-shuttle-system-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_system_id|path|string|true|The unique identifier for the shuttle system.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-shuttle-system-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Returns an empty response when the shuttle system was successfully<br>deleted.|None|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle system is not found or the user does not<br>have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Issue registration token for Windows system
+
+<a id="opIdpost_shuttle_systems_id_issue_registration_token_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_systems/6a315c0754833bfc5df067bf/issue_registration_token \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`POST /shuttle_systems/{shuttle_system_id}/issue_registration_token`
+
+Issues a new installation token for the Windows shuttle system identified
+by its ID. Paste the returned token into the Windows agent installer to
+register the agent with this system.
+
+<h3 id="issue-registration-token-for-windows-system-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_system_id|path|string|true|The unique identifier for the shuttle system.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "registration_token": "eyJhbGciOi...",
+  "expires_at": "2026-03-16T12:00:00Z"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="issue-registration-token-for-windows-system-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the agent installation credentials for the Windows system.|[ShuttleAgentCredentials](#schemashuttleagentcredentials)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle system is not found or the user does not<br>have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle jobs
+
+<a id="opIdget_shuttle_jobs_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_jobs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_jobs`
+
+Returns a paginated list of shuttle jobs accessible to the authenticated
+user.
+
+<h3 id="list-shuttle-jobs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba68e810d9156194530a1",
+      "type": "shuttle_job",
+      "name": "Q4 SharePoint to Box",
+      "comment": "Migrating the finance department archives.",
+      "job_type": "transfer",
+      "state": "created",
+      "mapping_state": "awaiting_path_mapping",
+      "source_system": {
+        "type": "shuttle_system",
+        "id": "6a3ba68e810d9156194530a1",
+        "name": "SharePoint"
+      },
+      "account_mapping": {
+        "is_enabled": true,
+        "permission_conflict_strategy": "preserve_structure_restrict_sharing",
+        "are_external_shares_mapped": false,
+        "are_permissions_mapped": true
+      },
+      "tags": [
+        "q4",
+        "hr"
+      ],
+      "settings": {
+        "bandwidth_limit_bytes_per_sec": 10485760,
+        "are_deletions_mirrored": false,
+        "are_file_versions_synced": true,
+        "max_file_versions": 10,
+        "is_overwrite_enabled": false,
+        "are_completed_mappings_skipped_on_rerun": true,
+        "is_content_scanning_enabled": false,
+        "include_shared_source_folders": true,
+        "include_shared_destination_folders": false
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-jobs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle jobs.|[ShuttleJobs](#schemashuttlejobs)|
+|400|Bad Request|Returned when the user has passed in a malformed `marker` or `limit`<br>value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shuttle job
+
+<a id="opIdpost_shuttle_jobs_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_jobs \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "name": "Q4 SharePoint to Box",
+    "job_type": "transfer",
+    "source_system_id": "6a3ba68e810d9156194530a1"
+  }'
+```
+
+`POST /shuttle_jobs`
+
+Creates a new shuttle job that describes a migration from the given source
+system into Box.
+
+> Body parameter
+
+```json
+{
+  "name": "Q4 SharePoint to Box",
+  "job_type": "transfer",
+  "source_system_id": "6a3ba68e810d9156194530a1"
+}
+```
+
+<h3 id="create-shuttle-job-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShuttleJobCreateRequest](#schemashuttlejobcreaterequest)|true|none|
+|» name|body|string|true|The human-readable name of the shuttle job.|
+|» job_type|body|string|true|The type of work the shuttle job performs.|
+|» source_system_id|body|string|true|The unique identifier of the source system to migrate from.|
+|» comment|body|string|false|An optional free-form comment describing the shuttle job.|
+|» tags|body|[string]|false|A list of free-form tags associated with the shuttle job.|
+|» account_mapping|body|object|false|The account mapping configuration that controls how source identities<br>and permissions are translated into Box. When this object is omitted,<br>the job is created with `is_enabled` set to `false`.|
+|» » is_enabled|body|boolean|false|Whether account mapping is enabled for the shuttle job. Defaults to<br>`false` when `account_mapping` is omitted on create.|
+|» » permission_conflict_strategy|body|[ShuttleJobPermissionConflictStrategy](#schemashuttlejobpermissionconflictstrategy) \| object \| null|false|The strategy used to resolve permission conflicts. `null` when<br>unset.|
+|» » » *oneOf*|body|[ShuttleJobPermissionConflictStrategy](#schemashuttlejobpermissionconflictstrategy)|false|The strategy used to resolve permission conflicts.|
+|» » » *oneOf*|body|object \| null|false|The definition for a null schema type in OpenAPI `3.0`.|
+|» » are_external_shares_mapped|body|boolean|false|Whether external shares are mapped during the migration.|
+|» » are_permissions_mapped|body|boolean|false|Whether permissions are mapped during the migration.|
+|» settings|body|object|false|The tunable settings that control how the shuttle job runs.|
+|» » bandwidth_limit_bytes_per_sec|body|integer(int64) \| null|false|The maximum transfer bandwidth in bytes per second. `null` when<br>unlimited.|
+|» » are_deletions_mirrored|body|boolean|false|Whether deletions in the source system are mirrored in Box.|
+|» » are_file_versions_synced|body|boolean|false|Whether prior file versions are synced during the migration.|
+|» » max_file_versions|body|integer(int32) \| null|false|The maximum number of file versions to sync. `null` when unlimited.|
+|» » is_overwrite_enabled|body|boolean|false|Whether existing files in Box are overwritten.|
+|» » are_completed_mappings_skipped_on_rerun|body|boolean|false|Whether mappings that already completed successfully are skipped when<br>the job is rerun.|
+|» » is_content_scanning_enabled|body|boolean|false|Whether migrated content is scanned during the migration. Applies<br>only when the source system supports content scanning; ignored<br>otherwise.|
+|» » include_shared_source_folders|body|boolean|false|Whether shared folders on the source are included in the migration.<br>Applies only when the source system supports shared folders; ignored<br>otherwise.|
+|» » include_shared_destination_folders|body|boolean|false|Whether shared folders on the destination are included in the<br>migration. Applies only when the destination system supports shared<br>folders; ignored otherwise.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|» job_type|transfer|
+|» job_type|analysis|
+|» » » *oneOf*|preserve_structure_restrict_sharing|
+|» » » *oneOf*|preserve_structure_expand_sharing|
+|» » » *oneOf*|preserve_sharing_modify_structure|
+|» » » *oneOf*|warn_permissions_conflicts|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "6a3ba68e810d9156194530a1",
+  "type": "shuttle_job",
+  "name": "Q4 SharePoint to Box",
+  "comment": "Migrating the finance department archives.",
+  "job_type": "transfer",
+  "state": "created",
+  "mapping_state": "awaiting_path_mapping",
+  "source_system": {
+    "type": "shuttle_system",
+    "id": "6a3ba68e810d9156194530a1",
+    "name": "SharePoint"
+  },
+  "account_mapping": {
+    "is_enabled": true,
+    "permission_conflict_strategy": "preserve_structure_restrict_sharing",
+    "are_external_shares_mapped": false,
+    "are_permissions_mapped": true
+  },
+  "tags": [
+    "q4",
+    "hr"
+  ],
+  "settings": {
+    "bandwidth_limit_bytes_per_sec": 10485760,
+    "are_deletions_mirrored": false,
+    "are_file_versions_synced": true,
+    "max_file_versions": 10,
+    "is_overwrite_enabled": false,
+    "are_completed_mappings_skipped_on_rerun": true,
+    "is_content_scanning_enabled": false,
+    "include_shared_source_folders": true,
+    "include_shared_destination_folders": false
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shuttle-job-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns the newly created shuttle job.|[ShuttleJob](#schemashuttlejob)|
+|400|Bad Request|Returned when the request body is malformed or required fields are<br>missing.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the referenced source system cannot be found or the user<br>does not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get shuttle job by ID
+
+<a id="opIdget_shuttle_jobs_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_jobs/6a3ba68e810d9156194530a1 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_jobs/{shuttle_job_id}`
+
+Returns details for a single shuttle job identified by its ID, including
+its current state, mapping-preparation state, and configured source system.
+
+<h3 id="get-shuttle-job-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_id|path|string|true|The unique identifier for the shuttle job.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a3ba68e810d9156194530a1",
+  "type": "shuttle_job",
+  "name": "Q4 SharePoint to Box",
+  "comment": "Migrating the finance department archives.",
+  "job_type": "transfer",
+  "state": "created",
+  "mapping_state": "awaiting_path_mapping",
+  "source_system": {
+    "type": "shuttle_system",
+    "id": "6a3ba68e810d9156194530a1",
+    "name": "SharePoint"
+  },
+  "account_mapping": {
+    "is_enabled": true,
+    "permission_conflict_strategy": "preserve_structure_restrict_sharing",
+    "are_external_shares_mapped": false,
+    "are_permissions_mapped": true
+  },
+  "tags": [
+    "q4",
+    "hr"
+  ],
+  "settings": {
+    "bandwidth_limit_bytes_per_sec": 10485760,
+    "are_deletions_mirrored": false,
+    "are_file_versions_synced": true,
+    "max_file_versions": 10,
+    "is_overwrite_enabled": false,
+    "are_completed_mappings_skipped_on_rerun": true,
+    "is_content_scanning_enabled": false,
+    "include_shared_source_folders": true,
+    "include_shared_destination_folders": false
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shuttle-job-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shuttle job.|[ShuttleJob](#schemashuttlejob)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Update shuttle job
+
+<a id="opIdput_shuttle_jobs_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_jobs/6a3ba68e810d9156194530a1 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "name": "Q4 SharePoint to Box (Primary)"
+  }'
+```
+
+`PUT /shuttle_jobs/{shuttle_job_id}`
+
+Updates the mutable properties of an existing shuttle job identified by its
+ID. Only the fields supplied in the request body are changed.
+
+> Body parameter
+
+```json
+{
+  "name": "Q4 SharePoint to Box (Primary)"
+}
+```
+
+<h3 id="update-shuttle-job-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_id|path|string|true|The unique identifier for the shuttle job.|
+|body|body|[ShuttleJobUpdateRequest](#schemashuttlejobupdaterequest)|true|none|
+|» name|body|string|false|The human-readable name of the shuttle job.|
+|» comment|body|string \| null|false|An optional free-form comment describing the shuttle job.|
+|» tags|body|[string]|false|A list of free-form tags associated with the shuttle job.|
+|» account_mapping|body|object|false|The account mapping configuration that controls how source identities<br>and permissions are translated into Box.|
+|» » is_enabled|body|boolean|false|Whether account mapping is enabled for the shuttle job.|
+|» » permission_conflict_strategy|body|[ShuttleJobPermissionConflictStrategy](#schemashuttlejobpermissionconflictstrategy) \| object \| null|false|The strategy used to resolve permission conflicts. `null` when<br>unset.|
+|» » » *oneOf*|body|[ShuttleJobPermissionConflictStrategy](#schemashuttlejobpermissionconflictstrategy)|false|The strategy used to resolve permission conflicts.|
+|» » » *oneOf*|body|object \| null|false|The definition for a null schema type in OpenAPI `3.0`.|
+|» » are_external_shares_mapped|body|boolean|false|Whether external shares are mapped during the migration.|
+|» » are_permissions_mapped|body|boolean|false|Whether permissions are mapped during the migration.|
+|» settings|body|object|false|The tunable settings that control how the shuttle job runs.|
+|» » bandwidth_limit_bytes_per_sec|body|integer(int64) \| null|false|The maximum transfer bandwidth in bytes per second. `null` when<br>unlimited.|
+|» » are_deletions_mirrored|body|boolean|false|Whether deletions in the source system are mirrored in Box.|
+|» » are_file_versions_synced|body|boolean|false|Whether prior file versions are synced during the migration.|
+|» » max_file_versions|body|integer(int32) \| null|false|The maximum number of file versions to sync. `null` when unlimited.|
+|» » is_overwrite_enabled|body|boolean|false|Whether existing files in Box are overwritten.|
+|» » are_completed_mappings_skipped_on_rerun|body|boolean|false|Whether mappings that already completed successfully are skipped when<br>the job is rerun.|
+|» » is_content_scanning_enabled|body|boolean|false|Whether migrated content is scanned during the migration. Applies<br>only when the source system supports content scanning; ignored<br>otherwise.|
+|» » include_shared_source_folders|body|boolean|false|Whether shared folders on the source are included in the migration.<br>Applies only when the source system supports shared folders; ignored<br>otherwise.|
+|» » include_shared_destination_folders|body|boolean|false|Whether shared folders on the destination are included in the<br>migration. Applies only when the destination system supports shared<br>folders; ignored otherwise.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|» » » *oneOf*|preserve_structure_restrict_sharing|
+|» » » *oneOf*|preserve_structure_expand_sharing|
+|» » » *oneOf*|preserve_sharing_modify_structure|
+|» » » *oneOf*|warn_permissions_conflicts|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a3ba68e810d9156194530a1",
+  "type": "shuttle_job",
+  "name": "Q4 SharePoint to Box",
+  "comment": "Migrating the finance department archives.",
+  "job_type": "transfer",
+  "state": "created",
+  "mapping_state": "awaiting_path_mapping",
+  "source_system": {
+    "type": "shuttle_system",
+    "id": "6a3ba68e810d9156194530a1",
+    "name": "SharePoint"
+  },
+  "account_mapping": {
+    "is_enabled": true,
+    "permission_conflict_strategy": "preserve_structure_restrict_sharing",
+    "are_external_shares_mapped": false,
+    "are_permissions_mapped": true
+  },
+  "tags": [
+    "q4",
+    "hr"
+  ],
+  "settings": {
+    "bandwidth_limit_bytes_per_sec": 10485760,
+    "are_deletions_mirrored": false,
+    "are_file_versions_synced": true,
+    "max_file_versions": 10,
+    "is_overwrite_enabled": false,
+    "are_completed_mappings_skipped_on_rerun": true,
+    "is_content_scanning_enabled": false,
+    "include_shared_source_folders": true,
+    "include_shared_destination_folders": false
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-shuttle-job-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the updated shuttle job.|[ShuttleJob](#schemashuttlejob)|
+|400|Bad Request|Returned when the request body is malformed, empty, or fails<br>validation.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete shuttle job
+
+<a id="opIddelete_shuttle_jobs_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_jobs/6a3ba68e810d9156194530a1 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`DELETE /shuttle_jobs/{shuttle_job_id}`
+
+Permanently deletes the shuttle job identified by its ID. This does not
+affect content that has already been migrated.
+
+<h3 id="delete-shuttle-job-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_id|path|string|true|The unique identifier for the shuttle job.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-shuttle-job-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Returns an empty response when the shuttle job was successfully deleted.|None|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Start shuttle job
+
+<a id="opIdpost_shuttle_jobs_id_start_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_jobs/6a3ba68e810d9156194530a1/start \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "mode": "simulation"
+  }'
+```
+
+`POST /shuttle_jobs/{shuttle_job_id}/start`
+
+Starts the job in the given mode. When no body is provided the job runs in
+simulation mode.
+
+> Body parameter
+
+```json
+{
+  "mode": "simulation"
+}
+```
+
+<h3 id="start-shuttle-job-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_id|path|string|true|The unique identifier for the shuttle job.|
+|body|body|[ShuttleJobStartRequest](#schemashuttlejobstartrequest)|false|none|
+|» mode|body|string|false|The run mode. Defaults to simulation when omitted.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|» mode|transfer|
+|» mode|simulation|
+|» mode|scan|
+|» mode|analysis|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="start-shuttle-job-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The shuttle job was accepted and is being started.|None|
+|400|Bad Request|Returned when the request body is malformed or fails validation.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returned when the job is not ready or is in a state that does not allow<br>starting.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Stop shuttle job
+
+<a id="opIdpost_shuttle_jobs_id_stop_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_jobs/6a3ba68e810d9156194530a1/stop \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`POST /shuttle_jobs/{shuttle_job_id}/stop`
+
+Stops a running shuttle job identified by its ID. Any work already in
+progress is allowed to finish before the job transitions to a stopped
+state.
+
+<h3 id="stop-shuttle-job-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_id|path|string|true|The unique identifier for the shuttle job.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="stop-shuttle-job-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The shuttle job was accepted and is being stopped.|None|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returned when the job is not in a running state and cannot be stopped.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Prepare migration
+
+<a id="opIdpost_shuttle_jobs_id_prepare_migration_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_jobs/6a3ba68e810d9156194530a1/prepare_migration \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`POST /shuttle_jobs/{shuttle_job_id}/prepare_migration`
+
+Validates the configured account and path mappings before a transfer. Only
+relevant when account mapping is enabled.
+
+<h3 id="prepare-migration-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_id|path|string|true|The unique identifier for the shuttle job.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="prepare-migration-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The migration preparation was accepted and is being processed.|None|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returned when the job is not in a state that allows migration<br>preparation, or account mapping is not enabled.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle runs
+
+<a id="opIdget_shuttle_runs_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shuttle_runs?job_id=6a3ba68e810d9156194530a1' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_runs`
+
+Returns a paginated list of runs for the shuttle job identified by
+`job_id`.
+
+<h3 id="list-shuttle-runs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|job_id|query|string|true|The unique identifier of the shuttle job whose runs to list.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba68e810d9156194530a1:42",
+      "type": "shuttle_run",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "run_mode": "transfer",
+      "state": "completed",
+      "started_at": "2026-03-15T02:00:00Z",
+      "ended_at": "2026-03-15T06:30:00Z",
+      "duration_seconds": 16200,
+      "stats": {
+        "bytes_sent": 1073741824,
+        "files_sent": 4200,
+        "folders_created": 350,
+        "is_estimated": false
+      },
+      "created_by": {
+        "id": "11446498",
+        "type": "user"
+      },
+      "available_report_sections": [
+        "event_log",
+        "files_and_folders"
+      ]
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-runs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle runs.|[ShuttleRuns](#schemashuttleruns)|
+|400|Bad Request|Returned when `job_id` is missing or the user has passed in a malformed<br>`marker` or `limit` value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get shuttle run by ID
+
+<a id="opIdget_shuttle_runs_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_runs/6a3ba68e810d9156194530a1%3A42 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_runs/{shuttle_run_id}`
+
+Returns details for a single shuttle run identified by its ID, including
+its mode, state, timing, and transfer statistics.
+
+<h3 id="get-shuttle-run-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_run_id|path|string|true|The unique identifier for the shuttle run, in the form<br>`{job_id}:{run_number}`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a3ba68e810d9156194530a1:42",
+  "type": "shuttle_run",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "run_mode": "transfer",
+  "state": "completed",
+  "started_at": "2026-03-15T02:00:00Z",
+  "ended_at": "2026-03-15T06:30:00Z",
+  "duration_seconds": 16200,
+  "stats": {
+    "bytes_sent": 1073741824,
+    "files_sent": 4200,
+    "folders_created": 350,
+    "is_estimated": false
+  },
+  "created_by": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "available_report_sections": [
+    "event_log",
+    "files_and_folders"
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shuttle-run-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shuttle run.|[ShuttleRun](#schemashuttlerun)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle run is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle job schedules
+
+<a id="opIdget_shuttle_job_schedules_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shuttle_job_schedules?job_id=6a3ba68e810d9156194530a1' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_job_schedules`
+
+Returns a paginated list of schedules for the shuttle job identified by
+`job_id`.
+
+<h3 id="list-shuttle-job-schedules-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|job_id|query|string|true|The unique identifier of the shuttle job whose schedules to list.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "7c1ba68e810d9156194530b2",
+      "type": "shuttle_job_schedule",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "state": "enabled",
+      "run_mode": "transfer",
+      "description": "Nightly finance share replay.",
+      "last_attempt_at": "2026-03-16T09:00:12Z",
+      "trigger": {
+        "type": "by_time",
+        "start_at": "2026-03-16T09:00:00",
+        "time_zone": "America/Los_Angeles",
+        "repeat": "daily"
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-job-schedules-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle job schedules.|[ShuttleJobSchedules](#schemashuttlejobschedules)|
+|400|Bad Request|Returned when `job_id` is missing or the user has passed in a malformed<br>`marker` or `limit` value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shuttle job schedule
+
+<a id="opIdpost_shuttle_job_schedules_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_job_schedules \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "job_id": "6a3ba68e810d9156194530a1",
+    "run_mode": "transfer",
+    "state": "enabled",
+    "description": "Nightly finance share replay.",
+    "trigger": {
+      "type": "by_time",
+      "start_at": "2026-03-16T09:00:00",
+      "time_zone": "America/Los_Angeles",
+      "repeat": "daily"
+    }
+  }'
+```
+
+`POST /shuttle_job_schedules`
+
+Creates a schedule that starts runs of the shuttle job identified by
+`job_id`. The schedule starts a run either at a wall-clock time or after
+another job's run meets a condition. Schedules cannot start a run in
+`scan` mode.
+
+> Body parameter
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "run_mode": "transfer",
+  "state": "enabled",
+  "description": "Nightly finance share replay.",
+  "trigger": {
+    "type": "by_time",
+    "start_at": "2026-03-16T09:00:00",
+    "time_zone": "America/Los_Angeles",
+    "repeat": "daily"
+  }
+}
+```
+
+<h3 id="create-shuttle-job-schedule-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShuttleJobScheduleCreateRequest](#schemashuttlejobschedulecreaterequest)|true|none|
+|» job_id|body|string|true|The unique identifier of the shuttle job this schedule belongs to.|
+|» run_mode|body|string|true|The kind of run the schedule starts. `scan` is not a valid schedule<br>run mode.|
+|» state|body|string|false|Whether the schedule is active. When omitted, defaults to `enabled`.|
+|» description|body|string \| null|false|An optional human-readable description of the schedule.|
+|» trigger|body|[ShuttleJobScheduleTrigger](#schemashuttlejobscheduletrigger)|true|When a shuttle job schedule should start a run. Exactly one trigger<br>variant is present, discriminated by `type`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|» run_mode|transfer|
+|» run_mode|simulation|
+|» run_mode|analysis|
+|» state|enabled|
+|» state|paused|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "7c1ba68e810d9156194530b2",
+  "type": "shuttle_job_schedule",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "state": "enabled",
+  "run_mode": "transfer",
+  "description": "Nightly finance share replay.",
+  "last_attempt_at": "2026-03-16T09:00:12Z",
+  "trigger": {
+    "type": "by_time",
+    "start_at": "2026-03-16T09:00:00",
+    "time_zone": "America/Los_Angeles",
+    "repeat": "daily"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shuttle-job-schedule-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns the newly created shuttle job schedule.|[ShuttleJobSchedule](#schemashuttlejobschedule)|
+|400|Bad Request|Returned when the request body is malformed or required fields are<br>missing.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when a referenced shuttle job cannot be found or the user<br>does not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get shuttle job schedule
+
+<a id="opIdget_shuttle_job_schedules_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_job_schedules/7c1ba68e810d9156194530b2 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_job_schedules/{shuttle_job_schedule_id}`
+
+Retrieves the shuttle job schedule identified by its ID.
+
+<h3 id="get-shuttle-job-schedule-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_schedule_id|path|string|true|The unique identifier for the shuttle job schedule.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "7c1ba68e810d9156194530b2",
+  "type": "shuttle_job_schedule",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "state": "enabled",
+  "run_mode": "transfer",
+  "description": "Nightly finance share replay.",
+  "last_attempt_at": "2026-03-16T09:00:12Z",
+  "trigger": {
+    "type": "by_time",
+    "start_at": "2026-03-16T09:00:00",
+    "time_zone": "America/Los_Angeles",
+    "repeat": "daily"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shuttle-job-schedule-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shuttle job schedule.|[ShuttleJobSchedule](#schemashuttlejobschedule)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job schedule is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Update shuttle job schedule
+
+<a id="opIdput_shuttle_job_schedules_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_job_schedules/7c1ba68e810d9156194530b2 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "state": "paused"
+  }'
+```
+
+`PUT /shuttle_job_schedules/{shuttle_job_schedule_id}`
+
+Updates the mutable properties of an existing shuttle job schedule
+identified by its ID. Only the fields supplied in the request body are
+changed. The owning job cannot be changed.
+
+> Body parameter
+
+```json
+{
+  "state": "paused"
+}
+```
+
+<h3 id="update-shuttle-job-schedule-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_schedule_id|path|string|true|The unique identifier for the shuttle job schedule.|
+|body|body|[ShuttleJobScheduleUpdateRequest](#schemashuttlejobscheduleupdaterequest)|true|none|
+|» state|body|string|false|Whether the schedule is active.|
+|» run_mode|body|string|false|The kind of run the schedule starts. `scan` is not a valid schedule<br>run mode.|
+|» description|body|string \| null|false|An optional human-readable description of the schedule.|
+|» trigger|body|[ShuttleJobScheduleTrigger](#schemashuttlejobscheduletrigger)|false|When a shuttle job schedule should start a run. Exactly one trigger<br>variant is present, discriminated by `type`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|» state|enabled|
+|» state|paused|
+|» run_mode|transfer|
+|» run_mode|simulation|
+|» run_mode|analysis|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "7c1ba68e810d9156194530b2",
+  "type": "shuttle_job_schedule",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "state": "enabled",
+  "run_mode": "transfer",
+  "description": "Nightly finance share replay.",
+  "last_attempt_at": "2026-03-16T09:00:12Z",
+  "trigger": {
+    "type": "by_time",
+    "start_at": "2026-03-16T09:00:00",
+    "time_zone": "America/Los_Angeles",
+    "repeat": "daily"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-shuttle-job-schedule-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the updated shuttle job schedule.|[ShuttleJobSchedule](#schemashuttlejobschedule)|
+|400|Bad Request|Returned when the request body is malformed, empty, or fails<br>validation.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job schedule is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete shuttle job schedule
+
+<a id="opIddelete_shuttle_job_schedules_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_job_schedules/7c1ba68e810d9156194530b2 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`DELETE /shuttle_job_schedules/{shuttle_job_schedule_id}`
+
+Permanently deletes the shuttle job schedule identified by its ID. This
+does not affect runs that have already started.
+
+<h3 id="delete-shuttle-job-schedule-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_job_schedule_id|path|string|true|The unique identifier for the shuttle job schedule.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-shuttle-job-schedule-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Returns an empty response when the shuttle job schedule was<br>successfully deleted.|None|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job schedule is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle path mappings
+
+<a id="opIdget_shuttle_path_mappings_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shuttle_path_mappings?job_id=6a3ba68e810d9156194530a1' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_path_mappings`
+
+Returns a paginated list of path mappings for the shuttle job identified
+by `job_id`.
+
+<h3 id="list-shuttle-path-mappings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|job_id|query|string|true|The unique identifier of the shuttle job whose path mappings to list.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba7a24ea17bc9461eeacd",
+      "type": "shuttle_path_mapping",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "is_path_skipped": false,
+      "source": {
+        "type": "account",
+        "path": "/HR Migration",
+        "path_id": "1234567890",
+        "account": {
+          "id": "123456",
+          "email": "admin@company.box.com",
+          "name": "Box Admin"
+        },
+        "is_directory": true
+      },
+      "target": {
+        "type": "account",
+        "path": "/HR Migration",
+        "path_id": "1234567890",
+        "account": {
+          "id": "123456",
+          "email": "admin@company.box.com",
+          "name": "Box Admin"
+        },
+        "is_directory": true
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-path-mappings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle path mappings.|[ShuttlePathMappings](#schemashuttlepathmappings)|
+|400|Bad Request|Returned when `job_id` is missing or the user has passed in a malformed<br>`marker` or `limit` value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shuttle path mapping
+
+<a id="opIdpost_shuttle_path_mappings_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_path_mappings \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "job_id": "6a3ba68e810d9156194530a1",
+    "source": {
+      "type": "shared_space",
+      "space": "HR Team Site",
+      "path": "/Shared Documents",
+      "path_id": "sp-folder-001",
+      "is_directory": true
+    },
+    "target": {
+      "type": "account",
+      "path": "/HR Migration",
+      "path_id": "1234567890",
+      "account": {
+        "email": "admin@company.box.com"
+      }
+    }
+  }'
+```
+
+`POST /shuttle_path_mappings`
+
+Creates a path mapping that connects a source location on the migrated
+system to a destination in Box for the given shuttle job.
+
+> Body parameter
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "source": {
+    "type": "shared_space",
+    "space": "HR Team Site",
+    "path": "/Shared Documents",
+    "path_id": "sp-folder-001",
+    "is_directory": true
+  },
+  "target": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "email": "admin@company.box.com"
+    }
+  }
+}
+```
+
+<h3 id="create-shuttle-path-mapping-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShuttlePathMappingCreateRequest](#schemashuttlepathmappingcreaterequest)|true|none|
+|» job_id|body|string|true|The unique identifier of the shuttle job this mapping belongs to.|
+|» is_path_skipped|body|boolean|false|Whether this source path should be skipped during the migration.<br>Defaults to `false`.|
+|» source|body|object|true|none|
+|» » *oneOf*|body|[ShuttlePathMappingAccountLocationInput](#schemashuttlepathmappingaccountlocationinput)|false|An account-scoped source location supplied when creating or updating a path<br>mapping.|
+|» » *oneOf*|body|[ShuttlePathMappingSharedSpaceLocationInput](#schemashuttlepathmappingsharedspacelocationinput)|false|A shared-container source location supplied when creating or updating a<br>path mapping.|
+|» target|body|[ShuttlePathMappingTargetLocationInput](#schemashuttlepathmappingtargetlocationinput) \| object \| null|false|The destination location to migrate to. Omit or set to `null` when the<br>source path is skipped.|
+|» » *oneOf*|body|[ShuttlePathMappingTargetLocationInput](#schemashuttlepathmappingtargetlocationinput)|false|A destination location supplied when creating or updating a path mapping.<br>The object shape is determined by `type`. Destination input does not<br>include `is_directory`; that flag is taken from the source.|
+|» » *oneOf*|body|object \| null|false|The definition for a null schema type in OpenAPI `3.0`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "6a3ba7a24ea17bc9461eeacd",
+  "type": "shuttle_path_mapping",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "is_path_skipped": false,
+  "source": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com",
+      "name": "Box Admin"
+    },
+    "is_directory": true
+  },
+  "target": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com",
+      "name": "Box Admin"
+    },
+    "is_directory": true
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shuttle-path-mapping-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns the newly created shuttle path mapping.|[ShuttlePathMapping](#schemashuttlepathmapping)|
+|400|Bad Request|Returned when the request body is malformed or required fields are<br>missing.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the referenced shuttle job cannot be found or the user<br>does not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get shuttle path mapping by ID
+
+<a id="opIdget_shuttle_path_mappings_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_path_mappings/6a3ba7a24ea17bc9461eeacd \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_path_mappings/{shuttle_path_mapping_id}`
+
+Returns details for a single shuttle path mapping identified by its ID,
+including the source location and destination, if any.
+
+<h3 id="get-shuttle-path-mapping-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_path_mapping_id|path|string|true|The unique identifier for the shuttle path mapping.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a3ba7a24ea17bc9461eeacd",
+  "type": "shuttle_path_mapping",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "is_path_skipped": false,
+  "source": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com",
+      "name": "Box Admin"
+    },
+    "is_directory": true
+  },
+  "target": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com",
+      "name": "Box Admin"
+    },
+    "is_directory": true
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shuttle-path-mapping-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shuttle path mapping.|[ShuttlePathMapping](#schemashuttlepathmapping)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle path mapping is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Update shuttle path mapping
+
+<a id="opIdput_shuttle_path_mappings_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_path_mappings/6a3ba7a24ea17bc9461eeacd \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "is_path_skipped": true,
+    "target": null
+  }'
+```
+
+`PUT /shuttle_path_mappings/{shuttle_path_mapping_id}`
+
+Updates the mutable properties of an existing shuttle path mapping
+identified by its ID. Only the fields supplied in the request body are
+changed.
+
+> Body parameter
+
+```json
+{
+  "is_path_skipped": true,
+  "target": null
+}
+```
+
+<h3 id="update-shuttle-path-mapping-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_path_mapping_id|path|string|true|The unique identifier for the shuttle path mapping.|
+|body|body|[ShuttlePathMappingUpdateRequest](#schemashuttlepathmappingupdaterequest)|true|none|
+|» is_path_skipped|body|boolean|false|Whether this source path should be skipped during the migration.|
+|» source|body|object|false|none|
+|» » *oneOf*|body|[ShuttlePathMappingAccountLocationInput](#schemashuttlepathmappingaccountlocationinput)|false|An account-scoped source location supplied when creating or updating a path<br>mapping.|
+|» » *oneOf*|body|[ShuttlePathMappingSharedSpaceLocationInput](#schemashuttlepathmappingsharedspacelocationinput)|false|A shared-container source location supplied when creating or updating a<br>path mapping.|
+|» target|body|[ShuttlePathMappingTargetLocationInput](#schemashuttlepathmappingtargetlocationinput) \| object \| null|false|The destination location to migrate to. Set to `null` to clear the<br>destination, for example when skipping the source path.|
+|» » *oneOf*|body|[ShuttlePathMappingTargetLocationInput](#schemashuttlepathmappingtargetlocationinput)|false|A destination location supplied when creating or updating a path mapping.<br>The object shape is determined by `type`. Destination input does not<br>include `is_directory`; that flag is taken from the source.|
+|» » *oneOf*|body|object \| null|false|The definition for a null schema type in OpenAPI `3.0`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a3ba7a24ea17bc9461eeacd",
+  "type": "shuttle_path_mapping",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "is_path_skipped": false,
+  "source": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com",
+      "name": "Box Admin"
+    },
+    "is_directory": true
+  },
+  "target": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com",
+      "name": "Box Admin"
+    },
+    "is_directory": true
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-shuttle-path-mapping-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the updated shuttle path mapping.|[ShuttlePathMapping](#schemashuttlepathmapping)|
+|400|Bad Request|Returned when the request body is malformed, empty, or fails<br>validation.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle path mapping is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete shuttle path mapping
+
+<a id="opIddelete_shuttle_path_mappings_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_path_mappings/6a3ba7a24ea17bc9461eeacd \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`DELETE /shuttle_path_mappings/{shuttle_path_mapping_id}`
+
+Permanently deletes the shuttle path mapping identified by its ID. This
+does not affect content that has already been migrated.
+
+<h3 id="delete-shuttle-path-mapping-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_path_mapping_id|path|string|true|The unique identifier for the shuttle path mapping.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-shuttle-path-mapping-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Returns an empty response when the shuttle path mapping was<br>successfully deleted.|None|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle path mapping is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shuttle path mapping import
+
+<a id="opIdpost_shuttle_path_mapping_imports_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_path_mapping_imports \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "job_id": "6a3ba68e810d9156194530a1",
+    "file_id": "12345678901"
+  }'
+```
+
+`POST /shuttle_path_mapping_imports`
+
+Accepts a spreadsheet of path mappings, already stored in Box, and replaces
+the job's path mappings.
+A file that is not a mapping workbook, or that exceeds the size or row
+limits (10 MiB Box download limit; 100,000 mapping rows), returns `400`
+synchronously and leaves the job unchanged.
+An accepted import always replaces every path mapping on the job. When all
+rows are valid the workbook is deployed in full. When any row is invalid
+the job ends with no path mappings and `mapping_state` becomes
+`paths_import_rejected` until the next import or the next manual
+path-mapping change. Row problems are listed by
+`GET /shuttle_mapping_errors?job_id=…` with category `path_import`, messages
+of the form `Row N: …`, at most 500 entries plus one overflow entry.
+Validation and deployment are asynchronous after acceptance. Poll
+`GET /shuttle_jobs/{shuttle_job_id}` while `mapping_state` is
+`importing_paths`. Only one import may be in flight per job.
+
+> Body parameter
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "file_id": "12345678901"
+}
+```
+
+<h3 id="create-shuttle-path-mapping-import-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShuttlePathMappingImportCreateRequest](#schemashuttlepathmappingimportcreaterequest)|true|none|
+|» job_id|body|string|true|The unique identifier of the shuttle job whose path mappings are<br>replaced.|
+|» file_id|body|string|true|The unique identifier of the Box file holding the mapping workbook. The<br>file is read as the calling user, so it must live somewhere that user can<br>download from.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shuttle-path-mapping-import-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The import was accepted. Validation and deployment continue<br>asynchronously. Poll `GET /shuttle_jobs/{shuttle_job_id}` until<br>`mapping_state` is no longer `importing_paths`. A rejected import ends<br>with `mapping_state` `paths_import_rejected` and an empty path-mapping<br>list; a successful import moves on to a later mapping-preparation state<br>such as `paths_ready` or `ready`.|None|
+|400|Bad Request|Returned when the request body is malformed or fails request validation,<br>or when the referenced file cannot be accepted as a mapping workbook<br>(for example it is not a spreadsheet, has no mapping sheets, or exceeds<br>the size or row limits). Nothing is stored and the job's path mappings<br>are unchanged. Row-level mapping errors are not returned here; after a<br>`202` they finish asynchronously as `paths_import_rejected` and appear<br>on `GET /shuttle_mapping_errors`.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found, or the referenced file does<br>not exist or cannot be read by the authenticated user.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returned when an import is already in progress for the shuttle job.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shuttle subject mapping import
+
+<a id="opIdpost_shuttle_subject_mapping_imports_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_subject_mapping_imports \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "job_id": "6a3ba68e810d9156194530a1",
+    "file_id": "12345678901"
+  }'
+```
+
+`POST /shuttle_subject_mapping_imports`
+
+Accepts a spreadsheet of subject (user and group) mappings, already stored
+in Box, and replaces the job's subject mappings.
+A file that is not a subject-mapping workbook, or that exceeds the size or
+row limits (10 MiB Box download limit; 50,000 mapping rows), returns `400`
+synchronously and leaves the job unchanged.
+An accepted import always replaces every subject mapping on the job. When
+all rows are valid the workbook is deployed in full. When any row is
+invalid the job ends with no subject mappings and `mapping_state` becomes
+`subjects_import_rejected` until the next import or the next manual
+subject-mapping change. Row problems are listed by
+`GET /shuttle_mapping_errors?job_id=…` with category `subject_import`,
+messages of the form `Row N: …`, at most 500 entries plus one overflow
+entry.
+Validation and deployment are asynchronous after acceptance. Poll
+`GET /shuttle_jobs/{shuttle_job_id}` while `mapping_state` is
+`importing_subjects`. Only one import may be in flight per job. The job
+must map subjects (`account_mapping` enabled) and its source scan must be
+finished; otherwise the request returns `409`.
+
+Expected workbook format (API clients cannot download the UI template):
+sheets `Users` and/or `Groups` (a sheet named `Subjects` is also accepted).
+Columns are `Source User <Key>`, `Target User <Key>`, `Skip` on `Users`,
+and `Source Group <Key>`, `Target Group <Key>`, `Skip` on `Groups`, where
+`<Key>` is the primary identifier for that role and system:
+- Users: `Email` for most systems; `ID` for `SharePoint` (2007/2010/2013);
+  `Name` for Windows (`windows_union`, stored as the user id).
+- Groups: `Name` for most systems; `Email` for Google Drive admin groups.
+Source rows for a template can be taken from
+`GET /shuttle_discovered_subjects`.
+
+> Body parameter
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "file_id": "12345678901"
+}
+```
+
+<h3 id="create-shuttle-subject-mapping-import-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShuttleSubjectMappingImportCreateRequest](#schemashuttlesubjectmappingimportcreaterequest)|true|none|
+|» job_id|body|string|true|The unique identifier of the shuttle job whose subject mappings are<br>replaced.|
+|» file_id|body|string|true|The unique identifier of the Box file holding the mapping workbook. The<br>file is read as the calling user, so it must live somewhere that user can<br>download from.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shuttle-subject-mapping-import-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The import was accepted. Validation and deployment continue<br>asynchronously. Poll `GET /shuttle_jobs/{shuttle_job_id}` until<br>`mapping_state` is no longer `importing_subjects`. A rejected import<br>ends with `mapping_state` `subjects_import_rejected` and an empty<br>subject-mapping list; a successful import moves on to a later<br>mapping-preparation state such as `mapping_complete` or `ready`.|None|
+|400|Bad Request|Returned when the request body is malformed or fails request validation,<br>or when the referenced file cannot be accepted as a subject-mapping<br>workbook (for example it is not a spreadsheet, has none of the `Users`,<br>`Groups`, or `Subjects` sheets, or exceeds the size or row limits).<br>Nothing is stored and the job's subject mappings are unchanged.<br>Row-level mapping errors are not returned here; after a `202` they<br>finish asynchronously as `subjects_import_rejected` and appear on<br>`GET /shuttle_mapping_errors`.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found, or the referenced file does<br>not exist or cannot be read by the authenticated user.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returned when an import is already in progress for the shuttle job, the<br>job does not map subjects, or the source scan has not finished (or is<br>out of date relative to the current path mappings).|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle subject mappings
+
+<a id="opIdget_shuttle_subject_mappings_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shuttle_subject_mappings?job_id=6a3ba68e810d9156194530a1' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_subject_mappings`
+
+Returns a paginated list of subject mappings for the shuttle job identified
+by `job_id`.
+
+<h3 id="list-shuttle-subject-mappings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|job_id|query|string|true|The unique identifier of the shuttle job whose subject mappings to list.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba7b12ea17bc9461eeace",
+      "type": "shuttle_subject_mapping",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+      "revision": 3,
+      "is_subject_skipped": false,
+      "source": {
+        "type": "user",
+        "id": "sp-user-001",
+        "email": "user@example.com",
+        "name": "Jane Doe",
+        "roles": [
+          "owner"
+        ]
+      },
+      "target": {
+        "type": "user",
+        "id": "12345678",
+        "email": "jane.doe@company.box.com",
+        "name": "Jane Doe"
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-subject-mappings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle subject mappings.|[ShuttleSubjectMappings](#schemashuttlesubjectmappings)|
+|400|Bad Request|Returned when `job_id` is missing or the user has passed in a malformed<br>`marker` or `limit` value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shuttle subject mapping
+
+<a id="opIdpost_shuttle_subject_mappings_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_subject_mappings \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "job_id": "6a3ba68e810d9156194530a1",
+    "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+    "target": {
+      "type": "user",
+      "id": "12345678"
+    }
+  }'
+```
+
+`POST /shuttle_subject_mappings`
+
+Creates a subject mapping that connects a discovered source subject to a
+Box user or group for the given shuttle job.
+
+> Body parameter
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+  "target": {
+    "type": "user",
+    "id": "12345678"
+  }
+}
+```
+
+<h3 id="create-shuttle-subject-mapping-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShuttleSubjectMappingCreateRequest](#schemashuttlesubjectmappingcreaterequest)|true|none|
+|» job_id|body|string|true|The unique identifier of the shuttle job this mapping belongs to.|
+|» discovered_subject_id|body|string|true|The unique identifier of the discovered subject to map.|
+|» revision|body|integer(int32)|false|The discovery-requirements revision to resolve against. Omit to use the<br>latest revision.|
+|» is_subject_skipped|body|boolean|false|Whether this subject should be skipped during the migration. Defaults<br>to `false`.|
+|» target|body|[ShuttleTargetSubjectInput](#schemashuttletargetsubjectinput) \| object \| null|false|The Box target to map to. Omit or set to `null` when the subject is<br>skipped.|
+|» » *oneOf*|body|[ShuttleTargetSubjectInput](#schemashuttletargetsubjectinput)|false|A Box user or group to map a source subject to.|
+|» » *oneOf*|body|object \| null|false|The definition for a null schema type in OpenAPI `3.0`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "6a3ba7b12ea17bc9461eeace",
+  "type": "shuttle_subject_mapping",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+  "revision": 3,
+  "is_subject_skipped": false,
+  "source": {
+    "type": "user",
+    "id": "sp-user-001",
+    "email": "user@example.com",
+    "name": "Jane Doe",
+    "roles": [
+      "owner"
+    ]
+  },
+  "target": {
+    "type": "user",
+    "id": "12345678",
+    "email": "jane.doe@company.box.com",
+    "name": "Jane Doe"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shuttle-subject-mapping-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns the newly created shuttle subject mapping.|[ShuttleSubjectMapping](#schemashuttlesubjectmapping)|
+|400|Bad Request|Returned when the request body is malformed or required fields are<br>missing.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the referenced shuttle job or discovered subject cannot<br>be found or the user does not have access to it.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returned when the provided revision does not match the current<br>discovery-requirements revision.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get shuttle subject mapping by ID
+
+<a id="opIdget_shuttle_subject_mappings_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_subject_mappings/6a3ba7b12ea17bc9461eeace \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_subject_mappings/{shuttle_subject_mapping_id}`
+
+Returns details for a single shuttle subject mapping identified by its ID,
+including the source subject and Box target, if any.
+
+<h3 id="get-shuttle-subject-mapping-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_subject_mapping_id|path|string|true|The unique identifier for the shuttle subject mapping.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a3ba7b12ea17bc9461eeace",
+  "type": "shuttle_subject_mapping",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+  "revision": 3,
+  "is_subject_skipped": false,
+  "source": {
+    "type": "user",
+    "id": "sp-user-001",
+    "email": "user@example.com",
+    "name": "Jane Doe",
+    "roles": [
+      "owner"
+    ]
+  },
+  "target": {
+    "type": "user",
+    "id": "12345678",
+    "email": "jane.doe@company.box.com",
+    "name": "Jane Doe"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shuttle-subject-mapping-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shuttle subject mapping.|[ShuttleSubjectMapping](#schemashuttlesubjectmapping)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle subject mapping is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Update shuttle subject mapping
+
+<a id="opIdput_shuttle_subject_mappings_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_subject_mappings/6a3ba7b12ea17bc9461eeace \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "is_subject_skipped": true
+  }'
+```
+
+`PUT /shuttle_subject_mappings/{shuttle_subject_mapping_id}`
+
+Updates the mutable properties of an existing shuttle subject mapping
+identified by its ID. Only the fields supplied in the request body are
+changed.
+
+> Body parameter
+
+```json
+{
+  "is_subject_skipped": true
+}
+```
+
+<h3 id="update-shuttle-subject-mapping-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_subject_mapping_id|path|string|true|The unique identifier for the shuttle subject mapping.|
+|body|body|[ShuttleSubjectMappingUpdateRequest](#schemashuttlesubjectmappingupdaterequest)|true|none|
+|» is_subject_skipped|body|boolean|false|Whether this subject should be skipped during the migration.|
+|» target|body|[ShuttleTargetSubjectInput](#schemashuttletargetsubjectinput) \| object \| null|false|The Box target to map to. Set to `null` only for a skipped subject.<br>Setting it to `null` while the mapping is active fails validation.<br>Updating `is_subject_skipped` alone preserves the existing target.|
+|» » *oneOf*|body|[ShuttleTargetSubjectInput](#schemashuttletargetsubjectinput)|false|A Box user or group to map a source subject to.|
+|» » *oneOf*|body|object \| null|false|The definition for a null schema type in OpenAPI `3.0`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a3ba7b12ea17bc9461eeace",
+  "type": "shuttle_subject_mapping",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+  "revision": 3,
+  "is_subject_skipped": false,
+  "source": {
+    "type": "user",
+    "id": "sp-user-001",
+    "email": "user@example.com",
+    "name": "Jane Doe",
+    "roles": [
+      "owner"
+    ]
+  },
+  "target": {
+    "type": "user",
+    "id": "12345678",
+    "email": "jane.doe@company.box.com",
+    "name": "Jane Doe"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-shuttle-subject-mapping-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the updated shuttle subject mapping.|[ShuttleSubjectMapping](#schemashuttlesubjectmapping)|
+|400|Bad Request|Returned when the request body is malformed, empty, or fails<br>validation.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle subject mapping is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete shuttle subject mapping
+
+<a id="opIddelete_shuttle_subject_mappings_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_subject_mappings/6a3ba7b12ea17bc9461eeace \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`DELETE /shuttle_subject_mappings/{shuttle_subject_mapping_id}`
+
+Permanently deletes the shuttle subject mapping identified by its ID.
+
+<h3 id="delete-shuttle-subject-mapping-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_subject_mapping_id|path|string|true|The unique identifier for the shuttle subject mapping.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-shuttle-subject-mapping-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Returns an empty response when the shuttle subject mapping was<br>successfully deleted.|None|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle subject mapping is not found or the user does<br>not have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle discovered subjects
+
+<a id="opIdget_shuttle_discovered_subjects_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shuttle_discovered_subjects?job_id=6a3ba68e810d9156194530a1' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_discovered_subjects`
+
+Returns a paginated list of subjects discovered on the source system for
+the shuttle job identified by `job_id`.
+
+<h3 id="list-shuttle-discovered-subjects-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|job_id|query|string|true|The unique identifier of the shuttle job whose discovered subjects to list.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a315c0754833bfc5df067bf",
+      "type": "shuttle_discovered_subject",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "revision": 3,
+      "source": {
+        "type": "user",
+        "id": "sp-user-001",
+        "email": "user@example.com",
+        "name": "Jane Doe",
+        "roles": [
+          "owner"
+        ]
+      },
+      "suggested_target": {
+        "type": "user",
+        "id": "12345678",
+        "email": "user@example.com",
+        "name": "Jane Doe"
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-discovered-subjects-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of discovered subjects.|[ShuttleDiscoveredSubjects](#schemashuttlediscoveredsubjects)|
+|400|Bad Request|Returned when `job_id` is missing or the user has passed in a malformed<br>`marker` or `limit` value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle path entries
+
+<a id="opIdget_shuttle_path_entries_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shuttle_path_entries?job_id=6a3ba68e810d9156194530a1&side=source' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_path_entries`
+
+Returns a paginated list of source or target path entries for a shuttle
+job. Call with only `job_id` and `side` to list the roots, then browse one
+level at a time using `path`, `path_id`, or both. Each entry includes
+`path`, `path_id`, `is_directory`, and a `scope` object (`account` or
+`shared_space`) so a mapping can be created from that row without extra
+browse state. Valid values depend on the selected system.
+
+<h3 id="list-shuttle-path-entries-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|job_id|query|string|true|The unique identifier of the shuttle job whose path entries to list.|
+|side|query|string|true|The side of the migration to browse.|
+|path|query|string|false|The human-readable parent path whose children are returned. This can<br>be used with or without `path_id`. Omit both, or pass `/` as `path`,<br>to list root entries.|
+|path_id|query|string|false|The `path_id` value of the parent entry whose children are<br>returned. This can be used with or without `path`. It distinguishes<br>paths with identical names on systems that support stable identifiers.|
+|account_email|query|string|false|The email of the account whose path entries are returned. This is a<br>system-native identifier and is not always an RFC 5322 address.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|side|source|
+|side|target|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba7c02ea17bc9461eeacf",
+      "type": "shuttle_path_entry",
+      "name": "Projects",
+      "path": "/Shared Documents/Projects",
+      "path_id": "01ABCDEF23456789",
+      "parent_path": "/Shared Documents",
+      "scope": {
+        "type": "shared_space",
+        "space": "HR Team Site"
+      },
+      "is_directory": true,
+      "can_map": true
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-path-entries-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle path entries.|[ShuttlePathEntries](#schemashuttlepathentries)|
+|400|Bad Request|Returned when a required parameter is missing, a parameter is<br>malformed, or the selected system cannot browse the supplied<br>combination of `path` and `path_id`.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle mapping errors
+
+<a id="opIdget_shuttle_mapping_errors_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shuttle_mapping_errors?job_id=6a3ba68e810d9156194530a1' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_mapping_errors`
+
+Returns a paginated list of mapping errors for a shuttle job. Only the latest
+record for each error is returned. The revision field identifies the mapping
+revision in which that error was generated.
+
+<h3 id="list-shuttle-mapping-errors-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|job_id|query|string|true|The unique identifier of the shuttle job whose mapping errors to list.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba7c02ea17bc9461eeacf",
+      "type": "shuttle_mapping_error",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "revision": 3,
+      "category": "path",
+      "path": "/Shared Documents/Projects",
+      "messages": [
+        "The source path could not be resolved."
+      ]
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-mapping-errors-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle mapping errors.|[ShuttleMappingErrors](#schemashuttlemappingerrors)|
+|400|Bad Request|Returned when `job_id` is missing or the user has passed in a malformed<br>`marker` or `limit` value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle job is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shuttle reports
+
+<a id="opIdget_shuttle_reports_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shuttle_reports?run_id=6a3ba68e810d9156194530a1%3A42' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_reports`
+
+Returns a paginated list of reports generated for the shuttle run
+identified by `run_id`.
+
+<h3 id="list-shuttle-reports-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|run_id|query|string|true|The unique identifier of the shuttle run whose reports to list.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba8d14f2c91e8370b4d12",
+      "type": "shuttle_report",
+      "run_id": "6a3ba68e810d9156194530a1:42",
+      "status": "complete",
+      "format": "xlsx",
+      "sections": [
+        "event_log",
+        "transfer_overview"
+      ],
+      "users_scope": "migrated",
+      "output": {
+        "id": "12345678",
+        "type": "file"
+      },
+      "created_at": "2026-03-15T06:35:00Z",
+      "completed_at": "2026-03-15T06:36:12Z"
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shuttle-reports-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of shuttle reports.|[ShuttleReports](#schemashuttlereports)|
+|400|Bad Request|Returned when `run_id` is missing or the user has passed in a<br>malformed `marker` or `limit` value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle run is not found or the user does not have<br>access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shuttle report
+
+<a id="opIdpost_shuttle_reports_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_reports \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0' \
+  -d '{
+    "run_id": "6a3ba68e810d9156194530a1:42",
+    "format": "xlsx",
+    "sections": [
+      "event_log",
+      "transfer_overview"
+    ],
+    "users_scope": "migrated"
+  }'
+```
+
+`POST /shuttle_reports`
+
+Requests asynchronous generation of a report for a shuttle run. The
+report is returned immediately in `pending` or `processing` status.
+Poll `GET /shuttle_reports/{shuttle_report_id}` while `status` is
+`pending` or `processing`. Stop when `status` is `complete`, `failed`,
+`canceled`, or `unknown`. Repeating this request with the same
+parameters reuses the existing report instead of creating a duplicate.
+
+> Body parameter
+
+```json
+{
+  "run_id": "6a3ba68e810d9156194530a1:42",
+  "format": "xlsx",
+  "sections": [
+    "event_log",
+    "transfer_overview"
+  ],
+  "users_scope": "migrated"
+}
+```
+
+<h3 id="create-shuttle-report-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|body|body|[ShuttleReportCreateRequest](#schemashuttlereportcreaterequest)|true|none|
+|» run_id|body|string|true|The unique identifier of the shuttle run to generate a report for.|
+|» format|body|string|true|The output file format of the report.|
+|» sections|body|[string]|true|The sections to include in the report. Must be a non-empty subset of<br>the run's `available_report_sections`. This is an open list whose set<br>of values is expected to grow; the currently documented values include<br>`files_and_folders`, `event_log`, `transfer_overview`, `source_users`,<br>`target_users`, `source_collaborators`, `target_collaborators`,<br>`source_collaborations`, and `target_collaborations`.|
+|» users_scope|body|string|false|Which users to include in user-related report sections. Defaults to<br>`migrated` when omitted.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|» format|xlsx|
+|» format|csv|
+|» users_scope|migrated|
+|» users_scope|all|
+
+> Example responses
+
+> 202 Response
+
+```json
+{
+  "id": "6a3ba8d14f2c91e8370b4d12",
+  "type": "shuttle_report",
+  "run_id": "6a3ba68e810d9156194530a1:42",
+  "status": "complete",
+  "format": "xlsx",
+  "sections": [
+    "event_log",
+    "transfer_overview"
+  ],
+  "users_scope": "migrated",
+  "output": {
+    "id": "12345678",
+    "type": "file"
+  },
+  "created_at": "2026-03-15T06:35:00Z",
+  "completed_at": "2026-03-15T06:36:12Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shuttle-report-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The report was accepted for generation. Returns the shuttle report;<br>generation continues asynchronously. Repeating this request with the<br>same parameters reuses the existing report instead of creating a<br>duplicate.|[ShuttleReport](#schemashuttlereport)|
+|400|Bad Request|Returned when the request body is malformed, required fields are<br>missing, or `sections` is not a subset of the run's<br>`available_report_sections`.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the referenced shuttle run cannot be found or the user<br>does not have access to it.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returned when a report cannot be generated for the run in its current<br>state.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get shuttle report by ID
+
+<a id="opIdget_shuttle_reports_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shuttle_reports/6a3ba8d14f2c91e8370b4d12 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /shuttle_reports/{shuttle_report_id}`
+
+Returns details for a single shuttle report identified by its ID,
+including generation status and, once generation finishes, the Box
+output reference.
+
+<h3 id="get-shuttle-report-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|shuttle_report_id|path|string|true|The unique identifier for the shuttle report.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "6a3ba8d14f2c91e8370b4d12",
+  "type": "shuttle_report",
+  "run_id": "6a3ba68e810d9156194530a1:42",
+  "status": "complete",
+  "format": "xlsx",
+  "sections": [
+    "event_log",
+    "transfer_overview"
+  ],
+  "users_scope": "migrated",
+  "output": {
+    "id": "12345678",
+    "type": "file"
+  },
+  "created_at": "2026-03-15T06:35:00Z",
+  "completed_at": "2026-03-15T06:36:12Z"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shuttle-report-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shuttle report.|[ShuttleReport](#schemashuttlereport)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned when the authenticated user is not an admin or co-admin with<br>permission to manage enterprise properties.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned when the shuttle report is not found or the user does not<br>have access to it.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned when the user has sent too many requests in a given amount of<br>time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
 # Schemas
 
 <h2 id="tocS_AutomateWorkflowAction">AutomateWorkflowAction</h2>
@@ -3265,6 +10057,2286 @@ pagination.
 |entries|[[QueryResultEntry](#schemaqueryresultentry)]|true|none|The list of items matching the query predicate.|
 |next_marker|string \| null|true|none|The marker for the start of the next page of results. When `null`, there<br>are no further results available.|
 |limit|integer(int32)|true|none|The limit that was used for this request. This will be the same as the limit query <br>parameter unless that value exceeded the maximum value allowed.|
+
+<h2 id="tocS_ShuttleAgentCredentials">ShuttleAgentCredentials</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttleagentcredentials"></a>
+<a id="schema_ShuttleAgentCredentials"></a>
+<a id="tocSshuttleagentcredentials"></a>
+<a id="tocsshuttleagentcredentials"></a>
+
+```json
+{
+  "registration_token": "eyJhbGciOi...",
+  "expires_at": "2026-03-16T12:00:00Z"
+}
+```
+
+The installation credentials issued for a Windows shuttle system. The
+registration token is pasted into the Windows agent installer to register
+the agent with its system.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|registration_token|string|true|none|The installation token to paste into the Windows agent installer to<br>register the agent.|
+|expires_at|string(date-time)|true|none|When the registration token expires and can no longer be used.|
+
+<h2 id="tocS_ShuttleDiscoveredSubject">ShuttleDiscoveredSubject</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlediscoveredsubject"></a>
+<a id="schema_ShuttleDiscoveredSubject"></a>
+<a id="tocSshuttlediscoveredsubject"></a>
+<a id="tocsshuttlediscoveredsubject"></a>
+
+```json
+{
+  "id": "6a315c0754833bfc5df067bf",
+  "type": "shuttle_discovered_subject",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "revision": 3,
+  "source": {
+    "type": "user",
+    "id": "sp-user-001",
+    "email": "user@example.com",
+    "name": "Jane Doe",
+    "roles": [
+      "owner"
+    ]
+  },
+  "suggested_target": {
+    "type": "user",
+    "id": "12345678",
+    "email": "user@example.com",
+    "name": "Jane Doe"
+  }
+}
+```
+
+A subject discovered on the source system during a scan, with an optional
+suggested Box target.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the discovered subject.|
+|type|string|true|none|The value will always be `shuttle_discovered_subject`.|
+|job_id|string|true|none|The unique identifier of the shuttle job this subject belongs to.|
+|revision|integer(int32)|true|none|The scan revision this discovered subject belongs to.|
+|source|object|true|none|none|
+|suggested_target|[ShuttleTargetSubject](#schemashuttletargetsubject) \| object \| null|false|none|A suggested Box target inferred during the scan. `null` when no<br>suggestion was made.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_discovered_subject|
+
+<h2 id="tocS_ShuttleDiscoveredSubjects">ShuttleDiscoveredSubjects</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlediscoveredsubjects"></a>
+<a id="schema_ShuttleDiscoveredSubjects"></a>
+<a id="tocSshuttlediscoveredsubjects"></a>
+<a id="tocsshuttlediscoveredsubjects"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a315c0754833bfc5df067bf",
+      "type": "shuttle_discovered_subject",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "revision": 3,
+      "source": {
+        "type": "user",
+        "id": "sp-user-001",
+        "email": "user@example.com",
+        "name": "Jane Doe",
+        "roles": [
+          "owner"
+        ]
+      },
+      "suggested_target": {
+        "type": "user",
+        "id": "12345678",
+        "email": "user@example.com",
+        "name": "Jane Doe"
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of subjects discovered on the source system.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttleDiscoveredSubject](#schemashuttlediscoveredsubject)]|true|none|A list of discovered subjects.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttleJob">ShuttleJob</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejob"></a>
+<a id="schema_ShuttleJob"></a>
+<a id="tocSshuttlejob"></a>
+<a id="tocsshuttlejob"></a>
+
+```json
+{
+  "id": "6a3ba68e810d9156194530a1",
+  "type": "shuttle_job",
+  "name": "Q4 SharePoint to Box",
+  "comment": "Migrating the finance department archives.",
+  "job_type": "transfer",
+  "state": "created",
+  "mapping_state": "awaiting_path_mapping",
+  "source_system": {
+    "type": "shuttle_system",
+    "id": "6a3ba68e810d9156194530a1",
+    "name": "SharePoint"
+  },
+  "account_mapping": {
+    "is_enabled": true,
+    "permission_conflict_strategy": "preserve_structure_restrict_sharing",
+    "are_external_shares_mapped": false,
+    "are_permissions_mapped": true
+  },
+  "tags": [
+    "q4",
+    "hr"
+  ],
+  "settings": {
+    "bandwidth_limit_bytes_per_sec": 10485760,
+    "are_deletions_mirrored": false,
+    "are_file_versions_synced": true,
+    "max_file_versions": 10,
+    "is_overwrite_enabled": false,
+    "are_completed_mappings_skipped_on_rerun": true,
+    "is_content_scanning_enabled": false,
+    "include_shared_source_folders": true,
+    "include_shared_destination_folders": false
+  }
+}
+```
+
+A standard representation of a shuttle job. A shuttle job describes a
+migration of content from a source system into Box, including its current
+state, mapping-preparation state, and mapping configuration.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the shuttle job.|
+|type|string|true|none|The value will always be `shuttle_job`.|
+|name|string|true|none|The human-readable name of the shuttle job.|
+|comment|string \| null|false|none|An optional free-form comment describing the shuttle job.|
+|job_type|string|true|none|The type of work the shuttle job performs.|
+|state|string|true|none|The current state of the shuttle job. This is an open string whose set<br>of values is expected to grow; the currently documented values include<br>`created`, `started`, `stopped`, `completed`, `failed`, `invalid`, and<br>`unknown`. Clients should treat any value they do not recognize as<br>`unknown`.|
+|mapping_state|string|true|none|The current mapping-preparation state of the job. This is an open string<br>whose set of values is expected to grow; the currently documented values<br>include `awaiting_path_mapping`, `importing_paths`,<br>`paths_import_rejected`, `paths_invalid`, `paths_ready`,<br>`scanning_source`, `source_scan_failed`, `source_scan_out_of_date`,<br>`awaiting_subject_mapping`, `importing_subjects`,<br>`subjects_import_rejected`, `mapping_complete`, `building_map`,<br>`map_build_failed`, `map_out_of_date`, and `ready`.<br>`paths_import_rejected` means the last path-mapping spreadsheet was<br>rejected or failed and the path mappings have not been changed since;<br>it clears on the next import or the next manual path-mapping change.<br>`subjects_import_rejected` means the last subject-mapping spreadsheet<br>was rejected or failed and the subject mappings have not been changed<br>since; it clears on the next import or the next manual subject-mapping<br>change.|
+|source_system|object|true|none|The source system the shuttle job migrates content from.|
+|account_mapping|object|false|none|The account mapping configuration that controls how source identities<br>and permissions are translated into Box.|
+|tags|[string]|false|none|A list of free-form tags associated with the shuttle job.|
+|settings|object|false|none|The tunable settings that control how the shuttle job runs.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_job|
+|job_type|transfer|
+|job_type|analysis|
+
+<h2 id="tocS_ShuttleJobCreateRequest">ShuttleJobCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobcreaterequest"></a>
+<a id="schema_ShuttleJobCreateRequest"></a>
+<a id="tocSshuttlejobcreaterequest"></a>
+<a id="tocsshuttlejobcreaterequest"></a>
+
+```json
+{
+  "name": "Q4 SharePoint to Box",
+  "job_type": "transfer",
+  "source_system_id": "6a3ba68e810d9156194530a1",
+  "comment": "Migrating the finance department archives.",
+  "tags": [
+    "q4",
+    "hr"
+  ],
+  "account_mapping": {
+    "is_enabled": true,
+    "permission_conflict_strategy": "preserve_structure_restrict_sharing",
+    "are_external_shares_mapped": false,
+    "are_permissions_mapped": true
+  },
+  "settings": {
+    "bandwidth_limit_bytes_per_sec": 10485760,
+    "are_deletions_mirrored": false,
+    "are_file_versions_synced": true,
+    "max_file_versions": 10,
+    "is_overwrite_enabled": false,
+    "are_completed_mappings_skipped_on_rerun": true,
+    "is_content_scanning_enabled": false,
+    "include_shared_source_folders": true,
+    "include_shared_destination_folders": false
+  }
+}
+```
+
+The request body used to create a new shuttle job.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|The human-readable name of the shuttle job.|
+|job_type|string|true|none|The type of work the shuttle job performs.|
+|source_system_id|string|true|none|The unique identifier of the source system to migrate from.|
+|comment|string|false|none|An optional free-form comment describing the shuttle job.|
+|tags|[string]|false|none|A list of free-form tags associated with the shuttle job.|
+|account_mapping|object|false|none|The account mapping configuration that controls how source identities<br>and permissions are translated into Box. When this object is omitted,<br>the job is created with `is_enabled` set to `false`.|
+|settings|object|false|none|The tunable settings that control how the shuttle job runs.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|job_type|transfer|
+|job_type|analysis|
+
+<h2 id="tocS_ShuttleJobPermissionConflictStrategy">ShuttleJobPermissionConflictStrategy</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobpermissionconflictstrategy"></a>
+<a id="schema_ShuttleJobPermissionConflictStrategy"></a>
+<a id="tocSshuttlejobpermissionconflictstrategy"></a>
+<a id="tocsshuttlejobpermissionconflictstrategy"></a>
+
+```json
+"preserve_structure_restrict_sharing"
+```
+
+The strategy used to resolve permission conflicts.
+
+<h2 id="tocS_ShuttleJobs">ShuttleJobs</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobs"></a>
+<a id="schema_ShuttleJobs"></a>
+<a id="tocSshuttlejobs"></a>
+<a id="tocsshuttlejobs"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba68e810d9156194530a1",
+      "type": "shuttle_job",
+      "name": "Q4 SharePoint to Box",
+      "comment": "Migrating the finance department archives.",
+      "job_type": "transfer",
+      "state": "created",
+      "mapping_state": "awaiting_path_mapping",
+      "source_system": {
+        "type": "shuttle_system",
+        "id": "6a3ba68e810d9156194530a1",
+        "name": "SharePoint"
+      },
+      "account_mapping": {
+        "is_enabled": true,
+        "permission_conflict_strategy": "preserve_structure_restrict_sharing",
+        "are_external_shares_mapped": false,
+        "are_permissions_mapped": true
+      },
+      "tags": [
+        "q4",
+        "hr"
+      ],
+      "settings": {
+        "bandwidth_limit_bytes_per_sec": 10485760,
+        "are_deletions_mirrored": false,
+        "are_file_versions_synced": true,
+        "max_file_versions": 10,
+        "is_overwrite_enabled": false,
+        "are_completed_mappings_skipped_on_rerun": true,
+        "is_content_scanning_enabled": false,
+        "include_shared_source_folders": true,
+        "include_shared_destination_folders": false
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle jobs.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttleJob](#schemashuttlejob)]|true|none|A list of shuttle jobs.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttleJobSchedule">ShuttleJobSchedule</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobschedule"></a>
+<a id="schema_ShuttleJobSchedule"></a>
+<a id="tocSshuttlejobschedule"></a>
+<a id="tocsshuttlejobschedule"></a>
+
+```json
+{
+  "id": "7c1ba68e810d9156194530b2",
+  "type": "shuttle_job_schedule",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "state": "enabled",
+  "run_mode": "transfer",
+  "description": "Nightly finance share replay.",
+  "last_attempt_at": "2026-03-16T09:00:12Z",
+  "trigger": {
+    "type": "by_time",
+    "start_at": "2026-03-16T09:00:00",
+    "time_zone": "America/Los_Angeles",
+    "repeat": "daily"
+  }
+}
+```
+
+A schedule that starts runs of a shuttle job. A schedule is either
+time-based or triggered by another job's run. Schedules cannot start a
+run in `scan` mode.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the shuttle job schedule.|
+|type|string|true|none|The value will always be `shuttle_job_schedule`.|
+|job_id|string|true|none|The unique identifier of the shuttle job this schedule belongs to.|
+|state|string|true|none|Whether the schedule is active.|
+|run_mode|string|true|none|The kind of run the schedule starts. `scan` is not a valid schedule<br>run mode.|
+|description|string \| null|false|none|An optional human-readable description of the schedule.|
+|last_attempt_at|string(date-time) \| null|false|none|When the schedule last attempted to start a run. `null` when the<br>schedule has never started a run.|
+|trigger|[ShuttleJobScheduleTrigger](#schemashuttlejobscheduletrigger)|true|none|When a shuttle job schedule should start a run. Exactly one trigger<br>variant is present, discriminated by `type`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_job_schedule|
+|state|enabled|
+|state|paused|
+|run_mode|transfer|
+|run_mode|simulation|
+|run_mode|analysis|
+
+<h2 id="tocS_ShuttleJobScheduleCreateRequest">ShuttleJobScheduleCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobschedulecreaterequest"></a>
+<a id="schema_ShuttleJobScheduleCreateRequest"></a>
+<a id="tocSshuttlejobschedulecreaterequest"></a>
+<a id="tocsshuttlejobschedulecreaterequest"></a>
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "run_mode": "transfer",
+  "state": "enabled",
+  "description": "Nightly finance share replay.",
+  "trigger": {
+    "type": "by_time",
+    "start_at": "2026-03-16T09:00:00",
+    "time_zone": "America/Los_Angeles",
+    "repeat": "daily"
+  }
+}
+```
+
+The request body used to create a shuttle job schedule.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|job_id|string|true|none|The unique identifier of the shuttle job this schedule belongs to.|
+|run_mode|string|true|none|The kind of run the schedule starts. `scan` is not a valid schedule<br>run mode.|
+|state|string|false|none|Whether the schedule is active. When omitted, defaults to `enabled`.|
+|description|string \| null|false|none|An optional human-readable description of the schedule.|
+|trigger|[ShuttleJobScheduleTrigger](#schemashuttlejobscheduletrigger)|true|none|When a shuttle job schedule should start a run. Exactly one trigger<br>variant is present, discriminated by `type`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|run_mode|transfer|
+|run_mode|simulation|
+|run_mode|analysis|
+|state|enabled|
+|state|paused|
+
+<h2 id="tocS_ShuttleJobSchedules">ShuttleJobSchedules</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobschedules"></a>
+<a id="schema_ShuttleJobSchedules"></a>
+<a id="tocSshuttlejobschedules"></a>
+<a id="tocsshuttlejobschedules"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "7c1ba68e810d9156194530b2",
+      "type": "shuttle_job_schedule",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "state": "enabled",
+      "run_mode": "transfer",
+      "description": "Nightly finance share replay.",
+      "last_attempt_at": "2026-03-16T09:00:12Z",
+      "trigger": {
+        "type": "by_time",
+        "start_at": "2026-03-16T09:00:00",
+        "time_zone": "America/Los_Angeles",
+        "repeat": "daily"
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle job schedules.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttleJobSchedule](#schemashuttlejobschedule)]|true|none|A list of shuttle job schedules.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttleJobScheduleTrigger">ShuttleJobScheduleTrigger</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobscheduletrigger"></a>
+<a id="schema_ShuttleJobScheduleTrigger"></a>
+<a id="tocSshuttlejobscheduletrigger"></a>
+<a id="tocsshuttlejobscheduletrigger"></a>
+
+```json
+{
+  "type": "by_time",
+  "start_at": "2026-03-16T09:00:00",
+  "time_zone": "America/Los_Angeles",
+  "repeat": "daily"
+}
+```
+
+When a shuttle job schedule should start a run. Exactly one trigger
+variant is present, discriminated by `type`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ShuttleJobScheduleTriggerByTime](#schemashuttlejobscheduletriggerbytime)|false|none|A time-based trigger that starts the schedule at a wall-clock time and<br>optionally repeats.|
+|*oneOf*|[ShuttleJobScheduleTriggerByJob](#schemashuttlejobscheduletriggerbyjob)|false|none|A job-based trigger that starts this schedule after another shuttle<br>job's run meets a condition.|
+
+<h2 id="tocS_ShuttleJobScheduleTriggerByJob">ShuttleJobScheduleTriggerByJob</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobscheduletriggerbyjob"></a>
+<a id="schema_ShuttleJobScheduleTriggerByJob"></a>
+<a id="tocSshuttlejobscheduletriggerbyjob"></a>
+<a id="tocsshuttlejobscheduletriggerbyjob"></a>
+
+```json
+{
+  "type": "by_job",
+  "triggered_by_job_id": "8d2ca68e810d9156194530c3",
+  "last_run_condition": "on_success"
+}
+```
+
+A job-based trigger that starts this schedule after another shuttle
+job's run meets a condition.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `by_job`.|
+|triggered_by_job_id|string|true|none|The unique identifier of the shuttle job whose run starts this<br>schedule.|
+|last_run_condition|string|true|none|When this schedule should start a run relative to the last run of<br>the triggering job.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|by_job|
+|last_run_condition|always|
+|last_run_condition|on_success|
+|last_run_condition|on_finish|
+
+<h2 id="tocS_ShuttleJobScheduleTriggerByTime">ShuttleJobScheduleTriggerByTime</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobscheduletriggerbytime"></a>
+<a id="schema_ShuttleJobScheduleTriggerByTime"></a>
+<a id="tocSshuttlejobscheduletriggerbytime"></a>
+<a id="tocsshuttlejobscheduletriggerbytime"></a>
+
+```json
+{
+  "type": "by_time",
+  "start_at": "2026-03-16T09:00:00",
+  "time_zone": "America/Los_Angeles",
+  "repeat": "daily"
+}
+```
+
+A time-based trigger that starts the schedule at a wall-clock time and
+optionally repeats.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `by_time`.|
+|start_at|string|true|none|The local wall-clock time when the schedule should first start a<br>run, without an offset or `Z` suffix. Combined with `time_zone` to<br>determine the instant, including DST.|
+|time_zone|string|true|none|The IANA time zone that gives `start_at` its calendar meaning (for<br>example `America/Los_Angeles`). Recurrence and DST transitions are<br>evaluated in this zone.|
+|repeat|string|true|none|How often the schedule repeats after `start_at`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|by_time|
+|repeat|none|
+|repeat|daily|
+|repeat|weekly|
+|repeat|weekdays|
+|repeat|weekends|
+
+<h2 id="tocS_ShuttleJobScheduleUpdateRequest">ShuttleJobScheduleUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobscheduleupdaterequest"></a>
+<a id="schema_ShuttleJobScheduleUpdateRequest"></a>
+<a id="tocSshuttlejobscheduleupdaterequest"></a>
+<a id="tocsshuttlejobscheduleupdaterequest"></a>
+
+```json
+{
+  "state": "paused",
+  "run_mode": "simulation",
+  "description": "Nightly finance share replay.",
+  "trigger": {
+    "type": "by_time",
+    "start_at": "2026-03-16T09:00:00",
+    "time_zone": "America/Los_Angeles",
+    "repeat": "daily"
+  }
+}
+```
+
+The request body used to update an existing shuttle job schedule. Only
+the fields supplied in the request body are changed.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|state|string|false|none|Whether the schedule is active.|
+|run_mode|string|false|none|The kind of run the schedule starts. `scan` is not a valid schedule<br>run mode.|
+|description|string \| null|false|none|An optional human-readable description of the schedule.|
+|trigger|[ShuttleJobScheduleTrigger](#schemashuttlejobscheduletrigger)|false|none|When a shuttle job schedule should start a run. Exactly one trigger<br>variant is present, discriminated by `type`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|enabled|
+|state|paused|
+|run_mode|transfer|
+|run_mode|simulation|
+|run_mode|analysis|
+
+<h2 id="tocS_ShuttleJobStartRequest">ShuttleJobStartRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobstartrequest"></a>
+<a id="schema_ShuttleJobStartRequest"></a>
+<a id="tocSshuttlejobstartrequest"></a>
+<a id="tocsshuttlejobstartrequest"></a>
+
+```json
+{
+  "mode": "simulation"
+}
+```
+
+The request body used to start a shuttle job.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mode|string|false|none|The run mode. Defaults to simulation when omitted.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|mode|transfer|
+|mode|simulation|
+|mode|scan|
+|mode|analysis|
+
+<h2 id="tocS_ShuttleJobUpdateRequest">ShuttleJobUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlejobupdaterequest"></a>
+<a id="schema_ShuttleJobUpdateRequest"></a>
+<a id="tocSshuttlejobupdaterequest"></a>
+<a id="tocsshuttlejobupdaterequest"></a>
+
+```json
+{
+  "name": "Q4 SharePoint to Box",
+  "comment": "Migrating the finance department archives.",
+  "tags": [
+    "q4",
+    "hr"
+  ],
+  "account_mapping": {
+    "is_enabled": true,
+    "permission_conflict_strategy": "preserve_structure_restrict_sharing",
+    "are_external_shares_mapped": false,
+    "are_permissions_mapped": true
+  },
+  "settings": {
+    "bandwidth_limit_bytes_per_sec": 10485760,
+    "are_deletions_mirrored": false,
+    "are_file_versions_synced": true,
+    "max_file_versions": 10,
+    "is_overwrite_enabled": false,
+    "are_completed_mappings_skipped_on_rerun": true,
+    "is_content_scanning_enabled": false,
+    "include_shared_source_folders": true,
+    "include_shared_destination_folders": false
+  }
+}
+```
+
+The request body used to update an existing shuttle job. Only the fields
+supplied in the request body are changed.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|The human-readable name of the shuttle job.|
+|comment|string \| null|false|none|An optional free-form comment describing the shuttle job.|
+|tags|[string]|false|none|A list of free-form tags associated with the shuttle job.|
+|account_mapping|object|false|none|The account mapping configuration that controls how source identities<br>and permissions are translated into Box.|
+|settings|object|false|none|The tunable settings that control how the shuttle job runs.|
+
+<h2 id="tocS_ShuttleMappingError">ShuttleMappingError</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlemappingerror"></a>
+<a id="schema_ShuttleMappingError"></a>
+<a id="tocSshuttlemappingerror"></a>
+<a id="tocsshuttlemappingerror"></a>
+
+```json
+{
+  "id": "6a3ba7c02ea17bc9461eeacf",
+  "type": "shuttle_mapping_error",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "revision": 3,
+  "category": "path",
+  "path": "/Shared Documents/Projects",
+  "messages": [
+    "The source path could not be resolved."
+  ]
+}
+```
+
+A problem encountered while preparing path, subject, or permission
+mappings for a shuttle job.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the mapping error.|
+|type|string|true|none|The value will always be `shuttle_mapping_error`.|
+|job_id|string|true|none|The unique identifier of the shuttle job this error belongs to.|
+|revision|integer(int32)|true|none|The mapping revision this error belongs to.|
+|category|string|true|none|The category of mapping work that produced the error. This is an open<br>string whose set of values can grow.|
+|path|string|true|none|The path or subject that the mapping error refers to.|
+|messages|[string]|true|none|Human-readable messages describing the mapping error.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_mapping_error|
+
+<h2 id="tocS_ShuttleMappingErrors">ShuttleMappingErrors</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlemappingerrors"></a>
+<a id="schema_ShuttleMappingErrors"></a>
+<a id="tocSshuttlemappingerrors"></a>
+<a id="tocsshuttlemappingerrors"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba7c02ea17bc9461eeacf",
+      "type": "shuttle_mapping_error",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "revision": 3,
+      "category": "path",
+      "path": "/Shared Documents/Projects",
+      "messages": [
+        "The source path could not be resolved."
+      ]
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle mapping errors.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttleMappingError](#schemashuttlemappingerror)]|true|none|A list of shuttle mapping errors.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttlePathEntries">ShuttlePathEntries</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathentries"></a>
+<a id="schema_ShuttlePathEntries"></a>
+<a id="tocSshuttlepathentries"></a>
+<a id="tocsshuttlepathentries"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba7c02ea17bc9461eeacf",
+      "type": "shuttle_path_entry",
+      "name": "Projects",
+      "path": "/Shared Documents/Projects",
+      "path_id": "01ABCDEF23456789",
+      "parent_path": "/Shared Documents",
+      "scope": {
+        "type": "shared_space",
+        "space": "HR Team Site"
+      },
+      "is_directory": true,
+      "can_map": true
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle path entries.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttlePathEntry](#schemashuttlepathentry)]|true|none|A list of shuttle path entries.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttlePathEntry">ShuttlePathEntry</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathentry"></a>
+<a id="schema_ShuttlePathEntry"></a>
+<a id="tocSshuttlepathentry"></a>
+<a id="tocsshuttlepathentry"></a>
+
+```json
+{
+  "id": "6a3ba7c02ea17bc9461eeacf",
+  "type": "shuttle_path_entry",
+  "name": "Projects",
+  "path": "/Shared Documents/Projects",
+  "path_id": "01ABCDEF23456789",
+  "parent_path": "/Shared Documents",
+  "scope": {
+    "type": "shared_space",
+    "space": "HR Team Site"
+  },
+  "is_directory": true,
+  "can_map": true
+}
+```
+
+A browsable entry on the source or target system used to build shuttle
+path mappings. Shared fields describe the node. `scope` is a
+discriminated object that identifies the mapping namespace so a path
+mapping can be created from this row without extra browse state.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier of this browse row. This is not the account<br>identifier; when `scope.type` is `account`, the account identifier is<br>`scope.id`.|
+|type|string|true|none|The value will always be `shuttle_path_entry`.|
+|name|string|true|none|The display name of the path entry.|
+|path|string|true|none|The human-readable path of the entry.|
+|path_id|string \| null|false|none|The system-native identifier of the path. `null` when the selected<br>system does not provide one. Maps to `path_id` on a path mapping<br>location.|
+|parent_path|string \| null|false|none|The human-readable path of the parent entry, or `null` for a root<br>entry.|
+|scope|object|true|none|none|
+|is_directory|boolean|true|none|Whether the entry is a directory (`true`) or a single file<br>(`false`). Maps to `is_directory` on a path mapping location.|
+|can_map|boolean|true|none|Whether the entry can be selected in a path mapping.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_path_entry|
+
+<h2 id="tocS_ShuttlePathEntryAccountScope">ShuttlePathEntryAccountScope</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathentryaccountscope"></a>
+<a id="schema_ShuttlePathEntryAccountScope"></a>
+<a id="tocSshuttlepathentryaccountscope"></a>
+<a id="tocsshuttlepathentryaccountscope"></a>
+
+```json
+{
+  "type": "account",
+  "id": "123456",
+  "email": "user@example.com",
+  "name": "Jane Doe"
+}
+```
+
+The mapping scope of a path entry that lives under a user or service
+account. `type` is the discriminator. The remaining fields are the
+account itself, flattened onto this object — they are not a nested
+`account` wrapper. `id` here is the account identifier, not the path
+entry `id`. Copy these fields onto `account` when creating an
+account-scoped path mapping.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `account`.|
+|id|string \| null|false|none|The platform-native identifier of the account that owns this entry.<br>`null` when the system does not provide one. This is not the path<br>entry `id`. Maps to `account.id` on an account-scoped path mapping<br>location.|
+|email|string \| null|false|none|The email of the account that owns this entry. This is a<br>system-native identifier and is not always an RFC 5322 address.<br>`null` when unknown. Maps to `account.email` on an account-scoped<br>path mapping location.|
+|name|string \| null|false|none|The display name of the account that owns this entry. `null` when<br>unknown. Maps to `account.name` on an account-scoped path mapping<br>location.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|account|
+
+<h2 id="tocS_ShuttlePathEntryScope">ShuttlePathEntryScope</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathentryscope"></a>
+<a id="schema_ShuttlePathEntryScope"></a>
+<a id="tocSshuttlepathentryscope"></a>
+<a id="tocsshuttlepathentryscope"></a>
+
+```json
+{
+  "type": "account",
+  "id": "123456",
+  "email": "user@example.com",
+  "name": "Jane Doe"
+}
+```
+
+Which mapping namespace this path entry belongs to. Discriminated by
+`type`: `account` flattens the owning account onto the object;
+`shared_space` carries the shared container name. File versus folder
+is not part of scope. Use `is_directory` on the path entry.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ShuttlePathEntryAccountScope](#schemashuttlepathentryaccountscope)|false|none|The mapping scope of a path entry that lives under a user or service<br>account. `type` is the discriminator. The remaining fields are the<br>account itself, flattened onto this object — they are not a nested<br>`account` wrapper. `id` here is the account identifier, not the path<br>entry `id`. Copy these fields onto `account` when creating an<br>account-scoped path mapping.|
+|*oneOf*|[ShuttlePathEntrySharedSpaceScope](#schemashuttlepathentrysharedspacescope)|false|none|The mapping scope of a path entry that lives under a shared container<br>such as a site, team drive, bucket, or file share. `type` is the<br>discriminator. Copy `space` onto a shared-space path mapping location<br>when creating a mapping from this row.|
+
+<h2 id="tocS_ShuttlePathEntrySharedSpaceScope">ShuttlePathEntrySharedSpaceScope</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathentrysharedspacescope"></a>
+<a id="schema_ShuttlePathEntrySharedSpaceScope"></a>
+<a id="tocSshuttlepathentrysharedspacescope"></a>
+<a id="tocsshuttlepathentrysharedspacescope"></a>
+
+```json
+{
+  "type": "shared_space",
+  "space": "HR Team Site"
+}
+```
+
+The mapping scope of a path entry that lives under a shared container
+such as a site, team drive, bucket, or file share. `type` is the
+discriminator. Copy `space` onto a shared-space path mapping location
+when creating a mapping from this row.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `shared_space`.|
+|space|string \| null|false|none|The display name of the shared container this entry belongs to.<br>`null` when the system has a single implicit container. Maps to<br>`space` on a shared-space path mapping location.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shared_space|
+
+<h2 id="tocS_ShuttlePathMapping">ShuttlePathMapping</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmapping"></a>
+<a id="schema_ShuttlePathMapping"></a>
+<a id="tocSshuttlepathmapping"></a>
+<a id="tocsshuttlepathmapping"></a>
+
+```json
+{
+  "id": "6a3ba7a24ea17bc9461eeacd",
+  "type": "shuttle_path_mapping",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "is_path_skipped": false,
+  "source": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com",
+      "name": "Box Admin"
+    },
+    "is_directory": true
+  },
+  "target": {
+    "type": "account",
+    "path": "/HR Migration",
+    "path_id": "1234567890",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com",
+      "name": "Box Admin"
+    },
+    "is_directory": true
+  }
+}
+```
+
+A standard representation of a shuttle path mapping. A path mapping
+connects a source location on the migrated system to a destination in Box,
+or marks the source path as skipped.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the shuttle path mapping.|
+|type|string|true|none|The value will always be `shuttle_path_mapping`.|
+|job_id|string|true|none|The unique identifier of the shuttle job this mapping belongs to.|
+|is_path_skipped|boolean|true|none|Whether this source path is skipped during the migration.|
+|source|object|true|none|none|
+|target|[ShuttlePathMappingLocation](#schemashuttlepathmappinglocation) \| object \| null|false|none|The destination location. `null` when the source path is skipped or<br>the job has no destination, such as an analysis job.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_path_mapping|
+
+<h2 id="tocS_ShuttlePathMappingAccount">ShuttlePathMappingAccount</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingaccount"></a>
+<a id="schema_ShuttlePathMappingAccount"></a>
+<a id="tocSshuttlepathmappingaccount"></a>
+<a id="tocsshuttlepathmappingaccount"></a>
+
+```json
+{
+  "id": "123456",
+  "email": "admin@company.box.com",
+  "name": "Box Admin"
+}
+```
+
+The account that owns an account-scoped path mapping location.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string \| null|false|none|The platform-native identifier of the account. `null` when the system<br>does not provide one.|
+|email|string \| null|false|none|The email address of the account. `null` when unknown.|
+|name|string \| null|false|none|The display name of the account. `null` when unknown.|
+
+<h2 id="tocS_ShuttlePathMappingAccountInput">ShuttlePathMappingAccountInput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingaccountinput"></a>
+<a id="schema_ShuttlePathMappingAccountInput"></a>
+<a id="tocSshuttlepathmappingaccountinput"></a>
+<a id="tocsshuttlepathmappingaccountinput"></a>
+
+```json
+{
+  "id": "123456",
+  "email": "admin@company.box.com"
+}
+```
+
+The account that owns an account-scoped path mapping location. Provide at
+least one of `id` or `email`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|The platform-native identifier of the account.|
+|email|string|false|none|The email address of the account.|
+
+<h2 id="tocS_ShuttlePathMappingAccountLocation">ShuttlePathMappingAccountLocation</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingaccountlocation"></a>
+<a id="schema_ShuttlePathMappingAccountLocation"></a>
+<a id="tocSshuttlepathmappingaccountlocation"></a>
+<a id="tocsshuttlepathmappingaccountlocation"></a>
+
+```json
+{
+  "type": "account",
+  "path": "/HR Migration",
+  "path_id": "1234567890",
+  "account": {
+    "id": "123456",
+    "email": "admin@company.box.com",
+    "name": "Box Admin"
+  },
+  "is_directory": true
+}
+```
+
+A path mapping location scoped to a user or service account.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `account`.|
+|path|string|true|none|The human-readable path relative to the account root.|
+|path_id|string \| null|false|none|The stable identifier of the location. `null` when the system does not<br>provide one.|
+|account|object|false|none|none|
+|is_directory|boolean \| null|false|none|Whether the location is a directory. `null` when unknown.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|account|
+
+<h2 id="tocS_ShuttlePathMappingAccountLocationInput">ShuttlePathMappingAccountLocationInput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingaccountlocationinput"></a>
+<a id="schema_ShuttlePathMappingAccountLocationInput"></a>
+<a id="tocSshuttlepathmappingaccountlocationinput"></a>
+<a id="tocsshuttlepathmappingaccountlocationinput"></a>
+
+```json
+{
+  "type": "account",
+  "path": "/Shared Documents",
+  "path_id": "sp-folder-001",
+  "account": {
+    "id": "123456",
+    "email": "admin@company.box.com"
+  },
+  "is_directory": true
+}
+```
+
+An account-scoped source location supplied when creating or updating a path
+mapping.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `account`.|
+|path|string|true|none|The human-readable path relative to the account root.|
+|path_id|string|false|none|An optional stable identifier of the location, when obtained from<br>browsing.|
+|account|object|true|none|none|
+|is_directory|boolean|false|none|Whether the location is a directory. When set, the destination must be<br>the same kind of object.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|account|
+
+<h2 id="tocS_ShuttlePathMappingAccountLocationTargetInput">ShuttlePathMappingAccountLocationTargetInput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingaccountlocationtargetinput"></a>
+<a id="schema_ShuttlePathMappingAccountLocationTargetInput"></a>
+<a id="tocSshuttlepathmappingaccountlocationtargetinput"></a>
+<a id="tocsshuttlepathmappingaccountlocationtargetinput"></a>
+
+```json
+{
+  "type": "account",
+  "path": "/HR Migration",
+  "path_id": "1234567890",
+  "account": {
+    "id": "123456",
+    "email": "admin@company.box.com"
+  }
+}
+```
+
+An account-scoped destination location supplied when creating or updating a
+path mapping.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `account`.|
+|path|string|true|none|The human-readable path relative to the account root.|
+|path_id|string|false|none|An optional stable identifier of the location, when obtained from<br>browsing.|
+|account|object|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|account|
+
+<h2 id="tocS_ShuttlePathMappingCreateRequest">ShuttlePathMappingCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingcreaterequest"></a>
+<a id="schema_ShuttlePathMappingCreateRequest"></a>
+<a id="tocSshuttlepathmappingcreaterequest"></a>
+<a id="tocsshuttlepathmappingcreaterequest"></a>
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "is_path_skipped": false,
+  "source": {
+    "type": "account",
+    "path": "/Shared Documents",
+    "path_id": "sp-folder-001",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com"
+    },
+    "is_directory": true
+  },
+  "target": {
+    "type": "account",
+    "path": "/HR Migration",
+    "account": {
+      "email": "admin@company.box.com"
+    }
+  }
+}
+```
+
+The request body used to create a new shuttle path mapping.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|job_id|string|true|none|The unique identifier of the shuttle job this mapping belongs to.|
+|is_path_skipped|boolean|false|none|Whether this source path should be skipped during the migration.<br>Defaults to `false`.|
+|source|object|true|none|none|
+|target|[ShuttlePathMappingTargetLocationInput](#schemashuttlepathmappingtargetlocationinput) \| object \| null|false|none|The destination location to migrate to. Omit or set to `null` when the<br>source path is skipped.|
+
+<h2 id="tocS_ShuttlePathMappingImportCreateRequest">ShuttlePathMappingImportCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingimportcreaterequest"></a>
+<a id="schema_ShuttlePathMappingImportCreateRequest"></a>
+<a id="tocSshuttlepathmappingimportcreaterequest"></a>
+<a id="tocsshuttlepathmappingimportcreaterequest"></a>
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "file_id": "12345678901"
+}
+```
+
+The request body used to import a shuttle job's path mappings from a
+spreadsheet already stored in Box.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|job_id|string|true|none|The unique identifier of the shuttle job whose path mappings are<br>replaced.|
+|file_id|string|true|none|The unique identifier of the Box file holding the mapping workbook. The<br>file is read as the calling user, so it must live somewhere that user can<br>download from.|
+
+<h2 id="tocS_ShuttlePathMappingLocation">ShuttlePathMappingLocation</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappinglocation"></a>
+<a id="schema_ShuttlePathMappingLocation"></a>
+<a id="tocSshuttlepathmappinglocation"></a>
+<a id="tocsshuttlepathmappinglocation"></a>
+
+```json
+{
+  "type": "account",
+  "path": "/HR Migration",
+  "path_id": "1234567890",
+  "account": {
+    "id": "123456",
+    "email": "admin@company.box.com",
+    "name": "Box Admin"
+  },
+  "is_directory": true
+}
+```
+
+One side of a path mapping. The object shape is determined by `type`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ShuttlePathMappingAccountLocation](#schemashuttlepathmappingaccountlocation)|false|none|A path mapping location scoped to a user or service account.|
+|*oneOf*|[ShuttlePathMappingSharedSpaceLocation](#schemashuttlepathmappingsharedspacelocation)|false|none|A path mapping location scoped to a shared container such as a site, team<br>drive, bucket, or file share.|
+
+<h2 id="tocS_ShuttlePathMappingLocationInput">ShuttlePathMappingLocationInput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappinglocationinput"></a>
+<a id="schema_ShuttlePathMappingLocationInput"></a>
+<a id="tocSshuttlepathmappinglocationinput"></a>
+<a id="tocsshuttlepathmappinglocationinput"></a>
+
+```json
+{
+  "type": "account",
+  "path": "/Shared Documents",
+  "path_id": "sp-folder-001",
+  "account": {
+    "id": "123456",
+    "email": "admin@company.box.com"
+  },
+  "is_directory": true
+}
+```
+
+A source location supplied when creating or updating a path mapping. The
+object shape is determined by `type`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ShuttlePathMappingAccountLocationInput](#schemashuttlepathmappingaccountlocationinput)|false|none|An account-scoped source location supplied when creating or updating a path<br>mapping.|
+|*oneOf*|[ShuttlePathMappingSharedSpaceLocationInput](#schemashuttlepathmappingsharedspacelocationinput)|false|none|A shared-container source location supplied when creating or updating a<br>path mapping.|
+
+<h2 id="tocS_ShuttlePathMappings">ShuttlePathMappings</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappings"></a>
+<a id="schema_ShuttlePathMappings"></a>
+<a id="tocSshuttlepathmappings"></a>
+<a id="tocsshuttlepathmappings"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba7a24ea17bc9461eeacd",
+      "type": "shuttle_path_mapping",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "is_path_skipped": false,
+      "source": {
+        "type": "account",
+        "path": "/HR Migration",
+        "path_id": "1234567890",
+        "account": {
+          "id": "123456",
+          "email": "admin@company.box.com",
+          "name": "Box Admin"
+        },
+        "is_directory": true
+      },
+      "target": {
+        "type": "account",
+        "path": "/HR Migration",
+        "path_id": "1234567890",
+        "account": {
+          "id": "123456",
+          "email": "admin@company.box.com",
+          "name": "Box Admin"
+        },
+        "is_directory": true
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle path mappings.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttlePathMapping](#schemashuttlepathmapping)]|true|none|A list of shuttle path mappings.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttlePathMappingSharedSpaceLocation">ShuttlePathMappingSharedSpaceLocation</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingsharedspacelocation"></a>
+<a id="schema_ShuttlePathMappingSharedSpaceLocation"></a>
+<a id="tocSshuttlepathmappingsharedspacelocation"></a>
+<a id="tocsshuttlepathmappingsharedspacelocation"></a>
+
+```json
+{
+  "type": "shared_space",
+  "space": "HR Team Site",
+  "path": "/Shared Documents",
+  "path_id": "sp-folder-001",
+  "is_directory": true
+}
+```
+
+A path mapping location scoped to a shared container such as a site, team
+drive, bucket, or file share.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `shared_space`.|
+|space|string \| null|false|none|The display name of the shared container. `null` when the system has a<br>single implicit container.|
+|path|string|true|none|The human-readable path relative to the shared container.|
+|path_id|string \| null|false|none|The stable identifier of the location. `null` when the system does not<br>provide one.|
+|is_directory|boolean \| null|false|none|Whether the location is a directory. `null` when unknown.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shared_space|
+
+<h2 id="tocS_ShuttlePathMappingSharedSpaceLocationInput">ShuttlePathMappingSharedSpaceLocationInput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingsharedspacelocationinput"></a>
+<a id="schema_ShuttlePathMappingSharedSpaceLocationInput"></a>
+<a id="tocSshuttlepathmappingsharedspacelocationinput"></a>
+<a id="tocsshuttlepathmappingsharedspacelocationinput"></a>
+
+```json
+{
+  "type": "shared_space",
+  "space": "HR Team Site",
+  "path": "/Shared Documents",
+  "path_id": "sp-folder-001",
+  "is_directory": true
+}
+```
+
+A shared-container source location supplied when creating or updating a
+path mapping.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `shared_space`.|
+|space|string|false|none|The display name of the shared container. Required for systems with<br>multiple containers.|
+|path|string|true|none|The human-readable path relative to the shared container.|
+|path_id|string|false|none|An optional stable identifier of the location, when obtained from<br>browsing.|
+|is_directory|boolean|false|none|Whether the location is a directory. When set, the destination must be<br>the same kind of object.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shared_space|
+
+<h2 id="tocS_ShuttlePathMappingSharedSpaceLocationTargetInput">ShuttlePathMappingSharedSpaceLocationTargetInput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingsharedspacelocationtargetinput"></a>
+<a id="schema_ShuttlePathMappingSharedSpaceLocationTargetInput"></a>
+<a id="tocSshuttlepathmappingsharedspacelocationtargetinput"></a>
+<a id="tocsshuttlepathmappingsharedspacelocationtargetinput"></a>
+
+```json
+{
+  "type": "shared_space",
+  "space": "HR Team Site",
+  "path": "/HR Migration",
+  "path_id": "1234567890"
+}
+```
+
+A shared-container destination location supplied when creating or updating
+a path mapping.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value will always be `shared_space`.|
+|space|string|false|none|The display name of the shared container. Required for systems with<br>multiple containers.|
+|path|string|true|none|The human-readable path relative to the shared container.|
+|path_id|string|false|none|An optional stable identifier of the location, when obtained from<br>browsing.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shared_space|
+
+<h2 id="tocS_ShuttlePathMappingTargetLocationInput">ShuttlePathMappingTargetLocationInput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingtargetlocationinput"></a>
+<a id="schema_ShuttlePathMappingTargetLocationInput"></a>
+<a id="tocSshuttlepathmappingtargetlocationinput"></a>
+<a id="tocsshuttlepathmappingtargetlocationinput"></a>
+
+```json
+{
+  "type": "account",
+  "path": "/HR Migration",
+  "path_id": "1234567890",
+  "account": {
+    "id": "123456",
+    "email": "admin@company.box.com"
+  }
+}
+```
+
+A destination location supplied when creating or updating a path mapping.
+The object shape is determined by `type`. Destination input does not
+include `is_directory`; that flag is taken from the source.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ShuttlePathMappingAccountLocationTargetInput](#schemashuttlepathmappingaccountlocationtargetinput)|false|none|An account-scoped destination location supplied when creating or updating a<br>path mapping.|
+|*oneOf*|[ShuttlePathMappingSharedSpaceLocationTargetInput](#schemashuttlepathmappingsharedspacelocationtargetinput)|false|none|A shared-container destination location supplied when creating or updating<br>a path mapping.|
+
+<h2 id="tocS_ShuttlePathMappingUpdateRequest">ShuttlePathMappingUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlepathmappingupdaterequest"></a>
+<a id="schema_ShuttlePathMappingUpdateRequest"></a>
+<a id="tocSshuttlepathmappingupdaterequest"></a>
+<a id="tocsshuttlepathmappingupdaterequest"></a>
+
+```json
+{
+  "is_path_skipped": true,
+  "source": {
+    "type": "account",
+    "path": "/Shared Documents",
+    "path_id": "sp-folder-001",
+    "account": {
+      "id": "123456",
+      "email": "admin@company.box.com"
+    },
+    "is_directory": true
+  },
+  "target": {
+    "type": "account",
+    "path": "/HR Migration",
+    "account": {
+      "email": "admin@company.box.com"
+    }
+  }
+}
+```
+
+The request body used to update an existing shuttle path mapping. Only the
+fields supplied in the request body are changed. `job_id`, `id`, and `type`
+are immutable.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|is_path_skipped|boolean|false|none|Whether this source path should be skipped during the migration.|
+|source|object|false|none|none|
+|target|[ShuttlePathMappingTargetLocationInput](#schemashuttlepathmappingtargetlocationinput) \| object \| null|false|none|The destination location to migrate to. Set to `null` to clear the<br>destination, for example when skipping the source path.|
+
+<h2 id="tocS_ShuttleReport">ShuttleReport</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlereport"></a>
+<a id="schema_ShuttleReport"></a>
+<a id="tocSshuttlereport"></a>
+<a id="tocsshuttlereport"></a>
+
+```json
+{
+  "id": "6a3ba8d14f2c91e8370b4d12",
+  "type": "shuttle_report",
+  "run_id": "6a3ba68e810d9156194530a1:42",
+  "status": "complete",
+  "format": "xlsx",
+  "sections": [
+    "event_log",
+    "transfer_overview"
+  ],
+  "users_scope": "migrated",
+  "output": {
+    "id": "12345678",
+    "type": "file"
+  },
+  "created_at": "2026-03-15T06:35:00Z",
+  "completed_at": "2026-03-15T06:36:12Z"
+}
+```
+
+A report generated asynchronously for a shuttle job run. Keep polling
+while `status` is `pending` or `processing`. Stop when `status` is
+`complete`, `failed`, `canceled`, or `unknown`. The generated Box file
+or folder is `null` until generation finishes.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the shuttle report.|
+|type|string|true|none|The value will always be `shuttle_report`.|
+|run_id|string|true|none|The unique identifier of the shuttle run this report was generated<br>for.|
+|status|string|true|none|The generation status of the report. This is an open string whose set<br>of values is expected to grow; the currently documented values include<br>`pending`, `processing`, `complete`, `failed`, `canceled`, and<br>`unknown`. Keep polling `pending` and `processing`. Stop on<br>`complete`, `failed`, `canceled`, and `unknown`. Treat any value that<br>is not recognized the same as `unknown`: do not fail parsing, and do<br>not keep polling.|
+|format|string|true|none|The output file format of the report.|
+|sections|[string]|false|none|The sections included in the report. Echoes the sections requested on<br>create. This is an open list whose set of values is expected to grow;<br>the currently documented values include `files_and_folders`,<br>`event_log`, `transfer_overview`, `source_users`, `target_users`,<br>`source_collaborators`, `target_collaborators`,<br>`source_collaborations`, and `target_collaborations`. Omitted on<br>older reports that have no stored section list. New reports always<br>include this field.|
+|users_scope|string|false|none|Which users are included in user-related report sections.|
+|output|[ShuttleReportOutput](#schemashuttlereportoutput) \| object \| null|true|none|The generated Box file or folder. Always present; `null` until<br>`status` is `complete`.|
+|created_at|string(date-time)|false|none|When report generation was requested.|
+|completed_at|string(date-time) \| null|true|none|When report generation finished. Always present; `null` while<br>generation is still in progress.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_report|
+|format|xlsx|
+|format|csv|
+|users_scope|migrated|
+|users_scope|all|
+
+<h2 id="tocS_ShuttleReportCreateRequest">ShuttleReportCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlereportcreaterequest"></a>
+<a id="schema_ShuttleReportCreateRequest"></a>
+<a id="tocSshuttlereportcreaterequest"></a>
+<a id="tocsshuttlereportcreaterequest"></a>
+
+```json
+{
+  "run_id": "6a3ba68e810d9156194530a1:42",
+  "format": "xlsx",
+  "sections": [
+    "event_log",
+    "transfer_overview"
+  ],
+  "users_scope": "migrated"
+}
+```
+
+The request body used to generate a report for a shuttle run. Generation
+is asynchronous: the created report is returned immediately in `pending`
+or `processing` status. Poll `GET /shuttle_reports/{shuttle_report_id}`
+while `status` is `pending` or `processing`. Stop when `status` is
+`complete`, `failed`, `canceled`, or `unknown`. Repeating this request
+with the same parameters reuses the existing report instead of creating
+a duplicate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|run_id|string|true|none|The unique identifier of the shuttle run to generate a report for.|
+|format|string|true|none|The output file format of the report.|
+|sections|[string]|true|none|The sections to include in the report. Must be a non-empty subset of<br>the run's `available_report_sections`. This is an open list whose set<br>of values is expected to grow; the currently documented values include<br>`files_and_folders`, `event_log`, `transfer_overview`, `source_users`,<br>`target_users`, `source_collaborators`, `target_collaborators`,<br>`source_collaborations`, and `target_collaborations`.|
+|users_scope|string|false|none|Which users to include in user-related report sections. Defaults to<br>`migrated` when omitted.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|format|xlsx|
+|format|csv|
+|users_scope|migrated|
+|users_scope|all|
+
+<h2 id="tocS_ShuttleReportOutput">ShuttleReportOutput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlereportoutput"></a>
+<a id="schema_ShuttleReportOutput"></a>
+<a id="tocSshuttlereportoutput"></a>
+<a id="tocsshuttlereportoutput"></a>
+
+```json
+{
+  "id": "12345678",
+  "type": "file"
+}
+```
+
+A reference to the generated Box file or folder.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier of the generated Box file or folder.|
+|type|string|true|none|The Box object type of the generated file or folder.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|file|
+|type|folder|
+
+<h2 id="tocS_ShuttleReports">ShuttleReports</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlereports"></a>
+<a id="schema_ShuttleReports"></a>
+<a id="tocSshuttlereports"></a>
+<a id="tocsshuttlereports"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba8d14f2c91e8370b4d12",
+      "type": "shuttle_report",
+      "run_id": "6a3ba68e810d9156194530a1:42",
+      "status": "complete",
+      "format": "xlsx",
+      "sections": [
+        "event_log",
+        "transfer_overview"
+      ],
+      "users_scope": "migrated",
+      "output": {
+        "id": "12345678",
+        "type": "file"
+      },
+      "created_at": "2026-03-15T06:35:00Z",
+      "completed_at": "2026-03-15T06:36:12Z"
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle reports.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttleReport](#schemashuttlereport)]|true|none|A list of shuttle reports.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttleRun">ShuttleRun</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlerun"></a>
+<a id="schema_ShuttleRun"></a>
+<a id="tocSshuttlerun"></a>
+<a id="tocsshuttlerun"></a>
+
+```json
+{
+  "id": "6a3ba68e810d9156194530a1:42",
+  "type": "shuttle_run",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "run_mode": "transfer",
+  "state": "completed",
+  "started_at": "2026-03-15T02:00:00Z",
+  "ended_at": "2026-03-15T06:30:00Z",
+  "duration_seconds": 16200,
+  "stats": {
+    "bytes_sent": 1073741824,
+    "files_sent": 4200,
+    "folders_created": 350,
+    "is_estimated": false
+  },
+  "created_by": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "available_report_sections": [
+    "event_log",
+    "files_and_folders"
+  ]
+}
+```
+
+A historical instance of a shuttle job run. A run is created each time
+a job is started. Run IDs have the form `{job_id}:{run_number}`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the shuttle run, in the form<br>`{job_id}:{run_number}`.|
+|type|string|true|none|The value will always be `shuttle_run`.|
+|job_id|string|true|none|The unique identifier of the shuttle job this run belongs to.|
+|run_mode|string|true|none|The mode the run was started in. This is an open string whose set of<br>values is expected to grow; the currently documented values include<br>`transfer`, `simulation`, `analysis`, `scan`, and `unknown`. Clients<br>should treat any value they do not recognize as `unknown`.|
+|state|string|true|none|The current state of the shuttle run. This is an open string whose set<br>of values is expected to grow; the currently documented values include<br>`running`, `stopping`, `completed`, `completed_with_errors`, `stopped`,<br>`failed`, `timed_out`, and `unknown`. Clients should treat any value<br>they do not recognize as `unknown`.|
+|started_at|string(date-time)|false|none|When the run started.|
+|ended_at|string(date-time) \| null|false|none|When the run ended. `null` while the run is still in progress.|
+|duration_seconds|integer(int64) \| null|false|none|Total duration of the run in seconds. `null` while the run is still in<br>progress.|
+|stats|object|false|none|Transfer statistics collected during the run.|
+|created_by|[User--Base](#schemauser--base) \| object \| null|false|none|The user who started the run. `null` for schedule- or system-initiated<br>runs.|
+|available_report_sections|[string]|false|none|Report sections that can be requested for this run. This is an open<br>list whose set of values is expected to grow; the currently documented<br>values include `files_and_folders`, `event_log`, `transfer_overview`,<br>`source_users`, `target_users`, `source_collaborators`,<br>`target_collaborators`, `source_collaborations`, and<br>`target_collaborations`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_run|
+
+<h2 id="tocS_ShuttleRuns">ShuttleRuns</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttleruns"></a>
+<a id="schema_ShuttleRuns"></a>
+<a id="tocSshuttleruns"></a>
+<a id="tocsshuttleruns"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba68e810d9156194530a1:42",
+      "type": "shuttle_run",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "run_mode": "transfer",
+      "state": "completed",
+      "started_at": "2026-03-15T02:00:00Z",
+      "ended_at": "2026-03-15T06:30:00Z",
+      "duration_seconds": 16200,
+      "stats": {
+        "bytes_sent": 1073741824,
+        "files_sent": 4200,
+        "folders_created": 350,
+        "is_estimated": false
+      },
+      "created_by": {
+        "id": "11446498",
+        "type": "user"
+      },
+      "available_report_sections": [
+        "event_log",
+        "files_and_folders"
+      ]
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle runs.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttleRun](#schemashuttlerun)]|true|none|A list of shuttle runs.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttleSubject">ShuttleSubject</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesubject"></a>
+<a id="schema_ShuttleSubject"></a>
+<a id="tocSshuttlesubject"></a>
+<a id="tocsshuttlesubject"></a>
+
+```json
+{
+  "type": "user",
+  "id": "sp-user-001",
+  "email": "user@example.com",
+  "name": "Jane Doe",
+  "roles": [
+    "owner"
+  ]
+}
+```
+
+A subject discovered on the source migration system, such as a user or
+group.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Whether this subject is a user or a group.|
+|id|string \| null|false|none|The platform-native identifier of the subject. `null` when the system<br>does not provide one.|
+|email|string \| null|false|none|The email address of the subject. `null` when unknown.|
+|name|string \| null|false|none|The display name of the subject. `null` when unknown.|
+|roles|[[ShuttleSubjectRole](#schemashuttlesubjectrole)]|false|none|Roles this subject holds on the source. `null` when no roles are known.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|user|
+|type|group|
+|roles|owner|
+|roles|creator|
+|roles|updater|
+|roles|namespace_account|
+|roles|sharee|
+|roles|account_holder|
+|roles|unknown|
+
+<h2 id="tocS_ShuttleSubjectMapping">ShuttleSubjectMapping</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesubjectmapping"></a>
+<a id="schema_ShuttleSubjectMapping"></a>
+<a id="tocSshuttlesubjectmapping"></a>
+<a id="tocsshuttlesubjectmapping"></a>
+
+```json
+{
+  "id": "6a3ba7b12ea17bc9461eeace",
+  "type": "shuttle_subject_mapping",
+  "job_id": "6a3ba68e810d9156194530a1",
+  "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+  "revision": 3,
+  "is_subject_skipped": false,
+  "source": {
+    "type": "user",
+    "id": "sp-user-001",
+    "email": "user@example.com",
+    "name": "Jane Doe",
+    "roles": [
+      "owner"
+    ]
+  },
+  "target": {
+    "type": "user",
+    "id": "12345678",
+    "email": "jane.doe@company.box.com",
+    "name": "Jane Doe"
+  }
+}
+```
+
+A standard representation of a shuttle subject mapping. A subject mapping
+connects a discovered source subject to a Box user or group, or marks the
+subject as skipped.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the shuttle subject mapping.|
+|type|string|true|none|The value will always be `shuttle_subject_mapping`.|
+|job_id|string|true|none|The unique identifier of the shuttle job this mapping belongs to.|
+|discovered_subject_id|string \| null|false|none|The unique identifier of the discovered subject this mapping applies to.<br>`null` for legacy mappings created before this field was tracked.|
+|revision|integer(int32) \| null|false|none|The discovery-requirements revision this mapping was resolved against.<br>`null` for legacy mappings.|
+|is_subject_skipped|boolean|true|none|Whether this subject is skipped during the migration.|
+|source|object|true|none|none|
+|target|[ShuttleTargetSubject](#schemashuttletargetsubject) \| object \| null|false|none|The Box target subject. `null` when the subject is skipped or not yet<br>assigned.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_subject_mapping|
+
+<h2 id="tocS_ShuttleSubjectMappingCreateRequest">ShuttleSubjectMappingCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesubjectmappingcreaterequest"></a>
+<a id="schema_ShuttleSubjectMappingCreateRequest"></a>
+<a id="tocSshuttlesubjectmappingcreaterequest"></a>
+<a id="tocsshuttlesubjectmappingcreaterequest"></a>
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+  "revision": 3,
+  "is_subject_skipped": false,
+  "target": {
+    "type": "user",
+    "id": "12345678"
+  }
+}
+```
+
+The request body used to create a new shuttle subject mapping.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|job_id|string|true|none|The unique identifier of the shuttle job this mapping belongs to.|
+|discovered_subject_id|string|true|none|The unique identifier of the discovered subject to map.|
+|revision|integer(int32)|false|none|The discovery-requirements revision to resolve against. Omit to use the<br>latest revision.|
+|is_subject_skipped|boolean|false|none|Whether this subject should be skipped during the migration. Defaults<br>to `false`.|
+|target|[ShuttleTargetSubjectInput](#schemashuttletargetsubjectinput) \| object \| null|false|none|The Box target to map to. Omit or set to `null` when the subject is<br>skipped.|
+
+<h2 id="tocS_ShuttleSubjectMappingImportCreateRequest">ShuttleSubjectMappingImportCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesubjectmappingimportcreaterequest"></a>
+<a id="schema_ShuttleSubjectMappingImportCreateRequest"></a>
+<a id="tocSshuttlesubjectmappingimportcreaterequest"></a>
+<a id="tocsshuttlesubjectmappingimportcreaterequest"></a>
+
+```json
+{
+  "job_id": "6a3ba68e810d9156194530a1",
+  "file_id": "12345678901"
+}
+```
+
+The request body used to import a shuttle job's subject mappings from a
+spreadsheet already stored in Box.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|job_id|string|true|none|The unique identifier of the shuttle job whose subject mappings are<br>replaced.|
+|file_id|string|true|none|The unique identifier of the Box file holding the mapping workbook. The<br>file is read as the calling user, so it must live somewhere that user can<br>download from.|
+
+<h2 id="tocS_ShuttleSubjectMappings">ShuttleSubjectMappings</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesubjectmappings"></a>
+<a id="schema_ShuttleSubjectMappings"></a>
+<a id="tocSshuttlesubjectmappings"></a>
+<a id="tocsshuttlesubjectmappings"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a3ba7b12ea17bc9461eeace",
+      "type": "shuttle_subject_mapping",
+      "job_id": "6a3ba68e810d9156194530a1",
+      "discovered_subject_id": "6a3ba7c02ea17bc9461eeacf",
+      "revision": 3,
+      "is_subject_skipped": false,
+      "source": {
+        "type": "user",
+        "id": "sp-user-001",
+        "email": "user@example.com",
+        "name": "Jane Doe",
+        "roles": [
+          "owner"
+        ]
+      },
+      "target": {
+        "type": "user",
+        "id": "12345678",
+        "email": "jane.doe@company.box.com",
+        "name": "Jane Doe"
+      }
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle subject mappings.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttleSubjectMapping](#schemashuttlesubjectmapping)]|true|none|A list of shuttle subject mappings.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttleSubjectMappingUpdateRequest">ShuttleSubjectMappingUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesubjectmappingupdaterequest"></a>
+<a id="schema_ShuttleSubjectMappingUpdateRequest"></a>
+<a id="tocSshuttlesubjectmappingupdaterequest"></a>
+<a id="tocsshuttlesubjectmappingupdaterequest"></a>
+
+```json
+{
+  "is_subject_skipped": true,
+  "target": {
+    "type": "user",
+    "id": "12345678"
+  }
+}
+```
+
+The request body used to update an existing shuttle subject mapping. Only
+the fields supplied in the request body are changed. `job_id`, `id`,
+`type`, `source`, `discovered_subject_id`, and `revision` are immutable.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|is_subject_skipped|boolean|false|none|Whether this subject should be skipped during the migration.|
+|target|[ShuttleTargetSubjectInput](#schemashuttletargetsubjectinput) \| object \| null|false|none|The Box target to map to. Set to `null` only for a skipped subject.<br>Setting it to `null` while the mapping is active fails validation.<br>Updating `is_subject_skipped` alone preserves the existing target.|
+
+<h2 id="tocS_ShuttleSubjectRole">ShuttleSubjectRole</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesubjectrole"></a>
+<a id="schema_ShuttleSubjectRole"></a>
+<a id="tocSshuttlesubjectrole"></a>
+<a id="tocsshuttlesubjectrole"></a>
+
+```json
+"owner"
+```
+
+A role a source subject holds on the source system.
+
+<h2 id="tocS_ShuttleSystem">ShuttleSystem</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesystem"></a>
+<a id="schema_ShuttleSystem"></a>
+<a id="tocSshuttlesystem"></a>
+<a id="tocsshuttlesystem"></a>
+
+```json
+{
+  "id": "6a315c0754833bfc5df067bf",
+  "type": "shuttle_system",
+  "name": "BoxProd",
+  "system_type": "box",
+  "label": "Box (Production)",
+  "state": "connected"
+}
+```
+
+A standard representation of a shuttle system. A shuttle system describes a
+source or destination that Shuttle can migrate content to or from, along
+with its current connection state.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The unique identifier for the shuttle system.|
+|type|string|true|none|The value will always be `shuttle_system`.|
+|name|string|true|none|The display name of the shuttle system.|
+|system_type|string|true|none|Identifies the kind of source or destination this system represents, for<br>example `box`, `windows`, `sharepoint`, or `amazon_s3`. New system types<br>are added over time, so clients must tolerate values they do not<br>recognize rather than treating this as a fixed set.|
+|label|string|false|none|A server-computed display label for the system.|
+|state|string|true|none|The current connection state of the shuttle system.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|shuttle_system|
+|state|connected|
+|state|disconnected|
+|state|unknown|
+
+<h2 id="tocS_ShuttleSystemCreateRequest">ShuttleSystemCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesystemcreaterequest"></a>
+<a id="schema_ShuttleSystemCreateRequest"></a>
+<a id="tocSshuttlesystemcreaterequest"></a>
+<a id="tocsshuttlesystemcreaterequest"></a>
+
+```json
+{
+  "name": "NYC File Server",
+  "system_type": "windows"
+}
+```
+
+The request body for creating a shuttle system. Only Windows agent systems
+can be created through the public API, so `system_type` must be `windows`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|The display name for the new shuttle system.|
+|system_type|string|true|none|The public system type identifier for the new shuttle system. Only<br>`windows` is currently supported through the public API.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|system_type|windows|
+
+<h2 id="tocS_ShuttleSystems">ShuttleSystems</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesystems"></a>
+<a id="schema_ShuttleSystems"></a>
+<a id="tocSshuttlesystems"></a>
+<a id="tocsshuttlesystems"></a>
+
+```json
+{
+  "entries": [
+    {
+      "id": "6a315c0754833bfc5df067bf",
+      "type": "shuttle_system",
+      "name": "BoxProd",
+      "system_type": "box",
+      "label": "Box (Production)",
+      "state": "connected"
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih"
+}
+```
+
+A paginated list of shuttle systems.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[ShuttleSystem](#schemashuttlesystem)]|true|none|A list of shuttle systems.|
+|limit|integer(int64)|false|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|false|none|The marker for the start of the next page of results.|
+|prev_marker|string \| null|false|none|The marker for the start of the previous page of results.|
+
+<h2 id="tocS_ShuttleSystemUpdateRequest">ShuttleSystemUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttlesystemupdaterequest"></a>
+<a id="schema_ShuttleSystemUpdateRequest"></a>
+<a id="tocSshuttlesystemupdaterequest"></a>
+<a id="tocsshuttlesystemupdaterequest"></a>
+
+```json
+{
+  "name": "NYC File Server (Primary)"
+}
+```
+
+The request body for updating a shuttle system. Only the fields supplied are
+changed.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|The updated display name for the shuttle system.|
+
+<h2 id="tocS_ShuttleTargetSubject">ShuttleTargetSubject</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttletargetsubject"></a>
+<a id="schema_ShuttleTargetSubject"></a>
+<a id="tocSshuttletargetsubject"></a>
+<a id="tocsshuttletargetsubject"></a>
+
+```json
+{
+  "type": "user",
+  "id": "12345678",
+  "email": "user@example.com",
+  "name": "Jane Doe"
+}
+```
+
+A Box user or group that a source subject is mapped to.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Whether the Box target is a user or a group.|
+|id|string \| null|false|none|The Box user or group ID. `null` when the mapping was not created<br>through this API and is identified by email (user) or name (group)<br>instead. Skip is represented by `target: null`, not a missing `id`.<br>Create and update always send `id`.|
+|email|string \| null|false|none|The email address of the target. `null` when unknown.|
+|name|string \| null|false|none|The display name of the target. `null` when unknown.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|user|
+|type|group|
+
+<h2 id="tocS_ShuttleTargetSubjectInput">ShuttleTargetSubjectInput</h2>
+<!-- backwards compatibility -->
+<a id="schemashuttletargetsubjectinput"></a>
+<a id="schema_ShuttleTargetSubjectInput"></a>
+<a id="tocSshuttletargetsubjectinput"></a>
+<a id="tocsshuttletargetsubjectinput"></a>
+
+```json
+{
+  "type": "user",
+  "id": "12345678"
+}
+```
+
+A Box user or group to map a source subject to.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Whether the Box target is a user or a group.|
+|id|string|true|none|The identifier of the target Box subject.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|user|
+|type|group|
 
 <h2 id="tocS_User--Base">User--Base</h2>
 <!-- backwards compatibility -->

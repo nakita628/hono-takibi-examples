@@ -23315,6 +23315,7 @@ const PolicySummaryResponseSchema = z
   .strictObject({
     isLast: z.boolean().exactOptional(),
     maxResults: z.int32().exactOptional(),
+    nextPageCursor: z.string().exactOptional(),
     startAt: z
       .preprocess(
         (val) =>
@@ -54767,7 +54768,7 @@ export const getRestApi3PoliciesRoute = createRoute({
   tags: ['Policies'],
   summary: 'Get all policies',
   description:
-    'Returns a paginated summary of all known policies, including their names, descriptions, and which projects each policy is assigned to.\n\nResults are paginated using the standard startAt, maxResults, total, isLast and values fields.',
+    'Returns a paginated summary of all known policies, including their names, descriptions, and which projects each policy is assigned to.\n\nWhen \\{@code tanuki-358-cursor-policy-listing\\} is enabled, omit cursor for the first page and pass the returned \\{@code nextPageCursor\\} for subsequent pages. The legacy \\{@code startAt\\} and \\{@code total\\} fields are null because an offset and total are not available in cursor mode. When disabled, the offset contract is unchanged.',
   operationId: 'listPolicies',
   request: {
     query: z.object({
@@ -54783,7 +54784,7 @@ export const getRestApi3PoliciesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            description: 'the index of the first item to return (0-based, default 0)',
+            description: 'legacy 0-based offset (default 0); only 0 is accepted in cursor mode',
             in: 'query',
             name: 'startAt',
             schema: { default: 0, format: 'int64', type: 'integer' },
@@ -54804,10 +54805,23 @@ export const getRestApi3PoliciesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            description: 'the maximum number of items to return per page (default 50, max 200)',
+            description:
+              'the maximum number of items to return per page (default 50; cursor max 50)',
             in: 'query',
             name: 'maxResults',
             schema: { default: 50, format: 'int32', type: 'integer' },
+            required: false,
+          },
+        }),
+      cursor: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'opaque cursor returned by the previous page, absent for the first page',
+            in: 'query',
+            name: 'cursor',
+            schema: { type: 'string' },
             required: false,
           },
         }),
@@ -54818,12 +54832,20 @@ export const getRestApi3PoliciesRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: PolicySummaryResponseSchema } },
     },
+    400: {
+      description: '400 response',
+      content: { 'application/json': { schema: ErrorResponseSchema } },
+    },
     401: {
       description: '401 response',
       content: { 'application/json': { schema: ErrorResponseSchema } },
     },
     403: {
       description: '403 response',
+      content: { 'application/json': { schema: ErrorResponseSchema } },
+    },
+    500: {
+      description: '500 response',
       content: { 'application/json': { schema: ErrorResponseSchema } },
     },
   },
@@ -55232,6 +55254,11 @@ export const postRestApi3PriorityRoute = createRoute({
             '{"errorMessages":["Only Jira administrators can access issue type screen schemes."],"errors":{}}',
         },
       },
+    },
+    422: {
+      description:
+        "Returned if the priority can't be added to the default priority scheme because that scheme has reached the maximum number of priorities.",
+      content: { 'application/json': { schema: LimitExceededResponseBeanSchema } },
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -60361,7 +60388,6 @@ export const getRestApi3ProjectsFieldsRoute = createRoute({
       description:
         'Returned if the user does not have permission to view the projects or work types.',
     },
-    404: { description: 'Returned if the endpoint is not enabled via feature flag.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['read:jira-work'] }],
 })

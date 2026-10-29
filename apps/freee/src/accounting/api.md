@@ -6100,7 +6100,8 @@ curl https://api.freee.co.jp/api/1/deals \
     ],
     "receipt_ids": [
       1
-    ]
+    ],
+    "parent_id": 1
   }'
 ```
 
@@ -6221,7 +6222,8 @@ curl https://api.freee.co.jp/api/1/deals \
   ],
   "receipt_ids": [
     1
-  ]
+  ],
+  "parent_id": 1
 }
 ```
 
@@ -6263,6 +6265,7 @@ curl https://api.freee.co.jp/api/1/deals \
 |» » from_walletable_type|body|string|true|口座区分 (銀行口座: bank_account, クレジットカード: credit_card, 現金: wallet, プライベート資金: private_account_item)：payments指定時は必須|
 |» » date|body|string|true|支払日 (yyyy-mm-dd)：payments指定時は必須|
 |» receipt_ids|body|[integer(int64)]|false|ファイルボックス（証憑ファイル）ID（配列）|
+|» parent_id|body|integer(int64)|false|作成した取引を紐付ける各種申請のID。承認済みの各種申請を元に取引を作成する場合に指定します。作成した取引は指定した各種申請に紐付き、各種申請APIのレスポンスのdeal_idで確認できます。存在しない・閲覧権限のない各種申請、承認されていない各種申請、すでに取引・振替伝票と紐付いている各種申請を指定した場合はエラーになり、取引は作成されません。指定するには、各種申請を利用できるプランであること、各種申請を閲覧する権限、アプリに read または accounting:approval_requests:read のスコープが必要です (満たさない場合は 403 になります)。|
 
 #### Enumerated Values
 
@@ -9365,7 +9368,8 @@ curl https://api.freee.co.jp/api/1/manual_journals \
     ],
     "receipt_ids": [
       1
-    ]
+    ],
+    "parent_id": 1
   }'
 ```
 
@@ -9422,7 +9426,8 @@ curl https://api.freee.co.jp/api/1/manual_journals \
   ],
   "receipt_ids": [
     1
-  ]
+  ],
+  "parent_id": 1
 }
 ```
 
@@ -9457,6 +9462,7 @@ curl https://api.freee.co.jp/api/1/manual_journals \
 |» » segment_3_tag_code|body|string|false|セグメント3タグコード。事業所のセグメントタグコード利用設定が有効な場合に、segment_3_tag_idの代わりに指定できます。|
 |» » description|body|string|false|備考|
 |» receipt_ids|body|[integer(int64)]|false|振替伝票に添付するファイルボックス（証憑ファイル）IDの一覧。操作ユーザーが参照可能なファイルを指定してください。|
+|» parent_id|body|integer(int64)|false|作成した振替伝票を紐付ける各種申請のID。承認済みの各種申請を元に振替伝票を作成する場合に指定します。作成した振替伝票は指定した各種申請に紐付き、各種申請APIのレスポンスのmanual_journal_idで確認できます。存在しない・閲覧権限のない各種申請、承認されていない各種申請、すでに取引・振替伝票と紐付いている各種申請を指定した場合はエラーになり、振替伝票は作成されません。指定するには、各種申請を利用できるプランであること、各種申請を閲覧する権限、アプリに read または accounting:approval_requests:read のスコープが必要です (満たさない場合は 403 になります)。|
 
 #### Enumerated Values
 
@@ -24187,6 +24193,7 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
   </li>
   <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>
   <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は更新できません。</li>
+  <li>申請全体のsection_id・tag_ids・segment_1〜3_tag_idは、指定した内容で置き換えられます。未指定の項目は削除されます。</li>
   <li>本APIは条件分岐を含む申請経路にも対応しています。</li>
 </ul>
 
@@ -24259,8 +24266,8 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
 |» title|body|string|true|申請タイトル (250文字以内)|
 |» issue_date|body|string|false|申請日 (yyyy-mm-dd)<br><br>指定しない場合は当日の日付が登録されます。<br>|
 |» description|body|string|false|備考 (10000文字以内)|
-|» section_id|body|integer(int64)|false|部門ID|
-|» tag_ids|body|[integer(int64)]|false|メモタグID|
+|» section_id|body|integer(int64)|false|部門ID<br><br>未指定の場合は部門なしで更新されます。|
+|» tag_ids|body|[integer(int64)]|false|メモタグID<br><br>未指定の場合はメモタグなしで更新されます。|
 |» purchase_lines|body|[object]|false|経費申請の申請行一覧（配列）|
 |» » id|body|integer(int64)|false|経費申請の申請行ID: 既存申請行を更新する場合に指定します。IDを指定しない申請行は、新規行として扱われ追加されます。また、purchase_linesに含まれない既存の申請行は削除されます。更新後も残したい行は、必ず経費申請の申請行IDを指定してpurchase_linesに含めてください。|
 |» » transaction_date|body|string|true|発生日(yyyy-mm-dd)|
@@ -24289,9 +24296,9 @@ curl https://api.freee.co.jp/api/1/expense_applications/1 \
 |» draft|body|boolean|false|経費申請のステータス<br><br>falseを指定した時は申請中（in_progress）で経費申請を更新します。<br><br>trueを指定した時は下書き（draft）で経費申請を更新します。<br><br>未指定の時は下書きとみなして経費申請を更新します。<br>|
 |» parent_id|body|integer(int64) \| null|false|親申請ID(法人アドバンスプラン（および旧法人プロフェッショナルプラン）, 法人エンタープライズプラン)<br><br><ul><br>  <li>承認済みの既存各種申請IDのみ指定可能です。</li><br>  <li>各種申請一覧APIを利用して取得してください。</li><br>  <li>親申請の種別を購買申請にする場合は parent_type に PurchaseRequest を指定してください。</li><br>  <li>null を指定すると、現在設定されている親申請との関連付けを解除します。</li><br>  <li>キーを指定しない場合、親申請は更新されません（他のフィールドと同じキー未指定=更新なしの挙動）。</li><br></ul><br>|
 |» parent_type|body|string|false|親申請の種別 (parent_id を指定した場合のみ有効)<br><br><ul><br>  <li>ApprovalRequest: 各種申請 (parent_type 未指定時のデフォルト)</li><br>  <li>PurchaseRequest: 購買申請</li><br></ul><br>上記以外の値を指定するとバリデーションエラーになります。<br>|
-|» segment_1_tag_id|body|integer(int64)|false|セグメント１タグID<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
-|» segment_2_tag_id|body|integer(int64)|false|セグメント２タグID<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
-|» segment_3_tag_id|body|integer(int64)|false|セグメント３タグID<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|» segment_1_tag_id|body|integer(int64)|false|セグメント１タグID<br><br>未指定の場合はセグメント１タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|» segment_2_tag_id|body|integer(int64)|false|セグメント２タグID<br><br>未指定の場合はセグメント２タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|» segment_3_tag_id|body|integer(int64)|false|セグメント３タグID<br><br>未指定の場合はセグメント３タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
 
 #### Enumerated Values
 
@@ -36256,7 +36263,8 @@ oauth2 ( Scopes: write read )
   ],
   "receipt_ids": [
     1
-  ]
+  ],
+  "parent_id": 1
 }
 ```
 
@@ -36274,6 +36282,7 @@ oauth2 ( Scopes: write read )
 |details|[object]|true|none|取引の明細行（最大100行）|
 |payments|[object]|false|none|支払行一覧（配列）：未指定の場合、未決済の取引を作成します。|
 |receipt_ids|[integer(int64)]|false|none|ファイルボックス（証憑ファイル）ID（配列）|
+|parent_id|integer(int64)|false|none|作成した取引を紐付ける各種申請のID。承認済みの各種申請を元に取引を作成する場合に指定します。作成した取引は指定した各種申請に紐付き、各種申請APIのレスポンスのdeal_idで確認できます。存在しない・閲覧権限のない各種申請、承認されていない各種申請、すでに取引・振替伝票と紐付いている各種申請を指定した場合はエラーになり、取引は作成されません。指定するには、各種申請を利用できるプランであること、各種申請を閲覧する権限、アプリに read または accounting:approval_requests:read のスコープが必要です (満たさない場合は 403 になります)。|
 
 #### Enumerated Values
 
@@ -36385,7 +36394,8 @@ oauth2 ( Scopes: write read )
   ],
   "receipt_ids": [
     1
-  ]
+  ],
+  "parent_id": 1
 }
 ```
 
@@ -36399,6 +36409,7 @@ oauth2 ( Scopes: write read )
 |ref_number|string|false|none|利用者が振替伝票を管理するための管理番号（20文字以内）|
 |details|[object]|true|none|貸借行一覧。貸方と借方の合計金額を一致させ、合計100行以内で指定します。|
 |receipt_ids|[integer(int64)]|false|none|振替伝票に添付するファイルボックス（証憑ファイル）IDの一覧。操作ユーザーが参照可能なファイルを指定してください。|
+|parent_id|integer(int64)|false|none|作成した振替伝票を紐付ける各種申請のID。承認済みの各種申請を元に振替伝票を作成する場合に指定します。作成した振替伝票は指定した各種申請に紐付き、各種申請APIのレスポンスのmanual_journal_idで確認できます。存在しない・閲覧権限のない各種申請、承認されていない各種申請、すでに取引・振替伝票と紐付いている各種申請を指定した場合はエラーになり、振替伝票は作成されません。指定するには、各種申請を利用できるプランであること、各種申請を閲覧する権限、アプリに read または accounting:approval_requests:read のスコープが必要です (満たさない場合は 403 になります)。|
 
 <h2 id="tocS_manualJournalUpdateParams">manualJournalUpdateParams</h2>
 <!-- backwards compatibility -->
@@ -37173,8 +37184,8 @@ oauth2 ( Scopes: write read )
 |title|string|true|none|申請タイトル (250文字以内)|
 |issue_date|string|false|none|申請日 (yyyy-mm-dd)<br><br>指定しない場合は当日の日付が登録されます。<br>|
 |description|string|false|none|備考 (10000文字以内)|
-|section_id|integer(int64)|false|none|部門ID|
-|tag_ids|[integer(int64)]|false|none|メモタグID|
+|section_id|integer(int64)|false|none|部門ID<br><br>未指定の場合は部門なしで更新されます。|
+|tag_ids|[integer(int64)]|false|none|メモタグID<br><br>未指定の場合はメモタグなしで更新されます。|
 |purchase_lines|[object]|false|none|経費申請の申請行一覧（配列）|
 |approval_flow_route_id|integer(int64)|false|none|申請経路ID<br><br><ul><br>    <li>経費申請のステータスを申請中として作成する場合は、必ず指定してください。</li><br>    <li>指定する申請経路IDは、申請経路APIを利用して取得してください。</li><br>    <li><br>        未指定の場合は、基本経路を設定している事業所では基本経路が、基本経路を設定していない事業所では利用可能な申請経路の中から最初の申請経路が自動的に使用されます。<br>        <ul><br>          <li>意図しない申請経路を持った経費申請の作成を防ぐために、使用する申請経路IDを指定することを推奨します。</li><br>        </ul><br>    </li><br>    <li><br>        法人スタータープラン、法人スタンダードプラン（および旧法人ベーシックプラン）の事業所では以下のデフォルトで用意された申請経路のみ指定できます<br>        <ul><br>        <li>指定なし</li><br>        <li>承認者を指定</li><br>        </ul><br>    </li><br></ul><br>|
 |approver_id|integer(int64)|false|none|承認者のユーザーID<br><br>指定する承認者のユーザーIDは、申請経路APIを利用して取得してください。<br>|
@@ -37183,9 +37194,9 @@ oauth2 ( Scopes: write read )
 |draft|boolean|false|none|経費申請のステータス<br><br>falseを指定した時は申請中（in_progress）で経費申請を更新します。<br><br>trueを指定した時は下書き（draft）で経費申請を更新します。<br><br>未指定の時は下書きとみなして経費申請を更新します。<br>|
 |parent_id|integer(int64) \| null|false|none|親申請ID(法人アドバンスプラン（および旧法人プロフェッショナルプラン）, 法人エンタープライズプラン)<br><br><ul><br>  <li>承認済みの既存各種申請IDのみ指定可能です。</li><br>  <li>各種申請一覧APIを利用して取得してください。</li><br>  <li>親申請の種別を購買申請にする場合は parent_type に PurchaseRequest を指定してください。</li><br>  <li>null を指定すると、現在設定されている親申請との関連付けを解除します。</li><br>  <li>キーを指定しない場合、親申請は更新されません（他のフィールドと同じキー未指定=更新なしの挙動）。</li><br></ul><br>|
 |parent_type|string|false|none|親申請の種別 (parent_id を指定した場合のみ有効)<br><br><ul><br>  <li>ApprovalRequest: 各種申請 (parent_type 未指定時のデフォルト)</li><br>  <li>PurchaseRequest: 購買申請</li><br></ul><br>上記以外の値を指定するとバリデーションエラーになります。<br>|
-|segment_1_tag_id|integer(int64)|false|none|セグメント１タグID<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
-|segment_2_tag_id|integer(int64)|false|none|セグメント２タグID<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
-|segment_3_tag_id|integer(int64)|false|none|セグメント３タグID<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|segment_1_tag_id|integer(int64)|false|none|セグメント１タグID<br><br>未指定の場合はセグメント１タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|segment_2_tag_id|integer(int64)|false|none|セグメント２タグID<br><br>未指定の場合はセグメント２タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
+|segment_3_tag_id|integer(int64)|false|none|セグメント３タグID<br><br>未指定の場合はセグメント３タグなしで更新されます。<br><br>セグメントタグ一覧の取得APIを利用して取得してください。<br><br><a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br><br>|
 
 <h2 id="tocS_expenseApplicationActionCreateParams">expenseApplicationActionCreateParams</h2>
 <!-- backwards compatibility -->

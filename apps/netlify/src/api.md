@@ -1,4 +1,4 @@
-<h1 id="netlifys-api-documentation">Netlify's API documentation v2.62.0</h1>
+<h1 id="netlifys-api-documentation">Netlify's API documentation v2.63.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -6409,7 +6409,11 @@ curl https://api.netlify.com/api/v1/sites/string/deploys \
           "expression": "string"
         }
       ],
-      "runtime_version": "string"
+      "runtime_version": "string",
+      "scale": {
+        "min": 0,
+        "max": 1
+      }
     },
     "function_schedules": [
       {
@@ -6569,7 +6573,11 @@ curl https://api.netlify.com/api/v1/sites/string/deploys \
         "expression": "string"
       }
     ],
-    "runtime_version": "string"
+    "runtime_version": "string",
+    "scale": {
+      "min": 0,
+      "max": 1
+    }
   },
   "function_schedules": [
     {
@@ -6720,6 +6728,9 @@ curl https://api.netlify.com/api/v1/sites/string/deploys \
 |» » routes|body|[[functionRoute](#schemafunctionroute)]|false|The paths the server handles.|
 |» » excluded_routes|body|[[excludedFunctionRoute](#schemaexcludedfunctionroute)]|false|Paths within `routes` that the server does not handle.|
 |» » runtime_version|body|string|false|The runtime version the server was built for, such as `nodejs24.x`. A<br>default version is used when absent.<br>|
+|» » scale|body|object|false|How many instances of the server run.|
+|» » » min|body|integer(int64) \| null|false|The minimum number of instances the server keeps running. Defaults to 0<br>when absent.<br>|
+|» » » max|body|integer(int64) \| null|false|The maximum number of instances the server scales to. Defaults to the<br>highest the account's plan allows when absent.<br>|
 |» function_schedules|body|[[functionSchedule](#schemafunctionschedule)]|false|none|
 |» functions_config|body|object|false|none|
 |» » **additionalProperties**|body|[functionConfig](#schemafunctionconfig)|false|none|
@@ -6979,7 +6990,11 @@ curl https://api.netlify.com/api/v1/sites/string/deploys/string \
           "expression": "string"
         }
       ],
-      "runtime_version": "string"
+      "runtime_version": "string",
+      "scale": {
+        "min": 0,
+        "max": 1
+      }
     },
     "function_schedules": [
       {
@@ -7139,7 +7154,11 @@ curl https://api.netlify.com/api/v1/sites/string/deploys/string \
         "expression": "string"
       }
     ],
-    "runtime_version": "string"
+    "runtime_version": "string",
+    "scale": {
+      "min": 0,
+      "max": 1
+    }
   },
   "function_schedules": [
     {
@@ -7286,6 +7305,9 @@ curl https://api.netlify.com/api/v1/sites/string/deploys/string \
 |» » routes|body|[[functionRoute](#schemafunctionroute)]|false|The paths the server handles.|
 |» » excluded_routes|body|[[excludedFunctionRoute](#schemaexcludedfunctionroute)]|false|Paths within `routes` that the server does not handle.|
 |» » runtime_version|body|string|false|The runtime version the server was built for, such as `nodejs24.x`. A<br>default version is used when absent.<br>|
+|» » scale|body|object|false|How many instances of the server run.|
+|» » » min|body|integer(int64) \| null|false|The minimum number of instances the server keeps running. Defaults to 0<br>when absent.<br>|
+|» » » max|body|integer(int64) \| null|false|The maximum number of instances the server scales to. Defaults to the<br>highest the account's plan allows when absent.<br>|
 |» function_schedules|body|[[functionSchedule](#schemafunctionschedule)]|false|none|
 |» functions_config|body|object|false|none|
 |» » **additionalProperties**|body|[functionConfig](#schemafunctionconfig)|false|none|
@@ -16852,7 +16874,11 @@ Environment variable value model definition
         "expression": "string"
       }
     ],
-    "runtime_version": "string"
+    "runtime_version": "string",
+    "scale": {
+      "min": 0,
+      "max": 1
+    }
   },
   "function_schedules": [
     {

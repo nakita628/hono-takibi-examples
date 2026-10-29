@@ -5061,6 +5061,410 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
+<h1 id="box-platform-api-box-sign-templates">Box Sign templates</h1>
+
+Sign templates allow you to use a predefined Box Sign
+template when creating a signature request.
+The template includes placeholders that
+are automatically populated with data when creating the request.
+
+## List Box Sign templates
+
+<a id="opIdget_sign_templates"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/sign_templates \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sign_templates`
+
+Gets Box Sign templates created by a user.
+
+<h3 id="list-box-sign-templates-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih",
+  "entries": [
+    {
+      "type": "sign-template",
+      "id": "4206996024-14944f75-c34b-478a-95a1-264b1ff80d35",
+      "name": "Official contract",
+      "email_subject": "Sign Request from Acme",
+      "email_message": "Hello! Please sign the document below",
+      "days_valid": 2,
+      "parent_folder": {
+        "id": "12345",
+        "etag": "1",
+        "type": "folder",
+        "sequence_id": {},
+        "name": "Contracts"
+      },
+      "source_files": [
+        {
+          "id": "12345",
+          "etag": "1",
+          "type": "file",
+          "sequence_id": {},
+          "name": "Contract.pdf",
+          "sha1": "85136C79CBF9FE36BB9D05D0639C70C265C18D37",
+          "file_version": {
+            "id": "12345",
+            "type": "file_version",
+            "sha1": "134b65991ed521fcfe4724b7d814ab8ded5185dc"
+          }
+        }
+      ],
+      "are_fields_locked": false,
+      "are_options_locked": true,
+      "are_recipients_locked": false,
+      "are_email_settings_locked": true,
+      "are_files_locked": true,
+      "signers": [
+        {
+          "inputs": [
+            {
+              "document_tag_id": "1234",
+              "text_value": "text",
+              "checkbox_value": true,
+              "date_value": "2021-04-26",
+              "type": "text",
+              "content_type": "text",
+              "is_required": true,
+              "page_index": 4,
+              "document_id": "123075213-eb54b537-8b25-445e-87c1-5a1c67d8cbd7",
+              "dropdown_choices": [
+                "Yes",
+                "No",
+                "Maybe"
+              ],
+              "group_id": "da317330-225a-4c72-89ad-0d6dcaaf4df6",
+              "coordinates": {
+                "x": 0.672258592471358,
+                "y": 0.18654283173599448
+              },
+              "dimensions": {
+                "width": 0.2618657937806874,
+                "height": 0.05311728090109673
+              },
+              "label": "Legal name",
+              "read_only": true,
+              "validation": {
+                "validation_type": "email"
+              }
+            }
+          ],
+          "email": "example@mail.com",
+          "role": "signer",
+          "is_in_person": true,
+          "order": 2,
+          "signer_group_id": "cd4ff89-8fc1-42cf-8b29-1890dedd26d7",
+          "label": "Jane Doe",
+          "public_id": "RJZYYVPR",
+          "is_password_required": true,
+          "is_phone_number_required": true,
+          "login_required": true
+        }
+      ],
+      "additional_info": {
+        "non_editable": [
+          "email_subject",
+          "name"
+        ],
+        "required": {
+          "signers": [
+            [
+              "email"
+            ],
+            [
+              "email"
+            ]
+          ]
+        }
+      },
+      "ready_sign_link": {
+        "url": "\"https://app.box.com/sign/\nready-sign-link/a1cdf2c7-fa81-4a67-8163-1e5f4dbe5178\"",
+        "name": "Official contract",
+        "instructions": "Hello! Please sign the document below",
+        "folder_id": "12345",
+        "is_notification_disabled": true,
+        "is_active": false
+      },
+      "custom_branding": {
+        "company_name": "Corporation inc.",
+        "logo_uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA\nAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A\n8AAQUBAScY42YAAAAASUVORK5CYII=",
+        "branding_color": "9E5E6F",
+        "email_footer_text": "Contact email email@mail.com"
+      },
+      "request_flow": "standard"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-box-sign-templates-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a collection of templates.|[SignTemplates](#schemasigntemplates)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get Box Sign template by ID
+
+<a id="opIdget_sign_templates_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/sign_templates/123075213-7d117509-8f05-42e4-a5ef-5190a319d41d \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sign_templates/{template_id}`
+
+Fetches details of a specific Box Sign template.
+
+<h3 id="get-box-sign-template-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|template_id|path|string|true|The ID of a Box Sign template.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "type": "sign-template",
+  "id": "4206996024-14944f75-c34b-478a-95a1-264b1ff80d35",
+  "name": "Official contract",
+  "email_subject": "Sign Request from Acme",
+  "email_message": "Hello! Please sign the document below",
+  "days_valid": 2,
+  "parent_folder": {
+    "id": "12345",
+    "etag": "1",
+    "type": "folder",
+    "sequence_id": {},
+    "name": "Contracts"
+  },
+  "source_files": [
+    {
+      "id": "12345",
+      "etag": "1",
+      "type": "file",
+      "sequence_id": {},
+      "name": "Contract.pdf",
+      "sha1": "85136C79CBF9FE36BB9D05D0639C70C265C18D37",
+      "file_version": {
+        "id": "12345",
+        "type": "file_version",
+        "sha1": "134b65991ed521fcfe4724b7d814ab8ded5185dc"
+      }
+    }
+  ],
+  "are_fields_locked": false,
+  "are_options_locked": true,
+  "are_recipients_locked": false,
+  "are_email_settings_locked": true,
+  "are_files_locked": true,
+  "signers": [
+    {
+      "inputs": [
+        {
+          "document_tag_id": "1234",
+          "text_value": "text",
+          "checkbox_value": true,
+          "date_value": "2021-04-26",
+          "type": "text",
+          "content_type": "text",
+          "is_required": true,
+          "page_index": 4,
+          "document_id": "123075213-eb54b537-8b25-445e-87c1-5a1c67d8cbd7",
+          "dropdown_choices": [
+            "Yes",
+            "No",
+            "Maybe"
+          ],
+          "group_id": "da317330-225a-4c72-89ad-0d6dcaaf4df6",
+          "coordinates": {
+            "x": 0.672258592471358,
+            "y": 0.18654283173599448
+          },
+          "dimensions": {
+            "width": 0.2618657937806874,
+            "height": 0.05311728090109673
+          },
+          "label": "Legal name",
+          "read_only": true,
+          "validation": {
+            "validation_type": "email"
+          }
+        }
+      ],
+      "email": "example@mail.com",
+      "role": "signer",
+      "is_in_person": true,
+      "order": 2,
+      "signer_group_id": "cd4ff89-8fc1-42cf-8b29-1890dedd26d7",
+      "label": "Jane Doe",
+      "public_id": "RJZYYVPR",
+      "is_password_required": true,
+      "is_phone_number_required": true,
+      "login_required": true
+    }
+  ],
+  "additional_info": {
+    "non_editable": [
+      "email_subject",
+      "name"
+    ],
+    "required": {
+      "signers": [
+        [
+          "email"
+        ],
+        [
+          "email"
+        ]
+      ]
+    }
+  },
+  "ready_sign_link": {
+    "url": "\"https://app.box.com/sign/\nready-sign-link/a1cdf2c7-fa81-4a67-8163-1e5f4dbe5178\"",
+    "name": "Official contract",
+    "instructions": "Hello! Please sign the document below",
+    "folder_id": "12345",
+    "is_notification_disabled": true,
+    "is_active": false
+  },
+  "custom_branding": {
+    "company_name": "Corporation inc.",
+    "logo_uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA\nAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A\n8AAQUBAScY42YAAAAASUVORK5CYII=",
+    "branding_color": "9E5E6F",
+    "email_footer_text": "Contact email email@mail.com"
+  },
+  "request_flow": "standard"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-box-sign-template-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns details of a template.|[SignTemplate](#schemasigntemplate)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned if the template is not found or the user does not<br>have access to the associated template.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
 <h1 id="box-platform-api-classifications">Classifications</h1>
 
 Classification labels are
@@ -10018,14 +10422,18 @@ scope `manage enterprise properties` checked.
 |event_type|RENAME|
 |event_type|RETENTION_POLICY_ASSIGNMENT_ADD|
 |event_type|SHARE|
+|event_type|SHARED_LINK_ONE_TIME_PASSCODE_ACCESS|
+|event_type|SHARED_LINK_ONE_TIME_PASSCODE_CHALLENGE|
 |event_type|SHARED_LINK_SEND|
 |event_type|SHARE_EXPIRATION|
 |event_type|SHIELD_ALERT|
 |event_type|SHIELD_DOWNLOAD_BLOCKED|
 |event_type|SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED|
 |event_type|SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION|
+|event_type|SHIELD_EXTERNAL_COLLAB_ACCESS_JUSTIFIED|
 |event_type|SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED|
 |event_type|SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION|
+|event_type|SHIELD_EXTERNAL_COLLAB_INVITE_JUSTIFIED|
 |event_type|SHIELD_JUSTIFICATION_APPROVAL|
 |event_type|SHIELD_PREVIEW_BLOCKED|
 |event_type|SHIELD_SHARED_LINK_ACCESS_BLOCKED|
@@ -16749,6 +17157,1070 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
+<h1 id="box-platform-api-group-memberships">Group memberships</h1>
+
+Group memberships signify that
+a user is a part of the group.
+
+## List user's groups
+
+<a id="opIdget_users_id_memberships"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/users/12345/memberships \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /users/{user_id}/memberships`
+
+Retrieves all the groups for a user. Only members of this
+group or users with admin-level permissions will be able to
+use this API.
+
+<h3 id="list-users-groups-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|user_id|path|string|true|The ID of the user.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+|offset|query|integer(int64)|false|The offset of the item at which to begin the response.<br><br>Queries with offset parameter value<br>exceeding 10000 will be rejected<br>with a 400 response.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "total_count": 5000,
+  "limit": 1000,
+  "offset": 2000,
+  "order": [
+    {
+      "by": "type",
+      "direction": "ASC"
+    }
+  ],
+  "entries": [
+    {
+      "id": "11446498",
+      "type": "group_membership",
+      "user": {
+        "id": "11446498",
+        "type": "user",
+        "name": "Aaron Levie",
+        "login": "ceo@example.com"
+      },
+      "group": {
+        "id": "11446498",
+        "type": "group",
+        "name": "Support",
+        "group_type": "managed_group"
+      },
+      "role": "member",
+      "created_at": "2012-12-12T10:53:43-08:00",
+      "modified_at": "2012-12-12T10:53:43-08:00"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-users-groups-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a collection of membership objects. If there are no<br>memberships, an empty collection will be returned.|[GroupMemberships](#schemagroupmemberships)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List members of group
+
+<a id="opIdget_groups_id_memberships"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/groups/57645/memberships \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /groups/{group_id}/memberships`
+
+Retrieves all the members for a group. Only members of this
+group or users with admin-level permissions will be able to
+use this API.
+
+<h3 id="list-members-of-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|group_id|path|string|true|The ID of the group.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+|offset|query|integer(int64)|false|The offset of the item at which to begin the response.<br><br>Queries with offset parameter value<br>exceeding 10000 will be rejected<br>with a 400 response.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "total_count": 5000,
+  "limit": 1000,
+  "offset": 2000,
+  "order": [
+    {
+      "by": "type",
+      "direction": "ASC"
+    }
+  ],
+  "entries": [
+    {
+      "id": "11446498",
+      "type": "group_membership",
+      "user": {
+        "id": "11446498",
+        "type": "user",
+        "name": "Aaron Levie",
+        "login": "ceo@example.com"
+      },
+      "group": {
+        "id": "11446498",
+        "type": "group",
+        "name": "Support",
+        "group_type": "managed_group"
+      },
+      "role": "member",
+      "created_at": "2012-12-12T10:53:43-08:00",
+      "modified_at": "2012-12-12T10:53:43-08:00"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-members-of-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a collection of membership objects. If there are no<br>memberships, an empty collection will be returned.|[GroupMemberships](#schemagroupmemberships)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Add user to group
+
+<a id="opIdpost_group_memberships"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/group_memberships \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "user": {
+      "id": "1434325"
+    },
+    "group": {
+      "id": "4545523"
+    },
+    "role": "member",
+    "configurable_permissions": {
+      "can_run_reports": true
+    }
+  }'
+```
+
+`POST /group_memberships`
+
+Creates a group membership. Only users with
+admin-level permissions will be able to use this API.
+
+> Body parameter
+
+```json
+{
+  "user": {
+    "id": "1434325"
+  },
+  "group": {
+    "id": "4545523"
+  },
+  "role": "member",
+  "configurable_permissions": {
+    "can_run_reports": true
+  }
+}
+```
+
+<h3 id="add-user-to-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
+|body|body|object|false|none|
+|» user|body|object|true|The user to add to the group.|
+|» » id|body|string|true|The ID of the user to add to the group.|
+|» group|body|object|true|The group to add the user to.|
+|» » id|body|string|true|The ID of the group to add the user to.|
+|» role|body|string|false|The role of the user in the group.|
+|» configurable_permissions|body|object \| null|false|Custom configuration for the permissions an admin<br>if a group will receive. This option has no effect<br>on members with a role of `member`.<br><br>Setting these permissions overwrites the default<br>access levels of an admin.<br><br>Specifying a value of `null` for this object will disable<br>all configurable permissions. Specifying permissions will set<br>them accordingly, omitted permissions will be enabled by default.|
+|» » **additionalProperties**|body|boolean|false|A key value pair of custom permissions.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» role|member|
+|» role|admin|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "11446498",
+  "type": "group_membership",
+  "user": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "group": {
+    "id": "11446498",
+    "type": "group",
+    "name": "Support",
+    "group_type": "managed_group"
+  },
+  "role": "member",
+  "created_at": "2012-12-12T10:53:43-08:00",
+  "modified_at": "2012-12-12T10:53:43-08:00"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="add-user-to-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns a new group membership object.|[GroupMembership](#schemagroupmembership)|
+|403|Forbidden|Returns an error when the user cannot be added<br>to a group.<br><br>* `forbidden_by_policy`: Adding a user<br>to a group is forbidden due to information<br>barrier restrictions.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get group membership
+
+<a id="opIdget_group_memberships_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/group_memberships/434534 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /group_memberships/{group_membership_id}`
+
+Retrieves a specific group membership. Only admins of this
+group or users with admin-level permissions will be able to
+use this API.
+
+<h3 id="get-group-membership-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|group_membership_id|path|string|true|The ID of the group membership.|
+|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "11446498",
+  "type": "group_membership",
+  "user": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "group": {
+    "id": "11446498",
+    "type": "group",
+    "name": "Support",
+    "group_type": "managed_group"
+  },
+  "role": "member",
+  "created_at": "2012-12-12T10:53:43-08:00",
+  "modified_at": "2012-12-12T10:53:43-08:00"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-group-membership-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the group membership object.|[GroupMembership](#schemagroupmembership)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Update group membership
+
+<a id="opIdput_group_memberships_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/group_memberships/434534 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "role": "member",
+    "configurable_permissions": {
+      "can_run_reports": true
+    }
+  }'
+```
+
+`PUT /group_memberships/{group_membership_id}`
+
+Updates a user's group membership. Only admins of this
+group or users with admin-level permissions will be able to
+use this API.
+
+> Body parameter
+
+```json
+{
+  "role": "member",
+  "configurable_permissions": {
+    "can_run_reports": true
+  }
+}
+```
+
+<h3 id="update-group-membership-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|group_membership_id|path|string|true|The ID of the group membership.|
+|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
+|body|body|object|false|none|
+|» role|body|string|false|The role of the user in the group.|
+|» configurable_permissions|body|object \| null|false|Custom configuration for the permissions an admin<br>if a group will receive. This option has no effect<br>on members with a role of `member`.<br><br>Setting these permissions overwrites the default<br>access levels of an admin.<br><br>Specifying a value of `null` for this object will disable<br>all configurable permissions. Specifying permissions will set<br>them accordingly, omitted permissions will be enabled by default.|
+|» » **additionalProperties**|body|boolean|false|A key value pair of custom permissions.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» role|member|
+|» role|admin|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "11446498",
+  "type": "group_membership",
+  "user": {
+    "id": "11446498",
+    "type": "user",
+    "name": "Aaron Levie",
+    "login": "ceo@example.com"
+  },
+  "group": {
+    "id": "11446498",
+    "type": "group",
+    "name": "Support",
+    "group_type": "managed_group"
+  },
+  "role": "member",
+  "created_at": "2012-12-12T10:53:43-08:00",
+  "modified_at": "2012-12-12T10:53:43-08:00"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-group-membership-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a new group membership object.|[GroupMembership](#schemagroupmembership)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Remove user from group
+
+<a id="opIddelete_group_memberships_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/group_memberships/434534 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /group_memberships/{group_membership_id}`
+
+Deletes a specific group membership. Only admins of this
+group or users with admin-level permissions will be able to
+use this API.
+
+<h3 id="remove-user-from-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|group_membership_id|path|string|true|The ID of the group membership.|
+
+> Example responses
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="remove-user-from-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|A blank response is returned if the membership was<br>successfully deleted.|None|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+<h1 id="box-platform-api-groups">Groups</h1>
+
+Groups created in an enterprise.
+
+## List groups for enterprise
+
+<a id="opIdget_groups"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/groups \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /groups`
+
+Retrieves all of the groups for a given enterprise. The user
+must have admin permissions to inspect enterprise's groups.
+
+<h3 id="list-groups-for-enterprise-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|filter_term|query|string|false|Limits the results to only groups whose `name` starts<br>with the search term.|
+|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+|offset|query|integer(int64)|false|The offset of the item at which to begin the response.<br><br>Queries with offset parameter value<br>exceeding 10000 will be rejected<br>with a 400 response.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "total_count": 5000,
+  "limit": 1000,
+  "offset": 2000,
+  "order": [
+    {
+      "by": "type",
+      "direction": "ASC"
+    }
+  ],
+  "entries": [
+    {
+      "id": "11446498",
+      "type": "group",
+      "name": "Support",
+      "group_type": "managed_group",
+      "created_at": "2012-12-12T10:53:43-08:00",
+      "modified_at": "2012-12-12T10:53:43-08:00",
+      "provenance": "Active Directory",
+      "external_sync_identifier": "AD:123456",
+      "description": "Support Group - as imported from Active Directory",
+      "invitability_level": "admins_only",
+      "member_viewability_level": "admins_only",
+      "permissions": {
+        "can_invite_as_collaborator": true
+      }
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-groups-for-enterprise-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a collection of group objects. If there are no groups, an<br>empty collection will be returned.|[Groups](#schemagroups)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create group
+
+<a id="opIdpost_groups"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/groups \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "Customer Support",
+    "provenance": "Active Directory",
+    "external_sync_identifier": "AD:123456",
+    "description": "\"Customer Support Group - as imported from Active Directory\"",
+    "invitability_level": "admins_only",
+    "member_viewability_level": "admins_only"
+  }'
+```
+
+`POST /groups`
+
+Creates a new group of users in an enterprise. Only users with admin
+permissions can create new groups.
+
+> Body parameter
+
+```json
+{
+  "name": "Customer Support",
+  "provenance": "Active Directory",
+  "external_sync_identifier": "AD:123456",
+  "description": "\"Customer Support Group - as imported from Active Directory\"",
+  "invitability_level": "admins_only",
+  "member_viewability_level": "admins_only"
+}
+```
+
+<h3 id="create-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
+|body|body|object|false|none|
+|» name|body|string|true|The name of the new group to be created. This name must be unique<br>within the enterprise.|
+|» provenance|body|string|false|Keeps track of which external source this group is<br>coming, for example `Active Directory`, or `Okta`.<br><br>Setting this will also prevent Box admins from editing<br>the group name and its members directly via the Box<br>web application.<br><br>This is desirable for one-way syncing of groups.|
+|» external_sync_identifier|body|string|false|An arbitrary identifier that can be used by<br>external group sync tools to link this Box Group to<br>an external group.<br><br>Example values of this field<br>could be an **Active Directory Object ID** or a **Google<br>Group ID**.<br><br>We recommend you use of this field in<br>order to avoid issues when group names are updated in<br>either Box or external systems.|
+|» description|body|string|false|A human readable description of the group.|
+|» invitability_level|body|string|false|Specifies who can invite the group to collaborate<br>on folders.<br><br>When set to `admins_only` the enterprise admin, co-admins,<br>and the group's admin can invite the group.<br><br>When set to `admins_and_members` all the admins listed<br>above and group members can invite the group.<br><br>When set to `all_managed_users` all managed users in the<br>enterprise can invite the group.|
+|» member_viewability_level|body|string|false|Specifies who can see the members of the group.<br><br>* `admins_only` - the enterprise admin, co-admins, group's<br>  group admin.<br>* `admins_and_members` - all admins and group members.<br>* `all_managed_users` - all managed users in the<br>  enterprise.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» invitability_level|admins_only|
+|» invitability_level|admins_and_members|
+|» invitability_level|all_managed_users|
+|» member_viewability_level|admins_only|
+|» member_viewability_level|admins_and_members|
+|» member_viewability_level|all_managed_users|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "11446498",
+  "type": "group",
+  "name": "Support",
+  "group_type": "managed_group",
+  "created_at": "2012-12-12T10:53:43-08:00",
+  "modified_at": "2012-12-12T10:53:43-08:00",
+  "provenance": "Active Directory",
+  "external_sync_identifier": "AD:123456",
+  "description": "Support Group - as imported from Active Directory",
+  "invitability_level": "admins_only",
+  "member_viewability_level": "admins_only",
+  "permissions": {
+    "can_invite_as_collaborator": true
+  }
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns the new group object.|[Group--Full](#schemagroup--full)|
+|409|Conflict|Returns an error a conflict is stopping the group from being created.<br><br>* `invalid_parameter`: Often returned if the group name is not unique in<br>the enterprise.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Get group
+
+<a id="opIdget_groups_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/groups/57645 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /groups/{group_id}`
+
+Retrieves information about a group. Only members of this
+group or users with admin-level permissions will be able to
+use this API.
+
+<h3 id="get-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|group_id|path|string|true|The ID of the group.|
+|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "11446498",
+  "type": "group",
+  "name": "Support",
+  "group_type": "managed_group",
+  "created_at": "2012-12-12T10:53:43-08:00",
+  "modified_at": "2012-12-12T10:53:43-08:00",
+  "provenance": "Active Directory",
+  "external_sync_identifier": "AD:123456",
+  "description": "Support Group - as imported from Active Directory",
+  "invitability_level": "admins_only",
+  "member_viewability_level": "admins_only",
+  "permissions": {
+    "can_invite_as_collaborator": true
+  }
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the group object.|[Group--Full](#schemagroup--full)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Update group
+
+<a id="opIdput_groups_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/groups/57645 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "Customer Support",
+    "provenance": "Active Directory",
+    "external_sync_identifier": "AD:123456",
+    "description": "\"Customer Support Group - as imported from Active Directory\"",
+    "invitability_level": "admins_only",
+    "member_viewability_level": "admins_only"
+  }'
+```
+
+`PUT /groups/{group_id}`
+
+Updates a specific group. Only admins of this
+group or users with admin-level permissions will be able to
+use this API.
+
+> Body parameter
+
+```json
+{
+  "name": "Customer Support",
+  "provenance": "Active Directory",
+  "external_sync_identifier": "AD:123456",
+  "description": "\"Customer Support Group - as imported from Active Directory\"",
+  "invitability_level": "admins_only",
+  "member_viewability_level": "admins_only"
+}
+```
+
+<h3 id="update-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|group_id|path|string|true|The ID of the group.|
+|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
+|body|body|object|false|none|
+|» name|body|string|false|The name of the new group to be created. Must be unique within the<br>enterprise.|
+|» provenance|body|string|false|Keeps track of which external source this group is<br>coming, for example `Active Directory`, or `Okta`.<br><br>Setting this will also prevent Box admins from editing<br>the group name and its members directly via the Box<br>web application.<br><br>This is desirable for one-way syncing of groups.|
+|» external_sync_identifier|body|string|false|An arbitrary identifier that can be used by<br>external group sync tools to link this Box Group to<br>an external group.<br><br>Example values of this field<br>could be an **Active Directory Object ID** or a **Google<br>Group ID**.<br><br>We recommend you use of this field in<br>order to avoid issues when group names are updated in<br>either Box or external systems.|
+|» description|body|string|false|A human readable description of the group.|
+|» invitability_level|body|string|false|Specifies who can invite the group to collaborate<br>on folders.<br><br>When set to `admins_only` the enterprise admin, co-admins,<br>and the group's admin can invite the group.<br><br>When set to `admins_and_members` all the admins listed<br>above and group members can invite the group.<br><br>When set to `all_managed_users` all managed users in the<br>enterprise can invite the group.|
+|» member_viewability_level|body|string|false|Specifies who can see the members of the group.<br><br>* `admins_only` - the enterprise admin, co-admins, group's<br>  group admin.<br>* `admins_and_members` - all admins and group members.<br>* `all_managed_users` - all managed users in the<br>  enterprise.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» invitability_level|admins_only|
+|» invitability_level|admins_and_members|
+|» invitability_level|all_managed_users|
+|» member_viewability_level|admins_only|
+|» member_viewability_level|admins_and_members|
+|» member_viewability_level|all_managed_users|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "11446498",
+  "type": "group",
+  "name": "Support",
+  "group_type": "managed_group",
+  "created_at": "2012-12-12T10:53:43-08:00",
+  "modified_at": "2012-12-12T10:53:43-08:00",
+  "provenance": "Active Directory",
+  "external_sync_identifier": "AD:123456",
+  "description": "Support Group - as imported from Active Directory",
+  "invitability_level": "admins_only",
+  "member_viewability_level": "admins_only",
+  "permissions": {
+    "can_invite_as_collaborator": true
+  }
+}
+```
+
+> 409 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="update-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the updated group object.|[Group--Full](#schemagroup--full)|
+|409|Conflict|Returns an error a conflict is stopping the group from being created.<br><br>* `invalid_parameter`: Often returned if the group name is not unique in<br>the enterprise.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Remove group
+
+<a id="opIddelete_groups_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/groups/57645 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /groups/{group_id}`
+
+Permanently deletes a group. Only users with
+admin-level permissions will be able to use this API.
+
+<h3 id="remove-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|group_id|path|string|true|The ID of the group.|
+
+> Example responses
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="remove-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|A blank response is returned if the group was<br>successfully deleted.|None|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
 <h1 id="box-platform-api-integration-mappings">Integration mappings</h1>
 
 Integration Mappings allow the users
@@ -17818,1070 +19290,6 @@ use this endpoint.
 |---|---|---|---|
 |204|No Content|Empty body in response.|None|
 |404|Not Found|Returns a `not_found` error if the integration mapping could not be found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-<h1 id="box-platform-api-group-memberships">Group memberships</h1>
-
-Group memberships signify that
-a user is a part of the group.
-
-## List user's groups
-
-<a id="opIdget_users_id_memberships"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/users/12345/memberships \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /users/{user_id}/memberships`
-
-Retrieves all the groups for a user. Only members of this
-group or users with admin-level permissions will be able to
-use this API.
-
-<h3 id="list-users-groups-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|user_id|path|string|true|The ID of the user.|
-|limit|query|integer(int64)|false|The maximum number of items to return per page.|
-|offset|query|integer(int64)|false|The offset of the item at which to begin the response.<br><br>Queries with offset parameter value<br>exceeding 10000 will be rejected<br>with a 400 response.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "total_count": 5000,
-  "limit": 1000,
-  "offset": 2000,
-  "order": [
-    {
-      "by": "type",
-      "direction": "ASC"
-    }
-  ],
-  "entries": [
-    {
-      "id": "11446498",
-      "type": "group_membership",
-      "user": {
-        "id": "11446498",
-        "type": "user",
-        "name": "Aaron Levie",
-        "login": "ceo@example.com"
-      },
-      "group": {
-        "id": "11446498",
-        "type": "group",
-        "name": "Support",
-        "group_type": "managed_group"
-      },
-      "role": "member",
-      "created_at": "2012-12-12T10:53:43-08:00",
-      "modified_at": "2012-12-12T10:53:43-08:00"
-    }
-  ]
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="list-users-groups-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a collection of membership objects. If there are no<br>memberships, an empty collection will be returned.|[GroupMemberships](#schemagroupmemberships)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## List members of group
-
-<a id="opIdget_groups_id_memberships"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/groups/57645/memberships \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /groups/{group_id}/memberships`
-
-Retrieves all the members for a group. Only members of this
-group or users with admin-level permissions will be able to
-use this API.
-
-<h3 id="list-members-of-group-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|group_id|path|string|true|The ID of the group.|
-|limit|query|integer(int64)|false|The maximum number of items to return per page.|
-|offset|query|integer(int64)|false|The offset of the item at which to begin the response.<br><br>Queries with offset parameter value<br>exceeding 10000 will be rejected<br>with a 400 response.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "total_count": 5000,
-  "limit": 1000,
-  "offset": 2000,
-  "order": [
-    {
-      "by": "type",
-      "direction": "ASC"
-    }
-  ],
-  "entries": [
-    {
-      "id": "11446498",
-      "type": "group_membership",
-      "user": {
-        "id": "11446498",
-        "type": "user",
-        "name": "Aaron Levie",
-        "login": "ceo@example.com"
-      },
-      "group": {
-        "id": "11446498",
-        "type": "group",
-        "name": "Support",
-        "group_type": "managed_group"
-      },
-      "role": "member",
-      "created_at": "2012-12-12T10:53:43-08:00",
-      "modified_at": "2012-12-12T10:53:43-08:00"
-    }
-  ]
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="list-members-of-group-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a collection of membership objects. If there are no<br>memberships, an empty collection will be returned.|[GroupMemberships](#schemagroupmemberships)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Add user to group
-
-<a id="opIdpost_group_memberships"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/group_memberships \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "user": {
-      "id": "1434325"
-    },
-    "group": {
-      "id": "4545523"
-    },
-    "role": "member",
-    "configurable_permissions": {
-      "can_run_reports": true
-    }
-  }'
-```
-
-`POST /group_memberships`
-
-Creates a group membership. Only users with
-admin-level permissions will be able to use this API.
-
-> Body parameter
-
-```json
-{
-  "user": {
-    "id": "1434325"
-  },
-  "group": {
-    "id": "4545523"
-  },
-  "role": "member",
-  "configurable_permissions": {
-    "can_run_reports": true
-  }
-}
-```
-
-<h3 id="add-user-to-group-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
-|body|body|object|false|none|
-|» user|body|object|true|The user to add to the group.|
-|» » id|body|string|true|The ID of the user to add to the group.|
-|» group|body|object|true|The group to add the user to.|
-|» » id|body|string|true|The ID of the group to add the user to.|
-|» role|body|string|false|The role of the user in the group.|
-|» configurable_permissions|body|object \| null|false|Custom configuration for the permissions an admin<br>if a group will receive. This option has no effect<br>on members with a role of `member`.<br><br>Setting these permissions overwrites the default<br>access levels of an admin.<br><br>Specifying a value of `null` for this object will disable<br>all configurable permissions. Specifying permissions will set<br>them accordingly, omitted permissions will be enabled by default.|
-|» » **additionalProperties**|body|boolean|false|A key value pair of custom permissions.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» role|member|
-|» role|admin|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "id": "11446498",
-  "type": "group_membership",
-  "user": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "group": {
-    "id": "11446498",
-    "type": "group",
-    "name": "Support",
-    "group_type": "managed_group"
-  },
-  "role": "member",
-  "created_at": "2012-12-12T10:53:43-08:00",
-  "modified_at": "2012-12-12T10:53:43-08:00"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="add-user-to-group-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created|Returns a new group membership object.|[GroupMembership](#schemagroupmembership)|
-|403|Forbidden|Returns an error when the user cannot be added<br>to a group.<br><br>* `forbidden_by_policy`: Adding a user<br>to a group is forbidden due to information<br>barrier restrictions.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Get group membership
-
-<a id="opIdget_group_memberships_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/group_memberships/434534 \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /group_memberships/{group_membership_id}`
-
-Retrieves a specific group membership. Only admins of this
-group or users with admin-level permissions will be able to
-use this API.
-
-<h3 id="get-group-membership-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|group_membership_id|path|string|true|The ID of the group membership.|
-|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "11446498",
-  "type": "group_membership",
-  "user": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "group": {
-    "id": "11446498",
-    "type": "group",
-    "name": "Support",
-    "group_type": "managed_group"
-  },
-  "role": "member",
-  "created_at": "2012-12-12T10:53:43-08:00",
-  "modified_at": "2012-12-12T10:53:43-08:00"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="get-group-membership-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the group membership object.|[GroupMembership](#schemagroupmembership)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Update group membership
-
-<a id="opIdput_group_memberships_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/group_memberships/434534 \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "role": "member",
-    "configurable_permissions": {
-      "can_run_reports": true
-    }
-  }'
-```
-
-`PUT /group_memberships/{group_membership_id}`
-
-Updates a user's group membership. Only admins of this
-group or users with admin-level permissions will be able to
-use this API.
-
-> Body parameter
-
-```json
-{
-  "role": "member",
-  "configurable_permissions": {
-    "can_run_reports": true
-  }
-}
-```
-
-<h3 id="update-group-membership-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|group_membership_id|path|string|true|The ID of the group membership.|
-|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
-|body|body|object|false|none|
-|» role|body|string|false|The role of the user in the group.|
-|» configurable_permissions|body|object \| null|false|Custom configuration for the permissions an admin<br>if a group will receive. This option has no effect<br>on members with a role of `member`.<br><br>Setting these permissions overwrites the default<br>access levels of an admin.<br><br>Specifying a value of `null` for this object will disable<br>all configurable permissions. Specifying permissions will set<br>them accordingly, omitted permissions will be enabled by default.|
-|» » **additionalProperties**|body|boolean|false|A key value pair of custom permissions.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» role|member|
-|» role|admin|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "11446498",
-  "type": "group_membership",
-  "user": {
-    "id": "11446498",
-    "type": "user",
-    "name": "Aaron Levie",
-    "login": "ceo@example.com"
-  },
-  "group": {
-    "id": "11446498",
-    "type": "group",
-    "name": "Support",
-    "group_type": "managed_group"
-  },
-  "role": "member",
-  "created_at": "2012-12-12T10:53:43-08:00",
-  "modified_at": "2012-12-12T10:53:43-08:00"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="update-group-membership-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a new group membership object.|[GroupMembership](#schemagroupmembership)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Remove user from group
-
-<a id="opIddelete_group_memberships_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/group_memberships/434534 \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /group_memberships/{group_membership_id}`
-
-Deletes a specific group membership. Only admins of this
-group or users with admin-level permissions will be able to
-use this API.
-
-<h3 id="remove-user-from-group-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|group_membership_id|path|string|true|The ID of the group membership.|
-
-> Example responses
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="remove-user-from-group-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|A blank response is returned if the membership was<br>successfully deleted.|None|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-<h1 id="box-platform-api-groups">Groups</h1>
-
-Groups created in an enterprise.
-
-## List groups for enterprise
-
-<a id="opIdget_groups"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/groups \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /groups`
-
-Retrieves all of the groups for a given enterprise. The user
-must have admin permissions to inspect enterprise's groups.
-
-<h3 id="list-groups-for-enterprise-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|filter_term|query|string|false|Limits the results to only groups whose `name` starts<br>with the search term.|
-|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
-|limit|query|integer(int64)|false|The maximum number of items to return per page.|
-|offset|query|integer(int64)|false|The offset of the item at which to begin the response.<br><br>Queries with offset parameter value<br>exceeding 10000 will be rejected<br>with a 400 response.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "total_count": 5000,
-  "limit": 1000,
-  "offset": 2000,
-  "order": [
-    {
-      "by": "type",
-      "direction": "ASC"
-    }
-  ],
-  "entries": [
-    {
-      "id": "11446498",
-      "type": "group",
-      "name": "Support",
-      "group_type": "managed_group",
-      "created_at": "2012-12-12T10:53:43-08:00",
-      "modified_at": "2012-12-12T10:53:43-08:00",
-      "provenance": "Active Directory",
-      "external_sync_identifier": "AD:123456",
-      "description": "Support Group - as imported from Active Directory",
-      "invitability_level": "admins_only",
-      "member_viewability_level": "admins_only",
-      "permissions": {
-        "can_invite_as_collaborator": true
-      }
-    }
-  ]
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="list-groups-for-enterprise-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a collection of group objects. If there are no groups, an<br>empty collection will be returned.|[Groups](#schemagroups)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Create group
-
-<a id="opIdpost_groups"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/groups \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "name": "Customer Support",
-    "provenance": "Active Directory",
-    "external_sync_identifier": "AD:123456",
-    "description": "\"Customer Support Group - as imported from Active Directory\"",
-    "invitability_level": "admins_only",
-    "member_viewability_level": "admins_only"
-  }'
-```
-
-`POST /groups`
-
-Creates a new group of users in an enterprise. Only users with admin
-permissions can create new groups.
-
-> Body parameter
-
-```json
-{
-  "name": "Customer Support",
-  "provenance": "Active Directory",
-  "external_sync_identifier": "AD:123456",
-  "description": "\"Customer Support Group - as imported from Active Directory\"",
-  "invitability_level": "admins_only",
-  "member_viewability_level": "admins_only"
-}
-```
-
-<h3 id="create-group-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
-|body|body|object|false|none|
-|» name|body|string|true|The name of the new group to be created. This name must be unique<br>within the enterprise.|
-|» provenance|body|string|false|Keeps track of which external source this group is<br>coming, for example `Active Directory`, or `Okta`.<br><br>Setting this will also prevent Box admins from editing<br>the group name and its members directly via the Box<br>web application.<br><br>This is desirable for one-way syncing of groups.|
-|» external_sync_identifier|body|string|false|An arbitrary identifier that can be used by<br>external group sync tools to link this Box Group to<br>an external group.<br><br>Example values of this field<br>could be an **Active Directory Object ID** or a **Google<br>Group ID**.<br><br>We recommend you use of this field in<br>order to avoid issues when group names are updated in<br>either Box or external systems.|
-|» description|body|string|false|A human readable description of the group.|
-|» invitability_level|body|string|false|Specifies who can invite the group to collaborate<br>on folders.<br><br>When set to `admins_only` the enterprise admin, co-admins,<br>and the group's admin can invite the group.<br><br>When set to `admins_and_members` all the admins listed<br>above and group members can invite the group.<br><br>When set to `all_managed_users` all managed users in the<br>enterprise can invite the group.|
-|» member_viewability_level|body|string|false|Specifies who can see the members of the group.<br><br>* `admins_only` - the enterprise admin, co-admins, group's<br>  group admin.<br>* `admins_and_members` - all admins and group members.<br>* `all_managed_users` - all managed users in the<br>  enterprise.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» invitability_level|admins_only|
-|» invitability_level|admins_and_members|
-|» invitability_level|all_managed_users|
-|» member_viewability_level|admins_only|
-|» member_viewability_level|admins_and_members|
-|» member_viewability_level|all_managed_users|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "id": "11446498",
-  "type": "group",
-  "name": "Support",
-  "group_type": "managed_group",
-  "created_at": "2012-12-12T10:53:43-08:00",
-  "modified_at": "2012-12-12T10:53:43-08:00",
-  "provenance": "Active Directory",
-  "external_sync_identifier": "AD:123456",
-  "description": "Support Group - as imported from Active Directory",
-  "invitability_level": "admins_only",
-  "member_viewability_level": "admins_only",
-  "permissions": {
-    "can_invite_as_collaborator": true
-  }
-}
-```
-
-> 409 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="create-group-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created|Returns the new group object.|[Group--Full](#schemagroup--full)|
-|409|Conflict|Returns an error a conflict is stopping the group from being created.<br><br>* `invalid_parameter`: Often returned if the group name is not unique in<br>the enterprise.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Get group
-
-<a id="opIdget_groups_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/groups/57645 \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /groups/{group_id}`
-
-Retrieves information about a group. Only members of this
-group or users with admin-level permissions will be able to
-use this API.
-
-<h3 id="get-group-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|group_id|path|string|true|The ID of the group.|
-|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "11446498",
-  "type": "group",
-  "name": "Support",
-  "group_type": "managed_group",
-  "created_at": "2012-12-12T10:53:43-08:00",
-  "modified_at": "2012-12-12T10:53:43-08:00",
-  "provenance": "Active Directory",
-  "external_sync_identifier": "AD:123456",
-  "description": "Support Group - as imported from Active Directory",
-  "invitability_level": "admins_only",
-  "member_viewability_level": "admins_only",
-  "permissions": {
-    "can_invite_as_collaborator": true
-  }
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="get-group-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the group object.|[Group--Full](#schemagroup--full)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Update group
-
-<a id="opIdput_groups_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/groups/57645 \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "name": "Customer Support",
-    "provenance": "Active Directory",
-    "external_sync_identifier": "AD:123456",
-    "description": "\"Customer Support Group - as imported from Active Directory\"",
-    "invitability_level": "admins_only",
-    "member_viewability_level": "admins_only"
-  }'
-```
-
-`PUT /groups/{group_id}`
-
-Updates a specific group. Only admins of this
-group or users with admin-level permissions will be able to
-use this API.
-
-> Body parameter
-
-```json
-{
-  "name": "Customer Support",
-  "provenance": "Active Directory",
-  "external_sync_identifier": "AD:123456",
-  "description": "\"Customer Support Group - as imported from Active Directory\"",
-  "invitability_level": "admins_only",
-  "member_viewability_level": "admins_only"
-}
-```
-
-<h3 id="update-group-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|group_id|path|string|true|The ID of the group.|
-|fields|query|[string]|false|A comma-separated list of attributes to include in the<br>response. This can be used to request fields that are<br>not normally returned in a standard response.<br><br>Be aware that specifying this parameter will have the<br>effect that none of the standard fields are returned in<br>the response unless explicitly specified, instead only<br>fields for the mini representation are returned, additional<br>to the fields requested.|
-|body|body|object|false|none|
-|» name|body|string|false|The name of the new group to be created. Must be unique within the<br>enterprise.|
-|» provenance|body|string|false|Keeps track of which external source this group is<br>coming, for example `Active Directory`, or `Okta`.<br><br>Setting this will also prevent Box admins from editing<br>the group name and its members directly via the Box<br>web application.<br><br>This is desirable for one-way syncing of groups.|
-|» external_sync_identifier|body|string|false|An arbitrary identifier that can be used by<br>external group sync tools to link this Box Group to<br>an external group.<br><br>Example values of this field<br>could be an **Active Directory Object ID** or a **Google<br>Group ID**.<br><br>We recommend you use of this field in<br>order to avoid issues when group names are updated in<br>either Box or external systems.|
-|» description|body|string|false|A human readable description of the group.|
-|» invitability_level|body|string|false|Specifies who can invite the group to collaborate<br>on folders.<br><br>When set to `admins_only` the enterprise admin, co-admins,<br>and the group's admin can invite the group.<br><br>When set to `admins_and_members` all the admins listed<br>above and group members can invite the group.<br><br>When set to `all_managed_users` all managed users in the<br>enterprise can invite the group.|
-|» member_viewability_level|body|string|false|Specifies who can see the members of the group.<br><br>* `admins_only` - the enterprise admin, co-admins, group's<br>  group admin.<br>* `admins_and_members` - all admins and group members.<br>* `all_managed_users` - all managed users in the<br>  enterprise.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» invitability_level|admins_only|
-|» invitability_level|admins_and_members|
-|» invitability_level|all_managed_users|
-|» member_viewability_level|admins_only|
-|» member_viewability_level|admins_and_members|
-|» member_viewability_level|all_managed_users|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "11446498",
-  "type": "group",
-  "name": "Support",
-  "group_type": "managed_group",
-  "created_at": "2012-12-12T10:53:43-08:00",
-  "modified_at": "2012-12-12T10:53:43-08:00",
-  "provenance": "Active Directory",
-  "external_sync_identifier": "AD:123456",
-  "description": "Support Group - as imported from Active Directory",
-  "invitability_level": "admins_only",
-  "member_viewability_level": "admins_only",
-  "permissions": {
-    "can_invite_as_collaborator": true
-  }
-}
-```
-
-> 409 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="update-group-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the updated group object.|[Group--Full](#schemagroup--full)|
-|409|Conflict|Returns an error a conflict is stopping the group from being created.<br><br>* `invalid_parameter`: Often returned if the group name is not unique in<br>the enterprise.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Remove group
-
-<a id="opIddelete_groups_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/groups/57645 \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /groups/{group_id}`
-
-Permanently deletes a group. Only users with
-admin-level permissions will be able to use this API.
-
-<h3 id="remove-group-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|group_id|path|string|true|The ID of the group.|
-
-> Example responses
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="remove-group-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|A blank response is returned if the group was<br>successfully deleted.|None|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -27847,12 +28255,82 @@ Returns the status for the POST request.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |202|Accepted|Returns a message about the request status.|[SessionTerminationMessage](#schemasessionterminationmessage)|
-|400|Bad Request|Returns an error if some of the parameters are<br>not valid.<br><br>* `Groups can not be NULL or EMPTY` when no value is provided.<br>* `group id format is string` when the provided group id format<br>is incorrect.<br>* `Supported payload format is JSON` when the provided payload<br>format is incorrect.|[ClientError](#schemaclienterror)|
+|400|Bad Request|Returns an error if some of the parameters are<br>not valid.<br><br>* `Groups can not be NULL or EMPTY` when no value is provided.<br>* `group id format is string` when the provided group id format<br>is incorrect.<br>* `Supported payload format is JSON` when the provided payload<br>format is incorrect.<br>* `Too many users included for this request` when more than 10,000 unique users exist across all specified groups.|[ClientError](#schemaclienterror)|
 |403|Forbidden|Returns an error if there are insufficient permissions.|[ClientError](#schemaclienterror)|
 |404|Not Found|Returns an error if the resource could not be found.|[ClientError](#schemaclienterror)|
 |429|Too Many Requests|Returns an error if the request limit is exceeded.|[ClientError](#schemaclienterror)|
 |500|Internal Server Error|Returns an error if there is an internal server issue.|[ClientError](#schemaclienterror)|
 |503|Service Unavailable|Returns an error if the request timed out.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+<h1 id="box-platform-api-shared-links-app-items">Shared links (App Items)</h1>
+
+URLs generated for app items stored in Box,
+which provide direct, read-only access to the resource.
+
+## Find app item for shared link
+
+<a id="opIdget_shared_items#app_items"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shared_items#app_items' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'boxapi: shared_link=[example.com]&shared_link_password=[xyz123]'
+```
+
+`GET /shared_items#app_items`
+
+Returns the app item represented by a shared link.
+
+The link can originate from the current enterprise or another.
+
+<h3 id="find-app-item-for-shared-link-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|boxapi|header|string|true|A header containing the shared link and optional password for the<br>shared link.<br><br>The format for this header is `shared_link=[link]&shared_link_password=[password]`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "12345678",
+  "type": "app_item",
+  "application_type": "hubs"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="find-app-item-for-shared-link-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a full app item resource if the shared link is valid and<br>the user has access to it.|[AppItem](#schemaappitem)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -31180,104 +31658,35 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-<h1 id="box-platform-api-shared-links-app-items">Shared links (App Items)</h1>
+<h1 id="box-platform-api-shield-information-barrier-reports">Shield information barrier reports</h1>
 
-URLs generated for app items stored in Box,
-which provide direct, read-only access to the resource.
+Shield information barrier reports
+contain information on what existing collaborations
+will be removed permanently when the information barrier is enabled.
 
-## Find app item for shared link
+## List shield information barrier reports
 
-<a id="opIdget_shared_items#app_items"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.box.com/2.0/shared_items#app_items' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H 'boxapi: shared_link=[example.com]&shared_link_password=[xyz123]'
-```
-
-`GET /shared_items#app_items`
-
-Returns the app item represented by a shared link.
-
-The link can originate from the current enterprise or another.
-
-<h3 id="find-app-item-for-shared-link-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|boxapi|header|string|true|A header containing the shared link and optional password for the<br>shared link.<br><br>The format for this header is `shared_link=[link]&shared_link_password=[password]`.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "12345678",
-  "type": "app_item",
-  "application_type": "hubs"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="find-app-item-for-shared-link-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a full app item resource if the shared link is valid and<br>the user has access to it.|[AppItem](#schemaappitem)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-<h1 id="box-platform-api-shield-information-barriers">Shield information barriers</h1>
-
-Shield information barrier in Box defines an ethical wall.
-An ethical wall is a mechanism that prevents exchanges or communication that
-could lead to conflicts of interest and therefore result in
-business activities ethically or legally questionable.
-
-## Get shield information barrier with specified ID
-
-<a id="opIdget_shield_information_barriers_id"></a>
+<a id="opIdget_shield_information_barrier_reports"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_information_barriers/1910967 \
+curl 'https://api.box.com/2.0/shield_information_barrier_reports?shield_information_barrier_id=1910967' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /shield_information_barriers/{shield_information_barrier_id}`
+`GET /shield_information_barrier_reports`
 
-Get shield information barrier based on provided ID.
+Lists shield information barrier reports.
 
-<h3 id="get-shield-information-barrier-with-specified-id-parameters">Parameters</h3>
+<h3 id="list-shield-information-barrier-reports-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|shield_information_barrier_id|path|string|true|The ID of the shield information barrier.|
+|shield_information_barrier_id|query|string|true|The ID of the shield information barrier.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
 
 > Example responses
 
@@ -31285,28 +31694,32 @@ Get shield information barrier based on provided ID.
 
 ```json
 {
-  "id": "11446498",
-  "type": "shield_information_barrier",
-  "enterprise": {
-    "id": "1910967",
-    "type": "enterprise"
-  },
-  "status": "draft",
-  "created_at": "2020-06-26T18:44:45.869Z",
-  "created_by": {
-    "id": "11446498",
-    "type": "user"
-  },
-  "updated_at": "2020-07-26T18:44:45.869Z",
-  "updated_by": {
-    "id": "11446498",
-    "type": "user"
-  },
-  "enabled_at": "2020-07-26T18:44:45.869Z",
-  "enabled_by": {
-    "id": "11446498",
-    "type": "user"
-  }
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "entries": [
+    {
+      "id": "11446498",
+      "type": "shield_information_barrier_report",
+      "shield_information_barrier": {
+        "shield_information_barrier": {
+          "id": "11446498",
+          "type": "shield_information_barrier"
+        }
+      },
+      "status": "pending",
+      "details": {
+        "details": {
+          "folder_id": "124235"
+        }
+      },
+      "created_at": "2020-06-26T18:44:45.869Z",
+      "created_by": {
+        "id": "11446498",
+        "type": "user"
+      },
+      "updated_at": "2020-07-26T18:44:45.869Z"
+    }
+  ]
 }
 ```
 
@@ -31342,12 +31755,12 @@ Get shield information barrier based on provided ID.
 }
 ```
 
-<h3 id="get-shield-information-barrier-with-specified-id-responses">Responses</h3>
+<h3 id="list-shield-information-barrier-reports-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Returns the shield information barrier object.|[ShieldInformationBarrier](#schemashieldinformationbarrier)|
-|404|Not Found|Returns a `not_found` error if<br>the shield information barrier was not found.|[ClientError](#schemaclienterror)|
+|200|OK|Returns a paginated list of shield information barrier report objects.|[ShieldInformationBarrierReports](#schemashieldinformationbarrierreports)|
+|404|Not Found|Returns a `not_found` error if the Shield Information Barrier could not be found.|[ClientError](#schemaclienterror)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -31355,80 +31768,74 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-## Add changed status of shield information barrier with specified ID
+## Create shield information barrier report
 
-<a id="opIdpost_shield_information_barriers_change_status"></a>
+<a id="opIdpost_shield_information_barrier_reports"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_information_barriers/change_status \
+curl https://api.box.com/2.0/shield_information_barrier_reports \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "id": "1910967",
-    "status": "pending"
+    "shield_information_barrier": {
+      "id": "11446498",
+      "type": "shield_information_barrier"
+    }
   }'
 ```
 
-`POST /shield_information_barriers/change_status`
+`POST /shield_information_barrier_reports`
 
-Change status of shield information barrier with the specified ID.
+Creates a shield information barrier report for a given barrier.
 
 > Body parameter
 
 ```json
 {
-  "id": "1910967",
-  "status": "pending"
+  "shield_information_barrier": {
+    "id": "11446498",
+    "type": "shield_information_barrier"
+  }
 }
 ```
 
-<h3 id="add-changed-status-of-shield-information-barrier-with-specified-id-parameters">Parameters</h3>
+<h3 id="create-shield-information-barrier-report-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|object|false|none|
-|» id|body|string|true|The ID of the shield information barrier.|
-|» status|body|string|true|The desired status for the shield information barrier.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» status|pending|
-|» status|disabled|
+|body|body|[ShieldInformationBarrierReference](#schemashieldinformationbarrierreference)|false|none|
+|» shield_information_barrier|body|[ShieldInformationBarrier--Base](#schemashieldinformationbarrier--base)|false|A base representation of a<br>shield information barrier object.|
 
 > Example responses
 
-> 200 Response
+> 201 Response
 
 ```json
 {
   "id": "11446498",
-  "type": "shield_information_barrier",
-  "enterprise": {
-    "id": "1910967",
-    "type": "enterprise"
+  "type": "shield_information_barrier_report",
+  "shield_information_barrier": {
+    "shield_information_barrier": {
+      "id": "11446498",
+      "type": "shield_information_barrier"
+    }
   },
-  "status": "draft",
+  "status": "pending",
+  "details": {
+    "details": {
+      "folder_id": "124235"
+    }
+  },
   "created_at": "2020-06-26T18:44:45.869Z",
   "created_by": {
     "id": "11446498",
     "type": "user"
   },
-  "updated_at": "2020-07-26T18:44:45.869Z",
-  "updated_by": {
-    "id": "11446498",
-    "type": "user"
-  },
-  "enabled_at": "2020-07-26T18:44:45.869Z",
-  "enabled_by": {
-    "id": "11446498",
-    "type": "user"
-  }
+  "updated_at": "2020-07-26T18:44:45.869Z"
 }
 ```
 
@@ -31480,13 +31887,13 @@ Change status of shield information barrier with the specified ID.
 }
 ```
 
-<h3 id="add-changed-status-of-shield-information-barrier-with-specified-id-responses">Responses</h3>
+<h3 id="create-shield-information-barrier-report-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Returns the updated shield information barrier object.|[ShieldInformationBarrier](#schemashieldinformationbarrier)|
-|404|Not Found|Returns a `not_found` error if the<br>shield information barrier was not found.|[ClientError](#schemaclienterror)|
-|409|Conflict|Returns an error if there exists Conflicts<br>with existing information barriers.|[ClientError](#schemaclienterror)|
+|201|Created|Returns the shield information barrier report information object.|[ShieldInformationBarrierReport](#schemashieldinformationbarrierreport)|
+|404|Not Found|Returns a `not_found` error if<br>the shield information barrier report was not found.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returns a `conflict` error if a<br>shield information barrier report is currently being created.|[ClientError](#schemaclienterror)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -31494,28 +31901,303 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-## List shield information barriers
+## Get shield information barrier report by ID
 
-<a id="opIdget_shield_information_barriers"></a>
+<a id="opIdget_shield_information_barrier_reports_id"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_information_barriers \
+curl https://api.box.com/2.0/shield_information_barrier_reports/3423 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /shield_information_barriers`
+`GET /shield_information_barrier_reports/{shield_information_barrier_report_id}`
 
-Retrieves a list of shield information barrier objects
-for the enterprise of JWT.
+Retrieves a shield information barrier report by its ID.
 
-<h3 id="list-shield-information-barriers-parameters">Parameters</h3>
+<h3 id="get-shield-information-barrier-report-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.|
+|shield_information_barrier_report_id|path|string|true|The ID of the shield information barrier Report.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "11446498",
+  "type": "shield_information_barrier_report",
+  "shield_information_barrier": {
+    "shield_information_barrier": {
+      "id": "11446498",
+      "type": "shield_information_barrier"
+    }
+  },
+  "status": "pending",
+  "details": {
+    "details": {
+      "folder_id": "124235"
+    }
+  },
+  "created_at": "2020-06-26T18:44:45.869Z",
+  "created_by": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "updated_at": "2020-07-26T18:44:45.869Z"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shield-information-barrier-report-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the  shield information barrier report object.|[ShieldInformationBarrierReport](#schemashieldinformationbarrierreport)|
+|404|Not Found|Returns a `not_found` error if the<br>shield information barrier Report was not found.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+<h1 id="box-platform-api-shield-information-barrier-segment-members">Shield information barrier segment members</h1>
+
+Shield information barrier segment member
+represents a user that is assigned to a
+specific segment.
+
+## Get shield information barrier segment member by ID
+
+<a id="opIdget_shield_information_barrier_segment_members_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_information_barrier_segment_members/7815 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /shield_information_barrier_segment_members/{shield_information_barrier_segment_member_id}`
+
+Retrieves a shield information barrier
+segment member by its ID.
+
+<h3 id="get-shield-information-barrier-segment-member-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|shield_information_barrier_segment_member_id|path|string|true|The ID of the shield information barrier segment Member.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "11446498",
+  "type": "shield_information_barrier_segment_member",
+  "user": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "shield_information_barrier": {
+    "id": "11446498",
+    "type": "shield_information_barrier"
+  },
+  "shield_information_barrier_segment": {
+    "id": "432554",
+    "type": "shield_information_barrier_segment"
+  },
+  "created_at": "2020-06-26T18:44:45.869Z",
+  "created_by": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "updated_at": "2020-07-26T18:44:45.869Z",
+  "updated_by": {
+    "id": "11446498",
+    "type": "user"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shield-information-barrier-segment-member-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shield information barrier segment member object.|[ShieldInformationBarrierSegmentMember](#schemashieldinformationbarriersegmentmember)|
+|404|Not Found|Returns a `not_found` error if<br>the shield information barrier segment member was not found.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete shield information barrier segment member by ID
+
+<a id="opIddelete_shield_information_barrier_segment_members_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_information_barrier_segment_members/7815 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /shield_information_barrier_segment_members/{shield_information_barrier_segment_member_id}`
+
+Deletes a shield information barrier
+segment member based on provided ID.
+
+<h3 id="delete-shield-information-barrier-segment-member-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|shield_information_barrier_segment_member_id|path|string|true|The ID of the shield information barrier segment Member.|
+
+> Example responses
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-shield-information-barrier-segment-member-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Returns an empty response if the<br>segment member was deleted successfully.|None|
+|404|Not Found|Returns a `not_found` error if the<br>shield information barrier segment member was not found.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shield information barrier segment members
+
+<a id="opIdget_shield_information_barrier_segment_members"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shield_information_barrier_segment_members?shield_information_barrier_segment_id=3423' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /shield_information_barrier_segment_members`
+
+Lists shield information barrier segment members
+based on provided segment IDs.
+
+<h3 id="list-shield-information-barrier-segment-members-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|shield_information_barrier_segment_id|query|string|true|The ID of the shield information barrier segment.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
 |limit|query|integer(int64)|false|The maximum number of items to return per page.|
 
 > Example responses
@@ -31529,12 +32211,19 @@ for the enterprise of JWT.
   "entries": [
     {
       "id": "11446498",
-      "type": "shield_information_barrier",
-      "enterprise": {
-        "id": "1910967",
-        "type": "enterprise"
+      "type": "shield_information_barrier_segment_member",
+      "user": {
+        "id": "11446498",
+        "type": "user"
       },
-      "status": "draft",
+      "shield_information_barrier": {
+        "id": "11446498",
+        "type": "shield_information_barrier"
+      },
+      "shield_information_barrier_segment": {
+        "id": "432554",
+        "type": "shield_information_barrier_segment"
+      },
       "created_at": "2020-06-26T18:44:45.869Z",
       "created_by": {
         "id": "11446498",
@@ -31544,30 +32233,9 @@ for the enterprise of JWT.
       "updated_by": {
         "id": "11446498",
         "type": "user"
-      },
-      "enabled_at": "2020-07-26T18:44:45.869Z",
-      "enabled_by": {
-        "id": "11446498",
-        "type": "user"
       }
     }
   ]
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
 }
 ```
 
@@ -31587,12 +32255,11 @@ for the enterprise of JWT.
 }
 ```
 
-<h3 id="list-shield-information-barriers-responses">Responses</h3>
+<h3 id="list-shield-information-barrier-segment-members-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Returns a paginated list of<br>shield information barrier objects,<br>empty list if currently no barrier.|[ShieldInformationBarriers](#schemashieldinformationbarriers)|
-|404|Not Found|Returns a `not_found` error if could not find an enterprise using JWT.|[ClientError](#schemaclienterror)|
+|200|OK|Returns a paginated list of<br>shield information barrier segment member objects.|[ShieldInformationBarrierSegmentMembers](#schemashieldinformationbarriersegmentmembers)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -31600,57 +32267,80 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-## Create shield information barrier
+## Create shield information barrier segment member
 
-<a id="opIdpost_shield_information_barriers"></a>
+<a id="opIdpost_shield_information_barrier_segment_members"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_information_barriers \
+curl https://api.box.com/2.0/shield_information_barrier_segment_members \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "enterprise": {
-      "id": "1910967",
-      "type": "enterprise"
+    "type": "shield_information_barrier_segment_member",
+    "shield_information_barrier": {
+      "id": "11446498",
+      "type": "shield_information_barrier"
+    },
+    "shield_information_barrier_segment": {
+      "id": "432554",
+      "type": "shield_information_barrier_segment"
+    },
+    "user": {
+      "id": "11446498",
+      "type": "user"
     }
   }'
 ```
 
-`POST /shield_information_barriers`
+`POST /shield_information_barrier_segment_members`
 
-Creates a shield information barrier to
-separate individuals/groups within the same
-firm and prevents confidential information passing between them.
+Creates a new shield information barrier segment member.
 
 > Body parameter
 
 ```json
 {
-  "enterprise": {
-    "id": "1910967",
-    "type": "enterprise"
+  "type": "shield_information_barrier_segment_member",
+  "shield_information_barrier": {
+    "id": "11446498",
+    "type": "shield_information_barrier"
+  },
+  "shield_information_barrier_segment": {
+    "id": "432554",
+    "type": "shield_information_barrier_segment"
+  },
+  "user": {
+    "id": "11446498",
+    "type": "user"
   }
 }
 ```
 
-<h3 id="create-shield-information-barrier-parameters">Parameters</h3>
+<h3 id="create-shield-information-barrier-segment-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|none|
-|» enterprise|body|object|true|The `type` and `id` of enterprise this barrier is under.|
-|» » id|body|string|false|The unique identifier for this enterprise.|
-|» » type|body|string|false|The value will always be `enterprise`.|
+|» type|body|string|false|A type of the shield barrier segment member.|
+|» shield_information_barrier|body|[ShieldInformationBarrier--Base](#schemashieldinformationbarrier--base)|false|A base representation of a<br>shield information barrier object.|
+|» shield_information_barrier_segment|body|object|true|The `type` and `id` of the<br>requested shield information barrier segment.|
+|» » id|body|string|false|The ID reference of the<br>requesting shield information barrier segment.|
+|» » type|body|string|false|The type of the shield barrier segment for this member.|
+|» user|body|object|true|User to which restriction will be applied.|
+|» » id|body|string|true|The unique identifier for this user.|
+|» » type|body|string|true|The value will always be `user`.|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
-|» » type|enterprise|
+|» type|shield_information_barrier_segment_member|
+|» » type|shield_information_barrier_segment|
+|» » type|user|
 
 > Example responses
 
@@ -31659,12 +32349,19 @@ firm and prevents confidential information passing between them.
 ```json
 {
   "id": "11446498",
-  "type": "shield_information_barrier",
-  "enterprise": {
-    "id": "1910967",
-    "type": "enterprise"
+  "type": "shield_information_barrier_segment_member",
+  "user": {
+    "id": "11446498",
+    "type": "user"
   },
-  "status": "draft",
+  "shield_information_barrier": {
+    "id": "11446498",
+    "type": "shield_information_barrier"
+  },
+  "shield_information_barrier_segment": {
+    "id": "432554",
+    "type": "shield_information_barrier_segment"
+  },
   "created_at": "2020-06-26T18:44:45.869Z",
   "created_by": {
     "id": "11446498",
@@ -31674,28 +32371,7 @@ firm and prevents confidential information passing between them.
   "updated_by": {
     "id": "11446498",
     "type": "user"
-  },
-  "enabled_at": "2020-07-26T18:44:45.869Z",
-  "enabled_by": {
-    "id": "11446498",
-    "type": "user"
   }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
 }
 ```
 
@@ -31731,13 +32407,435 @@ firm and prevents confidential information passing between them.
 }
 ```
 
-<h3 id="create-shield-information-barrier-responses">Responses</h3>
+<h3 id="create-shield-information-barrier-segment-member-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|Created|Returns a new shield information barrier object.|[ShieldInformationBarrier](#schemashieldinformationbarrier)|
-|400|Bad Request|Returns an error if the enterprise is missing from the request.|[ClientError](#schemaclienterror)|
-|404|Not Found|Returns an error when an incorrect or null enterprise is present in the request body.|[ClientError](#schemaclienterror)|
+|201|Created|Returns a new shield information barrier segment member object.|[ShieldInformationBarrierSegmentMember](#schemashieldinformationbarriersegmentmember)|
+|404|Not Found|Returns an error if the<br>shield information barrier or segment was not found.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+<h1 id="box-platform-api-shield-information-barrier-segment-restrictions">Shield information barrier segment restrictions</h1>
+
+Shield information barrier segment restriction is
+an access restriction based on the content (file or folder) owner.
+
+## Get shield information barrier segment restriction by ID
+
+<a id="opIdget_shield_information_barrier_segment_restrictions_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_information_barrier_segment_restrictions/4563 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /shield_information_barrier_segment_restrictions/{shield_information_barrier_segment_restriction_id}`
+
+Retrieves a shield information barrier segment
+restriction based on provided ID.
+
+<h3 id="get-shield-information-barrier-segment-restriction-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|shield_information_barrier_segment_restriction_id|path|string|true|The ID of the shield information barrier segment Restriction.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "type": "shield_information_barrier_segment_restriction",
+  "id": "11446498",
+  "shield_information_barrier_segment": {
+    "id": "1910967",
+    "type": "shield_information_barrier_segment"
+  },
+  "restricted_segment": {
+    "id": "1910967",
+    "type": "shield_information_barrier_segment"
+  },
+  "shield_information_barrier": {
+    "id": "11446498",
+    "type": "shield_information_barrier"
+  },
+  "created_at": "2020-06-26T18:44:45.869Z",
+  "created_by": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "updated_at": "2020-07-26T18:44:45.869Z",
+  "updated_by": {
+    "id": "11446498",
+    "type": "user"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shield-information-barrier-segment-restriction-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shield information barrier segment<br>restriction object.|[ShieldInformationBarrierSegmentRestriction](#schemashieldinformationbarriersegmentrestriction)|
+|404|Not Found|Returns a `not_found` error if the<br>shield information barrier segment<br>restriction was not found.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete shield information barrier segment restriction by ID
+
+<a id="opIddelete_shield_information_barrier_segment_restrictions_id"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_information_barrier_segment_restrictions/4563 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /shield_information_barrier_segment_restrictions/{shield_information_barrier_segment_restriction_id}`
+
+Delete shield information barrier segment restriction
+based on provided ID.
+
+<h3 id="delete-shield-information-barrier-segment-restriction-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|shield_information_barrier_segment_restriction_id|path|string|true|The ID of the shield information barrier segment Restriction.|
+
+> Example responses
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-shield-information-barrier-segment-restriction-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Empty body in response.|None|
+|404|Not Found|Returns a `not_found` error if the<br>shield information barrier segment restriction was not found.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## List shield information barrier segment restrictions
+
+<a id="opIdget_shield_information_barrier_segment_restrictions"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/shield_information_barrier_segment_restrictions?shield_information_barrier_segment_id=3423' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /shield_information_barrier_segment_restrictions`
+
+Lists shield information barrier segment restrictions
+based on provided segment ID.
+
+<h3 id="list-shield-information-barrier-segment-restrictions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|shield_information_barrier_segment_id|query|string|true|The ID of the shield information barrier segment.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|limit|query|integer(int64)|false|The maximum number of items to return per page.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
+  "entries": [
+    {
+      "type": "shield_information_barrier_segment_restriction",
+      "id": "11446498",
+      "shield_information_barrier_segment": {
+        "id": "1910967",
+        "type": "shield_information_barrier_segment"
+      },
+      "restricted_segment": {
+        "id": "1910967",
+        "type": "shield_information_barrier_segment"
+      },
+      "shield_information_barrier": {
+        "id": "11446498",
+        "type": "shield_information_barrier"
+      },
+      "created_at": "2020-06-26T18:44:45.869Z",
+      "created_by": {
+        "id": "11446498",
+        "type": "user"
+      },
+      "updated_at": "2020-07-26T18:44:45.869Z",
+      "updated_by": {
+        "id": "11446498",
+        "type": "user"
+      }
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-shield-information-barrier-segment-restrictions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of<br>shield information barrier segment restriction objects.|[ShieldInformationBarrierSegmentRestrictions](#schemashieldinformationbarriersegmentrestrictions)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Create shield information barrier segment restriction
+
+<a id="opIdpost_shield_information_barrier_segment_restrictions"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_information_barrier_segment_restrictions \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "type": "shield_information_barrier_segment_restriction",
+    "shield_information_barrier": {
+      "id": "11446498",
+      "type": "shield_information_barrier"
+    },
+    "shield_information_barrier_segment": {
+      "id": "1910967",
+      "type": "shield_information_barrier_segment"
+    },
+    "restricted_segment": {
+      "id": "1910967",
+      "type": "shield_information_barrier_segment"
+    }
+  }'
+```
+
+`POST /shield_information_barrier_segment_restrictions`
+
+Creates a shield information barrier
+segment restriction object.
+
+> Body parameter
+
+```json
+{
+  "type": "shield_information_barrier_segment_restriction",
+  "shield_information_barrier": {
+    "id": "11446498",
+    "type": "shield_information_barrier"
+  },
+  "shield_information_barrier_segment": {
+    "id": "1910967",
+    "type": "shield_information_barrier_segment"
+  },
+  "restricted_segment": {
+    "id": "1910967",
+    "type": "shield_information_barrier_segment"
+  }
+}
+```
+
+<h3 id="create-shield-information-barrier-segment-restriction-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|none|
+|» type|body|string|true|The type of the shield barrier segment<br>restriction for this member.|
+|» shield_information_barrier|body|[ShieldInformationBarrier--Base](#schemashieldinformationbarrier--base)|false|A base representation of a<br>shield information barrier object.|
+|» shield_information_barrier_segment|body|object|true|The `type` and `id` of the requested<br>shield information barrier segment.|
+|» » id|body|string|false|The ID reference of the requesting<br>shield information barrier segment.|
+|» » type|body|string|false|The type of the shield barrier segment for this member.|
+|» restricted_segment|body|object|true|The `type` and `id` of the restricted<br>shield information barrier segment.|
+|» » id|body|string|false|The ID reference of the restricted<br>shield information barrier segment.|
+|» » type|body|string|false|The type of the restricted shield<br>information barrier segment.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» type|shield_information_barrier_segment_restriction|
+|» » type|shield_information_barrier_segment|
+|» » type|shield_information_barrier_segment|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "type": "shield_information_barrier_segment_restriction",
+  "id": "11446498",
+  "shield_information_barrier_segment": {
+    "id": "1910967",
+    "type": "shield_information_barrier_segment"
+  },
+  "restricted_segment": {
+    "id": "1910967",
+    "type": "shield_information_barrier_segment"
+  },
+  "shield_information_barrier": {
+    "id": "11446498",
+    "type": "shield_information_barrier"
+  },
+  "created_at": "2020-06-26T18:44:45.869Z",
+  "created_by": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "updated_at": "2020-07-26T18:44:45.869Z",
+  "updated_by": {
+    "id": "11446498",
+    "type": "user"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="create-shield-information-barrier-segment-restriction-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Returns the newly created Shield<br>Information Barrier Segment Restriction object.|[ShieldInformationBarrierSegmentRestriction](#schemashieldinformationbarriersegmentrestriction)|
+|404|Not Found|Returns a `not_found` error if the<br>shield information barrier or segment was not found.|[ClientError](#schemaclienterror)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -32286,34 +33384,34 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-<h1 id="box-platform-api-shield-information-barrier-segment-members">Shield information barrier segment members</h1>
+<h1 id="box-platform-api-shield-information-barriers">Shield information barriers</h1>
 
-Shield information barrier segment member
-represents a user that is assigned to a
-specific segment.
+Shield information barrier in Box defines an ethical wall.
+An ethical wall is a mechanism that prevents exchanges or communication that
+could lead to conflicts of interest and therefore result in
+business activities ethically or legally questionable.
 
-## Get shield information barrier segment member by ID
+## Get shield information barrier with specified ID
 
-<a id="opIdget_shield_information_barrier_segment_members_id"></a>
+<a id="opIdget_shield_information_barriers_id"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_information_barrier_segment_members/7815 \
+curl https://api.box.com/2.0/shield_information_barriers/1910967 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /shield_information_barrier_segment_members/{shield_information_barrier_segment_member_id}`
+`GET /shield_information_barriers/{shield_information_barrier_id}`
 
-Retrieves a shield information barrier
-segment member by its ID.
+Get shield information barrier based on provided ID.
 
-<h3 id="get-shield-information-barrier-segment-member-by-id-parameters">Parameters</h3>
+<h3 id="get-shield-information-barrier-with-specified-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|shield_information_barrier_segment_member_id|path|string|true|The ID of the shield information barrier segment Member.|
+|shield_information_barrier_id|path|string|true|The ID of the shield information barrier.|
 
 > Example responses
 
@@ -32322,19 +33420,12 @@ segment member by its ID.
 ```json
 {
   "id": "11446498",
-  "type": "shield_information_barrier_segment_member",
-  "user": {
-    "id": "11446498",
-    "type": "user"
+  "type": "shield_information_barrier",
+  "enterprise": {
+    "id": "1910967",
+    "type": "enterprise"
   },
-  "shield_information_barrier": {
-    "id": "11446498",
-    "type": "shield_information_barrier"
-  },
-  "shield_information_barrier_segment": {
-    "id": "432554",
-    "type": "shield_information_barrier_segment"
-  },
+  "status": "draft",
   "created_at": "2020-06-26T18:44:45.869Z",
   "created_by": {
     "id": "11446498",
@@ -32344,313 +33435,119 @@ segment member by its ID.
   "updated_by": {
     "id": "11446498",
     "type": "user"
-  }
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
   },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="get-shield-information-barrier-segment-member-by-id-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the shield information barrier segment member object.|[ShieldInformationBarrierSegmentMember](#schemashieldinformationbarriersegmentmember)|
-|404|Not Found|Returns a `not_found` error if<br>the shield information barrier segment member was not found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Delete shield information barrier segment member by ID
-
-<a id="opIddelete_shield_information_barrier_segment_members_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/shield_information_barrier_segment_members/7815 \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /shield_information_barrier_segment_members/{shield_information_barrier_segment_member_id}`
-
-Deletes a shield information barrier
-segment member based on provided ID.
-
-<h3 id="delete-shield-information-barrier-segment-member-by-id-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|shield_information_barrier_segment_member_id|path|string|true|The ID of the shield information barrier segment Member.|
-
-> Example responses
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="delete-shield-information-barrier-segment-member-by-id-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|Returns an empty response if the<br>segment member was deleted successfully.|None|
-|404|Not Found|Returns a `not_found` error if the<br>shield information barrier segment member was not found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## List shield information barrier segment members
-
-<a id="opIdget_shield_information_barrier_segment_members"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.box.com/2.0/shield_information_barrier_segment_members?shield_information_barrier_segment_id=3423' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /shield_information_barrier_segment_members`
-
-Lists shield information barrier segment members
-based on provided segment IDs.
-
-<h3 id="list-shield-information-barrier-segment-members-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|shield_information_barrier_segment_id|query|string|true|The ID of the shield information barrier segment.|
-|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
-|limit|query|integer(int64)|false|The maximum number of items to return per page.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "limit": 1000,
-  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
-  "entries": [
-    {
-      "id": "11446498",
-      "type": "shield_information_barrier_segment_member",
-      "user": {
-        "id": "11446498",
-        "type": "user"
-      },
-      "shield_information_barrier": {
-        "id": "11446498",
-        "type": "shield_information_barrier"
-      },
-      "shield_information_barrier_segment": {
-        "id": "432554",
-        "type": "shield_information_barrier_segment"
-      },
-      "created_at": "2020-06-26T18:44:45.869Z",
-      "created_by": {
-        "id": "11446498",
-        "type": "user"
-      },
-      "updated_at": "2020-07-26T18:44:45.869Z",
-      "updated_by": {
-        "id": "11446498",
-        "type": "user"
-      }
-    }
-  ]
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="list-shield-information-barrier-segment-members-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a paginated list of<br>shield information barrier segment member objects.|[ShieldInformationBarrierSegmentMembers](#schemashieldinformationbarriersegmentmembers)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Create shield information barrier segment member
-
-<a id="opIdpost_shield_information_barrier_segment_members"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/shield_information_barrier_segment_members \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "type": "shield_information_barrier_segment_member",
-    "shield_information_barrier": {
-      "id": "11446498",
-      "type": "shield_information_barrier"
-    },
-    "shield_information_barrier_segment": {
-      "id": "432554",
-      "type": "shield_information_barrier_segment"
-    },
-    "user": {
-      "id": "11446498",
-      "type": "user"
-    }
-  }'
-```
-
-`POST /shield_information_barrier_segment_members`
-
-Creates a new shield information barrier segment member.
-
-> Body parameter
-
-```json
-{
-  "type": "shield_information_barrier_segment_member",
-  "shield_information_barrier": {
-    "id": "11446498",
-    "type": "shield_information_barrier"
-  },
-  "shield_information_barrier_segment": {
-    "id": "432554",
-    "type": "shield_information_barrier_segment"
-  },
-  "user": {
+  "enabled_at": "2020-07-26T18:44:45.869Z",
+  "enabled_by": {
     "id": "11446498",
     "type": "user"
   }
 }
 ```
 
-<h3 id="create-shield-information-barrier-segment-member-parameters">Parameters</h3>
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="get-shield-information-barrier-with-specified-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns the shield information barrier object.|[ShieldInformationBarrier](#schemashieldinformationbarrier)|
+|404|Not Found|Returns a `not_found` error if<br>the shield information barrier was not found.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Add changed status of shield information barrier with specified ID
+
+<a id="opIdpost_shield_information_barriers_change_status"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/shield_information_barriers/change_status \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "id": "1910967",
+    "status": "pending"
+  }'
+```
+
+`POST /shield_information_barriers/change_status`
+
+Change status of shield information barrier with the specified ID.
+
+> Body parameter
+
+```json
+{
+  "id": "1910967",
+  "status": "pending"
+}
+```
+
+<h3 id="add-changed-status-of-shield-information-barrier-with-specified-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|none|
-|» type|body|string|false|A type of the shield barrier segment member.|
-|» shield_information_barrier|body|[ShieldInformationBarrier--Base](#schemashieldinformationbarrier--base)|false|A base representation of a<br>shield information barrier object.|
-|» shield_information_barrier_segment|body|object|true|The `type` and `id` of the<br>requested shield information barrier segment.|
-|» » id|body|string|false|The ID reference of the<br>requesting shield information barrier segment.|
-|» » type|body|string|false|The type of the shield barrier segment for this member.|
-|» user|body|object|true|User to which restriction will be applied.|
-|» » id|body|string|true|The unique identifier for this user.|
-|» » type|body|string|true|The value will always be `user`.|
+|» id|body|string|true|The ID of the shield information barrier.|
+|» status|body|string|true|The desired status for the shield information barrier.|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
-|» type|shield_information_barrier_segment_member|
-|» » type|shield_information_barrier_segment|
-|» » type|user|
+|» status|pending|
+|» status|disabled|
 
 > Example responses
 
-> 201 Response
+> 200 Response
 
 ```json
 {
   "id": "11446498",
-  "type": "shield_information_barrier_segment_member",
-  "user": {
-    "id": "11446498",
-    "type": "user"
+  "type": "shield_information_barrier",
+  "enterprise": {
+    "id": "1910967",
+    "type": "enterprise"
   },
-  "shield_information_barrier": {
-    "id": "11446498",
-    "type": "shield_information_barrier"
-  },
-  "shield_information_barrier_segment": {
-    "id": "432554",
-    "type": "shield_information_barrier_segment"
-  },
+  "status": "draft",
   "created_at": "2020-06-26T18:44:45.869Z",
   "created_by": {
     "id": "11446498",
@@ -32660,233 +33557,12 @@ Creates a new shield information barrier segment member.
   "updated_by": {
     "id": "11446498",
     "type": "user"
-  }
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
   },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="create-shield-information-barrier-segment-member-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created|Returns a new shield information barrier segment member object.|[ShieldInformationBarrierSegmentMember](#schemashieldinformationbarriersegmentmember)|
-|404|Not Found|Returns an error if the<br>shield information barrier or segment was not found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-<h1 id="box-platform-api-shield-information-barrier-reports">Shield information barrier reports</h1>
-
-Shield information barrier reports
-contain information on what existing collaborations
-will be removed permanently when the information barrier is enabled.
-
-## List shield information barrier reports
-
-<a id="opIdget_shield_information_barrier_reports"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.box.com/2.0/shield_information_barrier_reports?shield_information_barrier_id=1910967' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /shield_information_barrier_reports`
-
-Lists shield information barrier reports.
-
-<h3 id="list-shield-information-barrier-reports-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|shield_information_barrier_id|query|string|true|The ID of the shield information barrier.|
-|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
-|limit|query|integer(int64)|false|The maximum number of items to return per page.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "limit": 1000,
-  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
-  "entries": [
-    {
-      "id": "11446498",
-      "type": "shield_information_barrier_report",
-      "shield_information_barrier": {
-        "shield_information_barrier": {
-          "id": "11446498",
-          "type": "shield_information_barrier"
-        }
-      },
-      "status": "pending",
-      "details": {
-        "details": {
-          "folder_id": "124235"
-        }
-      },
-      "created_at": "2020-06-26T18:44:45.869Z",
-      "created_by": {
-        "id": "11446498",
-        "type": "user"
-      },
-      "updated_at": "2020-07-26T18:44:45.869Z"
-    }
-  ]
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="list-shield-information-barrier-reports-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a paginated list of shield information barrier report objects.|[ShieldInformationBarrierReports](#schemashieldinformationbarrierreports)|
-|404|Not Found|Returns a `not_found` error if the Shield Information Barrier could not be found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Create shield information barrier report
-
-<a id="opIdpost_shield_information_barrier_reports"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/shield_information_barrier_reports \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "shield_information_barrier": {
-      "id": "11446498",
-      "type": "shield_information_barrier"
-    }
-  }'
-```
-
-`POST /shield_information_barrier_reports`
-
-Creates a shield information barrier report for a given barrier.
-
-> Body parameter
-
-```json
-{
-  "shield_information_barrier": {
-    "id": "11446498",
-    "type": "shield_information_barrier"
-  }
-}
-```
-
-<h3 id="create-shield-information-barrier-report-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[ShieldInformationBarrierReference](#schemashieldinformationbarrierreference)|false|none|
-|» shield_information_barrier|body|[ShieldInformationBarrier--Base](#schemashieldinformationbarrier--base)|false|A base representation of a<br>shield information barrier object.|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "id": "11446498",
-  "type": "shield_information_barrier_report",
-  "shield_information_barrier": {
-    "shield_information_barrier": {
-      "id": "11446498",
-      "type": "shield_information_barrier"
-    }
-  },
-  "status": "pending",
-  "details": {
-    "details": {
-      "folder_id": "124235"
-    }
-  },
-  "created_at": "2020-06-26T18:44:45.869Z",
-  "created_by": {
+  "enabled_at": "2020-07-26T18:44:45.869Z",
+  "enabled_by": {
     "id": "11446498",
     "type": "user"
-  },
-  "updated_at": "2020-07-26T18:44:45.869Z"
+  }
 }
 ```
 
@@ -32938,13 +33614,13 @@ Creates a shield information barrier report for a given barrier.
 }
 ```
 
-<h3 id="create-shield-information-barrier-report-responses">Responses</h3>
+<h3 id="add-changed-status-of-shield-information-barrier-with-specified-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|Created|Returns the shield information barrier report information object.|[ShieldInformationBarrierReport](#schemashieldinformationbarrierreport)|
-|404|Not Found|Returns a `not_found` error if<br>the shield information barrier report was not found.|[ClientError](#schemaclienterror)|
-|409|Conflict|Returns a `conflict` error if a<br>shield information barrier report is currently being created.|[ClientError](#schemaclienterror)|
+|200|OK|Returns the updated shield information barrier object.|[ShieldInformationBarrier](#schemashieldinformationbarrier)|
+|404|Not Found|Returns a `not_found` error if the<br>shield information barrier was not found.|[ClientError](#schemaclienterror)|
+|409|Conflict|Returns an error if there exists Conflicts<br>with existing information barriers.|[ClientError](#schemaclienterror)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -32952,302 +33628,28 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-## Get shield information barrier report by ID
+## List shield information barriers
 
-<a id="opIdget_shield_information_barrier_reports_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/shield_information_barrier_reports/3423 \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /shield_information_barrier_reports/{shield_information_barrier_report_id}`
-
-Retrieves a shield information barrier report by its ID.
-
-<h3 id="get-shield-information-barrier-report-by-id-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|shield_information_barrier_report_id|path|string|true|The ID of the shield information barrier Report.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "11446498",
-  "type": "shield_information_barrier_report",
-  "shield_information_barrier": {
-    "shield_information_barrier": {
-      "id": "11446498",
-      "type": "shield_information_barrier"
-    }
-  },
-  "status": "pending",
-  "details": {
-    "details": {
-      "folder_id": "124235"
-    }
-  },
-  "created_at": "2020-06-26T18:44:45.869Z",
-  "created_by": {
-    "id": "11446498",
-    "type": "user"
-  },
-  "updated_at": "2020-07-26T18:44:45.869Z"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="get-shield-information-barrier-report-by-id-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the  shield information barrier report object.|[ShieldInformationBarrierReport](#schemashieldinformationbarrierreport)|
-|404|Not Found|Returns a `not_found` error if the<br>shield information barrier Report was not found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-<h1 id="box-platform-api-shield-information-barrier-segment-restrictions">Shield information barrier segment restrictions</h1>
-
-Shield information barrier segment restriction is
-an access restriction based on the content (file or folder) owner.
-
-## Get shield information barrier segment restriction by ID
-
-<a id="opIdget_shield_information_barrier_segment_restrictions_id"></a>
+<a id="opIdget_shield_information_barriers"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_information_barrier_segment_restrictions/4563 \
+curl https://api.box.com/2.0/shield_information_barriers \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /shield_information_barrier_segment_restrictions/{shield_information_barrier_segment_restriction_id}`
+`GET /shield_information_barriers`
 
-Retrieves a shield information barrier segment
-restriction based on provided ID.
+Retrieves a list of shield information barrier objects
+for the enterprise of JWT.
 
-<h3 id="get-shield-information-barrier-segment-restriction-by-id-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|shield_information_barrier_segment_restriction_id|path|string|true|The ID of the shield information barrier segment Restriction.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "type": "shield_information_barrier_segment_restriction",
-  "id": "11446498",
-  "shield_information_barrier_segment": {
-    "id": "1910967",
-    "type": "shield_information_barrier_segment"
-  },
-  "restricted_segment": {
-    "id": "1910967",
-    "type": "shield_information_barrier_segment"
-  },
-  "shield_information_barrier": {
-    "id": "11446498",
-    "type": "shield_information_barrier"
-  },
-  "created_at": "2020-06-26T18:44:45.869Z",
-  "created_by": {
-    "id": "11446498",
-    "type": "user"
-  },
-  "updated_at": "2020-07-26T18:44:45.869Z",
-  "updated_by": {
-    "id": "11446498",
-    "type": "user"
-  }
-}
-```
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="get-shield-information-barrier-segment-restriction-by-id-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns the shield information barrier segment<br>restriction object.|[ShieldInformationBarrierSegmentRestriction](#schemashieldinformationbarriersegmentrestriction)|
-|404|Not Found|Returns a `not_found` error if the<br>shield information barrier segment<br>restriction was not found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Delete shield information barrier segment restriction by ID
-
-<a id="opIddelete_shield_information_barrier_segment_restrictions_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/shield_information_barrier_segment_restrictions/4563 \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /shield_information_barrier_segment_restrictions/{shield_information_barrier_segment_restriction_id}`
-
-Delete shield information barrier segment restriction
-based on provided ID.
-
-<h3 id="delete-shield-information-barrier-segment-restriction-by-id-parameters">Parameters</h3>
+<h3 id="list-shield-information-barriers-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|shield_information_barrier_segment_restriction_id|path|string|true|The ID of the shield information barrier segment Restriction.|
-
-> Example responses
-
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="delete-shield-information-barrier-segment-restriction-by-id-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|Empty body in response.|None|
-|404|Not Found|Returns a `not_found` error if the<br>shield information barrier segment restriction was not found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## List shield information barrier segment restrictions
-
-<a id="opIdget_shield_information_barrier_segment_restrictions"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.box.com/2.0/shield_information_barrier_segment_restrictions?shield_information_barrier_segment_id=3423' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /shield_information_barrier_segment_restrictions`
-
-Lists shield information barrier segment restrictions
-based on provided segment ID.
-
-<h3 id="list-shield-information-barrier-segment-restrictions-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|shield_information_barrier_segment_id|query|string|true|The ID of the shield information barrier segment.|
-|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
+|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.|
 |limit|query|integer(int64)|false|The maximum number of items to return per page.|
 
 > Example responses
@@ -33260,20 +33662,13 @@ based on provided segment ID.
   "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
   "entries": [
     {
-      "type": "shield_information_barrier_segment_restriction",
       "id": "11446498",
-      "shield_information_barrier_segment": {
+      "type": "shield_information_barrier",
+      "enterprise": {
         "id": "1910967",
-        "type": "shield_information_barrier_segment"
+        "type": "enterprise"
       },
-      "restricted_segment": {
-        "id": "1910967",
-        "type": "shield_information_barrier_segment"
-      },
-      "shield_information_barrier": {
-        "id": "11446498",
-        "type": "shield_information_barrier"
-      },
+      "status": "draft",
       "created_at": "2020-06-26T18:44:45.869Z",
       "created_by": {
         "id": "11446498",
@@ -33283,9 +33678,30 @@ based on provided segment ID.
       "updated_by": {
         "id": "11446498",
         "type": "user"
+      },
+      "enabled_at": "2020-07-26T18:44:45.869Z",
+      "enabled_by": {
+        "id": "11446498",
+        "type": "user"
       }
     }
   ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
 }
 ```
 
@@ -33305,11 +33721,12 @@ based on provided segment ID.
 }
 ```
 
-<h3 id="list-shield-information-barrier-segment-restrictions-responses">Responses</h3>
+<h3 id="list-shield-information-barriers-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Returns a paginated list of<br>shield information barrier segment restriction objects.|[ShieldInformationBarrierSegmentRestrictions](#schemashieldinformationbarriersegmentrestrictions)|
+|200|OK|Returns a paginated list of<br>shield information barrier objects,<br>empty list if currently no barrier.|[ShieldInformationBarriers](#schemashieldinformationbarriers)|
+|404|Not Found|Returns a `not_found` error if could not find an enterprise using JWT.|[ClientError](#schemaclienterror)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -33317,81 +33734,57 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2Security
 </aside>
 
-## Create shield information barrier segment restriction
+## Create shield information barrier
 
-<a id="opIdpost_shield_information_barrier_segment_restrictions"></a>
+<a id="opIdpost_shield_information_barriers"></a>
 
 > Code samples
 
 ```bash
-curl https://api.box.com/2.0/shield_information_barrier_segment_restrictions \
+curl https://api.box.com/2.0/shield_information_barriers \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "type": "shield_information_barrier_segment_restriction",
-    "shield_information_barrier": {
-      "id": "11446498",
-      "type": "shield_information_barrier"
-    },
-    "shield_information_barrier_segment": {
+    "enterprise": {
       "id": "1910967",
-      "type": "shield_information_barrier_segment"
-    },
-    "restricted_segment": {
-      "id": "1910967",
-      "type": "shield_information_barrier_segment"
+      "type": "enterprise"
     }
   }'
 ```
 
-`POST /shield_information_barrier_segment_restrictions`
+`POST /shield_information_barriers`
 
-Creates a shield information barrier
-segment restriction object.
+Creates a shield information barrier to
+separate individuals/groups within the same
+firm and prevents confidential information passing between them.
 
 > Body parameter
 
 ```json
 {
-  "type": "shield_information_barrier_segment_restriction",
-  "shield_information_barrier": {
-    "id": "11446498",
-    "type": "shield_information_barrier"
-  },
-  "shield_information_barrier_segment": {
+  "enterprise": {
     "id": "1910967",
-    "type": "shield_information_barrier_segment"
-  },
-  "restricted_segment": {
-    "id": "1910967",
-    "type": "shield_information_barrier_segment"
+    "type": "enterprise"
   }
 }
 ```
 
-<h3 id="create-shield-information-barrier-segment-restriction-parameters">Parameters</h3>
+<h3 id="create-shield-information-barrier-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|none|
-|» type|body|string|true|The type of the shield barrier segment<br>restriction for this member.|
-|» shield_information_barrier|body|[ShieldInformationBarrier--Base](#schemashieldinformationbarrier--base)|false|A base representation of a<br>shield information barrier object.|
-|» shield_information_barrier_segment|body|object|true|The `type` and `id` of the requested<br>shield information barrier segment.|
-|» » id|body|string|false|The ID reference of the requesting<br>shield information barrier segment.|
-|» » type|body|string|false|The type of the shield barrier segment for this member.|
-|» restricted_segment|body|object|true|The `type` and `id` of the restricted<br>shield information barrier segment.|
-|» » id|body|string|false|The ID reference of the restricted<br>shield information barrier segment.|
-|» » type|body|string|false|The type of the restricted shield<br>information barrier segment.|
+|» enterprise|body|object|true|The `type` and `id` of enterprise this barrier is under.|
+|» » id|body|string|false|The unique identifier for this enterprise.|
+|» » type|body|string|false|The value will always be `enterprise`.|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
-|» type|shield_information_barrier_segment_restriction|
-|» » type|shield_information_barrier_segment|
-|» » type|shield_information_barrier_segment|
+|» » type|enterprise|
 
 > Example responses
 
@@ -33399,20 +33792,13 @@ segment restriction object.
 
 ```json
 {
-  "type": "shield_information_barrier_segment_restriction",
   "id": "11446498",
-  "shield_information_barrier_segment": {
+  "type": "shield_information_barrier",
+  "enterprise": {
     "id": "1910967",
-    "type": "shield_information_barrier_segment"
+    "type": "enterprise"
   },
-  "restricted_segment": {
-    "id": "1910967",
-    "type": "shield_information_barrier_segment"
-  },
-  "shield_information_barrier": {
-    "id": "11446498",
-    "type": "shield_information_barrier"
-  },
+  "status": "draft",
   "created_at": "2020-06-26T18:44:45.869Z",
   "created_by": {
     "id": "11446498",
@@ -33422,398 +33808,16 @@ segment restriction object.
   "updated_by": {
     "id": "11446498",
     "type": "user"
+  },
+  "enabled_at": "2020-07-26T18:44:45.869Z",
+  "enabled_by": {
+    "id": "11446498",
+    "type": "user"
   }
 }
 ```
 
-> 404 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="create-shield-information-barrier-segment-restriction-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created|Returns the newly created Shield<br>Information Barrier Segment Restriction object.|[ShieldInformationBarrierSegmentRestriction](#schemashieldinformationbarriersegmentrestriction)|
-|404|Not Found|Returns a `not_found` error if the<br>shield information barrier or segment was not found.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-<h1 id="box-platform-api-box-sign-templates">Box Sign templates</h1>
-
-Sign templates allow you to use a predefined Box Sign
-template when creating a signature request.
-The template includes placeholders that
-are automatically populated with data when creating the request.
-
-## List Box Sign templates
-
-<a id="opIdget_sign_templates"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/sign_templates \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /sign_templates`
-
-Gets Box Sign templates created by a user.
-
-<h3 id="list-box-sign-templates-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|marker|query|string|false|Defines the position marker at which to begin returning results. This is<br>used when paginating using marker-based pagination.<br><br>This requires `usemarker` to be set to `true`.|
-|limit|query|integer(int64)|false|The maximum number of items to return per page.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "limit": 1000,
-  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii",
-  "prev_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVih",
-  "entries": [
-    {
-      "type": "sign-template",
-      "id": "4206996024-14944f75-c34b-478a-95a1-264b1ff80d35",
-      "name": "Official contract",
-      "email_subject": "Sign Request from Acme",
-      "email_message": "Hello! Please sign the document below",
-      "days_valid": 2,
-      "parent_folder": {
-        "id": "12345",
-        "etag": "1",
-        "type": "folder",
-        "sequence_id": {},
-        "name": "Contracts"
-      },
-      "source_files": [
-        {
-          "id": "12345",
-          "etag": "1",
-          "type": "file",
-          "sequence_id": {},
-          "name": "Contract.pdf",
-          "sha1": "85136C79CBF9FE36BB9D05D0639C70C265C18D37",
-          "file_version": {
-            "id": "12345",
-            "type": "file_version",
-            "sha1": "134b65991ed521fcfe4724b7d814ab8ded5185dc"
-          }
-        }
-      ],
-      "are_fields_locked": false,
-      "are_options_locked": true,
-      "are_recipients_locked": false,
-      "are_email_settings_locked": true,
-      "are_files_locked": true,
-      "signers": [
-        {
-          "inputs": [
-            {
-              "document_tag_id": "1234",
-              "text_value": "text",
-              "checkbox_value": true,
-              "date_value": "2021-04-26",
-              "type": "text",
-              "content_type": "text",
-              "is_required": true,
-              "page_index": 4,
-              "document_id": "123075213-eb54b537-8b25-445e-87c1-5a1c67d8cbd7",
-              "dropdown_choices": [
-                "Yes",
-                "No",
-                "Maybe"
-              ],
-              "group_id": "da317330-225a-4c72-89ad-0d6dcaaf4df6",
-              "coordinates": {
-                "x": 0.672258592471358,
-                "y": 0.18654283173599448
-              },
-              "dimensions": {
-                "width": 0.2618657937806874,
-                "height": 0.05311728090109673
-              },
-              "label": "Legal name",
-              "read_only": true,
-              "validation": {
-                "validation_type": "email"
-              }
-            }
-          ],
-          "email": "example@mail.com",
-          "role": "signer",
-          "is_in_person": true,
-          "order": 2,
-          "signer_group_id": "cd4ff89-8fc1-42cf-8b29-1890dedd26d7",
-          "label": "Jane Doe",
-          "public_id": "RJZYYVPR",
-          "is_password_required": true,
-          "is_phone_number_required": true,
-          "login_required": true
-        }
-      ],
-      "additional_info": {
-        "non_editable": [
-          "email_subject",
-          "name"
-        ],
-        "required": {
-          "signers": [
-            [
-              "email"
-            ],
-            [
-              "email"
-            ]
-          ]
-        }
-      },
-      "ready_sign_link": {
-        "url": "\"https://app.box.com/sign/\nready-sign-link/a1cdf2c7-fa81-4a67-8163-1e5f4dbe5178\"",
-        "name": "Official contract",
-        "instructions": "Hello! Please sign the document below",
-        "folder_id": "12345",
-        "is_notification_disabled": true,
-        "is_active": false
-      },
-      "custom_branding": {
-        "company_name": "Corporation inc.",
-        "logo_uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA\nAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A\n8AAQUBAScY42YAAAAASUVORK5CYII=",
-        "branding_color": "9E5E6F",
-        "email_footer_text": "Contact email email@mail.com"
-      },
-      "request_flow": "standard"
-    }
-  ]
-}
-```
-
-> 401 Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-> default Response
-
-```json
-{
-  "type": "error",
-  "status": 400,
-  "code": "item_name_invalid",
-  "message": "Method Not Allowed",
-  "context_info": {
-    "message": "Something went wrong"
-  },
-  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
-  "request_id": "abcdef123456"
-}
-```
-
-<h3 id="list-box-sign-templates-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Returns a collection of templates.|[SignTemplates](#schemasigntemplates)|
-|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
-|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2Security
-</aside>
-
-## Get Box Sign template by ID
-
-<a id="opIdget_sign_templates_id"></a>
-
-> Code samples
-
-```bash
-curl https://api.box.com/2.0/sign_templates/123075213-7d117509-8f05-42e4-a5ef-5190a319d41d \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /sign_templates/{template_id}`
-
-Fetches details of a specific Box Sign template.
-
-<h3 id="get-box-sign-template-by-id-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|template_id|path|string|true|The ID of a Box Sign template.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "type": "sign-template",
-  "id": "4206996024-14944f75-c34b-478a-95a1-264b1ff80d35",
-  "name": "Official contract",
-  "email_subject": "Sign Request from Acme",
-  "email_message": "Hello! Please sign the document below",
-  "days_valid": 2,
-  "parent_folder": {
-    "id": "12345",
-    "etag": "1",
-    "type": "folder",
-    "sequence_id": {},
-    "name": "Contracts"
-  },
-  "source_files": [
-    {
-      "id": "12345",
-      "etag": "1",
-      "type": "file",
-      "sequence_id": {},
-      "name": "Contract.pdf",
-      "sha1": "85136C79CBF9FE36BB9D05D0639C70C265C18D37",
-      "file_version": {
-        "id": "12345",
-        "type": "file_version",
-        "sha1": "134b65991ed521fcfe4724b7d814ab8ded5185dc"
-      }
-    }
-  ],
-  "are_fields_locked": false,
-  "are_options_locked": true,
-  "are_recipients_locked": false,
-  "are_email_settings_locked": true,
-  "are_files_locked": true,
-  "signers": [
-    {
-      "inputs": [
-        {
-          "document_tag_id": "1234",
-          "text_value": "text",
-          "checkbox_value": true,
-          "date_value": "2021-04-26",
-          "type": "text",
-          "content_type": "text",
-          "is_required": true,
-          "page_index": 4,
-          "document_id": "123075213-eb54b537-8b25-445e-87c1-5a1c67d8cbd7",
-          "dropdown_choices": [
-            "Yes",
-            "No",
-            "Maybe"
-          ],
-          "group_id": "da317330-225a-4c72-89ad-0d6dcaaf4df6",
-          "coordinates": {
-            "x": 0.672258592471358,
-            "y": 0.18654283173599448
-          },
-          "dimensions": {
-            "width": 0.2618657937806874,
-            "height": 0.05311728090109673
-          },
-          "label": "Legal name",
-          "read_only": true,
-          "validation": {
-            "validation_type": "email"
-          }
-        }
-      ],
-      "email": "example@mail.com",
-      "role": "signer",
-      "is_in_person": true,
-      "order": 2,
-      "signer_group_id": "cd4ff89-8fc1-42cf-8b29-1890dedd26d7",
-      "label": "Jane Doe",
-      "public_id": "RJZYYVPR",
-      "is_password_required": true,
-      "is_phone_number_required": true,
-      "login_required": true
-    }
-  ],
-  "additional_info": {
-    "non_editable": [
-      "email_subject",
-      "name"
-    ],
-    "required": {
-      "signers": [
-        [
-          "email"
-        ],
-        [
-          "email"
-        ]
-      ]
-    }
-  },
-  "ready_sign_link": {
-    "url": "\"https://app.box.com/sign/\nready-sign-link/a1cdf2c7-fa81-4a67-8163-1e5f4dbe5178\"",
-    "name": "Official contract",
-    "instructions": "Hello! Please sign the document below",
-    "folder_id": "12345",
-    "is_notification_disabled": true,
-    "is_active": false
-  },
-  "custom_branding": {
-    "company_name": "Corporation inc.",
-    "logo_uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA\nAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A\n8AAQUBAScY42YAAAAASUVORK5CYII=",
-    "branding_color": "9E5E6F",
-    "email_footer_text": "Contact email email@mail.com"
-  },
-  "request_flow": "standard"
-}
-```
-
-> 401 Response
+> 400 Response
 
 ```json
 {
@@ -33861,13 +33865,13 @@ Fetches details of a specific Box Sign template.
 }
 ```
 
-<h3 id="get-box-sign-template-by-id-responses">Responses</h3>
+<h3 id="create-shield-information-barrier-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Returns details of a template.|[SignTemplate](#schemasigntemplate)|
-|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
-|404|Not Found|Returned if the template is not found or the user does not<br>have access to the associated template.|[ClientError](#schemaclienterror)|
+|201|Created|Returns a new shield information barrier object.|[ShieldInformationBarrier](#schemashieldinformationbarrier)|
+|400|Bad Request|Returns an error if the enterprise is missing from the request.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returns an error when an incorrect or null enterprise is present in the request body.|[ClientError](#schemaclienterror)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
 <aside class="warning">
@@ -42373,7 +42377,7 @@ admin permissions.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Returns the updated user object.|[User--Full](#schemauser--full)|
-|400|Bad Request|Returns an error if some of the parameters are missing or<br>not valid.<br><br>* `invalid_parameter` when a parameter is formatted incorrectly,<br>  for example when the `notification_email` has an incorrectly formatted<br>  email address.|[ClientError](#schemaclienterror)|
+|400|Bad Request|Returns an error if some of the parameters are missing or<br>not valid.<br><br>* `invalid_parameter` when a parameter is formatted incorrectly,<br>  for example when the `notification_email` has an incorrectly formatted<br>  email address.<br>* `user_must_not_have_retained_content` when rolling the user out of the enterprise is blocked<br>  because they own content and the enterprise has a retention policy or legal hold. Transfer the user's content to<br>  another user first. For the steps for resolution, see<br>  [User cannot be deleted due to retention policies](https://support.box.com/hc/en-us/articles/33282413279635-API-Content-User-cannot-be-deleted-due-to-retention-policies-Please-transfer-user-content-first).|[ClientError](#schemaclienterror)|
 |403|Forbidden|Returns an error if the user is not allowed to make the changes.<br><br>* `access_denied_insufficient_permissions` when the user does not have<br>  the right permissions, for example when updating the notification email<br>  is turned off for the enterprise.<br>* `denied_by_policy` when the user does not have the right permissions<br>  due to the information barrier restrictions.|[ClientError](#schemaclienterror)|
 |default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
 
@@ -61132,7 +61136,7 @@ for creating a Box Sign request object.
 |verification_phone_number|string \| null|false|none|If set, this phone number will be used to verify the signer<br>via two-factor authentication before they are able to sign the document.<br>Cannot be selected in combination with `login_required`.|
 |password|string \| null|false|write-only|If set, the signer is required to enter the password before they are able<br>to sign a document. This field is write only.|
 |signer_group_id|string \| null|false|none|If set, signers who have the same value will be assigned to the same input and to the same signer group.<br>A signer group is not a Box Group. It is an entity that belongs to a Sign Request and can only be<br>used/accessed within this Sign Request. A signer group is expected to have more than one signer.<br>If the provided value is only used for one signer, this value will be ignored and request will be handled<br>as it was intended for an individual signer. The value provided can be any string and only used to<br>determine which signers belongs to same group. A successful response will provide a generated UUID value<br>instead for signers in the same signer group.|
-|suppress_notifications|boolean \| null|false|none|If true, no emails about the sign request will be sent.|
+|suppress_notifications|boolean \| null|false|none|If true, no emails about the sign request are sent.<br>The `embed_url_external_user_id` parameter is required when using<br>`suppress_notifications` for a signer.|
 |language|string \| null|false|none|The language of the user, formatted in modified version of the<br>[ISO 639-1](https://developer.box.com/guides/api-calls/language-codes) format.|
 
 #### Enumerated Values
@@ -61401,7 +61405,7 @@ on the body of a Box Sign request object.
 |verification_phone_number|string \| null|false|none|If set, this phone number will be used to verify the signer<br>via two-factor authentication before they are able to sign the document.<br>Cannot be selected in combination with `login_required`.|
 |password|string \| null|false|write-only|If set, the signer is required to enter the password before they are able<br>to sign a document. This field is write only.|
 |signer_group_id|string \| null|false|none|If set, signers who have the same value will be assigned to the same input and to the same signer group.<br>A signer group is not a Box Group. It is an entity that belongs to a Sign Request and can only be<br>used/accessed within this Sign Request. A signer group is expected to have more than one signer.<br>If the provided value is only used for one signer, this value will be ignored and request will be handled<br>as it was intended for an individual signer. The value provided can be any string and only used to<br>determine which signers belongs to same group. A successful response will provide a generated UUID value<br>instead for signers in the same signer group.|
-|suppress_notifications|boolean \| null|false|none|If true, no emails about the sign request will be sent.|
+|suppress_notifications|boolean \| null|false|none|If true, no emails about the sign request are sent.<br>The `embed_url_external_user_id` parameter is required when using<br>`suppress_notifications` for a signer.|
 |language|string \| null|false|none|The language of the user, formatted in modified version of the<br>[ISO 639-1](https://developer.box.com/guides/api-calls/language-codes) format.|
 |has_viewed_document|boolean|false|read-only|Set to `true` if the signer views the document.|
 |signer_decision|object \| null|false|none|Final decision made by the signer.|

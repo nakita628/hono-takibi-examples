@@ -1104,17 +1104,26 @@ const ActionRowComponentResponseSchema = z
   .openapi({ required: ['type', 'id', 'components'] })
   .openapi('ActionRowComponentResponse')
 
+const ContentScanMetadataResponseSchema = z
+  .object({ flags: z.int32() })
+  .openapi({ required: ['flags'] })
+  .openapi('ContentScanMetadataResponse')
+
 const UnfurledMediaResponseSchema = z
   .object({
     id: SnowflakeTypeSchema,
     url: z.string(),
-    proxy_url: z.string(),
+    proxy_url: z.string().exactOptional(),
     width: z.int32().nullable().exactOptional(),
     height: z.int32().nullable().exactOptional(),
+    placeholder: z.string().nullable().exactOptional(),
+    placeholder_version: z.int32().nullable().exactOptional(),
+    content_scan_metadata: ContentScanMetadataResponseSchema.exactOptional(),
     content_type: z.string().nullable().exactOptional(),
+    flags: z.int32().exactOptional(),
     attachment_id: SnowflakeTypeSchema.exactOptional(),
   })
-  .openapi({ required: ['id', 'url', 'proxy_url'] })
+  .openapi({ required: ['id', 'url'] })
   .openapi('UnfurledMediaResponse')
 
 const FileComponentResponseSchema = z
@@ -9539,6 +9548,15 @@ const OnboardingPromptOptionRequestSchema = z
   })
   .openapi({ required: ['title'] })
   .openapi('OnboardingPromptOptionRequest')
+
+const PermissionsResponseSchema = z
+  .object({
+    permissions: z
+      .string()
+      .openapi({ description: 'The computed permissions, as a stringified bitfield' }),
+  })
+  .openapi({ required: ['permissions'] })
+  .openapi('PermissionsResponse')
 
 const PinnedMessageResponseSchema = z
   .object({ pinned_at: z.iso.datetime({ offset: true }), message: MessageResponseSchema })
@@ -28340,6 +28358,110 @@ export const postChannelsChannelIdMessagesMessageIdThreadsRoute = createRoute({
   security: [{ BotToken: [] }],
 })
 
+export const getChannelsChannelIdPermissionsMemberUserIdRoute = createRoute({
+  method: 'get',
+  path: '/channels/{channel_id}/permissions/member/{user_id}',
+  description:
+    "Returns the fully cascaded permissions for a member in this channel, applying their roles and the channel's permission overwrites.",
+  operationId: 'get_channel_member_permissions',
+  request: {
+    params: z.object({
+      channel_id: SnowflakeTypeSchema.openapi({
+        param: {
+          name: 'channel_id',
+          in: 'path',
+          schema: { $ref: '#/components/schemas/SnowflakeType' },
+          required: true,
+        },
+      }),
+      user_id: SnowflakeTypeSchema.openapi({
+        param: {
+          name: 'user_id',
+          in: 'path',
+          schema: { $ref: '#/components/schemas/SnowflakeType' },
+          required: true,
+        },
+      }),
+    }),
+    query: z.object({
+      implicit: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: { name: 'implicit', in: 'query', schema: { type: 'boolean' }, required: false },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '200 response for get_channel_member_permissions',
+      content: { 'application/json': { schema: PermissionsResponseSchema } },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': XRateLimitResetHeaderSchema,
+        'X-RateLimit-Reset-After': XRateLimitResetAfterHeaderSchema,
+        'X-RateLimit-Bucket': XRateLimitBucketHeaderSchema,
+      }),
+    },
+    429: ClientRatelimitedResponseResponse,
+    '4XX': ClientErrorResponseResponse,
+  },
+  security: [{ BotToken: [] }],
+})
+
+export const getChannelsChannelIdPermissionsRoleRoleIdRoute = createRoute({
+  method: 'get',
+  path: '/channels/{channel_id}/permissions/role/{role_id}',
+  description:
+    "Returns the permissions a role grants in this channel, applying the channel's permission overwrites on top of the role's guild-level permissions.",
+  operationId: 'get_channel_role_permissions',
+  request: {
+    params: z.object({
+      channel_id: SnowflakeTypeSchema.openapi({
+        param: {
+          name: 'channel_id',
+          in: 'path',
+          schema: { $ref: '#/components/schemas/SnowflakeType' },
+          required: true,
+        },
+      }),
+      role_id: SnowflakeTypeSchema.openapi({
+        param: {
+          name: 'role_id',
+          in: 'path',
+          schema: { $ref: '#/components/schemas/SnowflakeType' },
+          required: true,
+        },
+      }),
+    }),
+    query: z.object({
+      implicit: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: { name: 'implicit', in: 'query', schema: { type: 'boolean' }, required: false },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '200 response for get_channel_role_permissions',
+      content: { 'application/json': { schema: PermissionsResponseSchema } },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': XRateLimitResetHeaderSchema,
+        'X-RateLimit-Reset-After': XRateLimitResetAfterHeaderSchema,
+        'X-RateLimit-Bucket': XRateLimitBucketHeaderSchema,
+      }),
+    },
+    429: ClientRatelimitedResponseResponse,
+    '4XX': ClientErrorResponseResponse,
+  },
+  security: [{ BotToken: [] }],
+})
+
 export const putChannelsChannelIdPermissionsOverwriteIdRoute = createRoute({
   method: 'put',
   path: '/channels/{channel_id}/permissions/{overwrite_id}',
@@ -40229,6 +40351,94 @@ export const putGuildsGuildIdOnboardingRoute = createRoute({
     200: {
       description: '200 response for put_guilds_onboarding',
       content: { 'application/json': { schema: GuildOnboardingResponseSchema } },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': XRateLimitResetHeaderSchema,
+        'X-RateLimit-Reset-After': XRateLimitResetAfterHeaderSchema,
+        'X-RateLimit-Bucket': XRateLimitBucketHeaderSchema,
+      }),
+    },
+    429: ClientRatelimitedResponseResponse,
+    '4XX': ClientErrorResponseResponse,
+  },
+  security: [{ BotToken: [] }],
+})
+
+export const getGuildsGuildIdPermissionsMemberUserIdRoute = createRoute({
+  method: 'get',
+  path: '/guilds/{guild_id}/permissions/member/{user_id}',
+  description:
+    "Returns the fully cascaded guild-level permissions for a member, applying all of their roles including @everyone's",
+  operationId: 'get_guild_member_permissions',
+  request: {
+    params: z.object({
+      guild_id: SnowflakeTypeSchema.openapi({
+        param: {
+          name: 'guild_id',
+          in: 'path',
+          schema: { $ref: '#/components/schemas/SnowflakeType' },
+          required: true,
+        },
+      }),
+      user_id: SnowflakeTypeSchema.openapi({
+        param: {
+          name: 'user_id',
+          in: 'path',
+          schema: { $ref: '#/components/schemas/SnowflakeType' },
+          required: true,
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '200 response for get_guild_member_permissions',
+      content: { 'application/json': { schema: PermissionsResponseSchema } },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': XRateLimitResetHeaderSchema,
+        'X-RateLimit-Reset-After': XRateLimitResetAfterHeaderSchema,
+        'X-RateLimit-Bucket': XRateLimitBucketHeaderSchema,
+      }),
+    },
+    429: ClientRatelimitedResponseResponse,
+    '4XX': ClientErrorResponseResponse,
+  },
+  security: [{ BotToken: [] }],
+})
+
+export const getGuildsGuildIdPermissionsRoleRoleIdRoute = createRoute({
+  method: 'get',
+  path: '/guilds/{guild_id}/permissions/role/{role_id}',
+  description:
+    "Returns the permissions a role grants at the guild level, combining the role's own permissions with @everyone's.",
+  operationId: 'get_guild_role_permissions',
+  request: {
+    params: z.object({
+      guild_id: SnowflakeTypeSchema.openapi({
+        param: {
+          name: 'guild_id',
+          in: 'path',
+          schema: { $ref: '#/components/schemas/SnowflakeType' },
+          required: true,
+        },
+      }),
+      role_id: SnowflakeTypeSchema.openapi({
+        param: {
+          name: 'role_id',
+          in: 'path',
+          schema: { $ref: '#/components/schemas/SnowflakeType' },
+          required: true,
+        },
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '200 response for get_guild_role_permissions',
+      content: { 'application/json': { schema: PermissionsResponseSchema } },
       headers: z.object({
         'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
         'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
@@ -62333,6 +62543,7 @@ export const putLobbiesRoute = createRoute({
                 .exactOptional(),
               secret: z.string().max(250),
               flags: z.xor([z.null().nullable(), z.literal(1)]).exactOptional(),
+              name: z.string().min(1).max(100).nullable().exactOptional(),
             })
             .openapi({ required: ['secret'] }),
         },
@@ -62377,6 +62588,7 @@ export const postLobbiesRoute = createRoute({
                 .exactOptional(),
               flags: z.xor([z.null().nullable(), z.literal(1)]).exactOptional(),
               override_event_webhooks_url: z.url().max(512).nullable().exactOptional(),
+              name: z.string().min(1).max(100).nullable().exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -62500,6 +62712,7 @@ export const patchLobbiesLobbyIdRoute = createRoute({
               members: z.array(LobbyMemberRequestSchema).max(25).nullable().exactOptional(),
               flags: z.xor([z.null().nullable(), z.literal(1)]).exactOptional(),
               override_event_webhooks_url: z.url().max(512).nullable().exactOptional(),
+              name: z.string().min(1).max(100).nullable().exactOptional(),
             })
             .openapi({ required: [] }),
         },

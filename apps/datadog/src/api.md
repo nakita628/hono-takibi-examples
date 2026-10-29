@@ -1508,13 +1508,15 @@ curl https://api.datadoghq.com/api/v2/pruned_trace/0000000000000000abc1230000000
 Retrieve a pruned, hierarchical view of an APM trace by its trace ID.
 The trace is summarized as a tree of spans rooted at the trace root and reduced in size
 to keep rendering large traces in the UI practical.
+A `400 Bad Request` response means the trace ID is malformed. A `404 Not Found` response means
+no trace with this ID is available, such as when the trace is outside the retention period.
 This endpoint is rate limited to `60` requests per minute per organization.
 
 <h3 id="get-a-pruned-trace-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|trace_id|path|string|true|The trace ID. Accepts either a 32-character hexadecimal string (128-bit trace ID)<br>or a decimal string of up to 39 digits.|
+|trace_id|path|string|true|The trace ID. Accepts either a hexadecimal string of up to 32 characters (128-bit trace ID)<br>or a decimal string of up to 39 digits. Hexadecimal IDs are case-insensitive, and shorter<br>values are left-padded with zeros.<br>Use the `trace_id` attribute of a span returned by the Search spans or Get a list of spans endpoints.<br>Values in any other format, such as UUIDs, return `400 Bad Request`. A well-formed ID with<br>no matching trace returns `404 Not Found`.|
 |expand_span_id|query|integer(int64)|false|Span ID to expand and preserve in the pruned tree even when its branch would<br>normally be summarized.|
 |time_hint|query|integer(int32)|false|Optional Unix time hint, in seconds, used to optimize the lookup of the trace<br>in long-term storage.|
 |force_source|query|string|false|Force the trace to be loaded from a specific source. When unset, the API picks<br>the source automatically.|
@@ -1560,6 +1562,29 @@ This endpoint is rate limited to `60` requests per minute per organization.
     "id": "0000000000000000abc1230000000000",
     "type": "pruned_trace"
   }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
 }
 ```
 
@@ -1647,6 +1672,7 @@ This endpoint is rate limited to `60` requests per minute per organization.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[PrunedTraceResponse](#schemaprunedtraceresponse)|
+|400|Bad Request|Bad Request|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |403|Forbidden|Forbidden|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
@@ -1674,13 +1700,15 @@ curl https://api.datadoghq.com/api/v2/trace/0000000000000000abc1230000000000 \
 
 Retrieve a full APM trace by its trace ID, including every span in the trace.
 Traces are returned from live storage when available and fall back to longer-term storage.
+A `400 Bad Request` response means the trace ID is malformed. A `404 Not Found` response means
+no trace with this ID is available, such as when the trace is outside the retention period.
 This endpoint is rate limited to `60` requests per minute per organization.
 
 <h3 id="get-a-trace-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|trace_id|path|string|true|The trace ID. Accepts either a 32-character hexadecimal string (128-bit trace ID)<br>or a decimal string of up to 39 digits.|
+|trace_id|path|string|true|The trace ID. Accepts either a hexadecimal string of up to 32 characters (128-bit trace ID)<br>or a decimal string of up to 39 digits. Hexadecimal IDs are case-insensitive, and shorter<br>values are left-padded with zeros.<br>Use the `trace_id` attribute of a span returned by the Search spans or Get a list of spans endpoints.<br>Values in any other format, such as UUIDs, return `400 Bad Request`. A well-formed ID with<br>no matching trace returns `404 Not Found`.|
 |include_fields|query|[string]|false|List of span fields to include in the response. When omitted, every available field is returned.<br>Values may be passed as repeated query parameters or as a single comma-separated value.|
 
 > Example responses
@@ -1719,6 +1747,29 @@ This endpoint is rate limited to `60` requests per minute per organization.
     "id": "0000000000000000abc1230000000000",
     "type": "trace"
   }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
 }
 ```
 
@@ -1806,6 +1857,7 @@ This endpoint is rate limited to `60` requests per minute per organization.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[TraceResponse](#schematraceresponse)|
+|400|Bad Request|Bad Request|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |403|Forbidden|Forbidden|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |413|Payload Too Large|Payload Too Large|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
@@ -40903,8 +40955,8 @@ Create a new investigation notebook and link it to a work item
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |case_id|path|string|true|Work item's UUID or key|
-|body|body|[NotebookCreateRequest](#schemanotebookcreaterequest)|true|Notebook creation request|
-|» data|body|[NotebookCreateData](#schemanotebookcreatedata)|true|Notebook creation data|
+|body|body|[CaseInvestigationNotebookCreateRequest](#schemacaseinvestigationnotebookcreaterequest)|true|Case investigation notebook creation request.|
+|» data|body|[CaseInvestigationNotebookCreateData](#schemacaseinvestigationnotebookcreatedata)|true|Case investigation notebook creation data.|
 
 > Example responses
 
@@ -45053,13 +45105,13 @@ Configure AWS and GitHub cloud authentication mappings for persona and intake au
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping \
+curl https://api.datadoghq.com/api/v2/wif/aws/persona_mapping \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`GET /api/v2/cloud_auth/aws/persona_mapping`
+`GET /api/v2/wif/aws/persona_mapping`
 
 List all AWS cloud authentication persona mappings. This endpoint retrieves all configured persona mappings that associate AWS IAM principals with Datadog users.
 
@@ -45160,7 +45212,7 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping \
+curl https://api.datadoghq.com/api/v2/wif/aws/persona_mapping \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -45177,7 +45229,7 @@ curl https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping \
   }'
 ```
 
-`POST /api/v2/cloud_auth/aws/persona_mapping`
+`POST /api/v2/wif/aws/persona_mapping`
 
 Create an AWS cloud authentication persona mapping. This endpoint associates an AWS IAM principal with a Datadog user.
 
@@ -45321,13 +45373,13 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/c5c758c6-18c2-4484-ae3f-46b84128404a \
+curl https://api.datadoghq.com/api/v2/wif/aws/persona_mapping/c5c758c6-18c2-4484-ae3f-46b84128404a \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`GET /api/v2/cloud_auth/aws/persona_mapping/{persona_mapping_id}`
+`GET /api/v2/wif/aws/persona_mapping/{persona_mapping_id}`
 
 Get a specific AWS cloud authentication persona mapping by ID. This endpoint retrieves a single configured persona mapping that associates an AWS IAM principal with a Datadog user.
 
@@ -45432,14 +45484,14 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/c5c758c6-18c2-4484-ae3f-46b84128404a \
+curl https://api.datadoghq.com/api/v2/wif/aws/persona_mapping/c5c758c6-18c2-4484-ae3f-46b84128404a \
   -X DELETE \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`DELETE /api/v2/cloud_auth/aws/persona_mapping/{persona_mapping_id}`
+`DELETE /api/v2/wif/aws/persona_mapping/{persona_mapping_id}`
 
 Delete an AWS cloud authentication persona mapping by ID. This removes the association between an AWS IAM principal and a Datadog user.
 
@@ -45528,13 +45580,13 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping \
+curl https://api.datadoghq.com/api/v2/wif/github/intake_mapping \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`GET /api/v2/cloud_auth/github/intake_mapping`
+`GET /api/v2/wif/github/intake_mapping`
 
 List all GitHub cloud authentication intake mappings. This endpoint retrieves all configured intake mappings that entitle matching GitHub Actions OIDC principals to request Datadog API keys.
 
@@ -45638,7 +45690,7 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping \
+curl https://api.datadoghq.com/api/v2/wif/github/intake_mapping \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -45659,7 +45711,7 @@ curl https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping \
   }'
 ```
 
-`POST /api/v2/cloud_auth/github/intake_mapping`
+`POST /api/v2/wif/github/intake_mapping`
 
 Create a GitHub cloud authentication intake mapping. This endpoint entitles a matching GitHub Actions OIDC principal to request Datadog API keys.
 
@@ -45810,13 +45862,13 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/d6d869d7-29d3-5595-bf40-57c95235cf5b \
+curl https://api.datadoghq.com/api/v2/wif/github/intake_mapping/d6d869d7-29d3-5595-bf40-57c95235cf5b \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`GET /api/v2/cloud_auth/github/intake_mapping/{intake_mapping_id}`
+`GET /api/v2/wif/github/intake_mapping/{intake_mapping_id}`
 
 Get a specific GitHub cloud authentication intake mapping by ID. This endpoint retrieves a single configured intake mapping that entitles a matching GitHub Actions OIDC principal to request Datadog API keys.
 
@@ -45924,14 +45976,14 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/d6d869d7-29d3-5595-bf40-57c95235cf5b \
+curl https://api.datadoghq.com/api/v2/wif/github/intake_mapping/d6d869d7-29d3-5595-bf40-57c95235cf5b \
   -X DELETE \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`DELETE /api/v2/cloud_auth/github/intake_mapping/{intake_mapping_id}`
+`DELETE /api/v2/wif/github/intake_mapping/{intake_mapping_id}`
 
 Delete a GitHub cloud authentication intake mapping by ID. This removes a GitHub Actions OIDC principal's entitlement to request Datadog API keys.
 
@@ -46020,13 +46072,13 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping \
+curl https://api.datadoghq.com/api/v2/wif/github/persona_mapping \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`GET /api/v2/cloud_auth/github/persona_mapping`
+`GET /api/v2/wif/github/persona_mapping`
 
 List all GitHub cloud authentication persona mappings. This endpoint retrieves all configured persona mappings that associate GitHub Actions OpenID Connect (OIDC) principals with Datadog users. Mapped principals can request impersonation tokens.
 
@@ -46132,7 +46184,7 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping \
+curl https://api.datadoghq.com/api/v2/wif/github/persona_mapping \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -46154,7 +46206,7 @@ curl https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping \
   }'
 ```
 
-`POST /api/v2/cloud_auth/github/persona_mapping`
+`POST /api/v2/wif/github/persona_mapping`
 
 Create a GitHub cloud authentication persona mapping. This endpoint associates a GitHub Actions OIDC principal with a Datadog user. The mapped principal can request an impersonation token.
 
@@ -46308,13 +46360,13 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping/c5c758c6-18c2-4484-ae3f-46b84128404a \
+curl https://api.datadoghq.com/api/v2/wif/github/persona_mapping/c5c758c6-18c2-4484-ae3f-46b84128404a \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`GET /api/v2/cloud_auth/github/persona_mapping/{persona_mapping_id}`
+`GET /api/v2/wif/github/persona_mapping/{persona_mapping_id}`
 
 Get a specific GitHub cloud authentication persona mapping by ID. This endpoint retrieves a single configured persona mapping that associates a GitHub Actions OIDC principal with a Datadog user. The mapped principal can request an impersonation token.
 
@@ -46424,14 +46476,14 @@ apiKeyAuth & appKeyAuth, AuthZ
 > Code samples
 
 ```bash
-curl https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping/c5c758c6-18c2-4484-ae3f-46b84128404a \
+curl https://api.datadoghq.com/api/v2/wif/github/persona_mapping/c5c758c6-18c2-4484-ae3f-46b84128404a \
   -X DELETE \
   -H 'Accept: application/json' \
   -H "DD-API-KEY: ${API_KEY}" \
   -H "DD-APPLICATION-KEY: ${API_KEY}"
 ```
 
-`DELETE /api/v2/cloud_auth/github/persona_mapping/{persona_mapping_id}`
+`DELETE /api/v2/wif/github/persona_mapping/{persona_mapping_id}`
 
 Delete a GitHub cloud authentication persona mapping by ID. This removes the association between a GitHub Actions OIDC principal and a Datadog user.
 
@@ -70059,7 +70111,8 @@ Retrieve the full details for a specific error tracking issue, including attribu
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |issue_id|path|string|true|The identifier of the issue.|
-|include|query|[[GetIssueIncludeQueryParameterItem](#schemagetissueincludequeryparameteritem)]|false|Comma-separated list of relationship objects that should be included in the response. Possible values are `assignee`, `case`, and `team_owners`.|
+|include|query|[[GetIssueIncludeQueryParameterItem](#schemagetissueincludequeryparameteritem)]|false|Comma-separated list of relationship objects that should be included in the response.<br>Possible values are `assignee`, `case`, `team_owners`, and `samples`.|
+|filter[samples.biases]|query|[[IssueSampleBias](#schemaissuesamplebias)]|false|Comma-separated list of biases used to pick the samples returned with `include=samples`.<br>Requires `include=samples`. Defaults to all biases.|
 
 #### Enumerated Values
 
@@ -70068,6 +70121,12 @@ Retrieve the full details for a specific error tracking issue, including attribu
 |include|assignee|
 |include|case|
 |include|team_owners|
+|include|samples|
+|filter[samples.biases]|latest|
+|filter[samples.biases]|git_metadata|
+|filter[samples.biases]|trace|
+|filter[samples.biases]|session_replay|
+|filter[samples.biases]|exception_replay|
 
 > Example responses
 
@@ -76336,7 +76395,18 @@ List draft, published, and archived experiment protocols. Omit filter[status] to
 
 ```json
 {
-  "data": []
+  "data": [
+    {
+      "attributes": {
+        "experiment_count": 0,
+        "name": "Checkout protocol",
+        "status": "DRAFT",
+        "updated_at": "2026-07-31T12:00:00Z"
+      },
+      "id": "e4d5f6a7-0000-0000-0000-000000000000",
+      "type": "protocols"
+    }
+  ]
 }
 ```
 
@@ -76434,6 +76504,269 @@ To perform this operation, you must be authenticated by means of one of the foll
 apiKeyAuth & appKeyAuth, AuthZ ( Scopes: product_analytics_experiments_read )
 </aside>
 
+## Create experiment protocol
+
+<a id="opIdCreateExperimentProtocol"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/experiments/protocols \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}" \
+  -d '{
+    "data": {
+      "attributes": {
+        "description": "Defaults for checkout experiments.",
+        "name": "Checkout protocol"
+      },
+      "type": "protocols"
+    }
+  }'
+```
+
+`POST /api/v2/experiments/protocols`
+
+Create a draft protocol with a name and optional description and migration metadata. The organization's default subject type is selected. Use PATCH to configure the draft, then publish it before creating experiments from it.
+
+> Body parameter
+
+```json
+{
+  "data": {
+    "attributes": {
+      "description": "Defaults for checkout experiments.",
+      "name": "Checkout protocol"
+    },
+    "type": "protocols"
+  }
+}
+```
+
+<h3 id="create-experiment-protocol-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[ExperimentsCreateExperimentProtocolRequest](#schemaexperimentscreateexperimentprotocolrequest)|true|none|
+|» data|body|[ExperimentsCreateExperimentProtocolRequestData](#schemaexperimentscreateexperimentprotocolrequestdata)|true|JSON:API protocol request resource.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "created_at": "2026-07-31T12:00:00Z",
+      "description": "Defaults for checkout experiments.",
+      "enforcement": {
+        "confidence_interval_method": "LOCKED",
+        "confidence_level": "EDITABLE",
+        "cuped_calculation": "EDITABLE",
+        "default_duration": "EDITABLE",
+        "environment": "EDITABLE",
+        "flag_source": "LOCKED",
+        "multiple_testing_correction": "EDITABLE",
+        "notifications": "EDITABLE",
+        "primary_metric": "EDITABLE",
+        "secondary_metrics": "EDITABLE",
+        "split_by_exploration_dimensions": "EDITABLE",
+        "subject_type": "LOCKED",
+        "targeting_rules": "EDITABLE",
+        "traffic_exposure": "EDITABLE",
+        "warehouse_exposure_source": "EDITABLE"
+      },
+      "experiment_count": 0,
+      "is_duration_required_to_start": false,
+      "is_equal_split_enforced": false,
+      "is_metric_limit_enabled": false,
+      "is_minimum_duration_enabled": false,
+      "metric_groups": [],
+      "name": "Checkout protocol",
+      "status": "DRAFT",
+      "subject_type": {
+        "id": "c2b3d4e5-0000-0000-0000-000000000000",
+        "name": "User"
+      },
+      "subject_type_id": "c2b3d4e5-0000-0000-0000-000000000000",
+      "updated_at": "2026-07-31T12:00:00Z"
+    },
+    "id": "e4d5f6a7-0000-0000-0000-000000000000",
+    "type": "protocols"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 415 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+<h3 id="create-experiment-protocol-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Created|[ExperimentsPublicProtocolResponse](#schemaexperimentspublicprotocolresponse)|
+|400|Bad Request|Invalid request or protocol settings.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|401|Unauthorized|Missing or invalid authentication.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|The caller lacks the product_analytics_experiments_write permission.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|409|Conflict|A protocol with this name already exists.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|415|Unsupported Media Type|Unsupported request content type.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+|500|Internal Server Error|Internal Server Error|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: product_analytics_experiments_write )
+</aside>
+
 ## Get experiment protocol
 
 <a id="opIdGetExperimentProtocol"></a>
@@ -76465,6 +76798,7 @@ Get a draft, published, or archived experiment protocol by ID.
 {
   "data": {
     "attributes": {
+      "created_at": "2026-07-31T12:00:00Z",
       "description": "Default settings for checkout experiments.",
       "enforcement": {
         "confidence_interval_method": "LOCKED",
@@ -76483,6 +76817,7 @@ Get a draft, published, or archived experiment protocol by ID.
         "traffic_exposure": "EDITABLE",
         "warehouse_exposure_source": "EDITABLE"
       },
+      "experiment_count": 0,
       "is_duration_required_to_start": false,
       "is_equal_split_enforced": false,
       "is_metric_limit_enabled": false,
@@ -76625,6 +76960,1271 @@ Get a draft, published, or archived experiment protocol by ID.
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 apiKeyAuth & appKeyAuth, AuthZ ( Scopes: product_analytics_experiments_read )
+</aside>
+
+## Replace experiment protocol
+
+<a id="opIdReplaceExperimentProtocol"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/experiments/protocols/550e8400-e29b-41d4-a716-446655440000 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}" \
+  -d '{
+    "data": {
+      "attributes": {
+        "is_duration_required_to_start": false,
+        "is_equal_split_enforced": false,
+        "is_metric_limit_enabled": false,
+        "is_minimum_duration_enabled": false,
+        "metric_groups": [],
+        "subject_type_id": "c2b3d4e5-0000-0000-0000-000000000000"
+      },
+      "type": "protocols"
+    }
+  }'
+```
+
+`PUT /api/v2/experiments/protocols/{protocol_id}`
+
+Replace the template of a published protocol. Draft and archived protocols return 409. Send subject_type_id, all four required boolean settings, and metric_groups. Omitted optional template fields are cleared. Omitted enforcement keeps the existing locks.
+
+Use primary_metric_id to select the primary metric. Use default_duration_days to set target_duration_days on experiments created from the protocol. The nested metric is_primary and analysis_plan.target_duration_days fields are rejected. An unchanged GET response can be sent as the request body. Response-only fields are ignored.
+
+Independent configuration errors are returned together in the JSON:API errors array. Each error identifies the field in source.pointer. Earlier request and reference checks can stop on the first error. A failed request leaves the protocol unchanged. Changes apply to future experiments; existing experiments keep their settings.
+
+> Body parameter
+
+```json
+{
+  "data": {
+    "attributes": {
+      "is_duration_required_to_start": false,
+      "is_equal_split_enforced": false,
+      "is_metric_limit_enabled": false,
+      "is_minimum_duration_enabled": false,
+      "metric_groups": [],
+      "subject_type_id": "c2b3d4e5-0000-0000-0000-000000000000"
+    },
+    "type": "protocols"
+  }
+}
+```
+
+<h3 id="replace-experiment-protocol-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|protocol_id|path|string(uuid)|true|The UUID of the protocol.|
+|expected_updated_at|query|string|false|The updated_at value from the last read. Include the full timestamp, with fractional seconds. Returns 409 if another write changed the protocol. Omit to skip this check.|
+|body|body|[ExperimentsReplaceExperimentProtocolRequest](#schemaexperimentsreplaceexperimentprotocolrequest)|true|none|
+|» data|body|[ExperimentsReplaceExperimentProtocolRequestData](#schemaexperimentsreplaceexperimentprotocolrequestdata)|true|JSON:API protocol request resource.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "created_at": "2026-07-31T12:00:00Z",
+      "description": "Defaults for checkout experiments.",
+      "enforcement": {
+        "confidence_interval_method": "LOCKED",
+        "confidence_level": "EDITABLE",
+        "cuped_calculation": "EDITABLE",
+        "default_duration": "EDITABLE",
+        "environment": "EDITABLE",
+        "flag_source": "LOCKED",
+        "multiple_testing_correction": "EDITABLE",
+        "notifications": "EDITABLE",
+        "primary_metric": "EDITABLE",
+        "secondary_metrics": "EDITABLE",
+        "split_by_exploration_dimensions": "EDITABLE",
+        "subject_type": "LOCKED",
+        "targeting_rules": "EDITABLE",
+        "traffic_exposure": "EDITABLE",
+        "warehouse_exposure_source": "EDITABLE"
+      },
+      "experiment_count": 0,
+      "is_duration_required_to_start": false,
+      "is_equal_split_enforced": false,
+      "is_metric_limit_enabled": false,
+      "is_minimum_duration_enabled": false,
+      "metric_groups": [],
+      "name": "Checkout protocol",
+      "published_at": "2026-07-31T12:00:00Z",
+      "status": "PUBLISHED",
+      "subject_type": {
+        "id": "c2b3d4e5-0000-0000-0000-000000000000",
+        "name": "User"
+      },
+      "subject_type_id": "c2b3d4e5-0000-0000-0000-000000000000",
+      "updated_at": "2026-07-31T12:00:00Z"
+    },
+    "id": "e4d5f6a7-0000-0000-0000-000000000000",
+    "type": "protocols"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 415 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+<h3 id="replace-experiment-protocol-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ExperimentsPublicProtocolResponse](#schemaexperimentspublicprotocolresponse)|
+|400|Bad Request|Invalid request or protocol settings.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|401|Unauthorized|Missing or invalid authentication.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|The caller lacks the product_analytics_experiments_write permission.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|404|Not Found|No protocol with this ID exists in the organization.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|409|Conflict|The protocol is not published or expected_updated_at is stale.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|415|Unsupported Media Type|Unsupported request content type.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+|500|Internal Server Error|Internal Server Error|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: product_analytics_experiments_write )
+</aside>
+
+## Delete experiment protocol
+
+<a id="opIdDeleteExperimentProtocol"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/experiments/protocols/550e8400-e29b-41d4-a716-446655440000 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}"
+```
+
+`DELETE /api/v2/experiments/protocols/{protocol_id}`
+
+Delete a protocol with no linked experiments. Draft, published, and archived protocols can be deleted. Returns 204 with no response body.
+
+<h3 id="delete-experiment-protocol-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|protocol_id|path|string(uuid)|true|The UUID of the protocol.|
+|expected_updated_at|query|string|false|The updated_at value from the last read. Include the full timestamp, with fractional seconds. Returns 409 if another write changed the protocol. Omit to skip this check.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+<h3 id="delete-experiment-protocol-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No Content|None|
+|400|Bad Request|Invalid request or protocol settings.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|401|Unauthorized|Missing or invalid authentication.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|The caller lacks the product_analytics_experiments_write permission.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|404|Not Found|No protocol with this ID exists in the organization.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|409|Conflict|The protocol has linked experiments or expected_updated_at is stale.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+|500|Internal Server Error|Internal Server Error|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: product_analytics_experiments_write )
+</aside>
+
+## Update experiment protocol
+
+<a id="opIdPatchExperimentProtocol"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/experiments/protocols/550e8400-e29b-41d4-a716-446655440000 \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}" \
+  -d '{
+    "data": {
+      "attributes": {
+        "description": "Updated defaults for checkout experiments."
+      },
+      "type": "protocols"
+    }
+  }'
+```
+
+`PATCH /api/v2/experiments/protocols/{protocol_id}`
+
+Update the supplied fields of a draft protocol. Published protocols accept only name, description, and migration_metadata changes through PATCH. Use PUT to replace their settings. Archived protocols cannot be edited.
+
+Omitted fields keep their current values, including fields inside analysis_plan, exposure_schedule, and enforcement. Arrays replace the stored arrays. Supported null values clear fields; see the request schema. Use primary_metric_id to select the primary metric and default_duration_days to set the experiment analysis duration. Nested metric is_primary and analysis_plan.target_duration_days fields are rejected.
+
+> Body parameter
+
+```json
+{
+  "data": {
+    "attributes": {
+      "description": "Updated defaults for checkout experiments."
+    },
+    "type": "protocols"
+  }
+}
+```
+
+<h3 id="update-experiment-protocol-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|protocol_id|path|string(uuid)|true|The UUID of the protocol.|
+|body|body|[ExperimentsPatchExperimentProtocolRequest](#schemaexperimentspatchexperimentprotocolrequest)|true|none|
+|» data|body|[ExperimentsPatchExperimentProtocolRequestData](#schemaexperimentspatchexperimentprotocolrequestdata)|true|JSON:API protocol request resource.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "created_at": "2026-07-31T12:00:00Z",
+      "description": "Updated defaults for checkout experiments.",
+      "enforcement": {
+        "confidence_interval_method": "LOCKED",
+        "confidence_level": "EDITABLE",
+        "cuped_calculation": "EDITABLE",
+        "default_duration": "EDITABLE",
+        "environment": "EDITABLE",
+        "flag_source": "LOCKED",
+        "multiple_testing_correction": "EDITABLE",
+        "notifications": "EDITABLE",
+        "primary_metric": "EDITABLE",
+        "secondary_metrics": "EDITABLE",
+        "split_by_exploration_dimensions": "EDITABLE",
+        "subject_type": "LOCKED",
+        "targeting_rules": "EDITABLE",
+        "traffic_exposure": "EDITABLE",
+        "warehouse_exposure_source": "EDITABLE"
+      },
+      "experiment_count": 0,
+      "is_duration_required_to_start": false,
+      "is_equal_split_enforced": false,
+      "is_metric_limit_enabled": false,
+      "is_minimum_duration_enabled": false,
+      "metric_groups": [],
+      "name": "Checkout protocol",
+      "status": "DRAFT",
+      "subject_type": {
+        "id": "c2b3d4e5-0000-0000-0000-000000000000",
+        "name": "User"
+      },
+      "subject_type_id": "c2b3d4e5-0000-0000-0000-000000000000",
+      "updated_at": "2026-07-31T12:00:00Z"
+    },
+    "id": "e4d5f6a7-0000-0000-0000-000000000000",
+    "type": "protocols"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 415 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+<h3 id="update-experiment-protocol-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ExperimentsPublicProtocolResponse](#schemaexperimentspublicprotocolresponse)|
+|400|Bad Request|Invalid request or protocol settings.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|401|Unauthorized|Missing or invalid authentication.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|The caller lacks the product_analytics_experiments_write permission.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|404|Not Found|No protocol with this ID exists in the organization.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|409|Conflict|The protocol is archived, a published protocol receives settings changes, or the name is already in use.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|415|Unsupported Media Type|Unsupported request content type.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+|500|Internal Server Error|Internal Server Error|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: product_analytics_experiments_write )
+</aside>
+
+## Archive experiment protocol
+
+<a id="opIdArchiveExperimentProtocol"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/experiments/protocols/550e8400-e29b-41d4-a716-446655440000/archive \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}"
+```
+
+`POST /api/v2/experiments/protocols/{protocol_id}/archive`
+
+Archive a draft or published protocol. Archived protocols cannot be edited or used to create new experiments. Existing experiments keep their settings. Archiving an already archived protocol returns 409.
+
+<h3 id="archive-experiment-protocol-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|protocol_id|path|string(uuid)|true|The UUID of the protocol.|
+|expected_updated_at|query|string|false|The updated_at value from the last read. Include the full timestamp, with fractional seconds. Returns 409 if another write changed the protocol. Omit to skip this check.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "archived_at": "2026-07-31T14:00:00Z",
+      "created_at": "2026-07-31T12:00:00Z",
+      "description": "Defaults for checkout experiments.",
+      "enforcement": {
+        "confidence_interval_method": "LOCKED",
+        "confidence_level": "EDITABLE",
+        "cuped_calculation": "EDITABLE",
+        "default_duration": "EDITABLE",
+        "environment": "EDITABLE",
+        "flag_source": "LOCKED",
+        "multiple_testing_correction": "EDITABLE",
+        "notifications": "EDITABLE",
+        "primary_metric": "EDITABLE",
+        "secondary_metrics": "EDITABLE",
+        "split_by_exploration_dimensions": "EDITABLE",
+        "subject_type": "LOCKED",
+        "targeting_rules": "EDITABLE",
+        "traffic_exposure": "EDITABLE",
+        "warehouse_exposure_source": "EDITABLE"
+      },
+      "experiment_count": 0,
+      "is_duration_required_to_start": false,
+      "is_equal_split_enforced": false,
+      "is_metric_limit_enabled": false,
+      "is_minimum_duration_enabled": false,
+      "metric_groups": [],
+      "name": "Checkout protocol",
+      "published_at": "2026-07-31T12:00:00Z",
+      "status": "ARCHIVED",
+      "subject_type": {
+        "id": "c2b3d4e5-0000-0000-0000-000000000000",
+        "name": "User"
+      },
+      "subject_type_id": "c2b3d4e5-0000-0000-0000-000000000000",
+      "updated_at": "2026-07-31T14:00:00Z"
+    },
+    "id": "e4d5f6a7-0000-0000-0000-000000000000",
+    "type": "protocols"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+<h3 id="archive-experiment-protocol-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ExperimentsPublicProtocolResponse](#schemaexperimentspublicprotocolresponse)|
+|400|Bad Request|Invalid request or protocol settings.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|401|Unauthorized|Missing or invalid authentication.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|The caller lacks the product_analytics_experiments_write permission.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|404|Not Found|No protocol with this ID exists in the organization.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|409|Conflict|The protocol is already archived or expected_updated_at is stale.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+|500|Internal Server Error|Internal Server Error|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: product_analytics_experiments_write )
+</aside>
+
+## Publish experiment protocol
+
+<a id="opIdPublishExperimentProtocol"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/experiments/protocols/550e8400-e29b-41d4-a716-446655440000/publish \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}"
+```
+
+`POST /api/v2/experiments/protocols/{protocol_id}/publish`
+
+Publish a valid draft protocol. The protocol must have a name and subject type. Supplied references and settings must be valid. An exposure schedule or targeting rules require an environment. Enabled limits require their values. Configurable template fields must have a value before they can be locked.
+
+Independent configuration errors are returned together in the JSON:API errors array with source.pointer values that identify the fields. Earlier request and reference checks can stop on the first error. A failed request leaves the protocol unchanged.
+
+<h3 id="publish-experiment-protocol-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|protocol_id|path|string(uuid)|true|The UUID of the protocol.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "created_at": "2026-07-31T12:00:00Z",
+      "description": "Defaults for checkout experiments.",
+      "enforcement": {
+        "confidence_interval_method": "LOCKED",
+        "confidence_level": "EDITABLE",
+        "cuped_calculation": "EDITABLE",
+        "default_duration": "EDITABLE",
+        "environment": "EDITABLE",
+        "flag_source": "LOCKED",
+        "multiple_testing_correction": "EDITABLE",
+        "notifications": "EDITABLE",
+        "primary_metric": "EDITABLE",
+        "secondary_metrics": "EDITABLE",
+        "split_by_exploration_dimensions": "EDITABLE",
+        "subject_type": "LOCKED",
+        "targeting_rules": "EDITABLE",
+        "traffic_exposure": "EDITABLE",
+        "warehouse_exposure_source": "EDITABLE"
+      },
+      "experiment_count": 0,
+      "is_duration_required_to_start": false,
+      "is_equal_split_enforced": false,
+      "is_metric_limit_enabled": false,
+      "is_minimum_duration_enabled": false,
+      "metric_groups": [],
+      "name": "Checkout protocol",
+      "published_at": "2026-07-31T12:00:00Z",
+      "status": "PUBLISHED",
+      "subject_type": {
+        "id": "c2b3d4e5-0000-0000-0000-000000000000",
+        "name": "User"
+      },
+      "subject_type_id": "c2b3d4e5-0000-0000-0000-000000000000",
+      "updated_at": "2026-07-31T12:00:00Z"
+    },
+    "id": "e4d5f6a7-0000-0000-0000-000000000000",
+    "type": "protocols"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+> 500 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+<h3 id="publish-experiment-protocol-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ExperimentsPublicProtocolResponse](#schemaexperimentspublicprotocolresponse)|
+|400|Bad Request|Invalid request or protocol settings.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|401|Unauthorized|Missing or invalid authentication.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|The caller lacks the product_analytics_experiments_write permission.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|404|Not Found|No protocol with this ID exists in the organization.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|409|Conflict|Only draft protocols can be published.|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+|500|Internal Server Error|Internal Server Error|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: product_analytics_experiments_write )
 </aside>
 
 ## Refresh experiment results for org
@@ -84265,7 +85865,10 @@ curl https://api.datadoghq.com/api/v2/feature-flags/550e8400-e29b-41d4-a716-4466
       "attributes": {
         "description": "Updated description for the feature flag",
         "enabled": true,
-        "name": "Updated Feature Flag XYZ789"
+        "name": "Updated Feature Flag XYZ789",
+        "tags": [
+          "team:feature-flagging"
+        ]
       },
       "type": "feature-flags"
     }
@@ -84277,6 +85880,11 @@ curl https://api.datadoghq.com/api/v2/feature-flags/550e8400-e29b-41d4-a716-4466
 Updates an existing feature flag's metadata such as
  name and description. Does not modify targeting rules or allocations.
 
+To change the owning team, update `tags` and include a tag of the form
+`team:<team-handle>` in the array. `tags` is a full replacement of the
+existing tag set (including any `team:` tag), so include every tag you
+want to keep, not just the ones you're adding.
+
 > Body parameter
 
 ```json
@@ -84285,7 +85893,10 @@ Updates an existing feature flag's metadata such as
     "attributes": {
       "description": "Updated description for the feature flag",
       "enabled": true,
-      "name": "Updated Feature Flag XYZ789"
+      "name": "Updated Feature Flag XYZ789",
+      "tags": [
+        "team:feature-flagging"
+      ]
     },
     "type": "feature-flags"
   }
@@ -105737,6 +107348,16 @@ List all responders for an incident.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |incident_id|path|string|true|The UUID of the incident.|
+|include|query|[[IncidentResponderRelatedObject](#schemaincidentresponderrelatedobject)]|false|Comma-separated related resource types to include. Supported values are `users` and `role_assignments`.|
+|page[limit]|query|integer(int64)|false|Maximum number of responders to return per page.|
+|page[offset]|query|integer(int64)|false|The offset of the first responder to return.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|include|users|
+|include|role_assignments|
 
 > Example responses
 
@@ -110319,6 +111940,101 @@ permission. Rehydration requires `logs_write_historical_view`.
 
 <a href="https://docs.datadoghq.com/logs/explorer/archive_search/">Find out more at</a>
 
+## List Archive Searches
+
+<a id="opIdListArchiveSearches"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/logs/archive_searches \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}"
+```
+
+`GET /api/v2/logs/archive_searches`
+
+List the organization's Archive Searches that haven't expired, up to 5,000. When more
+exist, `meta.truncated` is `true`.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "attributes": {
+        "archive_id": "mhmyYmyLTOaFYKvhNadu1w",
+        "bytes_scanned": 0,
+        "created_at": "2026-01-02T12:00:00Z",
+        "description": "Investigating the checkout latency spike.",
+        "events_scanned": 0,
+        "expected_duration": 120,
+        "from": "2026-01-01T00:00:00Z",
+        "name": "checkout-latency-investigation",
+        "query": "service:checkout status:error",
+        "status": "RUNNING",
+        "to": "2026-01-02T00:00:00Z"
+      },
+      "id": "nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq",
+      "type": "archive_search"
+    }
+  ],
+  "meta": {
+    "truncated": false
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+<h3 id="list-archive-searches-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ArchiveSearchListResponse](#schemaarchivesearchlistresponse)|
+|403|Forbidden|Forbidden|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ
+</aside>
+
 ## Create an Archive Search
 
 <a id="opIdCreateArchiveSearch"></a>
@@ -110644,6 +112360,355 @@ Get a single Archive Search, including its status and the amount of archive data
 ```
 
 <h3 id="get-an-archive-search-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ArchiveSearchResponse](#schemaarchivesearchresponse)|
+|400|Bad Request|Bad Request|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|Forbidden|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ
+</aside>
+
+## Rehydrate an Archive Search
+
+<a id="opIdRehydrateArchiveSearch"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/logs/archive_searches/nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}" \
+  -d '{
+    "data": {
+      "attributes": {
+        "rehydration": {
+          "retention_days": 15,
+          "tier": "standard"
+        }
+      },
+      "type": "archive_search"
+    }
+  }'
+```
+
+`PATCH /api/v2/logs/archive_searches/{archive_search_id}`
+
+Turn a plain Archive Search into a Search & Rehydration by indexing the matched logs into a
+retained historical view. Rehydration is the only thing this endpoint can change, and it only
+applies to a search that has already finished scanning.
+
+> Body parameter
+
+```json
+{
+  "data": {
+    "attributes": {
+      "rehydration": {
+        "retention_days": 15,
+        "tier": "standard"
+      }
+    },
+    "type": "archive_search"
+  }
+}
+```
+
+<h3 id="rehydrate-an-archive-search-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|archive_search_id|path|string|true|Unique identifier of the Archive Search.|
+|body|body|[ArchiveSearchRehydrateRequest](#schemaarchivesearchrehydraterequest)|true|none|
+|» data|body|[ArchiveSearchRehydrateRequestData](#schemaarchivesearchrehydraterequestdata)|true|Archive Search object to rehydrate.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "archive_id": "mhmyYmyLTOaFYKvhNadu1w",
+      "bytes_scanned": 402764439,
+      "created_at": "2026-01-02T12:00:00Z",
+      "description": "Investigating the checkout latency spike.",
+      "events_scanned": 1500,
+      "from": "2026-01-01T00:00:00Z",
+      "name": "checkout-latency-investigation",
+      "query": "service:checkout status:error",
+      "rehydration": {
+        "max_rehydrated_events": 100000,
+        "retention_days": 15,
+        "tier": "standard"
+      },
+      "status": "RUNNING",
+      "to": "2026-01-02T00:00:00Z"
+    },
+    "id": "nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq",
+    "type": "archive_search"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 412 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+<h3 id="rehydrate-an-archive-search-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ArchiveSearchResponse](#schemaarchivesearchresponse)|
+|400|Bad Request|Bad Request|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|Forbidden|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|412|Precondition Failed|Precondition Failed|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ
+</aside>
+
+## Cancel an Archive Search
+
+<a id="opIdCancelArchiveSearch"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/logs/archive_searches/nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq/cancel \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}"
+```
+
+`POST /api/v2/logs/archive_searches/{archive_search_id}/cancel`
+
+Cancel a running Archive Search. Cancelling an Archive Search that has already finished is a
+no-op: it returns the resource unchanged instead of returning an error.
+
+<h3 id="cancel-an-archive-search-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|archive_search_id|path|string|true|Unique identifier of the Archive Search.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "archive_id": "mhmyYmyLTOaFYKvhNadu1w",
+      "bytes_scanned": 102400,
+      "completed_at": "2026-01-02T12:05:00Z",
+      "created_at": "2026-01-02T12:00:00Z",
+      "description": "Investigating the checkout latency spike.",
+      "events_scanned": 500,
+      "from": "2026-01-01T00:00:00Z",
+      "name": "checkout-latency-investigation",
+      "query": "service:checkout status:error",
+      "status": "CANCELLED",
+      "to": "2026-01-02T00:00:00Z"
+    },
+    "id": "nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq",
+    "type": "archive_search"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+<h3 id="cancel-an-archive-search-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -115266,6 +117331,167 @@ To perform this operation, you must be authenticated by means of one of the foll
 apiKeyAuth & appKeyAuth, AuthZ ( Scopes: late_metrics_config_write )
 </aside>
 
+## List tag indexing rule exemptions
+
+<a id="opIdListTagIndexingRuleExemptions"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/metrics/list-tag-indexing-rule-exemptions \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}"
+```
+
+`GET /api/v2/metrics/list-tag-indexing-rule-exemptions`
+
+Returns explicit exemptions and legacy tag configurations that exclude metrics from tag indexing rules.
+You can filter results by metric name prefix, whether an exemption is safe to remove, or the UUID of a matching
+tag indexing rule. You can sort results by metric name or by estimated change in indexed volume.
+
+<h3 id="list-tag-indexing-rule-exemptions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|filter[metric_prefix]|query|string|false|Filter exemptions to metrics whose names start with this literal prefix.<br>Matching is case-sensitive. Wildcard characters are treated literally.|
+|filter[safe]|query|boolean|false|Filter exemptions by whether they are safe to remove. An exemption is considered safe when a fresh, usable<br>estimate indicates that removing it would not increase indexed volume and would not drop tags used to query<br>the metric in monitors, dashboards, notebooks, or SLOs. Set to `true` to return safe-to-remove exemptions,<br>or `false` to return all other exemptions, including those with unavailable or stale estimates.|
+|filter[tag_indexing_rule_id]|query|string(uuid)|false|Filter exemptions to metrics matched by the tag indexing rule with this UUID.|
+|sort|query|[TagIndexingRuleExemptionSort](#schematagindexingruleexemptionsort)|false|Sort field. Prefix the field with `-` for descending order. The default is `estimated_change_in_volume` in ascending order, with the largest reductions (most negative values) first.|
+|page[size]|query|integer(int32)|false|Maximum number of results per page. Defaults to 10000; accepts values from 1 to 10000. If<br>`meta.pagination.next_cursor` is non-null, request the next page by passing that value as `page[cursor]`.<br>Continue until `next_cursor` is null.|
+|page[cursor]|query|string|false|Cursor for pagination. Use `page[size]` to opt-in to pagination and get the first page; for subsequent pages, use the value from `meta.pagination.next_cursor` in the response. Pagination is complete when `next_cursor` is null.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|sort|name|
+|sort|-name|
+|sort|estimated_change_in_volume|
+|sort|-estimated_change_in_volume|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "attributes": {
+        "created_at": "2024-01-15T12:00:00.000Z",
+        "created_by_handle": "user@datadoghq.com",
+        "estimated_change_in_volume": 45,
+        "kind": "exemption",
+        "missing_indexed_tags": [
+          "service"
+        ],
+        "reason": "This metric has a pre-existing tag configuration.",
+        "volume_status": "ok"
+      },
+      "id": "dd.test.metric",
+      "type": "tag_indexing_rule_exemptions"
+    }
+  ],
+  "links": {
+    "first": "/api/v2/metrics/list-tag-indexing-rule-exemptions?page[size]=100",
+    "next": "/api/v2/metrics/list-tag-indexing-rule-exemptions?page[size]=100&page[cursor]=next-page-cursor",
+    "self": "/api/v2/metrics/list-tag-indexing-rule-exemptions?page[size]=100"
+  },
+  "meta": {
+    "pagination": {
+      "cursor": null,
+      "limit": 1,
+      "next_cursor": "next-page-cursor",
+      "type": "cursor_limit"
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+<h3 id="list-tag-indexing-rule-exemptions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[TagIndexingRuleExemptionsResponse](#schematagindexingruleexemptionsresponse)|
+|400|Bad Request|Bad Request|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|Forbidden|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too Many Requests|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: metrics_read )
+</aside>
+
 ## List tag indexing rules
 
 <a id="opIdListTagIndexingRules"></a>
@@ -116981,6 +119207,185 @@ implicit exclusion, or 404 when neither applies.
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 apiKeyAuth & appKeyAuth, AuthZ ( Scopes: metrics_read )
+</aside>
+
+## Update a tag indexing rule exemption
+
+<a id="opIdUpdateTagIndexingRuleExemption"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/metrics/dist.http.endpoint.request/tag-indexing-rule-exemptions \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}" \
+  -d '{
+    "data": {
+      "attributes": {
+        "reason": "This metric must remain exempt because of its query requirements."
+      },
+      "type": "tag_indexing_rule_exemptions"
+    }
+  }'
+```
+
+`PUT /api/v2/metrics/{metric_name}/tag-indexing-rule-exemptions`
+
+Update the reason for an explicit tag indexing rule exemption. The exemption's `created_at` and
+`created_by_handle` values remain unchanged. Returns 404 when the metric has no explicit exemption or has
+only a legacy tag configuration. Requires the `Manage Tags for Metrics` permission.
+
+> Body parameter
+
+```json
+{
+  "data": {
+    "attributes": {
+      "reason": "This metric must remain exempt because of its query requirements."
+    },
+    "type": "tag_indexing_rule_exemptions"
+  }
+}
+```
+
+<h3 id="update-a-tag-indexing-rule-exemption-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|metric_name|path|string|true|The name of the metric.|
+|body|body|[TagIndexingRuleExemptionUpdateRequest](#schematagindexingruleexemptionupdaterequest)|true|none|
+|» data|body|[TagIndexingRuleExemptionUpdateData](#schematagindexingruleexemptionupdatedata)|true|Data object for updating a tag indexing rule exemption.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "attributes": {
+      "created_at": "2024-01-15T12:00:00.000Z",
+      "created_by_handle": "user@datadoghq.com",
+      "estimated_change_in_volume": null,
+      "kind": "exemption",
+      "missing_indexed_tags": [],
+      "reason": "This metric must remain exempt because of its query requirements.",
+      "volume_status": "unavailable"
+    },
+    "id": "dd.test.metric",
+    "type": "tag_indexing_rule_exemptions"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+<h3 id="update-a-tag-indexing-rule-exemption-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[TagIndexingRuleExemptionResponse](#schematagindexingruleexemptionresponse)|
+|400|Bad Request|Bad Request|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|Forbidden|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|429|Too Many Requests|Too Many Requests|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: metric_tags_write )
 </aside>
 
 ## Create a tag indexing rule exemption
@@ -142653,7 +145058,7 @@ Create a new RUM application in your organization.
 
 > Example responses
 
-> 200 Response
+> 201 Response
 
 ```json
 {
@@ -142699,7 +145104,7 @@ Create a new RUM application in your organization.
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|[RUMApplicationResponse](#schemarumapplicationresponse)|
+|201|Created|Created|[RUMApplicationResponse](#schemarumapplicationresponse)|
 |400|Bad Request|Bad Request|[APIErrorResponse](#schemaapierrorresponse)|
 |429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
 
@@ -142760,7 +145165,20 @@ Get the RUM application with given ID in your organization.
 ```json
 {
   "errors": [
-    "Bad Request"
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
   ]
 }
 ```
@@ -142780,7 +145198,7 @@ Get the RUM application with given ID in your organization.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[RUMApplicationResponse](#schemarumapplicationresponse)|
-|404|Not Found|Not Found|[APIErrorResponse](#schemaapierrorresponse)|
+|404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
 
 <aside class="warning">
@@ -142819,7 +145237,20 @@ Delete an existing RUM application in your organization.
 ```json
 {
   "errors": [
-    "Bad Request"
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
   ]
 }
 ```
@@ -142839,7 +145270,7 @@ Delete an existing RUM application in your organization.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|No Content|None|
-|404|Not Found|Not Found|[APIErrorResponse](#schemaapierrorresponse)|
+|404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
 
 <aside class="warning">
@@ -142942,7 +145373,20 @@ Update the RUM application with given ID in your organization.
 ```json
 {
   "errors": [
-    "Bad Request"
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
   ]
 }
 ```
@@ -142973,7 +145417,7 @@ Update the RUM application with given ID in your organization.
 |---|---|---|---|
 |200|OK|OK|[RUMApplicationResponse](#schemarumapplicationresponse)|
 |400|Bad Request|Bad Request|[APIErrorResponse](#schemaapierrorresponse)|
-|404|Not Found|Not Found|[APIErrorResponse](#schemaapierrorresponse)|
+|404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |422|Unprocessable Entity|Unprocessable Entity.|[APIErrorResponse](#schemaapierrorresponse)|
 |429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
 
@@ -192428,378 +194872,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 apiKeyAuth & appKeyAuth, AuthZ ( Scopes: apm_service_catalog_read )
 </aside>
 
-<h1 id="datadog-api-v2-collection-spa">Spa</h1>
-
-SPA (Spark Pod Autosizing) API. Provides resource recommendations and cost insights to help optimize Spark job configurations.
-
-## Get SPA recommendations v2
-
-<a id="opIdGetSPARecommendationsV2"></a>
-
-> Code samples
-
-```bash
-curl https://api.datadoghq.com/api/v2/spa/recommendations-v2/string \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "data": {
-      "attributes": {
-        "arguments": [
-          ""
-        ]
-      },
-      "type": "recommendation_v2_request"
-    }
-  }'
-```
-
-`POST /api/v2/spa/recommendations-v2/{service}`
-
-This endpoint is experimental and restricted to Datadog internal use only.
-Retrieve resource recommendations for a Spark job. The caller (Spark Gateway) provides
-a service name and the job's raw arguments. SPA determines which arguments are relevant
-for the service and returns structured recommendations for driver and executor resources.
-
-> Body parameter
-
-```json
-{
-  "data": {
-    "attributes": {
-      "arguments": [
-        ""
-      ]
-    },
-    "type": "recommendation_v2_request"
-  }
-}
-```
-
-<h3 id="get-spa-recommendations-v2-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|service|path|string|true|The service name for a Spark job|
-|body|body|[RecommendationV2RequestBody](#schemarecommendationv2requestbody)|true|none|
-|» data|body|[RecommendationV2RequestData](#schemarecommendationv2requestdata)|true|JSON:API resource object for the SPA v2 recommendation request.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": {
-    "attributes": {
-      "driver": {
-        "estimation": {
-          "cpu": {
-            "max": 1500,
-            "p75": 1000,
-            "p95": 1200
-          },
-          "ephemeral_storage": 896,
-          "heap": 6144,
-          "memory": 7168,
-          "overhead": 1024
-        }
-      },
-      "executor": {
-        "estimation": {
-          "cpu": {
-            "max": 2000,
-            "p75": 1200,
-            "p95": 1500
-          },
-          "ephemeral_storage": 512,
-          "heap": 3072,
-          "memory": 4096,
-          "overhead": 1024
-        }
-      },
-      "matched_params": "detailed_metrics=false"
-    },
-    "id": "dedupeactivecontexts:adp_dedupeactivecontexts_org2",
-    "type": "recommendation"
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-> 403 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-> 404 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-<h3 id="get-spa-recommendations-v2-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|[RecommendationDocument](#schemarecommendationdocument)|
-|400|Bad Request|Bad Request|[APIErrorResponse](#schemaapierrorresponse)|
-|403|Forbidden|Not Authorized|[APIErrorResponse](#schemaapierrorresponse)|
-|404|Not Found|Not Found|[APIErrorResponse](#schemaapierrorresponse)|
-|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-AuthZ
-</aside>
-
-## Get SPA Recommendations
-
-<a id="opIdGetSPARecommendations"></a>
-
-> Code samples
-
-```bash
-curl https://api.datadoghq.com/api/v2/spa/recommendations/string \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v2/spa/recommendations/{service}`
-
-This endpoint is currently experimental and restricted to Datadog internal use only. Retrieve resource recommendations for a Spark job. The caller (Spark Gateway or DJM UI) provides a service name and SPA returns structured recommendations for driver and executor resources. The version with a shard should be preferred, where possible, as it gives more accurate results.
-
-<h3 id="get-spa-recommendations-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|bypass_cache|query|string|false|The recommendation service should not use its metrics cache.|
-|service|path|string|true|The service name for a spark job.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": {
-    "attributes": {
-      "driver": {
-        "estimation": {
-          "cpu": {
-            "max": 1500,
-            "p75": 1000,
-            "p95": 1200
-          },
-          "ephemeral_storage": 896,
-          "heap": 6144,
-          "memory": 7168,
-          "overhead": 1024
-        }
-      },
-      "executor": {
-        "estimation": {
-          "cpu": {
-            "max": 2000,
-            "p75": 1200,
-            "p95": 1500
-          },
-          "ephemeral_storage": 512,
-          "heap": 3072,
-          "memory": 4096,
-          "overhead": 1024
-        }
-      }
-    },
-    "id": "dedupeactivecontexts:adp_dedupeactivecontexts_org2",
-    "type": "recommendation"
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-> 403 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-<h3 id="get-spa-recommendations-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|[RecommendationDocument](#schemarecommendationdocument)|
-|400|Bad Request|Bad Request|[APIErrorResponse](#schemaapierrorresponse)|
-|403|Forbidden|Not Authorized|[APIErrorResponse](#schemaapierrorresponse)|
-|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-AuthZ
-</aside>
-
-## Get SPA Recommendations with a shard parameter
-
-<a id="opIdGetSPARecommendationsWithShard"></a>
-
-> Code samples
-
-```bash
-curl https://api.datadoghq.com/api/v2/spa/recommendations/string/string \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /api/v2/spa/recommendations/{service}/{shard}`
-
-This endpoint is currently experimental and restricted to Datadog internal use only. Retrieve resource recommendations for a Spark job. The caller (Spark Gateway or DJM UI) provides a service name and shard identifier, and SPA returns structured recommendations for driver and executor resources.
-
-<h3 id="get-spa-recommendations-with-a-shard-parameter-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|shard|path|string|true|The shard tag for a spark job, which differentiates jobs within the same service that have different resource needs|
-|service|path|string|true|The service name for a spark job|
-|bypass_cache|query|string|false|The recommendation service should not use its metrics cache.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": {
-    "attributes": {
-      "driver": {
-        "estimation": {
-          "cpu": {
-            "max": 1500,
-            "p75": 1000,
-            "p95": 1200
-          },
-          "ephemeral_storage": 896,
-          "heap": 6144,
-          "memory": 7168,
-          "overhead": 1024
-        }
-      },
-      "executor": {
-        "estimation": {
-          "cpu": {
-            "max": 2000,
-            "p75": 1200,
-            "p95": 1500
-          },
-          "ephemeral_storage": 512,
-          "heap": 3072,
-          "memory": 4096,
-          "overhead": 1024
-        }
-      }
-    },
-    "id": "dedupeactivecontexts:adp_dedupeactivecontexts_org2",
-    "type": "recommendation"
-  }
-}
-```
-
-> 400 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-> 403 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "errors": [
-    "Bad Request"
-  ]
-}
-```
-
-<h3 id="get-spa-recommendations-with-a-shard-parameter-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|[RecommendationDocument](#schemarecommendationdocument)|
-|400|Bad Request|Bad Request|[APIErrorResponse](#schemaapierrorresponse)|
-|403|Forbidden|Not Authorized|[APIErrorResponse](#schemaapierrorresponse)|
-|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-AuthZ
-</aside>
-
 <h1 id="datadog-api-v2-collection-spans">Spans</h1>
 
 Search and aggregate your spans from your Datadog platform over HTTP.
@@ -192835,15 +194907,13 @@ curl https://api.datadoghq.com/api/v2/spans/analytics/aggregate \
         },
         "group_by": [
           {
-            "facet": "host",
-            "histogram": {
-              "interval": 10,
-              "max": 100,
-              "min": 50
-            },
+            "facet": "service",
+            "limit": 20,
             "sort": {
-              "aggregation": "count",
-              "order": "asc"
+              "aggregation": "pc90",
+              "metric": "@duration",
+              "order": "desc",
+              "type": "measure"
             }
           }
         ],
@@ -192860,6 +194930,11 @@ curl https://api.datadoghq.com/api/v2/spans/analytics/aggregate \
 
 The API endpoint to aggregate spans into buckets and compute metrics and timeseries.
 This endpoint is rate limited to `300` requests per hour.
+
+A request can generate at most 10,000 groups across all `group_by` entries, or 400,000 groups
+including time buckets when a `timeseries` compute is used. Set `limit` on each `group_by` entry
+to stay within these bounds. Requests over long time ranges or with many groups are more resource-intensive
+and can fail. To reduce load, narrow the time range or lower the `limit` on each `group_by` entry.
 
 > Body parameter
 
@@ -192882,15 +194957,13 @@ This endpoint is rate limited to `300` requests per hour.
       },
       "group_by": [
         {
-          "facet": "host",
-          "histogram": {
-            "interval": 10,
-            "max": 100,
-            "min": 50
-          },
+          "facet": "service",
+          "limit": 20,
           "sort": {
-            "aggregation": "count",
-            "order": "asc"
+            "aggregation": "pc90",
+            "metric": "@duration",
+            "order": "desc",
+            "type": "measure"
           }
         }
       ],
@@ -210562,6 +212635,223 @@ Update a team link.
 |200|OK|OK|[TeamLinkResponse](#schemateamlinkresponse)|
 |403|Forbidden|Forbidden|[APIErrorResponse](#schemaapierrorresponse)|
 |404|Not Found|API error response.|[APIErrorResponse](#schemaapierrorresponse)|
+|429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+apiKeyAuth & appKeyAuth, AuthZ ( Scopes: teams_read )
+</aside>
+
+## Get team hierarchy members
+
+<a id="opIdListTeamHierarchyMembers"></a>
+
+> Code samples
+
+```bash
+curl https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members \
+  -H 'Accept: application/json' \
+  -H "DD-API-KEY: ${API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${API_KEY}"
+```
+
+`GET /api/v2/team/{team_id}/members`
+
+List the direct and inherited members of a team, deduplicated by user.
+Members of descendant teams are included unless `filter[is_direct_only]` is true.
+Datadog support users are always excluded.
+
+Use `page[number]` and `page[size]` to paginate through the results.
+Invalid query parameters return a JSON:API error with status 400.
+Invalid or unknown team UUIDs return status 404.
+
+<h3 id="get-team-hierarchy-members-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|team_id|path|string|true|UUID of the requested root team.|
+|filter[is_direct_only]|query|boolean|false|Return only direct members. By default, members inherited from descendant teams are also returned.|
+|filter[include_service_accounts]|query|boolean|false|Include service accounts. Datadog support users are always excluded.|
+|filter[keyword]|query|string|false|Filter by a case-insensitive substring of the user name, handle, or email.|
+|include|query|string|false|Comma-separated resources to include: `user` and `team`. The included team is the requested team. Whitespace is trimmed, and duplicate or empty entries are ignored.|
+|sort|query|string|false|Comma-separated sort fields: `name`, `handle`, `is_direct`, and `provisioned_by`. Fields are applied in order, each optionally prefixed with `-` for descending order. By default, team admins come first, followed by other direct members, then inherited members, sorted by name within each group.|
+|page[number]|query|integer(int64)|false|Zero-based page number. Negative values become 0. Defaults to 0.|
+|page[size]|query|integer(int64)|false|Requested number of members per page. Defaults to and maxes out at 100.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "attributes": {
+        "direct_role": "admin",
+        "is_direct": true,
+        "provisioned_by": "manual",
+        "provisioned_by_id": null
+      },
+      "id": "UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000001",
+      "relationships": {
+        "team": {
+          "data": {
+            "id": "692e8073-12c4-4c71-8408-5090bd44c9c8",
+            "type": "teams"
+          }
+        },
+        "user": {
+          "data": {
+            "id": "00000000-0000-0000-0000-000000000001",
+            "type": "users"
+          }
+        }
+      },
+      "type": "user_team_relationship"
+    },
+    {
+      "attributes": {
+        "direct_role": null,
+        "is_direct": false,
+        "provisioned_by": null,
+        "provisioned_by_id": null
+      },
+      "id": "UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000002",
+      "relationships": {
+        "team": {
+          "data": {
+            "id": "692e8073-12c4-4c71-8408-5090bd44c9c8",
+            "type": "teams"
+          }
+        },
+        "user": {
+          "data": {
+            "id": "00000000-0000-0000-0000-000000000002",
+            "type": "users"
+          }
+        }
+      },
+      "type": "user_team_relationship"
+    }
+  ],
+  "links": {
+    "first": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+    "last": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+    "self": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100"
+  },
+  "meta": {
+    "page": {
+      "first_number": 0,
+      "last_number": 0,
+      "next_number": null,
+      "number": 0,
+      "prev_number": null,
+      "size": 100,
+      "total": 2,
+      "type": "number_size"
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "detail": "Missing required attribute in body",
+      "meta": {
+        "property1": null,
+        "property2": null
+      },
+      "source": {
+        "header": "Authorization",
+        "parameter": "limit",
+        "pointer": "/data/attributes/title"
+      },
+      "status": "400",
+      "title": "Bad Request"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "errors": [
+    "Bad Request"
+  ]
+}
+```
+
+<h3 id="get-team-hierarchy-members-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[TeamHierarchyMembersResponse](#schemateamhierarchymembersresponse)|
+|400|Bad Request|Bad Request|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|401|Unauthorized|Unauthorized|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
+|403|Forbidden|Forbidden|[APIErrorResponse](#schemaapierrorresponse)|
+|404|Not Found|Not Found|[JSONAPIErrorResponse](#schemajsonapierrorresponse)|
 |429|Too Many Requests|Too many requests|[APIErrorResponse](#schemaapierrorresponse)|
 
 <aside class="warning">
@@ -231786,6 +234076,10 @@ A position in source code, identified by line and column numbers.
       "file_encoding": "utf-8",
       "filename": "test.py",
       "language": "python",
+      "options": {
+        "log_output": true,
+        "use_tree_sitter": true
+      },
       "rules": [
         {
           "arguments": [
@@ -231863,6 +234157,10 @@ The request payload for running static analysis on source code.
     "file_encoding": "utf-8",
     "filename": "test.py",
     "language": "python",
+    "options": {
+      "log_output": true,
+      "use_tree_sitter": true
+    },
     "rules": [
       {
         "arguments": [
@@ -231945,6 +234243,10 @@ The primary data object in the analysis request.
   "file_encoding": "utf-8",
   "filename": "test.py",
   "language": "python",
+  "options": {
+    "log_output": true,
+    "use_tree_sitter": true
+  },
   "rules": [
     {
       "arguments": [
@@ -232005,6 +234307,7 @@ The attributes of the analysis request, containing the source code and rules to 
 |file_encoding|string|true|none|The encoding of the source code file (must be `utf-8`).|
 |filename|string|true|none|The name of the file being analyzed.|
 |language|string|true|none|The programming language of the source code.|
+|options|[AnalysisRequestOptions](#schemaanalysisrequestoptions)|false|none|Analyzer options sent by browser-based clients. Accepted but ignored: the API always runs<br>the analysis with tree-sitter enabled and rule output logged.|
 |rules|[[AnalysisRequestRule](#schemaanalysisrequestrule)]|true|none|The list of static analysis rules to apply during analysis.|
 
 <h2 id="tocS_AnalysisRequestDataType">AnalysisRequestDataType</h2>
@@ -232019,6 +234322,30 @@ The attributes of the analysis request, containing the source code and rules to 
 ```
 
 Analysis request resource type.
+
+<h2 id="tocS_AnalysisRequestOptions">AnalysisRequestOptions</h2>
+<!-- backwards compatibility -->
+<a id="schemaanalysisrequestoptions"></a>
+<a id="schema_AnalysisRequestOptions"></a>
+<a id="tocSanalysisrequestoptions"></a>
+<a id="tocsanalysisrequestoptions"></a>
+
+```json
+{
+  "log_output": true,
+  "use_tree_sitter": true
+}
+```
+
+Analyzer options sent by browser-based clients. Accepted but ignored: the API always runs
+the analysis with tree-sitter enabled and rule output logged.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|log_output|boolean|false|none|Whether to capture the output logged by rules during execution. Ignored by this operation.|
+|use_tree_sitter|boolean|false|none|Whether to use tree-sitter to parse the source code. Ignored by this operation.|
 
 <h2 id="tocS_AnalysisRequestRule">AnalysisRequestRule</h2>
 <!-- backwards compatibility -->
@@ -239457,6 +241784,193 @@ Archive Search object to create.
 |Property|Value|
 |---|---|
 |type|archive_search|
+
+<h2 id="tocS_ArchiveSearchListResponse">ArchiveSearchListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaarchivesearchlistresponse"></a>
+<a id="schema_ArchiveSearchListResponse"></a>
+<a id="tocSarchivesearchlistresponse"></a>
+<a id="tocsarchivesearchlistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "attributes": {
+        "archive_id": "mhmyYmyLTOaFYKvhNadu1w",
+        "bytes_scanned": 402764439,
+        "completed_at": "2026-01-02T12:30:00Z",
+        "created_at": "2026-01-02T12:00:00Z",
+        "description": "Investigating the checkout latency spike.",
+        "events_scanned": 1500,
+        "expected_duration": 120,
+        "from": "2026-01-01T00:00:00Z",
+        "name": "checkout-latency-investigation",
+        "query": "service:checkout status:error",
+        "rehydration": {
+          "max_rehydrated_events": 1000000,
+          "retention_days": 15,
+          "tier": "standard"
+        },
+        "status": "RUNNING",
+        "to": "2026-01-02T00:00:00Z"
+      },
+      "id": "nv2eu4srgyzdkulggjzg2zkmmzifa2rum5iq",
+      "type": "archive_search"
+    }
+  ],
+  "meta": {
+    "truncated": false
+  }
+}
+```
+
+Response containing multiple Archive Searches.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[ArchiveSearchResponseData](#schemaarchivesearchresponsedata)]|true|none|Array of Archive Searches.|
+|meta|[ArchiveSearchListResponseMeta](#schemaarchivesearchlistresponsemeta)|false|none|Metadata of the Archive Searches response.|
+
+<h2 id="tocS_ArchiveSearchListResponseMeta">ArchiveSearchListResponseMeta</h2>
+<!-- backwards compatibility -->
+<a id="schemaarchivesearchlistresponsemeta"></a>
+<a id="schema_ArchiveSearchListResponseMeta"></a>
+<a id="tocSarchivesearchlistresponsemeta"></a>
+<a id="tocsarchivesearchlistresponsemeta"></a>
+
+```json
+{
+  "truncated": false
+}
+```
+
+Metadata of the Archive Searches response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|truncated|boolean|false|none|Whether more Archive Searches exist beyond the ones returned.|
+
+<h2 id="tocS_ArchiveSearchRehydrateRequest">ArchiveSearchRehydrateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaarchivesearchrehydraterequest"></a>
+<a id="schema_ArchiveSearchRehydrateRequest"></a>
+<a id="tocSarchivesearchrehydraterequest"></a>
+<a id="tocsarchivesearchrehydraterequest"></a>
+
+```json
+{
+  "data": {
+    "attributes": {
+      "rehydration": {
+        "retention_days": 15,
+        "tier": "standard"
+      }
+    },
+    "type": "archive_search"
+  }
+}
+```
+
+Request to rehydrate an Archive Search.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[ArchiveSearchRehydrateRequestData](#schemaarchivesearchrehydraterequestdata)|true|none|Archive Search object to rehydrate.|
+
+<h2 id="tocS_ArchiveSearchRehydrateRequestAttributes">ArchiveSearchRehydrateRequestAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemaarchivesearchrehydraterequestattributes"></a>
+<a id="schema_ArchiveSearchRehydrateRequestAttributes"></a>
+<a id="tocSarchivesearchrehydraterequestattributes"></a>
+<a id="tocsarchivesearchrehydraterequestattributes"></a>
+
+```json
+{
+  "rehydration": {
+    "retention_days": 15,
+    "tier": "standard"
+  }
+}
+```
+
+Attributes accepted when rehydrating an Archive Search.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|rehydration|[ArchiveSearchRehydrateRequestRehydration](#schemaarchivesearchrehydraterequestrehydration)|true|none|Rehydration settings to apply.|
+
+<h2 id="tocS_ArchiveSearchRehydrateRequestData">ArchiveSearchRehydrateRequestData</h2>
+<!-- backwards compatibility -->
+<a id="schemaarchivesearchrehydraterequestdata"></a>
+<a id="schema_ArchiveSearchRehydrateRequestData"></a>
+<a id="tocSarchivesearchrehydraterequestdata"></a>
+<a id="tocsarchivesearchrehydraterequestdata"></a>
+
+```json
+{
+  "attributes": {
+    "rehydration": {
+      "retention_days": 15,
+      "tier": "standard"
+    }
+  },
+  "type": "archive_search"
+}
+```
+
+Archive Search object to rehydrate.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[ArchiveSearchRehydrateRequestAttributes](#schemaarchivesearchrehydraterequestattributes)|true|none|Attributes accepted when rehydrating an Archive Search.|
+|type|[ArchiveSearchType](#schemaarchivesearchtype)|true|none|Archive Search resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|archive_search|
+
+<h2 id="tocS_ArchiveSearchRehydrateRequestRehydration">ArchiveSearchRehydrateRequestRehydration</h2>
+<!-- backwards compatibility -->
+<a id="schemaarchivesearchrehydraterequestrehydration"></a>
+<a id="schema_ArchiveSearchRehydrateRequestRehydration"></a>
+<a id="tocSarchivesearchrehydraterequestrehydration"></a>
+<a id="tocsarchivesearchrehydraterequestrehydration"></a>
+
+```json
+{
+  "retention_days": 15,
+  "tier": "standard"
+}
+```
+
+Rehydration settings to apply.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|retention_days|integer(int64)|true|none|Number of days the rehydrated logs are retained for.|
+|tier|[ArchiveSearchRehydrationTier](#schemaarchivesearchrehydrationtier)|true|none|Storage tier the matched logs are rehydrated into.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|tier|standard|
+|tier|flex|
 
 <h2 id="tocS_ArchiveSearchRehydration">ArchiveSearchRehydration</h2>
 <!-- backwards compatibility -->
@@ -252637,6 +255151,69 @@ Request payload for adding or removing work item insights.
 |---|---|---|---|---|
 |data|[CaseInsightsData](#schemacaseinsightsdata)|true|none|Data object containing the insights to add or remove.|
 
+<h2 id="tocS_CaseInvestigationNotebookCreateData">CaseInvestigationNotebookCreateData</h2>
+<!-- backwards compatibility -->
+<a id="schemacaseinvestigationnotebookcreatedata"></a>
+<a id="schema_CaseInvestigationNotebookCreateData"></a>
+<a id="tocScaseinvestigationnotebookcreatedata"></a>
+<a id="tocscaseinvestigationnotebookcreatedata"></a>
+
+```json
+{
+  "type": "notebook"
+}
+```
+
+Case investigation notebook creation data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|[CaseInvestigationNotebookResourceType](#schemacaseinvestigationnotebookresourcetype)|true|none|Case investigation notebook resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|notebook|
+
+<h2 id="tocS_CaseInvestigationNotebookCreateRequest">CaseInvestigationNotebookCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacaseinvestigationnotebookcreaterequest"></a>
+<a id="schema_CaseInvestigationNotebookCreateRequest"></a>
+<a id="tocScaseinvestigationnotebookcreaterequest"></a>
+<a id="tocscaseinvestigationnotebookcreaterequest"></a>
+
+```json
+{
+  "data": {
+    "type": "notebook"
+  }
+}
+```
+
+Case investigation notebook creation request.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CaseInvestigationNotebookCreateData](#schemacaseinvestigationnotebookcreatedata)|true|none|Case investigation notebook creation data.|
+
+<h2 id="tocS_CaseInvestigationNotebookResourceType">CaseInvestigationNotebookResourceType</h2>
+<!-- backwards compatibility -->
+<a id="schemacaseinvestigationnotebookresourcetype"></a>
+<a id="schema_CaseInvestigationNotebookResourceType"></a>
+<a id="tocScaseinvestigationnotebookresourcetype"></a>
+<a id="tocscaseinvestigationnotebookresourcetype"></a>
+
+```json
+"notebook"
+```
+
+Case investigation notebook resource type.
+
 <h2 id="tocS_CaseLink">CaseLink</h2>
 <!-- backwards compatibility -->
 <a id="schemacaselink"></a>
@@ -263096,37 +265673,6 @@ Whether the UI component is visible. If this is a string, it must be a valid Jav
 |*oneOf*|boolean|false|none|none|
 |*oneOf*|string|false|none|If this is a string, it must be a valid JavaScript expression that evaluates to a boolean.|
 
-<h2 id="tocS_ComponentRecommendation">ComponentRecommendation</h2>
-<!-- backwards compatibility -->
-<a id="schemacomponentrecommendation"></a>
-<a id="schema_ComponentRecommendation"></a>
-<a id="tocScomponentrecommendation"></a>
-<a id="tocscomponentrecommendation"></a>
-
-```json
-{
-  "estimation": {
-    "cpu": {
-      "max": 0,
-      "p75": 0,
-      "p95": 0
-    },
-    "ephemeral_storage": 0,
-    "heap": 0,
-    "memory": 0,
-    "overhead": 0
-  }
-}
-```
-
-Resource recommendation for a single Spark component (driver or executor). Contains estimation data used to patch Spark job specs.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|estimation|[Estimation](#schemaestimation)|true|none|Recommended resource values for a Spark driver or executor, derived from recent real usage metrics. Used by SPA to propose more efficient pod sizing.|
-
 <h2 id="tocS_ComponentType">ComponentType</h2>
 <!-- backwards compatibility -->
 <a id="schemacomponenttype"></a>
@@ -268630,31 +271176,6 @@ Coverage statistics for a specific service.
 ```
 
 JSON:API type for coverage summary response. The value must always be `ci_app_coverage_summary`.
-
-<h2 id="tocS_Cpu">Cpu</h2>
-<!-- backwards compatibility -->
-<a id="schemacpu"></a>
-<a id="schema_Cpu"></a>
-<a id="tocScpu"></a>
-<a id="tocscpu"></a>
-
-```json
-{
-  "max": 0,
-  "p75": 0,
-  "p95": 0
-}
-```
-
-CPU usage statistics derived from historical Spark job metrics. Provides multiple estimates so users can choose between conservative and cost-saving risk profiles.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|max|integer(int64)|false|none|Maximum CPU usage observed for the job, expressed in millicores. This represents the upper bound of usage.|
-|p75|integer(int64)|false|none|75th percentile of CPU usage (millicores). Represents a cost-saving configuration while covering most workloads.|
-|p95|integer(int64)|false|none|95th percentile of CPU usage (millicores). Balances performance and cost, providing a safer margin than p75.|
 
 <h2 id="tocS_CreateActionConnectionRequest">CreateActionConnectionRequest</h2>
 <!-- backwards compatibility -->
@@ -281664,7 +284185,7 @@ Attributes of a custom static analysis rule, including its most recent revision 
 |---|---|---|---|---|
 |created_at|string(date-time)|true|none|Creation timestamp|
 |created_by|string|true|none|Creator identifier|
-|last_revision|[CustomRuleRevisionEmbedded](#schemacustomrulerevisionembedded)|true|none|Most recent revision of the rule, or null when the rule has no revisions.|
+|last_revision|[CustomRuleNullableRevisionEmbedded](#schemacustomrulenullablerevisionembedded)|true|none|The most recent revision of the rule, or null when the rule has no revisions.|
 |name|string|true|none|Rule name|
 |revisions|[[CustomRuleRevisionEmbedded](#schemacustomrulerevisionembedded)]|true|none|Revision history of the rule.|
 
@@ -281680,6 +284201,120 @@ Attributes of a custom static analysis rule, including its most recent revision 
 ```
 
 Resource type
+
+<h2 id="tocS_CustomRuleNullableRevisionEmbedded">CustomRuleNullableRevisionEmbedded</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomrulenullablerevisionembedded"></a>
+<a id="schema_CustomRuleNullableRevisionEmbedded"></a>
+<a id="tocScustomrulenullablerevisionembedded"></a>
+<a id="tocscustomrulenullablerevisionembedded"></a>
+
+```json
+{
+  "arguments": [
+    {
+      "description": "YXJndW1lbnQgZGVzY3JpcHRpb24=",
+      "name": "YXJndW1lbnRfbmFtZQ=="
+    }
+  ],
+  "category": "SECURITY",
+  "checksum": "8a66c4e4e631099ad71be3c1ea3ea8fc2d57193e56db2c296e2dd8a508b26b99",
+  "code": "Y29uZHVjdG9yOgogICAgLSBkZXBsb3lfb25seTogdHJ1ZQ==",
+  "created_at": "2026-01-09T13:00:57.473141Z",
+  "created_by": "foobarbaz",
+  "creation_message": "Initial revision",
+  "cve": "CVE-2024-1234",
+  "cwe": "CWE-79",
+  "description": "bG9uZyBkZXNjcmlwdGlvbg==",
+  "documentation_url": "https://docs.example.com/rules/my-rule",
+  "id": "revision-123",
+  "is_published": false,
+  "is_testing": false,
+  "language": "PYTHON",
+  "severity": "ERROR",
+  "short_description": "c2hvcnQgZGVzY3JpcHRpb24=",
+  "should_use_ai_fix": false,
+  "tags": [
+    "security",
+    "custom"
+  ],
+  "tests": [
+    {
+      "annotation_count": 1,
+      "code": "Y29uZHVjdG9yOgogICAgLSBkZXBsb3lfb25seTogdHJ1ZQ==",
+      "filename": "test.yaml"
+    }
+  ],
+  "tree_sitter_query": "Y29uZHVjdG9yOgogICAgLSBkZXBsb3lfb25seTogdHJ1ZQ==",
+  "version_id": 1
+}
+```
+
+The most recent revision of the rule, or null when the rule has no revisions.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|arguments|[[Argument](#schemaargument)]|true|none|Rule arguments|
+|category|[CustomRuleRevisionAttributesCategory](#schemacustomrulerevisionattributescategory)|true|none|Rule category|
+|checksum|string|true|none|Code checksum|
+|code|string|true|none|Rule code|
+|created_at|string(date-time)|true|none|Creation timestamp|
+|created_by|string|true|none|Creator identifier|
+|creation_message|string|true|none|Revision creation message|
+|cve|string|false|none|Associated CVE. Omitted when the revision has no associated CVE.|
+|cwe|string|false|none|Associated CWE. Omitted when the revision has no associated CWE.|
+|description|string|true|none|Full description|
+|documentation_url|string|false|none|Documentation URL. Omitted when the revision has no documentation URL.|
+|id|string|true|none|Revision identifier|
+|is_published|boolean|true|none|Whether the revision is published|
+|is_testing|boolean|true|none|Whether this is a testing revision|
+|language|[Language](#schemalanguage)|true|none|Programming language|
+|severity|[CustomRuleRevisionAttributesSeverity](#schemacustomrulerevisionattributesseverity)|true|none|Rule severity|
+|short_description|string|true|none|Short description|
+|should_use_ai_fix|boolean|true|none|Whether to use AI for fixes|
+|tags|[string]|true|none|Rule tags|
+|tests|[[CustomRuleRevisionTest](#schemacustomrulerevisiontest)]|true|none|Rule tests|
+|tree_sitter_query|string|true|none|Tree-sitter query|
+|version_id|integer(int64)|true|none|Monotonically increasing version number of the revision.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|category|SECURITY|
+|category|BEST_PRACTICES|
+|category|CODE_STYLE|
+|category|ERROR_PRONE|
+|category|PERFORMANCE|
+|language|PYTHON|
+|language|JAVASCRIPT|
+|language|TYPESCRIPT|
+|language|JAVA|
+|language|GO|
+|language|YAML|
+|language|RUBY|
+|language|CSHARP|
+|language|PHP|
+|language|KOTLIN|
+|language|SWIFT|
+|language|DART|
+|language|DOCKERFILE|
+|language|ELIXIR|
+|language|JSON|
+|language|RUST|
+|language|TERRAFORM|
+|language|STARLARK|
+|language|BASH|
+|language|MARKDOWN|
+|language|APEX|
+|language|R|
+|language|SQL|
+|severity|ERROR|
+|severity|WARNING|
+|severity|NOTICE|
+|severity|NONE|
 
 <h2 id="tocS_CustomRuleRequest">CustomRuleRequest</h2>
 <!-- backwards compatibility -->
@@ -283768,7 +286403,7 @@ A custom static analysis rule as embedded in the rules list of a ruleset respons
 |created_at|string(date-time)|true|none|Creation timestamp|
 |created_by|string|true|none|Creator identifier|
 |id|string|true|none|Rule identifier, which is the same as the rule name.|
-|last_revision|[CustomRuleRevisionEmbedded](#schemacustomrulerevisionembedded)|true|none|Most recent revision of the rule, or null when the rule has no revisions.|
+|last_revision|[CustomRuleNullableRevisionEmbedded](#schemacustomrulenullablerevisionembedded)|true|none|The most recent revision of the rule, or null when the rule has no revisions.|
 |name|string|true|none|Rule name|
 |revisions|[[CustomRuleRevisionEmbedded](#schemacustomrulerevisionembedded)]|true|none|Revision history of the rule.|
 
@@ -308275,39 +310910,6 @@ A list of escalation targets for a step
 
 Represents the resource type for individual steps in an escalation policy used during incident response.
 
-<h2 id="tocS_Estimation">Estimation</h2>
-<!-- backwards compatibility -->
-<a id="schemaestimation"></a>
-<a id="schema_Estimation"></a>
-<a id="tocSestimation"></a>
-<a id="tocsestimation"></a>
-
-```json
-{
-  "cpu": {
-    "max": 0,
-    "p75": 0,
-    "p95": 0
-  },
-  "ephemeral_storage": 0,
-  "heap": 0,
-  "memory": 0,
-  "overhead": 0
-}
-```
-
-Recommended resource values for a Spark driver or executor, derived from recent real usage metrics. Used by SPA to propose more efficient pod sizing.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|cpu|[Cpu](#schemacpu)|false|none|CPU usage statistics derived from historical Spark job metrics. Provides multiple estimates so users can choose between conservative and cost-saving risk profiles.|
-|ephemeral_storage|integer(int64)|false|none|Recommended ephemeral storage allocation (in MiB). Derived from job temporary storage patterns.|
-|heap|integer(int64)|false|none|Recommended JVM heap size (in MiB).|
-|memory|integer(int64)|false|none|Recommended total memory allocation (in MiB). Includes both heap and overhead.|
-|overhead|integer(int64)|false|none|Recommended JVM overhead (in MiB). Computed as total memory - heap.|
-
 <h2 id="tocS_Event">Event</h2>
 <!-- backwards compatibility -->
 <a id="schemaevent"></a>
@@ -311729,6 +314331,101 @@ Reference to a metric to include in the experiment metric group.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |metric_id|string(uuid)|true|none|Identifier of the metric to include in the group.|
+
+<h2 id="tocS_ExperimentsCreateExperimentProtocolRequest">ExperimentsCreateExperimentProtocolRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentscreateexperimentprotocolrequest"></a>
+<a id="schema_ExperimentsCreateExperimentProtocolRequest"></a>
+<a id="tocSexperimentscreateexperimentprotocolrequest"></a>
+<a id="tocsexperimentscreateexperimentprotocolrequest"></a>
+
+```json
+{
+  "data": {
+    "attributes": {
+      "description": "string",
+      "migration_metadata": {
+        "property1": null,
+        "property2": null
+      },
+      "name": "Checkout conversion"
+    },
+    "type": "protocols"
+  }
+}
+```
+
+Create a draft protocol with the organization default subject type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[ExperimentsCreateExperimentProtocolRequestData](#schemaexperimentscreateexperimentprotocolrequestdata)|true|none|JSON:API protocol request resource.|
+
+<h2 id="tocS_ExperimentsCreateExperimentProtocolRequestData">ExperimentsCreateExperimentProtocolRequestData</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentscreateexperimentprotocolrequestdata"></a>
+<a id="schema_ExperimentsCreateExperimentProtocolRequestData"></a>
+<a id="tocSexperimentscreateexperimentprotocolrequestdata"></a>
+<a id="tocsexperimentscreateexperimentprotocolrequestdata"></a>
+
+```json
+{
+  "attributes": {
+    "description": "string",
+    "migration_metadata": {
+      "property1": null,
+      "property2": null
+    },
+    "name": "Checkout conversion"
+  },
+  "type": "protocols"
+}
+```
+
+JSON:API protocol request resource.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[ExperimentsCreateExperimentProtocolRequestDataAttributes](#schemaexperimentscreateexperimentprotocolrequestdataattributes)|true|none|Create a draft protocol with the organization default subject type.|
+|type|[ExperimentsPublicProtocolResponseDataType](#schemaexperimentspublicprotocolresponsedatatype)|true|none|Protocols resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|protocols|
+
+<h2 id="tocS_ExperimentsCreateExperimentProtocolRequestDataAttributes">ExperimentsCreateExperimentProtocolRequestDataAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentscreateexperimentprotocolrequestdataattributes"></a>
+<a id="schema_ExperimentsCreateExperimentProtocolRequestDataAttributes"></a>
+<a id="tocSexperimentscreateexperimentprotocolrequestdataattributes"></a>
+<a id="tocsexperimentscreateexperimentprotocolrequestdataattributes"></a>
+
+```json
+{
+  "description": "string",
+  "migration_metadata": {
+    "property1": null,
+    "property2": null
+  },
+  "name": "Checkout conversion"
+}
+```
+
+Create a draft protocol with the organization default subject type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string \| null|false|none|Optional text that explains the protocol.|
+|migration_metadata|object \| null|false|none|Metadata for imported resources. Must encode to at most 4096 bytes. Null clears it; omission preserves it on update.|
+|name|string|true|none|Protocol name. Leading and trailing spaces are removed. The trimmed name must contain 1 to 255 characters.|
 
 <h2 id="tocS_ExperimentsCreateExperimentV2Request">ExperimentsCreateExperimentV2Request</h2>
 <!-- backwards compatibility -->
@@ -316080,6 +318777,371 @@ Fields supplied to update the experiment metric group.
 
 Experiment metric groups resource type.
 
+<h2 id="tocS_ExperimentsPatchExperimentProtocolRequest">ExperimentsPatchExperimentProtocolRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentspatchexperimentprotocolrequest"></a>
+<a id="schema_ExperimentsPatchExperimentProtocolRequest"></a>
+<a id="tocSexperimentspatchexperimentprotocolrequest"></a>
+<a id="tocsexperimentspatchexperimentprotocolrequest"></a>
+
+```json
+{
+  "data": {
+    "attributes": {
+      "analysis_plan": {
+        "compute_cuped": true,
+        "confidence_interval_method": "string",
+        "confidence_level": 0,
+        "multiple_testing_correction_method": "string"
+      },
+      "assignment_source_default_properties": [
+        {
+          "column_name": "string",
+          "column_type": "string",
+          "name": "string"
+        }
+      ],
+      "assignment_source_id": "string",
+      "default_duration_days": 0,
+      "description": "string",
+      "enforcement": {
+        "confidence_interval_method": "string",
+        "confidence_level": "string",
+        "cuped_calculation": "string",
+        "default_duration": "string",
+        "environment": "string",
+        "flag_source": "string",
+        "multiple_testing_correction": "string",
+        "notifications": "string",
+        "primary_metric": "string",
+        "secondary_metrics": "string",
+        "split_by_exploration_dimensions": "string",
+        "subject_type": "string",
+        "targeting_rules": "string",
+        "traffic_exposure": "string",
+        "warehouse_exposure_source": "string"
+      },
+      "environment_id": "string",
+      "exposure_schedule": {
+        "autostart": true,
+        "guardrail_triggered_action": "string",
+        "rollout_steps": [
+          {
+            "exposure_ratio": 0,
+            "grouped_step_index": 0,
+            "interval_ms": 0,
+            "is_pause_record": true,
+            "order_position": 0
+          }
+        ],
+        "selection_interval_ms": 0,
+        "strategy": "string"
+      },
+      "is_duration_required_to_start": false,
+      "is_equal_split_enforced": false,
+      "is_metric_limit_enabled": false,
+      "is_minimum_duration_enabled": false,
+      "metric_groups": [
+        {
+          "is_decision": true,
+          "metrics": [
+            {
+              "metric_id": "550e8400-e29b-41d4-a716-446655440000"
+            }
+          ],
+          "name": "string"
+        }
+      ],
+      "metric_limit": 0,
+      "migration_metadata": {
+        "property1": null,
+        "property2": null
+      },
+      "minimum_duration_unit": "string",
+      "minimum_duration_value": 0,
+      "name": "Checkout conversion",
+      "primary_metric_id": "string",
+      "subject_type_id": "string",
+      "targeting_rules": [
+        {
+          "conditions": [
+            {
+              "attribute": "string",
+              "operator": "string",
+              "order_position": 0,
+              "saved_filter_id": "string",
+              "value": [
+                "string"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "type": "protocols"
+  }
+}
+```
+
+Partial protocol update. Omitted attributes remain unchanged. Published protocols accept only name, description, and migration_metadata; archived protocols reject updates.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[ExperimentsPatchExperimentProtocolRequestData](#schemaexperimentspatchexperimentprotocolrequestdata)|true|none|JSON:API protocol request resource.|
+
+<h2 id="tocS_ExperimentsPatchExperimentProtocolRequestData">ExperimentsPatchExperimentProtocolRequestData</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentspatchexperimentprotocolrequestdata"></a>
+<a id="schema_ExperimentsPatchExperimentProtocolRequestData"></a>
+<a id="tocSexperimentspatchexperimentprotocolrequestdata"></a>
+<a id="tocsexperimentspatchexperimentprotocolrequestdata"></a>
+
+```json
+{
+  "attributes": {
+    "analysis_plan": {
+      "compute_cuped": true,
+      "confidence_interval_method": "string",
+      "confidence_level": 0,
+      "multiple_testing_correction_method": "string"
+    },
+    "assignment_source_default_properties": [
+      {
+        "column_name": "string",
+        "column_type": "string",
+        "name": "string"
+      }
+    ],
+    "assignment_source_id": "string",
+    "default_duration_days": 0,
+    "description": "string",
+    "enforcement": {
+      "confidence_interval_method": "string",
+      "confidence_level": "string",
+      "cuped_calculation": "string",
+      "default_duration": "string",
+      "environment": "string",
+      "flag_source": "string",
+      "multiple_testing_correction": "string",
+      "notifications": "string",
+      "primary_metric": "string",
+      "secondary_metrics": "string",
+      "split_by_exploration_dimensions": "string",
+      "subject_type": "string",
+      "targeting_rules": "string",
+      "traffic_exposure": "string",
+      "warehouse_exposure_source": "string"
+    },
+    "environment_id": "string",
+    "exposure_schedule": {
+      "autostart": true,
+      "guardrail_triggered_action": "string",
+      "rollout_steps": [
+        {
+          "exposure_ratio": 0,
+          "grouped_step_index": 0,
+          "interval_ms": 0,
+          "is_pause_record": true,
+          "order_position": 0
+        }
+      ],
+      "selection_interval_ms": 0,
+      "strategy": "string"
+    },
+    "is_duration_required_to_start": false,
+    "is_equal_split_enforced": false,
+    "is_metric_limit_enabled": false,
+    "is_minimum_duration_enabled": false,
+    "metric_groups": [
+      {
+        "is_decision": true,
+        "metrics": [
+          {
+            "metric_id": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "name": "string"
+      }
+    ],
+    "metric_limit": 0,
+    "migration_metadata": {
+      "property1": null,
+      "property2": null
+    },
+    "minimum_duration_unit": "string",
+    "minimum_duration_value": 0,
+    "name": "Checkout conversion",
+    "primary_metric_id": "string",
+    "subject_type_id": "string",
+    "targeting_rules": [
+      {
+        "conditions": [
+          {
+            "attribute": "string",
+            "operator": "string",
+            "order_position": 0,
+            "saved_filter_id": "string",
+            "value": [
+              "string"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "type": "protocols"
+}
+```
+
+JSON:API protocol request resource.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[ExperimentsPatchExperimentProtocolRequestDataAttributes](#schemaexperimentspatchexperimentprotocolrequestdataattributes)|false|none|Partial protocol update. Omitted attributes remain unchanged. Published protocols accept only name, description, and migration_metadata; archived protocols reject updates.|
+|id|string(uuid)|false|none|Protocol ID. If supplied, must match the path protocol_id.|
+|type|[ExperimentsPublicProtocolResponseDataType](#schemaexperimentspublicprotocolresponsedatatype)|true|none|Protocols resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|protocols|
+
+<h2 id="tocS_ExperimentsPatchExperimentProtocolRequestDataAttributes">ExperimentsPatchExperimentProtocolRequestDataAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentspatchexperimentprotocolrequestdataattributes"></a>
+<a id="schema_ExperimentsPatchExperimentProtocolRequestDataAttributes"></a>
+<a id="tocSexperimentspatchexperimentprotocolrequestdataattributes"></a>
+<a id="tocsexperimentspatchexperimentprotocolrequestdataattributes"></a>
+
+```json
+{
+  "analysis_plan": {
+    "compute_cuped": true,
+    "confidence_interval_method": "string",
+    "confidence_level": 0,
+    "multiple_testing_correction_method": "string"
+  },
+  "assignment_source_default_properties": [
+    {
+      "column_name": "string",
+      "column_type": "string",
+      "name": "string"
+    }
+  ],
+  "assignment_source_id": "string",
+  "default_duration_days": 0,
+  "description": "string",
+  "enforcement": {
+    "confidence_interval_method": "string",
+    "confidence_level": "string",
+    "cuped_calculation": "string",
+    "default_duration": "string",
+    "environment": "string",
+    "flag_source": "string",
+    "multiple_testing_correction": "string",
+    "notifications": "string",
+    "primary_metric": "string",
+    "secondary_metrics": "string",
+    "split_by_exploration_dimensions": "string",
+    "subject_type": "string",
+    "targeting_rules": "string",
+    "traffic_exposure": "string",
+    "warehouse_exposure_source": "string"
+  },
+  "environment_id": "string",
+  "exposure_schedule": {
+    "autostart": true,
+    "guardrail_triggered_action": "string",
+    "rollout_steps": [
+      {
+        "exposure_ratio": 0,
+        "grouped_step_index": 0,
+        "interval_ms": 0,
+        "is_pause_record": true,
+        "order_position": 0
+      }
+    ],
+    "selection_interval_ms": 0,
+    "strategy": "string"
+  },
+  "is_duration_required_to_start": false,
+  "is_equal_split_enforced": false,
+  "is_metric_limit_enabled": false,
+  "is_minimum_duration_enabled": false,
+  "metric_groups": [
+    {
+      "is_decision": true,
+      "metrics": [
+        {
+          "metric_id": "550e8400-e29b-41d4-a716-446655440000"
+        }
+      ],
+      "name": "string"
+    }
+  ],
+  "metric_limit": 0,
+  "migration_metadata": {
+    "property1": null,
+    "property2": null
+  },
+  "minimum_duration_unit": "string",
+  "minimum_duration_value": 0,
+  "name": "Checkout conversion",
+  "primary_metric_id": "string",
+  "subject_type_id": "string",
+  "targeting_rules": [
+    {
+      "conditions": [
+        {
+          "attribute": "string",
+          "operator": "string",
+          "order_position": 0,
+          "saved_filter_id": "string",
+          "value": [
+            "string"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Partial protocol update. Omitted attributes remain unchanged. Published protocols accept only name, description, and migration_metadata; archived protocols reject updates.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|analysis_plan|[ExperimentsPatchProtocolAnalysisPlanInput](#schemaexperimentspatchprotocolanalysisplaninput)|false|none|Partial statistical settings. Omitted fields remain unchanged. Null clears the whole plan. Null clears nullable fields; null or an empty string clears confidence_interval_method.|
+|assignment_source_default_properties|[[ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItems](#schemaexperimentspublicprotocolresponsedataattributesassignmentsourcedefaultpropertiesitems)]|false|none|Assignment properties. Omission or null preserves them; an array replaces them.|
+|assignment_source_id|string \| null|false|none|ID of the assignment source selected by the protocol. Omission or null keeps the current value. An empty string clears it.|
+|default_duration_days|integer(int64) \| null|false|none|Default experiment duration supplied by the protocol, in days. Omission preserves it; null clears it. Sets analysis_plan.target_duration_days on experiments created from this protocol.|
+|description|string \| null|false|none|Description. Empty string clears it; omission or null preserves it.|
+|enforcement|[ExperimentsPatchProtocolEnforcementInput](#schemaexperimentspatchprotocolenforcementinput)|false|none|Partial lock map. Omitted fields remain unchanged. Null clears the whole map. Empty or null field values become `EDITABLE`, except `subject_type`, `flag_source`, and `confidence_interval_method`, which remain `LOCKED`.|
+|environment_id|string \| null|false|none|ID of the feature flag environment used by the experiment. Omission or null keeps the current value. An empty string clears it.|
+|exposure_schedule|[ExperimentsPatchProtocolExposureScheduleInput](#schemaexperimentspatchprotocolexposurescheduleinput)|false|none|Partial traffic schedule. Omitted fields remain unchanged. Null clears the whole schedule. Null clears nullable fields and rollout_steps; null sets strategy to an empty string and `autostart` to false.|
+|is_duration_required_to_start|boolean \| null|false|none|Whether the protocol requires a duration before an experiment can start. Omission or null preserves it.|
+|is_equal_split_enforced|boolean \| null|false|none|Whether the protocol requires equal traffic allocation across variants. Omission or null preserves it.|
+|is_metric_limit_enabled|boolean \| null|false|none|Whether the protocol limits the number of metrics. Omission or null preserves it.|
+|is_minimum_duration_enabled|boolean \| null|false|none|Whether the protocol enforces a minimum experiment duration. Omission or null preserves it.|
+|metric_groups|[[ExperimentsProtocolMetricGroupInput](#schemaexperimentsprotocolmetricgroupinput)]|false|none|Metric groups. Omission or null preserves them; an array replaces them.|
+|metric_limit|integer(int64) \| null|false|none|Maximum number of metrics allowed by the protocol. Omission preserves it; null clears it.|
+|migration_metadata|object \| null|false|none|Metadata for imported resources. Must encode to at most 4096 bytes. Null clears it; omission preserves it on update.|
+|minimum_duration_unit|string \| null|false|none|Minimum duration unit, `DAYS` or `WEEKS`. Empty string clears it. Omission or null preserves it.|
+|minimum_duration_value|integer(int64) \| null|false|none|Minimum experiment duration in the specified unit. Omission preserves it; null clears it.|
+|name|string \| null|false|none|Protocol name. Leading and trailing spaces are removed. The trimmed name must contain 1 to 255 characters.|
+|primary_metric_id|string \| null|false|none|ID of the primary metric supplied by the protocol. Omission or null keeps the current value. An empty string clears it.|
+|subject_type_id|string \| null|false|none|ID of the subject type used by this configuration. Omission or null keeps the current value. An empty string clears it.|
+|targeting_rules|[[ExperimentsProtocolTargetingRuleInput](#schemaexperimentsprotocoltargetingruleinput)]|false|none|Targeting rules. Omission or null preserves them; an array replaces them.|
+
 <h2 id="tocS_ExperimentsPatchExperimentV2MetaDTO">ExperimentsPatchExperimentV2MetaDTO</h2>
 <!-- backwards compatibility -->
 <a id="schemaexperimentspatchexperimentv2metadto"></a>
@@ -316888,6 +319950,119 @@ Fields supplied to update the metric collection.
 
 Metric collections resource type.
 
+<h2 id="tocS_ExperimentsPatchProtocolAnalysisPlanInput">ExperimentsPatchProtocolAnalysisPlanInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentspatchprotocolanalysisplaninput"></a>
+<a id="schema_ExperimentsPatchProtocolAnalysisPlanInput"></a>
+<a id="tocSexperimentspatchprotocolanalysisplaninput"></a>
+<a id="tocsexperimentspatchprotocolanalysisplaninput"></a>
+
+```json
+{
+  "compute_cuped": true,
+  "confidence_interval_method": "string",
+  "confidence_level": 0,
+  "multiple_testing_correction_method": "string"
+}
+```
+
+Partial statistical settings. Omitted fields remain unchanged. Null clears the whole plan. Null clears nullable fields; null or an empty string clears confidence_interval_method.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|compute_cuped|boolean \| null|false|none|Whether to use pre-experiment data to reduce variance with CUPED.|
+|confidence_interval_method|string \| null|false|none|Confidence interval method: `Sequential`, `FixedSample`, `Bayesian`, or `SequentialFixedHybrid`. An empty string leaves the method unset.|
+|confidence_level|number(double) \| null|false|none|Confidence level used by the statistical analysis.|
+|multiple_testing_correction_method|string \| null|false|none|Method used to adjust for testing multiple metrics.|
+
+<h2 id="tocS_ExperimentsPatchProtocolEnforcementInput">ExperimentsPatchProtocolEnforcementInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentspatchprotocolenforcementinput"></a>
+<a id="schema_ExperimentsPatchProtocolEnforcementInput"></a>
+<a id="tocSexperimentspatchprotocolenforcementinput"></a>
+<a id="tocsexperimentspatchprotocolenforcementinput"></a>
+
+```json
+{
+  "confidence_interval_method": "string",
+  "confidence_level": "string",
+  "cuped_calculation": "string",
+  "default_duration": "string",
+  "environment": "string",
+  "flag_source": "string",
+  "multiple_testing_correction": "string",
+  "notifications": "string",
+  "primary_metric": "string",
+  "secondary_metrics": "string",
+  "split_by_exploration_dimensions": "string",
+  "subject_type": "string",
+  "targeting_rules": "string",
+  "traffic_exposure": "string",
+  "warehouse_exposure_source": "string"
+}
+```
+
+Partial lock map. Omitted fields remain unchanged. Null clears the whole map. Empty or null field values become `EDITABLE`, except `subject_type`, `flag_source`, and `confidence_interval_method`, which remain `LOCKED`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|confidence_interval_method|string \| null|false|none|Always `LOCKED`. The server keeps this setting locked regardless of the supplied value.|
+|confidence_level|string \| null|false|none|LOCKED prevents changes to confidence level. EDITABLE permits changes.|
+|cuped_calculation|string \| null|false|none|LOCKED prevents changes to CUPED variance reduction. EDITABLE permits changes.|
+|default_duration|string \| null|false|none|LOCKED prevents changes to default duration. EDITABLE permits changes.|
+|environment|string \| null|false|none|LOCKED prevents changes to environment. EDITABLE permits changes.|
+|flag_source|string \| null|false|none|Always LOCKED. The server keeps this setting locked regardless of the supplied value.|
+|multiple_testing_correction|string \| null|false|none|LOCKED prevents changes to multiple testing correction. EDITABLE permits changes.|
+|notifications|string \| null|false|none|LOCKED prevents changes to notifications. EDITABLE permits changes.|
+|primary_metric|string \| null|false|none|LOCKED prevents changes to primary metric. EDITABLE permits changes.|
+|secondary_metrics|string \| null|false|none|LOCKED prevents changes to secondary metrics. EDITABLE permits changes.|
+|split_by_exploration_dimensions|string \| null|false|none|LOCKED prevents changes to result exploration dimensions. EDITABLE permits changes.|
+|subject_type|string \| null|false|none|Always LOCKED. The server keeps this setting locked regardless of the supplied value.|
+|targeting_rules|string \| null|false|none|LOCKED prevents changes to targeting rules. EDITABLE permits changes.|
+|traffic_exposure|string \| null|false|none|LOCKED prevents changes to traffic exposure. EDITABLE permits changes.|
+|warehouse_exposure_source|string \| null|false|none|LOCKED prevents changes to warehouse exposure source. EDITABLE permits changes.|
+
+<h2 id="tocS_ExperimentsPatchProtocolExposureScheduleInput">ExperimentsPatchProtocolExposureScheduleInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentspatchprotocolexposurescheduleinput"></a>
+<a id="schema_ExperimentsPatchProtocolExposureScheduleInput"></a>
+<a id="tocSexperimentspatchprotocolexposurescheduleinput"></a>
+<a id="tocsexperimentspatchprotocolexposurescheduleinput"></a>
+
+```json
+{
+  "autostart": true,
+  "guardrail_triggered_action": "string",
+  "rollout_steps": [
+    {
+      "exposure_ratio": 0,
+      "grouped_step_index": 0,
+      "interval_ms": 0,
+      "is_pause_record": true,
+      "order_position": 0
+    }
+  ],
+  "selection_interval_ms": 0,
+  "strategy": "string"
+}
+```
+
+Partial traffic schedule. Omitted fields remain unchanged. Null clears the whole schedule. Null clears nullable fields and rollout_steps; null sets strategy to an empty string and `autostart` to false.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|autostart|boolean \| null|false|none|Whether the exposure schedule starts automatically.|
+|guardrail_triggered_action|string \| null|false|none|Action taken when a guardrail triggers during the exposure schedule.|
+|rollout_steps|[[ExperimentsProtocolExposureStepInput](#schemaexperimentsprotocolexposurestepinput)]|false|none|Rollout steps, replaced when supplied.|
+|selection_interval_ms|integer(int64) \| null|false|none|Interval between traffic selections, in milliseconds.|
+|strategy|string \| null|false|none|Method used to increase traffic exposure over the schedule.|
+
 <h2 id="tocS_ExperimentsPatchSubjectTypeV2Request">ExperimentsPatchSubjectTypeV2Request</h2>
 <!-- backwards compatibility -->
 <a id="schemaexperimentspatchsubjecttypev2request"></a>
@@ -317085,6 +320260,211 @@ A property comparison for metric source data.
 
 Comparison applied by this filter.
 
+<h2 id="tocS_ExperimentsProtocolAnalysisPlanInput">ExperimentsProtocolAnalysisPlanInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsprotocolanalysisplaninput"></a>
+<a id="schema_ExperimentsProtocolAnalysisPlanInput"></a>
+<a id="tocSexperimentsprotocolanalysisplaninput"></a>
+<a id="tocsexperimentsprotocolanalysisplaninput"></a>
+
+```json
+{
+  "compute_cuped": true,
+  "confidence_interval_method": "string",
+  "confidence_level": 0,
+  "multiple_testing_correction_method": "string"
+}
+```
+
+Statistical settings. Use `default_duration_days` for duration; `target_duration_days` is not accepted here.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|compute_cuped|boolean \| null|false|none|Whether to use pre-experiment data to reduce variance with CUPED.|
+|confidence_interval_method|string|false|none|Confidence interval method: `Sequential`, `FixedSample`, `Bayesian`, or `SequentialFixedHybrid`. An empty string leaves the method unset.|
+|confidence_level|number(double) \| null|false|none|Confidence level used by the statistical analysis.|
+|multiple_testing_correction_method|string \| null|false|none|Method used to adjust for testing multiple metrics.|
+
+<h2 id="tocS_ExperimentsProtocolConditionInput">ExperimentsProtocolConditionInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsprotocolconditioninput"></a>
+<a id="schema_ExperimentsProtocolConditionInput"></a>
+<a id="tocSexperimentsprotocolconditioninput"></a>
+<a id="tocsexperimentsprotocolconditioninput"></a>
+
+```json
+{
+  "attribute": "string",
+  "operator": "string",
+  "order_position": 0,
+  "saved_filter_id": "string",
+  "value": [
+    "string"
+  ]
+}
+```
+
+Protocol targeting condition. Publishing and replacement require a saved filter or a valid inline attribute, operator, and values.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attribute|string|false|none|Subject attribute evaluated by the targeting condition.|
+|operator|string|false|none|Comparison applied to the subject attribute.|
+|order_position|integer(int64)|false|none|Position of this entry in the ordered configuration.|
+|saved_filter_id|string \| null|false|none|Saved filter UUID. Null selects an inline condition. An empty string skips the saved-filter lookup.|
+|value|[string]|false|none|Values compared with the subject attribute in this condition.|
+
+<h2 id="tocS_ExperimentsProtocolExposureScheduleInput">ExperimentsProtocolExposureScheduleInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsprotocolexposurescheduleinput"></a>
+<a id="schema_ExperimentsProtocolExposureScheduleInput"></a>
+<a id="tocSexperimentsprotocolexposurescheduleinput"></a>
+<a id="tocsexperimentsprotocolexposurescheduleinput"></a>
+
+```json
+{
+  "autostart": true,
+  "guardrail_triggered_action": "string",
+  "rollout_steps": [
+    {
+      "exposure_ratio": 0,
+      "grouped_step_index": 0,
+      "interval_ms": 0,
+      "is_pause_record": true,
+      "order_position": 0
+    }
+  ],
+  "selection_interval_ms": 0,
+  "strategy": "string"
+}
+```
+
+Traffic schedule. Publishing and replacement require `NO_ROLLOUT` with exactly one step, or `UNIFORM_INTERVALS` with a positive selection interval and at least one step. Requires `environment_id`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|autostart|boolean|false|none|Whether the exposure schedule starts automatically.|
+|guardrail_triggered_action|string \| null|false|none|Action taken when a guardrail triggers during the exposure schedule.|
+|rollout_steps|[[ExperimentsProtocolExposureStepInput](#schemaexperimentsprotocolexposurestepinput)]|false|none|Rollout steps, replaced when supplied.|
+|selection_interval_ms|integer(int64) \| null|false|none|Interval between traffic selections, in milliseconds.|
+|strategy|string|false|none|Method used to increase traffic exposure over the schedule.|
+
+<h2 id="tocS_ExperimentsProtocolExposureStepInput">ExperimentsProtocolExposureStepInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsprotocolexposurestepinput"></a>
+<a id="schema_ExperimentsProtocolExposureStepInput"></a>
+<a id="tocSexperimentsprotocolexposurestepinput"></a>
+<a id="tocsexperimentsprotocolexposurestepinput"></a>
+
+```json
+{
+  "exposure_ratio": 0,
+  "grouped_step_index": 0,
+  "interval_ms": 0,
+  "is_pause_record": true,
+  "order_position": 0
+}
+```
+
+A traffic exposure step in the protocol template.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|exposure_ratio|number(double)|false|none|Fraction of traffic exposed during this rollout step.|
+|grouped_step_index|integer(int64) \| null|false|none|Index of the group that contains this rollout step.|
+|interval_ms|integer(int64) \| null|false|none|Duration of this rollout step, in milliseconds.|
+|is_pause_record|boolean|false|none|Whether this schedule entry represents a pause.|
+|order_position|integer(int64)|false|none|Position of this entry in the ordered configuration.|
+
+<h2 id="tocS_ExperimentsProtocolMetricGroupInput">ExperimentsProtocolMetricGroupInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsprotocolmetricgroupinput"></a>
+<a id="schema_ExperimentsProtocolMetricGroupInput"></a>
+<a id="tocSexperimentsprotocolmetricgroupinput"></a>
+<a id="tocsexperimentsprotocolmetricgroupinput"></a>
+
+```json
+{
+  "is_decision": true,
+  "metrics": [
+    {
+      "metric_id": "550e8400-e29b-41d4-a716-446655440000"
+    }
+  ],
+  "name": "string"
+}
+```
+
+A metric group supplied by the protocol. Empty decision groups are removed.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|is_decision|boolean|false|none|Whether this group contains decision metrics.|
+|metrics|[[ExperimentsProtocolMetricInput](#schemaexperimentsprotocolmetricinput)]|false|none|Metrics in the group.|
+|name|string|false|none|Metric group name.|
+
+<h2 id="tocS_ExperimentsProtocolMetricInput">ExperimentsProtocolMetricInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsprotocolmetricinput"></a>
+<a id="schema_ExperimentsProtocolMetricInput"></a>
+<a id="tocSexperimentsprotocolmetricinput"></a>
+<a id="tocsexperimentsprotocolmetricinput"></a>
+
+```json
+{
+  "metric_id": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+A metric included in a protocol. Select the primary metric with `primary_metric_id`, not `is_primary`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|metric_id|string(uuid)|true|none|Metric UUID.|
+
+<h2 id="tocS_ExperimentsProtocolTargetingRuleInput">ExperimentsProtocolTargetingRuleInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsprotocoltargetingruleinput"></a>
+<a id="schema_ExperimentsProtocolTargetingRuleInput"></a>
+<a id="tocSexperimentsprotocoltargetingruleinput"></a>
+<a id="tocsexperimentsprotocoltargetingruleinput"></a>
+
+```json
+{
+  "conditions": [
+    {
+      "attribute": "string",
+      "operator": "string",
+      "order_position": 0,
+      "saved_filter_id": "string",
+      "value": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+A targeting rule in the protocol template.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|conditions|[[ExperimentsProtocolConditionInput](#schemaexperimentsprotocolconditioninput)]|false|none|Conditions in this rule.|
+
 <h2 id="tocS_ExperimentsPublicProtocolListResponseArray">ExperimentsPublicProtocolListResponseArray</h2>
 <!-- backwards compatibility -->
 <a id="schemaexperimentspublicprotocollistresponsearray"></a>
@@ -317138,6 +320518,7 @@ List of protocol resources with pagination information.
 {
   "attributes": {
     "description": "string",
+    "experiment_count": 0,
     "name": "Checkout conversion",
     "primary_metric": {
       "id": "string",
@@ -317183,6 +320564,7 @@ JSON:API resource containing the protocol identity and fields.
 ```json
 {
   "description": "string",
+  "experiment_count": 0,
   "name": "Checkout conversion",
   "primary_metric": {
     "id": "string",
@@ -317206,13 +320588,14 @@ Summary of the protocol and its selected subject type and primary metric.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |description|string|false|none|Text that explains the protocol.|
+|experiment_count|integer(int64)|true|none|Number of experiments in the organization that use this protocol, excluding deleted experiments.|
 |name|string|true|none|Display name of the protocol.|
 |primary_metric|[ExperimentsPublicProtocolResponseDataAttributesSubjectType](#schemaexperimentspublicprotocolresponsedataattributessubjecttype)|false|none|Subject type selected by the protocol.|
 |primary_metric_id|string|false|none|ID of the primary metric supplied by the protocol.|
 |status|[ExperimentsPublicProtocolResponseDataAttributesStatus](#schemaexperimentspublicprotocolresponsedataattributesstatus)|true|none|Publication status of the protocol.|
 |subject_type|[ExperimentsPublicProtocolResponseDataAttributesSubjectType](#schemaexperimentspublicprotocolresponsedataattributessubjecttype)|false|none|Subject type selected by the protocol.|
 |subject_type_id|string|false|none|ID of the subject type used by this configuration.|
-|updated_at|string|true|none|RFC3339 update time. Preserve all fractional seconds when passing this value as expected_updated_at.|
+|updated_at|string|true|none|RFC3339 update time. Preserve all fractional seconds when passing this value as<br>`expected_updated_at`.|
 
 #### Enumerated Values
 
@@ -317239,6 +320622,7 @@ Summary of the protocol and its selected subject type and primary metric.
         "confidence_level": 0,
         "multiple_testing_correction_method": "string"
       },
+      "archived_at": "2026-07-31T14:00:00Z",
       "assignment_source_default_properties": [
         {
           "column_name": "string",
@@ -317247,6 +320631,7 @@ Summary of the protocol and its selected subject type and primary metric.
         }
       ],
       "assignment_source_id": "string",
+      "created_at": "2026-07-31T12:00:00Z",
       "default_duration_days": 0,
       "description": "string",
       "enforcement": {
@@ -317267,6 +320652,7 @@ Summary of the protocol and its selected subject type and primary metric.
         "warehouse_exposure_source": "string"
       },
       "environment_id": "string",
+      "experiment_count": 0,
       "exposure_schedule": {
         "autostart": true,
         "guardrail_triggered_action": "string",
@@ -317351,6 +320737,7 @@ Response containing the protocol.
       "confidence_level": 0,
       "multiple_testing_correction_method": "string"
     },
+    "archived_at": "2026-07-31T14:00:00Z",
     "assignment_source_default_properties": [
       {
         "column_name": "string",
@@ -317359,6 +320746,7 @@ Response containing the protocol.
       }
     ],
     "assignment_source_id": "string",
+    "created_at": "2026-07-31T12:00:00Z",
     "default_duration_days": 0,
     "description": "string",
     "enforcement": {
@@ -317379,6 +320767,7 @@ Response containing the protocol.
       "warehouse_exposure_source": "string"
     },
     "environment_id": "string",
+    "experiment_count": 0,
     "exposure_schedule": {
       "autostart": true,
       "guardrail_triggered_action": "string",
@@ -317469,6 +320858,7 @@ JSON:API resource containing the protocol identity and fields.
     "confidence_level": 0,
     "multiple_testing_correction_method": "string"
   },
+  "archived_at": "2026-07-31T14:00:00Z",
   "assignment_source_default_properties": [
     {
       "column_name": "string",
@@ -317477,6 +320867,7 @@ JSON:API resource containing the protocol identity and fields.
     }
   ],
   "assignment_source_id": "string",
+  "created_at": "2026-07-31T12:00:00Z",
   "default_duration_days": 0,
   "description": "string",
   "enforcement": {
@@ -317497,6 +320888,7 @@ JSON:API resource containing the protocol identity and fields.
     "warehouse_exposure_source": "string"
   },
   "environment_id": "string",
+  "experiment_count": 0,
   "exposure_schedule": {
     "autostart": true,
     "guardrail_triggered_action": "string",
@@ -317560,12 +320952,15 @@ Settings and defaults supplied by the protocol.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |analysis_plan|[ExperimentsPublicProtocolResponseDataAttributesAnalysisPlan](#schemaexperimentspublicprotocolresponsedataattributesanalysisplan)|false|none|Default statistical settings supplied by the protocol.|
+|archived_at|string(date-time)|false|none|Time when the protocol was archived. Omitted if it has not been archived.|
 |assignment_source_default_properties|[[ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItems](#schemaexperimentspublicprotocolresponsedataattributesassignmentsourcedefaultpropertiesitems)]|false|none|Default properties supplied by the protocol's assignment source.|
 |assignment_source_id|string|false|none|ID of the assignment source selected by the protocol.|
+|created_at|string(date-time)|true|none|Time when the protocol was created.|
 |default_duration_days|integer(int64)|false|none|Default experiment duration supplied by the protocol, in days.|
 |description|string|false|none|Text that explains the protocol.|
 |enforcement|[ExperimentsPublicProtocolResponseDataAttributesEnforcement](#schemaexperimentspublicprotocolresponsedataattributesenforcement)|false|none|Controls that determine which protocol settings can be changed in an experiment.|
 |environment_id|string|false|none|ID of the feature flag environment used by the experiment.|
+|experiment_count|integer(int64)|false|none|Number of experiments in the organization that use this protocol, excluding deleted experiments. Omitted if the count cannot be retrieved. An omitted count does not mean zero.|
 |exposure_schedule|[ExperimentsPublicProtocolResponseDataAttributesExposureSchedule](#schemaexperimentspublicprotocolresponsedataattributesexposureschedule)|false|none|Schedule that controls traffic exposure for experiments created from the protocol.|
 |is_duration_required_to_start|boolean|true|none|Whether the protocol requires a duration before an experiment can start.|
 |is_equal_split_enforced|boolean|true|none|Whether the protocol requires equal traffic allocation across variants.|
@@ -317584,7 +320979,7 @@ Settings and defaults supplied by the protocol.
 |subject_type|[ExperimentsPublicProtocolResponseDataAttributesSubjectType](#schemaexperimentspublicprotocolresponsedataattributessubjecttype)|false|none|Subject type selected by the protocol.|
 |subject_type_id|string|false|none|ID of the subject type used by this configuration.|
 |targeting_rules|[[ExperimentsPublicProtocolResponseDataAttributesTargetingRulesItems](#schemaexperimentspublicprotocolresponsedataattributestargetingrulesitems)]|false|none|Rules that select subjects for the experiment.|
-|updated_at|string|true|none|RFC3339 update time. Preserve all fractional seconds when passing this value as expected_updated_at.|
+|updated_at|string|true|none|RFC3339 update time. Preserve all fractional seconds when passing this value as<br>`expected_updated_at`.|
 
 #### Enumerated Values
 
@@ -317679,18 +321074,18 @@ Controls that determine which protocol settings can be changed in an experiment.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|confidence_interval_method|string|false|none|LOCKED prevents changes to confidence interval method. EDITABLE permits changes.|
+|confidence_interval_method|string|false|none|Always LOCKED. The server keeps this setting locked regardless of the supplied value.|
 |confidence_level|string|false|none|LOCKED prevents changes to confidence level. EDITABLE permits changes.|
 |cuped_calculation|string|false|none|LOCKED prevents changes to CUPED variance reduction. EDITABLE permits changes.|
 |default_duration|string|false|none|LOCKED prevents changes to default duration. EDITABLE permits changes.|
 |environment|string|false|none|LOCKED prevents changes to environment. EDITABLE permits changes.|
-|flag_source|string|false|none|LOCKED prevents changes to feature flag source. EDITABLE permits changes.|
+|flag_source|string|false|none|Always LOCKED. The server keeps this setting locked regardless of the supplied value.|
 |multiple_testing_correction|string|false|none|LOCKED prevents changes to multiple testing correction. EDITABLE permits changes.|
 |notifications|string|false|none|LOCKED prevents changes to notifications. EDITABLE permits changes.|
 |primary_metric|string|false|none|LOCKED prevents changes to primary metric. EDITABLE permits changes.|
 |secondary_metrics|string|false|none|LOCKED prevents changes to secondary metrics. EDITABLE permits changes.|
 |split_by_exploration_dimensions|string|false|none|LOCKED prevents changes to result exploration dimensions. EDITABLE permits changes.|
-|subject_type|string|false|none|LOCKED prevents changes to subject type. EDITABLE permits changes.|
+|subject_type|string|false|none|Always LOCKED. The server keeps this setting locked regardless of the supplied value.|
 |targeting_rules|string|false|none|LOCKED prevents changes to targeting rules. EDITABLE permits changes.|
 |traffic_exposure|string|false|none|LOCKED prevents changes to traffic exposure. EDITABLE permits changes.|
 |warehouse_exposure_source|string|false|none|LOCKED prevents changes to warehouse exposure source. EDITABLE permits changes.|
@@ -318099,6 +321494,382 @@ Details of the experiment refresh result.
 ```
 
 Experiment results refresh resource type.
+
+<h2 id="tocS_ExperimentsReplaceExperimentProtocolRequest">ExperimentsReplaceExperimentProtocolRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsreplaceexperimentprotocolrequest"></a>
+<a id="schema_ExperimentsReplaceExperimentProtocolRequest"></a>
+<a id="tocSexperimentsreplaceexperimentprotocolrequest"></a>
+<a id="tocsexperimentsreplaceexperimentprotocolrequest"></a>
+
+```json
+{
+  "data": {
+    "attributes": {
+      "analysis_plan": {
+        "compute_cuped": true,
+        "confidence_interval_method": "string",
+        "confidence_level": 0,
+        "multiple_testing_correction_method": "string"
+      },
+      "assignment_source_default_properties": [
+        {
+          "column_name": "string",
+          "column_type": "string",
+          "name": "string"
+        }
+      ],
+      "assignment_source_id": "550e8400-e29b-41d4-a716-446655440000",
+      "default_duration_days": 0,
+      "enforcement": {
+        "confidence_interval_method": "LOCKED",
+        "confidence_level": "EDITABLE",
+        "cuped_calculation": "EDITABLE",
+        "default_duration": "EDITABLE",
+        "environment": "EDITABLE",
+        "flag_source": "LOCKED",
+        "multiple_testing_correction": "EDITABLE",
+        "notifications": "EDITABLE",
+        "primary_metric": "EDITABLE",
+        "secondary_metrics": "EDITABLE",
+        "split_by_exploration_dimensions": "EDITABLE",
+        "subject_type": "LOCKED",
+        "targeting_rules": "EDITABLE",
+        "traffic_exposure": "EDITABLE",
+        "warehouse_exposure_source": "EDITABLE"
+      },
+      "environment_id": "550e8400-e29b-41d4-a716-446655440000",
+      "exposure_schedule": {
+        "autostart": true,
+        "guardrail_triggered_action": "string",
+        "rollout_steps": [
+          {
+            "exposure_ratio": 0,
+            "grouped_step_index": 0,
+            "interval_ms": 0,
+            "is_pause_record": true,
+            "order_position": 0
+          }
+        ],
+        "selection_interval_ms": 0,
+        "strategy": "string"
+      },
+      "is_duration_required_to_start": false,
+      "is_equal_split_enforced": false,
+      "is_metric_limit_enabled": false,
+      "is_minimum_duration_enabled": false,
+      "metric_groups": [],
+      "metric_limit": 0,
+      "migration_metadata": {
+        "property1": null,
+        "property2": null
+      },
+      "minimum_duration_unit": "string",
+      "minimum_duration_value": 0,
+      "primary_metric_id": "550e8400-e29b-41d4-a716-446655440000",
+      "subject_type_id": "550e8400-e29b-41d4-a716-446655440000",
+      "targeting_rules": [
+        {
+          "conditions": [
+            {
+              "attribute": "string",
+              "operator": "string",
+              "order_position": 0,
+              "saved_filter_id": "string",
+              "value": [
+                "string"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "type": "protocols"
+  }
+}
+```
+
+Replace a published protocol template. Omitted optional template fields are cleared. Omitted enforcement and migration_metadata are preserved. Enabled limits require their values; allocation settings require environment_id.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[ExperimentsReplaceExperimentProtocolRequestData](#schemaexperimentsreplaceexperimentprotocolrequestdata)|true|none|JSON:API protocol request resource.|
+
+<h2 id="tocS_ExperimentsReplaceExperimentProtocolRequestData">ExperimentsReplaceExperimentProtocolRequestData</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsreplaceexperimentprotocolrequestdata"></a>
+<a id="schema_ExperimentsReplaceExperimentProtocolRequestData"></a>
+<a id="tocSexperimentsreplaceexperimentprotocolrequestdata"></a>
+<a id="tocsexperimentsreplaceexperimentprotocolrequestdata"></a>
+
+```json
+{
+  "attributes": {
+    "analysis_plan": {
+      "compute_cuped": true,
+      "confidence_interval_method": "string",
+      "confidence_level": 0,
+      "multiple_testing_correction_method": "string"
+    },
+    "assignment_source_default_properties": [
+      {
+        "column_name": "string",
+        "column_type": "string",
+        "name": "string"
+      }
+    ],
+    "assignment_source_id": "550e8400-e29b-41d4-a716-446655440000",
+    "default_duration_days": 0,
+    "enforcement": {
+      "confidence_interval_method": "LOCKED",
+      "confidence_level": "EDITABLE",
+      "cuped_calculation": "EDITABLE",
+      "default_duration": "EDITABLE",
+      "environment": "EDITABLE",
+      "flag_source": "LOCKED",
+      "multiple_testing_correction": "EDITABLE",
+      "notifications": "EDITABLE",
+      "primary_metric": "EDITABLE",
+      "secondary_metrics": "EDITABLE",
+      "split_by_exploration_dimensions": "EDITABLE",
+      "subject_type": "LOCKED",
+      "targeting_rules": "EDITABLE",
+      "traffic_exposure": "EDITABLE",
+      "warehouse_exposure_source": "EDITABLE"
+    },
+    "environment_id": "550e8400-e29b-41d4-a716-446655440000",
+    "exposure_schedule": {
+      "autostart": true,
+      "guardrail_triggered_action": "string",
+      "rollout_steps": [
+        {
+          "exposure_ratio": 0,
+          "grouped_step_index": 0,
+          "interval_ms": 0,
+          "is_pause_record": true,
+          "order_position": 0
+        }
+      ],
+      "selection_interval_ms": 0,
+      "strategy": "string"
+    },
+    "is_duration_required_to_start": false,
+    "is_equal_split_enforced": false,
+    "is_metric_limit_enabled": false,
+    "is_minimum_duration_enabled": false,
+    "metric_groups": [],
+    "metric_limit": 0,
+    "migration_metadata": {
+      "property1": null,
+      "property2": null
+    },
+    "minimum_duration_unit": "string",
+    "minimum_duration_value": 0,
+    "primary_metric_id": "550e8400-e29b-41d4-a716-446655440000",
+    "subject_type_id": "550e8400-e29b-41d4-a716-446655440000",
+    "targeting_rules": [
+      {
+        "conditions": [
+          {
+            "attribute": "string",
+            "operator": "string",
+            "order_position": 0,
+            "saved_filter_id": "string",
+            "value": [
+              "string"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "type": "protocols"
+}
+```
+
+JSON:API protocol request resource.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[ExperimentsReplaceExperimentProtocolRequestDataAttributes](#schemaexperimentsreplaceexperimentprotocolrequestdataattributes)|true|none|Replace a published protocol template. Omitted optional template fields are cleared. Omitted enforcement and migration_metadata are preserved. Enabled limits require their values; allocation settings require environment_id.|
+|id|string(uuid)|false|none|Protocol ID. If supplied, must match the path protocol_id.|
+|type|[ExperimentsPublicProtocolResponseDataType](#schemaexperimentspublicprotocolresponsedatatype)|true|none|Protocols resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|protocols|
+
+<h2 id="tocS_ExperimentsReplaceExperimentProtocolRequestDataAttributes">ExperimentsReplaceExperimentProtocolRequestDataAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsreplaceexperimentprotocolrequestdataattributes"></a>
+<a id="schema_ExperimentsReplaceExperimentProtocolRequestDataAttributes"></a>
+<a id="tocSexperimentsreplaceexperimentprotocolrequestdataattributes"></a>
+<a id="tocsexperimentsreplaceexperimentprotocolrequestdataattributes"></a>
+
+```json
+{
+  "analysis_plan": {
+    "compute_cuped": true,
+    "confidence_interval_method": "string",
+    "confidence_level": 0,
+    "multiple_testing_correction_method": "string"
+  },
+  "assignment_source_default_properties": [
+    {
+      "column_name": "string",
+      "column_type": "string",
+      "name": "string"
+    }
+  ],
+  "assignment_source_id": "550e8400-e29b-41d4-a716-446655440000",
+  "default_duration_days": 0,
+  "enforcement": {
+    "confidence_interval_method": "LOCKED",
+    "confidence_level": "EDITABLE",
+    "cuped_calculation": "EDITABLE",
+    "default_duration": "EDITABLE",
+    "environment": "EDITABLE",
+    "flag_source": "LOCKED",
+    "multiple_testing_correction": "EDITABLE",
+    "notifications": "EDITABLE",
+    "primary_metric": "EDITABLE",
+    "secondary_metrics": "EDITABLE",
+    "split_by_exploration_dimensions": "EDITABLE",
+    "subject_type": "LOCKED",
+    "targeting_rules": "EDITABLE",
+    "traffic_exposure": "EDITABLE",
+    "warehouse_exposure_source": "EDITABLE"
+  },
+  "environment_id": "550e8400-e29b-41d4-a716-446655440000",
+  "exposure_schedule": {
+    "autostart": true,
+    "guardrail_triggered_action": "string",
+    "rollout_steps": [
+      {
+        "exposure_ratio": 0,
+        "grouped_step_index": 0,
+        "interval_ms": 0,
+        "is_pause_record": true,
+        "order_position": 0
+      }
+    ],
+    "selection_interval_ms": 0,
+    "strategy": "string"
+  },
+  "is_duration_required_to_start": false,
+  "is_equal_split_enforced": false,
+  "is_metric_limit_enabled": false,
+  "is_minimum_duration_enabled": false,
+  "metric_groups": [],
+  "metric_limit": 0,
+  "migration_metadata": {
+    "property1": null,
+    "property2": null
+  },
+  "minimum_duration_unit": "string",
+  "minimum_duration_value": 0,
+  "primary_metric_id": "550e8400-e29b-41d4-a716-446655440000",
+  "subject_type_id": "550e8400-e29b-41d4-a716-446655440000",
+  "targeting_rules": [
+    {
+      "conditions": [
+        {
+          "attribute": "string",
+          "operator": "string",
+          "order_position": 0,
+          "saved_filter_id": "string",
+          "value": [
+            "string"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Replace a published protocol template. Omitted optional template fields are cleared. Omitted enforcement and migration_metadata are preserved. Enabled limits require their values; allocation settings require environment_id.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|analysis_plan|[ExperimentsProtocolAnalysisPlanInput](#schemaexperimentsprotocolanalysisplaninput)|false|none|Statistical settings. Use `default_duration_days` for duration; `target_duration_days` is not accepted here.|
+|assignment_source_default_properties|[[ExperimentsPublicProtocolResponseDataAttributesAssignmentSourceDefaultPropertiesItems](#schemaexperimentspublicprotocolresponsedataattributesassignmentsourcedefaultpropertiesitems)]|false|none|Assignment properties.|
+|assignment_source_id|string(uuid) \| null|false|none|ID of the assignment source selected by the protocol.|
+|default_duration_days|integer(int64) \| null|false|none|Default experiment duration supplied by the protocol, in days.|
+|enforcement|[ExperimentsReplaceProtocolEnforcementInput](#schemaexperimentsreplaceprotocolenforcementinput)|false|none|Complete lock map. Omit this object to preserve current locks. Null is rejected; every field is required.|
+|environment_id|string(uuid) \| null|false|none|ID of the feature flag environment used by the experiment.|
+|exposure_schedule|[ExperimentsProtocolExposureScheduleInput](#schemaexperimentsprotocolexposurescheduleinput)|false|none|Traffic schedule. Publishing and replacement require `NO_ROLLOUT` with exactly one step, or `UNIFORM_INTERVALS` with a positive selection interval and at least one step. Requires `environment_id`.|
+|is_duration_required_to_start|boolean|true|none|Whether the protocol requires a duration before an experiment can start.|
+|is_equal_split_enforced|boolean|true|none|Whether the protocol requires equal traffic allocation across variants.|
+|is_metric_limit_enabled|boolean|true|none|Whether the protocol limits the number of metrics.|
+|is_minimum_duration_enabled|boolean|true|none|Whether the protocol enforces a minimum experiment duration.|
+|metric_groups|[[ExperimentsProtocolMetricGroupInput](#schemaexperimentsprotocolmetricgroupinput)]|true|none|Metric groups.|
+|metric_limit|integer(int64) \| null|false|none|Maximum number of metrics allowed by the protocol.|
+|migration_metadata|object \| null|false|none|Metadata for imported resources. Must encode to at most 4096 bytes. Null clears it; omission preserves it on update.|
+|minimum_duration_unit|string \| null|false|none|Minimum duration unit, DAYS or WEEKS.|
+|minimum_duration_value|integer(int64) \| null|false|none|Minimum experiment duration in the specified unit.|
+|primary_metric_id|string(uuid) \| null|false|none|ID of the primary metric supplied by the protocol.|
+|subject_type_id|string(uuid)|true|none|ID of the subject type used by this configuration.|
+|targeting_rules|[[ExperimentsProtocolTargetingRuleInput](#schemaexperimentsprotocoltargetingruleinput)]|false|none|Targeting rules.|
+
+<h2 id="tocS_ExperimentsReplaceProtocolEnforcementInput">ExperimentsReplaceProtocolEnforcementInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaexperimentsreplaceprotocolenforcementinput"></a>
+<a id="schema_ExperimentsReplaceProtocolEnforcementInput"></a>
+<a id="tocSexperimentsreplaceprotocolenforcementinput"></a>
+<a id="tocsexperimentsreplaceprotocolenforcementinput"></a>
+
+```json
+{
+  "confidence_interval_method": "LOCKED",
+  "confidence_level": "EDITABLE",
+  "cuped_calculation": "EDITABLE",
+  "default_duration": "EDITABLE",
+  "environment": "EDITABLE",
+  "flag_source": "LOCKED",
+  "multiple_testing_correction": "EDITABLE",
+  "notifications": "EDITABLE",
+  "primary_metric": "EDITABLE",
+  "secondary_metrics": "EDITABLE",
+  "split_by_exploration_dimensions": "EDITABLE",
+  "subject_type": "LOCKED",
+  "targeting_rules": "EDITABLE",
+  "traffic_exposure": "EDITABLE",
+  "warehouse_exposure_source": "EDITABLE"
+}
+```
+
+Complete lock map. Omit this object to preserve current locks. Null is rejected; every field is required.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|confidence_interval_method|string|true|none|Always LOCKED. The server keeps this setting locked regardless of the supplied value.|
+|confidence_level|string|true|none|LOCKED prevents changes to confidence level. EDITABLE permits changes.|
+|cuped_calculation|string|true|none|LOCKED prevents changes to CUPED variance reduction. EDITABLE permits changes.|
+|default_duration|string|true|none|LOCKED prevents changes to default duration. EDITABLE permits changes.|
+|environment|string|true|none|LOCKED prevents changes to environment. EDITABLE permits changes.|
+|flag_source|string|true|none|Always LOCKED. The server keeps this setting locked regardless of the supplied value.|
+|multiple_testing_correction|string|true|none|LOCKED prevents changes to multiple testing correction. EDITABLE permits changes.|
+|notifications|string|true|none|LOCKED prevents changes to notifications. EDITABLE permits changes.|
+|primary_metric|string|true|none|LOCKED prevents changes to primary metric. EDITABLE permits changes.|
+|secondary_metrics|string|true|none|LOCKED prevents changes to secondary metrics. EDITABLE permits changes.|
+|split_by_exploration_dimensions|string|true|none|LOCKED prevents changes to result exploration dimensions. EDITABLE permits changes.|
+|subject_type|string|true|none|Always LOCKED. The server keeps this setting locked regardless of the supplied value.|
+|targeting_rules|string|true|none|LOCKED prevents changes to targeting rules. EDITABLE permits changes.|
+|traffic_exposure|string|true|none|LOCKED prevents changes to traffic exposure. EDITABLE permits changes.|
+|warehouse_exposure_source|string|true|none|LOCKED prevents changes to warehouse exposure source. EDITABLE permits changes.|
 
 <h2 id="tocS_ExperimentsSQLModelPropertyInput">ExperimentsSQLModelPropertyInput</h2>
 <!-- backwards compatibility -->
@@ -334998,6 +338769,13 @@ The definition of `GetResourceFilterResponseData` object.
               "aggregation": "count",
               "customQueryExtension": "a > 3",
               "dataSource": "logs",
+              "datasetIds": [
+                "string"
+              ],
+              "datasetVersions": {
+                "property1": 0,
+                "property2": 0
+              },
               "distinctFields": [
                 "string"
               ],
@@ -335014,7 +338792,8 @@ The definition of `GetResourceFilterResponseData` object.
                 "string"
               ],
               "name": "string",
-              "query": "a > 3"
+              "query": "a > 3",
+              "queryLanguage": "sql"
             }
           ],
           "referenceTables": [
@@ -335191,6 +338970,13 @@ The definition of `GetResourceFilterResponseData` object.
               "aggregation": "count",
               "customQueryExtension": "a > 3",
               "dataSource": "logs",
+              "datasetIds": [
+                "string"
+              ],
+              "datasetVersions": {
+                "property1": 0,
+                "property2": 0
+              },
               "distinctFields": [
                 "string"
               ],
@@ -335207,7 +338993,8 @@ The definition of `GetResourceFilterResponseData` object.
                 "string"
               ],
               "name": "string",
-              "query": "a > 3"
+              "query": "a > 3",
+              "queryLanguage": "sql"
             }
           ],
           "referenceTables": [
@@ -335433,6 +339220,13 @@ Type of data.
                 "aggregation": "count",
                 "customQueryExtension": "a > 3",
                 "dataSource": "logs",
+                "datasetIds": [
+                  "string"
+                ],
+                "datasetVersions": {
+                  "property1": 0,
+                  "property2": 0
+                },
                 "distinctFields": [
                   "string"
                 ],
@@ -335449,7 +339243,8 @@ Type of data.
                   "string"
                 ],
                 "name": "string",
-                "query": "a > 3"
+                "query": "a > 3",
+                "queryLanguage": "sql"
               }
             ],
             "referenceTables": [
@@ -335626,6 +339421,13 @@ Type of data.
                 "aggregation": "count",
                 "customQueryExtension": "a > 3",
                 "dataSource": "logs",
+                "datasetIds": [
+                  "string"
+                ],
+                "datasetVersions": {
+                  "property1": 0,
+                  "property2": 0
+                },
                 "distinctFields": [
                   "string"
                 ],
@@ -335642,7 +339444,8 @@ Type of data.
                   "string"
                 ],
                 "name": "string",
-                "query": "a > 3"
+                "query": "a > 3",
+                "queryLanguage": "sql"
               }
             ],
             "referenceTables": [
@@ -342642,6 +346445,50 @@ Type of the HAMR organization connection resource.
 
 Type of payload.
 
+<h2 id="tocS_HistoricalJobFailure">HistoricalJobFailure</h2>
+<!-- backwards compatibility -->
+<a id="schemahistoricaljobfailure"></a>
+<a id="schema_HistoricalJobFailure"></a>
+<a id="tocShistoricaljobfailure"></a>
+<a id="tocshistoricaljobfailure"></a>
+
+```json
+{
+  "hint": "Narrow the time range or reduce the data scanned.",
+  "reason": "query_too_expensive"
+}
+```
+
+Details about why the job failed. Only present when the job has failed and won't be retried.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|hint|string|false|none|A suggestion to fix the failure.|
+|reason|[HistoricalJobFailureReason](#schemahistoricaljobfailurereason)|false|none|The reason why the job failed.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|reason|rule_configuration|
+|reason|query_too_expensive|
+|reason|internal_error|
+
+<h2 id="tocS_HistoricalJobFailureReason">HistoricalJobFailureReason</h2>
+<!-- backwards compatibility -->
+<a id="schemahistoricaljobfailurereason"></a>
+<a id="schema_HistoricalJobFailureReason"></a>
+<a id="tocShistoricaljobfailurereason"></a>
+<a id="tocshistoricaljobfailurereason"></a>
+
+```json
+"query_too_expensive"
+```
+
+The reason why the job failed.
+
 <h2 id="tocS_HistoricalJobListMeta">HistoricalJobListMeta</h2>
 <!-- backwards compatibility -->
 <a id="schemahistoricaljoblistmeta"></a>
@@ -342894,6 +346741,10 @@ Query for selecting logs analyzed by the historical job.
       "createdByHandle": "string",
       "createdByName": "string",
       "createdFromRuleId": "string",
+      "failure": {
+        "hint": "Narrow the time range or reduce the data scanned.",
+        "reason": "query_too_expensive"
+      },
       "jobDefinition": {
         "calculatedFields": [
           {
@@ -343068,6 +346919,10 @@ Historical job response.
   "createdByHandle": "string",
   "createdByName": "string",
   "createdFromRuleId": "string",
+  "failure": {
+    "hint": "Narrow the time range or reduce the data scanned.",
+    "reason": "query_too_expensive"
+  },
   "jobDefinition": {
     "calculatedFields": [
       {
@@ -343227,6 +347082,7 @@ Historical job attributes.
 |createdByHandle|string|false|none|The handle of the user who created the job.|
 |createdByName|string|false|none|The name of the user who created the job.|
 |createdFromRuleId|string|false|none|ID of the rule used to create the job (if it is created from a rule).|
+|failure|[HistoricalJobFailure](#schemahistoricaljobfailure)|false|none|Details about why the job failed. Only present when the job has failed and won't be retried.|
 |jobDefinition|[JobDefinition](#schemajobdefinition)|false|none|Definition of a historical job.|
 |jobName|string|false|none|Job name.|
 |jobStatus|string|false|none|Job status.|
@@ -343248,6 +347104,10 @@ Historical job attributes.
     "createdByHandle": "string",
     "createdByName": "string",
     "createdFromRuleId": "string",
+    "failure": {
+      "hint": "Narrow the time range or reduce the data scanned.",
+      "reason": "query_too_expensive"
+    },
     "jobDefinition": {
       "calculatedFields": [
         {
@@ -352842,6 +356702,49 @@ Incident responder data in a response.
 |---|---|
 |type|incident_responders|
 
+<h2 id="tocS_IncidentResponderIncludedItem">IncidentResponderIncludedItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentresponderincludeditem"></a>
+<a id="schema_IncidentResponderIncludedItem"></a>
+<a id="tocSincidentresponderincludeditem"></a>
+<a id="tocsincidentresponderincludeditem"></a>
+
+```json
+{
+  "attributes": {
+    "email": "string",
+    "handle": "string",
+    "icon": "string",
+    "name": "string",
+    "uuid": "string"
+  },
+  "id": "string",
+  "type": "users"
+}
+```
+
+A user or role assignment related to an incident responder.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[IncidentUserData](#schemaincidentuserdata)|false|none|User object returned by the API.|
+|*oneOf*|[IncidentRoleAssignmentDataResponse](#schemaincidentroleassignmentdataresponse)|false|none|Role assignment data in a response.|
+
+<h2 id="tocS_IncidentResponderRelatedObject">IncidentResponderRelatedObject</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentresponderrelatedobject"></a>
+<a id="schema_IncidentResponderRelatedObject"></a>
+<a id="tocSincidentresponderrelatedobject"></a>
+<a id="tocsincidentresponderrelatedobject"></a>
+
+```json
+"users"
+```
+
+Object related to an incident responder.
+
 <h2 id="tocS_IncidentResponderRelationships">IncidentResponderRelationships</h2>
 <!-- backwards compatibility -->
 <a id="schemaincidentresponderrelationships"></a>
@@ -353135,6 +357038,41 @@ A user relationship data object for creating a responder.
 |id|string(uuid)|true|none|The user identifier.|
 |type|string|true|none|The user resource type.|
 
+<h2 id="tocS_IncidentRespondersPagination">IncidentRespondersPagination</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentresponderspagination"></a>
+<a id="schema_IncidentRespondersPagination"></a>
+<a id="tocSincidentresponderspagination"></a>
+<a id="tocsincidentresponderspagination"></a>
+
+```json
+{
+  "first_offset": 0,
+  "last_offset": 25,
+  "limit": 25,
+  "next_offset": 25,
+  "offset": 0,
+  "prev_offset": 0,
+  "total": 1,
+  "type": "offset_limit"
+}
+```
+
+Offset-based pagination for incident responders.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first_offset|integer(int64)|false|none|The offset of the first page.|
+|last_offset|integer(int64) \| null|false|none|The offset of the last page, if available.|
+|limit|integer(int64)|false|none|The maximum number of elements returned per page.|
+|next_offset|integer(int64) \| null|false|none|The offset of the next page, if available.|
+|offset|integer(int64)|false|none|The index of the first element in the current page.|
+|prev_offset|integer(int64) \| null|false|none|The offset of the previous page, if available.|
+|total|integer(int64) \| null|false|none|The total number of elements, when available.|
+|type|string|false|none|The pagination type.|
+
 <h2 id="tocS_IncidentRespondersResponse">IncidentRespondersResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemaincidentrespondersresponse"></a>
@@ -353202,7 +357140,26 @@ A user relationship data object for creating a responder.
       "id": "string",
       "type": "users"
     }
-  ]
+  ],
+  "links": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "meta": {
+    "page": {
+      "total_filtered_count": 1
+    },
+    "pagination": {
+      "first_offset": 0,
+      "last_offset": 25,
+      "limit": 25,
+      "next_offset": 25,
+      "offset": 0,
+      "prev_offset": 0,
+      "total": 1,
+      "type": "offset_limit"
+    }
+  }
 }
 ```
 
@@ -353213,7 +357170,64 @@ Response with a list of incident responders.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[IncidentResponderDataResponse](#schemaincidentresponderdataresponse)]|true|none|List of incident responders.|
-|included|[[IncidentUserData](#schemaincidentuserdata)]|false|read-only|Included related resources.|
+|included|[[IncidentResponderIncludedItem](#schemaincidentresponderincludeditem)]|false|read-only|Included related resources.|
+|links|object|false|none|Links to pages of incident responders.|
+|meta|[IncidentRespondersResponseMeta](#schemaincidentrespondersresponsemeta)|false|none|Pagination metadata for the responder list.|
+
+<h2 id="tocS_IncidentRespondersResponseMeta">IncidentRespondersResponseMeta</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentrespondersresponsemeta"></a>
+<a id="schema_IncidentRespondersResponseMeta"></a>
+<a id="tocSincidentrespondersresponsemeta"></a>
+<a id="tocsincidentrespondersresponsemeta"></a>
+
+```json
+{
+  "page": {
+    "total_filtered_count": 1
+  },
+  "pagination": {
+    "first_offset": 0,
+    "last_offset": 25,
+    "limit": 25,
+    "next_offset": 25,
+    "offset": 0,
+    "prev_offset": 0,
+    "total": 1,
+    "type": "offset_limit"
+  }
+}
+```
+
+Pagination metadata for the responder list.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|page|[IncidentRespondersResponseMetaPage](#schemaincidentrespondersresponsemetapage)|false|none|Total count for the responder list.|
+|pagination|[IncidentRespondersPagination](#schemaincidentresponderspagination)|false|none|Offset-based pagination for incident responders.|
+
+<h2 id="tocS_IncidentRespondersResponseMetaPage">IncidentRespondersResponseMetaPage</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentrespondersresponsemetapage"></a>
+<a id="schema_IncidentRespondersResponseMetaPage"></a>
+<a id="tocSincidentrespondersresponsemetapage"></a>
+<a id="tocsincidentrespondersresponsemetapage"></a>
+
+```json
+{
+  "total_filtered_count": 1
+}
+```
+
+Total count for the responder list.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|total_filtered_count|integer(int64)|true|none|Total number of responders matching the query, before pagination.|
 
 <h2 id="tocS_IncidentRespondersType">IncidentRespondersType</h2>
 <!-- backwards compatibility -->
@@ -353329,6 +357343,12 @@ The incident responders type.
             "type": "incident_impacts"
           }
         ]
+      },
+      "incident_type": {
+        "data": {
+          "id": "00000000-0000-0000-0000-000000000000",
+          "type": "incident_types"
+        }
       },
       "integrations": {
         "data": [
@@ -353607,6 +357627,12 @@ The incident's attributes from a response.
         }
       ]
     },
+    "incident_type": {
+      "data": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "type": "incident_types"
+      }
+    },
     "integrations": {
       "data": [
         {
@@ -353786,6 +357812,12 @@ Pagination properties.
       }
     ]
   },
+  "incident_type": {
+    "data": {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "incident_types"
+    }
+  },
   "integrations": {
     "data": [
       {
@@ -353834,10 +357866,271 @@ The incident's relationships from a response.
 |created_by_user|[RelationshipToUser](#schemarelationshiptouser)|false|none|Relationship to user.|
 |declared_by_user|[RelationshipToUser](#schemarelationshiptouser)|false|none|Relationship to user.|
 |impacts|[RelationshipToIncidentImpacts](#schemarelationshiptoincidentimpacts)|false|none|Relationship to impacts.|
+|incident_type|[RelationshipToIncidentType](#schemarelationshiptoincidenttype)|false|none|Relationship to an incident type.|
 |integrations|[RelationshipToIncidentIntegrationMetadatas](#schemarelationshiptoincidentintegrationmetadatas)|false|none|A relationship reference for multiple integration metadata objects.|
 |last_modified_by_user|[RelationshipToUser](#schemarelationshiptouser)|false|none|Relationship to user.|
 |responders|[RelationshipToIncidentResponders](#schemarelationshiptoincidentresponders)|false|none|Relationship to incident responders.|
 |user_defined_fields|[RelationshipToIncidentUserDefinedFields](#schemarelationshiptoincidentuserdefinedfields)|false|none|Relationship to incident user defined fields.|
+
+<h2 id="tocS_IncidentRoleAssignmentDataAttributesResponse">IncidentRoleAssignmentDataAttributesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentroleassignmentdataattributesresponse"></a>
+<a id="schema_IncidentRoleAssignmentDataAttributesResponse"></a>
+<a id="tocSincidentroleassignmentdataattributesresponse"></a>
+<a id="tocsincidentroleassignmentdataattributesresponse"></a>
+
+```json
+{
+  "created": "2024-01-01T00:00:00.000Z",
+  "deleted": "0001-01-01T00:00:00Z",
+  "modified": "2024-01-01T00:00:00.000Z",
+  "responder_type": "user",
+  "role": "commander"
+}
+```
+
+Attributes of an incident role assignment.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|created|string(date-time)|true|none|Timestamp when the role assignment was created.|
+|deleted|string(date-time)|false|none|Timestamp when the role assignment was deleted, or the zero timestamp if it has not been deleted.|
+|modified|string(date-time)|true|none|Timestamp when the role assignment was last modified.|
+|responder_type|string|true|none|The type of the responder.|
+|role|string|true|none|The name of the assigned role.|
+
+<h2 id="tocS_IncidentRoleAssignmentDataResponse">IncidentRoleAssignmentDataResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentroleassignmentdataresponse"></a>
+<a id="schema_IncidentRoleAssignmentDataResponse"></a>
+<a id="tocSincidentroleassignmentdataresponse"></a>
+<a id="tocsincidentroleassignmentdataresponse"></a>
+
+```json
+{
+  "attributes": {
+    "created": "2024-01-01T00:00:00.000Z",
+    "deleted": "0001-01-01T00:00:00Z",
+    "modified": "2024-01-01T00:00:00.000Z",
+    "responder_type": "user",
+    "role": "commander"
+  },
+  "id": "00000000-0000-0000-0000-000000000000",
+  "relationships": {
+    "created_by_user": {
+      "data": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "type": "users"
+      }
+    },
+    "last_modified_by_user": {
+      "data": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "type": "users"
+      }
+    },
+    "reserved_role": {
+      "data": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "type": "incident_reserved_roles"
+      }
+    },
+    "responder": {
+      "data": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "type": "users"
+      }
+    },
+    "user_defined_role": {
+      "data": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "type": "incident_reserved_roles"
+      }
+    }
+  },
+  "type": "incident_role_assignments"
+}
+```
+
+Role assignment data in a response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[IncidentRoleAssignmentDataAttributesResponse](#schemaincidentroleassignmentdataattributesresponse)|true|none|Attributes of an incident role assignment.|
+|id|string(uuid)|true|none|The role assignment identifier.|
+|relationships|[IncidentRoleAssignmentRelationshipsResponse](#schemaincidentroleassignmentrelationshipsresponse)|false|none|Relationships of a role assignment.|
+|type|[IncidentRoleAssignmentType](#schemaincidentroleassignmenttype)|true|none|Incident role assignment resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|incident_role_assignments|
+
+<h2 id="tocS_IncidentRoleAssignmentRelationshipsResponse">IncidentRoleAssignmentRelationshipsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentroleassignmentrelationshipsresponse"></a>
+<a id="schema_IncidentRoleAssignmentRelationshipsResponse"></a>
+<a id="tocSincidentroleassignmentrelationshipsresponse"></a>
+<a id="tocsincidentroleassignmentrelationshipsresponse"></a>
+
+```json
+{
+  "created_by_user": {
+    "data": {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "users"
+    }
+  },
+  "last_modified_by_user": {
+    "data": {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "users"
+    }
+  },
+  "reserved_role": {
+    "data": {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "incident_reserved_roles"
+    }
+  },
+  "responder": {
+    "data": {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "users"
+    }
+  },
+  "user_defined_role": {
+    "data": {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "incident_reserved_roles"
+    }
+  }
+}
+```
+
+Relationships of a role assignment.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|created_by_user|[IncidentRoleAssignmentResponderRelationship](#schemaincidentroleassignmentresponderrelationship)|false|none|Relationship to a responder.|
+|last_modified_by_user|[IncidentRoleAssignmentResponderRelationship](#schemaincidentroleassignmentresponderrelationship)|false|none|Relationship to a responder.|
+|reserved_role|[IncidentRoleAssignmentRoleRelationship](#schemaincidentroleassignmentrolerelationship)|false|none|Relationship to a role.|
+|responder|[IncidentRoleAssignmentResponderRelationship](#schemaincidentroleassignmentresponderrelationship)|true|none|Relationship to a responder.|
+|user_defined_role|[IncidentRoleAssignmentRoleRelationship](#schemaincidentroleassignmentrolerelationship)|false|none|Relationship to a role.|
+
+<h2 id="tocS_IncidentRoleAssignmentResponderRelationship">IncidentRoleAssignmentResponderRelationship</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentroleassignmentresponderrelationship"></a>
+<a id="schema_IncidentRoleAssignmentResponderRelationship"></a>
+<a id="tocSincidentroleassignmentresponderrelationship"></a>
+<a id="tocsincidentroleassignmentresponderrelationship"></a>
+
+```json
+{
+  "data": {
+    "id": "00000000-0000-0000-0000-000000000000",
+    "type": "users"
+  }
+}
+```
+
+Relationship to a responder.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[IncidentRoleAssignmentResponderRelationshipData](#schemaincidentroleassignmentresponderrelationshipdata)|true|none|Responder relationship data.|
+
+<h2 id="tocS_IncidentRoleAssignmentResponderRelationshipData">IncidentRoleAssignmentResponderRelationshipData</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentroleassignmentresponderrelationshipdata"></a>
+<a id="schema_IncidentRoleAssignmentResponderRelationshipData"></a>
+<a id="tocSincidentroleassignmentresponderrelationshipdata"></a>
+<a id="tocsincidentroleassignmentresponderrelationshipdata"></a>
+
+```json
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "type": "users"
+}
+```
+
+Responder relationship data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|The responder identifier.|
+|type|string|true|none|The responder resource type.|
+
+<h2 id="tocS_IncidentRoleAssignmentRoleRelationship">IncidentRoleAssignmentRoleRelationship</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentroleassignmentrolerelationship"></a>
+<a id="schema_IncidentRoleAssignmentRoleRelationship"></a>
+<a id="tocSincidentroleassignmentrolerelationship"></a>
+<a id="tocsincidentroleassignmentrolerelationship"></a>
+
+```json
+{
+  "data": {
+    "id": "00000000-0000-0000-0000-000000000000",
+    "type": "incident_reserved_roles"
+  }
+}
+```
+
+Relationship to a role.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[IncidentRoleAssignmentRoleRelationshipData](#schemaincidentroleassignmentrolerelationshipdata)|false|none|Role relationship data.|
+
+<h2 id="tocS_IncidentRoleAssignmentRoleRelationshipData">IncidentRoleAssignmentRoleRelationshipData</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentroleassignmentrolerelationshipdata"></a>
+<a id="schema_IncidentRoleAssignmentRoleRelationshipData"></a>
+<a id="tocSincidentroleassignmentrolerelationshipdata"></a>
+<a id="tocsincidentroleassignmentrolerelationshipdata"></a>
+
+```json
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "type": "incident_reserved_roles"
+}
+```
+
+Role relationship data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|The role identifier.|
+|type|string|true|none|The role resource type.|
+
+<h2 id="tocS_IncidentRoleAssignmentType">IncidentRoleAssignmentType</h2>
+<!-- backwards compatibility -->
+<a id="schemaincidentroleassignmenttype"></a>
+<a id="schema_IncidentRoleAssignmentType"></a>
+<a id="tocSincidentroleassignmenttype"></a>
+<a id="tocsincidentroleassignmenttype"></a>
+
+```json
+"incident_role_assignments"
+```
+
+Incident role assignment resource type.
 
 <h2 id="tocS_IncidentRuleCondition">IncidentRuleCondition</h2>
 <!-- backwards compatibility -->
@@ -354845,6 +359138,12 @@ Schema for an incident schedule trigger.
                   }
                 ]
               },
+              "incident_type": {
+                "data": {
+                  "id": "00000000-0000-0000-0000-000000000000",
+                  "type": "incident_types"
+                }
+              },
               "integrations": {
                 "data": [
                   {
@@ -355120,6 +359419,12 @@ Response with incidents and facets.
               }
             ]
           },
+          "incident_type": {
+            "data": {
+              "id": "00000000-0000-0000-0000-000000000000",
+              "type": "incident_types"
+            }
+          },
           "integrations": {
             "data": [
               {
@@ -355372,6 +359677,12 @@ Attributes returned by an incident search.
                   "type": "incident_impacts"
                 }
               ]
+            },
+            "incident_type": {
+              "data": {
+                "id": "00000000-0000-0000-0000-000000000000",
+                "type": "incident_types"
+              }
             },
             "integrations": {
               "data": [
@@ -355693,6 +360004,12 @@ Facet value and number of occurrences for a property field of an incident.
             "type": "incident_impacts"
           }
         ]
+      },
+      "incident_type": {
+        "data": {
+          "id": "00000000-0000-0000-0000-000000000000",
+          "type": "incident_types"
+        }
       },
       "integrations": {
         "data": [
@@ -361979,6 +366296,14 @@ Data object of the triage write response.
         "type": "case"
       }
     },
+    "samples": {
+      "data": [
+        {
+          "id": "AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA",
+          "type": "error_tracking_issue_sample"
+        }
+      ]
+    },
     "team_owners": {
       "data": [
         {
@@ -362677,6 +367002,7 @@ An array of related resources, returned when the `include` query parameter is us
 |*oneOf*|[IssueCase](#schemaissuecase)|false|none|The case attached to the issue.|
 |*oneOf*|[IssueUser](#schemaissueuser)|false|none|The user to whom the issue is assigned.|
 |*oneOf*|[IssueTeam](#schemaissueteam)|false|none|A team that owns an issue.|
+|*oneOf*|[IssueSample](#schemaissuesample)|false|none|An error event of the issue, picked because it satisfies one or more sample biases.|
 
 <h2 id="tocS_IssueLanguage">IssueLanguage</h2>
 <!-- backwards compatibility -->
@@ -362779,6 +367105,14 @@ Regression information for an issue that was previously resolved and then reopen
       "type": "case"
     }
   },
+  "samples": {
+    "data": [
+      {
+        "id": "AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA",
+        "type": "error_tracking_issue_sample"
+      }
+    ]
+  },
   "team_owners": {
     "data": [
       {
@@ -362798,6 +367132,7 @@ Relationship between the issue and an assignee, case and/or teams.
 |---|---|---|---|---|
 |assignee|[IssueAssigneeRelationship](#schemaissueassigneerelationship)|false|none|Relationship between the issue and assignee.|
 |case|[IssueCaseRelationship](#schemaissuecaserelationship)|false|none|Relationship between the issue and case.|
+|samples|[IssueSamplesRelationship](#schemaissuesamplesrelationship)|false|none|Relationship between the issue and its curated error samples.|
 |team_owners|[IssueTeamOwnersRelationship](#schemaissueteamownersrelationship)|false|none|Relationship between the issue and teams.|
 
 <h2 id="tocS_IssueResponse">IssueResponse</h2>
@@ -362846,6 +367181,14 @@ Relationship between the issue and an assignee, case and/or teams.
           "id": "2841440d-e780-4fe2-96cd-6a8c1d194da5",
           "type": "case"
         }
+      },
+      "samples": {
+        "data": [
+          {
+            "id": "AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA",
+            "type": "error_tracking_issue_sample"
+          }
+        ]
       },
       "team_owners": {
         "data": [
@@ -362945,6 +367288,520 @@ Response containing error tracking issue data.
 |---|---|---|---|---|
 |data|[Issue](#schemaissue)|false|none|The issue matching the request.|
 |included|[[IssueIncluded](#schemaissueincluded)]|false|none|Array of resources related to the issue.|
+
+<h2 id="tocS_IssueSample">IssueSample</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesample"></a>
+<a id="schema_IssueSample"></a>
+<a id="tocSissuesample"></a>
+<a id="tocsissuesample"></a>
+
+```json
+{
+  "attributes": {
+    "application_id": "40d8ca4b-2ac0-481f-b16e-f110699ecff6",
+    "biases": [
+      "latest",
+      "git_metadata"
+    ],
+    "build_id": "a1b2c3",
+    "bundle_version": "42",
+    "data_source": "APM",
+    "debug_id": "9d8c7b6a-5f4e-3d2c-1b0a-9f8e7d6c5b4a",
+    "debug_info_captured": false,
+    "error_source_type": "browser",
+    "error_stack": {
+      "frames": [
+        {
+          "code_snippet": {
+            "lines": [
+              "def filter_forbidden_tags(tags):",
+              "    return len(tags)"
+            ],
+            "offset": 37
+          },
+          "git_file_location": {
+            "column": 13,
+            "filepath": "conduit/apps/core/utils.py",
+            "first_line": 42,
+            "last_line": 42,
+            "ref": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+            "repo_id": "github.com/company/email-api-py"
+          },
+          "text": "main.handler(0xc000123456)\n\t/go/src/app/main.go:42 +0x1d"
+        }
+      ],
+      "language": "go"
+    },
+    "event": {
+      "property1": null,
+      "property2": null
+    },
+    "git_commit_sha": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+    "git_repository_id": "github.com/company/email-api-py",
+    "git_repository_url": "https://github.com/company/email-api-py",
+    "has_session_replay": true,
+    "language": "python",
+    "links": [
+      {
+        "code_location": {
+          "column": 13,
+          "filepath": "conduit/apps/core/utils.py",
+          "first_line": 42,
+          "last_line": 42,
+          "ref": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+          "repo_id": "github.com/company/email-api-py"
+        },
+        "frame_id": 1
+      }
+    ],
+    "os_name": "iOS",
+    "service": "email-api-py",
+    "session_id": "72d11fa0-7f59-408a-95ff-9af7d4f8d7db",
+    "session_replay_url": "https://app.datadoghq.com/rum/replay/sessions/72d11fa0-7f59-408a-95ff-9af7d4f8d7db",
+    "snapshot_id": "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+    "span_id": "3906394766563720946",
+    "timestamp": "2024-01-01T10:00:00Z",
+    "trace_id": "6730183925457637287",
+    "variant": "release",
+    "version": "1.2.3",
+    "view_id": "c5c02423-c03a-400a-993f-731bebf1732b"
+  },
+  "id": "AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA",
+  "type": "error_tracking_issue_sample"
+}
+```
+
+An error event of the issue, picked because it satisfies one or more sample biases.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[IssueSampleAttributes](#schemaissuesampleattributes)|true|none|Object containing the information of a sample.|
+|id|string|true|none|Sample identifier.|
+|type|[IssueSampleType](#schemaissuesampletype)|true|none|Type of the object.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|error_tracking_issue_sample|
+
+<h2 id="tocS_IssueSampleAttributes">IssueSampleAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesampleattributes"></a>
+<a id="schema_IssueSampleAttributes"></a>
+<a id="tocSissuesampleattributes"></a>
+<a id="tocsissuesampleattributes"></a>
+
+```json
+{
+  "application_id": "40d8ca4b-2ac0-481f-b16e-f110699ecff6",
+  "biases": [
+    "latest",
+    "git_metadata"
+  ],
+  "build_id": "a1b2c3",
+  "bundle_version": "42",
+  "data_source": "APM",
+  "debug_id": "9d8c7b6a-5f4e-3d2c-1b0a-9f8e7d6c5b4a",
+  "debug_info_captured": false,
+  "error_source_type": "browser",
+  "error_stack": {
+    "frames": [
+      {
+        "code_snippet": {
+          "lines": [
+            "def filter_forbidden_tags(tags):",
+            "    return len(tags)"
+          ],
+          "offset": 37
+        },
+        "git_file_location": {
+          "column": 13,
+          "filepath": "conduit/apps/core/utils.py",
+          "first_line": 42,
+          "last_line": 42,
+          "ref": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+          "repo_id": "github.com/company/email-api-py"
+        },
+        "text": "main.handler(0xc000123456)\n\t/go/src/app/main.go:42 +0x1d"
+      }
+    ],
+    "language": "go"
+  },
+  "event": {
+    "property1": null,
+    "property2": null
+  },
+  "git_commit_sha": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+  "git_repository_id": "github.com/company/email-api-py",
+  "git_repository_url": "https://github.com/company/email-api-py",
+  "has_session_replay": true,
+  "language": "python",
+  "links": [
+    {
+      "code_location": {
+        "column": 13,
+        "filepath": "conduit/apps/core/utils.py",
+        "first_line": 42,
+        "last_line": 42,
+        "ref": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+        "repo_id": "github.com/company/email-api-py"
+      },
+      "frame_id": 1
+    }
+  ],
+  "os_name": "iOS",
+  "service": "email-api-py",
+  "session_id": "72d11fa0-7f59-408a-95ff-9af7d4f8d7db",
+  "session_replay_url": "https://app.datadoghq.com/rum/replay/sessions/72d11fa0-7f59-408a-95ff-9af7d4f8d7db",
+  "snapshot_id": "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+  "span_id": "3906394766563720946",
+  "timestamp": "2024-01-01T10:00:00Z",
+  "trace_id": "6730183925457637287",
+  "variant": "release",
+  "version": "1.2.3",
+  "view_id": "c5c02423-c03a-400a-993f-731bebf1732b"
+}
+```
+
+Object containing the information of a sample.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|application_id|string|false|none|RUM application identifier of the error.|
+|biases|[[IssueSampleBias](#schemaissuesamplebias)]|false|none|Biases the sample satisfies. A single error can satisfy several biases.|
+|build_id|string|false|none|Build identifier of the mobile application.|
+|bundle_version|string|false|none|Bundle version of the mobile application.|
+|data_source|[IssueSampleDataSource](#schemaissuesampledatasource)|false|none|Product that reported the error. The value is `NONE` when the error has no known origin.|
+|debug_id|string|false|none|Debug identifier used to resolve the stack trace of the error to source code.|
+|debug_info_captured|boolean|false|none|Whether an Exception Replay snapshot was captured for the error.|
+|error_source_type|string|false|none|Source type set by the SDK or tracer that reported the error, such as `browser` for RUM browser errors<br>or `Crashtracking` for backend crash reports. Usually not set for APM and logs errors.|
+|error_stack|[IssueSampleErrorStack](#schemaissuesampleerrorstack)|true|none|Parsed stack trace of the error. Only the sample picked by the `git_metadata` bias has frames.|
+|event|[IssueSampleEvent](#schemaissuesampleevent)|false|none|Raw error event, as stored by its data source. Its fields differ between APM, logs, and RUM.|
+|git_commit_sha|string|false|none|Git commit SHA of the service version.|
+|git_repository_id|string|false|none|Git repository identifier of the service.|
+|git_repository_url|string|false|none|Git repository URL of the service.|
+|has_session_replay|boolean|false|none|Whether a RUM session replay is available for the error.|
+|language|string|false|none|Programming language of the service.|
+|links|[[IssueSampleFrameLink](#schemaissuesampleframelink)]|false|none|Source code locations of the stack frames that resolve to a repository file.|
+|os_name|string|false|none|Operating system of the device that reported the error.|
+|service|string|false|none|Service name.|
+|session_id|string|false|none|RUM session identifier of the error.|
+|session_replay_url|string|false|none|URL of the RUM session replay of the error.|
+|snapshot_id|string|false|none|Identifier of the Exception Replay snapshot of the error.|
+|span_id|string|false|none|APM span identifier of the error.|
+|timestamp|string(date-time)|true|none|Timestamp of the error.|
+|trace_id|string|false|none|APM trace identifier of the error.|
+|variant|string|false|none|Build variant of the mobile application.|
+|version|string|false|none|Version of the service.|
+|view_id|string|false|none|RUM view identifier of the error.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|biases|latest|
+|biases|git_metadata|
+|biases|trace|
+|biases|session_replay|
+|biases|exception_replay|
+|data_source|APM|
+|data_source|LOGS|
+|data_source|RUM|
+|data_source|LLMOBS|
+|data_source|SYNTHETICS|
+|data_source|NONE|
+
+<h2 id="tocS_IssueSampleBias">IssueSampleBias</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesamplebias"></a>
+<a id="schema_IssueSampleBias"></a>
+<a id="tocSissuesamplebias"></a>
+<a id="tocsissuesamplebias"></a>
+
+```json
+"latest"
+```
+
+Criterion used to pick a sample. `latest` picks the most recent error. `git_metadata` picks the most
+recent error with source code metadata, whose stack trace is parsed. `trace` picks the most recent error
+with an APM trace. `session_replay` picks the most recent error with a RUM session replay.
+`exception_replay` picks the most recent error with an Exception Replay snapshot.
+
+<h2 id="tocS_IssueSampleCodeSnippet">IssueSampleCodeSnippet</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesamplecodesnippet"></a>
+<a id="schema_IssueSampleCodeSnippet"></a>
+<a id="tocSissuesamplecodesnippet"></a>
+<a id="tocsissuesamplecodesnippet"></a>
+
+```json
+{
+  "lines": [
+    "def filter_forbidden_tags(tags):",
+    "    return len(tags)"
+  ],
+  "offset": 37
+}
+```
+
+Source code around a stack frame. Empty when the source code is unavailable.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|lines|[string]|false|none|Lines of source code.|
+|offset|integer(int64)|false|none|Line number of the first line of the snippet, starting at 1.|
+
+<h2 id="tocS_IssueSampleDataSource">IssueSampleDataSource</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesampledatasource"></a>
+<a id="schema_IssueSampleDataSource"></a>
+<a id="tocSissuesampledatasource"></a>
+<a id="tocsissuesampledatasource"></a>
+
+```json
+"APM"
+```
+
+Product that reported the error. The value is `NONE` when the error has no known origin.
+
+<h2 id="tocS_IssueSampleErrorStack">IssueSampleErrorStack</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesampleerrorstack"></a>
+<a id="schema_IssueSampleErrorStack"></a>
+<a id="tocSissuesampleerrorstack"></a>
+<a id="tocsissuesampleerrorstack"></a>
+
+```json
+{
+  "frames": [
+    {
+      "code_snippet": {
+        "lines": [
+          "def filter_forbidden_tags(tags):",
+          "    return len(tags)"
+        ],
+        "offset": 37
+      },
+      "git_file_location": {
+        "column": 13,
+        "filepath": "conduit/apps/core/utils.py",
+        "first_line": 42,
+        "last_line": 42,
+        "ref": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+        "repo_id": "github.com/company/email-api-py"
+      },
+      "text": "main.handler(0xc000123456)\n\t/go/src/app/main.go:42 +0x1d"
+    }
+  ],
+  "language": "go"
+}
+```
+
+Parsed stack trace of the error. Only the sample picked by the `git_metadata` bias has frames.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|frames|[[IssueSampleStackFrame](#schemaissuesamplestackframe)]|false|none|Stack frames, from the top of the stack.|
+|language|string|false|none|Programming language used to parse the stack trace.|
+
+<h2 id="tocS_IssueSampleEvent">IssueSampleEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesampleevent"></a>
+<a id="schema_IssueSampleEvent"></a>
+<a id="tocSissuesampleevent"></a>
+<a id="tocsissuesampleevent"></a>
+
+```json
+{
+  "property1": null,
+  "property2": null
+}
+```
+
+Raw error event, as stored by its data source. Its fields differ between APM, logs, and RUM.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|object|false|none|none|
+
+<h2 id="tocS_IssueSampleFrameLink">IssueSampleFrameLink</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesampleframelink"></a>
+<a id="schema_IssueSampleFrameLink"></a>
+<a id="tocSissuesampleframelink"></a>
+<a id="tocsissuesampleframelink"></a>
+
+```json
+{
+  "code_location": {
+    "column": 13,
+    "filepath": "conduit/apps/core/utils.py",
+    "first_line": 42,
+    "last_line": 42,
+    "ref": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+    "repo_id": "github.com/company/email-api-py"
+  },
+  "frame_id": 1
+}
+```
+
+Source code location of a stack frame.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code_location|[IssueSampleGitFileLocation](#schemaissuesamplegitfilelocation)|true|none|Location of a stack frame in a repository file. Empty when the source code is unavailable.|
+|frame_id|integer(int64)|true|none|Index of the frame in the stack trace, starting at 0.|
+
+<h2 id="tocS_IssueSampleGitFileLocation">IssueSampleGitFileLocation</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesamplegitfilelocation"></a>
+<a id="schema_IssueSampleGitFileLocation"></a>
+<a id="tocSissuesamplegitfilelocation"></a>
+<a id="tocsissuesamplegitfilelocation"></a>
+
+```json
+{
+  "column": 13,
+  "filepath": "conduit/apps/core/utils.py",
+  "first_line": 42,
+  "last_line": 42,
+  "ref": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+  "repo_id": "github.com/company/email-api-py"
+}
+```
+
+Location of a stack frame in a repository file. Empty when the source code is unavailable.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|column|integer(int64)|false|none|Column of the location, starting at 1.|
+|filepath|string|false|none|Path of the file in the repository.|
+|first_line|integer(int64)|false|none|First line of the location, starting at 1.|
+|last_line|integer(int64)|false|none|Last line of the location, starting at 1.|
+|ref|string|false|none|Git reference of the file, usually a commit SHA.|
+|repo_id|string|false|none|Repository identifier.|
+
+<h2 id="tocS_IssueSampleReference">IssueSampleReference</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesamplereference"></a>
+<a id="schema_IssueSampleReference"></a>
+<a id="tocSissuesamplereference"></a>
+<a id="tocsissuesamplereference"></a>
+
+```json
+{
+  "id": "AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA",
+  "type": "error_tracking_issue_sample"
+}
+```
+
+A curated error sample of the issue.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Sample identifier.|
+|type|[IssueSampleType](#schemaissuesampletype)|true|none|Type of the object.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|error_tracking_issue_sample|
+
+<h2 id="tocS_IssueSampleStackFrame">IssueSampleStackFrame</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesamplestackframe"></a>
+<a id="schema_IssueSampleStackFrame"></a>
+<a id="tocSissuesamplestackframe"></a>
+<a id="tocsissuesamplestackframe"></a>
+
+```json
+{
+  "code_snippet": {
+    "lines": [
+      "def filter_forbidden_tags(tags):",
+      "    return len(tags)"
+    ],
+    "offset": 37
+  },
+  "git_file_location": {
+    "column": 13,
+    "filepath": "conduit/apps/core/utils.py",
+    "first_line": 42,
+    "last_line": 42,
+    "ref": "b6199f80b6199f80b6199f80b6199f80b6199f80",
+    "repo_id": "github.com/company/email-api-py"
+  },
+  "text": "main.handler(0xc000123456)\n\t/go/src/app/main.go:42 +0x1d"
+}
+```
+
+A stack frame.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code_snippet|[IssueSampleCodeSnippet](#schemaissuesamplecodesnippet)|false|none|Source code around a stack frame. Empty when the source code is unavailable.|
+|git_file_location|[IssueSampleGitFileLocation](#schemaissuesamplegitfilelocation)|false|none|Location of a stack frame in a repository file. Empty when the source code is unavailable.|
+|text|string|false|none|Text of the frame, as it appears in the stack trace.|
+
+<h2 id="tocS_IssueSampleType">IssueSampleType</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesampletype"></a>
+<a id="schema_IssueSampleType"></a>
+<a id="tocSissuesampletype"></a>
+<a id="tocsissuesampletype"></a>
+
+```json
+"error_tracking_issue_sample"
+```
+
+Type of the object.
+
+<h2 id="tocS_IssueSamplesRelationship">IssueSamplesRelationship</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuesamplesrelationship"></a>
+<a id="schema_IssueSamplesRelationship"></a>
+<a id="tocSissuesamplesrelationship"></a>
+<a id="tocsissuesamplesrelationship"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA",
+      "type": "error_tracking_issue_sample"
+    }
+  ]
+}
+```
+
+Relationship between the issue and its curated error samples.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[IssueSampleReference](#schemaissuesamplereference)]|true|none|Array of curated error samples of the issue.|
 
 <h2 id="tocS_IssueState">IssueState</h2>
 <!-- backwards compatibility -->
@@ -363643,6 +368500,14 @@ Type of the object.
             "type": "case"
           }
         },
+        "samples": {
+          "data": [
+            {
+              "id": "AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA",
+              "type": "error_tracking_issue_sample"
+            }
+          ]
+        },
         "team_owners": {
           "data": [
             {
@@ -363781,6 +368646,14 @@ Object containing the information of a search result.
         "id": "2841440d-e780-4fe2-96cd-6a8c1d194da5",
         "type": "case"
       }
+    },
+    "samples": {
+      "data": [
+        {
+          "id": "AwAAAZPHnBVMDCSmFgAAABhBWlBIbkJWTUFBRDVnUkhKTmY0WmhRQUEAAAAkMDE5M2M3OWMtMTg1OC00ZTE1LWFhMmItOTQ1N2ZkOGVlMzQyAAAAAA",
+          "type": "error_tracking_issue_sample"
+        }
+      ]
     },
     "team_owners": {
       "data": [
@@ -385995,6 +390868,10 @@ The expected response schema when listing findings.
         "createdByHandle": "string",
         "createdByName": "string",
         "createdFromRuleId": "string",
+        "failure": {
+          "hint": "Narrow the time range or reduce the data scanned.",
+          "reason": "query_too_expensive"
+        },
         "jobDefinition": {
           "calculatedFields": [
             {
@@ -403248,69 +408125,6 @@ The attributes of the node types response, containing the list of node type defi
 
 Get node types response resource type.
 
-<h2 id="tocS_NotebookCreateData">NotebookCreateData</h2>
-<!-- backwards compatibility -->
-<a id="schemanotebookcreatedata"></a>
-<a id="schema_NotebookCreateData"></a>
-<a id="tocSnotebookcreatedata"></a>
-<a id="tocsnotebookcreatedata"></a>
-
-```json
-{
-  "type": "notebook"
-}
-```
-
-Notebook creation data
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|[NotebookResourceType](#schemanotebookresourcetype)|true|none|Notebook resource type|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|notebook|
-
-<h2 id="tocS_NotebookCreateRequest">NotebookCreateRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemanotebookcreaterequest"></a>
-<a id="schema_NotebookCreateRequest"></a>
-<a id="tocSnotebookcreaterequest"></a>
-<a id="tocsnotebookcreaterequest"></a>
-
-```json
-{
-  "data": {
-    "type": "notebook"
-  }
-}
-```
-
-Notebook creation request
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[NotebookCreateData](#schemanotebookcreatedata)|true|none|Notebook creation data|
-
-<h2 id="tocS_NotebookResourceType">NotebookResourceType</h2>
-<!-- backwards compatibility -->
-<a id="schemanotebookresourcetype"></a>
-<a id="schema_NotebookResourceType"></a>
-<a id="tocSnotebookresourcetype"></a>
-<a id="tocsnotebookresourcetype"></a>
-
-```json
-"notebook"
-```
-
-Notebook resource type
-
 <h2 id="tocS_NotebookTriggerWrapper">NotebookTriggerWrapper</h2>
 <!-- backwards compatibility -->
 <a id="schemanotebooktriggerwrapper"></a>
@@ -406462,6 +411276,7 @@ If omitted, the system’s default credentials are used (for example, the IAM ro
   "database": "logs_db",
   "id": "azure-data-explorer-destination",
   "ingestion_endpoint_key": "AZURE_DATA_EXPLORER_INGESTION_ENDPOINT",
+  "ingestion_mode": "queue",
   "inputs": [
     "filter-processor"
   ],
@@ -406487,6 +411302,7 @@ The `azure_data_explorer` destination sends log events to an Azure Data Explorer
 |database|string|true|none|The name of the Azure Data Explorer database to ingest into. Supports template syntax.|
 |id|string|true|none|The unique identifier for this component.|
 |ingestion_endpoint_key|string|false|none|Name of the environment variable or secret that holds the Azure Data Explorer ingestion endpoint URL.<br>Defaults to `DESTINATION_AZURE_DATA_EXPLORER_INGESTION_ENDPOINT` (prefixed with `DD_OP_` at runtime).|
+|ingestion_mode|[ObservabilityPipelineAzureDataExplorerDestinationIngestionMode](#schemaobservabilitypipelineazuredataexplorerdestinationingestionmode)|false|none|The ingestion method used to send data to Azure Data Explorer.<br><br>- `streaming`: Sends events directly to the table using streaming ingestion.<br>- `queue`: Sends events through queued (batched) ingestion.<br><br>Defaults to `streaming`.|
 |inputs|[string]|true|none|A list of component IDs whose output is used as the `input` for this component.|
 |mapping_reference|string \| null|false|none|The name of a pre-created ingestion mapping on the table used to map incoming events to columns. Supports template syntax.|
 |table|string|true|none|The name of the Azure Data Explorer table to ingest into. Supports template syntax.|
@@ -406497,6 +411313,8 @@ The `azure_data_explorer` destination sends log events to an Azure Data Explorer
 
 |Property|Value|
 |---|---|
+|ingestion_mode|streaming|
+|ingestion_mode|queue|
 |type|azure_data_explorer|
 
 <h2 id="tocS_ObservabilityPipelineAzureDataExplorerDestinationAuth">ObservabilityPipelineAzureDataExplorerDestinationAuth</h2>
@@ -406776,6 +411594,24 @@ Event batching settings for Azure Data Explorer ingestion.
 |max_bytes|integer(int64)|false|none|Maximum batch size in bytes.|
 |max_events|integer(int64)|false|none|Maximum number of events per batch before it is flushed.|
 |timeout_secs|integer(int64)|false|none|Maximum number of seconds to wait before flushing a partial batch.|
+
+<h2 id="tocS_ObservabilityPipelineAzureDataExplorerDestinationIngestionMode">ObservabilityPipelineAzureDataExplorerDestinationIngestionMode</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelineazuredataexplorerdestinationingestionmode"></a>
+<a id="schema_ObservabilityPipelineAzureDataExplorerDestinationIngestionMode"></a>
+<a id="tocSobservabilitypipelineazuredataexplorerdestinationingestionmode"></a>
+<a id="tocsobservabilitypipelineazuredataexplorerdestinationingestionmode"></a>
+
+```json
+"queue"
+```
+
+The ingestion method used to send data to Azure Data Explorer.
+
+- `streaming`: Sends events directly to the table using streaming ingestion.
+- `queue`: Sends events through queued (batched) ingestion.
+
+Defaults to `streaming`.
 
 <h2 id="tocS_ObservabilityPipelineAzureDataExplorerDestinationManagedIdentityIdType">ObservabilityPipelineAzureDataExplorerDestinationManagedIdentityIdType</h2>
 <!-- backwards compatibility -->
@@ -407695,6 +412531,7 @@ A processor for the pipeline.
 |*oneOf*|[ObservabilityPipelineReduceProcessor](#schemaobservabilitypipelinereduceprocessor)|false|none|The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.<br><br>**Supported pipeline types:** logs|
 |*oneOf*|[ObservabilityPipelineRemoveFieldsProcessor](#schemaobservabilitypipelineremovefieldsprocessor)|false|none|The `remove_fields` processor deletes specified fields from logs.<br><br>**Supported pipeline types:** logs|
 |*oneOf*|[ObservabilityPipelineRenameFieldsProcessor](#schemaobservabilitypipelinerenamefieldsprocessor)|false|none|The `rename_fields` processor changes field names.<br><br>**Supported pipeline types:** logs|
+|*oneOf*|[ObservabilityPipelineSpikeProtectionProcessor](#schemaobservabilitypipelinespikeprotectionprocessor)|false|none|The `spike_protection` processor learns the normal ingestion volume for the logs that match a specified filter and takes action when the volume spikes unexpectedly.<br><br>**Supported pipeline types:** logs|
 |*oneOf*|[ObservabilityPipelineSplitArrayProcessor](#schemaobservabilitypipelinesplitarrayprocessor)|false|none|The `split_array` processor splits array fields into separate events based on configured rules.<br><br>**Supported pipeline types:** logs|
 |*oneOf*|[ObservabilityPipelineThrottleProcessor](#schemaobservabilitypipelinethrottleprocessor)|false|none|The `throttle` processor limits the number of events that pass through over a given time window.<br><br>**Supported pipeline types:** logs|
 |*oneOf*|[ObservabilityPipelineCustomProcessor](#schemaobservabilitypipelinecustomprocessor)|false|none|The `custom_processor` processor transforms events using [Vector Remap Language (VRL)](https://vector.dev/docs/reference/vrl/) scripts with advanced filtering capabilities.<br><br>**Supported pipeline types:** logs, traces|
@@ -414995,6 +419832,259 @@ Contains the the pipeline configuration.
 |attributes|[ObservabilityPipelineDataAttributes](#schemaobservabilitypipelinedataattributes)|true|none|Defines the pipeline’s name and its components (sources, processors, and destinations).|
 |type|string|true|none|The resource type identifier. For pipeline resources, this should always be set to `pipelines`.|
 
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessor">ObservabilityPipelineSpikeProtectionProcessor</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessor"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessor"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessor"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessor"></a>
+
+```json
+{
+  "action_when_missing_partitions": "ignore",
+  "display_name": "my component",
+  "enabled": true,
+  "id": "spike-protection-processor",
+  "include": "service:my-service",
+  "minimal_threshold": 107374182400,
+  "minimal_threshold_overrides": [
+    {
+      "fields": [
+        {
+          "name": "field_name",
+          "value": "field_value"
+        }
+      ],
+      "minimal_threshold": {
+        "bytes": 107374182400,
+        "type": "threshold"
+      }
+    }
+  ],
+  "name": "MySpikeProtection",
+  "partition_fields": [
+    "string"
+  ],
+  "spike_action": "drop",
+  "spike_threshold": 5,
+  "type": "spike_protection"
+}
+```
+
+The `spike_protection` processor learns the normal ingestion volume for the logs that match a specified filter and takes action when the volume spikes unexpectedly.
+
+**Supported pipeline types:** logs
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|action_when_missing_partitions|[ObservabilityPipelineSpikeProtectionProcessorActionWhenMissingPartitions](#schemaobservabilitypipelinespikeprotectionprocessoractionwhenmissingpartitions)|false|none|How to handle logs that are missing one of the `partition_fields`. Options:<br>- `ignore`: Forward the event without applying spike protection.<br>- `default_bucket`: Assign the event to a default partition.|
+|display_name|[ObservabilityPipelineComponentDisplayName](#schemaobservabilitypipelinecomponentdisplayname)|false|none|The display name for a component.|
+|enabled|boolean|true|none|Indicates whether the processor is enabled.|
+|id|string|true|none|The unique identifier for this component. Used in other parts of the pipeline to reference this component (for example, as the `input` to downstream components).|
+|include|string|true|none|A Datadog search query used to determine which logs this processor targets.|
+|minimal_threshold|integer(int64)|false|none|The minimum volume, in bytes, that must be observed within 24 hours before spike protection can activate. Defaults to 100 GiB.|
+|minimal_threshold_overrides|[[ObservabilityPipelineSpikeProtectionProcessorThresholdOverride](#schemaobservabilitypipelinespikeprotectionprocessorthresholdoverride)]|false|none|A list of per-partition overrides for the minimal threshold, identified by matching field values. Requires `partition_fields` to be set.|
+|name|string|true|none|Name of the spike protection rule.|
+|partition_fields|[string]|false|none|A list of fields used to segment log traffic. Volume is learned and evaluated independently for each unique combination of these field values. A maximum of five fields is supported.|
+|spike_action|[ObservabilityPipelineSpikeProtectionProcessorSpikeAction](#schemaobservabilitypipelinespikeprotectionprocessorspikeaction)|true|none|The action to take with matching logs while spike protection is active. Options:<br>- `drop`: Drop the event.<br>- `no_action`: Let the event pass through.<br>- `overflow_routing`: Route to an overflow destination.<br><br>When `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events.|
+|spike_threshold|number(double)|false|none|The number of standard deviations above the learned mean volume that must be exceeded before a spike is detected. Defaults to `5`.|
+|type|[ObservabilityPipelineSpikeProtectionProcessorType](#schemaobservabilitypipelinespikeprotectionprocessortype)|true|none|The processor type. The value should always be `spike_protection`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|action_when_missing_partitions|ignore|
+|action_when_missing_partitions|default_bucket|
+|spike_action|drop|
+|spike_action|no_action|
+|spike_action|overflow_routing|
+|type|spike_protection|
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorActionWhenMissingPartitions">ObservabilityPipelineSpikeProtectionProcessorActionWhenMissingPartitions</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessoractionwhenmissingpartitions"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorActionWhenMissingPartitions"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessoractionwhenmissingpartitions"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessoractionwhenmissingpartitions"></a>
+
+```json
+"ignore"
+```
+
+How to handle logs that are missing one of the `partition_fields`. Options:
+- `ignore`: Forward the event without applying spike protection.
+- `default_bucket`: Assign the event to a default partition.
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorMinimalThreshold">ObservabilityPipelineSpikeProtectionProcessorMinimalThreshold</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessorminimalthreshold"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorMinimalThreshold"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessorminimalthreshold"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessorminimalthreshold"></a>
+
+```json
+{
+  "bytes": 107374182400,
+  "type": "threshold"
+}
+```
+
+The minimal threshold to apply to the matching partition.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytes](#schemaobservabilitypipelinespikeprotectionprocessorminimalthresholdbytes)|false|none|Sets a specific byte threshold for the matching partition.|
+|*oneOf*|[ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeep](#schemaobservabilitypipelinespikeprotectionprocessorminimalthresholdalwayskeep)|false|none|Never activates spike protection for the matching partition, regardless of volume.|
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeep">ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeep</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessorminimalthresholdalwayskeep"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeep"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessorminimalthresholdalwayskeep"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessorminimalthresholdalwayskeep"></a>
+
+```json
+{
+  "type": "always_keep"
+}
+```
+
+Never activates spike protection for the matching partition, regardless of volume.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|[ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepType](#schemaobservabilitypipelinespikeprotectionprocessorminimalthresholdalwayskeeptype)|true|none|The minimal threshold type. The value should always be `always_keep`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|always_keep|
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepType">ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepType</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessorminimalthresholdalwayskeeptype"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdAlwaysKeepType"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessorminimalthresholdalwayskeeptype"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessorminimalthresholdalwayskeeptype"></a>
+
+```json
+"always_keep"
+```
+
+The minimal threshold type. The value should always be `always_keep`.
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytes">ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytes</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessorminimalthresholdbytes"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytes"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessorminimalthresholdbytes"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessorminimalthresholdbytes"></a>
+
+```json
+{
+  "bytes": 107374182400,
+  "type": "threshold"
+}
+```
+
+Sets a specific byte threshold for the matching partition.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bytes|integer(int64)|true|none|The minimal threshold, in bytes, for the matching partition.|
+|type|[ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesType](#schemaobservabilitypipelinespikeprotectionprocessorminimalthresholdbytestype)|true|none|The minimal threshold type. The value should always be `threshold`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|threshold|
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesType">ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesType</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessorminimalthresholdbytestype"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorMinimalThresholdBytesType"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessorminimalthresholdbytestype"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessorminimalthresholdbytestype"></a>
+
+```json
+"threshold"
+```
+
+The minimal threshold type. The value should always be `threshold`.
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorSpikeAction">ObservabilityPipelineSpikeProtectionProcessorSpikeAction</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessorspikeaction"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorSpikeAction"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessorspikeaction"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessorspikeaction"></a>
+
+```json
+"drop"
+```
+
+The action to take with matching logs while spike protection is active. Options:
+- `drop`: Drop the event.
+- `no_action`: Let the event pass through.
+- `overflow_routing`: Route to an overflow destination.
+
+When `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events.
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorThresholdOverride">ObservabilityPipelineSpikeProtectionProcessorThresholdOverride</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessorthresholdoverride"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorThresholdOverride"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessorthresholdoverride"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessorthresholdoverride"></a>
+
+```json
+{
+  "fields": [
+    {
+      "name": "field_name",
+      "value": "field_value"
+    }
+  ],
+  "minimal_threshold": {
+    "bytes": 107374182400,
+    "type": "threshold"
+  }
+}
+```
+
+Defines a minimal threshold that applies to a specific partition instead of the processor-wide `minimal_threshold`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|fields|[[ObservabilityPipelineFieldValue](#schemaobservabilitypipelinefieldvalue)]|true|none|The set of field matchers that identifies the partition this override applies to. Every field name listed must also appear in `partition_fields`.|
+|minimal_threshold|[ObservabilityPipelineSpikeProtectionProcessorMinimalThreshold](#schemaobservabilitypipelinespikeprotectionprocessorminimalthreshold)|true|none|The minimal threshold to apply to the matching partition.|
+
+<h2 id="tocS_ObservabilityPipelineSpikeProtectionProcessorType">ObservabilityPipelineSpikeProtectionProcessorType</h2>
+<!-- backwards compatibility -->
+<a id="schemaobservabilitypipelinespikeprotectionprocessortype"></a>
+<a id="schema_ObservabilityPipelineSpikeProtectionProcessorType"></a>
+<a id="tocSobservabilitypipelinespikeprotectionprocessortype"></a>
+<a id="tocsobservabilitypipelinespikeprotectionprocessortype"></a>
+
+```json
+"spike_protection"
+```
+
+The processor type. The value should always be `spike_protection`.
+
 <h2 id="tocS_ObservabilityPipelineSplitArrayProcessor">ObservabilityPipelineSplitArrayProcessor</h2>
 <!-- backwards compatibility -->
 <a id="schemaobservabilitypipelinesplitarrayprocessor"></a>
@@ -419144,6 +424234,8 @@ Org connection attributes.
 |connection_types|logs|
 |connection_types|metrics|
 |connection_types|audit|
+|connection_types|ci_pipelines|
+|connection_types|ci_tests|
 
 <h2 id="tocS_OrgConnectionCreate">OrgConnectionCreate</h2>
 <!-- backwards compatibility -->
@@ -419218,6 +424310,8 @@ Attributes for creating an org connection.
 |connection_types|logs|
 |connection_types|metrics|
 |connection_types|audit|
+|connection_types|ci_pipelines|
+|connection_types|ci_tests|
 
 <h2 id="tocS_OrgConnectionCreateRelationships">OrgConnectionCreateRelationships</h2>
 <!-- backwards compatibility -->
@@ -419652,6 +424746,8 @@ Attributes for updating an org connection.
 |connection_types|logs|
 |connection_types|metrics|
 |connection_types|audit|
+|connection_types|ci_pipelines|
+|connection_types|ci_tests|
 
 <h2 id="tocS_OrgConnectionUpdateRequest">OrgConnectionUpdateRequest</h2>
 <!-- backwards compatibility -->
@@ -444034,7 +449130,7 @@ The type of sorting algorithm.
     {
       "by": {
         "@session.type": "user",
-        "@type": "view"
+        "@view.time_spent": 1000000000
       },
       "computes": {
         "property1": "string",
@@ -444080,7 +449176,7 @@ An aggregation function.
       {
         "by": {
           "@session.type": "user",
-          "@type": "view"
+          "@view.time_spent": 1000000000
         },
         "computes": {
           "property1": "string",
@@ -444131,14 +449227,25 @@ The response object for the RUM events aggregate API endpoint.
 {
   "attributes": {
     "api_key_id": 123456789,
+    "apm_rum_flat_sampling_replay_enabled": false,
+    "apm_rum_flat_sampling_replay_sample_rate": 0,
     "application_id": "abcd1234-0000-0000-abcd-1234abcd5678",
     "client_token": "abcd1234efgh5678ijkl90abcd1234efgh0",
     "created_at": 1659479836169,
     "created_by_handle": "john.doe",
+    "disabled_at": 1659479836169,
+    "disabled_by_handle": "jane.doe",
+    "error_tracking_exclusion_filter_enabled": false,
+    "external_feeds": [
+      "otel"
+    ],
     "hash": "string",
     "is_active": true,
     "name": "my_rum_application",
+    "ootb_metrics_installed": true,
     "org_id": 999,
+    "product_analytics_preview_disabled": true,
+    "product_analytics_replay_sample_rate": 0,
     "product_scales": {
       "product_analytics_retention_scale": {
         "last_modified_at": 1747922145974,
@@ -444150,6 +449257,10 @@ The response object for the RUM events aggregate API endpoint.
       }
     },
     "remote_config_id": "abc12345-1234-5678-abcd-ef1234567890",
+    "short_name": "my_rum_application",
+    "tags": [
+      "team:rum"
+    ],
     "type": "browser",
     "updated_at": 1659479836169,
     "updated_by_handle": "jane.doe"
@@ -444185,14 +449296,25 @@ RUM application.
 ```json
 {
   "api_key_id": 123456789,
+  "apm_rum_flat_sampling_replay_enabled": false,
+  "apm_rum_flat_sampling_replay_sample_rate": 0,
   "application_id": "abcd1234-0000-0000-abcd-1234abcd5678",
   "client_token": "abcd1234efgh5678ijkl90abcd1234efgh0",
   "created_at": 1659479836169,
   "created_by_handle": "john.doe",
+  "disabled_at": 1659479836169,
+  "disabled_by_handle": "jane.doe",
+  "error_tracking_exclusion_filter_enabled": false,
+  "external_feeds": [
+    "otel"
+  ],
   "hash": "string",
   "is_active": true,
   "name": "my_rum_application",
+  "ootb_metrics_installed": true,
   "org_id": 999,
+  "product_analytics_preview_disabled": true,
+  "product_analytics_replay_sample_rate": 0,
   "product_scales": {
     "product_analytics_retention_scale": {
       "last_modified_at": 1747922145974,
@@ -444204,6 +449326,10 @@ RUM application.
     }
   },
   "remote_config_id": "abc12345-1234-5678-abcd-ef1234567890",
+  "short_name": "my_rum_application",
+  "tags": [
+    "team:rum"
+  ],
   "type": "browser",
   "updated_at": 1659479836169,
   "updated_by_handle": "jane.doe"
@@ -444217,16 +449343,27 @@ RUM application attributes.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |api_key_id|integer(int32)|false|none|ID of the API key associated with the application.|
+|apm_rum_flat_sampling_replay_enabled|boolean|false|none|Indicates if flat sampling of Session Replay for APM-correlated RUM sessions is enabled.|
+|apm_rum_flat_sampling_replay_sample_rate|number(double)|false|none|Sample rate (0-100) of Session Replay for APM-correlated RUM sessions when flat sampling is enabled.|
 |application_id|string|true|none|ID of the RUM application.|
 |client_token|string|true|none|Client token of the RUM application.|
 |created_at|integer(int64)|true|none|Timestamp in ms of the creation date.|
 |created_by_handle|string|true|none|Handle of the creator user.|
+|disabled_at|integer(int64)|false|none|Timestamp in ms of the date the RUM application was disabled. Only present if the application was disabled.|
+|disabled_by_handle|string|false|none|Handle of the user who disabled the RUM application. Only present if the application was disabled.|
+|error_tracking_exclusion_filter_enabled|boolean|false|none|Indicates if Error Tracking exclusion filters are enabled for the application.|
+|external_feeds|[string]|false|none|Non-native ingestion paths the RUM application sends its data through. `otel` means the application sends RUM data through OpenTelemetry instead of the Datadog RUM SDK.|
 |hash|string|false|none|Hash of the RUM application. Optional.|
 |is_active|boolean|false|none|Indicates if the RUM application is active.|
 |name|string|true|none|Name of the RUM application.|
+|ootb_metrics_installed|boolean|false|none|Indicates if the out-of-the-box RUM metrics are installed for the application.|
 |org_id|integer(int32)|true|none|Org ID of the RUM application.|
+|product_analytics_preview_disabled|boolean|false|none|Indicates that the Product Analytics preview is disabled for the application. Only present (and `true`) when the Product Analytics retention state is not preview.|
+|product_analytics_replay_sample_rate|integer(int32)|false|none|Sample rate (0-100) of Session Replay for Product Analytics sessions.|
 |product_scales|[RUMProductScales](#schemarumproductscales)|false|none|Product Scales configuration for the RUM application.|
 |remote_config_id|string|false|none|ID of the RUM SDK remote configuration for the application, if one exists.|
+|short_name|string|false|none|Short name of the RUM application.|
+|tags|[string]|false|none|List of tags associated with the RUM application.|
 |type|string|true|none|Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.|
 |updated_at|integer(int64)|true|none|Timestamp in ms of the last update date.|
 |updated_by_handle|string|true|none|Handle of the updater user.|
@@ -444241,6 +449378,7 @@ RUM application attributes.
 ```json
 {
   "attributes": {
+    "create_default_retention_filters": false,
     "name": "my_new_rum_application",
     "product_analytics_retention_state": "MAX",
     "rum_event_processing_state": "ALL",
@@ -444274,6 +449412,7 @@ RUM application creation.
 
 ```json
 {
+  "create_default_retention_filters": false,
   "name": "my_new_rum_application",
   "product_analytics_retention_state": "MAX",
   "rum_event_processing_state": "ALL",
@@ -444287,6 +449426,7 @@ RUM application creation attributes.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|create_default_retention_filters|boolean|false|none|Whether to create the default retention filters when the application is created: `Sessions with errors` and `Sessions`, each with a 100% retention rate.<br>Set to `false` to create the application without them, for example when you add your own retention filters right after creating it. Until you add retention filters, the application only retains sessions matched by its [permanent retention filters](https://docs.datadoghq.com/real_user_monitoring/rum_without_limits/retention_filters/#permanent-retention-filters).<br>This setting doesn't affect permanent retention filters (sessions with forced replays, Synthetics sessions and RUM-APM flat sampling).|
 |name|string|true|none|Name of the RUM application.|
 |product_analytics_retention_state|[RUMProductAnalyticsRetentionState](#schemarumproductanalyticsretentionstate)|false|none|Controls the retention policy for Product Analytics data derived from RUM events.|
 |rum_event_processing_state|[RUMEventProcessingState](#schemarumeventprocessingstate)|false|none|Configures which RUM events are processed and stored for the application.|
@@ -444313,6 +449453,7 @@ RUM application creation attributes.
 {
   "data": {
     "attributes": {
+      "create_default_retention_filters": false,
       "name": "my_new_rum_application",
       "product_analytics_retention_state": "MAX",
       "rum_event_processing_state": "ALL",
@@ -444354,13 +449495,25 @@ RUM application creation type.
 ```json
 {
   "attributes": {
+    "api_key_id": 123456789,
+    "apm_rum_flat_sampling_replay_enabled": false,
+    "apm_rum_flat_sampling_replay_sample_rate": 0,
     "application_id": "abcd1234-0000-0000-abcd-1234abcd5678",
     "created_at": 1659479836169,
     "created_by_handle": "john.doe",
+    "disabled_at": 1659479836169,
+    "disabled_by_handle": "jane.doe",
+    "error_tracking_exclusion_filter_enabled": false,
+    "external_feeds": [
+      "otel"
+    ],
     "hash": "string",
     "is_active": true,
     "name": "my_rum_application",
+    "ootb_metrics_installed": true,
     "org_id": 999,
+    "product_analytics_preview_disabled": true,
+    "product_analytics_replay_sample_rate": 0,
     "product_scales": {
       "product_analytics_retention_scale": {
         "last_modified_at": 1747922145974,
@@ -444371,6 +449524,11 @@ RUM application creation type.
         "state": "ALL"
       }
     },
+    "remote_config_id": "abc12345-1234-5678-abcd-ef1234567890",
+    "short_name": "my_rum_application",
+    "tags": [
+      "team:rum"
+    ],
     "type": "browser",
     "updated_at": 1659479836169,
     "updated_by_handle": "jane.doe"
@@ -444405,13 +449563,25 @@ RUM application list.
 
 ```json
 {
+  "api_key_id": 123456789,
+  "apm_rum_flat_sampling_replay_enabled": false,
+  "apm_rum_flat_sampling_replay_sample_rate": 0,
   "application_id": "abcd1234-0000-0000-abcd-1234abcd5678",
   "created_at": 1659479836169,
   "created_by_handle": "john.doe",
+  "disabled_at": 1659479836169,
+  "disabled_by_handle": "jane.doe",
+  "error_tracking_exclusion_filter_enabled": false,
+  "external_feeds": [
+    "otel"
+  ],
   "hash": "string",
   "is_active": true,
   "name": "my_rum_application",
+  "ootb_metrics_installed": true,
   "org_id": 999,
+  "product_analytics_preview_disabled": true,
+  "product_analytics_replay_sample_rate": 0,
   "product_scales": {
     "product_analytics_retention_scale": {
       "last_modified_at": 1747922145974,
@@ -444422,6 +449592,11 @@ RUM application list.
       "state": "ALL"
     }
   },
+  "remote_config_id": "abc12345-1234-5678-abcd-ef1234567890",
+  "short_name": "my_rum_application",
+  "tags": [
+    "team:rum"
+  ],
   "type": "browser",
   "updated_at": 1659479836169,
   "updated_by_handle": "jane.doe"
@@ -444434,14 +449609,27 @@ RUM application list attributes.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|api_key_id|integer(int32)|false|none|ID of the API key associated with the application.|
+|apm_rum_flat_sampling_replay_enabled|boolean|false|none|Indicates if flat sampling of Session Replay for APM-correlated RUM sessions is enabled.|
+|apm_rum_flat_sampling_replay_sample_rate|number(double)|false|none|Sample rate (0-100) of Session Replay for APM-correlated RUM sessions when flat sampling is enabled.|
 |application_id|string|true|none|ID of the RUM application.|
 |created_at|integer(int64)|true|none|Timestamp in ms of the creation date.|
 |created_by_handle|string|true|none|Handle of the creator user.|
+|disabled_at|integer(int64)|false|none|Timestamp in ms of the date the RUM application was disabled. Only present if the application was disabled.|
+|disabled_by_handle|string|false|none|Handle of the user who disabled the RUM application. Only present if the application was disabled.|
+|error_tracking_exclusion_filter_enabled|boolean|false|none|Indicates if Error Tracking exclusion filters are enabled for the application.|
+|external_feeds|[string]|false|none|Non-native ingestion paths the RUM application sends its data through. `otel` means the application sends RUM data through OpenTelemetry instead of the Datadog RUM SDK.|
 |hash|string|false|none|Hash of the RUM application. Optional.|
 |is_active|boolean|false|none|Indicates if the RUM application is active.|
 |name|string|true|none|Name of the RUM application.|
+|ootb_metrics_installed|boolean|false|none|Indicates if the out-of-the-box RUM metrics are installed for the application.|
 |org_id|integer(int32)|true|none|Org ID of the RUM application.|
+|product_analytics_preview_disabled|boolean|false|none|Indicates that the Product Analytics preview is disabled for the application. Only present (and `true`) when the Product Analytics retention state is not preview.|
+|product_analytics_replay_sample_rate|integer(int32)|false|none|Sample rate (0-100) of Session Replay for Product Analytics sessions.|
 |product_scales|[RUMProductScales](#schemarumproductscales)|false|none|Product Scales configuration for the RUM application.|
+|remote_config_id|string|false|none|ID of the RUM SDK remote configuration for the application, if one exists.|
+|short_name|string|false|none|Short name of the RUM application.|
+|tags|[string]|false|none|List of tags associated with the RUM application.|
 |type|string|true|none|Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.|
 |updated_at|integer(int64)|true|none|Timestamp in ms of the last update date.|
 |updated_by_handle|string|true|none|Handle of the updater user.|
@@ -444471,14 +449659,25 @@ RUM application list type.
   "data": {
     "attributes": {
       "api_key_id": 123456789,
+      "apm_rum_flat_sampling_replay_enabled": false,
+      "apm_rum_flat_sampling_replay_sample_rate": 0,
       "application_id": "abcd1234-0000-0000-abcd-1234abcd5678",
       "client_token": "abcd1234efgh5678ijkl90abcd1234efgh0",
       "created_at": 1659479836169,
       "created_by_handle": "john.doe",
+      "disabled_at": 1659479836169,
+      "disabled_by_handle": "jane.doe",
+      "error_tracking_exclusion_filter_enabled": false,
+      "external_feeds": [
+        "otel"
+      ],
       "hash": "string",
       "is_active": true,
       "name": "my_rum_application",
+      "ootb_metrics_installed": true,
       "org_id": 999,
+      "product_analytics_preview_disabled": true,
+      "product_analytics_replay_sample_rate": 0,
       "product_scales": {
         "product_analytics_retention_scale": {
           "last_modified_at": 1747922145974,
@@ -444490,6 +449689,10 @@ RUM application list type.
         }
       },
       "remote_config_id": "abc12345-1234-5678-abcd-ef1234567890",
+      "short_name": "my_rum_application",
+      "tags": [
+        "team:rum"
+      ],
       "type": "browser",
       "updated_at": 1659479836169,
       "updated_by_handle": "jane.doe"
@@ -444649,13 +449852,25 @@ RUM application update type.
   "data": [
     {
       "attributes": {
+        "api_key_id": 123456789,
+        "apm_rum_flat_sampling_replay_enabled": false,
+        "apm_rum_flat_sampling_replay_sample_rate": 0,
         "application_id": "abcd1234-0000-0000-abcd-1234abcd5678",
         "created_at": 1659479836169,
         "created_by_handle": "john.doe",
+        "disabled_at": 1659479836169,
+        "disabled_by_handle": "jane.doe",
+        "error_tracking_exclusion_filter_enabled": false,
+        "external_feeds": [
+          "otel"
+        ],
         "hash": "string",
         "is_active": true,
         "name": "my_rum_application",
+        "ootb_metrics_installed": true,
         "org_id": 999,
+        "product_analytics_preview_disabled": true,
+        "product_analytics_replay_sample_rate": 0,
         "product_scales": {
           "product_analytics_retention_scale": {
             "last_modified_at": 1747922145974,
@@ -444666,6 +449881,11 @@ RUM application update type.
             "state": "ALL"
           }
         },
+        "remote_config_id": "abc12345-1234-5678-abcd-ef1234567890",
+        "short_name": "my_rum_application",
+        "tags": [
+          "team:rum"
+        ],
         "type": "browser",
         "updated_at": 1659479836169,
         "updated_by_handle": "jane.doe"
@@ -444685,6 +449905,26 @@ RUM applications response.
 |---|---|---|---|---|
 |data|[[RUMApplicationList](#schemarumapplicationlist)]|false|none|RUM applications array response.|
 
+<h2 id="tocS_RUMBucketGroupByValue">RUMBucketGroupByValue</h2>
+<!-- backwards compatibility -->
+<a id="schemarumbucketgroupbyvalue"></a>
+<a id="schema_RUMBucketGroupByValue"></a>
+<a id="tocSrumbucketgroupbyvalue"></a>
+<a id="tocsrumbucketgroupbyvalue"></a>
+
+```json
+"string"
+```
+
+The value of a group-by facet for this bucket. A string for string facets, a number for numeric facets and histograms.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|string|false|none|none|
+|*oneOf*|number(double)|false|none|none|
+
 <h2 id="tocS_RUMBucketResponse">RUMBucketResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemarumbucketresponse"></a>
@@ -444696,7 +449936,7 @@ RUM applications response.
 {
   "by": {
     "@session.type": "user",
-    "@type": "view"
+    "@view.time_spent": 1000000000
   },
   "computes": {
     "property1": "string",
@@ -447056,283 +452296,6 @@ Response from the recently updated entities endpoint, containing the entities wi
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[EntityContextEntity](#schemaentitycontextentity)]|true|none|The list of entities with the most recent updates, ordered from most to least recently updated.|
-
-<h2 id="tocS_RecommendationAttributes">RecommendationAttributes</h2>
-<!-- backwards compatibility -->
-<a id="schemarecommendationattributes"></a>
-<a id="schema_RecommendationAttributes"></a>
-<a id="tocSrecommendationattributes"></a>
-<a id="tocsrecommendationattributes"></a>
-
-```json
-{
-  "confidence_level": 0,
-  "driver": {
-    "estimation": {
-      "cpu": {
-        "max": 0,
-        "p75": 0,
-        "p95": 0
-      },
-      "ephemeral_storage": 0,
-      "heap": 0,
-      "memory": 0,
-      "overhead": 0
-    }
-  },
-  "executor": {
-    "estimation": {
-      "cpu": {
-        "max": 0,
-        "p75": 0,
-        "p95": 0
-      },
-      "ephemeral_storage": 0,
-      "heap": 0,
-      "memory": 0,
-      "overhead": 0
-    }
-  },
-  "matched_params": "detailed_metrics=false|Region=US1"
-}
-```
-
-Attributes of the SPA Recommendation resource. Contains recommendations for both driver and executor components.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|confidence_level|number(double)|false|none|The confidence level of the recommendation, expressed as a value between 0.0 (low confidence) and 1.0 (high confidence).|
-|driver|[ComponentRecommendation](#schemacomponentrecommendation)|true|none|Resource recommendation for a single Spark component (driver or executor). Contains estimation data used to patch Spark job specs.|
-|executor|[ComponentRecommendation](#schemacomponentrecommendation)|true|none|Resource recommendation for a single Spark component (driver or executor). Contains estimation data used to patch Spark job specs.|
-|matched_params|string|false|none|Only returned by the v2 endpoint. The job parameters whose values the recommendation was matched on, as `parameter=value` pairs joined by `\|`.<br>An empty string means the service-wide (coarse) recommendation was used.|
-
-<h2 id="tocS_RecommendationData">RecommendationData</h2>
-<!-- backwards compatibility -->
-<a id="schemarecommendationdata"></a>
-<a id="schema_RecommendationData"></a>
-<a id="tocSrecommendationdata"></a>
-<a id="tocsrecommendationdata"></a>
-
-```json
-{
-  "attributes": {
-    "confidence_level": 0,
-    "driver": {
-      "estimation": {
-        "cpu": {
-          "max": 0,
-          "p75": 0,
-          "p95": 0
-        },
-        "ephemeral_storage": 0,
-        "heap": 0,
-        "memory": 0,
-        "overhead": 0
-      }
-    },
-    "executor": {
-      "estimation": {
-        "cpu": {
-          "max": 0,
-          "p75": 0,
-          "p95": 0
-        },
-        "ephemeral_storage": 0,
-        "heap": 0,
-        "memory": 0,
-        "overhead": 0
-      }
-    },
-    "matched_params": "detailed_metrics=false|Region=US1"
-  },
-  "id": "string",
-  "type": "recommendation"
-}
-```
-
-JSON:API resource object for SPA Recommendation. Includes type, optional ID, and resource attributes with structured recommendations.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|attributes|[RecommendationAttributes](#schemarecommendationattributes)|true|none|Attributes of the SPA Recommendation resource. Contains recommendations for both driver and executor components.|
-|id|string|false|none|Resource identifier for the recommendation. Optional in responses.|
-|type|[RecommendationType](#schemarecommendationtype)|true|none|JSON:API resource type for Spark Pod Autosizing recommendations. Identifies the Recommendation resource returned by SPA.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|recommendation|
-
-<h2 id="tocS_RecommendationDocument">RecommendationDocument</h2>
-<!-- backwards compatibility -->
-<a id="schemarecommendationdocument"></a>
-<a id="schema_RecommendationDocument"></a>
-<a id="tocSrecommendationdocument"></a>
-<a id="tocsrecommendationdocument"></a>
-
-```json
-{
-  "data": {
-    "attributes": {
-      "confidence_level": 0,
-      "driver": {
-        "estimation": {
-          "cpu": {
-            "max": 0,
-            "p75": 0,
-            "p95": 0
-          },
-          "ephemeral_storage": 0,
-          "heap": 0,
-          "memory": 0,
-          "overhead": 0
-        }
-      },
-      "executor": {
-        "estimation": {
-          "cpu": {
-            "max": 0,
-            "p75": 0,
-            "p95": 0
-          },
-          "ephemeral_storage": 0,
-          "heap": 0,
-          "memory": 0,
-          "overhead": 0
-        }
-      },
-      "matched_params": "detailed_metrics=false|Region=US1"
-    },
-    "id": "string",
-    "type": "recommendation"
-  }
-}
-```
-
-JSON:API document containing a single Recommendation resource. Returned by SPA when the Spark Gateway requests recommendations.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[RecommendationData](#schemarecommendationdata)|true|none|JSON:API resource object for SPA Recommendation. Includes type, optional ID, and resource attributes with structured recommendations.|
-
-<h2 id="tocS_RecommendationType">RecommendationType</h2>
-<!-- backwards compatibility -->
-<a id="schemarecommendationtype"></a>
-<a id="schema_RecommendationType"></a>
-<a id="tocSrecommendationtype"></a>
-<a id="tocsrecommendationtype"></a>
-
-```json
-"recommendation"
-```
-
-JSON:API resource type for Spark Pod Autosizing recommendations. Identifies the Recommendation resource returned by SPA.
-
-<h2 id="tocS_RecommendationV2RequestAttributes">RecommendationV2RequestAttributes</h2>
-<!-- backwards compatibility -->
-<a id="schemarecommendationv2requestattributes"></a>
-<a id="schema_RecommendationV2RequestAttributes"></a>
-<a id="tocSrecommendationv2requestattributes"></a>
-<a id="tocsrecommendationv2requestattributes"></a>
-
-```json
-{
-  "arguments": [
-    ""
-  ]
-}
-```
-
-Attributes for requesting SPA recommendations by forwarding a Spark job's raw arguments
-instead of a pre-computed shard.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|arguments|[string]|true|none|Raw, unfiltered Spark job arguments as submitted (for example, `--org_id=2`).<br>SPA determines which arguments are relevant for the given service.|
-
-<h2 id="tocS_RecommendationV2RequestBody">RecommendationV2RequestBody</h2>
-<!-- backwards compatibility -->
-<a id="schemarecommendationv2requestbody"></a>
-<a id="schema_RecommendationV2RequestBody"></a>
-<a id="tocSrecommendationv2requestbody"></a>
-<a id="tocsrecommendationv2requestbody"></a>
-
-```json
-{
-  "data": {
-    "attributes": {
-      "arguments": [
-        ""
-      ]
-    },
-    "type": "recommendation_v2_request"
-  }
-}
-```
-
-Request body for retrieving SPA recommendations by forwarding a Spark job's raw arguments
-instead of a pre-computed shard.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[RecommendationV2RequestData](#schemarecommendationv2requestdata)|true|none|JSON:API resource object for the SPA v2 recommendation request.|
-
-<h2 id="tocS_RecommendationV2RequestData">RecommendationV2RequestData</h2>
-<!-- backwards compatibility -->
-<a id="schemarecommendationv2requestdata"></a>
-<a id="schema_RecommendationV2RequestData"></a>
-<a id="tocSrecommendationv2requestdata"></a>
-<a id="tocsrecommendationv2requestdata"></a>
-
-```json
-{
-  "attributes": {
-    "arguments": [
-      ""
-    ]
-  },
-  "type": "recommendation_v2_request"
-}
-```
-
-JSON:API resource object for the SPA v2 recommendation request.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|attributes|[RecommendationV2RequestAttributes](#schemarecommendationv2requestattributes)|true|none|Attributes for requesting SPA recommendations by forwarding a Spark job's raw arguments<br>instead of a pre-computed shard.|
-|type|[RecommendationV2RequestType](#schemarecommendationv2requesttype)|true|none|JSON:API resource type for the SPA v2 recommendation request.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|recommendation_v2_request|
-
-<h2 id="tocS_RecommendationV2RequestType">RecommendationV2RequestType</h2>
-<!-- backwards compatibility -->
-<a id="schemarecommendationv2requesttype"></a>
-<a id="schema_RecommendationV2RequestType"></a>
-<a id="tocSrecommendationv2requesttype"></a>
-<a id="tocsrecommendationv2requesttype"></a>
-
-```json
-"recommendation_v2_request"
-```
-
-JSON:API resource type for the SPA v2 recommendation request.
 
 <h2 id="tocS_RecommendationsFilterRequest">RecommendationsFilterRequest</h2>
 <!-- backwards compatibility -->
@@ -455156,6 +460119,13 @@ User creating or modifying a rule.
             "aggregation": "count",
             "customQueryExtension": "a > 3",
             "dataSource": "logs",
+            "datasetIds": [
+              "string"
+            ],
+            "datasetVersions": {
+              "property1": 0,
+              "property2": 0
+            },
             "distinctFields": [
               "string"
             ],
@@ -455172,7 +460142,8 @@ User creating or modifying a rule.
               "string"
             ],
             "name": "string",
-            "query": "a > 3"
+            "query": "a > 3",
+            "queryLanguage": "sql"
           }
         ],
         "referenceTables": [
@@ -455349,6 +460320,13 @@ User creating or modifying a rule.
             "aggregation": "count",
             "customQueryExtension": "a > 3",
             "dataSource": "logs",
+            "datasetIds": [
+              "string"
+            ],
+            "datasetVersions": {
+              "property1": 0,
+              "property2": 0
+            },
             "distinctFields": [
               "string"
             ],
@@ -455365,7 +460343,8 @@ User creating or modifying a rule.
               "string"
             ],
             "name": "string",
-            "query": "a > 3"
+            "query": "a > 3",
+            "queryLanguage": "sql"
           }
         ],
         "referenceTables": [
@@ -455563,6 +460542,13 @@ Response object containing the version history of a rule.
         "aggregation": "count",
         "customQueryExtension": "a > 3",
         "dataSource": "logs",
+        "datasetIds": [
+          "string"
+        ],
+        "datasetVersions": {
+          "property1": 0,
+          "property2": 0
+        },
         "distinctFields": [
           "string"
         ],
@@ -455579,7 +460565,8 @@ Response object containing the version history of a rule.
           "string"
         ],
         "name": "string",
-        "query": "a > 3"
+        "query": "a > 3",
+        "queryLanguage": "sql"
       }
     ],
     "referenceTables": [
@@ -477670,6 +482657,13 @@ The source type for a SentinelOne entity context sync.
           "aggregation": "count",
           "customQueryExtension": "a > 3",
           "dataSource": "logs",
+          "datasetIds": [
+            "string"
+          ],
+          "datasetVersions": {
+            "property1": 0,
+            "property2": 0
+          },
           "distinctFields": [
             "string"
           ],
@@ -477686,7 +482680,8 @@ The source type for a SentinelOne entity context sync.
             "string"
           ],
           "name": "string",
-          "query": "a > 3"
+          "query": "a > 3",
+          "queryLanguage": "sql"
         }
       ],
       "referenceTables": [
@@ -479365,6 +484360,13 @@ Options.
   "aggregation": "count",
   "customQueryExtension": "a > 3",
   "dataSource": "logs",
+  "datasetIds": [
+    "string"
+  ],
+  "datasetVersions": {
+    "property1": 0,
+    "property2": 0
+  },
   "distinctFields": [
     "string"
   ],
@@ -479381,7 +484383,8 @@ Options.
     "string"
   ],
   "name": "string",
-  "query": "a > 3"
+  "query": "a > 3",
+  "queryLanguage": "sql"
 }
 ```
 
@@ -479622,6 +484625,13 @@ Payload used to test the rule query.
       "aggregation": "count",
       "customQueryExtension": "a > 3",
       "dataSource": "logs",
+      "datasetIds": [
+        "string"
+      ],
+      "datasetVersions": {
+        "property1": 0,
+        "property2": 0
+      },
       "distinctFields": [
         "string"
       ],
@@ -479638,7 +484648,8 @@ Payload used to test the rule query.
         "string"
       ],
       "name": "string",
-      "query": "a > 3"
+      "query": "a > 3",
+      "queryLanguage": "sql"
     }
   ],
   "referenceTables": [
@@ -480352,6 +485363,13 @@ The rule type.
       "aggregation": "count",
       "customQueryExtension": "a > 3",
       "dataSource": "logs",
+      "datasetIds": [
+        "string"
+      ],
+      "datasetVersions": {
+        "property1": 0,
+        "property2": 0
+      },
       "distinctFields": [
         "string"
       ],
@@ -480368,7 +485386,8 @@ The rule type.
         "string"
       ],
       "name": "string",
-      "query": "a > 3"
+      "query": "a > 3",
+      "queryLanguage": "sql"
     }
   ],
   "referenceTables": [
@@ -483393,6 +488412,13 @@ The payload of a rule.
   "aggregation": "count",
   "customQueryExtension": "a > 3",
   "dataSource": "logs",
+  "datasetIds": [
+    "string"
+  ],
+  "datasetVersions": {
+    "property1": 0,
+    "property2": 0
+  },
   "distinctFields": [
     "string"
   ],
@@ -483409,7 +488435,8 @@ The payload of a rule.
     "string"
   ],
   "name": "string",
-  "query": "a > 3"
+  "query": "a > 3",
+  "queryLanguage": "sql"
 }
 ```
 
@@ -483422,6 +488449,8 @@ Query for matching rule.
 |aggregation|[SecurityMonitoringRuleQueryAggregation](#schemasecuritymonitoringrulequeryaggregation)|false|none|The aggregation type.|
 |customQueryExtension|string|false|none|Query extension to append to the logs query.|
 |dataSource|[SecurityMonitoringStandardDataSource](#schemasecuritymonitoringstandarddatasource)|false|none|Source of events, either logs, audit trail, security signals, or Datadog events. `app_sec_spans` is deprecated in favor of `spans`.|
+|datasetIds|[string]|false|none|IDs of the datasets queried by the rule. Only used when `queryLanguage` is `sql`.|
+|datasetVersions|object|false|none|Version of each dataset used by the rule, keyed by dataset ID. Only used when `queryLanguage` is `sql`.|
 |distinctFields|[string]|false|none|Field for which the cardinality is measured. Sent as an array.|
 |groupByFields|[string]|false|none|Fields to group by.|
 |hasOptionalGroupByFields|boolean|false|none|When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values.|
@@ -483431,6 +488460,7 @@ Query for matching rule.
 |metrics|[string]|false|none|Group of target fields to aggregate over when using the sum, max, geo data, or new value aggregations. The sum, max, and geo data aggregations only accept one value in this list, whereas the new value aggregation accepts up to five values.|
 |name|string|false|none|Name of the query.|
 |query|string|false|none|Query to run on logs.|
+|queryLanguage|string|false|none|Language of the query. Use `sql` for SQL-based rules over datasets. Defaults to `event_query`.|
 
 #### Enumerated Values
 
@@ -483603,6 +488633,13 @@ Query for matching rule.
       "aggregation": "count",
       "customQueryExtension": "a > 3",
       "dataSource": "logs",
+      "datasetIds": [
+        "string"
+      ],
+      "datasetVersions": {
+        "property1": 0,
+        "property2": 0
+      },
       "distinctFields": [
         "string"
       ],
@@ -483619,7 +488656,8 @@ Query for matching rule.
         "string"
       ],
       "name": "string",
-      "query": "a > 3"
+      "query": "a > 3",
+      "queryLanguage": "sql"
     }
   ],
   "referenceTables": [
@@ -485293,7 +490331,8 @@ Create group response.
         "starts_with": [
           "admin",
           "user"
-        ]
+        ],
+        "use_recommended_suppressions": true
       },
       "tags": [
         "string"
@@ -485401,7 +490440,8 @@ Filter for the Scanning Group.
         "starts_with": [
           "admin",
           "user"
-        ]
+        ],
+        "use_recommended_suppressions": true
       },
       "tags": [
         "string"
@@ -485477,7 +490517,8 @@ Included objects from relationships.
       "starts_with": [
         "admin",
         "user"
-      ]
+      ],
+      "use_recommended_suppressions": true
     },
     "tags": [
       "string"
@@ -485579,7 +490620,8 @@ An object related to the configuration.
           "starts_with": [
             "admin",
             "user"
-          ]
+          ],
+          "use_recommended_suppressions": true
         },
         "tags": [
           "string"
@@ -486566,7 +491608,8 @@ Rule item included in the group.
     "starts_with": [
       "admin",
       "user"
-    ]
+    ],
+    "use_recommended_suppressions": true
   },
   "tags": [
     "string"
@@ -486594,7 +491637,7 @@ Attributes of the Sensitive Data Scanner rule.
 |namespaces|[string]|false|none|Attributes included in the scan. If namespaces is empty or missing, all attributes except excluded_namespaces are scanned.<br>If both are missing the whole event is scanned.|
 |pattern|string|false|none|Not included if there is a relationship to a standard pattern.|
 |priority|integer(int64)|false|none|Integer from 1 (high) to 5 (low) indicating rule issue severity.|
-|suppressions|[SensitiveDataScannerSuppressions](#schemasensitivedatascannersuppressions)|false|none|Object describing the suppressions for a rule. There are three types of suppressions, `starts_with`, `ends_with`, and `exact_match`.<br>Suppressed matches are not obfuscated, counted in metrics, or displayed in the Findings page.|
+|suppressions|[SensitiveDataScannerSuppressions](#schemasensitivedatascannersuppressions)|false|none|Object describing suppressions for a rule, or the recommended suppression lists published by a standard pattern.<br>There are three types of suppressions, `starts_with`, `ends_with`, and `exact_match`.<br>Rules based on the Datadog library can use recommended or custom suppressions. Custom rules can only use custom suppressions.<br>Suppressed matches are not obfuscated, counted in metrics, or displayed in the Findings page.|
 |tags|[string]|false|none|List of tags.|
 |text_replacement|[SensitiveDataScannerTextReplacement](#schemasensitivedatascannertextreplacement)|false|none|Object describing how the scanned event will be replaced.|
 
@@ -486640,7 +491683,8 @@ Attributes of the Sensitive Data Scanner rule.
       "starts_with": [
         "admin",
         "user"
-      ]
+      ],
+      "use_recommended_suppressions": true
     },
     "tags": [
       "string"
@@ -486729,7 +491773,8 @@ Data related to the creation of a rule.
         "starts_with": [
           "admin",
           "user"
-        ]
+        ],
+        "use_recommended_suppressions": true
       },
       "tags": [
         "string"
@@ -486886,7 +491931,8 @@ Delete rule response.
       "starts_with": [
         "admin",
         "user"
-      ]
+      ],
+      "use_recommended_suppressions": true
     },
     "tags": [
       "string"
@@ -487009,7 +492055,8 @@ Relationships of a scanning rule.
       "starts_with": [
         "admin",
         "user"
-      ]
+      ],
+      "use_recommended_suppressions": true
     },
     "tags": [
       "string"
@@ -487112,7 +492159,8 @@ Sensitive Data Scanner rule type.
       "starts_with": [
         "admin",
         "user"
-      ]
+      ],
+      "use_recommended_suppressions": true
     },
     "tags": [
       "string"
@@ -487203,7 +492251,8 @@ Data related to the update of a rule.
         "starts_with": [
           "admin",
           "user"
-        ]
+        ],
+        "use_recommended_suppressions": true
       },
       "tags": [
         "string"
@@ -487347,6 +492396,21 @@ Data containing the standard pattern id.
   "name": "string",
   "pattern": "string",
   "priority": 1,
+  "suppressions": {
+    "ends_with": [
+      "@example.com",
+      "another.example.com"
+    ],
+    "exact_match": [
+      "admin@example.com",
+      "user@example.com"
+    ],
+    "starts_with": [
+      "admin",
+      "user"
+    ],
+    "use_recommended_suppressions": true
+  },
   "tags": [
     "string"
   ]
@@ -487364,6 +492428,7 @@ Attributes of the Sensitive Data Scanner standard pattern.
 |name|string|false|none|Name of the standard pattern.|
 |pattern|string|false|none|**Deprecated.** (Deprecated) Regex to match, optionally documented for older standard rules. Refer to the `description` field to understand what the rule does.|
 |priority|integer(int64)|false|none|Integer from 1 (high) to 5 (low) indicating standard pattern issue severity.|
+|suppressions|[SensitiveDataScannerSuppressions](#schemasensitivedatascannersuppressions)|false|none|Object describing suppressions for a rule, or the recommended suppression lists published by a standard pattern.<br>There are three types of suppressions, `starts_with`, `ends_with`, and `exact_match`.<br>Rules based on the Datadog library can use recommended or custom suppressions. Custom rules can only use custom suppressions.<br>Suppressed matches are not obfuscated, counted in metrics, or displayed in the Findings page.|
 |tags|[string]|false|none|List of tags.|
 
 <h2 id="tocS_SensitiveDataScannerStandardPatternData">SensitiveDataScannerStandardPatternData</h2>
@@ -487421,6 +492486,21 @@ Sensitive Data Scanner standard pattern type.
       "name": "string",
       "pattern": "string",
       "priority": 1,
+      "suppressions": {
+        "ends_with": [
+          "@example.com",
+          "another.example.com"
+        ],
+        "exact_match": [
+          "admin@example.com",
+          "user@example.com"
+        ],
+        "starts_with": [
+          "admin",
+          "user"
+        ],
+        "use_recommended_suppressions": true
+      },
       "tags": [
         "string"
       ]
@@ -487452,6 +492532,21 @@ List Standard patterns response.
         "name": "string",
         "pattern": "string",
         "priority": 1,
+        "suppressions": {
+          "ends_with": [
+            "@example.com",
+            "another.example.com"
+          ],
+          "exact_match": [
+            "admin@example.com",
+            "user@example.com"
+          ],
+          "starts_with": [
+            "admin",
+            "user"
+          ],
+          "use_recommended_suppressions": true
+        },
         "tags": [
           "string"
         ]
@@ -487488,6 +492583,21 @@ List Standard patterns response data.
     "name": "string",
     "pattern": "string",
     "priority": 1,
+    "suppressions": {
+      "ends_with": [
+        "@example.com",
+        "another.example.com"
+      ],
+      "exact_match": [
+        "admin@example.com",
+        "user@example.com"
+      ],
+      "starts_with": [
+        "admin",
+        "user"
+      ],
+      "use_recommended_suppressions": true
+    },
     "tags": [
       "string"
     ]
@@ -487533,11 +492643,14 @@ Standard pattern item.
   "starts_with": [
     "admin",
     "user"
-  ]
+  ],
+  "use_recommended_suppressions": true
 }
 ```
 
-Object describing the suppressions for a rule. There are three types of suppressions, `starts_with`, `ends_with`, and `exact_match`.
+Object describing suppressions for a rule, or the recommended suppression lists published by a standard pattern.
+There are three types of suppressions, `starts_with`, `ends_with`, and `exact_match`.
+Rules based on the Datadog library can use recommended or custom suppressions. Custom rules can only use custom suppressions.
 Suppressed matches are not obfuscated, counted in metrics, or displayed in the Findings page.
 
 ### Properties
@@ -487547,6 +492660,7 @@ Suppressed matches are not obfuscated, counted in metrics, or displayed in the F
 |ends_with|[string]|false|none|List of strings to use for suppression of matches ending with these strings.|
 |exact_match|[string]|false|none|List of strings to use for suppression of matches exactly matching these strings.|
 |starts_with|[string]|false|none|List of strings to use for suppression of matches starting with these strings.|
+|use_recommended_suppressions|boolean|false|none|Should the rule use the underlying standard pattern suppression configuration. If set to `true`, the rule must be tied<br>to a standard pattern. If set to `false`, the specified suppressions are applied.|
 
 <h2 id="tocS_SensitiveDataScannerTextReplacement">SensitiveDataScannerTextReplacement</h2>
 <!-- backwards compatibility -->
@@ -498159,8 +503273,10 @@ A timeseries point.
         "limit": 10,
         "missing": "string",
         "sort": {
-          "aggregation": "count",
-          "order": "asc"
+          "aggregation": "pc90",
+          "metric": "@duration",
+          "order": "desc",
+          "type": "measure"
         },
         "total": false
       }
@@ -498224,8 +503340,10 @@ The object containing the query content.
           "limit": 10,
           "missing": "string",
           "sort": {
-            "aggregation": "count",
-            "order": "asc"
+            "aggregation": "pc90",
+            "metric": "@duration",
+            "order": "desc",
+            "type": "measure"
           },
           "total": false
         }
@@ -498281,8 +503399,10 @@ The object sent with the request to retrieve a list of aggregated spans from you
       "limit": 10,
       "missing": "string",
       "sort": {
-        "aggregation": "count",
-        "order": "asc"
+        "aggregation": "pc90",
+        "metric": "@duration",
+        "order": "desc",
+        "type": "measure"
       },
       "total": false
     }
@@ -498430,12 +503550,16 @@ The status of the response.
 
 ```json
 {
-  "aggregation": "count",
-  "order": "asc"
+  "aggregation": "pc90",
+  "metric": "@duration",
+  "order": "desc",
+  "type": "measure"
 }
 ```
 
-A sort rule.
+A sort rule. With `type: alphabetical` (the default), buckets are sorted by facet value
+and only `order` is allowed. With `type: measure`, buckets are sorted by a computed value:
+set `aggregation`, and set `metric` unless the aggregation is `count`.
 
 ### Properties
 
@@ -498571,6 +503695,8 @@ JSON object containing all span attributes and their associated values.
 ```
 
 A compute rule to compute metrics or timeseries.
+All computes in a request must have the same `type`, and `timeseries` computes must use the same `interval`.
+To get both totals and timeseries, send separate requests.
 
 ### Properties
 
@@ -498673,8 +503799,10 @@ The spans filter. Spans matching this filter will be indexed and stored.
   "limit": 10,
   "missing": "string",
   "sort": {
-    "aggregation": "count",
-    "order": "asc"
+    "aggregation": "pc90",
+    "metric": "@duration",
+    "order": "desc",
+    "type": "measure"
   },
   "total": false
 }
@@ -498688,9 +503816,9 @@ A group by rule.
 |---|---|---|---|---|
 |facet|string|true|none|The name of the facet to use (required).|
 |histogram|[SpansGroupByHistogram](#schemaspansgroupbyhistogram)|false|none|Used to perform a histogram computation (only for measure facets).<br>Note: At most 100 buckets are allowed, the number of buckets is (max - min)/interval.|
-|limit|integer(int64)|false|none|The maximum buckets to return for this group by.|
+|limit|integer(int64)|false|none|The maximum buckets to return for this group by.<br>A request can generate at most 10,000 groups. Nested `group_by` entries multiply, so the<br>product of their limits must stay within that bound. For example, two entries with a limit of 100 each<br>produce up to 10,000 groups. With a `timeseries` compute, the number of groups multiplied by<br>the number of time buckets must not exceed 400,000.|
 |missing|[SpansGroupByMissing](#schemaspansgroupbymissing)|false|none|The value to use for spans that don't have the facet used to group by.|
-|sort|[SpansAggregateSort](#schemaspansaggregatesort)|false|none|A sort rule.|
+|sort|[SpansAggregateSort](#schemaspansaggregatesort)|false|none|A sort rule. With `type: alphabetical` (the default), buckets are sorted by facet value<br>and only `order` is allowed. With `type: measure`, buckets are sorted by a computed value:<br>set `aggregation`, and set `metric` unless the aggregation is `count`.|
 |total|[SpansGroupByTotal](#schemaspansgroupbytotal)|false|none|A resulting object to put the given computes in over all the matching records.|
 
 <h2 id="tocS_SpansGroupByHistogram">SpansGroupByHistogram</h2>
@@ -519124,6 +524252,19 @@ Response containing a tag indexing rule exemption.
 |---|---|---|---|---|
 |data|[TagIndexingRuleExemptionData](#schematagindexingruleexemptiondata)|false|none|A tag indexing rule exemption resource object.|
 
+<h2 id="tocS_TagIndexingRuleExemptionSort">TagIndexingRuleExemptionSort</h2>
+<!-- backwards compatibility -->
+<a id="schematagindexingruleexemptionsort"></a>
+<a id="schema_TagIndexingRuleExemptionSort"></a>
+<a id="tocStagindexingruleexemptionsort"></a>
+<a id="tocstagindexingruleexemptionsort"></a>
+
+```json
+"estimated_change_in_volume"
+```
+
+Sort field for tag indexing rule exemptions.
+
 <h2 id="tocS_TagIndexingRuleExemptionType">TagIndexingRuleExemptionType</h2>
 <!-- backwards compatibility -->
 <a id="schematagindexingruleexemptiontype"></a>
@@ -519136,6 +524277,84 @@ Response containing a tag indexing rule exemption.
 ```
 
 The tag indexing rule exemption resource type.
+
+<h2 id="tocS_TagIndexingRuleExemptionUpdateAttributes">TagIndexingRuleExemptionUpdateAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schematagindexingruleexemptionupdateattributes"></a>
+<a id="schema_TagIndexingRuleExemptionUpdateAttributes"></a>
+<a id="tocStagindexingruleexemptionupdateattributes"></a>
+<a id="tocstagindexingruleexemptionupdateattributes"></a>
+
+```json
+{
+  "reason": "This metric must remain exempt because of its query requirements."
+}
+```
+
+Attributes for updating a tag indexing rule exemption.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|reason|string|true|none|The updated reason the metric is exempt from tag indexing rules.|
+
+<h2 id="tocS_TagIndexingRuleExemptionUpdateData">TagIndexingRuleExemptionUpdateData</h2>
+<!-- backwards compatibility -->
+<a id="schematagindexingruleexemptionupdatedata"></a>
+<a id="schema_TagIndexingRuleExemptionUpdateData"></a>
+<a id="tocStagindexingruleexemptionupdatedata"></a>
+<a id="tocstagindexingruleexemptionupdatedata"></a>
+
+```json
+{
+  "attributes": {
+    "reason": "This metric must remain exempt because of its query requirements."
+  },
+  "type": "tag_indexing_rule_exemptions"
+}
+```
+
+Data object for updating a tag indexing rule exemption.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[TagIndexingRuleExemptionUpdateAttributes](#schematagindexingruleexemptionupdateattributes)|true|none|Attributes for updating a tag indexing rule exemption.|
+|type|[TagIndexingRuleExemptionType](#schematagindexingruleexemptiontype)|true|none|The tag indexing rule exemption resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|tag_indexing_rule_exemptions|
+
+<h2 id="tocS_TagIndexingRuleExemptionUpdateRequest">TagIndexingRuleExemptionUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schematagindexingruleexemptionupdaterequest"></a>
+<a id="schema_TagIndexingRuleExemptionUpdateRequest"></a>
+<a id="tocStagindexingruleexemptionupdaterequest"></a>
+<a id="tocstagindexingruleexemptionupdaterequest"></a>
+
+```json
+{
+  "data": {
+    "attributes": {
+      "reason": "This metric must remain exempt because of its query requirements."
+    },
+    "type": "tag_indexing_rule_exemptions"
+  }
+}
+```
+
+Request body for updating a tag indexing rule exemption.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[TagIndexingRuleExemptionUpdateData](#schematagindexingruleexemptionupdatedata)|true|none|Data object for updating a tag indexing rule exemption.|
 
 <h2 id="tocS_TagIndexingRuleExemptionVolumeStatus">TagIndexingRuleExemptionVolumeStatus</h2>
 <!-- backwards compatibility -->
@@ -519151,6 +524370,60 @@ The tag indexing rule exemption resource type.
 Indicates whether `estimated_change_in_volume` is available and, if not, why. `ok` indicates a fresh estimate.
 `unindexed_tags` indicates that the matching rule uses tags that are not indexed for the metric.
 `unavailable` indicates that the estimate is stale, was not computed, or could not be retrieved.
+
+<h2 id="tocS_TagIndexingRuleExemptionsResponse">TagIndexingRuleExemptionsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematagindexingruleexemptionsresponse"></a>
+<a id="schema_TagIndexingRuleExemptionsResponse"></a>
+<a id="tocStagindexingruleexemptionsresponse"></a>
+<a id="tocstagindexingruleexemptionsresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "attributes": {
+        "created_at": "2024-01-15T12:00:00.000Z",
+        "created_by_handle": "user@datadoghq.com",
+        "estimated_change_in_volume": 45,
+        "kind": "exemption",
+        "missing_indexed_tags": [
+          "service"
+        ],
+        "reason": "This metric has a pre-existing tag configuration.",
+        "volume_status": "unavailable"
+      },
+      "id": "dd.test.metric",
+      "type": "tag_indexing_rule_exemptions"
+    }
+  ],
+  "links": {
+    "first": "string",
+    "last": "string",
+    "next": "string",
+    "prev": "string",
+    "self": "string"
+  },
+  "meta": {
+    "pagination": {
+      "cursor": "string",
+      "limit": 0,
+      "next_cursor": "string",
+      "type": "cursor_limit"
+    }
+  }
+}
+```
+
+Response containing a page of tag indexing rule exemptions.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[TagIndexingRuleExemptionData](#schematagindexingruleexemptiondata)]|false|none|Array of tag indexing rule exemption objects.|
+|links|[MetricsListResponseLinks](#schemametricslistresponselinks)|false|none|Pagination links. Only present if pagination query parameters were provided.|
+|meta|[MetricPaginationMeta](#schemametricpaginationmeta)|false|none|Response metadata object.|
 
 <h2 id="tocS_TagIndexingRuleMetricMatch">TagIndexingRuleMetricMatch</h2>
 <!-- backwards compatibility -->
@@ -521872,6 +527145,677 @@ Team hierarchy links response
 |included|[[TeamHierarchyLinkTeam](#schemateamhierarchylinkteam)]|false|none|Included teams|
 |links|[TeamsHierarchyLinksResponseLinks](#schemateamshierarchylinksresponselinks)|false|none|When querying team hierarchy links, a set of links for navigation between different pages is included|
 |meta|[TeamsHierarchyLinksResponseMeta](#schemateamshierarchylinksresponsemeta)|false|none|Metadata that is included in the response when querying the team hierarchy links|
+
+<h2 id="tocS_TeamHierarchyMember">TeamHierarchyMember</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymember"></a>
+<a id="schema_TeamHierarchyMember"></a>
+<a id="tocSteamhierarchymember"></a>
+<a id="tocsteamhierarchymember"></a>
+
+```json
+{
+  "attributes": {
+    "direct_role": "member",
+    "is_direct": true,
+    "provisioned_by": "manual",
+    "provisioned_by_id": "00000000-0000-0000-0000-000000000003"
+  },
+  "id": "UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000001",
+  "relationships": {
+    "team": {
+      "data": {
+        "id": "692e8073-12c4-4c71-8408-5090bd44c9c8",
+        "type": "teams"
+      }
+    },
+    "user": {
+      "data": {
+        "id": "00000000-0000-0000-0000-000000000001",
+        "type": "users"
+      }
+    }
+  },
+  "type": "user_team_relationship"
+}
+```
+
+A user relationship to the requested team.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[TeamHierarchyMemberAttributes](#schemateamhierarchymemberattributes)|true|none|Membership attributes relative to the requested team.|
+|id|string|true|none|Relationship identifier containing the team UUID and user UUID.|
+|relationships|[TeamHierarchyMemberRelationships](#schemateamhierarchymemberrelationships)|true|none|User and requested team linkage.|
+|type|[TeamHierarchyMemberType](#schemateamhierarchymembertype)|true|none|Team hierarchy membership resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|user_team_relationship|
+
+<h2 id="tocS_TeamHierarchyMemberAttributes">TeamHierarchyMemberAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberattributes"></a>
+<a id="schema_TeamHierarchyMemberAttributes"></a>
+<a id="tocSteamhierarchymemberattributes"></a>
+<a id="tocsteamhierarchymemberattributes"></a>
+
+```json
+{
+  "direct_role": "member",
+  "is_direct": true,
+  "provisioned_by": "manual",
+  "provisioned_by_id": "00000000-0000-0000-0000-000000000003"
+}
+```
+
+Membership attributes relative to the requested team.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|direct_role|string \| null|true|none|Role on the requested team: admin or member. Null for inherited members.|
+|is_direct|boolean|true|none|Whether the user belongs directly to the requested team.|
+|provisioned_by|string \| null|true|none|Membership provisioner. Null for inherited members.|
+|provisioned_by_id|string \| null|true|none|Identifier supplied by the membership provisioner. Null when unavailable or for inherited members.|
+
+<h2 id="tocS_TeamHierarchyMemberIncluded">TeamHierarchyMemberIncluded</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberincluded"></a>
+<a id="schema_TeamHierarchyMemberIncluded"></a>
+<a id="tocSteamhierarchymemberincluded"></a>
+<a id="tocsteamhierarchymemberincluded"></a>
+
+```json
+{
+  "attributes": {
+    "created_at": "1970-01-01T00:00:00Z",
+    "disabled": true,
+    "email": "string",
+    "handle": "string",
+    "icon": "string",
+    "last_login_time": "1970-01-01T00:00:00Z",
+    "mfa_enabled": true,
+    "modified_at": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "service_account": true,
+    "status": "string",
+    "title": "string",
+    "uuid": "string",
+    "verified": true
+  },
+  "id": "00000000-0000-0000-0000-000000000001",
+  "type": "users"
+}
+```
+
+An included user or the requested team, distinguished by resource type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[TeamHierarchyMemberUser](#schemateamhierarchymemberuser)|false|none|A user included in the hierarchy members response.|
+|*oneOf*|[TeamHierarchyMemberTeam](#schemateamhierarchymemberteam)|false|none|The requested team, included at most once. Descendant teams are not included.|
+
+<h2 id="tocS_TeamHierarchyMemberRelationships">TeamHierarchyMemberRelationships</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberrelationships"></a>
+<a id="schema_TeamHierarchyMemberRelationships"></a>
+<a id="tocSteamhierarchymemberrelationships"></a>
+<a id="tocsteamhierarchymemberrelationships"></a>
+
+```json
+{
+  "team": {
+    "data": {
+      "id": "692e8073-12c4-4c71-8408-5090bd44c9c8",
+      "type": "teams"
+    }
+  },
+  "user": {
+    "data": {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "type": "users"
+    }
+  }
+}
+```
+
+User and requested team linkage.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|team|[TeamHierarchyMemberTeamRelationship](#schemateamhierarchymemberteamrelationship)|true|none|Linkage to the requested team.|
+|user|[TeamHierarchyMemberUserRelationship](#schemateamhierarchymemberuserrelationship)|true|none|Linkage to the user.|
+
+<h2 id="tocS_TeamHierarchyMemberTeam">TeamHierarchyMemberTeam</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberteam"></a>
+<a id="schema_TeamHierarchyMemberTeam"></a>
+<a id="tocSteamhierarchymemberteam"></a>
+<a id="tocsteamhierarchymemberteam"></a>
+
+```json
+{
+  "attributes": {
+    "handle": "platform",
+    "name": "Platform"
+  },
+  "id": "692e8073-12c4-4c71-8408-5090bd44c9c8",
+  "type": "teams"
+}
+```
+
+The requested team, included at most once. Descendant teams are not included.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[TeamHierarchyMemberTeamAttributes](#schemateamhierarchymemberteamattributes)|false|none|Available attributes of the requested team.|
+|id|string(uuid)|true|none|UUID of the requested team.|
+|type|[TeamHierarchyMemberTeamType](#schemateamhierarchymemberteamtype)|true|none|Requested team resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|teams|
+
+<h2 id="tocS_TeamHierarchyMemberTeamAttributes">TeamHierarchyMemberTeamAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberteamattributes"></a>
+<a id="schema_TeamHierarchyMemberTeamAttributes"></a>
+<a id="tocSteamhierarchymemberteamattributes"></a>
+<a id="tocsteamhierarchymemberteamattributes"></a>
+
+```json
+{
+  "handle": "platform",
+  "name": "Platform"
+}
+```
+
+Available attributes of the requested team.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|handle|string|false|none|Handle of the team.|
+|name|string|false|none|Name of the team.|
+
+<h2 id="tocS_TeamHierarchyMemberTeamData">TeamHierarchyMemberTeamData</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberteamdata"></a>
+<a id="schema_TeamHierarchyMemberTeamData"></a>
+<a id="tocSteamhierarchymemberteamdata"></a>
+<a id="tocsteamhierarchymemberteamdata"></a>
+
+```json
+{
+  "id": "692e8073-12c4-4c71-8408-5090bd44c9c8",
+  "type": "teams"
+}
+```
+
+Team resource identifier.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|UUID of the team.|
+|type|[TeamHierarchyMemberTeamType](#schemateamhierarchymemberteamtype)|true|none|Requested team resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|teams|
+
+<h2 id="tocS_TeamHierarchyMemberTeamRelationship">TeamHierarchyMemberTeamRelationship</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberteamrelationship"></a>
+<a id="schema_TeamHierarchyMemberTeamRelationship"></a>
+<a id="tocSteamhierarchymemberteamrelationship"></a>
+<a id="tocsteamhierarchymemberteamrelationship"></a>
+
+```json
+{
+  "data": {
+    "id": "692e8073-12c4-4c71-8408-5090bd44c9c8",
+    "type": "teams"
+  }
+}
+```
+
+Linkage to the requested team.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[TeamHierarchyMemberTeamData](#schemateamhierarchymemberteamdata)|true|none|Team resource identifier.|
+
+<h2 id="tocS_TeamHierarchyMemberTeamType">TeamHierarchyMemberTeamType</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberteamtype"></a>
+<a id="schema_TeamHierarchyMemberTeamType"></a>
+<a id="tocSteamhierarchymemberteamtype"></a>
+<a id="tocsteamhierarchymemberteamtype"></a>
+
+```json
+"teams"
+```
+
+Requested team resource type.
+
+<h2 id="tocS_TeamHierarchyMemberType">TeamHierarchyMemberType</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymembertype"></a>
+<a id="schema_TeamHierarchyMemberType"></a>
+<a id="tocSteamhierarchymembertype"></a>
+<a id="tocsteamhierarchymembertype"></a>
+
+```json
+"user_team_relationship"
+```
+
+Team hierarchy membership resource type.
+
+<h2 id="tocS_TeamHierarchyMemberUser">TeamHierarchyMemberUser</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberuser"></a>
+<a id="schema_TeamHierarchyMemberUser"></a>
+<a id="tocSteamhierarchymemberuser"></a>
+<a id="tocsteamhierarchymemberuser"></a>
+
+```json
+{
+  "attributes": {
+    "created_at": "1970-01-01T00:00:00Z",
+    "disabled": true,
+    "email": "string",
+    "handle": "string",
+    "icon": "string",
+    "last_login_time": "1970-01-01T00:00:00Z",
+    "mfa_enabled": true,
+    "modified_at": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "service_account": true,
+    "status": "string",
+    "title": "string",
+    "uuid": "string",
+    "verified": true
+  },
+  "id": "00000000-0000-0000-0000-000000000001",
+  "type": "users"
+}
+```
+
+A user included in the hierarchy members response.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[UserAttributes](#schemauserattributes)|true|none|Attributes of user object returned by the API.|
+|id|string(uuid)|true|none|UUID of the user.|
+|type|[UsersType](#schemauserstype)|true|none|Users resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|users|
+
+<h2 id="tocS_TeamHierarchyMemberUserData">TeamHierarchyMemberUserData</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberuserdata"></a>
+<a id="schema_TeamHierarchyMemberUserData"></a>
+<a id="tocSteamhierarchymemberuserdata"></a>
+<a id="tocsteamhierarchymemberuserdata"></a>
+
+```json
+{
+  "id": "00000000-0000-0000-0000-000000000001",
+  "type": "users"
+}
+```
+
+User resource identifier.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|UUID of the user.|
+|type|[UsersType](#schemauserstype)|true|none|Users resource type.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|users|
+
+<h2 id="tocS_TeamHierarchyMemberUserRelationship">TeamHierarchyMemberUserRelationship</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberuserrelationship"></a>
+<a id="schema_TeamHierarchyMemberUserRelationship"></a>
+<a id="tocSteamhierarchymemberuserrelationship"></a>
+<a id="tocsteamhierarchymemberuserrelationship"></a>
+
+```json
+{
+  "data": {
+    "id": "00000000-0000-0000-0000-000000000001",
+    "type": "users"
+  }
+}
+```
+
+Linkage to the user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[TeamHierarchyMemberUserData](#schemateamhierarchymemberuserdata)|true|none|User resource identifier.|
+
+<h2 id="tocS_TeamHierarchyMembersNumberPage">TeamHierarchyMembersNumberPage</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymembersnumberpage"></a>
+<a id="schema_TeamHierarchyMembersNumberPage"></a>
+<a id="tocSteamhierarchymembersnumberpage"></a>
+<a id="tocsteamhierarchymembersnumberpage"></a>
+
+```json
+{
+  "first_number": 0,
+  "last_number": 0,
+  "next_number": null,
+  "number": 0,
+  "prev_number": null,
+  "size": 100,
+  "total": 2,
+  "type": "number_size"
+}
+```
+
+Pagination metadata using number and size.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first_number|integer(int64)|true|none|First page number.|
+|last_number|integer(int64) \| null|true|none|Last page number. Null when unavailable.|
+|next_number|integer(int64) \| null|true|none|Next page number. Null when unavailable.|
+|number|integer(int64)|true|none|Current zero-based page number.|
+|prev_number|integer(int64) \| null|true|none|Previous page number. Null when unavailable.|
+|size|integer(int64)|true|none|Maximum number of members per page.|
+|total|integer(int64)|true|none|Total number of members matching the filters.|
+|type|[TeamHierarchyMembersNumberPageType](#schemateamhierarchymembersnumberpagetype)|true|none|Pagination mode.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|number_size|
+
+<h2 id="tocS_TeamHierarchyMembersNumberPageType">TeamHierarchyMembersNumberPageType</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymembersnumberpagetype"></a>
+<a id="schema_TeamHierarchyMembersNumberPageType"></a>
+<a id="tocSteamhierarchymembersnumberpagetype"></a>
+<a id="tocsteamhierarchymembersnumberpagetype"></a>
+
+```json
+"number_size"
+```
+
+Pagination mode.
+
+<h2 id="tocS_TeamHierarchyMembersOffsetPage">TeamHierarchyMembersOffsetPage</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymembersoffsetpage"></a>
+<a id="schema_TeamHierarchyMembersOffsetPage"></a>
+<a id="tocSteamhierarchymembersoffsetpage"></a>
+<a id="tocsteamhierarchymembersoffsetpage"></a>
+
+```json
+{
+  "first_offset": 0,
+  "last_offset": 0,
+  "limit": 100,
+  "next_offset": null,
+  "offset": 0,
+  "prev_offset": null,
+  "total": 2,
+  "type": "offset_limit"
+}
+```
+
+Pagination metadata using offset and limit.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first_offset|integer(int64)|true|none|First offset.|
+|last_offset|integer(int64) \| null|true|none|Last offset. Null when unavailable.|
+|limit|integer(int64)|true|none|Maximum number of members per page.|
+|next_offset|integer(int64) \| null|true|none|Next offset. Null when unavailable.|
+|offset|integer(int64)|true|none|Current offset.|
+|prev_offset|integer(int64) \| null|true|none|Previous offset. Null when unavailable.|
+|total|integer(int64)|true|none|Total number of members matching the filters.|
+|type|[TeamHierarchyMembersOffsetPageType](#schemateamhierarchymembersoffsetpagetype)|true|none|Pagination mode.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|offset_limit|
+
+<h2 id="tocS_TeamHierarchyMembersOffsetPageType">TeamHierarchyMembersOffsetPageType</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymembersoffsetpagetype"></a>
+<a id="schema_TeamHierarchyMembersOffsetPageType"></a>
+<a id="tocSteamhierarchymembersoffsetpagetype"></a>
+<a id="tocsteamhierarchymembersoffsetpagetype"></a>
+
+```json
+"offset_limit"
+```
+
+Pagination mode.
+
+<h2 id="tocS_TeamHierarchyMembersPage">TeamHierarchyMembersPage</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymemberspage"></a>
+<a id="schema_TeamHierarchyMembersPage"></a>
+<a id="tocSteamhierarchymemberspage"></a>
+<a id="tocsteamhierarchymemberspage"></a>
+
+```json
+{
+  "first_offset": 0,
+  "last_offset": 0,
+  "limit": 100,
+  "next_offset": null,
+  "offset": 0,
+  "prev_offset": null,
+  "total": 2,
+  "type": "offset_limit"
+}
+```
+
+Pagination metadata for the selected pagination mode.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[TeamHierarchyMembersOffsetPage](#schemateamhierarchymembersoffsetpage)|false|none|Pagination metadata using offset and limit.|
+|*oneOf*|[TeamHierarchyMembersNumberPage](#schemateamhierarchymembersnumberpage)|false|none|Pagination metadata using number and size.|
+
+<h2 id="tocS_TeamHierarchyMembersResponse">TeamHierarchyMembersResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymembersresponse"></a>
+<a id="schema_TeamHierarchyMembersResponse"></a>
+<a id="tocSteamhierarchymembersresponse"></a>
+<a id="tocsteamhierarchymembersresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "attributes": {
+        "direct_role": "member",
+        "is_direct": true,
+        "provisioned_by": "manual",
+        "provisioned_by_id": "00000000-0000-0000-0000-000000000003"
+      },
+      "id": "UserTeamRelationship:692e8073-12c4-4c71-8408-5090bd44c9c8:00000000-0000-0000-0000-000000000001",
+      "relationships": {
+        "team": {
+          "data": {
+            "id": "692e8073-12c4-4c71-8408-5090bd44c9c8",
+            "type": "teams"
+          }
+        },
+        "user": {
+          "data": {
+            "id": "00000000-0000-0000-0000-000000000001",
+            "type": "users"
+          }
+        }
+      },
+      "type": "user_team_relationship"
+    }
+  ],
+  "included": [
+    {
+      "attributes": {
+        "created_at": "1970-01-01T00:00:00Z",
+        "disabled": true,
+        "email": "string",
+        "handle": "string",
+        "icon": "string",
+        "last_login_time": "1970-01-01T00:00:00Z",
+        "mfa_enabled": true,
+        "modified_at": "1970-01-01T00:00:00Z",
+        "name": "string",
+        "service_account": true,
+        "status": "string",
+        "title": "string",
+        "uuid": "string",
+        "verified": true
+      },
+      "id": "00000000-0000-0000-0000-000000000001",
+      "type": "users"
+    }
+  ],
+  "links": {
+    "first": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+    "last": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+    "next": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+    "prev": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+    "self": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100"
+  },
+  "meta": {
+    "page": {
+      "first_offset": 0,
+      "last_offset": 0,
+      "limit": 100,
+      "next_offset": null,
+      "offset": 0,
+      "prev_offset": null,
+      "total": 2,
+      "type": "offset_limit"
+    }
+  }
+}
+```
+
+Direct and inherited members of the requested team.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[TeamHierarchyMember](#schemateamhierarchymember)]|true|none|Membership relationships for users who belong to the requested team or inherit membership through its descendant teams. Each user appears once, even if they belong to multiple teams in the hierarchy. Each relationship identifies the user and requested team, and indicates whether the user is a direct member of the requested team.|
+|included|[[TeamHierarchyMemberIncluded](#schemateamhierarchymemberincluded)]|false|none|Requested users and the team. May be absent when the result is empty, even if requested.|
+|links|[TeamHierarchyMembersResponseLinks](#schemateamhierarchymembersresponselinks)|true|none|Page navigation links. Unavailable links are omitted.|
+|meta|[TeamHierarchyMembersResponseMeta](#schemateamhierarchymembersresponsemeta)|true|none|Pagination metadata for the filtered members.|
+
+<h2 id="tocS_TeamHierarchyMembersResponseLinks">TeamHierarchyMembersResponseLinks</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymembersresponselinks"></a>
+<a id="schema_TeamHierarchyMembersResponseLinks"></a>
+<a id="tocSteamhierarchymembersresponselinks"></a>
+<a id="tocsteamhierarchymembersresponselinks"></a>
+
+```json
+{
+  "first": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+  "last": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+  "next": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+  "prev": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100",
+  "self": "https://api.datadoghq.com/api/v2/team/692e8073-12c4-4c71-8408-5090bd44c9c8/members?page%5Bnumber%5D=0&page%5Bsize%5D=100"
+}
+```
+
+Page navigation links. Unavailable links are omitted.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first|string|false|none|First page URL.|
+|last|string|false|none|Last page URL.|
+|next|string|false|none|Next page URL.|
+|prev|string|false|none|Previous page URL.|
+|self|string|false|none|Current page URL.|
+
+<h2 id="tocS_TeamHierarchyMembersResponseMeta">TeamHierarchyMembersResponseMeta</h2>
+<!-- backwards compatibility -->
+<a id="schemateamhierarchymembersresponsemeta"></a>
+<a id="schema_TeamHierarchyMembersResponseMeta"></a>
+<a id="tocSteamhierarchymembersresponsemeta"></a>
+<a id="tocsteamhierarchymembersresponsemeta"></a>
+
+```json
+{
+  "page": {
+    "first_offset": 0,
+    "last_offset": 0,
+    "limit": 100,
+    "next_offset": null,
+    "offset": 0,
+    "prev_offset": null,
+    "total": 2,
+    "type": "offset_limit"
+  }
+}
+```
+
+Pagination metadata for the filtered members.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|page|[TeamHierarchyMembersPage](#schemateamhierarchymemberspage)|true|none|Pagination metadata for the selected pagination mode.|
 
 <h2 id="tocS_TeamIncluded">TeamIncluded</h2>
 <!-- backwards compatibility -->
@@ -535430,7 +541374,10 @@ Request to update an environment.
 {
   "description": "Updated description for feature flag XYZ789",
   "json_schema": "{\"type\": \"object\", \"properties\": {\"enabled\": {\"type\": \"boolean\"}}}",
-  "name": "Updated Feature Flag XYZ789"
+  "name": "Updated Feature Flag XYZ789",
+  "tags": [
+    "team:feature-flagging"
+  ]
 }
 ```
 
@@ -535443,6 +541390,7 @@ Attributes for updating a feature flag.
 |description|string|false|none|The description of the feature flag.|
 |json_schema|string \| null|false|none|JSON schema for validation when value_type is JSON.|
 |name|string|false|none|The name of the feature flag.|
+|tags|[string]|false|none|Tags associated with the feature flag. This field replaces the full set of<br>existing tags; omit it to leave tags unchanged, or pass an empty array to<br>clear all tags. The owning team is set by including a tag of the form<br>`team:<team-handle>` in this array.|
 
 <h2 id="tocS_UpdateFeatureFlagData">UpdateFeatureFlagData</h2>
 <!-- backwards compatibility -->
@@ -535456,7 +541404,10 @@ Attributes for updating a feature flag.
   "attributes": {
     "description": "Updated description for feature flag XYZ789",
     "json_schema": "{\"type\": \"object\", \"properties\": {\"enabled\": {\"type\": \"boolean\"}}}",
-    "name": "Updated Feature Flag XYZ789"
+    "name": "Updated Feature Flag XYZ789",
+    "tags": [
+      "team:feature-flagging"
+    ]
   },
   "type": "feature-flags"
 }
@@ -535503,7 +541454,10 @@ The resource type.
     "attributes": {
       "description": "Updated description for feature flag XYZ789",
       "json_schema": "{\"type\": \"object\", \"properties\": {\"enabled\": {\"type\": \"boolean\"}}}",
-      "name": "Updated Feature Flag XYZ789"
+      "name": "Updated Feature Flag XYZ789",
+      "tags": [
+        "team:feature-flagging"
+      ]
     },
     "type": "feature-flags"
   }

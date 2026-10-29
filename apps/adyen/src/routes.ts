@@ -14176,8 +14176,12 @@ const PaymentRequestSchema = z
           "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
       }),
     shopperTaxInfo: ShopperTaxInfoSchema.exactOptional().openapi({
+      deprecated: true,
       description: 'The tax info of the shopper',
       'x-addedInVersion': '68',
+      'x-deprecatedInVersion': '68',
+      'x-deprecatedMessage':
+        "Do not use this field. We reject requests that include it. To verify the shopper's tax identification, use the `/verifyShopperTaxIdentification` endpoint (available from v72).",
     }),
     socialSecurityNumber: z
       .string()

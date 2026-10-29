@@ -41,7 +41,6 @@ const ArchiveSchema = z
       .min(0)
       .max(255)
       .nullable()
-      .exactOptional()
       .openapi({
         description: 'The description of the archive.',
         example: 'This is an archive for important documents.',
@@ -56,7 +55,6 @@ const ArchiveSchema = z
           }),
         type: z.string().openapi({ description: 'The value is always `user`.', example: 'user' }),
       })
-      .exactOptional()
       .openapi({
         description:
           'The part of an archive API response that describes the user who owns the archive.',
@@ -67,7 +65,7 @@ const ArchiveSchema = z
   .openapi({
     description:
       'An archive is a folder dedicated to storing content that is\nredundant, outdated, or trivial. Content in an archive is not accessible to its\nowner and collaborators.\nTo use this feature, you must request GCM scope for your Box application.',
-    required: ['id', 'type', 'name', 'size'],
+    required: ['id', 'type', 'name', 'size', 'description', 'owned_by'],
     title: 'Archive',
     'x-box-resource-id': 'archive_v2025.0',
     'x-box-tag': 'archives',
@@ -4386,6 +4384,7 @@ export const postDocgenBatchesRoute = createRoute({
 export const getEnterpriseConfigurationsEnterpriseIdRoute = createRoute({
   method: 'get',
   path: '/enterprise_configurations/{enterprise_id}',
+  tags: ['Enterprise Configurations'],
   summary: 'Get enterprise configuration',
   description: 'Retrieves the configuration for an enterprise.',
   operationId: 'get_enterprise_configurations_id_v2025.0',

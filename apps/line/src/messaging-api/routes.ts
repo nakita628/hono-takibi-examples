@@ -2866,13 +2866,13 @@ const RichMenuSwitchActionSchema = ActionSchema.and(
 ).openapi('RichMenuSwitchAction')
 
 const AltUriSchema = z
-  .object({ desktop: z.string().min(0).max(1000).exactOptional() })
+  .object({ desktop: z.string().min(0).max(10000).exactOptional() })
   .openapi({ required: [] })
   .openapi('AltUri')
 
 const URIActionSchema = ActionSchema.and(
   z
-    .object({ uri: z.url().exactOptional(), altUri: AltUriSchema.exactOptional() })
+    .object({ uri: z.url().max(10000).exactOptional(), altUri: AltUriSchema.exactOptional() })
     .openapi({ required: [] }),
 ).openapi('URIAction')
 

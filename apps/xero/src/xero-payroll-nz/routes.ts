@@ -273,7 +273,7 @@ const EmployeeTaxSchema = z
       .boolean()
       .exactOptional()
       .openapi({
-        description: 'Does the employee has a special student loan rate?',
+        description: 'Does the employee have a special student loan rate?',
         example: true,
       }),
     specialStudentLoanRatePercentage: z
@@ -287,7 +287,12 @@ const EmployeeTaxSchema = z
     isEligibleForKiwiSaver: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'The employee eligibility for KiwiSaver.', example: true }),
+      .openapi({
+        description:
+          'The employee eligibility for KiwiSaver. Deprecated, replaced by kiwiSaverStatus. Omit this field from POST requests.',
+        deprecated: true,
+        example: true,
+      }),
     esctRatePercentage: z
       .float64()
       .exactOptional()
@@ -309,6 +314,21 @@ const EmployeeTaxSchema = z
         description:
           "Contribution Option which can be 'MakeContributions' 'OptOut', 'OnAContributionsHoliday', 'OnASavingsSuspension', 'NotCurrentlyAKiwiSaverMember' for employees without a KiwiSaver membership",
         example: 'MakeContributions',
+      }),
+    kiwiSaverStatus: z
+      .enum([
+        'ActiveKiwiSaverMember',
+        'AutomaticallyEnrolledIntoKiwiSaver',
+        'EmployedForLessThan28Days',
+        'NotRequiredToBeAutomaticallyEnrolled',
+        'OptedIntoKiwiSaver',
+        'NotEligibleForKiwiSaver',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'KiwiSaver eligibility. Required in POST requests for all tax codes except WT and NSW.',
+        example: 'ActiveKiwiSaverMember',
       }),
     kiwiSaverEmployeeContributionRatePercentage: z
       .float64()
@@ -369,6 +389,14 @@ const EmployeeTaxSchema = z
         description: 'The date of the letter from IR.',
         'x-is-date': true,
         example: '2020-07-01T00:00:00',
+      }),
+    registeredForGST: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Is the employee registered for GST? Required in POST requests when taxCode is WT.',
+        example: true,
       }),
   })
   .openapi({ required: [] })
@@ -2990,6 +3018,7 @@ export const getEmployeesEmployeeIDTaxRoute = createRoute({
               specialStudentLoanRatePercentage: null,
               specialTaxRatePercentage: null,
               kiwiSaverContributions: 'MakeContributions',
+              kiwiSaverStatus: 'ActiveKiwiSaverMember',
               kiwiSaverOptOutDate: null,
               kiwiSaverContributionHolidayEndDate: null,
               kiwiSaverEmployeeContributionRatePercentage: 3,
@@ -2998,6 +3027,7 @@ export const getEmployeesEmployeeIDTaxRoute = createRoute({
               hasStudentLoanBalance: false,
               studentLoanBalance: null,
               studentLoanAsAt: null,
+              registeredForGST: null,
             },
           },
         },
@@ -3012,6 +3042,8 @@ export const postEmployeesEmployeeIDTaxRoute = createRoute({
   path: '/Employees/{EmployeeID}/Tax',
   tags: ['PayrollNz'],
   summary: 'Updates the tax records for a specific employee',
+  description:
+    'Replaces the entire EmployeeTax record. This is not a partial update. Any field omitted from the request is treated as null and overwrites the stored value. To change individual fields, GET the current record, merge your changes, remove deprecated fields such as isEligibleForKiwiSaver, and POST the complete object.',
   operationId: 'updateEmployeeTax',
   request: {
     headers: z.object({
@@ -3045,11 +3077,11 @@ export const postEmployeesEmployeeIDTaxRoute = createRoute({
             irdNumber: '111111111',
             taxCode: 'M',
             esctRatePercentage: 17.5,
-            isEligibleForKiwiSaver: true,
             hasSpecialStudentLoanRate: false,
             specialStudentLoanRatePercentage: null,
             specialTaxRatePercentage: null,
             kiwiSaverContributions: 'MakeContributions',
+            kiwiSaverStatus: 'ActiveKiwiSaverMember',
             kiwiSaverOptOutDate: null,
             kiwiSaverContributionHolidayEndDate: null,
             kiwiSaverEmployeeContributionRatePercentage: 3,
@@ -3058,6 +3090,7 @@ export const postEmployeesEmployeeIDTaxRoute = createRoute({
             hasStudentLoanBalance: false,
             studentLoanBalance: null,
             studentLoanAsAt: null,
+            registeredForGST: null,
           },
         },
       },
@@ -3086,6 +3119,7 @@ export const postEmployeesEmployeeIDTaxRoute = createRoute({
               specialStudentLoanRatePercentage: null,
               specialTaxRatePercentage: null,
               kiwiSaverContributions: 'MakeContributions',
+              kiwiSaverStatus: 'ActiveKiwiSaverMember',
               kiwiSaverOptOutDate: null,
               kiwiSaverContributionHolidayEndDate: null,
               kiwiSaverEmployeeContributionRatePercentage: 3,
@@ -3094,6 +3128,7 @@ export const postEmployeesEmployeeIDTaxRoute = createRoute({
               hasStudentLoanBalance: false,
               studentLoanBalance: null,
               studentLoanAsAt: null,
+              registeredForGST: null,
             },
           },
         },

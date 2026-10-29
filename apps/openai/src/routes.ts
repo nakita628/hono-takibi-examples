@@ -90,12 +90,18 @@ const PromptCacheBreakpointConfigSchema = z
         description: 'The breakpoint mode. Always `explicit`.',
         'x-stainless-const': true,
       }),
+    ttl: z
+      .enum(['30m', '12h'])
+      .exactOptional()
+      .openapi({
+        description: 'The minimum lifetime of this cache breakpoint. Defaults to the request TTL.',
+      }),
   })
   .openapi({
     required: ['mode'],
     title: 'Prompt cache breakpoint',
     description:
-      "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
+      "Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
   })
   .openapi('PromptCacheBreakpointConfig')
 
@@ -1162,7 +1168,7 @@ const PromptCacheBreakpointParamSchema = z
     required: ['mode'],
     title: 'Prompt cache breakpoint',
     description:
-      "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
+      "Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
   })
   .openapi('PromptCacheBreakpointParam')
 
@@ -2098,7 +2104,7 @@ const InputFidelitySchema = z
   .enum(['high', 'low'])
   .openapi({
     description:
-      'Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.',
+      'Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.',
   })
   .openapi('InputFidelity')
 
@@ -7025,6 +7031,30 @@ const AssistantSupportedModelsSchema = z
   ])
   .openapi({
     'x-openai-enum-deprecations': {
+      'gpt-5': {
+        message:
+          'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+      },
+      'gpt-5-mini': {
+        message:
+          'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+      },
+      'gpt-5-nano': {
+        message:
+          'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+      },
+      'gpt-5-2025-08-07': {
+        message:
+          'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+      },
+      'gpt-5-mini-2025-08-07': {
+        message:
+          'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+      },
+      'gpt-5-nano-2025-08-07': {
+        message:
+          'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+      },
       'gpt-4.1': {
         message:
           'Announced shutdown date: 2027-01-14. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
@@ -7059,16 +7089,41 @@ const AudioTranscriptionSchema = z
     model: z
       .union([
         z.string(),
-        z.enum([
-          'whisper-1',
-          'gpt-transcribe',
-          'gpt-live-transcribe',
-          'gpt-4o-mini-transcribe',
-          'gpt-4o-mini-transcribe-2025-12-15',
-          'gpt-4o-transcribe',
-          'gpt-4o-transcribe-diarize',
-          'gpt-realtime-whisper',
-        ]),
+        z
+          .enum([
+            'whisper-1',
+            'gpt-transcribe',
+            'gpt-live-transcribe',
+            'gpt-4o-mini-transcribe',
+            'gpt-4o-mini-transcribe-2025-12-15',
+            'gpt-4o-transcribe',
+            'gpt-4o-transcribe-diarize',
+            'gpt-realtime-whisper',
+          ])
+          .openapi({
+            'x-openai-enum-deprecations': {
+              'gpt-4o-mini-transcribe-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'whisper-1': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-transcribe': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-mini-transcribe': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-transcribe-diarize': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+            },
+          }),
       ])
       .exactOptional()
       .openapi({
@@ -7120,16 +7175,41 @@ const AudioTranscriptionResponseSchema = z
     model: z
       .union([
         z.string(),
-        z.enum([
-          'whisper-1',
-          'gpt-transcribe',
-          'gpt-live-transcribe',
-          'gpt-4o-mini-transcribe',
-          'gpt-4o-mini-transcribe-2025-12-15',
-          'gpt-4o-transcribe',
-          'gpt-4o-transcribe-diarize',
-          'gpt-realtime-whisper',
-        ]),
+        z
+          .enum([
+            'whisper-1',
+            'gpt-transcribe',
+            'gpt-live-transcribe',
+            'gpt-4o-mini-transcribe',
+            'gpt-4o-mini-transcribe-2025-12-15',
+            'gpt-4o-transcribe',
+            'gpt-4o-transcribe-diarize',
+            'gpt-realtime-whisper',
+          ])
+          .openapi({
+            'x-openai-enum-deprecations': {
+              'gpt-4o-mini-transcribe-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'whisper-1': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-transcribe': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-mini-transcribe': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-transcribe-diarize': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+            },
+          }),
       ])
       .exactOptional()
       .openapi({
@@ -11757,6 +11837,7 @@ const ModelIdsSharedSchema = z
       .enum([
         'gpt-6-astra',
         'gpt-6.1-sol',
+        'gpt-6.1-terra',
         'gpt-6-sol',
         'gpt-6-luna',
         'gpt-5.6-sol',
@@ -11852,6 +11933,14 @@ const ModelIdsSharedSchema = z
               'Announced shutdown date: 2027-04-01. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
           },
           'gpt-5.1': {
+            message:
+              'Announced shutdown date: 2027-04-01. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+          },
+          'gpt-5.1-2025-11-13': {
+            message:
+              'Announced shutdown date: 2027-04-01. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+          },
+          'gpt-5.4-nano-2026-03-17': {
             message:
               'Announced shutdown date: 2027-04-01. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
           },
@@ -14950,6 +15039,16 @@ const CreateGroupUserBodySchema = z
   })
   .openapi('CreateGroupUserBody')
 
+const MarkupSchema = z
+  .file()
+  .openapi({
+    type: 'string',
+    format: 'binary',
+    description:
+      "A transparent PNG overlaid on the first image to guide the edit. Must match that image's dimensions after orientation and contain transparent pixels. Supports GPT Image 2.5 and 2.6. Cannot be combined with mask.",
+  })
+  .openapi('Markup')
+
 const PartialImagesSchema = z
   .union([
     z
@@ -14993,6 +15092,7 @@ const CreateImageEditRequestSchema = z
         description:
           'An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where `image` should be edited. If there are multiple images provided, the mask will be applied on the first image. Must be a valid PNG file, less than 4MB, and have the same dimensions as `image`.',
       }),
+    markup: MarkupSchema.exactOptional(),
     background: z
       .union([z.enum(['transparent', 'opaque', 'auto']), z.null().nullable()])
       .default('auto')
@@ -16882,7 +16982,28 @@ const CreateSpeechRequestSchema = z
     model: z
       .union([
         z.string(),
-        z.enum(['tts-1', 'tts-1-hd', 'gpt-4o-mini-tts', 'gpt-4o-mini-tts-2025-12-15']),
+        z
+          .enum(['tts-1', 'tts-1-hd', 'gpt-4o-mini-tts', 'gpt-4o-mini-tts-2025-12-15'])
+          .openapi({
+            'x-openai-enum-deprecations': {
+              'gpt-4o-mini-tts': {
+                message:
+                  'Announced shutdown date: 2027-01-06. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'tts-1': {
+                message:
+                  'Announced shutdown date: 2027-01-06. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'tts-1-hd': {
+                message:
+                  'Announced shutdown date: 2027-01-06. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-mini-tts-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-01-06. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+            },
+          }),
       ])
       .openapi({
         description:
@@ -17132,46 +17253,75 @@ const CreateThreadAndRunRequestSchema = z
     model: z
       .union([
         z.string(),
-        z.enum([
-          'gpt-5',
-          'gpt-5-mini',
-          'gpt-5-nano',
-          'gpt-5-2025-08-07',
-          'gpt-5-mini-2025-08-07',
-          'gpt-5-nano-2025-08-07',
-          'gpt-4.1',
-          'gpt-4.1-mini',
-          'gpt-4.1-nano',
-          'gpt-4.1-2025-04-14',
-          'gpt-4.1-mini-2025-04-14',
-          'gpt-4.1-nano-2025-04-14',
-          'gpt-4o',
-          'gpt-4o-2024-11-20',
-          'gpt-4o-2024-08-06',
-          'gpt-4o-2024-05-13',
-          'gpt-4o-mini',
-          'gpt-4o-mini-2024-07-18',
-          'gpt-4.5-preview',
-          'gpt-4.5-preview-2025-02-27',
-          'gpt-4-turbo',
-          'gpt-4-turbo-2024-04-09',
-          'gpt-4-0125-preview',
-          'gpt-4-turbo-preview',
-          'gpt-4-1106-preview',
-          'gpt-4-vision-preview',
-          'gpt-4',
-          'gpt-4-0314',
-          'gpt-4-0613',
-          'gpt-4-32k',
-          'gpt-4-32k-0314',
-          'gpt-4-32k-0613',
-          'gpt-3.5-turbo',
-          'gpt-3.5-turbo-16k',
-          'gpt-3.5-turbo-0613',
-          'gpt-3.5-turbo-1106',
-          'gpt-3.5-turbo-0125',
-          'gpt-3.5-turbo-16k-0613',
-        ]),
+        z
+          .enum([
+            'gpt-5',
+            'gpt-5-mini',
+            'gpt-5-nano',
+            'gpt-5-2025-08-07',
+            'gpt-5-mini-2025-08-07',
+            'gpt-5-nano-2025-08-07',
+            'gpt-4.1',
+            'gpt-4.1-mini',
+            'gpt-4.1-nano',
+            'gpt-4.1-2025-04-14',
+            'gpt-4.1-mini-2025-04-14',
+            'gpt-4.1-nano-2025-04-14',
+            'gpt-4o',
+            'gpt-4o-2024-11-20',
+            'gpt-4o-2024-08-06',
+            'gpt-4o-2024-05-13',
+            'gpt-4o-mini',
+            'gpt-4o-mini-2024-07-18',
+            'gpt-4.5-preview',
+            'gpt-4.5-preview-2025-02-27',
+            'gpt-4-turbo',
+            'gpt-4-turbo-2024-04-09',
+            'gpt-4-0125-preview',
+            'gpt-4-turbo-preview',
+            'gpt-4-1106-preview',
+            'gpt-4-vision-preview',
+            'gpt-4',
+            'gpt-4-0314',
+            'gpt-4-0613',
+            'gpt-4-32k',
+            'gpt-4-32k-0314',
+            'gpt-4-32k-0613',
+            'gpt-3.5-turbo',
+            'gpt-3.5-turbo-16k',
+            'gpt-3.5-turbo-0613',
+            'gpt-3.5-turbo-1106',
+            'gpt-3.5-turbo-0125',
+            'gpt-3.5-turbo-16k-0613',
+          ])
+          .openapi({
+            'x-openai-enum-deprecations': {
+              'gpt-5': {
+                message:
+                  'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-5-mini': {
+                message:
+                  'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-5-nano': {
+                message:
+                  'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-5-2025-08-07': {
+                message:
+                  'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-5-mini-2025-08-07': {
+                message:
+                  'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-5-nano-2025-08-07': {
+                message:
+                  'Announced shutdown date: 2026-12-11. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+            },
+          }),
         z.null().nullable(),
       ])
       .exactOptional()
@@ -17360,7 +17510,31 @@ const CreateTranscriptionRequestSchema = z
             'gpt-4o-mini-transcribe-2025-12-15',
             'gpt-4o-transcribe-diarize',
           ])
-          .openapi({ 'x-stainless-const': true }),
+          .openapi({
+            'x-openai-enum-deprecations': {
+              'gpt-4o-mini-transcribe-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'whisper-1': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-transcribe': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-mini-transcribe': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-4o-transcribe-diarize': {
+                message:
+                  'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+            },
+            'x-stainless-const': true,
+          }),
       ])
       .openapi({
         description:
@@ -18469,6 +18643,10 @@ const EditImageBodyJsonParamSchema = z
           'Input image references to edit.\nFor GPT image models, you can provide up to 16 images.\n',
       }),
     mask: ImageRefParamSchema.exactOptional(),
+    markup: ImageRefParamSchema.exactOptional().openapi({
+      description:
+        "A transparent PNG overlaid on the first image, referenced by file ID, HTTPS URL, or base64 data URL. Must match that image's dimensions after orientation and contain transparent pixels. Supports GPT Image 2.5 and 2.6. Cannot be combined with mask.",
+    }),
     prompt: z
       .string()
       .min(1)
@@ -26092,11 +26270,11 @@ const LiveTransportDTMFReceivedSchema = z
   })
   .openapi('LiveTransportDTMFReceived')
 
-const LiveTransportDTMFSendSchema = z
+const LiveTransportDTMFSentSchema = z
   .object({
     type: z
-      .literal('transport.dtmf.send')
-      .default('transport.dtmf.send')
+      .literal('transport.dtmf.sent')
+      .default('transport.dtmf.sent')
       .openapi({ 'x-stainless-const': true }),
     event_id: z.string(),
     event: z
@@ -26111,11 +26289,11 @@ const LiveTransportDTMFSendSchema = z
   .openapi({
     description:
       'A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.',
-    example: { type: 'transport.dtmf.send', event_id: 'event_dtmf_2', event: '#' },
+    example: { type: 'transport.dtmf.sent', event_id: 'event_dtmf_2', event: '#' },
     required: ['type', 'event_id', 'event'],
-    'x-oaiMeta': { example: { type: 'transport.dtmf.send', event_id: 'event_dtmf_2', event: '#' } },
+    'x-oaiMeta': { example: { type: 'transport.dtmf.sent', event_id: 'event_dtmf_2', event: '#' } },
   })
-  .openapi('LiveTransportDTMFSend')
+  .openapi('LiveTransportDTMFSent')
 
 const LiveTransportRingingSchema = z
   .object({
@@ -26238,7 +26416,7 @@ const LiveServerEvent_2Schema = z
     LiveErrorEventSchema,
     LiveInfoEventSchema,
     LiveTransportDTMFReceivedSchema,
-    LiveTransportDTMFSendSchema,
+    LiveTransportDTMFSentSchema,
     LiveTransportRingingSchema,
     LiveTransportAnsweredSchema,
     LiveTransportFailedSchema,
@@ -26404,12 +26582,46 @@ const LiveSessionCreateResponseSchema = z
   })
   .openapi('LiveSessionCreateResponse')
 
+const LiveTransportDTMFSendParamSchema = z
+  .object({
+    event_id: z
+      .union([
+        z
+          .string()
+          .max(512)
+          .openapi({
+            description:
+              "Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.",
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
+    type: z
+      .literal('transport.dtmf.send')
+      .default('transport.dtmf.send')
+      .openapi({ 'x-stainless-const': true }),
+    event: z
+      .string()
+      .regex(/^[0-9A-D*#]$/)
+      .length(1)
+      .openapi({ description: 'The DTMF key to send: one of `0`–`9`, `A`–`D`, `*`, or `#`.' }),
+  })
+  .openapi({
+    description:
+      'Send one DTMF keypress to the SIP trunk through a Live sideband connection. This command is supported only for SIP calls. A successful send emits `transport.dtmf.sent` on sideband. If you provide `event_id`, the success notification includes it as `client_event_id`; a failure includes it as `error.client_event_id`. Send separate events for multiple keypresses.',
+    example: { type: 'transport.dtmf.send', event_id: 'evt_dtmf_001', event: '#' },
+    required: ['type', 'event'],
+    'x-oaiMeta': { example: { type: 'transport.dtmf.send', event_id: 'evt_dtmf_001', event: '#' } },
+  })
+  .openapi('LiveTransportDTMFSendParam')
+
 const LiveSidebandClientEventSchema = z
   .discriminatedUnion('type', [
     LiveSessionUpdateParamSchema,
     LiveInputAudioMuteParamSchema,
     LiveInputAudioUnmuteParamSchema,
     LiveOutputAudioFixturePlayParamSchema,
+    LiveTransportDTMFSendParamSchema,
     LiveInstructionsAppendParamSchema,
     LiveThinkingAppendParamSchema,
     LiveCommentaryAppendParamSchema,
@@ -26461,6 +26673,8 @@ const LiveSidebandServerEventSchema = z
     LiveTransportRingingSchema,
     LiveTransportAnsweredSchema,
     LiveTransportFailedSchema,
+    LiveTransportDTMFReceivedSchema,
+    LiveTransportDTMFSentSchema,
     LiveSessionStartedSchema,
     LiveSessionUpdatedSchema,
     LiveInputAudioMutedSchema,
@@ -30737,24 +30951,53 @@ const RealtimeSessionSchema = z
     model: z
       .union([
         z.string(),
-        z.enum([
-          'gpt-realtime',
-          'gpt-realtime-1.5',
-          'gpt-realtime-2025-08-28',
-          'gpt-4o-realtime-preview',
-          'gpt-4o-realtime-preview-2024-10-01',
-          'gpt-4o-realtime-preview-2024-12-17',
-          'gpt-4o-realtime-preview-2025-06-03',
-          'gpt-4o-mini-realtime-preview',
-          'gpt-4o-mini-realtime-preview-2024-12-17',
-          'gpt-realtime-mini',
-          'gpt-realtime-mini-2025-10-06',
-          'gpt-realtime-mini-2025-12-15',
-          'gpt-audio-1.5',
-          'gpt-audio-mini',
-          'gpt-audio-mini-2025-10-06',
-          'gpt-audio-mini-2025-12-15',
-        ]),
+        z
+          .enum([
+            'gpt-realtime',
+            'gpt-realtime-1.5',
+            'gpt-realtime-2025-08-28',
+            'gpt-4o-realtime-preview',
+            'gpt-4o-realtime-preview-2024-10-01',
+            'gpt-4o-realtime-preview-2024-12-17',
+            'gpt-4o-realtime-preview-2025-06-03',
+            'gpt-4o-mini-realtime-preview',
+            'gpt-4o-mini-realtime-preview-2024-12-17',
+            'gpt-realtime-mini',
+            'gpt-realtime-mini-2025-10-06',
+            'gpt-realtime-mini-2025-12-15',
+            'gpt-audio-1.5',
+            'gpt-audio-mini',
+            'gpt-audio-mini-2025-10-06',
+            'gpt-audio-mini-2025-12-15',
+          ])
+          .openapi({
+            'x-openai-enum-deprecations': {
+              'gpt-realtime-2025-08-28': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime-mini-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-audio-mini-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime-mini': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-audio-mini': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+            },
+          }),
       ])
       .exactOptional()
       .openapi({ description: 'The Realtime model used for this session.\n' }),
@@ -31150,27 +31393,56 @@ const RealtimeSessionCreateRequestGASchema = z
     model: z
       .union([
         z.string(),
-        z.enum([
-          'gpt-realtime',
-          'gpt-realtime-1.5',
-          'gpt-realtime-2',
-          'gpt-realtime-2.1',
-          'gpt-realtime-2.1-mini',
-          'gpt-realtime-2025-08-28',
-          'gpt-4o-realtime-preview',
-          'gpt-4o-realtime-preview-2024-10-01',
-          'gpt-4o-realtime-preview-2024-12-17',
-          'gpt-4o-realtime-preview-2025-06-03',
-          'gpt-4o-mini-realtime-preview',
-          'gpt-4o-mini-realtime-preview-2024-12-17',
-          'gpt-realtime-mini',
-          'gpt-realtime-mini-2025-10-06',
-          'gpt-realtime-mini-2025-12-15',
-          'gpt-audio-1.5',
-          'gpt-audio-mini',
-          'gpt-audio-mini-2025-10-06',
-          'gpt-audio-mini-2025-12-15',
-        ]),
+        z
+          .enum([
+            'gpt-realtime',
+            'gpt-realtime-1.5',
+            'gpt-realtime-2',
+            'gpt-realtime-2.1',
+            'gpt-realtime-2.1-mini',
+            'gpt-realtime-2025-08-28',
+            'gpt-4o-realtime-preview',
+            'gpt-4o-realtime-preview-2024-10-01',
+            'gpt-4o-realtime-preview-2024-12-17',
+            'gpt-4o-realtime-preview-2025-06-03',
+            'gpt-4o-mini-realtime-preview',
+            'gpt-4o-mini-realtime-preview-2024-12-17',
+            'gpt-realtime-mini',
+            'gpt-realtime-mini-2025-10-06',
+            'gpt-realtime-mini-2025-12-15',
+            'gpt-audio-1.5',
+            'gpt-audio-mini',
+            'gpt-audio-mini-2025-10-06',
+            'gpt-audio-mini-2025-12-15',
+          ])
+          .openapi({
+            'x-openai-enum-deprecations': {
+              'gpt-realtime-2025-08-28': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime-mini-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-audio-mini-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime-mini': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-audio-mini': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+            },
+          }),
       ])
       .exactOptional()
       .openapi({ description: 'The Realtime model used for this session.\n' }),
@@ -31667,6 +31939,298 @@ const RealtimeClientEventResponseCancelSchema = z
   })
   .openapi('RealtimeClientEventResponseCancel')
 
+const RealtimeResponseInputMessageFieldsSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .min(1)
+      .max(32)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'An optional client ID. The value `root` is reserved.' }),
+    type: z.literal('message').exactOptional(),
+    status: z
+      .union([z.literal('completed'), z.literal('incomplete'), z.literal(null)])
+      .nullable()
+      .default('completed')
+      .exactOptional()
+      .openapi({ description: 'Optional input status. Omission or null defaults to completed.' }),
+    role: z.string().exactOptional(),
+    content: z.array(z.any()).min(1).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .refine(
+    (val) =>
+      !z
+        .object({ id: z.literal('root') })
+        .openapi({ required: ['id'] })
+        .safeParse(val).success,
+  )
+  .openapi({
+    title: 'Realtime response input message fields',
+    required: ['type', 'role', 'content'],
+  })
+  .openapi('RealtimeResponseInputMessageFields')
+
+const RealtimeResponseInputTextSchema = z
+  .strictObject({ type: z.literal('input_text'), text: z.string().max(256000) })
+  .openapi({ title: 'Realtime response input text', required: ['type', 'text'] })
+  .openapi('RealtimeResponseInputText')
+
+const RealtimeResponseInputMessageSystemSchema = RealtimeResponseInputMessageFieldsSchema.and(
+  z
+    .object({
+      role: z.literal('system').exactOptional(),
+      content: z.array(RealtimeResponseInputTextSchema).length(1).exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ title: 'Realtime response input system message' })
+  .openapi('RealtimeResponseInputMessageSystem')
+
+const RealtimeResponseInputMessageDeveloperSchema = RealtimeResponseInputMessageFieldsSchema.and(
+  z
+    .object({
+      role: z.literal('developer').exactOptional(),
+      content: z.array(RealtimeResponseInputTextSchema).length(1).exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ title: 'Realtime response input developer message' })
+  .openapi('RealtimeResponseInputMessageDeveloper')
+
+const RealtimeResponseInputAudioSchema = z
+  .strictObject({
+    type: z.literal('input_audio'),
+    audio: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Base64 audio bytes in the session input audio format.' }),
+    transcript: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Optional text to associate with the input audio.' }),
+  })
+  .openapi({ title: 'Realtime response input audio', required: ['type', 'audio'] })
+  .openapi('RealtimeResponseInputAudio')
+
+const RealtimeResponseInputImageSchema = z
+  .strictObject({
+    type: z.literal('input_image'),
+    image_url: z
+      .url()
+      .regex(/^data:image\/[^;,]+;base64,.+/)
+      .openapi({ description: 'A base64 data URL with an image MIME type; use PNG or JPEG.' }),
+    detail: z
+      .union([z.literal('low'), z.literal('high'), z.literal('auto'), z.literal(null)])
+      .nullable()
+      .default('auto')
+      .exactOptional(),
+  })
+  .openapi({ title: 'Realtime response input image', required: ['type', 'image_url'] })
+  .openapi('RealtimeResponseInputImage')
+
+const RealtimeResponseInputMessageUserSchema = RealtimeResponseInputMessageFieldsSchema.and(
+  z
+    .object({
+      role: z.literal('user').exactOptional(),
+      content: z
+        .array(
+          z
+            .union([
+              RealtimeResponseInputTextSchema,
+              RealtimeResponseInputAudioSchema,
+              RealtimeResponseInputImageSchema,
+            ])
+            .openapi({
+              discriminator: {
+                propertyName: 'type',
+                mapping: {
+                  input_text: '#/components/schemas/RealtimeResponseInputText',
+                  input_audio: '#/components/schemas/RealtimeResponseInputAudio',
+                  input_image: '#/components/schemas/RealtimeResponseInputImage',
+                },
+              },
+            }),
+        )
+        .min(1)
+        .exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ title: 'Realtime response input user message' })
+  .openapi('RealtimeResponseInputMessageUser')
+
+const RealtimeResponseInputMessageAssistantSchema = RealtimeResponseInputMessageFieldsSchema.and(
+  z
+    .object({
+      role: z.literal('assistant').exactOptional(),
+      content: z
+        .array(
+          z
+            .strictObject({ type: z.literal('output_text'), text: z.string().max(256000) })
+            .openapi({
+              title: 'Realtime response input assistant text',
+              required: ['type', 'text'],
+            }),
+        )
+        .min(1)
+        .exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ title: 'Realtime response input assistant message' })
+  .openapi('RealtimeResponseInputMessageAssistant')
+
+const RealtimeResponseInputMessageSchema = z
+  .union([
+    RealtimeResponseInputMessageSystemSchema,
+    RealtimeResponseInputMessageDeveloperSchema,
+    RealtimeResponseInputMessageUserSchema,
+    RealtimeResponseInputMessageAssistantSchema,
+  ])
+  .and(z.object({ type: z.literal('message') }).openapi({ required: ['type'] }))
+  .openapi({
+    required: ['type'],
+    discriminator: {
+      propertyName: 'role',
+      mapping: {
+        system: '#/components/schemas/RealtimeResponseInputMessageSystem',
+        developer: '#/components/schemas/RealtimeResponseInputMessageDeveloper',
+        user: '#/components/schemas/RealtimeResponseInputMessageUser',
+        assistant: '#/components/schemas/RealtimeResponseInputMessageAssistant',
+      },
+    },
+    title: 'Realtime response input message',
+    description:
+      'A message supplied as input to a Realtime response. The role determines the allowed content.',
+  })
+  .openapi('RealtimeResponseInputMessage')
+
+const RealtimeResponseInputFunctionCallSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .min(1)
+      .max(32)
+      .refine((val) => !['root'].includes(val))
+      .nullable()
+      .exactOptional(),
+    type: z.literal('function_call'),
+    status: z
+      .union([z.literal('completed'), z.literal('incomplete'), z.literal(null)])
+      .nullable()
+      .default('completed')
+      .exactOptional(),
+    call_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .min(1)
+      .max(32)
+      .refine((val) => !['root'].includes(val)),
+    name: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .min(1)
+      .max(64),
+    arguments: z.string().max(1048576),
+  })
+  .openapi({
+    title: 'Realtime response input function call',
+    description: 'A function call supplied as input to a Realtime response.',
+    required: ['type', 'call_id', 'name', 'arguments'],
+  })
+  .openapi('RealtimeResponseInputFunctionCall')
+
+const RealtimeResponseInputFunctionCallOutputSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .min(1)
+      .max(32)
+      .refine((val) => !['root'].includes(val))
+      .nullable()
+      .exactOptional(),
+    type: z.literal('function_call_output'),
+    status: z
+      .union([z.literal('completed'), z.literal('incomplete'), z.literal(null)])
+      .nullable()
+      .default('completed')
+      .exactOptional(),
+    call_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .min(1)
+      .max(32)
+      .refine((val) => !['root'].includes(val)),
+    output: z.string().max(1048576),
+  })
+  .openapi({
+    title: 'Realtime response input function call output',
+    description: 'The result of a function call supplied as input to a Realtime response.',
+    required: ['type', 'call_id', 'output'],
+  })
+  .openapi('RealtimeResponseInputFunctionCallOutput')
+
+const RealtimeResponseItemReferenceSchema = z
+  .strictObject({
+    type: z
+      .literal('item_reference')
+      .exactOptional()
+      .openapi({
+        'x-stainless-const': true,
+        description: 'The type of this item. Always `item_reference`.',
+      }),
+    id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]+$/)
+      .min(1)
+      .max(32)
+      .exactOptional()
+      .openapi({ description: 'The ID of an existing item in the same Realtime session.' }),
+  })
+  .openapi({ required: [] })
+  .refine(
+    (val) =>
+      !z
+        .object({ id: z.literal('root').exactOptional() })
+        .openapi({ required: [] })
+        .safeParse(val).success,
+  )
+  .openapi({
+    description:
+      'Reference an existing item in this Realtime session as response.create input.\nItem references are only accepted in the response input array, not as new\nconversation items.\n',
+    required: ['type', 'id'],
+  })
+  .openapi('RealtimeResponseItemReference')
+
+const RealtimeResponseInputItemSchema = z
+  .union([
+    RealtimeResponseInputMessageSchema,
+    RealtimeResponseInputFunctionCallSchema,
+    RealtimeResponseInputFunctionCallOutputSchema,
+    RealtimeResponseItemReferenceSchema,
+  ])
+  .openapi({
+    title: 'Realtime response input item',
+    description:
+      'An existing item reference or a new message or function call item for a Realtime response.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        message: '#/components/schemas/RealtimeResponseInputMessage',
+        function_call: '#/components/schemas/RealtimeResponseInputFunctionCall',
+        function_call_output: '#/components/schemas/RealtimeResponseInputFunctionCallOutput',
+        item_reference: '#/components/schemas/RealtimeResponseItemReference',
+      },
+    },
+  })
+  .openapi('RealtimeResponseInputItem')
+
 const RealtimeResponseCreateParamsSchema = z
   .object({
     output_modalities: z
@@ -31739,7 +32303,7 @@ const RealtimeResponseCreateParamsSchema = z
     metadata: MetadataSchema.exactOptional(),
     prompt: PromptSchema.exactOptional(),
     input: z
-      .array(RealtimeConversationItemSchema)
+      .array(RealtimeResponseInputItemSchema)
       .exactOptional()
       .openapi({
         description:
@@ -31772,7 +32336,7 @@ const RealtimeClientEventResponseCreateSchema = z
       name: 'response.create',
       group: 'realtime',
       example:
-        '// Trigger a response with the default Conversation and no special parameters\n{\n  "type": "response.create",\n}\n\n// Trigger an out-of-band response that does not write to the default Conversation\n{\n  "type": "response.create",\n  "response": {\n    "instructions": "Provide a concise answer.",\n    "tools": [], // clear any session tools\n    "conversation": "none",\n    "output_modalities": ["text"],\n    "metadata": {\n      "response_purpose": "summarization"\n    },\n    "input": [\n      {\n        "type": "item_reference",\n        "id": "item_12345"\n      },\n      {\n        "type": "message",\n        "role": "user",\n        "content": [\n          {\n            "type": "input_text",\n            "text": "Summarize the above message in one sentence."\n          }\n        ]\n      }\n    ]\n  }\n}\n',
+        '// Trigger a response with the default Conversation and no special parameters\n{\n  "type": "response.create"\n}\n\n// Trigger an out-of-band response that does not write to the default Conversation\n{\n  "type": "response.create",\n  "response": {\n    "instructions": "Provide a concise answer.",\n    "tools": [], // clear any session tools\n    "conversation": "none",\n    "output_modalities": ["text"],\n    "metadata": {\n      "response_purpose": "summarization"\n    },\n    "input": [\n      {\n        "type": "item_reference",\n        "id": "item_12345"\n      },\n      {\n        "type": "message",\n        "role": "user",\n        "content": [\n          {\n            "type": "input_text",\n            "text": "Summarize the above message in one sentence."\n          }\n        ]\n      }\n    ]\n  }\n}\n',
     },
   })
   .openapi('RealtimeClientEventResponseCreate')
@@ -31914,6 +32478,26 @@ const RealtimeClientEventTranscriptionSessionUpdateSchema = z
     },
   })
   .openapi('RealtimeClientEventTranscriptionSessionUpdate')
+
+const RealtimeConnectDocumentationParamsSchema = z
+  .object({
+    model: z.string().exactOptional(),
+    call_id: z.string().exactOptional(),
+    intent: z
+      .enum(['realtime', 'transcription'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Selects the session type. Set `transcription` and omit `model` for a transcription session. If omitted, the session type from a client secret applies when present; otherwise the intent is `realtime`.\n',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RealtimeConnectDocumentationParams')
+
+const RealtimeConnectParamsSchema = z
+  .object({ model: z.string().exactOptional(), call_id: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('RealtimeConnectParams')
 
 const RealtimeConversationItemWithReferenceSchema = z
   .object({
@@ -32121,27 +32705,56 @@ const RealtimeSessionCreateResponseGASchema = z
     model: z
       .union([
         z.string(),
-        z.enum([
-          'gpt-realtime',
-          'gpt-realtime-1.5',
-          'gpt-realtime-2',
-          'gpt-realtime-2.1',
-          'gpt-realtime-2.1-mini',
-          'gpt-realtime-2025-08-28',
-          'gpt-4o-realtime-preview',
-          'gpt-4o-realtime-preview-2024-10-01',
-          'gpt-4o-realtime-preview-2024-12-17',
-          'gpt-4o-realtime-preview-2025-06-03',
-          'gpt-4o-mini-realtime-preview',
-          'gpt-4o-mini-realtime-preview-2024-12-17',
-          'gpt-realtime-mini',
-          'gpt-realtime-mini-2025-10-06',
-          'gpt-realtime-mini-2025-12-15',
-          'gpt-audio-1.5',
-          'gpt-audio-mini',
-          'gpt-audio-mini-2025-10-06',
-          'gpt-audio-mini-2025-12-15',
-        ]),
+        z
+          .enum([
+            'gpt-realtime',
+            'gpt-realtime-1.5',
+            'gpt-realtime-2',
+            'gpt-realtime-2.1',
+            'gpt-realtime-2.1-mini',
+            'gpt-realtime-2025-08-28',
+            'gpt-4o-realtime-preview',
+            'gpt-4o-realtime-preview-2024-10-01',
+            'gpt-4o-realtime-preview-2024-12-17',
+            'gpt-4o-realtime-preview-2025-06-03',
+            'gpt-4o-mini-realtime-preview',
+            'gpt-4o-mini-realtime-preview-2024-12-17',
+            'gpt-realtime-mini',
+            'gpt-realtime-mini-2025-10-06',
+            'gpt-realtime-mini-2025-12-15',
+            'gpt-audio-1.5',
+            'gpt-audio-mini',
+            'gpt-audio-mini-2025-10-06',
+            'gpt-audio-mini-2025-12-15',
+          ])
+          .openapi({
+            'x-openai-enum-deprecations': {
+              'gpt-realtime-2025-08-28': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime-mini-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-audio-mini-2025-12-15': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-realtime-mini': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+              'gpt-audio-mini': {
+                message:
+                  'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+              },
+            },
+          }),
       ])
       .exactOptional()
       .openapi({ description: 'The Realtime model used for this session.\n' }),
@@ -32912,7 +33525,7 @@ const RealtimeServerEventConversationItemRetrievedSchema = z
       name: 'conversation.item.retrieved',
       group: 'realtime',
       example:
-        '{\n  "type": "conversation.item.retrieved",\n  "event_id": "event_CCXGSizgEppa2d4XbKA7K",\n  "item": {\n    "id": "item_CCXGRxbY0n6WE4EszhF5w",\n    "object": "realtime.item",\n    "type": "message",\n    "status": "completed",\n    "role": "assistant",\n    "content": [\n      {\n        "type": "audio",\n        "transcript": "Yes, I can hear you loud and clear. How can I help you today?",\n        "audio": "8//2//v/9//q/+//+P/s...",\n        "format": "pcm16"\n      }\n    ]\n  }\n}\n',
+        '{\n  "type": "conversation.item.retrieved",\n  "event_id": "event_CCXGSizgEppa2d4XbKA7K",\n  "item": {\n    "id": "item_CCXGRxbY0n6WE4EszhF5w",\n    "object": "realtime.item",\n    "type": "message",\n    "status": "completed",\n    "role": "assistant",\n    "content": [\n      {\n        "type": "output_audio",\n        "transcript": "Yes, I can hear you loud and clear. How can I help you today?",\n        "audio": "AAABAP//AAA="\n      }\n    ]\n  }\n}\n',
     },
   })
   .openapi('RealtimeServerEventConversationItemRetrieved')
@@ -33083,7 +33696,7 @@ const RealtimeServerEventInputAudioBufferDtmfEventReceivedSchema = z
       name: 'input_audio_buffer.dtmf_event_received',
       group: 'realtime',
       example:
-        '{\n    "type":" input_audio_buffer.dtmf_event_received",\n    "event": "9",\n    "received_at": 1763605109,\n}\n',
+        '{\n  "type": "input_audio_buffer.dtmf_event_received",\n  "event": "9",\n  "received_at": 1763605109\n}\n',
     },
   })
   .openapi('RealtimeServerEventInputAudioBufferDtmfEventReceived')
@@ -33477,7 +34090,7 @@ const RealtimeServerEventResponseCreatedSchema = z
       name: 'response.created',
       group: 'realtime',
       example:
-        '{\n  "type": "response.created",\n  "event_id": "event_C9G8pqbTEddBSIxbBN6Os",\n  "response": {\n    "object": "realtime.response",\n    "id": "resp_C9G8p7IH2WxLbkgPNouYL",\n    "status": "in_progress",\n    "status_details": null,\n    "output": [],\n    "conversation_id": "conv_C9G8mmBkLhQJwCon3hoJN",\n    "output_modalities": [\n      "audio"\n    ],\n    "max_output_tokens": "inf",\n    "audio": {\n      "output": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "voice": "marin"\n      }\n    },\n    "usage": null,\n    "metadata": null\n  },\n}\n',
+        '{\n  "type": "response.created",\n  "event_id": "event_C9G8pqbTEddBSIxbBN6Os",\n  "response": {\n    "object": "realtime.response",\n    "id": "resp_C9G8p7IH2WxLbkgPNouYL",\n    "status": "in_progress",\n    "status_details": null,\n    "output": [],\n    "conversation_id": "conv_C9G8mmBkLhQJwCon3hoJN",\n    "output_modalities": [\n      "audio"\n    ],\n    "max_output_tokens": "inf",\n    "audio": {\n      "output": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "voice": "marin"\n      }\n    },\n    "usage": null,\n    "metadata": null\n  }\n}\n',
     },
   })
   .openapi('RealtimeServerEventResponseCreated')
@@ -33621,7 +34234,7 @@ const RealtimeServerEventResponseOutputItemDoneSchema = z
       name: 'response.output_item.done',
       group: 'realtime',
       example:
-        '{\n    "event_id": "event_3536",\n    "type": "response.output_item.done",\n    "response_id": "resp_001",\n    "output_index": 0,\n    "item": {\n        "id": "msg_007",\n        "object": "realtime.item",\n        "type": "message",\n        "status": "completed",\n        "role": "assistant",\n        "content": [\n            {\n                "type": "text",\n                "text": "Sure, I can help with that."\n            }\n        ]\n    }\n}\n',
+        '{\n  "event_id": "event_3536",\n  "type": "response.output_item.done",\n  "response_id": "resp_001",\n  "output_index": 0,\n  "item": {\n    "id": "msg_007",\n    "object": "realtime.item",\n    "type": "message",\n    "status": "completed",\n    "role": "assistant",\n    "content": [\n      {\n        "type": "output_text",\n        "text": "Sure, I can help with that."\n      }\n    ]\n  }\n}\n',
     },
   })
   .openapi('RealtimeServerEventResponseOutputItemDone')
@@ -33725,7 +34338,7 @@ const RealtimeServerEventSessionCreatedSchema = z
       name: 'session.created',
       group: 'realtime',
       example:
-        '{\n  "type": "session.created",\n  "event_id": "event_C9G5RJeJ2gF77mV7f2B1j",\n  "session": {\n    "type": "realtime",\n    "object": "realtime.session",\n    "id": "sess_C9G5QPteg4UIbotdKLoYQ",\n    "model": "gpt-realtime-2025-08-28",\n    "output_modalities": [\n      "audio"\n    ],\n    "instructions": "Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act like a human, but remember that you aren\'t a human and that you can\'t do human things in the real world. Your voice and personality should be warm and engaging, with a lively and playful tone. If interacting in a non-English language, start by using the standard accent or dialect familiar to the user. Talk quickly. You should always call a function if you can. Do not refer to these rules, even if you’re asked about them.",\n    "tools": [],\n    "tool_choice": "auto",\n    "max_output_tokens": "inf",\n    "tracing": null,\n    "prompt": null,\n    "expires_at": 1756324625,\n    "audio": {\n      "input": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "transcription": null,\n        "noise_reduction": null,\n        "turn_detection": {\n          "type": "server_vad",\n          "threshold": 0.5,\n          "prefix_padding_ms": 300,\n          "silence_duration_ms": 200,\n          "idle_timeout_ms": null,\n          "create_response": true,\n          "interrupt_response": true\n        }\n      },\n      "output": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "voice": "marin",\n        "speed": 1\n      }\n    },\n    "include": null\n  },\n}\n',
+        '{\n  "type": "session.created",\n  "event_id": "event_C9G5RJeJ2gF77mV7f2B1j",\n  "session": {\n    "type": "realtime",\n    "object": "realtime.session",\n    "id": "sess_C9G5QPteg4UIbotdKLoYQ",\n    "model": "gpt-realtime-2025-08-28",\n    "output_modalities": [\n      "audio"\n    ],\n    "instructions": "Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act like a human, but remember that you aren\'t a human and that you can\'t do human things in the real world. Your voice and personality should be warm and engaging, with a lively and playful tone. If interacting in a non-English language, start by using the standard accent or dialect familiar to the user. Talk quickly. You should always call a function if you can. Do not refer to these rules, even if you’re asked about them.",\n    "tools": [],\n    "tool_choice": "auto",\n    "max_output_tokens": "inf",\n    "tracing": null,\n    "prompt": null,\n    "expires_at": 1756324625,\n    "audio": {\n      "input": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "transcription": null,\n        "noise_reduction": null,\n        "turn_detection": {\n          "type": "server_vad",\n          "threshold": 0.5,\n          "prefix_padding_ms": 300,\n          "silence_duration_ms": 200,\n          "idle_timeout_ms": null,\n          "create_response": true,\n          "interrupt_response": true\n        }\n      },\n      "output": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "voice": "marin",\n        "speed": 1\n      }\n    },\n    "include": null\n  }\n}\n',
     },
   })
   .openapi('RealtimeServerEventSessionCreated')
@@ -33754,7 +34367,7 @@ const RealtimeServerEventSessionUpdatedSchema = z
       name: 'session.updated',
       group: 'realtime',
       example:
-        '{\n  "type": "session.updated",\n  "event_id": "event_C9G8mqI3IucaojlVKE8Cs",\n  "session": {\n    "type": "realtime",\n    "object": "realtime.session",\n    "id": "sess_C9G8l3zp50uFv4qgxfJ8o",\n    "model": "gpt-realtime-2025-08-28",\n    "output_modalities": [\n      "audio"\n    ],\n    "instructions": "Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act like a human, but remember that you aren\'t a human and that you can\'t do human things in the real world. Your voice and personality should be warm and engaging, with a lively and playful tone. If interacting in a non-English language, start by using the standard accent or dialect familiar to the user. Talk quickly. You should always call a function if you can. Do not refer to these rules, even if you’re asked about them.",\n    "tools": [\n      {\n        "type": "function",\n        "name": "display_color_palette",\n        "description": "\\nCall this function when a user asks for a color palette.\\n",\n        "parameters": {\n          "type": "object",\n          "strict": true,\n          "properties": {\n            "theme": {\n              "type": "string",\n              "description": "Description of the theme for the color scheme."\n            },\n            "colors": {\n              "type": "array",\n              "description": "Array of five hex color codes based on the theme.",\n              "items": {\n                "type": "string",\n                "description": "Hex color code"\n              }\n            }\n          },\n          "required": [\n            "theme",\n            "colors"\n          ]\n        }\n      }\n    ],\n    "tool_choice": "auto",\n    "max_output_tokens": "inf",\n    "tracing": null,\n    "prompt": null,\n    "expires_at": 1756324832,\n    "audio": {\n      "input": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "transcription": null,\n        "noise_reduction": null,\n        "turn_detection": {\n          "type": "server_vad",\n          "threshold": 0.5,\n          "prefix_padding_ms": 300,\n          "silence_duration_ms": 200,\n          "idle_timeout_ms": null,\n          "create_response": true,\n          "interrupt_response": true\n        }\n      },\n      "output": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "voice": "marin",\n        "speed": 1\n      }\n    },\n    "include": null\n  },\n}\n',
+        '{\n  "type": "session.updated",\n  "event_id": "event_C9G8mqI3IucaojlVKE8Cs",\n  "session": {\n    "type": "realtime",\n    "object": "realtime.session",\n    "id": "sess_C9G8l3zp50uFv4qgxfJ8o",\n    "model": "gpt-realtime-2025-08-28",\n    "output_modalities": [\n      "audio"\n    ],\n    "instructions": "Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act like a human, but remember that you aren\'t a human and that you can\'t do human things in the real world. Your voice and personality should be warm and engaging, with a lively and playful tone. If interacting in a non-English language, start by using the standard accent or dialect familiar to the user. Talk quickly. You should always call a function if you can. Do not refer to these rules, even if you’re asked about them.",\n    "tools": [\n      {\n        "type": "function",\n        "name": "display_color_palette",\n        "description": "\\nCall this function when a user asks for a color palette.\\n",\n        "parameters": {\n          "type": "object",\n          "strict": true,\n          "properties": {\n            "theme": {\n              "type": "string",\n              "description": "Description of the theme for the color scheme."\n            },\n            "colors": {\n              "type": "array",\n              "description": "Array of five hex color codes based on the theme.",\n              "items": {\n                "type": "string",\n                "description": "Hex color code"\n              }\n            }\n          },\n          "required": [\n            "theme",\n            "colors"\n          ]\n        }\n      }\n    ],\n    "tool_choice": "auto",\n    "max_output_tokens": "inf",\n    "tracing": null,\n    "prompt": null,\n    "expires_at": 1756324832,\n    "audio": {\n      "input": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "transcription": null,\n        "noise_reduction": null,\n        "turn_detection": {\n          "type": "server_vad",\n          "threshold": 0.5,\n          "prefix_padding_ms": 300,\n          "silence_duration_ms": 200,\n          "idle_timeout_ms": null,\n          "create_response": true,\n          "interrupt_response": true\n        }\n      },\n      "output": {\n        "format": {\n          "type": "audio/pcm",\n          "rate": 24000\n        },\n        "voice": "marin",\n        "speed": 1\n      }\n    },\n    "include": null\n  }\n}\n',
     },
   })
   .openapi('RealtimeServerEventSessionUpdated')
@@ -34871,6 +35484,11 @@ const RealtimeTranslationClientSecretCreateResponseSchema = z
   })
   .openapi('RealtimeTranslationClientSecretCreateResponse')
 
+const RealtimeTranslationConnectParamsSchema = z
+  .object({ model: z.string() })
+  .openapi({ required: ['model'] })
+  .openapi('RealtimeTranslationConnectParams')
+
 const RealtimeTranslationServerEventSessionCreatedSchema = z
   .object({
     event_id: z.string().openapi({ description: 'The unique ID of the server event.' }),
@@ -35189,6 +35807,66 @@ const ResponseUsageSchema = z
   })
   .openapi('ResponseUsage')
 
+const CachedUsageDetailsSchema = z
+  .object({ cached_text_tokens: z.int(), cached_image_tokens: z.int() })
+  .openapi({ required: ['cached_text_tokens', 'cached_image_tokens'] })
+  .openapi('CachedUsageDetails')
+
+const ImageGenToolUsageSchema = z
+  .object({
+    input_tokens: z
+      .int()
+      .openapi({ description: 'The number of tokens (images and text) in the input prompt.' }),
+    total_tokens: z
+      .int()
+      .openapi({
+        description: 'The total number of tokens (images and text) used for the image generation.',
+      }),
+    output_tokens: z
+      .int()
+      .openapi({ description: 'The number of output tokens generated by the model.' }),
+    output_tokens_details: ImageGenOutputTokensDetailsSchema.exactOptional(),
+    input_tokens_details: ImageGenInputUsageDetailsSchema,
+    cached_tokens: z.int().exactOptional(),
+    cached_tokens_details: CachedUsageDetailsSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['input_tokens', 'total_tokens', 'output_tokens', 'input_tokens_details'],
+    title: 'Image generation tool usage',
+    description: 'Token usage for image generation tool calls in a response.',
+  })
+  .openapi('ImageGenToolUsage')
+
+const WebSearchUsageSchema = z
+  .object({
+    num_requests: z
+      .int()
+      .openapi({ description: 'The number of billable web search requests issued.' }),
+  })
+  .openapi({
+    required: ['num_requests'],
+    title: 'Web search usage',
+    description: 'Usage details for web search requests that ran while generating the response.',
+  })
+  .openapi('WebSearchUsage')
+
+const ResponseToolUsageSchema = z
+  .object({
+    image_gen: ImageGenToolUsageSchema.openapi({
+      description: 'Aggregated usage statistics for image generation tool calls.',
+    }),
+    web_search: WebSearchUsageSchema.openapi({
+      description: 'Aggregated billable usage statistics for web search tool calls.',
+    }),
+  })
+  .openapi({
+    required: ['image_gen', 'web_search'],
+    title: 'Response tool usage',
+    description:
+      'Aggregated usage details for billable tools that ran while generating the response.',
+  })
+  .openapi('ResponseToolUsage')
+
 const PromptCacheOptionsSchema = z
   .object({
     ttl: PromptCacheTTLEnumSchema.openapi({
@@ -35455,6 +36133,10 @@ const ResponseSchema = ModelResponsePropertiesSchema.and(ResponsePropertiesSchem
           ])
           .exactOptional(),
         usage: z.union([ResponseUsageSchema, z.null().nullable()]).exactOptional(),
+        tool_usage: ResponseToolUsageSchema.exactOptional().openapi({
+          description:
+            'Usage reported by hosted tools, separate from base model `usage`. The field\ncan be omitted when tool usage is unavailable. When present, tool families\nwith no recorded usage have zero counts.\n\n`image_gen` sums available token counts across image generation calls.\nCalls with missing or incomplete usage records may be skipped. Output\ntoken details and cached input counts can be omitted. An omitted cache\ncount means cache usage is unknown.\n\n`web_search.num_requests` counts billable searches. Discounted searches\nand actions such as opening a page are excluded. Use billing records to\nreconcile final charges.\n',
+        }),
         prompt_cache_options: PromptCacheOptionsSchema.exactOptional(),
         prompt_cache_diagnostics: PromptCacheDiagnosticsSchema.exactOptional(),
         moderation: z
@@ -35551,6 +36233,16 @@ const ResponseSchema = ModelResponsePropertiesSchema.and(ResponsePropertiesSchem
         output_tokens: 52,
         output_tokens_details: { reasoning_tokens: 0 },
         total_tokens: 380,
+      },
+      tool_usage: {
+        image_gen: {
+          input_tokens: 0,
+          input_tokens_details: { text_tokens: 0, image_tokens: 0 },
+          output_tokens: 0,
+          output_tokens_details: { text_tokens: 0, image_tokens: 0 },
+          total_tokens: 0,
+        },
+        web_search: { num_requests: 0 },
       },
       user: null,
       metadata: {},
@@ -42345,6 +43037,185 @@ const SafetyAlertResourceSchema = z
   })
   .openapi('SafetyAlertResource')
 
+const OrderEnumSchema = z.enum(['asc', 'desc']).openapi('OrderEnum')
+
+const ExternalKeyPurposeSchema = z.enum(['ekm', 'psp_decryption']).openapi('ExternalKeyPurpose')
+
+const ExternalKeyResourceSchema = z
+  .object({
+    object: z.string(),
+    id: z.string(),
+    type: z.string(),
+    purpose: ExternalKeyPurposeSchema.exactOptional(),
+    name: z.string(),
+    api_project_ids: z.array(z.string()),
+    workspace_id: z.string(),
+    created_at: z.int(),
+    role_arn: z.string().exactOptional(),
+    external_id: z.string().exactOptional(),
+    kms_arn: z.string().exactOptional(),
+    workload_identity_project_number: z.string().exactOptional(),
+    workload_identity_pool_id: z.string().exactOptional(),
+    workload_identity_provider_id: z.string().exactOptional(),
+    audience: z.string().exactOptional(),
+    kms_project_id: z.string().exactOptional(),
+    kms_key_ring_name: z.string().exactOptional(),
+    kms_key_name: z.string().exactOptional(),
+    kms_key_location: z.string().exactOptional(),
+    kms_key_version: z.string().exactOptional(),
+    tenant_id: z.string().exactOptional(),
+    vault_uri: z.string().exactOptional(),
+    key_name: z.string().exactOptional(),
+    key_version: z.string().exactOptional(),
+  })
+  .openapi({
+    required: ['object', 'id', 'type', 'name', 'api_project_ids', 'workspace_id', 'created_at'],
+  })
+  .openapi('ExternalKeyResource')
+
+const ListExternalKeysResourceSchema = z
+  .object({
+    object: z.literal('list').default('list').openapi({ 'x-stainless-const': true }),
+    data: z.array(ExternalKeyResourceSchema),
+    first_id: z.union([z.string(), z.null().nullable()]),
+    last_id: z.union([z.string(), z.null().nullable()]),
+    has_more: z.boolean(),
+  })
+  .openapi({ required: ['object', 'data', 'first_id', 'last_id', 'has_more'] })
+  .openapi('ListExternalKeysResource')
+
+const AwsExternalKeyParamsSchema = z
+  .object({
+    name: z.string().openapi({ description: 'A friendly name to identify this config' }),
+    type: z.literal('aws').default('aws').openapi({ 'x-stainless-const': true }),
+    role_arn: z
+      .string()
+      .regex(/^arn:aws:iam::\d{12}:role\/.+$/)
+      .openapi({ description: 'The Role ARN that OpenAI will assume to call your KMS' }),
+    kms_arn: z
+      .string()
+      .openapi({ description: 'The Key Management System ARN for the master key you manage' }),
+    external_id: z
+      .string()
+      .openapi({
+        description:
+          "The ExternalID that OpenAI will pass in the AssumeRole call for the customer's AWS account. This must be the OpenAI organization ID or an API project ID that belongs to the organization.",
+      }),
+    purpose: ExternalKeyPurposeSchema.exactOptional(),
+  })
+  .openapi({ required: ['name', 'type', 'role_arn', 'kms_arn', 'external_id'] })
+  .openapi('AwsExternalKeyParams')
+
+const GcpExternalKeyParamsSchema = z
+  .object({
+    name: z.string().openapi({ description: 'A friendly name to identify this config' }),
+    type: z.literal('gcp').default('gcp').openapi({ 'x-stainless-const': true }),
+    workload_identity_project_number: z
+      .string()
+      .regex(/^[0-9]{1,19}$/)
+      .openapi({
+        description:
+          "The numeric GCP project number where you registered OpenAI's workload identity",
+      }),
+    workload_identity_pool_id: z
+      .string()
+      .openapi({
+        description:
+          'The pool containing the Workload Identity provider that you registered for OpenAI',
+      }),
+    workload_identity_provider_id: z
+      .string()
+      .openapi({ description: 'The Workload Identity provider that you registered for OpenAI' }),
+    kms_project_id: z
+      .string()
+      .openapi({ description: 'The string GCP project name where your KMS resides' }),
+    kms_key_ring_name: z
+      .string()
+      .openapi({ description: 'The Key Management System key ring for the master key you manage' }),
+    kms_key_name: z
+      .string()
+      .openapi({ description: 'The name of the Key Management System master key you manage' }),
+    kms_key_location: z
+      .string()
+      .openapi({
+        description: 'The region where your Key Management System master key is located',
+      }),
+    audience: z
+      .string()
+      .openapi({
+        description:
+          "The aud field in the identity token OpenAI will pass in the call to the customer's GCP STS. This must be the OpenAI organization ID or an API project ID that belongs to the organization.",
+      }),
+    purpose: ExternalKeyPurposeSchema.exactOptional(),
+    kms_key_version: z
+      .string()
+      .regex(/^[1-9][0-9]*$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'An exact CryptoKeyVersion number. Required for PSP decryption; not accepted for EKM.',
+      }),
+  })
+  .openapi({
+    required: [
+      'name',
+      'type',
+      'workload_identity_project_number',
+      'workload_identity_pool_id',
+      'workload_identity_provider_id',
+      'kms_project_id',
+      'kms_key_ring_name',
+      'kms_key_name',
+      'kms_key_location',
+      'audience',
+    ],
+  })
+  .openapi('GcpExternalKeyParams')
+
+const AzureExternalKeyParamsSchema = z
+  .object({
+    name: z.string().openapi({ description: 'A friendly name to identify this config' }),
+    type: z.literal('azure').default('azure').openapi({ 'x-stainless-const': true }),
+    tenant_id: z
+      .string()
+      .regex(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)
+      .openapi({ description: 'Your Azure tenant UUID' }),
+    vault_uri: z
+      .string()
+      .regex(/^https:\/\/.+\.vault\.azure\.net\/?$/)
+      .openapi({ description: 'The URI of the Azure vault containing the master key you manage' }),
+    key_name: z
+      .string()
+      .regex(/^org-[0-9a-zA-Z-]*--[0-9a-zA-Z-]*$/)
+      .max(127)
+      .openapi({ description: 'The name of the Azure Key Vault master key that you manage' }),
+    purpose: ExternalKeyPurposeSchema.exactOptional(),
+    key_version: z
+      .string()
+      .regex(/^[0-9a-fA-F]{32}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'An exact Azure Key Vault key version. Required for PSP decryption; not accepted for EKM.',
+      }),
+  })
+  .openapi({ required: ['name', 'type', 'tenant_id', 'vault_uri', 'key_name'] })
+  .openapi('AzureExternalKeyParams')
+
+const V1OrganizationExternalKeysPostRequestSchema = z
+  .discriminatedUnion('type', [
+    AwsExternalKeyParamsSchema,
+    GcpExternalKeyParamsSchema,
+    AzureExternalKeyParamsSchema,
+  ])
+  .openapi({ discriminator: { propertyName: 'type' } })
+  .openapi('V1OrganizationExternalKeysPostRequest')
+
+const ValidateExternalKeyResourceSchema = z
+  .object({ status: z.string() })
+  .openapi({ required: ['status'] })
+  .openapi('ValidateExternalKeyResource')
+
 const DecisionsUsageBucketWidthSchema = z
   .enum(['1m', '1h', '1d'])
   .openapi('DecisionsUsageBucketWidth')
@@ -43092,8 +43963,6 @@ const ProvenanceResourceSchema = z
   })
   .openapi({ required: ['object', 'created_at', 'results'] })
   .openapi('ProvenanceResource')
-
-const OrderEnumSchema = z.enum(['asc', 'desc']).openapi('OrderEnum')
 
 const VideoModelSchema = z
   .union([
@@ -46277,6 +47146,32 @@ const MultiAgentConfigResourceSchema = z
   })
   .openapi('MultiAgentConfigResource')
 
+const CompactionResourceSchema = z
+  .strictObject({
+    async: z
+      .boolean()
+      .openapi({
+        description: 'Whether context is compacted in the background. Defaults to true.',
+      }),
+  })
+  .openapi({
+    required: ['async'],
+    description: "The effective settings for compacting the agent's context.",
+  })
+  .openapi('CompactionResource')
+
+const ExperimentalConfigResourceSchema = z
+  .strictObject({
+    time_awareness: z
+      .boolean()
+      .openapi({ description: 'Whether the model receives periodic current-time reminders.' }),
+  })
+  .openapi({
+    required: ['time_awareness'],
+    description: 'The effective experimental settings for an agent.',
+  })
+  .openapi('ExperimentalConfigResource')
+
 const AutomationAgentConfigResourceSchema = z
   .strictObject({
     model: z.string().min(0).openapi({ description: 'The requested model name.' }),
@@ -46299,6 +47194,12 @@ const AutomationAgentConfigResourceSchema = z
       .openapi({ description: 'Configured tools, excluding confidential credentials.' }),
     multi_agent: MultiAgentConfigResourceSchema.openapi({
       description: 'The configuration for creating and coordinating subagents.',
+    }),
+    compaction: CompactionResourceSchema.exactOptional().openapi({
+      description: 'The effective context compaction settings.',
+    }),
+    experimental: ExperimentalConfigResourceSchema.exactOptional().openapi({
+      description: 'The effective experimental settings for the agent.',
     }),
   })
   .openapi({
@@ -47121,6 +48022,22 @@ const ErrorResponse_2Schema = z
   .openapi({ required: ['error'], description: 'An API error response.' })
   .openapi('ErrorResponse_2')
 
+const ExperimentalConfigOverridesParamSchema = z
+  .strictObject({
+    time_awareness: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to give the model periodic current-time reminders. Omit to keep the current setting.',
+      }),
+  })
+  .openapi({
+    description: 'Experimental settings to update. Omitted settings keep their current values.',
+    required: [],
+  })
+  .openapi('ExperimentalConfigOverridesParam')
+
 const ReasoningEffortParamSchema = z
   .enum(['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'])
   .openapi({ description: 'The amount of reasoning effort the model should use.' })
@@ -47280,6 +48197,20 @@ const MultiAgentConfigCurrentParamSchema = z
     description: 'Explicit configuration for creating and coordinating subagents.',
   })
   .openapi('MultiAgentConfigCurrentParam')
+
+const CompactionParamSchema = z
+  .strictObject({
+    async: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to compact context in the background. Omission or null defaults to true. Set to false to use blocking compaction. Background compaction may increase token usage.',
+      }),
+  })
+  .openapi({ description: "Settings for compacting the agent's context.", required: [] })
+  .openapi('CompactionParam')
 
 const AgentToolConfigParamFunctionSchema = z
   .strictObject({
@@ -47689,6 +48620,12 @@ const AgentToolConfigParamSchema = z
 
 const SessionAgentConfigParamSchema = z
   .strictObject({
+    experimental: ExperimentalConfigOverridesParamSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Experimental settings to merge by key. Omitted settings keep their current values.',
+      }),
     model: z
       .string()
       .min(0)
@@ -47726,6 +48663,13 @@ const SessionAgentConfigParamSchema = z
       .union([MultiAgentConfigCurrentParamSchema, z.null().nullable()])
       .exactOptional()
       .openapi({ description: 'Configuration for creating and coordinating subagents.' }),
+    compaction: z
+      .union([CompactionParamSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Context compaction settings. Omit to keep the current settings. A supplied object replaces the settings; null or an empty object enables background compaction.',
+      }),
     tools: z
       .array(AgentToolConfigParamSchema)
       .min(0)
@@ -47739,7 +48683,7 @@ const SessionAgentConfigParamSchema = z
   })
   .openapi({
     description:
-      'Agent configuration for a session. Omitted fields inherit from `agent_id` when supplied. Supplied objects and arrays replace the whole field; null resets nullable fields.',
+      'Agent configuration for a session. Omitted fields inherit from `agent_id` when supplied. Supplied objects and arrays replace the whole field, except experimental settings, which merge by key. Null resets nullable fields.',
     required: [],
   })
   .openapi('SessionAgentConfigParam')
@@ -51277,6 +52221,12 @@ const AgentResourceSchema = z
     multi_agent: MultiAgentConfigResourceSchema.openapi({
       description: 'The resolved configuration for creating and coordinating subagents.',
     }),
+    compaction: CompactionResourceSchema.exactOptional().openapi({
+      description: 'The effective context compaction settings.',
+    }),
+    experimental: ExperimentalConfigResourceSchema.exactOptional().openapi({
+      description: 'The effective experimental settings for the agent.',
+    }),
   })
   .openapi({
     required: [
@@ -51338,6 +52288,20 @@ const AgentListResourceSchema = z
     description: 'A page of Agents API resources, with IDs for retrieving additional pages.',
   })
   .openapi('AgentListResource')
+
+const ExperimentalConfigParamSchema = z
+  .strictObject({
+    time_awareness: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to give the model periodic current-time reminders. Defaults to false.',
+      }),
+  })
+  .openapi({ description: 'Experimental agent settings. These features may change.', required: [] })
+  .openapi('ExperimentalConfigParam')
 
 const PersistedAgentToolConfigParamFunctionSchema = z
   .strictObject({
@@ -51665,6 +52629,11 @@ const PersistedAgentToolConfigParamSchema = z
 
 const CreateAgentParamsSchema = z
   .strictObject({
+    experimental: ExperimentalConfigParamSchema.default({ time_awareness: false })
+      .exactOptional()
+      .openapi({
+        description: 'Experimental agent settings. All experimental features default to disabled.',
+      }),
     metadata: z
       .record(z.string(), z.string().min(0).max(512))
       .refine((val) => Object.keys(val).length >= 0)
@@ -51736,12 +52705,24 @@ const CreateAgentParamsSchema = z
         description:
           'Configuration for creating and coordinating subagents. Subagent tools are disabled by default.',
       }),
+    compaction: z
+      .union([CompactionParamSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description: 'Context compaction settings. Omission or null enables background compaction.',
+      }),
   })
   .openapi({ required: ['model'], description: 'Parameters for creating a reusable agent.' })
   .openapi('CreateAgentParams')
 
 const UpdateAgentParamsSchema = z
   .strictObject({
+    experimental: ExperimentalConfigOverridesParamSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Experimental settings to merge by key. Omitted settings keep their current values.',
+      }),
     model: z
       .string()
       .min(0)
@@ -51779,6 +52760,13 @@ const UpdateAgentParamsSchema = z
       .union([MultiAgentConfigCurrentParamSchema, z.null().nullable()])
       .exactOptional()
       .openapi({ description: 'Configuration for creating and coordinating subagents.' }),
+    compaction: z
+      .union([CompactionParamSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Context compaction settings. Omit to keep the current settings. A supplied object replaces the settings; null or an empty object enables background compaction.',
+      }),
     metadata: z
       .record(z.string(), z.string().min(0).max(512))
       .refine((val) => Object.keys(val).length >= 0)
@@ -52386,6 +53374,12 @@ const SessionAgentResourceSchema = z
       .openapi({ description: 'Tools available to the agent.' }),
     multi_agent: MultiAgentConfigResourceSchema.openapi({
       description: 'Configuration for creating and coordinating subagents.',
+    }),
+    compaction: CompactionResourceSchema.exactOptional().openapi({
+      description: 'The effective context compaction settings.',
+    }),
+    experimental: ExperimentalConfigResourceSchema.exactOptional().openapi({
+      description: 'The effective experimental settings for the agent.',
     }),
   })
   .openapi({
@@ -56330,12 +57324,18 @@ const BetaPromptCacheBreakpointConfigSchema = z
         description: 'The breakpoint mode. Always `explicit`.',
         'x-stainless-const': true,
       }),
+    ttl: z
+      .enum(['30m', '12h'])
+      .exactOptional()
+      .openapi({
+        description: 'The minimum lifetime of this cache breakpoint. Defaults to the request TTL.',
+      }),
   })
   .openapi({
     required: ['mode'],
     title: 'Prompt cache breakpoint',
     description:
-      "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
+      "Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
   })
   .openapi('BetaPromptCacheBreakpointConfig')
 
@@ -57446,7 +58446,7 @@ const BetaPromptCacheBreakpointParamSchema = z
     required: ['mode'],
     title: 'Prompt cache breakpoint',
     description:
-      "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
+      "Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
   })
   .openapi('BetaPromptCacheBreakpointParam')
 
@@ -58703,7 +59703,7 @@ const BetaInputFidelitySchema = z
   .enum(['high', 'low'])
   .openapi({
     description:
-      'Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.',
+      'Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.',
   })
   .openapi('BetaInputFidelity')
 
@@ -61632,6 +62632,7 @@ const BetaModelIdsSharedSchema = z
       .enum([
         'gpt-6-astra',
         'gpt-6.1-sol',
+        'gpt-6.1-terra',
         'gpt-6-sol',
         'gpt-6-luna',
         'gpt-5.6-sol',
@@ -61727,6 +62728,14 @@ const BetaModelIdsSharedSchema = z
               'Announced shutdown date: 2027-04-01. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
           },
           'gpt-5.1': {
+            message:
+              'Announced shutdown date: 2027-04-01. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+          },
+          'gpt-5.1-2025-11-13': {
+            message:
+              'Announced shutdown date: 2027-04-01. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+          },
+          'gpt-5.4-nano-2026-03-17': {
             message:
               'Announced shutdown date: 2027-04-01. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
           },
@@ -64020,6 +65029,96 @@ const BetaOutputItemSchema = z
   .openapi({ discriminator: { propertyName: 'type' } })
   .openapi('BetaOutputItem')
 
+const BetaImageGenOutputTokensDetailsSchema = z
+  .object({
+    image_tokens: z
+      .int()
+      .openapi({ description: 'The number of image output tokens generated by the model.' }),
+    text_tokens: z
+      .int()
+      .openapi({ description: 'The number of text output tokens generated by the model.' }),
+  })
+  .openapi({
+    required: ['image_tokens', 'text_tokens'],
+    title: 'Image generation output token details',
+    description: 'The output token details for the image generation.',
+  })
+  .openapi('BetaImageGenOutputTokensDetails')
+
+const BetaImageGenInputUsageDetailsSchema = z
+  .object({
+    text_tokens: z.int().openapi({ description: 'The number of text tokens in the input prompt.' }),
+    image_tokens: z
+      .int()
+      .openapi({ description: 'The number of image tokens in the input prompt.' }),
+  })
+  .openapi({
+    required: ['text_tokens', 'image_tokens'],
+    title: 'Input usage details',
+    description: 'The input tokens detailed information for the image generation.',
+  })
+  .openapi('BetaImageGenInputUsageDetails')
+
+const BetaCachedUsageDetailsSchema = z
+  .object({ cached_text_tokens: z.int(), cached_image_tokens: z.int() })
+  .openapi({ required: ['cached_text_tokens', 'cached_image_tokens'] })
+  .openapi('BetaCachedUsageDetails')
+
+const BetaImageGenToolUsageSchema = z
+  .object({
+    input_tokens: z
+      .int()
+      .openapi({ description: 'The number of tokens (images and text) in the input prompt.' }),
+    total_tokens: z
+      .int()
+      .openapi({
+        description: 'The total number of tokens (images and text) used for the image generation.',
+      }),
+    output_tokens: z
+      .int()
+      .openapi({ description: 'The number of output tokens generated by the model.' }),
+    output_tokens_details: BetaImageGenOutputTokensDetailsSchema.exactOptional(),
+    input_tokens_details: BetaImageGenInputUsageDetailsSchema,
+    cached_tokens: z.int().exactOptional(),
+    cached_tokens_details: BetaCachedUsageDetailsSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['input_tokens', 'total_tokens', 'output_tokens', 'input_tokens_details'],
+    title: 'Image generation tool usage',
+    description: 'Token usage for image generation tool calls in a response.',
+  })
+  .openapi('BetaImageGenToolUsage')
+
+const BetaWebSearchUsageSchema = z
+  .object({
+    num_requests: z
+      .int()
+      .openapi({ description: 'The number of billable web search requests issued.' }),
+  })
+  .openapi({
+    required: ['num_requests'],
+    title: 'Web search usage',
+    description: 'Usage details for web search requests that ran while generating the response.',
+  })
+  .openapi('BetaWebSearchUsage')
+
+const BetaResponseToolUsageSchema = z
+  .object({
+    image_gen: BetaImageGenToolUsageSchema.openapi({
+      description: 'Aggregated usage statistics for image generation tool calls.',
+    }),
+    web_search: BetaWebSearchUsageSchema.openapi({
+      description: 'Aggregated billable usage statistics for web search tool calls.',
+    }),
+  })
+  .openapi({
+    required: ['image_gen', 'web_search'],
+    title: 'Response tool usage',
+    description:
+      'Aggregated usage details for billable tools that ran while generating the response.',
+  })
+  .openapi('BetaResponseToolUsage')
+
 const BetaPromptCacheOptionsSchema = z
   .object({
     ttl: BetaPromptCacheTTLEnumSchema.openapi({
@@ -64338,6 +65437,10 @@ const BetaResponseSchema = BetaModelResponsePropertiesSchema.and(BetaResponsePro
           ])
           .exactOptional(),
         usage: z.union([BetaResponseUsageSchema, z.null().nullable()]).exactOptional(),
+        tool_usage: BetaResponseToolUsageSchema.exactOptional().openapi({
+          description:
+            'Usage reported by hosted tools, separate from base model `usage`. The field\ncan be omitted when tool usage is unavailable. When present, tool families\nwith no recorded usage have zero counts.\n\n`image_gen` sums available token counts across image generation calls.\nCalls with missing or incomplete usage records may be skipped. Output\ntoken details and cached input counts can be omitted. An omitted cache\ncount means cache usage is unknown.\n\n`web_search.num_requests` counts billable searches. Discounted searches\nand actions such as opening a page are excluded. Use billing records to\nreconcile final charges.\n',
+        }),
         prompt_cache_options: BetaPromptCacheOptionsSchema.exactOptional(),
         prompt_cache_diagnostics: BetaPromptCacheDiagnosticsSchema.exactOptional(),
         moderation: z
@@ -64434,6 +65537,16 @@ const BetaResponseSchema = BetaModelResponsePropertiesSchema.and(BetaResponsePro
         output_tokens: 52,
         output_tokens_details: { reasoning_tokens: 0 },
         total_tokens: 380,
+      },
+      tool_usage: {
+        image_gen: {
+          input_tokens: 0,
+          input_tokens_details: { text_tokens: 0, image_tokens: 0 },
+          output_tokens: 0,
+          output_tokens_details: { text_tokens: 0, image_tokens: 0 },
+          total_tokens: 0,
+        },
+        web_search: { num_requests: 0 },
       },
       user: null,
       metadata: {},
@@ -68997,7 +70110,7 @@ export const postAudioSpeechRoute = createRoute({
   tags: ['Audio'],
   summary: 'Create speech',
   description:
-    'Generates audio from the input text.\n\nReturns the audio file content, or a stream of audio events.\n',
+    'Generates audio from the input text.\n\nReturns the audio file content, or a stream of audio events.\n\nThe `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`, `gpt-4o-mini-tts-2025-03-20`, and\n`gpt-4o-mini-tts-2025-12-15` models are deprecated and scheduled to shut down\non January 6, 2027. These examples use the existing Speech API; for new\nintegrations, migrate to `gpt-realtime-2.1-mini` through the\n[Realtime API](https://developers.openai.com/api/docs/guides/realtime). See the\n[deprecation schedule](https://developers.openai.com/api/docs/deprecations) for migration details.\n',
   operationId: 'createSpeech',
   request: {
     body: {
@@ -69106,7 +70219,31 @@ export const postAudioTranscriptionsRoute = createRoute({
                       'gpt-4o-mini-transcribe-2025-12-15',
                       'gpt-4o-transcribe-diarize',
                     ])
-                    .openapi({ 'x-stainless-const': true }),
+                    .openapi({
+                      'x-openai-enum-deprecations': {
+                        'gpt-4o-mini-transcribe-2025-12-15': {
+                          message:
+                            'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                        },
+                        'whisper-1': {
+                          message:
+                            'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                        },
+                        'gpt-4o-transcribe': {
+                          message:
+                            'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                        },
+                        'gpt-4o-mini-transcribe': {
+                          message:
+                            'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                        },
+                        'gpt-4o-transcribe-diarize': {
+                          message:
+                            'Announced shutdown date: 2027-02-26. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                        },
+                      },
+                      'x-stainless-const': true,
+                    }),
                 ])
                 .openapi({
                   description:
@@ -69382,7 +70519,8 @@ export const postAudioTranslationsRoute = createRoute({
   path: '/audio/translations',
   tags: ['Audio'],
   summary: 'Create translation',
-  description: 'Translates audio into English.',
+  description:
+    'Translates audio into English.\n\nThis endpoint supports only `whisper-1`. The endpoint and model are deprecated\nand scheduled to shut down on February 26, 2027. Migrate to\n`/v1/realtime/translations`, which requires a separate integration. See the\n[deprecation schedule](https://developers.openai.com/api/docs/deprecations)\nfor details.\n',
   operationId: 'createTranslation',
   request: {
     body: {
@@ -69505,6 +70643,7 @@ export const postAudioTranslationsRoute = createRoute({
     },
     503: InferenceServiceUnavailableResponse,
   },
+  deprecated: true,
 })
 
 export const getAudioVoiceConsentsRoute = createRoute({
@@ -73078,6 +74217,7 @@ export const postImagesEditsRoute = createRoute({
                   description:
                     'An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where `image` should be edited. If there are multiple images provided, the mask will be applied on the first image. Must be a valid PNG file, less than 4MB, and have the same dimensions as `image`.',
                 }),
+              markup: MarkupSchema.exactOptional(),
               background: ((schema) =>
                 z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
                 z.union([
@@ -82640,27 +83780,56 @@ export const postRealtimeCallsRoute = createRoute({
                   model: z
                     .union([
                       z.string(),
-                      z.enum([
-                        'gpt-realtime',
-                        'gpt-realtime-1.5',
-                        'gpt-realtime-2',
-                        'gpt-realtime-2.1',
-                        'gpt-realtime-2.1-mini',
-                        'gpt-realtime-2025-08-28',
-                        'gpt-4o-realtime-preview',
-                        'gpt-4o-realtime-preview-2024-10-01',
-                        'gpt-4o-realtime-preview-2024-12-17',
-                        'gpt-4o-realtime-preview-2025-06-03',
-                        'gpt-4o-mini-realtime-preview',
-                        'gpt-4o-mini-realtime-preview-2024-12-17',
-                        'gpt-realtime-mini',
-                        'gpt-realtime-mini-2025-10-06',
-                        'gpt-realtime-mini-2025-12-15',
-                        'gpt-audio-1.5',
-                        'gpt-audio-mini',
-                        'gpt-audio-mini-2025-10-06',
-                        'gpt-audio-mini-2025-12-15',
-                      ]),
+                      z
+                        .enum([
+                          'gpt-realtime',
+                          'gpt-realtime-1.5',
+                          'gpt-realtime-2',
+                          'gpt-realtime-2.1',
+                          'gpt-realtime-2.1-mini',
+                          'gpt-realtime-2025-08-28',
+                          'gpt-4o-realtime-preview',
+                          'gpt-4o-realtime-preview-2024-10-01',
+                          'gpt-4o-realtime-preview-2024-12-17',
+                          'gpt-4o-realtime-preview-2025-06-03',
+                          'gpt-4o-mini-realtime-preview',
+                          'gpt-4o-mini-realtime-preview-2024-12-17',
+                          'gpt-realtime-mini',
+                          'gpt-realtime-mini-2025-10-06',
+                          'gpt-realtime-mini-2025-12-15',
+                          'gpt-audio-1.5',
+                          'gpt-audio-mini',
+                          'gpt-audio-mini-2025-10-06',
+                          'gpt-audio-mini-2025-12-15',
+                        ])
+                        .openapi({
+                          'x-openai-enum-deprecations': {
+                            'gpt-realtime-2025-08-28': {
+                              message:
+                                'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                            },
+                            'gpt-realtime-mini-2025-12-15': {
+                              message:
+                                'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                            },
+                            'gpt-audio-mini-2025-12-15': {
+                              message:
+                                'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                            },
+                            'gpt-realtime': {
+                              message:
+                                'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                            },
+                            'gpt-realtime-mini': {
+                              message:
+                                'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                            },
+                            'gpt-audio-mini': {
+                              message:
+                                'Announced shutdown date: 2027-01-20. See https://developers.openai.com/api/docs/deprecations for details and recommended replacements.',
+                            },
+                          },
+                        }),
                     ])
                     .exactOptional()
                     .openapi({ description: 'The Realtime model used for this session.\n' }),
@@ -86556,6 +87725,185 @@ export const getSafetyAlertsIdRoute = createRoute({
       content: { 'application/json': { schema: ErrorResponseSchema } },
     },
   },
+})
+
+export const getOrganizationExternalKeysRoute = createRoute({
+  method: 'get',
+  path: '/organization/external_keys',
+  summary: "List the external key configs registered on the user's organization",
+  description: "List the external key configs registered on the user's organization",
+  operationId: "Listtheexternalkeyconfigsregisteredontheuser'sorganization",
+  request: {
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            required: false,
+            schema: { type: 'integer', minimum: 0, maximum: 100 },
+          },
+        }),
+      order: OrderEnumSchema.openapi({
+        param: {
+          name: 'order',
+          in: 'query',
+          required: false,
+          schema: { $ref: '#/components/schemas/OrderEnum' },
+        },
+      }).exactOptional(),
+      after: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'after',
+            in: 'query',
+            required: false,
+            schema: { anyOf: [{ type: 'string' }, { type: 'null' }] },
+          },
+        }),
+      purpose: ExternalKeyPurposeSchema.openapi({
+        param: {
+          name: 'purpose',
+          in: 'query',
+          description: 'Filter by key purpose. When omitted, returns keys of all purposes.',
+          required: false,
+          schema: { $ref: '#/components/schemas/ExternalKeyPurpose' },
+        },
+      }).exactOptional(),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: { 'application/json': { schema: ListExternalKeysResourceSchema } },
+    },
+  },
+  security: [{ AdminApiKeyAuth: [] }],
+})
+
+export const postOrganizationExternalKeysRoute = createRoute({
+  method: 'post',
+  path: '/organization/external_keys',
+  summary: 'Add an external key config for an organization',
+  description: 'Add an external key config for an organization',
+  operationId: 'Addanexternalkeyconfigforanorganization',
+  request: {
+    body: {
+      content: { 'application/json': { schema: V1OrganizationExternalKeysPostRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: { 'application/json': { schema: ExternalKeyResourceSchema } },
+    },
+  },
+  security: [{ AdminApiKeyAuth: [] }],
+})
+
+export const getOrganizationExternalKeysExternalKeyIdRoute = createRoute({
+  method: 'get',
+  path: '/organization/external_keys/{external_key_id}',
+  summary: 'Retrieve an external key registration',
+  description: "Retrieve a stored external key registration for the user's organization.",
+  operationId: 'Retrieveanexternalkeyregistration',
+  request: {
+    params: z.object({
+      external_key_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'external_key_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: { 'application/json': { schema: ExternalKeyResourceSchema } },
+    },
+  },
+  security: [{ AdminApiKeyAuth: [] }],
+})
+
+export const deleteOrganizationExternalKeysExternalKeyIdRoute = createRoute({
+  method: 'delete',
+  path: '/organization/external_keys/{external_key_id}',
+  summary: "Delete an external key config for the user's organization",
+  description: "Delete an external key config for the user's organization",
+  operationId: "Deleteanexternalkeyconfigfortheuser'sorganization",
+  request: {
+    params: z.object({
+      external_key_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'external_key_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: { 'application/json': { schema: ExternalKeyResourceSchema } },
+    },
+  },
+  security: [{ AdminApiKeyAuth: [] }],
+})
+
+export const postOrganizationExternalKeysExternalKeyIdValidateRoute = createRoute({
+  method: 'post',
+  path: '/organization/external_keys/{external_key_id}/validate',
+  summary: "Validate an external key config for the user's organization",
+  description: "Validate an external key config for the user's organization",
+  operationId: "Validateanexternalkeyconfigfortheuser'sorganization",
+  request: {
+    params: z.object({
+      external_key_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'external_key_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: { 'application/json': { schema: ValidateExternalKeyResourceSchema } },
+    },
+  },
+  security: [{ AdminApiKeyAuth: [] }],
 })
 
 export const getLiveSessionsSessionIdContentRoute = createRoute({
@@ -91806,84 +93154,216 @@ export const getAgentsSessionsRoute = createRoute({
     'Lists managed agent sessions using ID-based pagination and the requested sort order. See [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).',
   operationId: 'listAgentSessions',
   request: {
-    query: z.object({
-      limit: z
-        .preprocess((val) => {
-          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
-            return val
-          if (/^-?\d+$/.test(val)) return BigInt(val)
-          const num = Number(val)
-          return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(1n).max(100n))
-        .default(20n)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'limit',
-            in: 'query',
-            required: false,
-            schema: { type: 'integer', format: 'int64', minimum: 1, maximum: 100, default: 20 },
-            description:
-              'The maximum number of resources to return, between 1 and 100. Defaults to 20.',
-          },
-        }),
-      order: z
-        .enum(['asc', 'desc'])
-        .default('desc')
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'order',
-            in: 'query',
-            required: false,
-            schema: {
-              type: 'string',
-              enum: ['asc', 'desc'],
+    query: z
+      .looseObject({})
+      .transform((val) => {
+        const rest: [string, unknown][] = []
+        const groups = new Map<string, Record<string, unknown>>()
+        const group = (name: string) => {
+          const found = groups.get(name)
+          if (found !== undefined) return found
+          const made: Record<string, unknown> = Object.create(null)
+          groups.set(name, made)
+          return made
+        }
+        const isGroup = (item: unknown): item is Record<string, unknown> =>
+          typeof item === 'object' && item !== null && !Array.isArray(item)
+        const lists = new WeakSet<object>()
+        const isIndex = (part: string | undefined) => part !== undefined && /^\d*$/.test(part)
+        const child = (target: Record<string, unknown>, key: string, asList: boolean) => {
+          const held = target[key]
+          if (isGroup(held)) return held
+          const made: Record<string, unknown> = Object.create(null)
+          if (asList) lists.add(made)
+          target[key] = made
+          return made
+        }
+        const set = (
+          root: Record<string, unknown>,
+          path: readonly string[],
+          item: unknown,
+        ): void => {
+          const work: [Record<string, unknown>, number, unknown, boolean][] = [
+            [root, 0, item, false],
+          ]
+          for (let job = work.pop(); job !== undefined; job = work.pop()) {
+            const [target, at, value, split] = job
+            const head = path[at]
+            if (head === undefined) continue
+            const next = path[at + 1]
+            if (head === '') {
+              if (!split && Array.isArray(value)) {
+                for (let i = value.length - 1; i >= 0; i -= 1)
+                  work.push([target, at, value[i], true])
+                continue
+              }
+              const size = Object.keys(target).length
+              if (next === undefined) {
+                target[String(size)] = value
+                continue
+              }
+              const free =
+                next === ''
+                  ? -1
+                  : Object.values(target).findIndex((held) => isGroup(held) && !(next in held))
+              work.push([
+                child(target, String(free < 0 ? size : free), isIndex(next)),
+                at + 1,
+                value,
+                false,
+              ])
+              continue
+            }
+            if (next === undefined) {
+              target[head] = value
+              continue
+            }
+            work.push([child(target, head, isIndex(next)), at + 1, value, false])
+          }
+        }
+        const settle = (root: unknown): unknown => {
+          if (!isGroup(root)) return root
+          const found: [Record<string, unknown>, string, Record<string, unknown>][] = []
+          const queue: Record<string, unknown>[] = [root]
+          for (const node of queue) {
+            for (const [key, inner] of Object.entries(node)) {
+              if (isGroup(inner)) {
+                found.push([node, key, inner])
+                queue.push(inner)
+              }
+            }
+          }
+          const finish = (group: Record<string, unknown>): unknown =>
+            lists.has(group)
+              ? Object.entries(group)
+                  .sort((a, b) => Number(a[0]) - Number(b[0]))
+                  .map(([, inner]) => inner)
+              : Object.assign(Object.create(null), group)
+          for (const [parent, key, group] of found.reverse()) {
+            parent[key] = finish(group)
+          }
+          return finish(root)
+        }
+        const deep: string[] = ['metadata']
+        for (const [key, item] of Object.entries(val)) {
+          const match = /^([^\[\]]+)((?:\[[^\[\]]*\])+)$/.exec(key)
+          const name = match?.[1]
+          const path = match?.[2]
+          if (name !== undefined && path !== undefined && deep.includes(name)) {
+            const parts = path.slice(1, -1).split('][')
+            set(group(name), parts, item)
+            continue
+          }
+          rest.push([key, item])
+        }
+        return Object.fromEntries([
+          ...rest,
+          ...[...groups].map(([name, held]) => [name, settle(held)] as const),
+        ])
+      })
+      .pipe(
+        z.object({
+          limit: z
+            .preprocess((val) => {
+              if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+                return val
+              if (/^-?\d+$/.test(val)) return BigInt(val)
+              const num = Number(val)
+              return Number.isSafeInteger(num) ? BigInt(num) : val
+            }, z.int64().min(1n).max(100n))
+            .default(20n)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'limit',
+                in: 'query',
+                required: false,
+                schema: { type: 'integer', format: 'int64', minimum: 1, maximum: 100, default: 20 },
+                description:
+                  'The maximum number of resources to return, between 1 and 100. Defaults to 20.',
+              },
+            }),
+          order: z
+            .enum(['asc', 'desc'])
+            .default('desc')
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'order',
+                in: 'query',
+                required: false,
+                schema: {
+                  type: 'string',
+                  enum: ['asc', 'desc'],
+                  'x-enumDescriptions': [
+                    'Returns resources in ascending order.',
+                    'Returns resources in descending order.',
+                  ],
+                  description: 'The order in which paginated resources are returned.',
+                  default: 'desc',
+                },
+                description: 'The order in which resources are returned. Defaults to `desc`.',
+              },
               'x-enumDescriptions': [
                 'Returns resources in ascending order.',
                 'Returns resources in descending order.',
               ],
               description: 'The order in which paginated resources are returned.',
-              default: 'desc',
-            },
-            description: 'The order in which resources are returned. Defaults to `desc`.',
-          },
-          'x-enumDescriptions': [
-            'Returns resources in ascending order.',
-            'Returns resources in descending order.',
-          ],
-          description: 'The order in which paginated resources are returned.',
+            }),
+          after: z
+            .string()
+            .min(0)
+            .max(1048576)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'after',
+                in: 'query',
+                required: false,
+                schema: { type: 'string', minLength: 0, maxLength: 1048576 },
+                description: 'Return resources after this resource ID in the selected order.',
+              },
+            }),
+          agent_id: z
+            .string()
+            .min(0)
+            .max(1048576)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'agent_id',
+                in: 'query',
+                required: false,
+                schema: { type: 'string', minLength: 0, maxLength: 1048576 },
+                description:
+                  'Only return sessions whose root agent has this ID. Omit to return sessions for all agents.',
+              },
+            }),
+          metadata: z
+            .record(z.string(), z.string().min(0).max(512))
+            .refine((val) => Object.keys(val).length >= 0)
+            .refine((val) => Object.keys(val).length <= 16)
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'metadata',
+                in: 'query',
+                required: false,
+                schema: {
+                  type: 'object',
+                  additionalProperties: { type: 'string', minLength: 0, maxLength: 512 },
+                  propertyNames: { type: 'string', minLength: 1, maxLength: 64 },
+                  minProperties: 0,
+                  maxProperties: 16,
+                },
+                description:
+                  'Exact string matches supplied as `metadata[key]=value`. All supplied pairs must match. Up to 16 pairs, with keys from 1 to 64 characters and values up to 512 characters. New sessions and metadata updates may take time to appear in filtered results.',
+                style: 'deepObject',
+                explode: true,
+              },
+            }),
         }),
-      after: z
-        .string()
-        .min(0)
-        .max(1048576)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'after',
-            in: 'query',
-            required: false,
-            schema: { type: 'string', minLength: 0, maxLength: 1048576 },
-            description: 'Return resources after this resource ID in the selected order.',
-          },
-        }),
-      agent_id: z
-        .string()
-        .min(0)
-        .max(1048576)
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'agent_id',
-            in: 'query',
-            required: false,
-            schema: { type: 'string', minLength: 0, maxLength: 1048576 },
-            description:
-              'Only return sessions whose root agent has this ID. Omit to return sessions for all agents.',
-          },
-        }),
-    }),
+      ),
   },
   responses: {
     200: {
