@@ -89,6 +89,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/backstage-catalog": {
+      "name": "@apps/backstage-catalog",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/bitbucket": {
       "name": "@apps/bitbucket",
       "dependencies": {
@@ -133,6 +147,20 @@
     },
     "apps/brevo": {
       "name": "@apps/brevo",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/calcom": {
+      "name": "@apps/calcom",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -551,6 +579,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/langfuse": {
+      "name": "@apps/langfuse",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/line": {
       "name": "@apps/line",
       "dependencies": {
@@ -567,6 +609,20 @@
     },
     "apps/linode": {
       "name": "@apps/linode",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/medusa-admin": {
+      "name": "@apps/medusa-admin",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -635,8 +691,50 @@
         "typescript": "catalog:",
       },
     },
+    "apps/n8n": {
+      "name": "@apps/n8n",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/netbox": {
+      "name": "@apps/netbox",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/netlify": {
       "name": "@apps/netlify",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/nocodb": {
+      "name": "@apps/nocodb",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -859,8 +957,36 @@
         "typescript": "catalog:",
       },
     },
+    "apps/temporal": {
+      "name": "@apps/temporal",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/tmdb": {
       "name": "@apps/tmdb",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/train-travel": {
+      "name": "@apps/train-travel",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1036,6 +1162,8 @@
 
     "@apps/authentik": ["@apps/authentik@workspace:apps/authentik"],
 
+    "@apps/backstage-catalog": ["@apps/backstage-catalog@workspace:apps/backstage-catalog"],
+
     "@apps/bitbucket": ["@apps/bitbucket@workspace:apps/bitbucket"],
 
     "@apps/box": ["@apps/box@workspace:apps/box"],
@@ -1043,6 +1171,8 @@
     "@apps/box-versions": ["@apps/box-versions@workspace:apps/box-versions"],
 
     "@apps/brevo": ["@apps/brevo@workspace:apps/brevo"],
+
+    "@apps/calcom": ["@apps/calcom@workspace:apps/calcom"],
 
     "@apps/clerk": ["@apps/clerk@workspace:apps/clerk"],
 
@@ -1102,9 +1232,13 @@
 
     "@apps/lago": ["@apps/lago@workspace:apps/lago"],
 
+    "@apps/langfuse": ["@apps/langfuse@workspace:apps/langfuse"],
+
     "@apps/line": ["@apps/line@workspace:apps/line"],
 
     "@apps/linode": ["@apps/linode@workspace:apps/linode"],
+
+    "@apps/medusa-admin": ["@apps/medusa-admin@workspace:apps/medusa-admin"],
 
     "@apps/medusa-store": ["@apps/medusa-store@workspace:apps/medusa-store"],
 
@@ -1114,7 +1248,13 @@
 
     "@apps/msgraph": ["@apps/msgraph@workspace:apps/msgraph"],
 
+    "@apps/n8n": ["@apps/n8n@workspace:apps/n8n"],
+
+    "@apps/netbox": ["@apps/netbox@workspace:apps/netbox"],
+
     "@apps/netlify": ["@apps/netlify@workspace:apps/netlify"],
+
+    "@apps/nocodb": ["@apps/nocodb@workspace:apps/nocodb"],
 
     "@apps/okta": ["@apps/okta@workspace:apps/okta"],
 
@@ -1146,7 +1286,11 @@
 
     "@apps/supabase": ["@apps/supabase@workspace:apps/supabase"],
 
+    "@apps/temporal": ["@apps/temporal@workspace:apps/temporal"],
+
     "@apps/tmdb": ["@apps/tmdb@workspace:apps/tmdb"],
+
+    "@apps/train-travel": ["@apps/train-travel@workspace:apps/train-travel"],
 
     "@apps/trello": ["@apps/trello@workspace:apps/trello"],
 
