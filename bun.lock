@@ -271,6 +271,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/immich": {
+      "name": "@apps/immich",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/intercom": {
+      "name": "@apps/intercom",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/jira": {
       "name": "@apps/jira",
       "dependencies": {
@@ -439,6 +467,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/pagerduty": {
+      "name": "@apps/pagerduty",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/paypal": {
       "name": "@apps/paypal",
       "dependencies": {
@@ -565,6 +607,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/supabase": {
+      "name": "@apps/supabase",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/twilio": {
       "name": "@apps/twilio",
       "dependencies": {
@@ -581,6 +637,20 @@
     },
     "apps/twitter": {
       "name": "@apps/twitter",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/vault": {
+      "name": "@apps/vault",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -698,6 +768,10 @@
 
     "@apps/hetzner": ["@apps/hetzner@workspace:apps/hetzner"],
 
+    "@apps/immich": ["@apps/immich@workspace:apps/immich"],
+
+    "@apps/intercom": ["@apps/intercom@workspace:apps/intercom"],
+
     "@apps/jira": ["@apps/jira@workspace:apps/jira"],
 
     "@apps/keycloak": ["@apps/keycloak@workspace:apps/keycloak"],
@@ -722,6 +796,8 @@
 
     "@apps/ory": ["@apps/ory@workspace:apps/ory"],
 
+    "@apps/pagerduty": ["@apps/pagerduty@workspace:apps/pagerduty"],
+
     "@apps/paypal": ["@apps/paypal@workspace:apps/paypal"],
 
     "@apps/petstore": ["@apps/petstore@workspace:apps/petstore"],
@@ -740,9 +816,13 @@
 
     "@apps/stripe": ["@apps/stripe@workspace:apps/stripe"],
 
+    "@apps/supabase": ["@apps/supabase@workspace:apps/supabase"],
+
     "@apps/twilio": ["@apps/twilio@workspace:apps/twilio"],
 
     "@apps/twitter": ["@apps/twitter@workspace:apps/twitter"],
+
+    "@apps/vault": ["@apps/vault@workspace:apps/vault"],
 
     "@apps/vercel": ["@apps/vercel@workspace:apps/vercel"],
 

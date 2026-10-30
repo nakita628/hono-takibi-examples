@@ -141,3 +141,8 @@ Generation examples for [hono-takibi](https://github.com/nakita628/hono-takibi).
 | [meilisearch](./apps/meilisearch) | [open-api.json](https://raw.githubusercontent.com/meilisearch/open-api/main/open-api.json) | [routes.ts](./apps/meilisearch/src/routes.ts) · [api.md](./apps/meilisearch/src/api.md) |
 | [zendesk](./apps/zendesk) | [oas.yaml](https://developer.zendesk.com/zendesk/oas.yaml) | [routes.ts](./apps/zendesk/src/routes.ts) · [api.md](./apps/zendesk/src/api.md) |
 | [e-gov-law](./apps/e-gov-law) | [lawapi-v2.yaml](https://laws.e-gov.go.jp/api/2/swagger-ui/lawapi-v2.yaml) | [routes.ts](./apps/e-gov-law/src/routes.ts) · [api.md](./apps/e-gov-law/src/api.md) |
+| [intercom](./apps/intercom) | [api.intercom.io.yaml](https://raw.githubusercontent.com/intercom/Intercom-OpenAPI/main/descriptions/2.17/api.intercom.io.yaml) | [routes.ts](./apps/intercom/src/routes.ts) · [api.md](./apps/intercom/src/api.md) |
+| [pagerduty](./apps/pagerduty) | [openapiv3.json](https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json) | [routes.ts](./apps/pagerduty/src/routes.ts) · [api.md](./apps/pagerduty/src/api.md) |
+| [supabase](./apps/supabase) | [v1-json](https://api.supabase.com/api/v1-json) | [routes.ts](./apps/supabase/src/routes.ts) · [api.md](./apps/supabase/src/api.md) |
+| [vault](./apps/vault) | [openapi.json](https://raw.githubusercontent.com/hashicorp/vault-client-go/main/openapi.json) | [routes.ts](./apps/vault/src/routes.ts) · [api.md](./apps/vault/src/api.md) |
+| [immich](./apps/immich) | [immich-openapi-specs.json](https://raw.githubusercontent.com/immich-app/immich/main/open-api/immich-openapi-specs.json) | [routes.ts](./apps/immich/src/routes.ts) · [api.md](./apps/immich/src/api.md) |
