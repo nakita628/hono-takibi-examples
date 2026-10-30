@@ -33,6 +33,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/airflow": {
+      "name": "@apps/airflow",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/asana": {
       "name": "@apps/asana",
       "dependencies": {
@@ -215,6 +229,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/directus": {
+      "name": "@apps/directus",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/discord": {
       "name": "@apps/discord",
       "dependencies": {
@@ -369,6 +397,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/hubspot": {
+      "name": "@apps/hubspot",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/huggingface": {
       "name": "@apps/huggingface",
       "dependencies": {
@@ -439,6 +481,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/jira-service-management": {
+      "name": "@apps/jira-service-management",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/keycloak": {
       "name": "@apps/keycloak",
       "dependencies": {
@@ -481,8 +537,50 @@
         "typescript": "catalog:",
       },
     },
+    "apps/lago": {
+      "name": "@apps/lago",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/line": {
       "name": "@apps/line",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/linode": {
+      "name": "@apps/linode",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/medusa-store": {
+      "name": "@apps/medusa-store",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -930,6 +1028,8 @@
 
     "@apps/adyen-services": ["@apps/adyen-services@workspace:apps/adyen-services"],
 
+    "@apps/airflow": ["@apps/airflow@workspace:apps/airflow"],
+
     "@apps/asana": ["@apps/asana@workspace:apps/asana"],
 
     "@apps/asana-app-components": ["@apps/asana-app-components@workspace:apps/asana-app-components"],
@@ -956,6 +1056,8 @@
 
     "@apps/digitalocean": ["@apps/digitalocean@workspace:apps/digitalocean"],
 
+    "@apps/directus": ["@apps/directus@workspace:apps/directus"],
+
     "@apps/discord": ["@apps/discord@workspace:apps/discord"],
 
     "@apps/docker-hub": ["@apps/docker-hub@workspace:apps/docker-hub"],
@@ -978,6 +1080,8 @@
 
     "@apps/hetzner": ["@apps/hetzner@workspace:apps/hetzner"],
 
+    "@apps/hubspot": ["@apps/hubspot@workspace:apps/hubspot"],
+
     "@apps/huggingface": ["@apps/huggingface@workspace:apps/huggingface"],
 
     "@apps/immich": ["@apps/immich@workspace:apps/immich"],
@@ -988,13 +1092,21 @@
 
     "@apps/jira": ["@apps/jira@workspace:apps/jira"],
 
+    "@apps/jira-service-management": ["@apps/jira-service-management@workspace:apps/jira-service-management"],
+
     "@apps/keycloak": ["@apps/keycloak@workspace:apps/keycloak"],
 
     "@apps/kintone": ["@apps/kintone@workspace:apps/kintone"],
 
     "@apps/kubernetes": ["@apps/kubernetes@workspace:apps/kubernetes"],
 
+    "@apps/lago": ["@apps/lago@workspace:apps/lago"],
+
     "@apps/line": ["@apps/line@workspace:apps/line"],
+
+    "@apps/linode": ["@apps/linode@workspace:apps/linode"],
+
+    "@apps/medusa-store": ["@apps/medusa-store@workspace:apps/medusa-store"],
 
     "@apps/meilisearch": ["@apps/meilisearch@workspace:apps/meilisearch"],
 
