@@ -2,9 +2,26 @@
   "name": "hono-takibi-examples",
   "private": true,
   "type": "module",
-  "scripts": {
-    "generate": "pnpm -r run generate",
-    "typecheck": "pnpm -r run typecheck"
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "catalog": {
+      "@hono/zod-openapi": "^1.6.3",
+      "@types/node": "^26.6.5",
+      "hono": "^4.13.13",
+      "hono-takibi": "^0.28.0",
+      "typescript": "^7.0.2",
+      "zod": "^4.6.7"
+    }
   },
-  "packageManager": "pnpm@11.7.0"
+  "scripts": {
+    "generate": "bun run --workspaces --sequential --no-exit-on-error generate",
+    "typecheck": "bun run --workspaces --sequential --no-exit-on-error typecheck"
+  },
+  "packageManager": "bun@1.4.4",
+  "overrides": {
+    "@effect/platform-node-shared": "4.0.6"
+  }
 }
