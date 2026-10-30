@@ -146,3 +146,17 @@ Generation examples for [hono-takibi](https://github.com/nakita628/hono-takibi).
 | [supabase](./apps/supabase) | [v1-json](https://api.supabase.com/api/v1-json) | [routes.ts](./apps/supabase/src/routes.ts) · [api.md](./apps/supabase/src/api.md) |
 | [vault](./apps/vault) | [openapi.json](https://raw.githubusercontent.com/hashicorp/vault-client-go/main/openapi.json) | [routes.ts](./apps/vault/src/routes.ts) · [api.md](./apps/vault/src/api.md) |
 | [immich](./apps/immich) | [immich-openapi-specs.json](https://raw.githubusercontent.com/immich-app/immich/main/open-api/immich-openapi-specs.json) | [routes.ts](./apps/immich/src/routes.ts) · [api.md](./apps/immich/src/api.md) |
+| [clerk](./apps/clerk) | [2025-04-10.yml](https://raw.githubusercontent.com/clerk/openapi-specs/main/bapi/2025-04-10.yml) | [routes.ts](./apps/clerk/src/routes.ts) · [api.md](./apps/clerk/src/api.md) |
+| [typesense](./apps/typesense) | [openapi.yml](https://raw.githubusercontent.com/typesense/typesense-api-spec/master/openapi.yml) | [routes.ts](./apps/typesense/src/routes.ts) · [api.md](./apps/typesense/src/api.md) |
+| [qdrant](./apps/qdrant) | [openapi.json](https://raw.githubusercontent.com/qdrant/qdrant/master/docs/redoc/master/openapi.json) | [routes.ts](./apps/qdrant/src/routes.ts) · [api.md](./apps/qdrant/src/api.md) |
+| [bitbucket](./apps/bitbucket) | [swagger.v3.json](https://developer.atlassian.com/cloud/bitbucket/swagger.v3.json) | [routes.ts](./apps/bitbucket/src/routes.ts) · [api.md](./apps/bitbucket/src/api.md) |
+| [trello](./apps/trello) | [swagger.v3.json](https://developer.atlassian.com/cloud/trello/swagger.v3.json) | [routes.ts](./apps/trello/src/routes.ts) · [api.md](./apps/trello/src/api.md) |
+| [huggingface](./apps/huggingface) | [openapi.json](https://huggingface.co/.well-known/openapi.json) | [routes.ts](./apps/huggingface/src/routes.ts) · [api.md](./apps/huggingface/src/api.md) |
+| [elevenlabs](./apps/elevenlabs) | [openapi.json](https://api.elevenlabs.io/openapi.json) | [routes.ts](./apps/elevenlabs/src/routes.ts) · [api.md](./apps/elevenlabs/src/api.md) |
+| [cohere](./apps/cohere) | [cohere-openapi.yaml](https://raw.githubusercontent.com/cohere-ai/cohere-developer-experience/main/cohere-openapi.yaml) | [routes.ts](./apps/cohere/src/routes.ts) · [api.md](./apps/cohere/src/api.md) |
+| [jellyfin](./apps/jellyfin) | [jellyfin-openapi-stable.json](https://api.jellyfin.org/openapi/jellyfin-openapi-stable.json) | [routes.ts](./apps/jellyfin/src/routes.ts) · [api.md](./apps/jellyfin/src/api.md) |
+| [authentik](./apps/authentik) | [schema.yml](https://raw.githubusercontent.com/goauthentik/authentik/main/schema.yml) | [routes.ts](./apps/authentik/src/routes.ts) · [api.md](./apps/authentik/src/api.md) |
+| [weather-gov](./apps/weather-gov) | [openapi.json](https://api.weather.gov/openapi.json) | [routes.ts](./apps/weather-gov/src/routes.ts) · [api.md](./apps/weather-gov/src/api.md) |
+| [tmdb](./apps/tmdb) | [tmdb-api.json](https://developer.themoviedb.org/openapi/tmdb-api.json) | [routes.ts](./apps/tmdb/src/routes.ts) · [api.md](./apps/tmdb/src/api.md) |
+| [brevo](./apps/brevo) | [swagger_definition_v3.yml](https://api.brevo.com/v3/swagger_definition_v3.yml) | [routes.ts](./apps/brevo/src/routes.ts) · [api.md](./apps/brevo/src/api.md) |
+| [docker-hub](./apps/docker-hub) | [latest.yaml](https://docs.docker.com/reference/api/hub/latest.yaml) | not generated: OpenAPI 3.2.0 is rejected by the version check ([nakita628/hono-takibi#397](https://github.com/nakita628/hono-takibi/issues/397)) |

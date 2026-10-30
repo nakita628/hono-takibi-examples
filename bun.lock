@@ -61,6 +61,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/authentik": {
+      "name": "@apps/authentik",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/bitbucket": {
+      "name": "@apps/bitbucket",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/box": {
       "name": "@apps/box",
       "dependencies": {
@@ -89,8 +117,50 @@
         "typescript": "catalog:",
       },
     },
+    "apps/brevo": {
+      "name": "@apps/brevo",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/clerk": {
+      "name": "@apps/clerk",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/cloudflare": {
       "name": "@apps/cloudflare",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/cohere": {
+      "name": "@apps/cohere",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -159,6 +229,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/docker-hub": {
+      "name": "@apps/docker-hub",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/e-gov-law": {
       "name": "@apps/e-gov-law",
       "dependencies": {
@@ -175,6 +259,20 @@
     },
     "apps/elasticsearch": {
       "name": "@apps/elasticsearch",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/elevenlabs": {
+      "name": "@apps/elevenlabs",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -271,6 +369,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/huggingface": {
+      "name": "@apps/huggingface",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/immich": {
       "name": "@apps/immich",
       "dependencies": {
@@ -287,6 +399,20 @@
     },
     "apps/intercom": {
       "name": "@apps/intercom",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/jellyfin": {
+      "name": "@apps/jellyfin",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -523,6 +649,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/qdrant": {
+      "name": "@apps/qdrant",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/resend": {
       "name": "@apps/resend",
       "dependencies": {
@@ -621,6 +761,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/tmdb": {
+      "name": "@apps/tmdb",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/trello": {
+      "name": "@apps/trello",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/twilio": {
       "name": "@apps/twilio",
       "dependencies": {
@@ -649,6 +817,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/typesense": {
+      "name": "@apps/typesense",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/vault": {
       "name": "@apps/vault",
       "dependencies": {
@@ -665,6 +847,20 @@
     },
     "apps/vercel": {
       "name": "@apps/vercel",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/weather-gov": {
+      "name": "@apps/weather-gov",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -738,11 +934,21 @@
 
     "@apps/asana-app-components": ["@apps/asana-app-components@workspace:apps/asana-app-components"],
 
+    "@apps/authentik": ["@apps/authentik@workspace:apps/authentik"],
+
+    "@apps/bitbucket": ["@apps/bitbucket@workspace:apps/bitbucket"],
+
     "@apps/box": ["@apps/box@workspace:apps/box"],
 
     "@apps/box-versions": ["@apps/box-versions@workspace:apps/box-versions"],
 
+    "@apps/brevo": ["@apps/brevo@workspace:apps/brevo"],
+
+    "@apps/clerk": ["@apps/clerk@workspace:apps/clerk"],
+
     "@apps/cloudflare": ["@apps/cloudflare@workspace:apps/cloudflare"],
+
+    "@apps/cohere": ["@apps/cohere@workspace:apps/cohere"],
 
     "@apps/confluence": ["@apps/confluence@workspace:apps/confluence"],
 
@@ -752,9 +958,13 @@
 
     "@apps/discord": ["@apps/discord@workspace:apps/discord"],
 
+    "@apps/docker-hub": ["@apps/docker-hub@workspace:apps/docker-hub"],
+
     "@apps/e-gov-law": ["@apps/e-gov-law@workspace:apps/e-gov-law"],
 
     "@apps/elasticsearch": ["@apps/elasticsearch@workspace:apps/elasticsearch"],
+
+    "@apps/elevenlabs": ["@apps/elevenlabs@workspace:apps/elevenlabs"],
 
     "@apps/figma": ["@apps/figma@workspace:apps/figma"],
 
@@ -768,9 +978,13 @@
 
     "@apps/hetzner": ["@apps/hetzner@workspace:apps/hetzner"],
 
+    "@apps/huggingface": ["@apps/huggingface@workspace:apps/huggingface"],
+
     "@apps/immich": ["@apps/immich@workspace:apps/immich"],
 
     "@apps/intercom": ["@apps/intercom@workspace:apps/intercom"],
+
+    "@apps/jellyfin": ["@apps/jellyfin@workspace:apps/jellyfin"],
 
     "@apps/jira": ["@apps/jira@workspace:apps/jira"],
 
@@ -804,6 +1018,8 @@
 
     "@apps/plaid": ["@apps/plaid@workspace:apps/plaid"],
 
+    "@apps/qdrant": ["@apps/qdrant@workspace:apps/qdrant"],
+
     "@apps/resend": ["@apps/resend@workspace:apps/resend"],
 
     "@apps/sendgrid": ["@apps/sendgrid@workspace:apps/sendgrid"],
@@ -818,13 +1034,21 @@
 
     "@apps/supabase": ["@apps/supabase@workspace:apps/supabase"],
 
+    "@apps/tmdb": ["@apps/tmdb@workspace:apps/tmdb"],
+
+    "@apps/trello": ["@apps/trello@workspace:apps/trello"],
+
     "@apps/twilio": ["@apps/twilio@workspace:apps/twilio"],
 
     "@apps/twitter": ["@apps/twitter@workspace:apps/twitter"],
 
+    "@apps/typesense": ["@apps/typesense@workspace:apps/typesense"],
+
     "@apps/vault": ["@apps/vault@workspace:apps/vault"],
 
     "@apps/vercel": ["@apps/vercel@workspace:apps/vercel"],
+
+    "@apps/weather-gov": ["@apps/weather-gov@workspace:apps/weather-gov"],
 
     "@apps/xero": ["@apps/xero@workspace:apps/xero"],
 
