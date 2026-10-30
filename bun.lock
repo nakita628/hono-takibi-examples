@@ -159,6 +159,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/e-gov-law": {
+      "name": "@apps/e-gov-law",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/elasticsearch": {
       "name": "@apps/elasticsearch",
       "dependencies": {
@@ -327,6 +341,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/meilisearch": {
+      "name": "@apps/meilisearch",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/mistral": {
       "name": "@apps/mistral",
       "dependencies": {
@@ -453,6 +481,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/resend": {
+      "name": "@apps/resend",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/sendgrid": {
+      "name": "@apps/sendgrid",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/sentry": {
       "name": "@apps/sentry",
       "dependencies": {
@@ -565,6 +621,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/zendesk": {
+      "name": "@apps/zendesk",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "packages/tsconfig": {
       "name": "@packages/tsconfig",
       "version": "0.0.0",
@@ -612,6 +682,8 @@
 
     "@apps/discord": ["@apps/discord@workspace:apps/discord"],
 
+    "@apps/e-gov-law": ["@apps/e-gov-law@workspace:apps/e-gov-law"],
+
     "@apps/elasticsearch": ["@apps/elasticsearch@workspace:apps/elasticsearch"],
 
     "@apps/figma": ["@apps/figma@workspace:apps/figma"],
@@ -636,6 +708,8 @@
 
     "@apps/line": ["@apps/line@workspace:apps/line"],
 
+    "@apps/meilisearch": ["@apps/meilisearch@workspace:apps/meilisearch"],
+
     "@apps/mistral": ["@apps/mistral@workspace:apps/mistral"],
 
     "@apps/msgraph": ["@apps/msgraph@workspace:apps/msgraph"],
@@ -654,6 +728,10 @@
 
     "@apps/plaid": ["@apps/plaid@workspace:apps/plaid"],
 
+    "@apps/resend": ["@apps/resend@workspace:apps/resend"],
+
+    "@apps/sendgrid": ["@apps/sendgrid@workspace:apps/sendgrid"],
+
     "@apps/sentry": ["@apps/sentry@workspace:apps/sentry"],
 
     "@apps/spotify": ["@apps/spotify@workspace:apps/spotify"],
@@ -669,6 +747,8 @@
     "@apps/vercel": ["@apps/vercel@workspace:apps/vercel"],
 
     "@apps/xero": ["@apps/xero@workspace:apps/xero"],
+
+    "@apps/zendesk": ["@apps/zendesk@workspace:apps/zendesk"],
 
     "@asteasolutions/zod-to-openapi": ["@asteasolutions/zod-to-openapi@9.1.0", "", { "dependencies": { "openapi3-ts": "^4.6.0" }, "peerDependencies": { "zod": "^4.0.0" } }, "sha512-pLMeRgRYS7/vZIgAAkOe2P6+XGTifR1MT9pqDoxZ11EmcJJ+DPmdPqLN8ZZF4U8R9KHCCQCS9c2wtuE8wSrfkw=="],
 
