@@ -1,0 +1,20 @@
+{
+  "name": "@apps/kubernetes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/api__v1.config.ts && hono-takibi -c configs/apis__admissionregistration.k8s.io__v1.config.ts && hono-takibi -c configs/apis__apiextensions.k8s.io__v1.config.ts && hono-takibi -c configs/apis__apiregistration.k8s.io__v1.config.ts && hono-takibi -c configs/apis__apps__v1.config.ts && hono-takibi -c configs/apis__authentication.k8s.io__v1.config.ts && hono-takibi -c configs/apis__authorization.k8s.io__v1.config.ts && hono-takibi -c configs/apis__autoscaling__v1.config.ts && hono-takibi -c configs/apis__autoscaling__v2.config.ts && hono-takibi -c configs/apis__batch__v1.config.ts && hono-takibi -c configs/apis__certificates.k8s.io__v1.config.ts && hono-takibi -c configs/apis__coordination.k8s.io__v1.config.ts && hono-takibi -c configs/apis__discovery.k8s.io__v1.config.ts && hono-takibi -c configs/apis__events.k8s.io__v1.config.ts && hono-takibi -c configs/apis__flowcontrol.apiserver.k8s.io__v1.config.ts && hono-takibi -c configs/apis__networking.k8s.io__v1.config.ts && hono-takibi -c configs/apis__node.k8s.io__v1.config.ts && hono-takibi -c configs/apis__policy__v1.config.ts && hono-takibi -c configs/apis__rbac.authorization.k8s.io__v1.config.ts && hono-takibi -c configs/apis__resource.k8s.io__v1.config.ts && hono-takibi -c configs/apis__scheduling.k8s.io__v1.config.ts && hono-takibi -c configs/apis__storage.k8s.io__v1.config.ts && hono-takibi -c configs/apis__storagemigration.k8s.io__v1.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

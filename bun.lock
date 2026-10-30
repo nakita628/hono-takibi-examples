@@ -159,6 +159,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/elasticsearch": {
+      "name": "@apps/elasticsearch",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/figma": {
       "name": "@apps/figma",
       "dependencies": {
@@ -229,6 +243,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/hetzner": {
+      "name": "@apps/hetzner",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/jira": {
       "name": "@apps/jira",
       "dependencies": {
@@ -271,6 +299,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/kubernetes": {
+      "name": "@apps/kubernetes",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/line": {
       "name": "@apps/line",
       "dependencies": {
@@ -287,6 +329,20 @@
     },
     "apps/mistral": {
       "name": "@apps/mistral",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/msgraph": {
+      "name": "@apps/msgraph",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -556,6 +612,8 @@
 
     "@apps/discord": ["@apps/discord@workspace:apps/discord"],
 
+    "@apps/elasticsearch": ["@apps/elasticsearch@workspace:apps/elasticsearch"],
+
     "@apps/figma": ["@apps/figma@workspace:apps/figma"],
 
     "@apps/freee": ["@apps/freee@workspace:apps/freee"],
@@ -566,15 +624,21 @@
 
     "@apps/grafana": ["@apps/grafana@workspace:apps/grafana"],
 
+    "@apps/hetzner": ["@apps/hetzner@workspace:apps/hetzner"],
+
     "@apps/jira": ["@apps/jira@workspace:apps/jira"],
 
     "@apps/keycloak": ["@apps/keycloak@workspace:apps/keycloak"],
 
     "@apps/kintone": ["@apps/kintone@workspace:apps/kintone"],
 
+    "@apps/kubernetes": ["@apps/kubernetes@workspace:apps/kubernetes"],
+
     "@apps/line": ["@apps/line@workspace:apps/line"],
 
     "@apps/mistral": ["@apps/mistral@workspace:apps/mistral"],
+
+    "@apps/msgraph": ["@apps/msgraph@workspace:apps/msgraph"],
 
     "@apps/netlify": ["@apps/netlify@workspace:apps/netlify"],
 

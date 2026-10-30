@@ -1,0 +1,3701 @@
+import { createRoute, z } from '@hono/zod-openapi'
+
+const IoK8sApimachineryPkgApiResourceQuantitySchema = z
+  .xor([z.string(), z.number()])
+  .openapi({
+    description:
+      'Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.\n\nThe serialization format is:\n\n- `<quantity>`: `<signedNumber><suffix>`\n\n- `<digit>`: `0 | 1 | ... | 9`\n\n- `<digits>`: `<digit> | <digit><digits>`\n\n- `<number>`: `<digits> | <digits>.<digits> | <digits>. | .<digits>`\n\n- `<sign>`: `"+" | "-"`\n\n- `<signedNumber>`: `<number> | <sign><number>`\n\n- `<signedDigits>`: `<digits> | <sign><digits>`\n\n- `<suffix>`: `<binarySI> | <decimalExponent> | <decimalSI>`\n\n- `<binarySI>`: `Ki | Mi | Gi | Ti | Pi | Ei`\n\n- `<decimalSI>`: `n | u | m | "" | k | M | G | T | P | E`\n\n- `<decimalExponent>`: `"e" <signedDigits> | "E" <signedDigits>`\n\nNote that `<suffix>` may be empty, from the `""` case in `<decimalSI>`. For `<binarySI>`, 1024 = 1Ki but 1000 = 1k; I didn\'t choose the capitalization. See http://physics.nist.gov/cuu/Units/binary.html.\n\nA decimal quantity is not capped at 2^63-1 in magnitude, and no quantity is limited to three decimal places: "18446744073709551616" keeps its value, and "1.2345" keeps its precision (String reports it as "1234500u"). Parsing does cap a binarySI quantity, silently, at 2^63-1: "8Ei" parses as 2^63-1. Parsing also preserves a value only down to nano, rounding a finer non-zero value away from zero, so "0.9n" becomes "1n". The int64 accessors round and may overflow on top of that: see Value, MilliValue and ScaledValue.\n\nWhen a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.\n\nBefore serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:\n\n- No precision is lost\n\n- No fractional digits will be emitted\n\n- The exponent (or suffix) is as large as possible.\n\nThe sign will be omitted unless the number is negative.\n\nExamples:\n\n- 1.5 will be serialized as "1500m"\n\n- 1.5Gi will be serialized as "1536Mi"\n\nNote that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.\n\nNon-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don\'t diff.)\n\nThis format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.',
+  })
+  .openapi('IoK8sApimachineryPkgApiResourceQuantity')
+
+const IoK8sApiAutoscalingV2MetricTargetSchema = z
+  .object({
+    averageUtilization: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'averageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type',
+      }),
+    averageValue: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'averageValue is the target value of the average of the metric across all relevant pods (as a quantity)',
+    }),
+    type: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'type represents whether the metric type is Utilization, Value, or AverageValue',
+      }),
+    value: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description: 'value is the target value of the metric (as a quantity).',
+    }),
+  })
+  .openapi({
+    description:
+      'MetricTarget defines the target value, average value, or average utilization of a specific metric',
+    required: ['type'],
+  })
+  .openapi('IoK8sApiAutoscalingV2MetricTarget')
+
+const IoK8sApiAutoscalingV2ContainerResourceMetricSourceSchema = z
+  .object({
+    container: z
+      .string()
+      .default('')
+      .openapi({
+        description: 'container is the name of the container in the pods of the scaling target',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is the name of the resource in question.' }),
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
+      description: 'target specifies the target value for the given metric',
+    }),
+  })
+  .openapi({
+    description:
+      'ContainerResourceMetricSource indicates how to scale on a resource metric known to Kubernetes, as specified in requests and limits, describing each pod in the current scale target (e.g. CPU or memory).  The values will be averaged together before being compared to the target.  Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.  Only one "target" type should be set.',
+    required: ['name', 'target', 'container'],
+  })
+  .openapi('IoK8sApiAutoscalingV2ContainerResourceMetricSource')
+
+const IoK8sApiAutoscalingV2MetricValueStatusSchema = z
+  .object({
+    averageUtilization: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'averageUtilization is the current value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods.',
+      }),
+    averageValue: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'averageValue is the current value of the average of the metric across all relevant pods (as a quantity)',
+    }),
+    value: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description: 'value is the current value of the metric (as a quantity).',
+    }),
+  })
+  .openapi({ description: 'MetricValueStatus holds the current value for a metric', required: [] })
+  .openapi('IoK8sApiAutoscalingV2MetricValueStatus')
+
+const IoK8sApiAutoscalingV2ContainerResourceMetricStatusSchema = z
+  .object({
+    container: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'container is the name of the container in the pods of the scaling target',
+      }),
+    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'current contains the current value for the given metric' }),
+    name: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({ description: 'name is the name of the resource in question.' }),
+  })
+  .openapi({
+    description:
+      'ContainerResourceMetricStatus indicates the current value of a resource metric known to Kubernetes, as specified in requests and limits, describing a single container in each pod in the current scale target (e.g. CPU or memory).  Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2ContainerResourceMetricStatus')
+
+const IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'apiVersion is the API version of the referent' }),
+    kind: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names',
+      }),
+  })
+  .openapi({
+    description:
+      'CrossVersionObjectReference contains enough information to let you identify the referred resource.',
+    required: ['kind', 'name'],
+  })
+  .openapi('IoK8sApiAutoscalingV2CrossVersionObjectReference')
+
+const IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema = z
+  .object({
+    key: z
+      .string()
+      .default('')
+      .openapi({ description: 'key is the label key that the selector applies to.' }),
+    operator: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.",
+      }),
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.',
+    required: ['key', 'operator'],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirement')
+
+const IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema = z
+  .object({
+    matchExpressions: z
+      .array(IoK8sApimachineryPkgApisMetaV1LabelSelectorRequirementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'matchExpressions is a list of label selector requirements. The requirements are ANDed.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    matchLabels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.',
+      }),
+  })
+  .openapi({
+    description:
+      'A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.',
+    'x-kubernetes-map-type': 'atomic',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1LabelSelector')
+
+const IoK8sApiAutoscalingV2MetricIdentifierSchema = z
+  .object({
+    name: z.string().default('').openapi({ description: 'name is the name of the given metric' }),
+    selector: IoK8sApimachineryPkgApisMetaV1LabelSelectorSchema.exactOptional().openapi({
+      description:
+        'selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.',
+    }),
+  })
+  .openapi({
+    description: 'MetricIdentifier defines the name and optionally selector for a metric',
+    required: ['name'],
+  })
+  .openapi('IoK8sApiAutoscalingV2MetricIdentifier')
+
+const IoK8sApiAutoscalingV2ExternalMetricSourceSchema = z
+  .object({
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({}).openapi({
+      description: 'metric identifies the target metric by name and selector',
+    }),
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
+      description: 'target specifies the target value for the given metric',
+    }),
+  })
+  .openapi({
+    description:
+      'ExternalMetricSource indicates how to scale on a metric not associated with any Kubernetes object (for example length of queue in cloud messaging service, or QPS from loadbalancer running outside of cluster).',
+    required: ['metric', 'target'],
+  })
+  .openapi('IoK8sApiAutoscalingV2ExternalMetricSource')
+
+const IoK8sApiAutoscalingV2ExternalMetricStatusSchema = z
+  .object({
+    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'current contains the current value for the given metric' }),
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'metric identifies the target metric by name and selector' }),
+  })
+  .openapi({
+    description:
+      'ExternalMetricStatus indicates the current value of a global metric not associated with any Kubernetes object.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2ExternalMetricStatus')
+
+const IoK8sApiAutoscalingV2HPAScalingPolicySchema = z
+  .object({
+    periodSeconds: z
+      .int32()
+      .default(0)
+      .openapi({
+        description:
+          'periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).',
+      }),
+    type: z
+      .string()
+      .default('')
+      .openapi({ description: 'type is used to specify the scaling policy.' }),
+    value: z
+      .int32()
+      .default(0)
+      .openapi({
+        description:
+          'value contains the amount of change which is permitted by the policy. It must be greater than zero',
+      }),
+  })
+  .openapi({
+    description:
+      'HPAScalingPolicy is a single policy which must hold true for a specified past interval.',
+    required: ['type', 'value', 'periodSeconds'],
+  })
+  .openapi('IoK8sApiAutoscalingV2HPAScalingPolicy')
+
+const IoK8sApiAutoscalingV2HPAScalingRulesSchema = z
+  .object({
+    policies: z
+      .array(IoK8sApiAutoscalingV2HPAScalingPolicySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'policies is a list of potential scaling polices which can be used during scaling. If not set, use the default values: - For scale up: allow doubling the number of pods, or an absolute change of 4 pods in a 15s window. - For scale down: allow all pods to be removed in a 15s window.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    selectPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.',
+      }),
+    stabilizationWindowSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).',
+      }),
+    tolerance: IoK8sApimachineryPkgApiResourceQuantitySchema.exactOptional().openapi({
+      description:
+        'tolerance is the tolerance on the ratio between the current and desired metric value under which no updates are made to the desired number of replicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not set, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi, and scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be triggered when the actual consumption falls below 95Mi or exceeds 101Mi.',
+    }),
+  })
+  .openapi({
+    description:
+      'HPAScalingRules configures the scaling behavior for one direction via scaling Policy Rules and a configurable metric tolerance.\n\nScaling Policy Rules are applied after calculating DesiredReplicas from metrics for the HPA. They can limit the scaling velocity by specifying scaling policies. They can prevent flapping by specifying the stabilization window, so that the number of replicas is not set instantly, instead, the safest value from the stabilization window is chosen.\n\nThe tolerance is applied to the metric values and prevents scaling too eagerly for small metric variations.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2HPAScalingRules')
+
+const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.',
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1Time')
+
+const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
+  .object({})
+  .openapi({
+    description:
+      "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1FieldsV1')
+
+const IoK8sApimachineryPkgApisMetaV1ManagedFieldsEntrySchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the version of this resource that this field set applies to. The format is "group/version" just like the top-level APIVersion field. It is necessary to track the version of a field set because it cannot be automatically converted.',
+      }),
+    fieldsType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'FieldsType is the discriminator for the different fields format and version. There is currently only one possible value: "FieldsV1"',
+      }),
+    fieldsV1: IoK8sApimachineryPkgApisMetaV1FieldsV1Schema.exactOptional().openapi({
+      description:
+        'FieldsV1 holds the first JSON version format as described in the "FieldsV1" type.',
+    }),
+    manager: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Manager is an identifier of the workflow managing these fields.' }),
+    operation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are 'Apply' and 'Update'.",
+      }),
+    subresource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subresource is the name of the subresource used to update that object, or empty string if the object was updated through the main resource. The value of this field is used to distinguish between managers, even if they share the same name. For example, a status update will be distinct from a regular update using the same manager name. Note that the APIVersion field is not related to the Subresource field and it always corresponds to the version of the main resource.',
+      }),
+    time: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description:
+        'Time is the timestamp of when the ManagedFields entry was added. The timestamp will also be updated if a field is added, the manager changes any of the owned fields value or removes a field. The timestamp does not update when a field is removed from the entry because another manager took it over.',
+    }),
+  })
+  .openapi({
+    description:
+      'ManagedFieldsEntry is a workflow-id, a FieldSet and the group version of the resource that the fieldset applies to.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ManagedFieldsEntry')
+
+const IoK8sApimachineryPkgApisMetaV1OwnerReferenceSchema = z
+  .object({
+    apiVersion: z.string().default('').openapi({ description: 'API version of the referent.' }),
+    blockOwnerDeletion: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.',
+      }),
+    controller: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, this reference points to the managing controller.' }),
+    kind: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names',
+      }),
+    uid: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids',
+      }),
+  })
+  .openapi({
+    description:
+      'OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.',
+    required: ['apiVersion', 'kind', 'name', 'uid'],
+    'x-kubernetes-map-type': 'atomic',
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1OwnerReference')
+
+const IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema = z
+  .object({
+    annotations: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations',
+      }),
+    creationTimestamp: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description:
+        'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.\n\nPopulated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+    }),
+    deletionGracePeriodSeconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.',
+      }),
+    deletionTimestamp: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description:
+        'DeletionTimestamp is RFC 3339 date and time at which this resource will be deleted. This field is set by the server when a graceful deletion is requested by the user, and is not directly settable by a client. The resource is expected to be deleted (no longer visible from resource lists, and not reachable by name) after the time in this field, once the finalizers list is empty. As long as the finalizers list contains items, deletion is blocked. Once the deletionTimestamp is set, this value may not be unset or be set further into the future, although it may be shortened or the resource may be deleted prior to this time. For example, a user may request that a pod is deleted in 30 seconds. The Kubelet will react by sending a graceful termination signal to the containers in the pod. After that 30 seconds, the Kubelet will send a hard termination signal (SIGKILL) to the container and after cleanup, remove the pod from the API. In the presence of network partitions, this object may still exist after this timestamp, until an administrator or automated process can determine the resource is fully terminated. If not set, graceful deletion of the object has not been requested.\n\nPopulated by the system when a graceful deletion is requested. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+    }),
+    finalizers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed. Finalizers may be processed and removed in any order.  Order is NOT enforced because it introduces significant risk of stuck finalizers. finalizers is a shared field, any actor with permission can reorder it. If the finalizer list is processed in order, then this can lead to a situation in which the component responsible for the first finalizer in the list is waiting for a signal (field value, external system, or other) produced by a component responsible for a finalizer later in the list, resulting in a deadlock. Without enforced ordering finalizers are free to order amongst themselves and are not vulnerable to ordering changes in the list.',
+        'x-kubernetes-list-type': 'set',
+        'x-kubernetes-patch-strategy': 'merge',
+      }),
+    generateName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.\n\nIf this field is specified and the generated name exists, the server will return a 409.\n\nApplied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency',
+      }),
+    generation: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels',
+      }),
+    managedFields: z
+      .array(IoK8sApimachineryPkgApisMetaV1ManagedFieldsEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn't need to set or understand this field. A workflow can be the user's name, a controller's name, or the name of a specific apply path like \"ci-cd\". The set of fields is always in the version that the workflow used when modifying the object.",
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names',
+      }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespace defines the space within which each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.\n\nMust be a DNS_LABEL. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces',
+      }),
+    ownerReferences: z
+      .array(IoK8sApimachineryPkgApisMetaV1OwnerReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.',
+        'x-kubernetes-list-map-keys': ['uid'],
+        'x-kubernetes-list-type': 'map',
+        'x-kubernetes-patch-merge-key': 'uid',
+        'x-kubernetes-patch-strategy': 'merge',
+      }),
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.\n\nPopulated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency',
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
+      }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.\n\nPopulated by the system. Read-only. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids',
+      }),
+  })
+  .openapi({
+    description:
+      'ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ObjectMeta')
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehaviorSchema = z
+  .object({
+    scaleDown: IoK8sApiAutoscalingV2HPAScalingRulesSchema.exactOptional().openapi({
+      description:
+        'scaleDown is scaling policy for scaling Down. If not set, the default value is to allow to scale down to minReplicas pods, with a 300 second stabilization window (i.e., the highest recommendation for the last 300sec is used).',
+    }),
+    scaleUp: IoK8sApiAutoscalingV2HPAScalingRulesSchema.exactOptional().openapi({
+      description:
+        'scaleUp is scaling policy for scaling Up. If not set, the default value is the higher of:\n  * increase no more than 4 pods per 60 seconds\n  * double the number of pods per 60 seconds\nNo stabilization is used.',
+    }),
+  })
+  .openapi({
+    description:
+      'HorizontalPodAutoscalerBehavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively).',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehavior')
+
+const IoK8sApiAutoscalingV2ObjectMetricSourceSchema = z
+  .object({
+    describedObject: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.default({}).openapi({
+      description:
+        'describedObject specifies the descriptions of a object,such as kind,name apiVersion',
+    }),
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({}).openapi({
+      description: 'metric identifies the target metric by name and selector',
+    }),
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
+      description: 'target specifies the target value for the given metric',
+    }),
+  })
+  .openapi({
+    description:
+      'ObjectMetricSource indicates how to scale on a metric describing a kubernetes object (for example, hits-per-second on an Ingress object).',
+    required: ['describedObject', 'target', 'metric'],
+  })
+  .openapi('IoK8sApiAutoscalingV2ObjectMetricSource')
+
+const IoK8sApiAutoscalingV2PodsMetricSourceSchema = z
+  .object({
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({}).openapi({
+      description: 'metric identifies the target metric by name and selector',
+    }),
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
+      description: 'target specifies the target value for the given metric',
+    }),
+  })
+  .openapi({
+    description:
+      'PodsMetricSource indicates how to scale on a metric describing each pod in the current scale target (for example, transactions-processed-per-second). The values will be averaged together before being compared to the target value.',
+    required: ['metric', 'target'],
+  })
+  .openapi('IoK8sApiAutoscalingV2PodsMetricSource')
+
+const IoK8sApiAutoscalingV2ResourceMetricSourceSchema = z
+  .object({
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is the name of the resource in question.' }),
+    target: IoK8sApiAutoscalingV2MetricTargetSchema.default({}).openapi({
+      description: 'target specifies the target value for the given metric',
+    }),
+  })
+  .openapi({
+    description:
+      'ResourceMetricSource indicates how to scale on a resource metric known to Kubernetes, as specified in requests and limits, describing each pod in the current scale target (e.g. CPU or memory).  The values will be averaged together before being compared to the target.  Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.  Only one "target" type should be set.',
+    required: ['name', 'target'],
+  })
+  .openapi('IoK8sApiAutoscalingV2ResourceMetricSource')
+
+const IoK8sApiAutoscalingV2MetricSpecSchema = z
+  .object({
+    containerResource:
+      IoK8sApiAutoscalingV2ContainerResourceMetricSourceSchema.exactOptional().openapi({
+        description:
+          'containerResource refers to a resource metric (such as those specified in requests and limits) known to Kubernetes describing a single container in each pod of the current scale target (e.g. CPU or memory). Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.',
+      }),
+    external: IoK8sApiAutoscalingV2ExternalMetricSourceSchema.exactOptional().openapi({
+      description:
+        'external refers to a global metric that is not associated with any Kubernetes object. It allows autoscaling based on information coming from components running outside of cluster (for example length of queue in cloud messaging service, or QPS from loadbalancer running outside of cluster).',
+    }),
+    object: IoK8sApiAutoscalingV2ObjectMetricSourceSchema.exactOptional().openapi({
+      description:
+        'object refers to a metric describing a single kubernetes object (for example, hits-per-second on an Ingress object).',
+    }),
+    pods: IoK8sApiAutoscalingV2PodsMetricSourceSchema.exactOptional().openapi({
+      description:
+        'pods refers to a metric describing each pod in the current scale target (for example, transactions-processed-per-second).  The values will be averaged together before being compared to the target value.',
+    }),
+    resource: IoK8sApiAutoscalingV2ResourceMetricSourceSchema.exactOptional().openapi({
+      description:
+        'resource refers to a resource metric (such as those specified in requests and limits) known to Kubernetes describing each pod in the current scale target (e.g. CPU or memory). Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.',
+    }),
+    type: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'type is the type of metric source.  It should be one of "ContainerResource", "External", "Object", "Pods" or "Resource", each mapping to a matching field in the object.',
+      }),
+  })
+  .openapi({
+    description:
+      'MetricSpec specifies how to scale based on a single metric (only `type` and one other matching field should be set at once).',
+    required: ['type'],
+  })
+  .openapi('IoK8sApiAutoscalingV2MetricSpec')
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecSchema = z
+  .object({
+    behavior: IoK8sApiAutoscalingV2HorizontalPodAutoscalerBehaviorSchema.exactOptional().openapi({
+      description:
+        'behavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively). If not set, the default HPAScalingRules for scale up and scale down are used.',
+    }),
+    maxReplicas: z
+      .int32()
+      .default(0)
+      .openapi({
+        description:
+          'maxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up. It cannot be less that minReplicas.',
+      }),
+    metrics: z
+      .array(IoK8sApiAutoscalingV2MetricSpecSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'metrics contains the specifications for which to use to calculate the desired replica count (the maximum replica count across all metrics will be used).  The desired replica count is calculated multiplying the ratio between the target value and the current value by the current number of pods.  Ergo, metrics used must decrease as the pod count is increased, and vice-versa.  See the individual metric source types for more information about how each type of metric must respond. If not set, the default metric will be set to 80% average CPU utilization.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    minReplicas: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'minReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.  It defaults to 1 pod.  minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured.  Scaling is active as long as at least one metric value is available.',
+      }),
+    scaleTargetRef: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.default({}).openapi({
+      description:
+        'scaleTargetRef points to the target resource to scale, and is used to the pods for which metrics should be collected, as well as to actually change the replica count.',
+    }),
+  })
+  .openapi({
+    description:
+      'HorizontalPodAutoscalerSpec describes the desired functionality of the HorizontalPodAutoscaler.',
+    required: ['scaleTargetRef', 'maxReplicas'],
+  })
+  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpec')
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerConditionSchema = z
+  .object({
+    lastTransitionTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description:
+        'lastTransitionTime is the last time the condition transitioned from one status to another',
+    }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'message is a human-readable explanation containing details about the transition',
+      }),
+    observedGeneration: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "reason is the reason for the condition's last transition." }),
+    status: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'status is the status of the condition, should be one of True, False, Unknown',
+      }),
+    type: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({ description: 'type describes the current condition' }),
+  })
+  .openapi({
+    description:
+      'HorizontalPodAutoscalerCondition describes the state of a HorizontalPodAutoscaler at a certain point.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerCondition')
+
+const IoK8sApiAutoscalingV2ObjectMetricStatusSchema = z
+  .object({
+    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'current contains the current value for the given metric' }),
+    describedObject: IoK8sApiAutoscalingV2CrossVersionObjectReferenceSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'describedObject specifies the descriptions of a object,such as kind,name apiVersion',
+      }),
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'metric identifies the target metric by name and selector' }),
+  })
+  .openapi({
+    description:
+      'ObjectMetricStatus indicates the current value of a metric describing a kubernetes object (for example, hits-per-second on an Ingress object).',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2ObjectMetricStatus')
+
+const IoK8sApiAutoscalingV2PodsMetricStatusSchema = z
+  .object({
+    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'current contains the current value for the given metric' }),
+    metric: IoK8sApiAutoscalingV2MetricIdentifierSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'metric identifies the target metric by name and selector' }),
+  })
+  .openapi({
+    description:
+      'PodsMetricStatus indicates the current value of a metric describing each pod in the current scale target (for example, transactions-processed-per-second).',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2PodsMetricStatus')
+
+const IoK8sApiAutoscalingV2ResourceMetricStatusSchema = z
+  .object({
+    current: IoK8sApiAutoscalingV2MetricValueStatusSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'current contains the current value for the given metric' }),
+    name: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({ description: 'name is the name of the resource in question.' }),
+  })
+  .openapi({
+    description:
+      'ResourceMetricStatus indicates the current value of a resource metric known to Kubernetes, as specified in requests and limits, describing each pod in the current scale target (e.g. CPU or memory).  Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2ResourceMetricStatus')
+
+const IoK8sApiAutoscalingV2MetricStatusSchema = z
+  .object({
+    containerResource:
+      IoK8sApiAutoscalingV2ContainerResourceMetricStatusSchema.exactOptional().openapi({
+        description:
+          'containerResource refers to a resource metric (such as those specified in requests and limits) known to Kubernetes describing a single container in each pod in the current scale target (e.g. CPU or memory). Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.',
+      }),
+    external: IoK8sApiAutoscalingV2ExternalMetricStatusSchema.exactOptional().openapi({
+      description:
+        'external refers to a global metric that is not associated with any Kubernetes object. It allows autoscaling based on information coming from components running outside of cluster (for example length of queue in cloud messaging service, or QPS from loadbalancer running outside of cluster).',
+    }),
+    object: IoK8sApiAutoscalingV2ObjectMetricStatusSchema.exactOptional().openapi({
+      description:
+        'object refers to a metric describing a single kubernetes object (for example, hits-per-second on an Ingress object).',
+    }),
+    pods: IoK8sApiAutoscalingV2PodsMetricStatusSchema.exactOptional().openapi({
+      description:
+        'pods refers to a metric describing each pod in the current scale target (for example, transactions-processed-per-second).  The values will be averaged together before being compared to the target value.',
+    }),
+    resource: IoK8sApiAutoscalingV2ResourceMetricStatusSchema.exactOptional().openapi({
+      description:
+        'resource refers to a resource metric (such as those specified in requests and limits) known to Kubernetes describing each pod in the current scale target (e.g. CPU or memory). Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.',
+    }),
+    type: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        description:
+          'type is the type of metric source.  It will be one of "ContainerResource", "External", "Object", "Pods" or "Resource", each corresponds to a matching field in the object.',
+      }),
+  })
+  .openapi({
+    description: 'MetricStatus describes the last-read state of a single metric.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2MetricStatus')
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusSchema = z
+  .object({
+    conditions: z
+      .array(IoK8sApiAutoscalingV2HorizontalPodAutoscalerConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'conditions is the set of conditions required for this autoscaler to scale its target, and indicates whether or not those conditions are met.',
+        'x-kubernetes-list-map-keys': ['type'],
+        'x-kubernetes-list-type': 'map',
+        'x-kubernetes-patch-merge-key': 'type',
+        'x-kubernetes-patch-strategy': 'merge',
+      }),
+    currentMetrics: z
+      .array(IoK8sApiAutoscalingV2MetricStatusSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'currentMetrics is the last read state of the metrics used by this autoscaler.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    currentReplicas: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'currentReplicas is current number of replicas of pods managed by this autoscaler, as last seen by the autoscaler.',
+      }),
+    desiredReplicas: z
+      .int32()
+      .default(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'desiredReplicas is the desired number of replicas of pods managed by this autoscaler, as last calculated by the autoscaler.',
+      }),
+    lastScaleTime: IoK8sApimachineryPkgApisMetaV1TimeSchema.exactOptional().openapi({
+      description:
+        'lastScaleTime is the last time the HorizontalPodAutoscaler scaled the number of pods, used by the autoscaler to control how often the number of pods is changed.',
+    }),
+    observedGeneration: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'observedGeneration is the most recent generation observed by this autoscaler.',
+      }),
+  })
+  .openapi({
+    description:
+      'HorizontalPodAutoscalerStatus describes the current status of a horizontal pod autoscaler.',
+    required: [],
+  })
+  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatus')
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ObjectMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata',
+      }),
+    spec: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSpecSchema.default({}).openapi({
+      description:
+        'spec is the specification for the behaviour of the autoscaler. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.',
+    }),
+    status: IoK8sApiAutoscalingV2HorizontalPodAutoscalerStatusSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'status is the current information about the autoscaler.' }),
+  })
+  .openapi({
+    description:
+      'HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.',
+    required: ['spec'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'autoscaling', kind: 'HorizontalPodAutoscaler', version: 'v2' },
+    ],
+  })
+  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscaler')
+
+const IoK8sApimachineryPkgApisMetaV1ShardInfoSchema = z
+  .object({
+    selector: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'selector is the shard selector string from the request, echoed back so clients can verify which shard they received and merge responses from multiple shards.',
+      }),
+  })
+  .openapi({
+    description:
+      'ShardInfo describes the shard selector that was applied to produce a list response. Its presence on a list response indicates the list is a filtered subset.',
+    required: ['selector'],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ShardInfo')
+
+const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
+  .object({
+    continue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'continue may be set if the user set a limit on the number of items returned, and indicates that the server has more data available. The value is opaque and may be used to issue another request to the endpoint that served this list to retrieve the next set of available objects. Continuing a consistent list may not be possible if the server configuration has changed or more than a few minutes have passed. The resourceVersion field returned when using this continue value will be identical to the value in the first response, unless you have received this token from an error message.',
+      }),
+    remainingItemCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'remainingItemCount is the number of subsequent items in the list which are not included in this list response. If the list request contained label or field selectors, then the number of remaining items is unknown and the field will be left unset and omitted during serialization. If the list is complete (either because it is not chunking or because this is the last chunk), then there are no more remaining items and this field will be left unset and omitted during serialization. Servers older than v1.15 do not set this field. The intended use of the remainingItemCount is *estimating* the size of a collection. Clients should not rely on the remainingItemCount to be set or to be exact.',
+      }),
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "String that identifies the server's internal version of this object that can be used by clients to determine when objects have changed. Value must be treated as opaque by clients and passed unmodified back to the server. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency",
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.',
+      }),
+    shardInfo: IoK8sApimachineryPkgApisMetaV1ShardInfoSchema.exactOptional().openapi({
+      description:
+        'shardInfo is set when the list is a filtered subset of the full collection, as selected by a shard selector on the request. It echoes back the selector so clients can verify which shard they received and merge sharded responses. Clients should not cache sharded list responses as a full representation of the collection.\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.',
+    }),
+  })
+  .openapi({
+    description:
+      'ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
+
+const IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    items: z
+      .array(IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema)
+      .openapi({ description: 'items is the list of horizontal pod autoscaler objects.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({ description: 'metadata is the standard list metadata.' }),
+  })
+  .openapi({
+    description: 'HorizontalPodAutoscalerList is a list of horizontal pod autoscaler objects.',
+    required: ['items'],
+    'x-kubernetes-group-version-kind': [
+      { group: 'autoscaling', kind: 'HorizontalPodAutoscalerList', version: 'v2' },
+    ],
+  })
+  .openapi('IoK8sApiAutoscalingV2HorizontalPodAutoscalerList')
+
+const IoK8sApimachineryPkgApisMetaV1APIResourceSchema = z
+  .object({
+    categories: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "categories is a list of the grouped resources this resource belongs to (e.g. 'all')",
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    group: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'group is the preferred group of the resource.  Empty implies the group of the containing resource list. For subresources, this may have a different value, for example: Scale".',
+      }),
+    kind: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          "kind is the kind for the resource (e.g. 'Foo' is the kind for a resource 'foo')",
+      }),
+    name: z
+      .string()
+      .default('')
+      .openapi({ description: 'name is the plural name of the resource.' }),
+    namespaced: z
+      .boolean()
+      .default(false)
+      .openapi({ description: 'namespaced indicates if a resource is namespaced or not.' }),
+    shortNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'shortNames is a list of suggested short names of the resource.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    singularName: z
+      .string()
+      .default('')
+      .openapi({
+        description:
+          'singularName is the singular name of the resource.  This allows clients to handle plural and singular opaquely. The singularName is more correct for reporting status on a single item and both singular and plural are allowed from the kubectl CLI interface.',
+      }),
+    storageVersionHash: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The hash value of the storage version, the version this resource is converted to when written to the data store. Value must be treated as opaque by clients. Only equality comparison on the value is valid. This is an alpha feature and may change or be removed in the future. The field is populated by the apiserver only if the StorageVersionHash feature gate is enabled. This field will remain optional even if it graduates.',
+      }),
+    verbs: z
+      .array(z.string())
+      .openapi({
+        description:
+          'verbs is a list of supported kube verbs (this includes get, list, watch, create, update, patch, delete, deletecollection, and proxy)',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'version is the preferred version of the resource.  Empty implies the version of the containing resource list For subresources, this may have a different value, for example: v1 (while inside a v1beta1 version of the core resource\'s group)".',
+      }),
+  })
+  .openapi({
+    description: 'APIResource specifies the name of a resource and whether it is namespaced.',
+    required: ['name', 'singularName', 'namespaced', 'kind', 'verbs'],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1APIResource')
+
+const IoK8sApimachineryPkgApisMetaV1APIResourceListSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    groupVersion: z
+      .string()
+      .default('')
+      .openapi({
+        description: 'groupVersion is the group and version this APIResourceList is for.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    resources: z
+      .array(IoK8sApimachineryPkgApisMetaV1APIResourceSchema)
+      .openapi({
+        description: 'resources contains the name of the resources and if they are namespaced.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+  })
+  .openapi({
+    description:
+      'APIResourceList is a list of APIResource, it is used to expose the name of the resources supported in a specific group and version, and if the resource is namespaced.',
+    required: ['groupVersion', 'resources'],
+    'x-kubernetes-group-version-kind': [{ group: '', kind: 'APIResourceList', version: 'v1' }],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1APIResourceList')
+
+const IoK8sApimachineryPkgApisMetaV1PreconditionsSchema = z
+  .object({
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the target ResourceVersion' }),
+    uid: z.string().exactOptional().openapi({ description: 'Specifies the target UID.' }),
+  })
+  .openapi({
+    description:
+      'Preconditions must be fulfilled before an operation (update, delete, etc.) is carried out.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1Preconditions')
+
+const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    dryRun: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    gracePeriodSeconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.',
+      }),
+    ignoreStoreReadErrorWithClusterBreakingPotential: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'if set to true, it will trigger an unsafe deletion of the resource in case the normal deletion flow fails with a corrupt object error. A resource is considered corrupt if it can not be retrieved from the underlying storage successfully because of a) its data can not be transformed e.g. decryption failure, or b) it fails to decode into an object. NOTE: unsafe deletion ignores finalizer constraints, skips precondition checks, and removes the object from the storage. WARNING: This may potentially break the cluster if the workload associated with the resource being unsafe-deleted relies on normal deletion flow. Use only if you REALLY know what you are doing. The default value is false, and the user must opt in to enable it',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    orphanDependents: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the "orphan" finalizer will be added to/removed from the object\'s finalizers list. Either this field or PropagationPolicy may be set, but not both.',
+      }),
+    preconditions: IoK8sApimachineryPkgApisMetaV1PreconditionsSchema.exactOptional().openapi({
+      description:
+        'Must be fulfilled before a deletion is carried out. If not possible, a 409 Conflict status will be returned.',
+    }),
+    propagationPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.",
+      }),
+  })
+  .openapi({
+    description: 'DeleteOptions may be provided when deleting an API object.',
+    'x-kubernetes-group-version-kind': [
+      { group: '', kind: 'DeleteOptions', version: 'v1' },
+      { group: 'autoscaling', kind: 'DeleteOptions', version: 'v2' },
+    ],
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
+
+const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
+  .object({})
+  .openapi({
+    description:
+      'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1Patch')
+
+const IoK8sApimachineryPkgApisMetaV1StatusCauseSchema = z
+  .object({
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The field of the resource that has caused this error, as named by its JSON serialization. May include dot and postfix notation for nested attributes. Arrays are zero-indexed.  Fields may appear more than once in an array of causes due to fields having multiple errors. Optional.\n\nExamples:\n  "name" - the field "name" on the current resource\n  "items[0].name" - the field "name" on the first array entry in "items"',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A human-readable description of the cause of the error.  This field may be presented as-is to a reader.',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A machine-readable description of the cause of the error. If this value is empty there is no information available.',
+      }),
+  })
+  .openapi({
+    description:
+      'StatusCause provides more information about an api.Status failure, including cases when multiple errors are encountered.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1StatusCause')
+
+const IoK8sApimachineryPkgApisMetaV1StatusDetailsSchema = z
+  .object({
+    causes: z
+      .array(IoK8sApimachineryPkgApisMetaV1StatusCauseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The Causes array includes more details associated with the StatusReason failure. Not all StatusReasons may provide detailed causes.',
+        'x-kubernetes-list-type': 'atomic',
+      }),
+    group: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The group attribute of the resource associated with the status StatusReason.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind attribute of the resource associated with the status StatusReason. On some operations may differ from the requested resource Kind. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name attribute of the resource associated with the status StatusReason (when there is a single name which can be described).',
+      }),
+    retryAfterSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'If specified, the time in seconds before the operation should be retried. Some errors may indicate the client must take an alternate action - for those errors this field may indicate how long to wait before taking the alternate action.',
+      }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'UID of the resource. (when there is a single resource which can be described). More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids',
+      }),
+  })
+  .openapi({
+    description:
+      'StatusDetails is a set of additional properties that MAY be set by the server to provide additional information about a response. The Reason field of a Status object defines what attributes will be set. Clients must ignore fields that do not match the defined type of each attribute, and should assume that any attribute may be empty, invalid, or under defined.',
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1StatusDetails')
+
+const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+      }),
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Suggested HTTP return code for this status, 0 if not set.' }),
+    details: IoK8sApimachineryPkgApisMetaV1StatusDetailsSchema.exactOptional().openapi({
+      description:
+        'Extended data associated with the reason.  Each reason may define its own extended details. This field is optional and the data returned is not guaranteed to conform to any schema except that defined by the reason type.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A human-readable description of the status of this operation.' }),
+    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A machine-readable description of why this operation is in the "Failure" status. If this value is empty there is no information available. A Reason clarifies an HTTP status code but does not override it.',
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Status of the operation. One of: "Success" or "Failure". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status',
+      }),
+  })
+  .openapi({
+    description: "Status is a return value for calls that don't return other objects.",
+    'x-kubernetes-group-version-kind': [{ group: '', kind: 'Status', version: 'v1' }],
+    required: [],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1Status')
+
+const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
+  .object({})
+  .openapi({
+    description:
+      'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',
+  })
+  .openapi('IoK8sApimachineryPkgRuntimeRawExtension')
+
+const IoK8sApimachineryPkgApisMetaV1WatchEventSchema = z
+  .object({
+    object: IoK8sApimachineryPkgRuntimeRawExtensionSchema.openapi({
+      description:
+        'Object is:\n * If Type is Added or Modified: the new state of the object.\n * If Type is Deleted: the state of the object immediately before deletion.\n * If Type is Error: *Status is recommended; other types may make sense\n   depending on context.',
+    }),
+    type: z.string().default(''),
+  })
+  .openapi({
+    description: 'Event represents a single event to a watched resource.',
+    required: ['type', 'object'],
+    'x-kubernetes-group-version-kind': [
+      { group: '', kind: 'WatchEvent', version: 'v1' },
+      { group: 'autoscaling', kind: 'WatchEvent', version: 'v2' },
+    ],
+  })
+  .openapi('IoK8sApimachineryPkgApisMetaV1WatchEvent')
+
+const BearerTokenSecurityScheme = {
+  description: 'Bearer Token authentication',
+  in: 'header',
+  name: 'authorization',
+  type: 'apiKey',
+}
+
+export const getApisAutoscalingV2IndexRoute = createRoute({
+  method: 'get',
+  path: '/apis/autoscaling/v2/',
+  tags: ['autoscaling_v2'],
+  description: 'get available resources',
+  operationId: 'getAutoscalingV2APIResources',
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/cbor': { schema: IoK8sApimachineryPkgApisMetaV1APIResourceListSchema },
+        'application/json': { schema: IoK8sApimachineryPkgApisMetaV1APIResourceListSchema },
+        'application/vnd.kubernetes.protobuf': {
+          schema: IoK8sApimachineryPkgApisMetaV1APIResourceListSchema,
+        },
+        'application/yaml': { schema: IoK8sApimachineryPkgApisMetaV1APIResourceListSchema },
+      },
+    },
+    401: { description: 'Unauthorized' },
+  },
+})
+
+export const getApisAutoscalingV2HorizontalpodautoscalersRoute = createRoute({
+  method: 'get',
+  path: '/apis/autoscaling/v2/horizontalpodautoscalers',
+  tags: ['autoscaling_v2'],
+  description: 'list or watch objects of kind HorizontalPodAutoscaler',
+  operationId: 'listAutoscalingV2HorizontalPodAutoscalerForAllNamespaces',
+  request: {
+    query: z.object({
+      allowWatchBookmarks: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server\'s discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.',
+            in: 'query',
+            name: 'allowWatchBookmarks',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      continue: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".\n\nThis field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.',
+            in: 'query',
+            name: 'continue',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      fieldSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A selector to restrict the list of returned objects by their fields. Defaults to everything.',
+            in: 'query',
+            name: 'fieldSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      labelSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A selector to restrict the list of returned objects by their labels. Defaults to everything.',
+            in: 'query',
+            name: 'labelSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.\n\nThe server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.',
+            in: 'query',
+            name: 'limit',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+      pretty: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+            in: 'query',
+            name: 'pretty',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      resourceVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+            in: 'query',
+            name: 'resourceVersion',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      resourceVersionMatch: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+            in: 'query',
+            name: 'resourceVersionMatch',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      sendInitialEvents: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              '`sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.\n\nWhen `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan\n  is interpreted as "data at least as new as the provided `resourceVersion`"\n  and the bookmark event is send when the state is synced\n  to a `resourceVersion` at least as fresh as the one provided by the ListOptions.\n  If `resourceVersion` is unset, this is interpreted as "consistent read" and the\n  bookmark event is send when the state is synced at least to the moment\n  when request started being processed.\n- `resourceVersionMatch` set to any other value or unset\n  Invalid error is returned.\n\nDefaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.',
+            in: 'query',
+            name: 'sendInitialEvents',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      shardSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:\n\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000')\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n\nField paths use CEL-style object-rooted syntax (e.g. \"object.metadata.uid\"), NOT the fieldSelector format (\"metadata.uid\"). Currently supported paths:\n  - object.metadata.uid\n  - object.metadata.namespace\n\nhexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.\n\nExamples:\n  2-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n  4-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')\n    shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')\n    shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.",
+            in: 'query',
+            name: 'shardSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      timeoutSeconds: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.',
+            in: 'query',
+            name: 'timeoutSeconds',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+      watch: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.',
+            in: 'query',
+            name: 'watch',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema },
+        'application/cbor-seq': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema },
+        'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema },
+        'application/json;stream=watch': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema,
+        },
+        'application/vnd.kubernetes.protobuf': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema,
+        },
+        'application/vnd.kubernetes.protobuf;stream=watch': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema,
+        },
+        'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema },
+      },
+    },
+    401: { description: 'Unauthorized' },
+  },
+})
+
+export const getApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersRoute = createRoute({
+  method: 'get',
+  path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers',
+  tags: ['autoscaling_v2'],
+  description: 'list or watch objects of kind HorizontalPodAutoscaler',
+  operationId: 'listAutoscalingV2NamespacedHorizontalPodAutoscaler',
+  request: {
+    params: z.object({
+      namespace: z
+        .string()
+        .openapi({
+          param: {
+            description: 'object name and auth scope, such as for teams and projects',
+            in: 'path',
+            name: 'namespace',
+            required: true,
+            schema: { type: 'string', uniqueItems: true },
+          },
+        }),
+    }),
+    query: z.object({
+      pretty: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+            in: 'query',
+            name: 'pretty',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      allowWatchBookmarks: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server\'s discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.',
+            in: 'query',
+            name: 'allowWatchBookmarks',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      continue: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".\n\nThis field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.',
+            in: 'query',
+            name: 'continue',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      fieldSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A selector to restrict the list of returned objects by their fields. Defaults to everything.',
+            in: 'query',
+            name: 'fieldSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      labelSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A selector to restrict the list of returned objects by their labels. Defaults to everything.',
+            in: 'query',
+            name: 'labelSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.\n\nThe server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.',
+            in: 'query',
+            name: 'limit',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+      resourceVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+            in: 'query',
+            name: 'resourceVersion',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      resourceVersionMatch: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+            in: 'query',
+            name: 'resourceVersionMatch',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      sendInitialEvents: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              '`sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.\n\nWhen `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan\n  is interpreted as "data at least as new as the provided `resourceVersion`"\n  and the bookmark event is send when the state is synced\n  to a `resourceVersion` at least as fresh as the one provided by the ListOptions.\n  If `resourceVersion` is unset, this is interpreted as "consistent read" and the\n  bookmark event is send when the state is synced at least to the moment\n  when request started being processed.\n- `resourceVersionMatch` set to any other value or unset\n  Invalid error is returned.\n\nDefaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.',
+            in: 'query',
+            name: 'sendInitialEvents',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      shardSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:\n\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000')\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n\nField paths use CEL-style object-rooted syntax (e.g. \"object.metadata.uid\"), NOT the fieldSelector format (\"metadata.uid\"). Currently supported paths:\n  - object.metadata.uid\n  - object.metadata.namespace\n\nhexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.\n\nExamples:\n  2-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n  4-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')\n    shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')\n    shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.",
+            in: 'query',
+            name: 'shardSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      timeoutSeconds: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.',
+            in: 'query',
+            name: 'timeoutSeconds',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+      watch: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.',
+            in: 'query',
+            name: 'watch',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema },
+        'application/cbor-seq': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema },
+        'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema },
+        'application/json;stream=watch': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema,
+        },
+        'application/vnd.kubernetes.protobuf': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema,
+        },
+        'application/vnd.kubernetes.protobuf;stream=watch': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema,
+        },
+        'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerListSchema },
+      },
+    },
+    401: { description: 'Unauthorized' },
+  },
+})
+
+export const postApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersRoute = createRoute({
+  method: 'post',
+  path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers',
+  tags: ['autoscaling_v2'],
+  description: 'create a HorizontalPodAutoscaler',
+  operationId: 'createAutoscalingV2NamespacedHorizontalPodAutoscaler',
+  request: {
+    params: z.object({
+      namespace: z
+        .string()
+        .openapi({
+          param: {
+            description: 'object name and auth scope, such as for teams and projects',
+            in: 'path',
+            name: 'namespace',
+            required: true,
+            schema: { type: 'string', uniqueItems: true },
+          },
+        }),
+    }),
+    query: z.object({
+      pretty: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+            in: 'query',
+            name: 'pretty',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      dryRun: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed',
+            in: 'query',
+            name: 'dryRun',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      fieldManager: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.',
+            in: 'query',
+            name: 'fieldManager',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      fieldValidation: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.',
+            in: 'query',
+            name: 'fieldValidation',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+    }),
+    body: {
+      content: { '*/*': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        'application/vnd.kubernetes.protobuf': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+        },
+        'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+      },
+    },
+    201: {
+      description: 'Created',
+      content: {
+        'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        'application/vnd.kubernetes.protobuf': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+        },
+        'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+      },
+    },
+    202: {
+      description: 'Accepted',
+      content: {
+        'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        'application/vnd.kubernetes.protobuf': {
+          schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+        },
+        'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+      },
+    },
+    401: { description: 'Unauthorized' },
+  },
+})
+
+export const deleteApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersRoute = createRoute({
+  method: 'delete',
+  path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers',
+  tags: ['autoscaling_v2'],
+  description: 'delete collection of HorizontalPodAutoscaler',
+  operationId: 'deleteAutoscalingV2CollectionNamespacedHorizontalPodAutoscaler',
+  request: {
+    params: z.object({
+      namespace: z
+        .string()
+        .openapi({
+          param: {
+            description: 'object name and auth scope, such as for teams and projects',
+            in: 'path',
+            name: 'namespace',
+            required: true,
+            schema: { type: 'string', uniqueItems: true },
+          },
+        }),
+    }),
+    query: z.object({
+      pretty: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+            in: 'query',
+            name: 'pretty',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      continue: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".\n\nThis field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.',
+            in: 'query',
+            name: 'continue',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      dryRun: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed',
+            in: 'query',
+            name: 'dryRun',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      fieldSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A selector to restrict the list of returned objects by their fields. Defaults to everything.',
+            in: 'query',
+            name: 'fieldSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      gracePeriodSeconds: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.',
+            in: 'query',
+            name: 'gracePeriodSeconds',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+      ignoreStoreReadErrorWithClusterBreakingPotential: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'if set to true, it will trigger an unsafe deletion of the resource in case the normal deletion flow fails with a corrupt object error. A resource is considered corrupt if it can not be retrieved from the underlying storage successfully because of a) its data can not be transformed e.g. decryption failure, or b) it fails to decode into an object. NOTE: unsafe deletion ignores finalizer constraints, skips precondition checks, and removes the object from the storage. WARNING: This may potentially break the cluster if the workload associated with the resource being unsafe-deleted relies on normal deletion flow. Use only if you REALLY know what you are doing. The default value is false, and the user must opt in to enable it',
+            in: 'query',
+            name: 'ignoreStoreReadErrorWithClusterBreakingPotential',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      labelSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A selector to restrict the list of returned objects by their labels. Defaults to everything.',
+            in: 'query',
+            name: 'labelSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.\n\nThe server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.',
+            in: 'query',
+            name: 'limit',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+      orphanDependents: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the "orphan" finalizer will be added to/removed from the object\'s finalizers list. Either this field or PropagationPolicy may be set, but not both.',
+            in: 'query',
+            name: 'orphanDependents',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      propagationPolicy: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.",
+            in: 'query',
+            name: 'propagationPolicy',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      resourceVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+            in: 'query',
+            name: 'resourceVersion',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      resourceVersionMatch: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+            in: 'query',
+            name: 'resourceVersionMatch',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      sendInitialEvents: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              '`sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.\n\nWhen `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan\n  is interpreted as "data at least as new as the provided `resourceVersion`"\n  and the bookmark event is send when the state is synced\n  to a `resourceVersion` at least as fresh as the one provided by the ListOptions.\n  If `resourceVersion` is unset, this is interpreted as "consistent read" and the\n  bookmark event is send when the state is synced at least to the moment\n  when request started being processed.\n- `resourceVersionMatch` set to any other value or unset\n  Invalid error is returned.\n\nDefaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.',
+            in: 'query',
+            name: 'sendInitialEvents',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      shardSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:\n\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000')\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n\nField paths use CEL-style object-rooted syntax (e.g. \"object.metadata.uid\"), NOT the fieldSelector format (\"metadata.uid\"). Currently supported paths:\n  - object.metadata.uid\n  - object.metadata.namespace\n\nhexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.\n\nExamples:\n  2-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n  4-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')\n    shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')\n    shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.",
+            in: 'query',
+            name: 'shardSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      timeoutSeconds: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.',
+            in: 'query',
+            name: 'timeoutSeconds',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+    }),
+    body: { content: { '*/*': { schema: IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/cbor': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+        'application/json': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+        'application/vnd.kubernetes.protobuf': {
+          schema: IoK8sApimachineryPkgApisMetaV1StatusSchema,
+        },
+        'application/yaml': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+      },
+    },
+    401: { description: 'Unauthorized' },
+  },
+})
+
+export const getApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersNameRoute = createRoute(
+  {
+    method: 'get',
+    path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers/{name}',
+    tags: ['autoscaling_v2'],
+    description: 'read the specified HorizontalPodAutoscaler',
+    operationId: 'readAutoscalingV2NamespacedHorizontalPodAutoscaler',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: {
+              description: 'name of the HorizontalPodAutoscaler',
+              in: 'path',
+              name: 'name',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+      query: z.object({
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  },
+)
+
+export const putApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersNameRoute = createRoute(
+  {
+    method: 'put',
+    path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers/{name}',
+    tags: ['autoscaling_v2'],
+    description: 'replace the specified HorizontalPodAutoscaler',
+    operationId: 'replaceAutoscalingV2NamespacedHorizontalPodAutoscaler',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: {
+              description: 'name of the HorizontalPodAutoscaler',
+              in: 'path',
+              name: 'name',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+      query: z.object({
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        dryRun: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed',
+              in: 'query',
+              name: 'dryRun',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldManager: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.',
+              in: 'query',
+              name: 'fieldManager',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldValidation: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.',
+              in: 'query',
+              name: 'fieldValidation',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+      body: {
+        content: { '*/*': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      201: {
+        description: 'Created',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  },
+)
+
+export const deleteApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersNameRoute =
+  createRoute({
+    method: 'delete',
+    path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers/{name}',
+    tags: ['autoscaling_v2'],
+    description: 'delete a HorizontalPodAutoscaler',
+    operationId: 'deleteAutoscalingV2NamespacedHorizontalPodAutoscaler',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: {
+              description: 'name of the HorizontalPodAutoscaler',
+              in: 'path',
+              name: 'name',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+      query: z.object({
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        dryRun: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed',
+              in: 'query',
+              name: 'dryRun',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        gracePeriodSeconds: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.',
+              in: 'query',
+              name: 'gracePeriodSeconds',
+              schema: { type: 'integer', uniqueItems: true },
+              required: false,
+            },
+          }),
+        ignoreStoreReadErrorWithClusterBreakingPotential: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'if set to true, it will trigger an unsafe deletion of the resource in case the normal deletion flow fails with a corrupt object error. A resource is considered corrupt if it can not be retrieved from the underlying storage successfully because of a) its data can not be transformed e.g. decryption failure, or b) it fails to decode into an object. NOTE: unsafe deletion ignores finalizer constraints, skips precondition checks, and removes the object from the storage. WARNING: This may potentially break the cluster if the workload associated with the resource being unsafe-deleted relies on normal deletion flow. Use only if you REALLY know what you are doing. The default value is false, and the user must opt in to enable it',
+              in: 'query',
+              name: 'ignoreStoreReadErrorWithClusterBreakingPotential',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+        orphanDependents: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7. Should the dependent objects be orphaned. If true/false, the "orphan" finalizer will be added to/removed from the object\'s finalizers list. Either this field or PropagationPolicy may be set, but not both.',
+              in: 'query',
+              name: 'orphanDependents',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+        propagationPolicy: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "Whether and how garbage collection will be performed. Either this field or OrphanDependents may be set, but not both. The default policy is decided by the existing finalizer set in the metadata.finalizers and the resource-specific default policy. Acceptable values are: 'Orphan' - orphan the dependents; 'Background' - allow the garbage collector to delete the dependents in the background; 'Foreground' - a cascading policy that deletes all dependents in the foreground.",
+              in: 'query',
+              name: 'propagationPolicy',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+      body: { content: { '*/*': { schema: IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema } } },
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+          'application/json': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApimachineryPkgApisMetaV1StatusSchema,
+          },
+          'application/yaml': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+        },
+      },
+      202: {
+        description: 'Accepted',
+        content: {
+          'application/cbor': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+          'application/json': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApimachineryPkgApisMetaV1StatusSchema,
+          },
+          'application/yaml': { schema: IoK8sApimachineryPkgApisMetaV1StatusSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  })
+
+export const patchApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersNameRoute =
+  createRoute({
+    method: 'patch',
+    path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers/{name}',
+    tags: ['autoscaling_v2'],
+    description: 'partially update the specified HorizontalPodAutoscaler',
+    operationId: 'patchAutoscalingV2NamespacedHorizontalPodAutoscaler',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: {
+              description: 'name of the HorizontalPodAutoscaler',
+              in: 'path',
+              name: 'name',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+      query: z.object({
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        dryRun: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed',
+              in: 'query',
+              name: 'dryRun',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldManager: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch).',
+              in: 'query',
+              name: 'fieldManager',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldValidation: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.',
+              in: 'query',
+              name: 'fieldValidation',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        force: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'Force is going to "force" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests.',
+              in: 'query',
+              name: 'force',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+      body: {
+        content: {
+          'application/apply-patch+cbor': { schema: IoK8sApimachineryPkgApisMetaV1PatchSchema },
+          'application/apply-patch+yaml': { schema: IoK8sApimachineryPkgApisMetaV1PatchSchema },
+          'application/json-patch+json': { schema: IoK8sApimachineryPkgApisMetaV1PatchSchema },
+          'application/merge-patch+json': { schema: IoK8sApimachineryPkgApisMetaV1PatchSchema },
+          'application/strategic-merge-patch+json': {
+            schema: IoK8sApimachineryPkgApisMetaV1PatchSchema,
+          },
+        },
+        required: true,
+      },
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      201: {
+        description: 'Created',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  })
+
+export const getApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute =
+  createRoute({
+    method: 'get',
+    path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers/{name}/status',
+    tags: ['autoscaling_v2'],
+    description: 'read status of the specified HorizontalPodAutoscaler',
+    operationId: 'readAutoscalingV2NamespacedHorizontalPodAutoscalerStatus',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: {
+              description: 'name of the HorizontalPodAutoscaler',
+              in: 'path',
+              name: 'name',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+      query: z.object({
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  })
+
+export const putApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute =
+  createRoute({
+    method: 'put',
+    path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers/{name}/status',
+    tags: ['autoscaling_v2'],
+    description: 'replace status of the specified HorizontalPodAutoscaler',
+    operationId: 'replaceAutoscalingV2NamespacedHorizontalPodAutoscalerStatus',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: {
+              description: 'name of the HorizontalPodAutoscaler',
+              in: 'path',
+              name: 'name',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+      query: z.object({
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        dryRun: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed',
+              in: 'query',
+              name: 'dryRun',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldManager: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint.',
+              in: 'query',
+              name: 'fieldManager',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldValidation: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.',
+              in: 'query',
+              name: 'fieldValidation',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+      body: {
+        content: { '*/*': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema } },
+        required: true,
+      },
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      201: {
+        description: 'Created',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  })
+
+export const patchApisAutoscalingV2NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute =
+  createRoute({
+    method: 'patch',
+    path: '/apis/autoscaling/v2/namespaces/{namespace}/horizontalpodautoscalers/{name}/status',
+    tags: ['autoscaling_v2'],
+    description: 'partially update status of the specified HorizontalPodAutoscaler',
+    operationId: 'patchAutoscalingV2NamespacedHorizontalPodAutoscalerStatus',
+    request: {
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: {
+              description: 'name of the HorizontalPodAutoscaler',
+              in: 'path',
+              name: 'name',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+      query: z.object({
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        dryRun: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed',
+              in: 'query',
+              name: 'dryRun',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldManager: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch).',
+              in: 'query',
+              name: 'fieldManager',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldValidation: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'fieldValidation instructs the server on how to handle objects in the request (POST/PUT/PATCH) containing unknown or duplicate fields. Valid values are: - Ignore: This will ignore any unknown fields that are silently dropped from the object, and will ignore all but the last duplicate field that the decoder encounters. This is the default behavior prior to v1.23. - Warn: This will send a warning via the standard warning response header for each unknown field that is dropped from the object, and for each duplicate field that is encountered. The request will still succeed if there are no other errors, and will only persist the last of any duplicate fields. This is the default in v1.23+ - Strict: This will fail the request with a BadRequest error if any unknown fields would be dropped from the object, or if any duplicate fields are present. The error returned from the server will contain all unknown and duplicate fields encountered.',
+              in: 'query',
+              name: 'fieldValidation',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        force: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'Force is going to "force" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests.',
+              in: 'query',
+              name: 'force',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+      body: {
+        content: {
+          'application/apply-patch+cbor': { schema: IoK8sApimachineryPkgApisMetaV1PatchSchema },
+          'application/apply-patch+yaml': { schema: IoK8sApimachineryPkgApisMetaV1PatchSchema },
+          'application/json-patch+json': { schema: IoK8sApimachineryPkgApisMetaV1PatchSchema },
+          'application/merge-patch+json': { schema: IoK8sApimachineryPkgApisMetaV1PatchSchema },
+          'application/strategic-merge-patch+json': {
+            schema: IoK8sApimachineryPkgApisMetaV1PatchSchema,
+          },
+        },
+        required: true,
+      },
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      201: {
+        description: 'Created',
+        content: {
+          'application/cbor': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/json': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema,
+          },
+          'application/yaml': { schema: IoK8sApiAutoscalingV2HorizontalPodAutoscalerSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  })
+
+export const getApisAutoscalingV2WatchHorizontalpodautoscalersRoute = createRoute({
+  method: 'get',
+  path: '/apis/autoscaling/v2/watch/horizontalpodautoscalers',
+  tags: ['autoscaling_v2'],
+  description:
+    "watch individual changes to a list of HorizontalPodAutoscaler. deprecated: use the 'watch' parameter with a list operation instead.",
+  operationId: 'watchAutoscalingV2HorizontalPodAutoscalerListForAllNamespaces',
+  request: {
+    query: z.object({
+      allowWatchBookmarks: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server\'s discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.',
+            in: 'query',
+            name: 'allowWatchBookmarks',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      continue: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".\n\nThis field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.',
+            in: 'query',
+            name: 'continue',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      fieldSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A selector to restrict the list of returned objects by their fields. Defaults to everything.',
+            in: 'query',
+            name: 'fieldSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      labelSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A selector to restrict the list of returned objects by their labels. Defaults to everything.',
+            in: 'query',
+            name: 'labelSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.\n\nThe server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.',
+            in: 'query',
+            name: 'limit',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+      pretty: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+            in: 'query',
+            name: 'pretty',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      resourceVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+            in: 'query',
+            name: 'resourceVersion',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      resourceVersionMatch: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+            in: 'query',
+            name: 'resourceVersionMatch',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      sendInitialEvents: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              '`sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.\n\nWhen `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan\n  is interpreted as "data at least as new as the provided `resourceVersion`"\n  and the bookmark event is send when the state is synced\n  to a `resourceVersion` at least as fresh as the one provided by the ListOptions.\n  If `resourceVersion` is unset, this is interpreted as "consistent read" and the\n  bookmark event is send when the state is synced at least to the moment\n  when request started being processed.\n- `resourceVersionMatch` set to any other value or unset\n  Invalid error is returned.\n\nDefaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.',
+            in: 'query',
+            name: 'sendInitialEvents',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+      shardSelector: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              "shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:\n\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000')\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n\nField paths use CEL-style object-rooted syntax (e.g. \"object.metadata.uid\"), NOT the fieldSelector format (\"metadata.uid\"). Currently supported paths:\n  - object.metadata.uid\n  - object.metadata.namespace\n\nhexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.\n\nExamples:\n  2-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n  4-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')\n    shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')\n    shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.",
+            in: 'query',
+            name: 'shardSelector',
+            schema: { type: 'string', uniqueItems: true },
+            required: false,
+          },
+        }),
+      timeoutSeconds: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.',
+            in: 'query',
+            name: 'timeoutSeconds',
+            schema: { type: 'integer', uniqueItems: true },
+            required: false,
+          },
+        }),
+      watch: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.',
+            in: 'query',
+            name: 'watch',
+            schema: { type: 'boolean', uniqueItems: true },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/cbor': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+        'application/cbor-seq': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+        'application/json': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+        'application/json;stream=watch': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+        'application/vnd.kubernetes.protobuf': {
+          schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema,
+        },
+        'application/vnd.kubernetes.protobuf;stream=watch': {
+          schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema,
+        },
+        'application/yaml': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+      },
+    },
+    401: { description: 'Unauthorized' },
+  },
+})
+
+export const getApisAutoscalingV2WatchNamespacesNamespaceHorizontalpodautoscalersRoute =
+  createRoute({
+    method: 'get',
+    path: '/apis/autoscaling/v2/watch/namespaces/{namespace}/horizontalpodautoscalers',
+    tags: ['autoscaling_v2'],
+    description:
+      "watch individual changes to a list of HorizontalPodAutoscaler. deprecated: use the 'watch' parameter with a list operation instead.",
+    operationId: 'watchAutoscalingV2NamespacedHorizontalPodAutoscalerList',
+    request: {
+      query: z.object({
+        allowWatchBookmarks: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server\'s discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.',
+              in: 'query',
+              name: 'allowWatchBookmarks',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+        continue: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".\n\nThis field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.',
+              in: 'query',
+              name: 'continue',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldSelector: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'A selector to restrict the list of returned objects by their fields. Defaults to everything.',
+              in: 'query',
+              name: 'fieldSelector',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        labelSelector: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'A selector to restrict the list of returned objects by their labels. Defaults to everything.',
+              in: 'query',
+              name: 'labelSelector',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        limit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.\n\nThe server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.',
+              in: 'query',
+              name: 'limit',
+              schema: { type: 'integer', uniqueItems: true },
+              required: false,
+            },
+          }),
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        resourceVersion: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+              in: 'query',
+              name: 'resourceVersion',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        resourceVersionMatch: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+              in: 'query',
+              name: 'resourceVersionMatch',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        sendInitialEvents: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                '`sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.\n\nWhen `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan\n  is interpreted as "data at least as new as the provided `resourceVersion`"\n  and the bookmark event is send when the state is synced\n  to a `resourceVersion` at least as fresh as the one provided by the ListOptions.\n  If `resourceVersion` is unset, this is interpreted as "consistent read" and the\n  bookmark event is send when the state is synced at least to the moment\n  when request started being processed.\n- `resourceVersionMatch` set to any other value or unset\n  Invalid error is returned.\n\nDefaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.',
+              in: 'query',
+              name: 'sendInitialEvents',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+        shardSelector: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:\n\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000')\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n\nField paths use CEL-style object-rooted syntax (e.g. \"object.metadata.uid\"), NOT the fieldSelector format (\"metadata.uid\"). Currently supported paths:\n  - object.metadata.uid\n  - object.metadata.namespace\n\nhexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.\n\nExamples:\n  2-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n  4-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')\n    shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')\n    shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.",
+              in: 'query',
+              name: 'shardSelector',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        timeoutSeconds: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.',
+              in: 'query',
+              name: 'timeoutSeconds',
+              schema: { type: 'integer', uniqueItems: true },
+              required: false,
+            },
+          }),
+        watch: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.',
+              in: 'query',
+              name: 'watch',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+      params: z.object({
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+          'application/cbor-seq': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+          'application/json': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+          'application/json;stream=watch': {
+            schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema,
+          },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema,
+          },
+          'application/vnd.kubernetes.protobuf;stream=watch': {
+            schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema,
+          },
+          'application/yaml': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  })
+
+export const getApisAutoscalingV2WatchNamespacesNamespaceHorizontalpodautoscalersNameRoute =
+  createRoute({
+    method: 'get',
+    path: '/apis/autoscaling/v2/watch/namespaces/{namespace}/horizontalpodautoscalers/{name}',
+    tags: ['autoscaling_v2'],
+    description:
+      "watch changes to an object of kind HorizontalPodAutoscaler. deprecated: use the 'watch' parameter with a list operation instead, filtered to a single item with the 'fieldSelector' parameter.",
+    operationId: 'watchAutoscalingV2NamespacedHorizontalPodAutoscaler',
+    request: {
+      query: z.object({
+        allowWatchBookmarks: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'allowWatchBookmarks requests watch events with type "BOOKMARK". Servers that do not implement bookmarks may ignore this flag and bookmarks are sent at the server\'s discretion. Clients should not assume bookmarks are returned at any specific interval, nor may they assume the server will send any BOOKMARK event during a session. If this is not a watch, this field is ignored.',
+              in: 'query',
+              name: 'allowWatchBookmarks',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+        continue: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server, the server will respond with a 410 ResourceExpired error together with a continue token. If the client needs a consistent list, it must restart their list without the continue field. Otherwise, the client may send another list request with the token received with the 410 error, the server will respond with a list starting from the next key, but from the latest snapshot, which is inconsistent from the previous list results - objects that are created, modified, or deleted after the first list request will be included in the response, as long as their keys are after the "next key".\n\nThis field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.',
+              in: 'query',
+              name: 'continue',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        fieldSelector: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'A selector to restrict the list of returned objects by their fields. Defaults to everything.',
+              in: 'query',
+              name: 'fieldSelector',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        labelSelector: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'A selector to restrict the list of returned objects by their labels. Defaults to everything.',
+              in: 'query',
+              name: 'labelSelector',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        limit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.\n\nThe server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.',
+              in: 'query',
+              name: 'limit',
+              schema: { type: 'integer', uniqueItems: true },
+              required: false,
+            },
+          }),
+        pretty: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "If 'true', then the output is pretty printed. Defaults to 'false' unless the user-agent indicates a browser or command-line HTTP tool (curl and wget).",
+              in: 'query',
+              name: 'pretty',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        resourceVersion: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'resourceVersion sets a constraint on what resource versions a request may be served from. See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+              in: 'query',
+              name: 'resourceVersion',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        resourceVersionMatch: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'resourceVersionMatch determines how resourceVersion is applied to list calls. It is highly recommended that resourceVersionMatch be set for list calls where resourceVersion is set See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for details.\n\nDefaults to unset',
+              in: 'query',
+              name: 'resourceVersionMatch',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        sendInitialEvents: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                '`sendInitialEvents=true` may be set together with `watch=true`. In that case, the watch stream will begin with synthetic events to produce the current state of objects in the collection. Once all such events have been sent, a synthetic "Bookmark" event  will be sent. The bookmark will report the ResourceVersion (RV) corresponding to the set of objects, and be marked with `"k8s.io/initial-events-end": "true"` annotation. Afterwards, the watch stream will proceed as usual, sending watch events corresponding to changes (subsequent to the RV) to objects watched.\n\nWhen `sendInitialEvents` option is set, we require `resourceVersionMatch` option to also be set. The semantic of the watch request is as following: - `resourceVersionMatch` = NotOlderThan\n  is interpreted as "data at least as new as the provided `resourceVersion`"\n  and the bookmark event is send when the state is synced\n  to a `resourceVersion` at least as fresh as the one provided by the ListOptions.\n  If `resourceVersion` is unset, this is interpreted as "consistent read" and the\n  bookmark event is send when the state is synced at least to the moment\n  when request started being processed.\n- `resourceVersionMatch` set to any other value or unset\n  Invalid error is returned.\n\nDefaults to true if `resourceVersion=""` or `resourceVersion="0"` (for backward compatibility reasons) and to false otherwise.',
+              in: 'query',
+              name: 'sendInitialEvents',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+        shardSelector: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                "shardSelector restricts the list of returned objects using a CEL-based shard selector expression. The format uses the shardRange() function combined with || (logical OR) to specify one or more hash ranges:\n\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000')\n  shardRange(object.metadata.uid, '0x0', '0x8000000000000000') || shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n\nField paths use CEL-style object-rooted syntax (e.g. \"object.metadata.uid\"), NOT the fieldSelector format (\"metadata.uid\"). Currently supported paths:\n  - object.metadata.uid\n  - object.metadata.namespace\n\nhexStart and hexEnd are single-quoted CEL string literals with a '0x' prefix, defining the inclusive lower and exclusive upper bounds over the 64-bit FNV-1a hash space. The full range is [0x0, 0x10000000000000000), where the exclusive upper bound equals 2^64.\n\nExamples:\n  2-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x8000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x8000000000000000', '0x10000000000000000')\n  4-shard split:\n    shard 0: shardRange(object.metadata.uid, '0x0000000000000000', '0x4000000000000000')\n    shard 1: shardRange(object.metadata.uid, '0x4000000000000000', '0x8000000000000000')\n    shard 2: shardRange(object.metadata.uid, '0x8000000000000000', '0xc000000000000000')\n    shard 3: shardRange(object.metadata.uid, '0xc000000000000000', '0x10000000000000000')\n\nThis is a beta field and is enabled by default via the ShardedListAndWatch feature gate.",
+              in: 'query',
+              name: 'shardSelector',
+              schema: { type: 'string', uniqueItems: true },
+              required: false,
+            },
+          }),
+        timeoutSeconds: z
+          .preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.int(),
+          )
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'Timeout for the list/watch call. This limits the duration of the call, regardless of any activity or inactivity.',
+              in: 'query',
+              name: 'timeoutSeconds',
+              schema: { type: 'integer', uniqueItems: true },
+              required: false,
+            },
+          }),
+        watch: z
+          .stringbool()
+          .exactOptional()
+          .openapi({
+            param: {
+              description:
+                'Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.',
+              in: 'query',
+              name: 'watch',
+              schema: { type: 'boolean', uniqueItems: true },
+              required: false,
+            },
+          }),
+      }),
+      params: z.object({
+        name: z
+          .string()
+          .openapi({
+            param: {
+              description: 'name of the HorizontalPodAutoscaler',
+              in: 'path',
+              name: 'name',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+        namespace: z
+          .string()
+          .openapi({
+            param: {
+              description: 'object name and auth scope, such as for teams and projects',
+              in: 'path',
+              name: 'namespace',
+              required: true,
+              schema: { type: 'string', uniqueItems: true },
+            },
+          }),
+      }),
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/cbor': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+          'application/cbor-seq': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+          'application/json': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+          'application/json;stream=watch': {
+            schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema,
+          },
+          'application/vnd.kubernetes.protobuf': {
+            schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema,
+          },
+          'application/vnd.kubernetes.protobuf;stream=watch': {
+            schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema,
+          },
+          'application/yaml': { schema: IoK8sApimachineryPkgApisMetaV1WatchEventSchema },
+        },
+      },
+      401: { description: 'Unauthorized' },
+    },
+  })
