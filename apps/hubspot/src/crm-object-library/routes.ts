@@ -1,0 +1,449 @@
+import { createRoute, z } from '@hono/zod-openapi'
+
+const ErrorDetailSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status code associated with the error detail', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description: 'Context about the error condition',
+        example: '{missingScopes=[scope1, scope2]}',
+      }),
+    in: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the field or parameter in which the error was found.',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'A human readable message describing the error along with remediation steps where appropriate',
+        example: null,
+      }),
+    subCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A specific category that contains more specific detail about the error',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['message'],
+    description:
+      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
+    example: null,
+  })
+  .openapi('ErrorDetail')
+
+const ErrorSchema = z
+  .object({
+    category: z.string().openapi({ description: 'The error category', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description: 'Context about the error condition',
+        example: '{invalidPropertyName=[propertyValue], missingScopes=[scope1, scope2]}',
+      }),
+    correlationId: z
+      .uuid()
+      .openapi({
+        description:
+          'A unique identifier for the request. Include this value with any error reports or support tickets',
+        example: 'aeb5f871-7f07-4993-9211-075dc63e7cbf',
+      }),
+    errors: z
+      .array(ErrorDetailSchema)
+      .exactOptional()
+      .openapi({ description: 'further information about the error', example: null }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description:
+          'A map of link names to associated URIs containing documentation about the error or recommended remediation steps',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'A human readable message describing the error along with remediation steps where appropriate',
+        example: 'An error occurred',
+      }),
+    subCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A specific category that contains more specific detail about the error',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['category', 'correlationId', 'message'],
+    description:
+      'Represents an error response returned by the API when an operation fails. This component is used in various endpoints to provide detailed information about the error encountered.',
+    example: {
+      message: 'Invalid input (details will vary based on the error)',
+      correlationId: 'aeb5f871-7f07-4993-9211-075dc63e7cbf',
+      category: 'VALIDATION_ERROR',
+      links: { 'knowledge-base': 'https://www.hubspot.com/products/service/knowledge-base' },
+    },
+  })
+  .openapi('Error')
+
+const ObjectTypeEnablementPublicResponseSchema = z
+  .object({
+    enablement: z
+      .boolean()
+      .openapi({ description: 'Whether the object type is enabled or not', example: null }),
+  })
+  .openapi({ required: ['enablement'], example: null })
+  .openapi('ObjectTypeEnablementPublicResponse')
+
+const PortalObjectTypeEnablementPublicResponseSchema = z
+  .object({
+    enablementByObjectTypeId: z
+      .record(z.string(), z.boolean().openapi({ example: null }))
+      .openapi({
+        description: 'A map of objectTypeId to whether that object type is enabled or not',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['enablementByObjectTypeId'], example: null })
+  .openapi('PortalObjectTypeEnablementPublicResponse')
+
+const ErrorResponse = {
+  description: 'An error occurred.',
+  content: { '*/*': { schema: ErrorSchema, example: null } },
+}
+
+const DeveloperHapikeySecurityScheme = { type: 'apiKey', name: 'hapikey', in: 'query' }
+
+const Oauth2SecurityScheme = {
+  type: 'oauth2',
+  flows: {
+    authorizationCode: {
+      authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
+      tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
+      scopes: {
+        'crm.objects.appointments.read': '',
+        'crm.objects.appointments.sensitive.read.v2': '',
+        'crm.objects.appointments.sensitive.write.v2': '',
+        'crm.objects.appointments.write': '',
+        'crm.objects.calls.read': '',
+        'crm.objects.carts.read': '',
+        'crm.objects.carts.write': '',
+        'crm.objects.commercepayments.read': '',
+        'crm.objects.commercepayments.write': '',
+        'crm.objects.companies.highly_sensitive.read.v2': '',
+        'crm.objects.companies.highly_sensitive.write.v2': '',
+        'crm.objects.companies.read': '',
+        'crm.objects.companies.sensitive.read.v2': '',
+        'crm.objects.companies.sensitive.write.v2': '',
+        'crm.objects.companies.write': '',
+        'crm.objects.contacts.highly_sensitive.read.v2': '',
+        'crm.objects.contacts.highly_sensitive.write.v2': '',
+        'crm.objects.contacts.read': '',
+        'crm.objects.contacts.sensitive.read.v2': '',
+        'crm.objects.contacts.sensitive.write.v2': '',
+        'crm.objects.contacts.write': '',
+        'crm.objects.courses.read': '',
+        'crm.objects.courses.write': '',
+        'crm.objects.custom.highly_sensitive.read.v2': '',
+        'crm.objects.custom.highly_sensitive.write.v2': '',
+        'crm.objects.custom.read': '',
+        'crm.objects.custom.sensitive.read.v2': '',
+        'crm.objects.custom.sensitive.write.v2': '',
+        'crm.objects.custom.write': '',
+        'crm.objects.deals.highly_sensitive.read.v2': '',
+        'crm.objects.deals.highly_sensitive.write.v2': '',
+        'crm.objects.deals.read': '',
+        'crm.objects.deals.sensitive.read.v2': '',
+        'crm.objects.deals.sensitive.write.v2': '',
+        'crm.objects.deals.write': '',
+        'crm.objects.emails.read': '',
+        'crm.objects.feedback_submissions.read': '',
+        'crm.objects.goals.read': '',
+        'crm.objects.goals.write': '',
+        'crm.objects.invoices.read': '',
+        'crm.objects.invoices.write': '',
+        'crm.objects.leads.read': '',
+        'crm.objects.leads.write': '',
+        'crm.objects.line_items.read': '',
+        'crm.objects.line_items.write': '',
+        'crm.objects.listings.read': '',
+        'crm.objects.listings.write': '',
+        'crm.objects.meetings.read': '',
+        'crm.objects.notes.read': '',
+        'crm.objects.orders.read': '',
+        'crm.objects.orders.write': '',
+        'crm.objects.partner-clients.read': '',
+        'crm.objects.partner-clients.write': '',
+        'crm.objects.partner-services.read': '',
+        'crm.objects.partner-services.write': '',
+        'crm.objects.products.read': '',
+        'crm.objects.products.write': '',
+        'crm.objects.projects.highly_sensitive.read': '',
+        'crm.objects.projects.highly_sensitive.write': '',
+        'crm.objects.projects.read': '',
+        'crm.objects.projects.sensitive.read': '',
+        'crm.objects.projects.sensitive.write': '',
+        'crm.objects.projects.write': '',
+        'crm.objects.quotes.read': '',
+        'crm.objects.quotes.write': '',
+        'crm.objects.services.read': '',
+        'crm.objects.services.write': '',
+        'crm.objects.subscriptions.read': '',
+        'crm.objects.subscriptions.write': '',
+        'crm.objects.tasks.read': '',
+        'crm.objects.tickets.highly_sensitive.read': '',
+        'crm.objects.tickets.highly_sensitive.write': '',
+        'crm.objects.tickets.sensitive.read': '',
+        'crm.objects.tickets.sensitive.write': '',
+        'crm.objects.users.read': '',
+        'crm.objects.users.write': '',
+        'e-commerce': '',
+        'media_bridge.read': '',
+        'tickets.highly_sensitive.v2': '',
+        'tickets.sensitive.v2': '',
+      },
+    },
+  },
+}
+
+const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
+
+const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
+
+export const getCrmObjectLibrary202609EnablementRoute = createRoute({
+  method: 'get',
+  path: '/crm/object-library/2026-09/enablement',
+  tags: ['Basic'],
+  summary: 'Get object activation statuses',
+  description:
+    "For all object types supporting enablement, returns whether they're enabled or disabled",
+  operationId: 'get-/crm/object-library/2026-09/enablement_/crm/object-library/2026-03/enablement',
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: {
+        'application/json': {
+          schema: PortalObjectTypeEnablementPublicResponseSchema,
+          example: null,
+        },
+      },
+    },
+    default: ErrorResponse,
+  },
+  security: [
+    { oauth2: ['crm.objects.deals.read'] },
+    { oauth2: ['crm.objects.subscriptions.read'] },
+    { oauth2: ['crm.objects.services.read'] },
+    { oauth2: ['crm.objects.tickets.sensitive.read'] },
+    { oauth2: ['crm.objects.orders.read'] },
+    { oauth2: ['crm.objects.listings.write'] },
+    { oauth2: ['crm.objects.custom.read'] },
+    { oauth2: ['crm.objects.companies.write'] },
+    { oauth2: ['crm.objects.tasks.read'] },
+    { oauth2: ['crm.objects.custom.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.custom.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.companies.read'] },
+    { oauth2: ['crm.objects.appointments.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.contacts.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.tickets.highly_sensitive.read'] },
+    { oauth2: ['crm.objects.companies.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.tickets.sensitive.write'] },
+    { oauth2: ['media_bridge.read'] },
+    { oauth2: ['crm.objects.deals.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.contacts.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.companies.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.commercepayments.write'] },
+    { oauth2: ['crm.objects.invoices.write'] },
+    { oauth2: ['crm.objects.contacts.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.calls.read'] },
+    { oauth2: ['crm.objects.users.write'] },
+    { oauth2: ['crm.objects.meetings.read'] },
+    { oauth2: ['crm.objects.custom.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.users.read'] },
+    { oauth2: ['crm.objects.partner-services.read'] },
+    { oauth2: ['crm.objects.orders.write'] },
+    { oauth2: ['crm.objects.partner-services.write'] },
+    { oauth2: ['crm.objects.appointments.write'] },
+    { oauth2: ['crm.objects.projects.highly_sensitive.write'] },
+    { oauth2: ['crm.objects.carts.write'] },
+    { oauth2: ['crm.objects.tickets.highly_sensitive.write'] },
+    { oauth2: ['crm.objects.commercepayments.read'] },
+    { oauth2: ['crm.objects.products.write'] },
+    { oauth2: ['crm.objects.feedback_submissions.read'] },
+    { oauth2: ['crm.objects.services.write'] },
+    { oauth2: ['crm.objects.subscriptions.write'] },
+    { oauth2: ['crm.objects.deals.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.contacts.read'] },
+    { oauth2: ['crm.objects.appointments.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.projects.highly_sensitive.read'] },
+    { oauth2: ['crm.objects.invoices.read'] },
+    { oauth2: ['crm.objects.custom.write'] },
+    { oauth2: ['tickets.sensitive.v2'] },
+    { oauth2: ['crm.objects.deals.write'] },
+    { oauth2: ['e-commerce'] },
+    { oauth2: ['crm.objects.appointments.read'] },
+    { oauth2: ['crm.objects.projects.read'] },
+    { oauth2: ['crm.objects.companies.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.companies.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.deals.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.custom.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.goals.write'] },
+    { oauth2: ['crm.objects.projects.sensitive.read'] },
+    { oauth2: ['crm.objects.line_items.write'] },
+    { oauth2: ['crm.objects.contacts.write'] },
+    { oauth2: ['crm.objects.goals.read'] },
+    { oauth2: ['crm.objects.line_items.read'] },
+    { oauth2: ['crm.objects.partner-clients.write'] },
+    { oauth2: ['crm.objects.projects.write'] },
+    { oauth2: ['crm.objects.projects.sensitive.write'] },
+    { oauth2: ['crm.objects.deals.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.quotes.write'] },
+    { oauth2: ['tickets.highly_sensitive.v2'] },
+    { oauth2: ['crm.objects.leads.read'] },
+    { oauth2: ['crm.objects.leads.write'] },
+    { oauth2: ['crm.objects.carts.read'] },
+    { oauth2: ['crm.objects.emails.read'] },
+    { oauth2: ['crm.objects.quotes.read'] },
+    { oauth2: ['crm.objects.courses.write'] },
+    { oauth2: ['crm.objects.partner-clients.read'] },
+    { oauth2: ['crm.objects.notes.read'] },
+    { oauth2: ['crm.objects.courses.read'] },
+    { oauth2: ['crm.objects.listings.read'] },
+    { oauth2: ['crm.objects.contacts.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.products.read'] },
+  ],
+})
+
+export const getCrmObjectLibrary202609EnablementObjectTypeIdRoute = createRoute({
+  method: 'get',
+  path: '/crm/object-library/2026-09/enablement/{objectTypeId}',
+  tags: ['Basic'],
+  summary: 'Get object activation status',
+  description: 'Fetch whether object type is enabled',
+  operationId:
+    'get-/crm/object-library/2026-09/enablement/{objectTypeId}_/crm/object-library/2026-03/enablement/{objectTypeId}',
+  request: {
+    params: z.object({
+      objectTypeId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'objectTypeId',
+            in: 'path',
+            description:
+              'The unique identifier of the object type to retrieve the enablement status for.',
+            required: true,
+            style: 'simple',
+            explode: false,
+            schema: { type: 'string', example: null },
+          },
+          example: null,
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: {
+        'application/json': { schema: ObjectTypeEnablementPublicResponseSchema, example: null },
+      },
+    },
+    default: ErrorResponse,
+  },
+  security: [
+    { oauth2: ['crm.objects.deals.read'] },
+    { oauth2: ['crm.objects.subscriptions.read'] },
+    { oauth2: ['crm.objects.services.read'] },
+    { oauth2: ['crm.objects.tickets.sensitive.read'] },
+    { oauth2: ['crm.objects.orders.read'] },
+    { oauth2: ['crm.objects.listings.write'] },
+    { oauth2: ['crm.objects.custom.read'] },
+    { oauth2: ['crm.objects.companies.write'] },
+    { oauth2: ['crm.objects.tasks.read'] },
+    { oauth2: ['crm.objects.custom.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.custom.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.companies.read'] },
+    { oauth2: ['crm.objects.appointments.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.contacts.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.tickets.highly_sensitive.read'] },
+    { oauth2: ['crm.objects.companies.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.tickets.sensitive.write'] },
+    { oauth2: ['media_bridge.read'] },
+    { oauth2: ['crm.objects.deals.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.contacts.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.companies.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.commercepayments.write'] },
+    { oauth2: ['crm.objects.invoices.write'] },
+    { oauth2: ['crm.objects.contacts.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.calls.read'] },
+    { oauth2: ['crm.objects.users.write'] },
+    { oauth2: ['crm.objects.meetings.read'] },
+    { oauth2: ['crm.objects.custom.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.users.read'] },
+    { oauth2: ['crm.objects.partner-services.read'] },
+    { oauth2: ['crm.objects.orders.write'] },
+    { oauth2: ['crm.objects.partner-services.write'] },
+    { oauth2: ['crm.objects.appointments.write'] },
+    { oauth2: ['crm.objects.projects.highly_sensitive.write'] },
+    { oauth2: ['crm.objects.carts.write'] },
+    { oauth2: ['crm.objects.tickets.highly_sensitive.write'] },
+    { oauth2: ['crm.objects.commercepayments.read'] },
+    { oauth2: ['crm.objects.products.write'] },
+    { oauth2: ['crm.objects.feedback_submissions.read'] },
+    { oauth2: ['crm.objects.services.write'] },
+    { oauth2: ['crm.objects.subscriptions.write'] },
+    { oauth2: ['crm.objects.deals.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.contacts.read'] },
+    { oauth2: ['crm.objects.appointments.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.projects.highly_sensitive.read'] },
+    { oauth2: ['crm.objects.invoices.read'] },
+    { oauth2: ['crm.objects.custom.write'] },
+    { oauth2: ['tickets.sensitive.v2'] },
+    { oauth2: ['crm.objects.deals.write'] },
+    { oauth2: ['e-commerce'] },
+    { oauth2: ['crm.objects.appointments.read'] },
+    { oauth2: ['crm.objects.projects.read'] },
+    { oauth2: ['crm.objects.companies.sensitive.write.v2'] },
+    { oauth2: ['crm.objects.companies.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.deals.highly_sensitive.write.v2'] },
+    { oauth2: ['crm.objects.custom.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.goals.write'] },
+    { oauth2: ['crm.objects.projects.sensitive.read'] },
+    { oauth2: ['crm.objects.line_items.write'] },
+    { oauth2: ['crm.objects.contacts.write'] },
+    { oauth2: ['crm.objects.goals.read'] },
+    { oauth2: ['crm.objects.line_items.read'] },
+    { oauth2: ['crm.objects.partner-clients.write'] },
+    { oauth2: ['crm.objects.projects.write'] },
+    { oauth2: ['crm.objects.projects.sensitive.write'] },
+    { oauth2: ['crm.objects.deals.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.quotes.write'] },
+    { oauth2: ['tickets.highly_sensitive.v2'] },
+    { oauth2: ['crm.objects.leads.read'] },
+    { oauth2: ['crm.objects.leads.write'] },
+    { oauth2: ['crm.objects.carts.read'] },
+    { oauth2: ['crm.objects.emails.read'] },
+    { oauth2: ['crm.objects.quotes.read'] },
+    { oauth2: ['crm.objects.courses.write'] },
+    { oauth2: ['crm.objects.partner-clients.read'] },
+    { oauth2: ['crm.objects.notes.read'] },
+    { oauth2: ['crm.objects.courses.read'] },
+    { oauth2: ['crm.objects.listings.read'] },
+    { oauth2: ['crm.objects.contacts.sensitive.read.v2'] },
+    { oauth2: ['crm.objects.products.read'] },
+  ],
+})
