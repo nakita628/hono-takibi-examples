@@ -47,6 +47,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/appwrite": {
+      "name": "@apps/appwrite",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/asana": {
       "name": "@apps/asana",
       "dependencies": {
@@ -243,6 +257,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/deepgram": {
+      "name": "@apps/deepgram",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/digitalocean": {
       "name": "@apps/digitalocean",
       "dependencies": {
@@ -341,8 +369,36 @@
         "typescript": "catalog:",
       },
     },
+    "apps/exa": {
+      "name": "@apps/exa",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/figma": {
       "name": "@apps/figma",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/firecrawl": {
+      "name": "@apps/firecrawl",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -371,6 +427,20 @@
     },
     "apps/github": {
       "name": "@apps/github",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/github-next": {
+      "name": "@apps/github-next",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -593,6 +663,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/launchdarkly": {
+      "name": "@apps/launchdarkly",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/line": {
       "name": "@apps/line",
       "dependencies": {
@@ -609,6 +693,20 @@
     },
     "apps/linode": {
       "name": "@apps/linode",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/lob": {
+      "name": "@apps/lob",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -705,6 +803,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/neon": {
+      "name": "@apps/neon",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/netbox": {
       "name": "@apps/netbox",
       "dependencies": {
@@ -761,6 +873,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/ollama": {
+      "name": "@apps/ollama",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/openai": {
       "name": "@apps/openai",
       "dependencies": {
@@ -777,6 +903,34 @@
     },
     "apps/ory": {
       "name": "@apps/ory",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/ory-hydra": {
+      "name": "@apps/ory-hydra",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/ory-keto": {
+      "name": "@apps/ory-keto",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -831,6 +985,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/pinecone": {
+      "name": "@apps/pinecone",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/plaid": {
       "name": "@apps/plaid",
       "dependencies": {
@@ -847,6 +1015,48 @@
     },
     "apps/qdrant": {
       "name": "@apps/qdrant",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/qstash": {
+      "name": "@apps/qstash",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/render": {
+      "name": "@apps/render",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/replicate": {
+      "name": "@apps/replicate",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -957,6 +1167,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/supabase-auth": {
+      "name": "@apps/supabase-auth",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/svix": {
+      "name": "@apps/svix",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/temporal": {
       "name": "@apps/temporal",
       "dependencies": {
@@ -1001,6 +1239,20 @@
     },
     "apps/trello": {
       "name": "@apps/trello",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/trigger-dev": {
+      "name": "@apps/trigger-dev",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1156,6 +1408,8 @@
 
     "@apps/airflow": ["@apps/airflow@workspace:apps/airflow"],
 
+    "@apps/appwrite": ["@apps/appwrite@workspace:apps/appwrite"],
+
     "@apps/asana": ["@apps/asana@workspace:apps/asana"],
 
     "@apps/asana-app-components": ["@apps/asana-app-components@workspace:apps/asana-app-components"],
@@ -1184,6 +1438,8 @@
 
     "@apps/datadog": ["@apps/datadog@workspace:apps/datadog"],
 
+    "@apps/deepgram": ["@apps/deepgram@workspace:apps/deepgram"],
+
     "@apps/digitalocean": ["@apps/digitalocean@workspace:apps/digitalocean"],
 
     "@apps/directus": ["@apps/directus@workspace:apps/directus"],
@@ -1198,11 +1454,17 @@
 
     "@apps/elevenlabs": ["@apps/elevenlabs@workspace:apps/elevenlabs"],
 
+    "@apps/exa": ["@apps/exa@workspace:apps/exa"],
+
     "@apps/figma": ["@apps/figma@workspace:apps/figma"],
+
+    "@apps/firecrawl": ["@apps/firecrawl@workspace:apps/firecrawl"],
 
     "@apps/freee": ["@apps/freee@workspace:apps/freee"],
 
     "@apps/github": ["@apps/github@workspace:apps/github"],
+
+    "@apps/github-next": ["@apps/github-next@workspace:apps/github-next"],
 
     "@apps/gitlab": ["@apps/gitlab@workspace:apps/gitlab"],
 
@@ -1234,9 +1496,13 @@
 
     "@apps/langfuse": ["@apps/langfuse@workspace:apps/langfuse"],
 
+    "@apps/launchdarkly": ["@apps/launchdarkly@workspace:apps/launchdarkly"],
+
     "@apps/line": ["@apps/line@workspace:apps/line"],
 
     "@apps/linode": ["@apps/linode@workspace:apps/linode"],
+
+    "@apps/lob": ["@apps/lob@workspace:apps/lob"],
 
     "@apps/medusa-admin": ["@apps/medusa-admin@workspace:apps/medusa-admin"],
 
@@ -1250,6 +1516,8 @@
 
     "@apps/n8n": ["@apps/n8n@workspace:apps/n8n"],
 
+    "@apps/neon": ["@apps/neon@workspace:apps/neon"],
+
     "@apps/netbox": ["@apps/netbox@workspace:apps/netbox"],
 
     "@apps/netlify": ["@apps/netlify@workspace:apps/netlify"],
@@ -1258,9 +1526,15 @@
 
     "@apps/okta": ["@apps/okta@workspace:apps/okta"],
 
+    "@apps/ollama": ["@apps/ollama@workspace:apps/ollama"],
+
     "@apps/openai": ["@apps/openai@workspace:apps/openai"],
 
     "@apps/ory": ["@apps/ory@workspace:apps/ory"],
+
+    "@apps/ory-hydra": ["@apps/ory-hydra@workspace:apps/ory-hydra"],
+
+    "@apps/ory-keto": ["@apps/ory-keto@workspace:apps/ory-keto"],
 
     "@apps/pagerduty": ["@apps/pagerduty@workspace:apps/pagerduty"],
 
@@ -1268,9 +1542,17 @@
 
     "@apps/petstore": ["@apps/petstore@workspace:apps/petstore"],
 
+    "@apps/pinecone": ["@apps/pinecone@workspace:apps/pinecone"],
+
     "@apps/plaid": ["@apps/plaid@workspace:apps/plaid"],
 
     "@apps/qdrant": ["@apps/qdrant@workspace:apps/qdrant"],
+
+    "@apps/qstash": ["@apps/qstash@workspace:apps/qstash"],
+
+    "@apps/render": ["@apps/render@workspace:apps/render"],
+
+    "@apps/replicate": ["@apps/replicate@workspace:apps/replicate"],
 
     "@apps/resend": ["@apps/resend@workspace:apps/resend"],
 
@@ -1286,6 +1568,10 @@
 
     "@apps/supabase": ["@apps/supabase@workspace:apps/supabase"],
 
+    "@apps/supabase-auth": ["@apps/supabase-auth@workspace:apps/supabase-auth"],
+
+    "@apps/svix": ["@apps/svix@workspace:apps/svix"],
+
     "@apps/temporal": ["@apps/temporal@workspace:apps/temporal"],
 
     "@apps/tmdb": ["@apps/tmdb@workspace:apps/tmdb"],
@@ -1293,6 +1579,8 @@
     "@apps/train-travel": ["@apps/train-travel@workspace:apps/train-travel"],
 
     "@apps/trello": ["@apps/trello@workspace:apps/trello"],
+
+    "@apps/trigger-dev": ["@apps/trigger-dev@workspace:apps/trigger-dev"],
 
     "@apps/twilio": ["@apps/twilio@workspace:apps/twilio"],
 
