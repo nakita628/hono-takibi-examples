@@ -1,0 +1,1811 @@
+<h1 id="cloud-runtime-configuration-api">Cloud Runtime Configuration API v1beta1</h1>
+
+> Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+
+The Runtime Configurator allows you to dynamically configure and expose variables through Google Cloud Platform. In addition, you can also set Watchers and Waiters that will watch for changes to your data and return based on certain conditions.
+
+Base URLs:
+
+* <a href="https://runtimeconfig.googleapis.com/">https://runtimeconfig.googleapis.com/</a>
+
+<a href="https://developers.google.com/terms/">Terms of service</a>
+Web: <a href="https://google.com">Google</a> 
+License: <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0</a>
+
+<a href="https://cloud.google.com/deployment-manager/runtime-configurator/">External documentation</a>
+
+# Authentication
+
+- oAuth2 authentication. Oauth 2.0 implicit authentication
+
+    - Flow: implicit
+    - Authorization URL = [https://accounts.google.com/o/oauth2/auth](https://accounts.google.com/o/oauth2/auth)
+
+|Scope|Scope Description|
+|---|---|
+|https://www.googleapis.com/auth/cloud-platform|See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.|
+|https://www.googleapis.com/auth/cloudruntimeconfig|Manage your Google Cloud Platform services' runtime configuration|
+
+- oAuth2 authentication. Oauth 2.0 authorizationCode authentication
+
+    - Flow: authorizationCode
+    - Authorization URL = [https://accounts.google.com/o/oauth2/auth](https://accounts.google.com/o/oauth2/auth)
+    - Token URL = [https://accounts.google.com/o/oauth2/token](https://accounts.google.com/o/oauth2/token)
+
+|Scope|Scope Description|
+|---|---|
+|https://www.googleapis.com/auth/cloud-platform|See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.|
+|https://www.googleapis.com/auth/cloudruntimeconfig|Manage your Google Cloud Platform services' runtime configuration|
+
+<h1 id="cloud-runtime-configuration-api-projects">projects</h1>
+
+## runtimeconfig.projects.configs.waiters.get
+
+<a id="opIdruntimeconfig.projects.configs.waiters.get"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1beta1/{name}`
+
+Gets information about a single waiter.
+
+<h3 id="runtimeconfigprojectsconfigswaitersget-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|The fully-qualified name of the Waiter resource object to retrieve, in the format: `projects/[PROJECT_ID]/configs/[CONFIG_NAME]/waiters/[WAITER_NAME]`|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "createTime": "string",
+  "done": true,
+  "error": {
+    "code": 0,
+    "details": [
+      {
+        "property1": null,
+        "property2": null
+      }
+    ],
+    "message": "string"
+  },
+  "failure": {
+    "cardinality": {
+      "number": 0,
+      "path": "string"
+    }
+  },
+  "name": "string",
+  "success": {
+    "cardinality": {
+      "number": 0,
+      "path": "string"
+    }
+  },
+  "timeout": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigswaitersget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[Waiter](#schemawaiter)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.variables.update
+
+<a id="opIdruntimeconfig.projects.configs.variables.update"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "state": "VARIABLE_STATE_UNSPECIFIED",
+    "text": "string",
+    "updateTime": "string",
+    "value": "string"
+  }'
+```
+
+`PUT /v1beta1/{name}`
+
+Updates an existing variable with a new value.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "state": "VARIABLE_STATE_UNSPECIFIED",
+  "text": "string",
+  "updateTime": "string",
+  "value": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigsvariablesupdate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|The name of the variable to update, in the format: `projects/[PROJECT_ID]/configs/[CONFIG_NAME]/variables/[VARIABLE_NAME]`|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+|body|body|[Variable](#schemavariable)|false|none|
+|» name|body|string|false|The name of the variable resource, in the format: projects/[PROJECT_ID]/configs/[CONFIG_NAME]/variables/[VARIABLE_NAME] The `[PROJECT_ID]` must be a valid project ID, `[CONFIG_NAME]` must be a valid RuntimeConfig resource and `[VARIABLE_NAME]` follows Unix file system file path naming. The `[VARIABLE_NAME]` can contain ASCII letters, numbers, slashes and dashes. Slashes are used as path element separators and are not part of the `[VARIABLE_NAME]` itself, so `[VARIABLE_NAME]` must contain at least one non-slash character. Multiple slashes are coalesced into single slash character. Each path segment should match [0-9A-Za-z](?:[_.A-Za-z0-9-]{0,62}[_.A-Za-z0-9])? regular expression. The length of a `[VARIABLE_NAME]` must be less than 256 characters. Once you create a variable, you cannot change the variable name.|
+|» state|body|string|false|Output only. The current state of the variable. The variable state indicates the outcome of the `variables().watch` call and is visible through the `get` and `list` calls.|
+|» text|body|string|false|The string value of the variable. The length of the value must be less than 4096 bytes. Empty values are also accepted. For example, `text: "my text value"`. The string must be valid UTF-8.|
+|» updateTime|body|string(google-datetime)|false|Output only. The time of the last variable update. Timestamp will be UTC timestamp.|
+|» value|body|string(byte)|false|The binary value of the variable. The length of the value must be less than 4096 bytes. Empty values are also accepted. The value must be base64 encoded, and must comply with IETF RFC4648 (https://www.ietf.org/rfc/rfc4648.txt). Only one of `value` or `text` can be set.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+|» state|VARIABLE_STATE_UNSPECIFIED|
+|» state|UPDATED|
+|» state|DELETED|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "name": "string",
+  "state": "VARIABLE_STATE_UNSPECIFIED",
+  "text": "string",
+  "updateTime": "string",
+  "value": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigsvariablesupdate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[Variable](#schemavariable)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.waiters.delete
+
+<a id="opIdruntimeconfig.projects.configs.waiters.delete"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1beta1/{name}`
+
+Deletes the waiter with the specified name.
+
+<h3 id="runtimeconfigprojectsconfigswaitersdelete-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|The Waiter resource to delete, in the format: `projects/[PROJECT_ID]/configs/[CONFIG_NAME]/waiters/[WAITER_NAME]`|
+|recursive|query|boolean|false|Set to `true` to recursively delete multiple variables with the same prefix.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{}
+```
+
+<h3 id="runtimeconfigprojectsconfigswaitersdelete-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[Empty](#schemaempty)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.variables.watch
+
+<a id="opIdruntimeconfig.projects.configs.variables.watch"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string:watch \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "newerThan": "string"
+  }'
+```
+
+`POST /v1beta1/{name}:watch`
+
+Watches a specific variable and waits for a change in the variable's value. When there is a change, this method returns the new value or times out. If a variable is deleted while being watched, the `variableState` state is set to `DELETED` and the method returns the last known variable `value`. If you set the deadline for watching to a larger value than internal timeout (60 seconds), the current variable value is returned and the `variableState` will be `VARIABLE_STATE_UNSPECIFIED`. To learn more about creating a watcher, read the [Watching a Variable for Changes](/deployment-manager/runtime-configurator/watching-a-variable) documentation.
+
+> Body parameter
+
+```json
+{
+  "newerThan": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigsvariableswatch-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|The name of the variable to watch, in the format: `projects/[PROJECT_ID]/configs/[CONFIG_NAME]`|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+|body|body|[WatchVariableRequest](#schemawatchvariablerequest)|false|none|
+|» newerThan|body|string(google-datetime)|false|If specified, checks the current timestamp of the variable and if the current timestamp is newer than `newerThan` timestamp, the method returns immediately. If not specified or the variable has an older timestamp, the watcher waits for a the value to change before returning.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "name": "string",
+  "state": "VARIABLE_STATE_UNSPECIFIED",
+  "text": "string",
+  "updateTime": "string",
+  "value": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigsvariableswatch-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[Variable](#schemavariable)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.list
+
+<a id="opIdruntimeconfig.projects.configs.list"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string/configs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1beta1/{parent}/configs`
+
+Lists all the RuntimeConfig resources within project.
+
+<h3 id="runtimeconfigprojectsconfigslist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|parent|path|string|true|The [project ID](https://support.google.com/cloud/answer/6158840?hl=en&ref_topic=6158848) for this request, in the format `projects/[PROJECT_ID]`.|
+|pageSize|query|integer|false|Specifies the number of results to return per page. If there are fewer elements than the specified number, returns all elements.|
+|pageToken|query|string|false|Specifies a page token to use. Set `pageToken` to a `nextPageToken` returned by a previous list request to get the next page of results.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "configs": [
+    {
+      "description": "string",
+      "name": "string"
+    }
+  ],
+  "nextPageToken": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigslist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[ListConfigsResponse](#schemalistconfigsresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.create
+
+<a id="opIdruntimeconfig.projects.configs.create"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string/configs \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "description": "string",
+    "name": "string"
+  }'
+```
+
+`POST /v1beta1/{parent}/configs`
+
+Creates a new RuntimeConfig resource. The configuration name must be unique within project.
+
+> Body parameter
+
+```json
+{
+  "description": "string",
+  "name": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigscreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|parent|path|string|true|The [project ID](https://support.google.com/cloud/answer/6158840?hl=en&ref_topic=6158848) for this request, in the format `projects/[PROJECT_ID]`.|
+|requestId|query|string|false|An optional but recommended unique `request_id`. If the server receives two `create()` requests with the same `request_id`, then the second request will be ignored and the first resource created and stored in the backend is returned. Empty `request_id` fields are ignored. It is responsibility of the client to ensure uniqueness of the `request_id` strings. `request_id` strings are limited to 64 characters.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+|body|body|[RuntimeConfig](#schemaruntimeconfig)|false|none|
+|» description|body|string|false|An optional description of the RuntimeConfig object.|
+|» name|body|string|false|The resource name of a runtime config. The name must have the format: projects/[PROJECT_ID]/configs/[CONFIG_NAME] The `[PROJECT_ID]` must be a valid project ID, and `[CONFIG_NAME]` is an arbitrary name that matches the `[0-9A-Za-z](?:[_.A-Za-z0-9-]{0,62}[_.A-Za-z0-9])?` regular expression. The length of `[CONFIG_NAME]` must be less than 64 characters. You pick the RuntimeConfig resource name, but the server will validate that the name adheres to this format. After you create the resource, you cannot change the resource's name.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "description": "string",
+  "name": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigscreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[RuntimeConfig](#schemaruntimeconfig)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.variables.list
+
+<a id="opIdruntimeconfig.projects.configs.variables.list"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string/variables \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1beta1/{parent}/variables`
+
+Lists variables within given a configuration, matching any provided filters. This only lists variable names, not the values, unless `return_values` is true, in which case only variables that user has IAM permission to GetVariable will be returned.
+
+<h3 id="runtimeconfigprojectsconfigsvariableslist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|parent|path|string|true|The path to the RuntimeConfig resource for which you want to list variables. The configuration must exist beforehand; the path must be in the format: `projects/[PROJECT_ID]/configs/[CONFIG_NAME]`|
+|filter|query|string|false|Filters variables by matching the specified filter. For example: `projects/example-project/config/[CONFIG_NAME]/variables/example-variable`.|
+|pageSize|query|integer|false|Specifies the number of results to return per page. If there are fewer elements than the specified number, returns all elements.|
+|pageToken|query|string|false|Specifies a page token to use. Set `pageToken` to a `nextPageToken` returned by a previous list request to get the next page of results.|
+|returnValues|query|boolean|false|The flag indicates whether the user wants to return values of variables. If true, then only those variables that user has IAM GetVariable permission will be returned along with their values.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "nextPageToken": "string",
+  "variables": [
+    {
+      "name": "string",
+      "state": "VARIABLE_STATE_UNSPECIFIED",
+      "text": "string",
+      "updateTime": "string",
+      "value": "string"
+    }
+  ]
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigsvariableslist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[ListVariablesResponse](#schemalistvariablesresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.variables.create
+
+<a id="opIdruntimeconfig.projects.configs.variables.create"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string/variables \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "state": "VARIABLE_STATE_UNSPECIFIED",
+    "text": "string",
+    "updateTime": "string",
+    "value": "string"
+  }'
+```
+
+`POST /v1beta1/{parent}/variables`
+
+Creates a variable within the given configuration. You cannot create a variable with a name that is a prefix of an existing variable name, or a name that has an existing variable name as a prefix. To learn more about creating a variable, read the [Setting and Getting Data](/deployment-manager/runtime-configurator/set-and-get-variables) documentation.
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "state": "VARIABLE_STATE_UNSPECIFIED",
+  "text": "string",
+  "updateTime": "string",
+  "value": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigsvariablescreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|parent|path|string|true|The path to the RutimeConfig resource that this variable should belong to. The configuration must exist beforehand; the path must be in the format: `projects/[PROJECT_ID]/configs/[CONFIG_NAME]`|
+|requestId|query|string|false|An optional but recommended unique `request_id`. If the server receives two `create()` requests with the same `request_id`, then the second request will be ignored and the first resource created and stored in the backend is returned. Empty `request_id` fields are ignored. It is responsibility of the client to ensure uniqueness of the `request_id` strings. `request_id` strings are limited to 64 characters.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+|body|body|[Variable](#schemavariable)|false|none|
+|» name|body|string|false|The name of the variable resource, in the format: projects/[PROJECT_ID]/configs/[CONFIG_NAME]/variables/[VARIABLE_NAME] The `[PROJECT_ID]` must be a valid project ID, `[CONFIG_NAME]` must be a valid RuntimeConfig resource and `[VARIABLE_NAME]` follows Unix file system file path naming. The `[VARIABLE_NAME]` can contain ASCII letters, numbers, slashes and dashes. Slashes are used as path element separators and are not part of the `[VARIABLE_NAME]` itself, so `[VARIABLE_NAME]` must contain at least one non-slash character. Multiple slashes are coalesced into single slash character. Each path segment should match [0-9A-Za-z](?:[_.A-Za-z0-9-]{0,62}[_.A-Za-z0-9])? regular expression. The length of a `[VARIABLE_NAME]` must be less than 256 characters. Once you create a variable, you cannot change the variable name.|
+|» state|body|string|false|Output only. The current state of the variable. The variable state indicates the outcome of the `variables().watch` call and is visible through the `get` and `list` calls.|
+|» text|body|string|false|The string value of the variable. The length of the value must be less than 4096 bytes. Empty values are also accepted. For example, `text: "my text value"`. The string must be valid UTF-8.|
+|» updateTime|body|string(google-datetime)|false|Output only. The time of the last variable update. Timestamp will be UTC timestamp.|
+|» value|body|string(byte)|false|The binary value of the variable. The length of the value must be less than 4096 bytes. Empty values are also accepted. The value must be base64 encoded, and must comply with IETF RFC4648 (https://www.ietf.org/rfc/rfc4648.txt). Only one of `value` or `text` can be set.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+|» state|VARIABLE_STATE_UNSPECIFIED|
+|» state|UPDATED|
+|» state|DELETED|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "name": "string",
+  "state": "VARIABLE_STATE_UNSPECIFIED",
+  "text": "string",
+  "updateTime": "string",
+  "value": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigsvariablescreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[Variable](#schemavariable)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.waiters.list
+
+<a id="opIdruntimeconfig.projects.configs.waiters.list"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string/waiters \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1beta1/{parent}/waiters`
+
+List waiters within the given configuration.
+
+<h3 id="runtimeconfigprojectsconfigswaiterslist-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|parent|path|string|true|The path to the configuration for which you want to get a list of waiters. The configuration must exist beforehand; the path must be in the format: `projects/[PROJECT_ID]/configs/[CONFIG_NAME]`|
+|pageSize|query|integer|false|Specifies the number of results to return per page. If there are fewer elements than the specified number, returns all elements.|
+|pageToken|query|string|false|Specifies a page token to use. Set `pageToken` to a `nextPageToken` returned by a previous list request to get the next page of results.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "nextPageToken": "string",
+  "waiters": [
+    {
+      "createTime": "string",
+      "done": true,
+      "error": {
+        "code": 0,
+        "details": [
+          {
+            "property1": null,
+            "property2": null
+          }
+        ],
+        "message": "string"
+      },
+      "failure": {
+        "cardinality": {
+          "number": 0,
+          "path": "string"
+        }
+      },
+      "name": "string",
+      "success": {
+        "cardinality": {
+          "number": 0,
+          "path": "string"
+        }
+      },
+      "timeout": "string"
+    }
+  ]
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigswaiterslist-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[ListWaitersResponse](#schemalistwaitersresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.waiters.create
+
+<a id="opIdruntimeconfig.projects.configs.waiters.create"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string/waiters \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "createTime": "string",
+    "done": true,
+    "error": {
+      "code": 0,
+      "details": [
+        {
+          "property1": null,
+          "property2": null
+        }
+      ],
+      "message": "string"
+    },
+    "failure": {
+      "cardinality": {
+        "number": 0,
+        "path": "string"
+      }
+    },
+    "name": "string",
+    "success": {
+      "cardinality": {
+        "number": 0,
+        "path": "string"
+      }
+    },
+    "timeout": "string"
+  }'
+```
+
+`POST /v1beta1/{parent}/waiters`
+
+Creates a Waiter resource. This operation returns a long-running Operation resource which can be polled for completion. However, a waiter with the given name will exist (and can be retrieved) prior to the operation completing. If the operation fails, the failed Waiter resource will still exist and must be deleted prior to subsequent creation attempts.
+
+> Body parameter
+
+```json
+{
+  "createTime": "string",
+  "done": true,
+  "error": {
+    "code": 0,
+    "details": [
+      {
+        "property1": null,
+        "property2": null
+      }
+    ],
+    "message": "string"
+  },
+  "failure": {
+    "cardinality": {
+      "number": 0,
+      "path": "string"
+    }
+  },
+  "name": "string",
+  "success": {
+    "cardinality": {
+      "number": 0,
+      "path": "string"
+    }
+  },
+  "timeout": "string"
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigswaiterscreate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|parent|path|string|true|The path to the configuration that will own the waiter. The configuration must exist beforehand; the path must be in the format: `projects/[PROJECT_ID]/configs/[CONFIG_NAME]`.|
+|requestId|query|string|false|An optional but recommended unique `request_id`. If the server receives two `create()` requests with the same `request_id`, then the second request will be ignored and the first resource created and stored in the backend is returned. Empty `request_id` fields are ignored. It is responsibility of the client to ensure uniqueness of the `request_id` strings. `request_id` strings are limited to 64 characters.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+|body|body|[Waiter](#schemawaiter)|false|none|
+|» createTime|body|string(google-datetime)|false|Output only. The instant at which this Waiter resource was created. Adding the value of `timeout` to this instant yields the timeout deadline for the waiter.|
+|» done|body|boolean|false|Output only. If the value is `false`, it means the waiter is still waiting for one of its conditions to be met. If true, the waiter has finished. If the waiter finished due to a timeout or failure, `error` will be set.|
+|» error|body|[Status](#schemastatus)|false|Output only. If the waiter ended due to a failure or timeout, this value will be set.|
+|» failure|body|[EndCondition](#schemaendcondition)|false|[Optional] The failure condition of this waiter. If this condition is met, `done` will be set to `true` and the `error` code will be set to `ABORTED`. The failure condition takes precedence over the success condition. If both conditions are met, a failure will be indicated. This value is optional; if no failure condition is set, the only failure scenario will be a timeout.|
+|» name|body|string|false|The name of the Waiter resource, in the format: projects/[PROJECT_ID]/configs/[CONFIG_NAME]/waiters/[WAITER_NAME] The `[PROJECT_ID]` must be a valid Google Cloud project ID, the `[CONFIG_NAME]` must be a valid RuntimeConfig resource, the `[WAITER_NAME]` must match RFC 1035 segment specification, and the length of `[WAITER_NAME]` must be less than 64 bytes. After you create a Waiter resource, you cannot change the resource name.|
+|» success|body|[EndCondition](#schemaendcondition)|false|[Required] The success condition. If this condition is met, `done` will be set to `true` and the `error` value will remain unset. The failure condition takes precedence over the success condition. If both conditions are met, a failure will be indicated.|
+|» timeout|body|string(google-duration)|false|[Required] Specifies the timeout of the waiter in seconds, beginning from the instant that `waiters().create` method is called. If this time elapses before the success or failure conditions are met, the waiter fails and sets the `error` code to `DEADLINE_EXCEEDED`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "done": true,
+  "error": {
+    "code": 0,
+    "details": [
+      {
+        "property1": null,
+        "property2": null
+      }
+    ],
+    "message": "string"
+  },
+  "metadata": {
+    "property1": null,
+    "property2": null
+  },
+  "name": "string",
+  "response": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigswaiterscreate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[Operation](#schemaoperation)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.getIamPolicy
+
+<a id="opIdruntimeconfig.projects.configs.getIamPolicy"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string:getIamPolicy \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1beta1/{resource}:getIamPolicy`
+
+Gets the access control policy for a resource. Returns an empty policy if the resource exists and does not have a policy set.
+
+<h3 id="runtimeconfigprojectsconfigsgetiampolicy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|resource|path|string|true|REQUIRED: The resource for which the policy is being requested. See [Resource names](https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field.|
+|options.requestedPolicyVersion|query|integer|false|Optional. The maximum policy version that will be used to format the policy. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for policies with any conditional role bindings must specify version 3. Policies with no conditional role bindings may specify any valid value or leave the field unset. The policy in the response might use the policy version that you specified, or it might use a lower policy version. For example, if you specify version 3, but the policy has no conditional role bindings, the response uses version 1. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "bindings": [
+    {
+      "condition": {
+        "description": "string",
+        "expression": "string",
+        "location": "string",
+        "title": "string"
+      },
+      "members": [
+        "string"
+      ],
+      "role": "string"
+    }
+  ],
+  "etag": "string",
+  "version": 0
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigsgetiampolicy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[Policy](#schemapolicy)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.setIamPolicy
+
+<a id="opIdruntimeconfig.projects.configs.setIamPolicy"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string:setIamPolicy \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "policy": {
+      "bindings": [
+        {
+          "condition": {
+            "description": "string",
+            "expression": "string",
+            "location": "string",
+            "title": "string"
+          },
+          "members": [
+            "string"
+          ],
+          "role": "string"
+        }
+      ],
+      "etag": "string",
+      "version": 0
+    }
+  }'
+```
+
+`POST /v1beta1/{resource}:setIamPolicy`
+
+Sets the access control policy on the specified resource. Replaces any existing policy. Can return `NOT_FOUND`, `INVALID_ARGUMENT`, and `PERMISSION_DENIED` errors.
+
+> Body parameter
+
+```json
+{
+  "policy": {
+    "bindings": [
+      {
+        "condition": {
+          "description": "string",
+          "expression": "string",
+          "location": "string",
+          "title": "string"
+        },
+        "members": [
+          "string"
+        ],
+        "role": "string"
+      }
+    ],
+    "etag": "string",
+    "version": 0
+  }
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigssetiampolicy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|resource|path|string|true|REQUIRED: The resource for which the policy is being specified. See [Resource names](https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+|body|body|[SetIamPolicyRequest](#schemasetiampolicyrequest)|false|none|
+|» policy|body|[Policy](#schemapolicy)|false|REQUIRED: The complete policy to be applied to the `resource`. The size of the policy is limited to a few 10s of KB. An empty policy is a valid policy but certain Google Cloud services (such as Projects) might reject them.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "bindings": [
+    {
+      "condition": {
+        "description": "string",
+        "expression": "string",
+        "location": "string",
+        "title": "string"
+      },
+      "members": [
+        "string"
+      ],
+      "role": "string"
+    }
+  ],
+  "etag": "string",
+  "version": 0
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigssetiampolicy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[Policy](#schemapolicy)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+## runtimeconfig.projects.configs.waiters.testIamPermissions
+
+<a id="opIdruntimeconfig.projects.configs.waiters.testIamPermissions"></a>
+
+> Code samples
+
+```bash
+curl https://www.googleapis.com/v1beta1/string:testIamPermissions \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "permissions": [
+      "string"
+    ]
+  }'
+```
+
+`POST /v1beta1/{resource}:testIamPermissions`
+
+Returns permissions that a caller has on the specified resource. If the resource does not exist, this will return an empty set of permissions, not a `NOT_FOUND` error. Note: This operation is designed to be used for building permission-aware UIs and command-line tools, not for authorization checking. This operation may "fail open" without warning.
+
+> Body parameter
+
+```json
+{
+  "permissions": [
+    "string"
+  ]
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigswaiterstestiampermissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|resource|path|string|true|REQUIRED: The resource for which the policy detail is being requested. See [Resource names](https://cloud.google.com/apis/design/resource_names) for the appropriate value for this field.|
+|$.xgafv|query|string|false|V1 error format.|
+|access_token|query|string|false|OAuth access token.|
+|alt|query|string|false|Data format for response.|
+|callback|query|string|false|JSONP|
+|fields|query|string|false|Selector specifying which fields to include in a partial response.|
+|key|query|string|false|API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.|
+|oauth_token|query|string|false|OAuth 2.0 token for the current user.|
+|prettyPrint|query|boolean|false|Returns response with indentations and line breaks.|
+|quotaUser|query|string|false|Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.|
+|upload_protocol|query|string|false|Upload protocol for media (e.g. "raw", "multipart").|
+|uploadType|query|string|false|Legacy upload protocol for media (e.g. "media", "multipart").|
+|body|body|[TestIamPermissionsRequest](#schematestiampermissionsrequest)|false|none|
+|» permissions|body|[string]|false|The set of permissions to check for the `resource`. Permissions with wildcards (such as `*` or `storage.*`) are not allowed. For more information see [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|$.xgafv|1|
+|$.xgafv|2|
+|alt|json|
+|alt|media|
+|alt|proto|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "permissions": [
+    "string"
+  ]
+}
+```
+
+<h3 id="runtimeconfigprojectsconfigswaiterstestiampermissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|[TestIamPermissionsResponse](#schematestiampermissionsresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+Oauth2 ( Scopes: https://www.googleapis.com/auth/cloud-platform ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloud-platform ), Oauth2 ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig ) & Oauth2c ( Scopes: https://www.googleapis.com/auth/cloudruntimeconfig )
+</aside>
+
+# Schemas
+
+<h2 id="tocS_Binding">Binding</h2>
+<!-- backwards compatibility -->
+<a id="schemabinding"></a>
+<a id="schema_Binding"></a>
+<a id="tocSbinding"></a>
+<a id="tocsbinding"></a>
+
+```json
+{
+  "condition": {
+    "description": "string",
+    "expression": "string",
+    "location": "string",
+    "title": "string"
+  },
+  "members": [
+    "string"
+  ],
+  "role": "string"
+}
+```
+
+Associates `members`, or principals, with a `role`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|condition|[Expr](#schemaexpr)|false|none|The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).|
+|members|[string]|false|none|Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.|
+|role|string|false|none|Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.|
+
+<h2 id="tocS_Cardinality">Cardinality</h2>
+<!-- backwards compatibility -->
+<a id="schemacardinality"></a>
+<a id="schema_Cardinality"></a>
+<a id="tocScardinality"></a>
+<a id="tocscardinality"></a>
+
+```json
+{
+  "number": 0,
+  "path": "string"
+}
+```
+
+A Cardinality condition for the Waiter resource. A cardinality condition is met when the number of variables under a specified path prefix reaches a predefined number. For example, if you set a Cardinality condition where the `path` is set to `/foo` and the number of paths is set to `2`, the following variables would meet the condition in a RuntimeConfig resource: + `/foo/variable1 = "value1"` + `/foo/variable2 = "value2"` + `/bar/variable3 = "value3"` It would not satisfy the same condition with the `number` set to `3`, however, because there is only 2 paths that start with `/foo`. Cardinality conditions are recursive; all subtrees under the specific path prefix are counted.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|number|integer(int32)|false|none|The number variables under the `path` that must exist to meet this condition. Defaults to 1 if not specified.|
+|path|string|false|none|The root of the variable subtree to monitor. For example, `/foo`.|
+
+<h2 id="tocS_Empty">Empty</h2>
+<!-- backwards compatibility -->
+<a id="schemaempty"></a>
+<a id="schema_Empty"></a>
+<a id="tocSempty"></a>
+<a id="tocsempty"></a>
+
+```json
+{}
+```
+
+A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }
+
+<h2 id="tocS_EndCondition">EndCondition</h2>
+<!-- backwards compatibility -->
+<a id="schemaendcondition"></a>
+<a id="schema_EndCondition"></a>
+<a id="tocSendcondition"></a>
+<a id="tocsendcondition"></a>
+
+```json
+{
+  "cardinality": {
+    "number": 0,
+    "path": "string"
+  }
+}
+```
+
+The condition that a Waiter resource is waiting for.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cardinality|[Cardinality](#schemacardinality)|false|none|The cardinality of the `EndCondition`.|
+
+<h2 id="tocS_Expr">Expr</h2>
+<!-- backwards compatibility -->
+<a id="schemaexpr"></a>
+<a id="schema_Expr"></a>
+<a id="tocSexpr"></a>
+<a id="tocsexpr"></a>
+
+```json
+{
+  "description": "string",
+  "expression": "string",
+  "location": "string",
+  "title": "string"
+}
+```
+
+Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != 'private' && document.type != 'internal'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "'New message received at ' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.|
+|expression|string|false|none|Textual representation of an expression in Common Expression Language syntax.|
+|location|string|false|none|Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.|
+|title|string|false|none|Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.|
+
+<h2 id="tocS_ListConfigsResponse">ListConfigsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistconfigsresponse"></a>
+<a id="schema_ListConfigsResponse"></a>
+<a id="tocSlistconfigsresponse"></a>
+<a id="tocslistconfigsresponse"></a>
+
+```json
+{
+  "configs": [
+    {
+      "description": "string",
+      "name": "string"
+    }
+  ],
+  "nextPageToken": "string"
+}
+```
+
+`ListConfigs()` returns the following response. The order of returned objects is arbitrary; that is, it is not ordered in any particular way.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configs|[[RuntimeConfig](#schemaruntimeconfig)]|false|none|A list of the configurations in the project. The order of returned objects is arbitrary; that is, it is not ordered in any particular way.|
+|nextPageToken|string|false|none|This token allows you to get the next page of results for list requests. If the number of results is larger than `pageSize`, use the `nextPageToken` as a value for the query parameter `pageToken` in the next list request. Subsequent list requests will have their own `nextPageToken` to continue paging through the results|
+
+<h2 id="tocS_ListVariablesResponse">ListVariablesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistvariablesresponse"></a>
+<a id="schema_ListVariablesResponse"></a>
+<a id="tocSlistvariablesresponse"></a>
+<a id="tocslistvariablesresponse"></a>
+
+```json
+{
+  "nextPageToken": "string",
+  "variables": [
+    {
+      "name": "string",
+      "state": "VARIABLE_STATE_UNSPECIFIED",
+      "text": "string",
+      "updateTime": "string",
+      "value": "string"
+    }
+  ]
+}
+```
+
+Response for the `ListVariables()` method.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|nextPageToken|string|false|none|This token allows you to get the next page of results for list requests. If the number of results is larger than `pageSize`, use the `nextPageToken` as a value for the query parameter `pageToken` in the next list request. Subsequent list requests will have their own `nextPageToken` to continue paging through the results|
+|variables|[[Variable](#schemavariable)]|false|none|A list of variables and their values. The order of returned variable objects is arbitrary.|
+
+<h2 id="tocS_ListWaitersResponse">ListWaitersResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistwaitersresponse"></a>
+<a id="schema_ListWaitersResponse"></a>
+<a id="tocSlistwaitersresponse"></a>
+<a id="tocslistwaitersresponse"></a>
+
+```json
+{
+  "nextPageToken": "string",
+  "waiters": [
+    {
+      "createTime": "string",
+      "done": true,
+      "error": {
+        "code": 0,
+        "details": [
+          {
+            "property1": null,
+            "property2": null
+          }
+        ],
+        "message": "string"
+      },
+      "failure": {
+        "cardinality": {
+          "number": 0,
+          "path": "string"
+        }
+      },
+      "name": "string",
+      "success": {
+        "cardinality": {
+          "number": 0,
+          "path": "string"
+        }
+      },
+      "timeout": "string"
+    }
+  ]
+}
+```
+
+Response for the `ListWaiters()` method. Order of returned waiter objects is arbitrary.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|nextPageToken|string|false|none|This token allows you to get the next page of results for list requests. If the number of results is larger than `pageSize`, use the `nextPageToken` as a value for the query parameter `pageToken` in the next list request. Subsequent list requests will have their own `nextPageToken` to continue paging through the results|
+|waiters|[[Waiter](#schemawaiter)]|false|none|Found waiters in the project.|
+
+<h2 id="tocS_Operation">Operation</h2>
+<!-- backwards compatibility -->
+<a id="schemaoperation"></a>
+<a id="schema_Operation"></a>
+<a id="tocSoperation"></a>
+<a id="tocsoperation"></a>
+
+```json
+{
+  "done": true,
+  "error": {
+    "code": 0,
+    "details": [
+      {
+        "property1": null,
+        "property2": null
+      }
+    ],
+    "message": "string"
+  },
+  "metadata": {
+    "property1": null,
+    "property2": null
+  },
+  "name": "string",
+  "response": {
+    "property1": null,
+    "property2": null
+  }
+}
+```
+
+This resource represents a long-running operation that is the result of a network API call.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|done|boolean|false|none|If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.|
+|error|[Status](#schemastatus)|false|none|The error result of the operation in case of failure or cancellation.|
+|metadata|object|false|none|Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.|
+|name|string|false|none|The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.|
+|response|object|false|none|The normal response of the operation in case of success. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.|
+
+<h2 id="tocS_Policy">Policy</h2>
+<!-- backwards compatibility -->
+<a id="schemapolicy"></a>
+<a id="schema_Policy"></a>
+<a id="tocSpolicy"></a>
+<a id="tocspolicy"></a>
+
+```json
+{
+  "bindings": [
+    {
+      "condition": {
+        "description": "string",
+        "expression": "string",
+        "location": "string",
+        "title": "string"
+      },
+      "members": [
+        "string"
+      ],
+      "role": "string"
+    }
+  ],
+  "etag": "string",
+  "version": 0
+}
+```
+
+An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies). **JSON example:** { "bindings": [ { "role": "roles/resourcemanager.organizationAdmin", "members": [ "user:mike@example.com", "group:admins@example.com", "domain:google.com", "serviceAccount:my-project-id@appspot.gserviceaccount.com" ] }, { "role": "roles/resourcemanager.organizationViewer", "members": [ "user:eve@example.com" ], "condition": { "title": "expirable access", "description": "Does not grant access after Sep 2020", "expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } ], "etag": "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: - user:mike@example.com - group:admins@example.com - domain:google.com - serviceAccount:my-project-id@appspot.gserviceaccount.com role: roles/resourcemanager.organizationAdmin - members: - user:eve@example.com role: roles/resourcemanager.organizationViewer condition: title: expirable access description: Does not grant access after Sep 2020 expression: request.time < timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA= version: 3 For a description of IAM and its features, see the [IAM documentation](https://cloud.google.com/iam/docs/).
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bindings|[[Binding](#schemabinding)]|false|none|Associates a list of `members`, or principals, with a `role`. Optionally, may specify a `condition` that determines how and when the `bindings` are applied. Each of the `bindings` must contain at least one principal. The `bindings` in a `Policy` can refer to up to 1,500 principals; up to 250 of these principals can be Google groups. Each occurrence of a principal counts towards these limits. For example, if the `bindings` grant 50 different roles to `user:alice@example.com`, and not to any other principal, then you can add another 1,450 principals to the `bindings` in the `Policy`.|
+|etag|string(byte)|false|none|`etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a policy from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform policy updates in order to avoid race conditions: An `etag` is returned in the response to `getIamPolicy`, and systems are expected to put that etag in the request to `setIamPolicy` to ensure that their change will be applied to the same version of the policy. **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost.|
+|version|integer(int32)|false|none|Specifies the format of the policy. Valid values are `0`, `1`, and `3`. Requests that specify an invalid value are rejected. Any operation that affects conditional role bindings must specify version `3`. This requirement applies to the following operations: * Getting a policy that includes a conditional role binding * Adding a conditional role binding to a policy * Changing a conditional role binding in a policy * Removing any role binding, with or without a condition, from a policy that includes conditions **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost. If a policy does not include any conditions, operations on that policy may specify any valid version or leave the field unset. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).|
+
+<h2 id="tocS_RuntimeConfig">RuntimeConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaruntimeconfig"></a>
+<a id="schema_RuntimeConfig"></a>
+<a id="tocSruntimeconfig"></a>
+<a id="tocsruntimeconfig"></a>
+
+```json
+{
+  "description": "string",
+  "name": "string"
+}
+```
+
+A RuntimeConfig resource is the primary resource in the Cloud RuntimeConfig service. A RuntimeConfig resource consists of metadata and a hierarchy of variables.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|An optional description of the RuntimeConfig object.|
+|name|string|false|none|The resource name of a runtime config. The name must have the format: projects/[PROJECT_ID]/configs/[CONFIG_NAME] The `[PROJECT_ID]` must be a valid project ID, and `[CONFIG_NAME]` is an arbitrary name that matches the `[0-9A-Za-z](?:[_.A-Za-z0-9-]{0,62}[_.A-Za-z0-9])?` regular expression. The length of `[CONFIG_NAME]` must be less than 64 characters. You pick the RuntimeConfig resource name, but the server will validate that the name adheres to this format. After you create the resource, you cannot change the resource's name.|
+
+<h2 id="tocS_SetIamPolicyRequest">SetIamPolicyRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemasetiampolicyrequest"></a>
+<a id="schema_SetIamPolicyRequest"></a>
+<a id="tocSsetiampolicyrequest"></a>
+<a id="tocssetiampolicyrequest"></a>
+
+```json
+{
+  "policy": {
+    "bindings": [
+      {
+        "condition": {
+          "description": "string",
+          "expression": "string",
+          "location": "string",
+          "title": "string"
+        },
+        "members": [
+          "string"
+        ],
+        "role": "string"
+      }
+    ],
+    "etag": "string",
+    "version": 0
+  }
+}
+```
+
+Request message for `SetIamPolicy` method.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|policy|[Policy](#schemapolicy)|false|none|REQUIRED: The complete policy to be applied to the `resource`. The size of the policy is limited to a few 10s of KB. An empty policy is a valid policy but certain Google Cloud services (such as Projects) might reject them.|
+
+<h2 id="tocS_Status">Status</h2>
+<!-- backwards compatibility -->
+<a id="schemastatus"></a>
+<a id="schema_Status"></a>
+<a id="tocSstatus"></a>
+<a id="tocsstatus"></a>
+
+```json
+{
+  "code": 0,
+  "details": [
+    {
+      "property1": null,
+      "property2": null
+    }
+  ],
+  "message": "string"
+}
+```
+
+The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|integer(int32)|false|none|The status code, which should be an enum value of google.rpc.Code.|
+|details|[object]|false|none|A list of messages that carry the error details. There is a common set of message types for APIs to use.|
+|message|string|false|none|A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.|
+
+<h2 id="tocS_TestIamPermissionsRequest">TestIamPermissionsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schematestiampermissionsrequest"></a>
+<a id="schema_TestIamPermissionsRequest"></a>
+<a id="tocStestiampermissionsrequest"></a>
+<a id="tocstestiampermissionsrequest"></a>
+
+```json
+{
+  "permissions": [
+    "string"
+  ]
+}
+```
+
+Request message for `TestIamPermissions` method.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|permissions|[string]|false|none|The set of permissions to check for the `resource`. Permissions with wildcards (such as `*` or `storage.*`) are not allowed. For more information see [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).|
+
+<h2 id="tocS_TestIamPermissionsResponse">TestIamPermissionsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schematestiampermissionsresponse"></a>
+<a id="schema_TestIamPermissionsResponse"></a>
+<a id="tocStestiampermissionsresponse"></a>
+<a id="tocstestiampermissionsresponse"></a>
+
+```json
+{
+  "permissions": [
+    "string"
+  ]
+}
+```
+
+Response message for `TestIamPermissions` method.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|permissions|[string]|false|none|A subset of `TestPermissionsRequest.permissions` that the caller is allowed.|
+
+<h2 id="tocS_Variable">Variable</h2>
+<!-- backwards compatibility -->
+<a id="schemavariable"></a>
+<a id="schema_Variable"></a>
+<a id="tocSvariable"></a>
+<a id="tocsvariable"></a>
+
+```json
+{
+  "name": "string",
+  "state": "VARIABLE_STATE_UNSPECIFIED",
+  "text": "string",
+  "updateTime": "string",
+  "value": "string"
+}
+```
+
+Describes a single variable within a RuntimeConfig resource. The name denotes the hierarchical variable name. For example, `ports/serving_port` is a valid variable name. The variable value is an opaque string and only leaf variables can have values (that is, variables that do not have any child variables).
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|The name of the variable resource, in the format: projects/[PROJECT_ID]/configs/[CONFIG_NAME]/variables/[VARIABLE_NAME] The `[PROJECT_ID]` must be a valid project ID, `[CONFIG_NAME]` must be a valid RuntimeConfig resource and `[VARIABLE_NAME]` follows Unix file system file path naming. The `[VARIABLE_NAME]` can contain ASCII letters, numbers, slashes and dashes. Slashes are used as path element separators and are not part of the `[VARIABLE_NAME]` itself, so `[VARIABLE_NAME]` must contain at least one non-slash character. Multiple slashes are coalesced into single slash character. Each path segment should match [0-9A-Za-z](?:[_.A-Za-z0-9-]{0,62}[_.A-Za-z0-9])? regular expression. The length of a `[VARIABLE_NAME]` must be less than 256 characters. Once you create a variable, you cannot change the variable name.|
+|state|string|false|none|Output only. The current state of the variable. The variable state indicates the outcome of the `variables().watch` call and is visible through the `get` and `list` calls.|
+|text|string|false|none|The string value of the variable. The length of the value must be less than 4096 bytes. Empty values are also accepted. For example, `text: "my text value"`. The string must be valid UTF-8.|
+|updateTime|string(google-datetime)|false|none|Output only. The time of the last variable update. Timestamp will be UTC timestamp.|
+|value|string(byte)|false|none|The binary value of the variable. The length of the value must be less than 4096 bytes. Empty values are also accepted. The value must be base64 encoded, and must comply with IETF RFC4648 (https://www.ietf.org/rfc/rfc4648.txt). Only one of `value` or `text` can be set.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|VARIABLE_STATE_UNSPECIFIED|
+|state|UPDATED|
+|state|DELETED|
+
+<h2 id="tocS_Waiter">Waiter</h2>
+<!-- backwards compatibility -->
+<a id="schemawaiter"></a>
+<a id="schema_Waiter"></a>
+<a id="tocSwaiter"></a>
+<a id="tocswaiter"></a>
+
+```json
+{
+  "createTime": "string",
+  "done": true,
+  "error": {
+    "code": 0,
+    "details": [
+      {
+        "property1": null,
+        "property2": null
+      }
+    ],
+    "message": "string"
+  },
+  "failure": {
+    "cardinality": {
+      "number": 0,
+      "path": "string"
+    }
+  },
+  "name": "string",
+  "success": {
+    "cardinality": {
+      "number": 0,
+      "path": "string"
+    }
+  },
+  "timeout": "string"
+}
+```
+
+A Waiter resource waits for some end condition within a RuntimeConfig resource to be met before it returns. For example, assume you have a distributed system where each node writes to a Variable resource indicating the node's readiness as part of the startup process. You then configure a Waiter resource with the success condition set to wait until some number of nodes have checked in. Afterwards, your application runs some arbitrary code after the condition has been met and the waiter returns successfully. Once created, a Waiter resource is immutable. To learn more about using waiters, read the [Creating a Waiter](/deployment-manager/runtime-configurator/creating-a-waiter) documentation.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|createTime|string(google-datetime)|false|none|Output only. The instant at which this Waiter resource was created. Adding the value of `timeout` to this instant yields the timeout deadline for the waiter.|
+|done|boolean|false|none|Output only. If the value is `false`, it means the waiter is still waiting for one of its conditions to be met. If true, the waiter has finished. If the waiter finished due to a timeout or failure, `error` will be set.|
+|error|[Status](#schemastatus)|false|none|Output only. If the waiter ended due to a failure or timeout, this value will be set.|
+|failure|[EndCondition](#schemaendcondition)|false|none|[Optional] The failure condition of this waiter. If this condition is met, `done` will be set to `true` and the `error` code will be set to `ABORTED`. The failure condition takes precedence over the success condition. If both conditions are met, a failure will be indicated. This value is optional; if no failure condition is set, the only failure scenario will be a timeout.|
+|name|string|false|none|The name of the Waiter resource, in the format: projects/[PROJECT_ID]/configs/[CONFIG_NAME]/waiters/[WAITER_NAME] The `[PROJECT_ID]` must be a valid Google Cloud project ID, the `[CONFIG_NAME]` must be a valid RuntimeConfig resource, the `[WAITER_NAME]` must match RFC 1035 segment specification, and the length of `[WAITER_NAME]` must be less than 64 bytes. After you create a Waiter resource, you cannot change the resource name.|
+|success|[EndCondition](#schemaendcondition)|false|none|[Required] The success condition. If this condition is met, `done` will be set to `true` and the `error` value will remain unset. The failure condition takes precedence over the success condition. If both conditions are met, a failure will be indicated.|
+|timeout|string(google-duration)|false|none|[Required] Specifies the timeout of the waiter in seconds, beginning from the instant that `waiters().create` method is called. If this time elapses before the success or failure conditions are met, the waiter fails and sets the `error` code to `DEADLINE_EXCEEDED`.|
+
+<h2 id="tocS_WatchVariableRequest">WatchVariableRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemawatchvariablerequest"></a>
+<a id="schema_WatchVariableRequest"></a>
+<a id="tocSwatchvariablerequest"></a>
+<a id="tocswatchvariablerequest"></a>
+
+```json
+{
+  "newerThan": "string"
+}
+```
+
+Request for the `WatchVariable()` method.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|newerThan|string(google-datetime)|false|none|If specified, checks the current timestamp of the variable and if the current timestamp is newer than `newerThan` timestamp, the method returns immediately. If not specified or the variable has an older timestamp, the watcher waits for a the value to change before returning.|
