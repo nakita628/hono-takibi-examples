@@ -285,6 +285,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/azure-openai": {
+      "name": "@apps/azure-openai",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/backstage-catalog": {
       "name": "@apps/backstage-catalog",
       "dependencies": {
@@ -621,6 +635,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/consul-terraform-sync": {
+      "name": "@apps/consul-terraform-sync",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/coolify": {
       "name": "@apps/coolify",
       "dependencies": {
@@ -791,6 +819,34 @@
     },
     "apps/ebay": {
       "name": "@apps/ebay",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/elastic-apm-server": {
+      "name": "@apps/elastic-apm-server",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/elastic-fleet-server": {
+      "name": "@apps/elastic-fleet-server",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1001,6 +1057,76 @@
     },
     "apps/grafana": {
       "name": "@apps/grafana",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/grafana-com": {
+      "name": "@apps/grafana-com",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/grafana-pyroscope": {
+      "name": "@apps/grafana-pyroscope",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/grafana-quickpizza": {
+      "name": "@apps/grafana-quickpizza",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/grafana-slo": {
+      "name": "@apps/grafana-slo",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/grafana-synthetic-monitoring": {
+      "name": "@apps/grafana-synthetic-monitoring",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1267,6 +1393,20 @@
     },
     "apps/jira-service-management": {
       "name": "@apps/jira-service-management",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/k6-extension-registry": {
+      "name": "@apps/k6-extension-registry",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1615,6 +1755,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/microsoft-ccf": {
+      "name": "@apps/microsoft-ccf",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/microsoft-mcp-gateway": {
+      "name": "@apps/microsoft-mcp-gateway",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/misp": {
       "name": "@apps/misp",
       "dependencies": {
@@ -1799,6 +1967,20 @@
     },
     "apps/nextcloud-talk": {
       "name": "@apps/nextcloud-talk",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/nginx-controller-analytics": {
+      "name": "@apps/nginx-controller-analytics",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2231,6 +2413,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/podman-ai-lab": {
+      "name": "@apps/podman-ai-lab",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/pokeapi": {
       "name": "@apps/pokeapi",
       "dependencies": {
@@ -2597,6 +2793,20 @@
     },
     "apps/tmdb": {
       "name": "@apps/tmdb",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/traefik-whoami": {
+      "name": "@apps/traefik-whoami",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2996,6 +3206,8 @@
 
     "@apps/aws-apis": ["@apps/aws-apis@workspace:apps/aws-apis"],
 
+    "@apps/azure-openai": ["@apps/azure-openai@workspace:apps/azure-openai"],
+
     "@apps/backstage-catalog": ["@apps/backstage-catalog@workspace:apps/backstage-catalog"],
 
     "@apps/backstage-events": ["@apps/backstage-events@workspace:apps/backstage-events"],
@@ -3044,6 +3256,8 @@
 
     "@apps/confluence": ["@apps/confluence@workspace:apps/confluence"],
 
+    "@apps/consul-terraform-sync": ["@apps/consul-terraform-sync@workspace:apps/consul-terraform-sync"],
+
     "@apps/coolify": ["@apps/coolify@workspace:apps/coolify"],
 
     "@apps/cvat": ["@apps/cvat@workspace:apps/cvat"],
@@ -3069,6 +3283,10 @@
     "@apps/e2b": ["@apps/e2b@workspace:apps/e2b"],
 
     "@apps/ebay": ["@apps/ebay@workspace:apps/ebay"],
+
+    "@apps/elastic-apm-server": ["@apps/elastic-apm-server@workspace:apps/elastic-apm-server"],
+
+    "@apps/elastic-fleet-server": ["@apps/elastic-fleet-server@workspace:apps/elastic-fleet-server"],
 
     "@apps/elasticsearch": ["@apps/elasticsearch@workspace:apps/elasticsearch"],
 
@@ -3099,6 +3317,16 @@
     "@apps/gov-bc-ca": ["@apps/gov-bc-ca@workspace:apps/gov-bc-ca"],
 
     "@apps/grafana": ["@apps/grafana@workspace:apps/grafana"],
+
+    "@apps/grafana-com": ["@apps/grafana-com@workspace:apps/grafana-com"],
+
+    "@apps/grafana-pyroscope": ["@apps/grafana-pyroscope@workspace:apps/grafana-pyroscope"],
+
+    "@apps/grafana-quickpizza": ["@apps/grafana-quickpizza@workspace:apps/grafana-quickpizza"],
+
+    "@apps/grafana-slo": ["@apps/grafana-slo@workspace:apps/grafana-slo"],
+
+    "@apps/grafana-synthetic-monitoring": ["@apps/grafana-synthetic-monitoring@workspace:apps/grafana-synthetic-monitoring"],
 
     "@apps/growthbook": ["@apps/growthbook@workspace:apps/growthbook"],
 
@@ -3137,6 +3365,8 @@
     "@apps/jira": ["@apps/jira@workspace:apps/jira"],
 
     "@apps/jira-service-management": ["@apps/jira-service-management@workspace:apps/jira-service-management"],
+
+    "@apps/k6-extension-registry": ["@apps/k6-extension-registry@workspace:apps/k6-extension-registry"],
 
     "@apps/kabu-station": ["@apps/kabu-station@workspace:apps/kabu-station"],
 
@@ -3186,6 +3416,10 @@
 
     "@apps/mermade-openapi3-examples": ["@apps/mermade-openapi3-examples@workspace:apps/mermade-openapi3-examples"],
 
+    "@apps/microsoft-ccf": ["@apps/microsoft-ccf@workspace:apps/microsoft-ccf"],
+
+    "@apps/microsoft-mcp-gateway": ["@apps/microsoft-mcp-gateway@workspace:apps/microsoft-mcp-gateway"],
+
     "@apps/misp": ["@apps/misp@workspace:apps/misp"],
 
     "@apps/mistral": ["@apps/mistral@workspace:apps/mistral"],
@@ -3213,6 +3447,8 @@
     "@apps/nextcloud-core": ["@apps/nextcloud-core@workspace:apps/nextcloud-core"],
 
     "@apps/nextcloud-talk": ["@apps/nextcloud-talk@workspace:apps/nextcloud-talk"],
+
+    "@apps/nginx-controller-analytics": ["@apps/nginx-controller-analytics@workspace:apps/nginx-controller-analytics"],
 
     "@apps/nocodb": ["@apps/nocodb@workspace:apps/nocodb"],
 
@@ -3274,6 +3510,8 @@
 
     "@apps/plaid": ["@apps/plaid@workspace:apps/plaid"],
 
+    "@apps/podman-ai-lab": ["@apps/podman-ai-lab@workspace:apps/podman-ai-lab"],
+
     "@apps/pokeapi": ["@apps/pokeapi@workspace:apps/pokeapi"],
 
     "@apps/polygon": ["@apps/polygon@workspace:apps/polygon"],
@@ -3327,6 +3565,8 @@
     "@apps/temporal": ["@apps/temporal@workspace:apps/temporal"],
 
     "@apps/tmdb": ["@apps/tmdb@workspace:apps/tmdb"],
+
+    "@apps/traefik-whoami": ["@apps/traefik-whoami@workspace:apps/traefik-whoami"],
 
     "@apps/train-travel": ["@apps/train-travel@workspace:apps/train-travel"],
 

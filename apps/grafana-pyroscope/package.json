@@ -1,0 +1,20 @@
+{
+  "name": "@apps/grafana-pyroscope",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/adhocprofiles-v1-adhocprofiles.config.ts; hono-takibi -c configs/capabilities-v1-feature-flags.config.ts; hono-takibi -c configs/debuginfo-v1-debuginfo.config.ts; hono-takibi -c configs/debuginfo-v1alpha1-debuginfo.config.ts; hono-takibi -c configs/google-v1-profile.config.ts; hono-takibi -c configs/ingester-v1-ingester.config.ts; hono-takibi -c configs/metastore-v1-compactor.config.ts; hono-takibi -c configs/metastore-v1-index.config.ts; hono-takibi -c configs/metastore-v1-query.config.ts; hono-takibi -c configs/metastore-v1-raft-log-raft-log.config.ts; hono-takibi -c configs/metastore-v1-tenant.config.ts; hono-takibi -c configs/metastore-v1-types.config.ts; hono-takibi -c configs/push-v1-push.config.ts; hono-takibi -c configs/querier-v1-querier.config.ts; hono-takibi -c configs/query-v1-query.config.ts; hono-takibi -c configs/segmentwriter-v1-push.config.ts; hono-takibi -c configs/settings-v1-recording-rules.config.ts; hono-takibi -c configs/settings-v1-setting.config.ts; hono-takibi -c configs/status-v1-status.config.ts; hono-takibi -c configs/storegateway-v1-storegateway.config.ts; hono-takibi -c configs/types-v1-types.config.ts; hono-takibi -c configs/vcs-v1-vcs.config.ts; hono-takibi -c configs/version-v1-version.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}
