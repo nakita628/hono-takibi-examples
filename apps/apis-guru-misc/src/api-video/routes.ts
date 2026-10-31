@@ -1,0 +1,5634 @@
+import { createRoute, z } from '@hono/zod-openapi'
+
+type BadRequestType = {
+  name?: string
+  problems?: BadRequestType[]
+  status?: number
+  title?: string
+  type?: string
+}
+
+const AccessTokenSchema = z
+  .object({
+    access_token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The access token containing security credentials allowing you to acccess the API. The token lasts for one hour.',
+        example:
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjUyZWM4NWUyMjFkODZjOWI0NDQ5NzBhMjQwMzUyOWQ4MDQyNGQ3ZmJjYjFlYWM2MjVlM2VkMjI2YWRlNTcxMDY2NDUyZDc0NjdhN2E4NjI0In0.eyJhdWQiOiJsaWJjYXN0IiwianRpIjoiNTJlYzg1ZTIyMWQ4NmM5YjQ0NDk3MGEyNDAzNTI5ZDgwNDI0ZDdmYmNiMWVhYzYyNWUzZWQyMjZhZGU1NzEwNjY0NTJkNzQ2N2E3YTg2MjQiLCJpYXQiOjE1MjUyNzYxNDcsIm5iZiI6MTUyNTI3NjE0NywiZXhwIjoxNTI1Mjc5NzQ3LCJzdWIiOiJ1c01vbml0b3IiLCJzY29wZXMiOlsibW9uaXRvci5saWJjYXN0LmNvbSJdLCJjb250ZXh0Ijp7InVzZXIiOiJ1c01vbml0b3IiLCJwcm9qZWN0IjoicHJNb25pdG9yIiwibWVtYmVyIjoibWVNb25pdG9yIn19.rUvishDNyJLNlI4W5VmguNecm5KD2uZgPkKJQbaqw-cJbSrVxkSbiKYtk_E3cz3WT7-IS2yFTsYN3uIo5Rbit8_HftweyEp2bdBRI8yjR6oZZ1sNJJXswISN1i2kk4r-aaxu7Xxf_LtsjOMUj_YZsvcc2nqBXPKjHbJCJryx3DDJaIcymOqao7nhQaCCQyrQooAXNTYs4E9fWN1dC_x2O-zok5TuG-xhEW-umwxfSUMWNgSTkz38ACceQ0PCJSgB3jqjDH4MwC7B3ppEPZuK5E6JhKeyRlalswRyYq3UQPnVeMTam7YQHsuTgbehF6WySW8i44o7V_MCe9hjPdp-WA',
+      }),
+    expires_in: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Lists the time in seconds when your access token expires. It lasts for one hour.',
+      }),
+    refresh_token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A token you can use to get the next access token when your current access token expires.',
+        example:
+          'def50200a28d88fb9aaa921be78eeb5604b071101a334899a7d5fc7492cf8ea752962ddc8961fe5c126101d4ecacd980396eb2fd494995b812dffcb98256c4277f790d1f658fc2d2e34f350740544e5232d69d68d34c648271d706c5e7049adac0b1832d0fdf71809715cc7e97fa63f65966deadb501a55ff469b0fd23a637cb6acbe9d9b8594a17f09efc2efeed82984764a0065d5e29c950c7b081a61ba2aaa192be3085c400ee37eac50fa9320ce2cfe8916c8165418d23e9f91b6a5c8515e1d74ee193a5a1ca01954fbff27361c20184240be2359e0afbed0bf1c762cf872450b5e8b5d4704f4fd9583e4470adc98409dd42965709712806bd9019378a72eea0b4912ce684ffd833db5806ab84174f905db2a75380071d004615c944bb8f8c4045cce7234c2be9a2330522cf7f067b8e58f57cffb6edb4b7ef91313e12bcde47e5e76ceee7fa52990132288f345d33ed917ae4fd54b7284f8964d898e97e1ee3bc4157f75d7fee63976e4be66ac1ec32ef74afa533f0eb593523f226cbec57d196ac8962',
+      }),
+    token_type: z
+      .string()
+      .default('bearer')
+      .exactOptional()
+      .openapi({ description: 'The type of token you have.' }),
+  })
+  .openapi({
+    example: {
+      access_token: 'est',
+      expires_in: 3600,
+      refresh_token: 'cillum',
+      token_type: 'qui nulla l',
+    },
+    title: 'AccessToken',
+    required: [],
+  })
+  .openapi('AccessToken')
+
+const AccountSchema = z
+  .object({
+    environment: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated. Whether you are using your production or sandbox API key will impact what environment is displayed here, as well as stats and features information. If you use your sandbox key, the environment is "sandbox." If you use your production key, the environment is "production."',
+      }),
+    features: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated. What features are enabled for your account. Choices include: app.dynamic_metadata - the ability to dynamically tag videos to better segment and understand your audiences, app.event_log - the ability to create and retrieve a log detailing how your videos were interacted with, player.white_label - the ability to customise your player, stats.player_events - the ability to see statistics about how your player is being used, transcode.mp4_support - the ability to reformat content into mp4 using the H264 codec.',
+        example: '["app.dynamic_metadata, app.event_log"]',
+      }),
+    quota: z
+      .object({
+        quotaRemaining: z.number().exactOptional().openapi({ description: 'Deprecated' }),
+        quotaTotal: z.number().exactOptional().openapi({ description: 'Deprecated' }),
+        quotaUsed: z.number().exactOptional().openapi({ description: 'Deprecated' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Deprecated', required: [] }),
+  })
+  .openapi({ deprecated: true, title: 'Account', required: [] })
+  .openapi('Account')
+
+const AuthenticatePayloadSchema = z
+  .object({
+    apiKey: z
+      .string()
+      .openapi({
+        description:
+          'Your account API key. You can use your sandbox API key, or you can use your production API key.',
+      }),
+  })
+  .openapi({
+    example: { apiKey: '9VxMaPgsaFg7EBqmuspSzF7' },
+    required: ['apiKey'],
+    title: 'apiKey',
+  })
+  .openapi('AuthenticatePayload')
+
+const BadRequestSchema: z.ZodType<BadRequestType> = z
+  .lazy(() =>
+    z
+      .object({
+        name: z.string().exactOptional(),
+        problems: z
+          .array(BadRequestSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional(),
+        status: z.int().exactOptional(),
+        title: z.string().exactOptional(),
+        type: z.string().exactOptional(),
+      })
+      .openapi({ title: 'BadRequest', required: [] }),
+  )
+  .openapi('BadRequest')
+
+const BytesRangeSchema = z
+  .object({
+    from: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The starting point for the range of bytes for a chunk of a video.',
+        example: 0,
+      }),
+    to: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The ending point for the range of bytes for a chunk of a video.',
+        example: 9999,
+      }),
+    total: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The total number of bytes in the provided range.', example: 10000 }),
+  })
+  .openapi({ title: 'bytes_range', required: [] })
+  .openapi('BytesRange')
+
+const SubtitleSchema = z
+  .object({
+    default: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether you will have subtitles or not. True for yes you will have subtitles, false for no you will not have subtitles.',
+        example: false,
+      }),
+    src: z.string().exactOptional(),
+    srclang: z.string().exactOptional(),
+    uri: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Subtitle', required: [] })
+  .openapi('Subtitle')
+
+const PaginationLinkSchema = z
+  .object({
+    rel: z
+      .string()
+      .regex(/^self$/)
+      .exactOptional(),
+    uri: z.url().exactOptional(),
+  })
+  .openapi({ title: 'PaginationLink', required: [] })
+  .openapi('PaginationLink')
+
+const PaginationSchema = z
+  .object({
+    currentPage: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The current page index.', readOnly: true }),
+    currentPageItems: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of items on the current page.', readOnly: true }),
+    itemsTotal: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Total number of items that exist.', readOnly: true }),
+    links: z.array(PaginationLinkSchema),
+    pageSize: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Maximum number of item per page.', readOnly: true }),
+    pagesTotal: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of items listed in the current page.', readOnly: true }),
+  })
+  .openapi({
+    example: {
+      currentPage: 3,
+      currentPageItems: 20,
+      itemsTotal: 123,
+      links: {
+        first: { rel: 'first', uri: '/videos/search?currentPage=1&pageSize=20' },
+        last: { rel: 'last', uri: '/videos/search?currentPage=6&pageSize=20' },
+        next: { rel: 'next', uri: '/videos/search?currentPage=4&pageSize=20' },
+        previous: { rel: 'previous', uri: '/videos/search?currentPage=2&pageSize=20' },
+      },
+      pageSize: 20,
+      pagesTotal: 7,
+    },
+    required: ['links'],
+    title: 'Pagination',
+  })
+  .openapi('Pagination')
+
+const CaptionsListResponseSchema = z
+  .object({
+    data: z.array(SubtitleSchema).exactOptional(),
+    pagination: PaginationSchema.exactOptional(),
+  })
+  .openapi({ title: 'VideoCaptions', required: [] })
+  .openapi('CaptionsListResponse')
+
+const CaptionsUpdatePayloadSchema = z
+  .object({ default: z.boolean().exactOptional() })
+  .openapi({ title: 'UpdateCaptionPayload', required: [] })
+  .openapi('CaptionsUpdatePayload')
+
+const CaptionsUploadPayloadSchema = z
+  .object({
+    file: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: 'The video text track (VTT) you want to upload.',
+        example: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/captions/en.vtt',
+      }),
+  })
+  .openapi({ required: ['file'] })
+  .openapi('CaptionsUploadPayload')
+
+const ChapterSchema = z
+  .object({
+    language: z.string().exactOptional(),
+    src: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The link to your VTT file, which contains your chapters information for the video.',
+        example: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/chapters/fr.vtt',
+      }),
+    uri: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Chapter', required: [] })
+  .openapi('Chapter')
+
+const ChaptersListResponseSchema = z
+  .object({
+    data: z.array(ChapterSchema).exactOptional(),
+    pagination: PaginationSchema.exactOptional(),
+  })
+  .openapi({ title: 'VideoChapters', required: [] })
+  .openapi('ChaptersListResponse')
+
+const ChaptersUpdatePayloadSchema = z
+  .object({
+    file: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: 'The VTT file describing the chapters you want to upload.',
+      }),
+  })
+  .openapi({ required: ['file'], title: 'UpdateChapterPayload' })
+  .openapi('ChaptersUpdatePayload')
+
+const LinkSchema = z
+  .object({ rel: z.string().exactOptional(), uri: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Link')
+
+const LiveStreamAssetsSchema = z
+  .object({
+    hls: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'The http live streaming (HLS) link for your live video stream.',
+        example: 'https://live.api.video/li4pqNqGUkhKfWcBGpZVLRY5.m3u8',
+      }),
+    iframe: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The embed code for the iframe containing your live video stream.',
+        example:
+          '<iframe src=\\"https://embed.api.video/live/li4pqNqGUkhKfWcBGpZVLRY5\\" width=\\"100%\\" height=\\"100%\\" frameborder=\\"0\\" scrolling=\\"no\\" allowfullscreen=\\"\\"></iframe>',
+      }),
+    player: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the video player that is playing your live stream.',
+        example: 'https://embed.api.video/live/li400mYKSgQ6xs7taUeSaEKr',
+      }),
+    thumbnail: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the thumbnail for your video.',
+        example: 'https://cdn.api.video/live/li400mYKSgQ6xs7taUeSaEKr/thumbnail.jpg',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('LiveStreamAssets')
+
+const LiveStreamSchema = z
+  .object({
+    assets: LiveStreamAssetsSchema.exactOptional(),
+    broadcasting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not you are broadcasting the live video you recorded for others to see. True means you are broadcasting to viewers, false means you are not.',
+        example: true,
+      }),
+    liveStreamId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the live stream. Live stream IDs begin with "li."',
+        example: 'li400mYKSgQ6xs7taUeSaEKr',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of your live stream.', example: 'My Live Stream' }),
+    playerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the player.',
+        example: 'pl45d5vFFGrfdsdsd156dGhh',
+      }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'BETA FEATURE Please limit all public = false ("private") livestreams to 3,000 users. Whether your video can be viewed by everyone, or requires authentication to see it. A setting of false will require a unique token for each view.',
+        example: true,
+      }),
+    record: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether you are recording or not.', example: true }),
+    streamKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique, private stream key that you use to begin streaming.',
+        example: 'cc1b4df0-d1c5-4064-a8f9-9f0368385135',
+      }),
+  })
+  .openapi({ title: 'LiveStream', required: [] })
+  .openapi('LiveStream')
+
+const LiveStreamCreatePayloadSchema = z
+  .object({
+    name: z
+      .string()
+      .openapi({
+        description: 'Add a name for your live stream here.',
+        example: 'My Live Stream Video',
+      }),
+    playerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the player.',
+        example: 'pl4f4ferf5erfr5zed4fsdd',
+      }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'BETA FEATURE Please limit all public = false ("private") livestreams to 3,000 users. Whether your video can be viewed by everyone, or requires authentication to see it. A setting of false will require a unique token for each view.',
+      }),
+    record: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Whether you are recording or not. True for record, false for not record.',
+        example: true,
+      }),
+  })
+  .openapi({
+    example: { name: 'Test live', playerId: 'pl4f4ferf5erfr5zed4fsdd', record: true },
+    required: ['name'],
+    title: 'liveStreamCreationPayload',
+  })
+  .openapi('LiveStreamCreatePayload')
+
+const LiveStreamListResponseSchema = z
+  .object({ data: z.array(LiveStreamSchema), pagination: PaginationSchema })
+  .openapi({ required: ['data', 'pagination'], title: 'LiveStreams' })
+  .openapi('LiveStreamListResponse')
+
+const LiveStreamSessionClientSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the browser used to view the live stream session.',
+        example: 'Firefox',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of client used to view the live stream session.',
+        example: 'browser',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The version of the browser used to view the live stream session.',
+        example: '67.0',
+      }),
+  })
+  .openapi({
+    description: 'What kind of browser the viewer is using for the live stream session.',
+    required: [],
+  })
+  .openapi('LiveStreamSessionClient')
+
+const LiveStreamSessionDeviceSchema = z
+  .object({
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The specific model of the device, if known.', example: 'unknown' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'What the type is like desktop, laptop, mobile.',
+        example: 'desktop',
+      }),
+    vendor: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If known, what the brand of the device is, like Apple, Dell, etc.',
+        example: 'Dell',
+      }),
+  })
+  .openapi({
+    description: 'What type of device the user is on when in the live stream session.',
+    required: [],
+  })
+  .openapi('LiveStreamSessionDevice')
+
+const LiveStreamSessionLocationSchema = z
+  .object({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The city of the viewer of the live stream.', example: 'Paris' }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The country of the viewer of the live stream.', example: 'France' }),
+  })
+  .openapi({ description: 'The location of the viewer of the live stream.', required: [] })
+  .openapi('LiveStreamSessionLocation')
+
+const VideoSessionOsSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the operating system.', example: 'Microsoft Windows' }),
+    shortname: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The nickname for the operating system, often representing the version.',
+        example: 'W10',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The version of the operating system.', example: 'Windows 10' }),
+  })
+  .openapi({ description: 'The operating system the viewer is on.', required: [] })
+  .openapi('VideoSessionOs')
+
+const LiveStreamSessionReferrerSchema = z
+  .object({
+    medium: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of search that brought the viewer to the live stream. Organic would be they found it on their own, paid would be they found it via an advertisement.',
+        example: 'organic',
+      }),
+    searchTerm: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'What term they searched for that led them to the live stream.',
+        example: 'video stream',
+      }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Where the viewer came from to see the live stream (usually where they searched from).',
+        example: 'https://google.com',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The website the viewer of the live stream was referred to in order to view the live stream.',
+        example: 'https://api.video',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('LiveStreamSessionReferrer')
+
+const LiveStreamSessionSessionSchema = z
+  .object({
+    endedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When the session ended, with the date and time presented in ISO-8601 format.',
+        example: '2019-06-24T12:45:01.109+00',
+      }),
+    loadedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'When the session started, with the date and time presented in ISO-8601 format.',
+        example: '2019-06-24T11:45:01.109+00',
+      }),
+    sessionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for your session. You can use this to track what happens during a specific session.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('LiveStreamSessionSession')
+
+const LiveStreamSessionSchema = z
+  .object({
+    client: LiveStreamSessionClientSchema.exactOptional(),
+    device: LiveStreamSessionDeviceSchema.exactOptional(),
+    location: LiveStreamSessionLocationSchema.exactOptional(),
+    os: VideoSessionOsSchema.exactOptional(),
+    referrer: LiveStreamSessionReferrerSchema.exactOptional(),
+    session: LiveStreamSessionSessionSchema.exactOptional(),
+  })
+  .openapi({ title: 'Live Stream Session', required: [] })
+  .openapi('LiveStreamSession')
+
+const LiveStreamThumbnailUploadPayloadSchema = z
+  .object({
+    file: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: 'The image to be added as a thumbnail.',
+      }),
+  })
+  .openapi({ required: ['file'] })
+  .openapi('LiveStreamThumbnailUploadPayload')
+
+const LiveStreamUpdatePayloadSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name you want to use for your live stream.',
+        example: 'My Live Stream Video',
+      }),
+    playerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique ID for the player associated with a live stream that you want to update.',
+        example: 'pl45KFKdlddgk654dspkze',
+      }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'BETA FEATURE Please limit all public = false ("private") livestreams to 3,000 users. Whether your video can be viewed by everyone, or requires authentication to see it. A setting of false will require a unique token for each view.',
+      }),
+    record: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Use this to indicate whether you want the recording on or off. On is true, off is false.',
+        example: true,
+      }),
+  })
+  .openapi({ title: 'LiveStreamUpdatePayload', required: [] })
+  .openapi('LiveStreamUpdatePayload')
+
+const MetadataSchema = z
+  .object({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The constant that defines the data set.', example: 'Color' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A variable which belongs to the data set.', example: 'Green' }),
+  })
+  .openapi({ title: 'metadata', 'x-client-all-args-constructor': true, required: [] })
+  .openapi('Metadata')
+
+const NotFoundSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    status: z.int().exactOptional(),
+    title: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ title: 'NotFound', required: [] })
+  .openapi('NotFound')
+
+const PlayerinputSchema = z
+  .object({
+    backgroundBottom: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'RGBA color: bottom 50% of background. Default: rgba(0, 0, 0, .7)' }),
+    backgroundText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'RGBA color for title text. Default: rgba(255, 255, 255, 1)' }),
+    backgroundTop: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'RGBA color: top 50% of background. Default: rgba(0, 0, 0, .7)' }),
+    enableApi: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'enable/disable player SDK access. Default: true' }),
+    enableControls: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'enable/disable player controls. Default: true' }),
+    forceAutoplay: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'enable/disable player autoplay. Default: false' }),
+    forceLoop: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'enable/disable looping. Default: false' }),
+    hideTitle: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'enable/disable title. Default: false' }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'RGBA color for all controls. Default: rgba(255, 255, 255, 1)' }),
+    linkHover: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'RGBA color for all controls when hovered. Default: rgba(255, 255, 255, 1)',
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'RGBA color for timer text. Default: rgba(255, 255, 255, 1)' }),
+    trackBackground: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'RGBA color playback bar: background. Default: rgba(255, 255, 255, .2)',
+      }),
+    trackPlayed: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'RGBA color playback bar: played content. Default: rgba(88, 131, 255, .95)',
+      }),
+    trackUnplayed: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'RGBA color playback bar: downloaded but unplayed (buffered) content. Default: rgba(255, 255, 255, .35)',
+      }),
+  })
+  .openapi({
+    example: {
+      assets: {
+        link: 'https://api.video',
+        logo: 'https://cdn.api.video/player/pl14Db6oMJRH6SRVoOwORacK/logo.png',
+      },
+      backgroundBottom: 'rgba(94, 95, 89, 1)',
+      backgroundText: 'rgba(255, 255, 255, .95)',
+      backgroundTop: 'rgba(72, 4, 45, 1)',
+      enableApi: true,
+      enableControls: true,
+      forceAutoplay: false,
+      forceLoop: false,
+      hideTitle: false,
+      language: 'en',
+      link: 'rgba(255, 0, 0, .95)',
+      linkActive: 'rgba(255, 0, 0, .75)',
+      linkHover: 'rgba(255, 255, 255, .75)',
+      shapeAspect: 'flat',
+      shapeBackgroundBottom: 'rgba(50, 50, 50, .8)',
+      shapeBackgroundTop: 'rgba(50, 50, 50, .7)',
+      shapeMargin: 10,
+      shapeRadius: 3,
+      text: 'rgba(255, 255, 255, .95)',
+      trackBackground: 'rgba(0, 0, 0, 0)',
+      trackPlayed: 'rgba(255, 255, 255, .95)',
+      trackUnplayed: 'rgba(255, 255, 255, .1)',
+    },
+    title: 'PlayerInput',
+    required: [],
+  })
+  .openapi('Playerinput')
+
+const PlayerSchema = PlayerinputSchema.and(
+  z
+    .object({
+      assets: z
+        .object({
+          link: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'The path to the file containing your logo.',
+              example: 'path/to/my/logo/mylogo.jpg',
+            }),
+          logo: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'The name of the file containing the logo you want to use.',
+              example: 'mylogo.jpg',
+            }),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      createdAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'When the player was created, presented in ISO-8601 format.',
+          example: '2020-01-31T10:17:47+00:00',
+        }),
+      linkActive: z.string().exactOptional().openapi({ description: 'Deprecated' }),
+      playerId: z.string().exactOptional().openapi({ example: 'pl45KFKdlddgk654dspkze' }),
+      shapeAspect: z.string().exactOptional().openapi({ description: 'Deprecated' }),
+      shapeBackgroundBottom: z.string().exactOptional().openapi({ description: 'Deprecated' }),
+      shapeBackgroundTop: z.string().exactOptional().openapi({ description: 'Deprecated' }),
+      shapeMargin: z.int().exactOptional().openapi({ description: 'Deprecated' }),
+      shapeRadius: z.int().exactOptional().openapi({ description: 'Deprecated' }),
+      updatedAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'When the player was last updated, presented in ISO-8601 format.',
+          example: '2020-01-31T10:18:47+00:00',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ title: 'Player' })
+  .openapi('Player')
+
+const PlayerSessionEventSchema = z
+  .object({
+    at: z.int().exactOptional(),
+    emittedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When an event occurred, presented in ISO-8601 format.',
+        example: '2019-06-24T11:45:01.109+00',
+      }),
+    from: z.int().exactOptional(),
+    to: z.int().exactOptional(),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Possible values are: ready, play, pause, resume, seek.backward, seek.forward, end',
+        example: 'play',
+      }),
+  })
+  .openapi({ title: 'Player Session Event', required: [] })
+  .openapi('PlayerSessionEvent')
+
+const PlayerCreationPayloadSchema = PlayerinputSchema.openapi('PlayerCreationPayload')
+
+const PlayerUpdatePayloadSchema = PlayerinputSchema.openapi('PlayerUpdatePayload')
+
+const PlayersListResponseSchema = z
+  .object({
+    data: z.array(PlayerSchema).exactOptional(),
+    pagination: PaginationSchema.exactOptional(),
+  })
+  .openapi({ title: 'Players', required: [] })
+  .openapi('PlayersListResponse')
+
+const PlayersUploadLogoPayloadSchema = z
+  .object({
+    file: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: 'The name of the file you want to use for your logo.',
+        example: 'mylogo.jpg',
+      }),
+    link: z
+      .string()
+      .openapi({
+        description: 'The path to the file you want to upload and use as a logo.',
+        example: 'path/to/my/logo/mylogo.jpg',
+      }),
+  })
+  .openapi({ required: ['file', 'link'] })
+  .openapi('PlayersUploadLogoPayload')
+
+const QualitySchema = z
+  .object({
+    quality: z
+      .enum(['240p', '360p', '480p', '720p', '1080p', '2160p'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The quality of the video you have, in pixels. Choices include 360p, 480p, 720p, 1080p, and 2160p.',
+        example: '720p',
+      }),
+    status: z
+      .enum(['waiting', 'encoding', 'encoded', 'failed'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of your video. Statuses include waiting - the video is waiting to be encoded. encoding - the video is in the process of being encoded. encoded - the video was successfully encoded. failed - the video failed to be encoded.',
+      }),
+  })
+  .openapi({ title: 'quality', required: [] })
+  .openapi('Quality')
+
+const RawStatisticsListLiveStreamAnalyticsResponseSchema = z
+  .object({
+    data: z.array(LiveStreamSessionSchema).exactOptional(),
+    pagination: PaginationSchema.exactOptional(),
+  })
+  .openapi({ title: 'LiveStreamSessions', required: [] })
+  .openapi('RawStatisticsListLiveStreamAnalyticsResponse')
+
+const RawStatisticsListPlayerSessionEventsResponseSchema = z
+  .object({
+    data: z.array(PlayerSessionEventSchema).exactOptional(),
+    pagination: PaginationSchema.exactOptional(),
+  })
+  .openapi({ title: 'PlayerSessionEvents', required: [] })
+  .openapi('RawStatisticsListPlayerSessionEventsResponse')
+
+const VideoSessionClientSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the browser used to view the video session.',
+        example: 'Firefox',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of client used to view the video session.',
+        example: 'browser',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The version of the browser used to view the video session.',
+        example: '67.0',
+      }),
+  })
+  .openapi({
+    description: 'What kind of browser the viewer is using for the video session.',
+    required: [],
+  })
+  .openapi('VideoSessionClient')
+
+const VideoSessionDeviceSchema = z
+  .object({
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The specific model of the device, if known.', example: 'unknown' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'What the type is like desktop, laptop, mobile.',
+        example: 'desktop',
+      }),
+    vendor: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If known, what the brand of the device is, like Apple, Dell, etc.',
+        example: 'Dell',
+      }),
+  })
+  .openapi({
+    description: 'What type of device the user is on when in the video session.',
+    required: [],
+  })
+  .openapi('VideoSessionDevice')
+
+const VideoSessionLocationSchema = z
+  .object({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The city of the viewer.', example: 'Paris' }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The country of the viewer.', example: 'France' }),
+  })
+  .openapi({ description: 'The location of the viewer.', required: [] })
+  .openapi('VideoSessionLocation')
+
+const VideoSessionReferrerSchema = z
+  .object({
+    medium: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'How they arrived at the site, for example organic or paid. Organic meaning they found it themselves and paid meaning they followed a link from an advertisement.',
+        example: 'organic',
+      }),
+    searchTerm: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The search term they typed to arrive at the video session.' }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The source the referrer came from to the video session. For example if they searched through google to find the stream.',
+        example: 'https://google.com',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The link the viewer used to reach the video session.',
+        example: 'https://api.video',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoSessionReferrer')
+
+const VideoSessionSessionSchema = z
+  .object({
+    endedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When the video session ended, presented in ISO-8601 format.',
+        example: '2019-06-24T12:45:01.109+00',
+      }),
+    loadedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When the video session started, presented in ISO-8601 format.',
+        example: '2019-06-24T11:45:01.109+00',
+      }),
+    sessionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier for the session that you can use to track what happens during it.',
+        example: 'psEmFwGQUAXR2lFHj5nDOpy',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoSessionSession')
+
+const VideoSessionSchema = z
+  .object({
+    client: VideoSessionClientSchema.exactOptional(),
+    device: VideoSessionDeviceSchema.exactOptional(),
+    location: VideoSessionLocationSchema.exactOptional(),
+    os: VideoSessionOsSchema.exactOptional(),
+    referrer: VideoSessionReferrerSchema.exactOptional(),
+    session: VideoSessionSessionSchema.exactOptional(),
+  })
+  .openapi({
+    example: {
+      client: { name: 'Firefox', type: 'browser', version: '67.0' },
+      device: { model: 'unknown', type: 'desktop', vendor: 'Dell' },
+      location: { city: 'Paris', country: 'France' },
+      os: { name: 'Microsoft Windows', shortname: 'W10', version: 'Windows10' },
+      referrer: {
+        medium: 'organic',
+        searchTerm: 'video encoding hosting and delivery',
+        source: 'https://google.com',
+        url: 'https://api.video',
+      },
+      session: {
+        endedAt: '2019-06-24T11:49:19.243+00',
+        loadedAt: '2019-06-24T11:45:01.109+00',
+        sessionId: 'psEmFwGQUAXR2lFHj5nDOpy',
+      },
+    },
+    title: 'Video Session',
+    required: [],
+  })
+  .openapi('VideoSession')
+
+const RawStatisticsListSessionsResponseSchema = z
+  .object({
+    data: z.array(VideoSessionSchema).exactOptional(),
+    pagination: PaginationSchema.exactOptional(),
+  })
+  .openapi({ title: 'VideoSessions', required: [] })
+  .openapi('RawStatisticsListSessionsResponse')
+
+const RefreshTokenPayloadSchema = z
+  .object({
+    refreshToken: z
+      .string()
+      .openapi({
+        description:
+          "The refresh token is either the first refresh token you received when you authenticated with the auth/api-key endpoint, or it's the refresh token from the last time you used the auth/refresh endpoint. Place this in the body of your request to obtain a new access token (which is valid for an hour) and a new refresh token.\n",
+      }),
+  })
+  .openapi({
+    example: {
+      refreshToken:
+        'def502005346d9cc2bd79a7793ab5bdabfefcaabfbb8c253f14733f1262077e1a3f38c4751d6d20f590c3784e531a82adc11f05fc1949aa46d5575aaa99cb84b9334ba66ac773576b5d7a418937ae337de62811d086dd42ad1164b12f87d67be6ffea18f2d50be9b95697b21c4d3c4372849bdb2287259cb80541570e913691a08b2fa33c85885930de15cebea627fc09f0255562ab3d39d87d4ff8fc02b00e252afcd480421dec7de9d1411176bcf669c527762e22294b453bc9ea06e9fa8ba5b873feb2ee14ce0a6a6ddd4b78c580631e210e9b9387265dc2bec9478a66a09dcdce1c40d2f856689e9d81742c9628a0b87b359e0b218ea1f07427eef89f999e47af89792f598e05847bd008fddc32ee63f4a601ffb4cd2ad08977f1c854ec358238322c918f05aa5a41f8a171dee497218408abc8283473f6112aeed7310815416a0fa36c63667e0ed014fa40b8992891bf58bae400d901c01450101c88f4978938ad138adc19cfe5698d60fd82cb27c586f6a8f70f4393c7c9e579df8739d46d249fb76d7',
+    },
+    required: ['refreshToken'],
+    title: 'refreshToken',
+  })
+  .openapi('RefreshTokenPayload')
+
+const TokenCreatePayloadSchema = z
+  .object({
+    ttl: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .default(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'Time in seconds that the token will be active. A value of 0 means that the token has no exipration date. The default is to have no expiration.',
+      }),
+  })
+  .openapi({ example: { ttl: 3600 }, title: 'tokenCreationPayload', required: [] })
+  .openapi('TokenCreatePayload')
+
+const UploadTokenSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When the token was created, displayed in ISO-8601 format.',
+        example: '2019-12-16T08:25:51+00:00',
+      }),
+    expiresAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When the token expires, displayed in ISO-8601 format.',
+        example: '2019-12-16T09:25:51+00:00',
+      }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the token you will use to authenticate an upload.',
+        example: 'to1tcmSFHeYY5KzyhOqVKMKb',
+      }),
+    ttl: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({ description: 'Time-to-live - how long the upload token is valid for.' }),
+  })
+  .openapi({ title: 'UploadToken', required: [] })
+  .openapi('UploadToken')
+
+const TokenListResponseSchema = z
+  .object({
+    data: z.array(UploadTokenSchema).openapi({ title: 'uploadToken' }),
+    pagination: PaginationSchema,
+  })
+  .openapi({ required: ['data', 'pagination'], title: 'uploadTokens' })
+  .openapi('TokenListResponse')
+
+const TokenUploadPayloadSchema = z
+  .object({
+    file: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: 'The path to the video you want to upload.',
+        example: 'path/to/video/video.mp4',
+        'x-client-chunk-upload': 'true',
+      }),
+    videoId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The video id returned by the first call to this endpoint in a large video upload scenario.',
+        'x-client-copy-from-response': true,
+        'x-client-ignore': true,
+      }),
+  })
+  .openapi({ required: ['file'] })
+  .openapi('TokenUploadPayload')
+
+const VideoAssetsSchema = z
+  .object({
+    hls: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is the manifest URL. For HTTP Live Streaming (HLS), when a HLS video stream is initiated, the first file to download is the manifest. This file has the extension M3U8, and provides the video player with information about the various bitrates available for streaming.',
+      }),
+    iframe: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Code to use video from a third party website',
+        example:
+          '<iframe src="//embed.api.video/c188ed58-3403-46a2-b91b-44603d10b2c9?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+      }),
+    mp4: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'Available only if mp4Support is enabled. Raw mp4 url.',
+        example:
+          'https://cdn.api.video/vod/vi4k0jvEUuaTdRAEjQ4Jfrgz/token/8fd70443-d9f0-45d2-b01c-12c8cfc707c9/mp4/720/source.mp4',
+      }),
+    player: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'Raw url of the player.',
+        example:
+          'https://embed.api.video/1b9d6ae8-8f57-4b6d-8552-d636926b4f5f?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+      }),
+    thumbnail: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'Poster of the video.',
+        example: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+      }),
+  })
+  .openapi({
+    description:
+      'Collection of details about the video object that you can use to work with the video object.',
+    required: [],
+  })
+  .openapi('VideoAssets')
+
+const VideoSourceLiveStreamLinkSchema = z
+  .object({ rel: z.string().exactOptional(), uri: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('VideoSourceLiveStreamLink')
+
+const VideoSourceLiveStreamSchema = z
+  .object({
+    links: z.array(VideoSourceLiveStreamLinkSchema).exactOptional(),
+    liveStreamId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier for the live stream.',
+        example: 'li400mYKSgQ6xs7taUeSaEKr',
+      }),
+  })
+  .openapi({ description: 'This appears if the video is from a Live Record.', required: [] })
+  .openapi('VideoSourceLiveStream')
+
+const VideoSourceSchema = z
+  .object({
+    liveStream: VideoSourceLiveStreamSchema.exactOptional(),
+    type: z.string().exactOptional(),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL where the video is stored.',
+        example: '/videos/vi4k0jvEUuaTdRAEjQ4Prklg/source',
+      }),
+  })
+  .openapi({ description: 'Source information about the video.', required: [] })
+  .openapi('VideoSource')
+
+const VideoSchema = z
+  .object({
+    assets: VideoAssetsSchema.exactOptional(),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A description for the video content.\n',
+        example: 'An amazing video explaining string theory.',
+      }),
+    metadata: z
+      .array(MetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata you can use to categorise and filter videos. Metadata is a list of dictionaries, where each dictionary represents a key value pair for categorising a video. [Dynamic Metadata](https://api.video/blog/endpoints/dynamic-metadata) allows you to define a key that allows any value pair.\n',
+        example: '[{"key":"Author", "value":"John Doe"}, {"key":"Format", "value":"Tutorial"}]',
+      }),
+    mp4Support: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'This lets you know whether mp4 is supported. If enabled, an mp4 URL will be provided in the response for the video.\n',
+        example: true,
+      }),
+    panoramic: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Defines if video is panoramic.\n', example: false }),
+    playerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the player that will be applied on the video.\n',
+        example: 'pl45KFKdlddgk654dspkze',
+      }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines if the content is publicly reachable or if a unique token is needed for each play session. Default is true. Tutorials on [private videos](https://api.video/blog/endpoints/private-videos).\n',
+        example: false,
+      }),
+    publishedAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time the API created the video. Date and time are provided using ISO-8601 UTC format.',
+        example: '2019-12-16T08:25:51+00:00',
+      }),
+    source: VideoSourceSchema.exactOptional(),
+    tags: z
+      .array(z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'One array of tags (each tag is a string) in order to categorize a video. Tags may include spaces. \n',
+        example: '"tags": ["maths", "string theory", "video"]',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The title of the video content.\n', example: 'Maths video' }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time the video was updated. Date and time are provided using ISO-8601 UTC format.',
+        example: '2019-12-16T08:25:51+00:10',
+      }),
+    videoId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the video object.',
+        example: 'vi4k0jvEUuaTdRAEjQ4Prklg',
+      }),
+  })
+  .openapi({
+    example: {
+      actions: ['video_delete', 'video_download', 'video_update'],
+      description: 'An amazing video explaining the string theory',
+      metadata: [
+        { key: 'Author', value: 'John Doe' },
+        { key: 'Format', value: 'Tutorial' },
+      ],
+      publishedAt: '4665-07-14T23:36:18.598Z',
+      scheduledAt: '4251-03-03T12:52:03.085Z',
+      tags: ['maths', 'string theory', 'video'],
+      title: 'Maths video',
+      videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+    },
+    title: 'video',
+    required: [],
+  })
+  .openapi('Video')
+
+const VideoCreatePayloadSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A brief description of your video.',
+        example: 'A video about string theory.',
+      }),
+    metadata: z
+      .array(MetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of key value pairs that you use to provide metadata for your video. These pairs can be made dynamic, allowing you to segment your audience. Read more on [dynamic metadata](https://api.video/blog/endpoints/dynamic-metadata).',
+        example: '[{"key": "Author", "value": "John Doe"}]',
+      }),
+    mp4Support: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description: 'Enables mp4 version in addition to streamed version.',
+        example: true,
+      }),
+    panoramic: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if your video is a 360/immersive video.',
+        example: false,
+      }),
+    playerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identification number for your video player.',
+        example: 'pl45KFKdlddgk654dspkze',
+      }),
+    public: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether your video can be viewed by everyone, or requires authentication to see it. A setting of false will require a unique token for each view. Default is true. Tutorials on [private videos](https://api.video/blog/endpoints/private-videos).',
+        example: true,
+      }),
+    publishedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The API uses ISO-8601 format for time, and includes 3 places for milliseconds.',
+        example: '2020-07-14T23:36:18.598Z',
+      }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If you add a video already on the web, this is where you enter the url for the video.',
+        example: 'https://www.myvideo.url.com/video.mp4',
+      }),
+    tags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of tags you want to use to describe your video.',
+        example: '["maths", "string theory", "video"]',
+      }),
+    title: z
+      .string()
+      .openapi({ description: 'The title of your new video.', example: 'Maths video' }),
+  })
+  .openapi({
+    example: {
+      description: 'An amazing video explaining string theory.',
+      metadata: [
+        { key: 'Author', value: 'John Doe' },
+        { key: 'Format', value: 'Tutorial' },
+      ],
+      mp4Support: true,
+      panoramic: false,
+      playerId: 'pl45KFKdlddgk654dspkze',
+      public: false,
+      tags: ['maths', 'string theory', 'video'],
+      title: 'Maths video',
+    },
+    required: ['title'],
+    title: 'videoCreationPayload',
+  })
+  .openapi('VideoCreatePayload')
+
+const VideoThumbnailPickPayloadSchema = z
+  .object({
+    timecode: z
+      .string()
+      .regex(/00:00:00.00/)
+      .openapi({
+        description:
+          'Frame in video to be used as a placeholder before the video plays. \nExample: \'"00:01:00.000" for 1 minute into the video.\'\nValid Patterns: \n"hh:mm:ss.ms"\n"hh:mm:ss:frameNumber"\n"124" (integer value is reported as seconds) \nIf selection is out of range, "00:00:00.00" will be chosen.',
+      }),
+  })
+  .openapi({
+    example: { timecode: '00:00:00.000' },
+    required: ['timecode'],
+    title: 'pickThumbnailPayload',
+  })
+  .openapi('VideoThumbnailPickPayload')
+
+const VideoThumbnailUploadPayloadSchema = z
+  .object({
+    file: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: 'The image to be added as a thumbnail.',
+      }),
+  })
+  .openapi({ required: ['file'] })
+  .openapi('VideoThumbnailUploadPayload')
+
+const VideoUpdatePayloadSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A brief description of the video.',
+        example: 'A film about good books.',
+      }),
+    metadata: z
+      .array(MetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list (array) of dictionaries where each dictionary contains a key value pair that describes the video. As with tags, you must send the complete list of metadata you want as whatever you send here will overwrite the existing metadata for the video. [Dynamic Metadata](https://api.video/blog/endpoints/dynamic-metadata) allows you to define a key that allows any value pair.',
+      }),
+    mp4Support: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the player supports the mp4 format.', example: true }),
+    panoramic: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the video is a 360 degree or immersive video.',
+        example: false,
+      }),
+    playerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique ID for the player you want to associate with your video.',
+        example: 'pl4k0jvEUuaTdRAEjQ4Jfrgz',
+      }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the video is publicly available or not. False means it is set to private. Default is true. Tutorials on [private videos](https://api.video/blog/endpoints/private-videos).',
+        example: true,
+      }),
+    tags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of terms or words you want to tag the video with. Make sure the list includes all the tags you want as whatever you send in this list will overwrite the existing list for the video.',
+        example: '["maths", "string theory", "video"]',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The title you want to use for your video.' }),
+  })
+  .openapi({
+    example: {
+      description: 'An amazing video explaining the string theory',
+      metadata: [
+        { key: 'Author', value: 'John Doe' },
+        { key: 'Format', value: 'Tutorial' },
+      ],
+      mp4Support: true,
+      panoramic: false,
+      playerId: 'pl45KFKdlddgk654dspkze',
+      public: false,
+      tags: ['maths', 'string theory', 'video'],
+      title: 'String theory',
+    },
+    title: 'videoUpdatePayload',
+    required: [],
+  })
+  .openapi('VideoUpdatePayload')
+
+const VideoUploadPayloadSchema = z
+  .object({
+    file: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description:
+          'The path to the video you would like to upload. The path must be local. If you want to use a video from an online source, you must use the "/videos" endpoint and add the "source" parameter when you create a new video.',
+        example: '@/path/to/video.mp4',
+        'x-client-chunk-upload': 'true',
+      }),
+  })
+  .openapi({ required: ['file'] })
+  .openapi('VideoUploadPayload')
+
+const VideosListResponseSchema = z
+  .object({ data: z.array(VideoSchema), pagination: PaginationSchema })
+  .openapi({ required: ['data', 'pagination'], title: 'Videos' })
+  .openapi('VideosListResponse')
+
+const VideostatusEncodingMetadataSchema = z
+  .object({
+    aspectRatio: z.string().exactOptional(),
+    audioCodec: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The method used to compress and decompress digital audio for your video.',
+      }),
+    bitrate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The number of bits processed per second.' }),
+    duration: z.int().exactOptional().openapi({ description: 'The length of the video.' }),
+    framerate: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The frequency with which consecutive images or frames appear on a display. Shown in this API as frames per second (fps).',
+        example: 60,
+      }),
+    height: z.int().exactOptional().openapi({ description: 'The height of the video in pixels.' }),
+    samplerate: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'How many samples per second a digital audio system uses to record an audio signal. The higher the rate, the higher the frequencies that can be recorded. They are presented in this API using hertz.',
+        example: 48000,
+      }),
+    videoCodec: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The method used to compress and decompress digital video. API Video supports all codecs in the libavcodec library. ',
+      }),
+    width: z.int().exactOptional().openapi({ description: 'The width of the video in pixels.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideostatusEncodingMetadata')
+
+const VideostatusEncodingSchema = z
+  .object({
+    metadata: VideostatusEncodingMetadataSchema.exactOptional(),
+    playable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the video is playable or not.', example: true }),
+    qualities: z
+      .array(QualitySchema)
+      .exactOptional()
+      .openapi({ description: 'Available qualities the video can be viewed in.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideostatusEncoding')
+
+const VideostatusIngestSchema = z
+  .object({
+    filesize: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The size of your file in bytes.', example: 200000 }),
+    receivedBytes: z
+      .array(BytesRangeSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The total number of bytes received, listed for each chunk of the upload.',
+      }),
+    status: z
+      .enum(['missing', 'uploading', 'uploaded'])
+      .exactOptional()
+      .openapi({
+        description:
+          'There are three possible ingest statuses. missing - you are missing information required to ingest the video. uploading - the video is in the process of being uploaded. uploaded - the video is ready for use.',
+        example: 'uploaded',
+      }),
+  })
+  .openapi({
+    description:
+      'Details about the capturing, transferring, and storing of your video for use immediately or in the future.',
+    required: [],
+  })
+  .openapi('VideostatusIngest')
+
+const VideostatusSchema = z
+  .object({
+    encoding: VideostatusEncodingSchema.exactOptional(),
+    ingest: VideostatusIngestSchema.exactOptional(),
+  })
+  .openapi({
+    example: {
+      encoding: {
+        metadata: {
+          aspectRatio: '16/9',
+          audioCodec: 'aac',
+          bitrate: 411.218,
+          duration: 4176,
+          framerate: 24,
+          height: 240,
+          samplerate: 48000,
+          videoCodec: 'h264',
+          width: 424,
+        },
+        playable: true,
+        qualities: [
+          { quality: '240p', status: 'encoded' },
+          { quality: '360p', status: 'encoded' },
+          { quality: '480p', status: 'encoded' },
+          { quality: '720p', status: 'encoded' },
+          { quality: '1080p', status: 'encoding' },
+          { quality: '2160p', status: 'waiting' },
+        ],
+      },
+      ingest: {
+        filesize: 273579401,
+        receivedBytes: [
+          { from: 0, to: 134217727, total: 273579401 },
+          { from: 134217728, to: 268435455, total: 273579401 },
+          { from: 268435456, to: 273579400, total: 273579401 },
+        ],
+        status: 'uploaded',
+      },
+    },
+    title: 'VideoStatus',
+    required: [],
+  })
+  .openapi('Videostatus')
+
+const WebhookSchema = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'When an webhook was created, presented in ISO-8601 format.',
+        example: '2019-06-24T11:45:01.109+00',
+      }),
+    events: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of events that will trigger the webhook.',
+        example: '["video.encoding.quality.completed"]',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'URL of the webhook',
+        example: 'http://clientnotificationserver.com/notif?myquery=query',
+      }),
+    webhookId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier of the webhook',
+        example: 'webhook_XXXXXXXXXXXXXXX',
+      }),
+  })
+  .openapi({ title: 'Webhook', required: [] })
+  .openapi('Webhook')
+
+const WebhooksCreatePayloadSchema = z
+  .object({
+    events: z
+      .array(z.string())
+      .openapi({
+        description:
+          'A list of the webhooks that you are subscribing to. There are Currently four webhook options:\n* ```video.encoding.quality.completed```  When a new video is uploaded into your account, it will be encoded into several different HLS sizes/bitrates.  When each version is encoded, your webhook will get a notification.  It will look like ```{ \\"type\\": \\"video.encoding.quality.completed\\", \\"emittedAt\\": \\"2021-01-29T16:46:25.217+01:00\\", \\"videoId\\": \\"viXXXXXXXX\\", \\"encoding\\": \\"hls\\", \\"quality\\": \\"720p\\"} ```. This request says that the 720p HLS encoding was completed.\n* ```live-stream.broadcast.started```  When a livestream begins broadcasting, the broadcasting parameter changes from false to true, and this webhook fires.\n* ```live-stream.broadcast.ended```  This event fores when the livestream has finished broadcasting, and the broadcasting parameter flips from false to true.\n* ```video.source.recorded```  This event is similar to ```video.encoding.quality.completed```, but tells you if a livestream has been recorded as a VOD.',
+        example: 'video.encoding.quality.completed',
+      }),
+    url: z
+      .string()
+      .openapi({
+        description:
+          'The the url to which HTTP notifications are sent. It could be any http or https URL.',
+        example: 'https://example.com/webhooks',
+      }),
+  })
+  .openapi({
+    example: {
+      events: ['video.encoding.quality.completed'],
+      url: 'http://clientnotificationserver.com/notif?myquery=query',
+    },
+    required: ['events', 'url'],
+  })
+  .openapi('WebhooksCreatePayload')
+
+const WebhooksListResponseSchema = z
+  .object({
+    data: z.array(WebhookSchema).exactOptional(),
+    pagination: PaginationSchema.exactOptional(),
+  })
+  .openapi({ title: 'Webhooks', required: [] })
+  .openapi('WebhooksListResponse')
+
+const CurrentPageParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int(),
+  )
+  .default(1)
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'Choose the number of search results to return per page. Minimum value: 1',
+      example: 2,
+      explode: true,
+      in: 'query',
+      name: 'currentPage',
+      required: false,
+      schema: { default: 1, type: 'integer' },
+      style: 'form',
+    },
+  })
+
+const PageSizeParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int(),
+  )
+  .default(25)
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'Results per page. Allowed values 1-100, default is 25.',
+      example: 30,
+      explode: true,
+      in: 'query',
+      name: 'pageSize',
+      required: false,
+      schema: { default: 25, type: 'integer' },
+      style: 'form',
+    },
+  })
+
+const BearerAuthSecurityScheme = { scheme: 'bearer', type: 'http' }
+
+export const getAccountRoute = createRoute({
+  method: 'get',
+  path: '/account',
+  tags: ['Account'],
+  summary: 'Show account',
+  description:
+    'Deprecated. Authenticate and get a token, then you can use the bearer token here to retrieve details about your account.',
+  operationId: 'GET_account',
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: AccountSchema,
+          examples: {
+            response: {
+              value: {
+                environment: 'production',
+                features: [
+                  'app.dynamic_metadata',
+                  'app.event_log',
+                  'player.white_label',
+                  'stats.player_events',
+                  'transcode.mp4_support',
+                ],
+                quota: { quotaRemaining: 54, quotaTotal: 60, quotaUsed: 6 },
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: '',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  deprecated: true,
+  security: [{ bearerAuth: [] }],
+})
+
+export const getAnalyticsLiveStreamsLiveStreamIdRoute = createRoute({
+  method: 'get',
+  path: '/analytics/live-streams/{liveStreamId}',
+  tags: ['Analytics'],
+  summary: 'List live stream player sessions',
+  operationId: 'GET_analytics-live-streams-liveStreamId',
+  request: {
+    params: z.object({
+      liveStreamId: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'The unique identifier for the live stream you want to retrieve analytics for.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'liveStreamId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    query: z.object({
+      period: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Period must have one of the following formats: \n- For a day : "2018-01-01",\n- For a week: "2018-W01", \n- For a month: "2018-01"\n- For a year: "2018"\nFor a range period: \n-  Date range: "2018-01-01/2018-01-15"\n',
+            example: '2019-01-01',
+            explode: true,
+            in: 'query',
+            name: 'period',
+            required: false,
+            schema: { format: 'period', type: 'string' },
+            style: 'form',
+          },
+        }),
+      currentPage: CurrentPageParamsSchema,
+      pageSize: PageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: RawStatisticsListLiveStreamAnalyticsResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    client: { name: 'Firefox', type: 'browser', version: '61.0' },
+                    device: { model: 'unknown', type: 'desktop', vendor: 'unknown' },
+                    location: { city: 'Paris', country: 'France' },
+                    os: { name: 'unknown', shortname: 'unknown', version: 'unknown' },
+                    referrer: {
+                      medium: 'unknown',
+                      searchTerm: 'unknown',
+                      source: 'unknown',
+                      url: 'unknown',
+                    },
+                    session: {
+                      endedAt: '2018-09-11T14:47:22.186+00',
+                      loadedAt: '2018-09-11T13:04:37.89+00',
+                      sessionId: 'ps4zRWVOv2If2vzKJLMr3jQo',
+                    },
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 1,
+                  itemsTotal: 1,
+                  links: [
+                    {
+                      rel: 'self',
+                      uri: '/analytics/sessions/ps4zRWVOv2If2vzKJLMr3jQo?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'first',
+                      uri: '/analytics/sessions/ps4zRWVOv2If2vzKJLMr3jQo?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'last',
+                      uri: '/analytics/sessions/ps4zRWVOv2If2vzKJLMr3jQo?currentPage=1&pageSize=25',
+                    },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'liveStreamId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getAnalyticsSessionsSessionIdEventsRoute = createRoute({
+  method: 'get',
+  path: '/analytics/sessions/{sessionId}/events',
+  tags: ['Analytics'],
+  summary: 'List player session events',
+  description: "Useful to track and measure video's engagement.",
+  operationId: 'GET_analytics-sessions-sessionId-events',
+  request: {
+    params: z.object({
+      sessionId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'A unique identifier you can use to reference and track a session with.',
+            example: 'psEmFwGQUAXR2lFHj5nDOpy',
+            explode: false,
+            in: 'path',
+            name: 'sessionId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    query: z.object({ currentPage: CurrentPageParamsSchema, pageSize: PageSizeParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: RawStatisticsListPlayerSessionEventsResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  { at: 0, emittedAt: '2020-09-15T09:47:42+00:00', type: 'ready' },
+                  { at: 0, emittedAt: '2020-09-15T21:35:57+00:00', type: 'play' },
+                  { at: 7, emittedAt: '2020-09-15T21:36:05+00:00', type: 'pause' },
+                  { at: 21, emittedAt: '2020-09-15T21:36:19+00:00', type: 'resume' },
+                  { emittedAt: '2020-09-15T21:36:19+00:00', from: 7, to: 21, type: 'seek.forward' },
+                  { at: 30, emittedAt: '2020-09-15T21:36:28+00:00', type: 'end' },
+                  { at: 0, emittedAt: '2020-09-15T21:36:29+00:00', type: 'play' },
+                  {
+                    emittedAt: '2020-09-15T21:36:29+00:00',
+                    from: 30,
+                    to: 0,
+                    type: 'seek.backward',
+                  },
+                  { at: 21, emittedAt: '2020-09-15T21:36:29+00:00', type: 'pause' },
+                  { at: 21, emittedAt: '2020-09-15T21:36:30+00:00', type: 'resume' },
+                  { emittedAt: '2020-09-15T21:36:30+00:00', from: 0, to: 21, type: 'seek.forward' },
+                  { at: 20, emittedAt: '2020-09-15T21:36:33+00:00', type: 'pause' },
+                  { at: 20, emittedAt: '2020-09-15T21:36:33+00:00', type: 'resume' },
+                  {
+                    emittedAt: '2020-09-15T21:36:33+00:00',
+                    from: 24,
+                    to: 20,
+                    type: 'seek.backward',
+                  },
+                  { at: 17, emittedAt: '2020-09-15T21:36:39+00:00', type: 'pause' },
+                  { at: 17, emittedAt: '2020-09-15T21:36:39+00:00', type: 'resume' },
+                  {
+                    emittedAt: '2020-09-15T21:36:39+00:00',
+                    from: 17,
+                    to: 17,
+                    type: 'seek.forward',
+                  },
+                  { at: 19, emittedAt: '2020-09-15T21:36:41+00:00', type: 'pause' },
+                  { at: 0, emittedAt: '2020-09-17T09:20:47+00:00', type: 'ready' },
+                  { at: 0, emittedAt: '2020-09-17T09:41:01+00:00', type: 'ready' },
+                  { at: 0, emittedAt: '2020-09-17T09:41:08+00:00', type: 'ready' },
+                  { at: 0, emittedAt: '2020-09-17T09:41:10+00:00', type: 'play' },
+                  { at: 1, emittedAt: '2020-09-17T09:41:12+00:00', type: 'pause' },
+                  { at: 1, emittedAt: '2020-09-17T09:41:13+00:00', type: 'resume' },
+                  { at: 3, emittedAt: '2020-09-17T09:41:15+00:00', type: 'pause' },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 25,
+                  itemsTotal: 30,
+                  links: [
+                    {
+                      rel: 'self',
+                      uri: '/analytics/sessions/ps5ltuhfsTOeh6bP03Tq5OWc/events?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'first',
+                      uri: '/analytics/sessions/ps5ltuhfsTOeh6bP03Tq5OWc/events?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'next',
+                      uri: '/analytics/sessions/ps5ltuhfsTOeh6bP03Tq5OWc/events?currentPage=2&pageSize=25',
+                    },
+                    {
+                      rel: 'last',
+                      uri: '/analytics/sessions/ps5ltuhfsTOeh6bP03Tq5OWc/events?currentPage=2&pageSize=25',
+                    },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 2,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getAnalyticsVideosVideoIdRoute = createRoute({
+  method: 'get',
+  path: '/analytics/videos/{videoId}',
+  tags: ['Analytics'],
+  summary: 'List video player sessions',
+  description:
+    'Retrieve all available user sessions for a specific video. Tutorials that use the [analytics endpoint](https://api.video/blog/endpoints/analytics).',
+  operationId: 'GET_analytics-videos-videoId',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'The unique identifier for the video you want to retrieve session information for.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Prklg',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    query: z.object({
+      period: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Period must have one of the following formats: \n- For a day : 2018-01-01,\n- For a week: 2018-W01, \n- For a month: 2018-01\n- For a year: 2018\nFor a range period: \n-  Date range: 2018-01-01/2018-01-15\n',
+            explode: true,
+            in: 'query',
+            name: 'period',
+            required: false,
+            schema: { format: 'period', type: 'string' },
+            style: 'form',
+          },
+        }),
+      metadata: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Metadata and [Dynamic Metadata](https://api.video/blog/endpoints/dynamic-metadata) filter. Send an array of key value pairs you want to filter sessios with.',
+            example:
+              '[{"key": "Author", "value": "John Doe"}, {"key": "Format", "value": "Tutorial"}]',
+            explode: true,
+            in: 'query',
+            name: 'metadata',
+            required: false,
+            schema: { items: { type: 'string' }, type: 'array' },
+            style: 'form',
+          },
+        }),
+      currentPage: CurrentPageParamsSchema,
+      pageSize: PageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: RawStatisticsListSessionsResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    client: { name: 'Firefox', type: 'browser', version: '67.0' },
+                    device: { model: 'unknown', type: 'desktop', vendor: 'Dell' },
+                    location: { city: 'Paris', country: 'France' },
+                    os: { name: 'Microsoft Windows', shortname: 'W10', version: 'Windows10' },
+                    referrer: {
+                      medium: 'organic',
+                      searchTerm: 'video encoding hosting and delivery',
+                      source: 'https://google.com',
+                      url: 'https://api.video',
+                    },
+                    session: {
+                      endedAt: '2019-06-24T11:49:19.243+00',
+                      loadedAt: '2019-06-24T11:45:01.109+00',
+                      sessionId: 'psEmFwGQUAXR2lFHj5nDOpy',
+                    },
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 1,
+                  itemsTotal: 1,
+                  links: [
+                    {
+                      rel: 'self',
+                      uri: '/analytics/sessions/psEmFwGQUAXR2lFHj5nDOpy?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'first',
+                      uri: '/analytics/sessions/psEmFwGQUAXR2lFHj5nDOpy?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'last',
+                      uri: '/analytics/sessions/psEmFwGQUAXR2lFHj5nDOpy?currentPage=1&pageSize=25',
+                    },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postAuthApiKeyRoute = createRoute({
+  method: 'post',
+  path: '/auth/api-key',
+  tags: ['Authentication'],
+  summary: 'Authenticate',
+  description:
+    'To get started, submit your API key in the body of your request. api.video returns an access token that is valid for one hour (3600 seconds). A refresh token is also returned. View a [tutorial](https://api.video/blog/tutorials/authentication-tutorial) on authentication.\nAll tutorials using the [authentication endpoint](https://api.video/blog/endpoints/authenticate)',
+  operationId: 'POST_auth-api-key',
+  request: { body: { content: { 'application/json': { schema: AuthenticatePayloadSchema } } } },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: AccessTokenSchema,
+          examples: {
+            response: {
+              value: {
+                access_token:
+                  'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjUyZWM4NWUyMjFkODZjOWI0NDQ5NzBhMjQwMzUyOWQ4MDQyNGQ3ZmJjYjFlYWM2MjVlM2VkMjI2YWRlNTcxMDY2NDUyZDc0NjdhN2E4NjI0In0.eyJhdWQiOiJsaWJjYXN0IiwianRpIjoiNTJlYzg1ZTIyMWQ4NmM5YjQ0NDk3MGEyNDAzNTI5ZDgwNDI0ZDdmYmNiMWVhYzYyNWUzZWQyMjZhZGU1NzEwNjY0NTJkNzQ2N2E3YTg2MjQiLCJpYXQiOjE1MjUyNzYxNDcsIm5iZiI6MTUyNTI3NjE0NywiZXhwIjoxNTI1Mjc5NzQ3LCJzdWIiOiJ1c01vbml0b3IiLCJzY29wZXMiOlsibW9uaXRvci5saWJjYXN0LmNvbSJdLCJjb250ZXh0Ijp7InVzZXIiOiJ1c01vbml0b3IiLCJwcm9qZWN0IjoicHJNb25pdG9yIiwibWVtYmVyIjoibWVNb25pdG9yIn19.rUvishDNyJLNlI4W5VmguNecm5KD2uZgPkKJQbaqw-cJbSrVxkSbiKYtk_E3cz3WT7-IS2yFTsYN3uIo5Rbit8_HftweyEp2bdBRI8yjR6oZZ1sNJJXswISN1i2kk4r-aaxu7Xxf_LtsjOMUj_YZsvcc2nqBXPKjHbJCJryx3DDJaIcymOqao7nhQaCCQyrQooAXNTYs4E9fWN1dC_x2O-zok5TuG-xhEW-umwxfSUMWNgSTkz38ACceQ0PCJSgB3jqjDH4MwC7B3ppEPZuK5E6JhKeyRlalswRyYq3UQPnVeMTam7YQHsuTgbehF6WySW8i44o7V_MCe9hjPdp-WA',
+                expires_in: 3600,
+                refresh_token:
+                  'def50200a28d88fb9aaa921be78eeb5604b071101a334899a7d5fc7492cf8ea752962ddc8961fe5c126101d4ecacd980396eb2fd494995b812dffcb98256c4277f790d1f658fc2d2e34f350740544e5232d69d68d34c648271d706c5e7049adac0b1832d0fdf71809715cc7e97fa63f65966deadb501a55ff469b0fd23a637cb6acbe9d9b8594a17f09efc2efeed82984764a0065d5e29c950c7b081a61ba2aaa192be3085c400ee37eac50fa9320ce2cfe8916c8165418d23e9f91b6a5c8515e1d74ee193a5a1ca01954fbff27361c20184240be2359e0afbed0bf1c762cf872450b5e8b5d4704f4fd9583e4470adc98409dd42965709712806bd9019378a72eea0b4912ce684ffd833db5806ab84174f905db2a75380071d004615c944bb8f8c4045cce7234c2be9a2330522cf7f067b8e58f57cffb6edb4b7ef91313e12bcde47e5e76ceee7fa52990132288f345d33ed917ae4fd54b7284f8964d898e97e1ee3bc4157f75d7fee63976e4be66ac1ec32ef74afa533f0eb593523f226cbec57d196ac8962',
+                token_type: 'Bearer',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: '',
+                status: 400,
+                title: 'The user credentials were incorrect.',
+                type: 'https://docs.api.video/docs/authenticationinvalid_credentials',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+
+export const postAuthRefreshRoute = createRoute({
+  method: 'post',
+  path: '/auth/refresh',
+  tags: ['Authentication'],
+  summary: 'Refresh token',
+  description:
+    'Use the refresh endpoint with the refresh token you received when you first authenticated using the api-key endpoint. Send the refresh token in the body of your request. The api.video API returns a new access token that is valid for one hour (3600 seconds) and a new refresh token. \n',
+  operationId: 'POST_auth-refresh',
+  request: { body: { content: { 'application/json': { schema: RefreshTokenPayloadSchema } } } },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: AccessTokenSchema,
+          examples: {
+            response: {
+              value: {
+                access_token:
+                  'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjUyZWM4NWUyMjFkODZjOWI0NDQ5NzBhMjQwMzUyOWQ4MDQyNGQ3ZmJjYjFlYWM2MjVlM2VkMjI2YWRlNTcxMDY2NDUyZDc0NjdhN2E4NjI0In0.eyJhdWQiOiJsaWJjYXN0IiwianRpIjoiNTJlYzg1ZTIyMWQ4NmM5YjQ0NDk3MGEyNDAzNTI5ZDgwNDI0ZDdmYmNiMWVhYzYyNWUzZWQyMjZhZGU1NzEwNjY0NTJkNzQ2N2E3YTg2MjQiLCJpYXQiOjE1MjUyNzYxNDcsIm5iZiI6MTUyNTI3NjE0NywiZXhwIjoxNTI1Mjc5NzQ3LCJzdWIiOiJ1c01vbml0b3IiLCJzY29wZXMiOlsibW9uaXRvci5saWJjYXN0LmNvbSJdLCJjb250ZXh0Ijp7InVzZXIiOiJ1c01vbml0b3IiLCJwcm9qZWN0IjoicHJNb25pdG9yIiwibWVtYmVyIjoibWVNb25pdG9yIn19.rUvishDNyJLNlI4W5VmguNecm5KD2uZgPkKJQbaqw-cJbSrVxkSbiKYtk_E3cz3WT7-IS2yFTsYN3uIo5Rbit8_HftweyEp2bdBRI8yjR6oZZ1sNJJXswISN1i2kk4r-aaxu7Xxf_LtsjOMUj_YZsvcc2nqBXPKjHbJCJryx3DDJaIcymOqao7nhQaCCQyrQooAXNTYs4E9fWN1dC_x2O-zok5TuG-xhEW-umwxfSUMWNgSTkz38ACceQ0PCJSgB3jqjDH4MwC7B3ppEPZuK5E6JhKeyRlalswRyYq3UQPnVeMTam7YQHsuTgbehF6WySW8i44o7V_MCe9hjPdp-WA',
+                expires_in: 3600,
+                refresh_token:
+                  'def50200a28d88fb9aaa921be78eeb5604b071101a334899a7d5fc7492cf8ea752962ddc8961fe5c126101d4ecacd980396eb2fd494995b812dffcb98256c4277f790d1f658fc2d2e34f350740544e5232d69d68d34c648271d706c5e7049adac0b1832d0fdf71809715cc7e97fa63f65966deadb501a55ff469b0fd23a637cb6acbe9d9b8594a17f09efc2efeed82984764a0065d5e29c950c7b081a61ba2aaa192be3085c400ee37eac50fa9320ce2cfe8916c8165418d23e9f91b6a5c8515e1d74ee193a5a1ca01954fbff27361c20184240be2359e0afbed0bf1c762cf872450b5e8b5d4704f4fd9583e4470adc98409dd42965709712806bd9019378a72eea0b4912ce684ffd833db5806ab84174f905db2a75380071d004615c944bb8f8c4045cce7234c2be9a2330522cf7f067b8e58f57cffb6edb4b7ef91313e12bcde47e5e76ceee7fa52990132288f345d33ed917ae4fd54b7284f8964d898e97e1ee3bc4157f75d7fee63976e4be66ac1ec32ef74afa533f0eb593523f226cbec57d196ac8962',
+                token_type: 'Bearer',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: '',
+                status: 400,
+                title: 'The user credentials were incorrect.',
+                type: 'https://docs.api.video/docs/authenticationinvalid_credentials',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+
+export const getLiveStreamsRoute = createRoute({
+  method: 'get',
+  path: '/live-streams',
+  tags: ['Live'],
+  summary: 'List all live streams',
+  description:
+    'With no parameters added to the url, this will return all livestreams. Query by name or key to limit the list.',
+  operationId: 'GET_live-streams',
+  request: {
+    query: z.object({
+      streamKey: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'The unique stream key that allows you to stream videos.',
+            example: '30087931-229e-42cf-b5f9-e91bcc1f7332',
+            explode: true,
+            in: 'query',
+            name: 'streamKey',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'You can filter live streams by their name or a part of their name.',
+            example: 'My Video',
+            explode: true,
+            in: 'query',
+            name: 'name',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      sortBy: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Allowed: createdAt, publishedAt, name. createdAt - the time a livestream was created using the specified streamKey. publishedAt - the time a livestream was published using the specified streamKey. name - the name of the livestream. If you choose one of the time based options, the time is presented in ISO-8601 format.',
+            example: 'createdAt',
+            explode: true,
+            in: 'query',
+            name: 'sortBy',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      sortOrder: z
+        .enum(['asc', 'desc'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Allowed: asc, desc. Ascending for date and time means that earlier values precede later ones. Descending means that later values preced earlier ones. For title, it is 0-9 and A-Z ascending and Z-A, 9-0 descending.',
+            example: 'desc',
+            explode: true,
+            in: 'query',
+            name: 'sortOrder',
+            required: false,
+            schema: { enum: ['asc', 'desc'], type: 'string' },
+            style: 'form',
+          },
+        }),
+      currentPage: CurrentPageParamsSchema,
+      pageSize: PageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: LiveStreamListResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    assets: {
+                      hls: 'https://live.api.video/li400mYKSgQ6xs7taUeSaEKr.m3u8',
+                      iframe:
+                        '<iframe src="https://embed.api.video/live/li400mYKSgQ6xs7taUeSaEKr" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                      player: 'https://embed.api.video/live/li400mYKSgQ6xs7taUeSaEKr',
+                      thumbnail:
+                        'https://cdn.api.video/live/li400mYKSgQ6xs7taUeSaEKr/thumbnail.jpg',
+                    },
+                    broadcasting: false,
+                    createdAt: '2020-01-31T10:17:47+00:00',
+                    liveStreamId: 'li400mYKSgQ6xs7taUeSaEKr',
+                    name: 'Live Stream From the browser',
+                    public: true,
+                    record: true,
+                    streamKey: '30087931-229e-42cf-b5f9-e91bcc1f7332',
+                    updatedAt: '2020-03-09T13:19:43+00:00',
+                  },
+                  {
+                    assets: {
+                      hls: 'https://live.api.video/li4pqNqGUkhKfWcBGpZVLRY5.m3u8',
+                      iframe:
+                        '<iframe src="https://embed.api.video/live/li4pqNqGUkhKfWcBGpZVLRY5" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                      player: 'https://embed.api.video/live/li4pqNqGUkhKfWcBGpZVLRY5',
+                      thumbnail:
+                        'https://cdn.api.video/live/li4pqNqGUkhKfWcBGpZVLRY5/thumbnail.jpg',
+                    },
+                    broadcasting: false,
+                    createdAt: '2020-07-29T10:45:35+00:00',
+                    liveStreamId: 'li4pqNqGUkhKfWcBGpZVLRY5',
+                    name: 'Live From New York',
+                    public: true,
+                    record: true,
+                    streamKey: 'cc1b4df0-d1c5-4064-a8f9-9f0368385135',
+                    updatedAt: '2020-07-29T10:45:35+00:00',
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 19,
+                  itemsTotal: 19,
+                  links: [
+                    { rel: 'self', uri: '/live-streams?currentPage=1&pageSize=25' },
+                    { rel: 'first', uri: '/live-streams?currentPage=1&pageSize=25' },
+                    { rel: 'last', uri: '/live-streams?currentPage=1&pageSize=25' },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postLiveStreamsRoute = createRoute({
+  method: 'post',
+  path: '/live-streams',
+  tags: ['Live'],
+  summary: 'Create live stream',
+  description:
+    "A live stream will give you the 'connection point' to RTMP your video stream to api.video. It will also give you the details for viewers to watch the same livestream.  The public=false 'private livestream' is available as a BETA feature, and should be limited to livestreams of 3,000 viewers or fewer. See our [Live Stream Tutorial](https://api.video/blog/tutorials/live-stream-tutorial) for a walkthrough of this API with OBS. Your RTMP endpoint for the livestream is rtmp://broadcast.api.video/s/{streamKey}\nTutorials that [create live streams](https://api.video/blog/endpoints/live-create).",
+  operationId: 'POST_live-streams',
+  request: { body: { content: { 'application/json': { schema: LiveStreamCreatePayloadSchema } } } },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: LiveStreamSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://live.api.video/li4pqNqGUkhKfWcBGpZVLRY5.m3u8',
+                  iframe:
+                    '<iframe src="https://embed.api.video/live/li4pqNqGUkhKfWcBGpZVLRY5" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  player: 'https://embed.api.video/live/li4pqNqGUkhKfWcBGpZVLRY5',
+                  thumbnail: 'https://cdn.api.video/live/li4pqNqGUkhKfWcBGpZVLRY5/thumbnail.jpg',
+                },
+                broadcasting: false,
+                createdAt: '2020-07-29T10:45:35+00:00',
+                liveStreamId: 'li4pqNqGUkhKfWcBGpZVLRY5',
+                name: 'Live From New York',
+                public: true,
+                record: true,
+                streamKey: 'cc1b4df0-d1c5-4064-a8f9-9f0368385135',
+                updatedAt: '2020-07-29T10:45:35+00:00',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: BadRequestSchema } },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getLiveStreamsLiveStreamIdRoute = createRoute({
+  method: 'get',
+  path: '/live-streams/{liveStreamId}',
+  tags: ['Live'],
+  summary: 'Show live stream',
+  description:
+    "Supply a LivestreamId, and you'll get all the details for streaming into, and watching the livestream. Tutorials that use the [show livestream endpoint](https://api.video/blog/endpoints/live-stream-status).",
+  operationId: 'GET_live-streams-liveStreamId',
+  request: {
+    params: z.object({
+      liveStreamId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique ID for the live stream you want to watch.',
+            example: 'li400mYKSgQ6xs7taUeSaEKr',
+            explode: false,
+            in: 'path',
+            name: 'liveStreamId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: LiveStreamSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://live.api.video/li400mYKSgQ6xs7taUeSaEKr.m3u8',
+                  iframe:
+                    '<iframe src="https://embed.api.video/live/li400mYKSgQ6xs7taUeSaEKr" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  player: 'https://embed.api.video/live/li400mYKSgQ6xs7taUeSaEKr',
+                  thumbnail: 'https://cdn.api.video/live/li400mYKSgQ6xs7taUeSaEKr/thumbnail.jpg',
+                },
+                broadcasting: false,
+                createdAt: '2020-01-31T10:17:47+00:00',
+                liveStreamId: 'li400mYKSgQ6xs7taUeSaEKr',
+                name: 'Live Stream From the browser',
+                public: true,
+                record: true,
+                streamKey: '30087931-229e-42cf-b5f9-e91bcc1f7332',
+                updatedAt: '2020-03-09T13:19:43+00:00',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deleteLiveStreamsLiveStreamIdRoute = createRoute({
+  method: 'delete',
+  path: '/live-streams/{liveStreamId}',
+  tags: ['Live'],
+  summary: 'Delete a live stream',
+  operationId: 'DELETE_live-streams-liveStreamId',
+  request: {
+    params: z.object({
+      liveStreamId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique ID for the live stream that you want to remove.',
+            example: 'li400mYKSgQ6xs7taUeSaEKr',
+            explode: false,
+            in: 'path',
+            name: 'liveStreamId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: { 204: { description: 'No Content' } },
+  security: [{ bearerAuth: [] }],
+})
+
+export const patchLiveStreamsLiveStreamIdRoute = createRoute({
+  method: 'patch',
+  path: '/live-streams/{liveStreamId}',
+  tags: ['Live'],
+  summary: 'Update a live stream',
+  description:
+    "Use this endpoint to update the player, or to turn recording on/off (saving a copy of the livestream). NOTE: If the livestream is actively streaming, changing the recording status will only affect the NEXT stream.    The public=false 'private livestream' is available as a BETA feature, and should be limited to livestreams of 3,000 viewers or fewer.",
+  operationId: 'PATCH_live-streams-liveStreamId',
+  request: {
+    params: z.object({
+      liveStreamId: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'The unique ID for the live stream that you want to update information for such as player details, or whether you want the recording on or off.',
+            example: 'li400mYKSgQ6xs7taUeSaEKr',
+            explode: false,
+            in: 'path',
+            name: 'liveStreamId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: LiveStreamUpdatePayloadSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: LiveStreamSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://live.api.video/li400mYKSgQ6xs7taUeSaEKr.m3u8',
+                  iframe:
+                    '<iframe src="https://embed.api.video/live/li400mYKSgQ6xs7taUeSaEKr" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  player: 'https://embed.api.video/live/li400mYKSgQ6xs7taUeSaEKr',
+                  thumbnail: 'https://cdn.api.video/live/li400mYKSgQ6xs7taUeSaEKr/thumbnail.jpg',
+                },
+                broadcasting: false,
+                createdAt: '2020-01-31T10:17:47+00:00',
+                liveStreamId: 'li400mYKSgQ6xs7taUeSaEKr',
+                name: 'Live Stream From the browser',
+                public: true,
+                record: true,
+                streamKey: '30087931-229e-42cf-b5f9-e91bcc1f7332',
+                updatedAt: '2020-03-09T13:19:43+00:00',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: BadRequestSchema } },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postLiveStreamsLiveStreamIdThumbnailRoute = createRoute({
+  method: 'post',
+  path: '/live-streams/{liveStreamId}/thumbnail',
+  tags: ['Live'],
+  summary: 'Upload a thumbnail',
+  description:
+    'Upload an image to use as a backdrop for your livestream. Tutorials that [update live stream thumbnails](https://api.video/blog/endpoints/live-upload-a-thumbnail).',
+  operationId: 'POST_live-streams-liveStreamId-thumbnail',
+  request: {
+    params: z.object({
+      liveStreamId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique ID for the live stream you want to upload.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'liveStreamId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: {
+      content: { 'multipart/form-data': { schema: LiveStreamThumbnailUploadPayloadSchema } },
+    },
+  },
+  responses: {
+    201: { description: 'Created', content: { 'application/json': { schema: LiveStreamSchema } } },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'file',
+                status: 400,
+                title: 'Only [jpeg, jpg, JPG, JPEG] extensions are supported.',
+                type: 'https://docs.api.video/docs/fileextension',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'liveStreamId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deleteLiveStreamsLiveStreamIdThumbnailRoute = createRoute({
+  method: 'delete',
+  path: '/live-streams/{liveStreamId}/thumbnail',
+  tags: ['Live'],
+  summary: 'Delete a thumbnail',
+  description: 'Send the unique identifier for a live stream to delete it from the system.',
+  operationId: 'DELETE_live-streams-liveStreamId-thumbnail',
+  request: {
+    params: z.object({
+      liveStreamId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the live stream you want to delete. ',
+            example: 'li400mYKSgQ6xs7taUeSaEKr',
+            explode: false,
+            in: 'path',
+            name: 'liveStreamId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'Success', content: { 'application/json': { schema: LiveStreamSchema } } },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'liveStreamId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getPlayersRoute = createRoute({
+  method: 'get',
+  path: '/players',
+  tags: ['Players'],
+  summary: 'List all players',
+  description:
+    'Retrieve a list of all the players you created, as well as details about each one.\nTutorials that use the [player endpoint](https://api.video/blog/endpoints/player).',
+  operationId: 'GET_players',
+  request: {
+    query: z.object({
+      sortBy: z
+        .enum(['createdAt', 'updatedAt'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'createdAt is the time the player was created. updatedAt is the time the player was last updated. The time is presented in ISO-8601 format.',
+            example: 'createdAt',
+            explode: true,
+            in: 'query',
+            name: 'sortBy',
+            required: false,
+            schema: { enum: ['createdAt', 'updatedAt'], type: 'string' },
+            style: 'form',
+          },
+        }),
+      sortOrder: z
+        .enum(['asc', 'desc'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Allowed: asc, desc. Ascending for date and time means that earlier values precede later ones. Descending means that later values preced earlier ones.',
+            example: 'asc',
+            explode: true,
+            in: 'query',
+            name: 'sortOrder',
+            required: false,
+            schema: { enum: ['asc', 'desc'], type: 'string' },
+            style: 'form',
+          },
+        }),
+      currentPage: CurrentPageParamsSchema,
+      pageSize: PageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: PlayersListResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    backgroundBottom: 'rgba(94, 95, 89, 1)',
+                    backgroundText: 'rgba(255, 255, 255, .95)',
+                    backgroundTop: 'rgba(72, 4, 45, 1)',
+                    createdAt: '2020-01-13T10:09:17+00:00',
+                    enableApi: false,
+                    enableControls: false,
+                    forceAutoplay: false,
+                    forceLoop: false,
+                    hideTitle: false,
+                    link: 'rgba(255, 0, 0, .95)',
+                    linkActive: 'rgba(255, 0, 0, .75)',
+                    linkHover: 'rgba(255, 255, 255, .75)',
+                    playerId: 'pl4fgtjy4tjyKDK545DRdfg',
+                    shapeAspect: 'flat',
+                    shapeBackgroundBottom: 'rgba(50, 50, 50, .8)',
+                    shapeBackgroundTop: 'rgba(50, 50, 50, .7)',
+                    shapeMargin: 10,
+                    shapeRadius: 3,
+                    text: 'rgba(255, 255, 255, .95)',
+                    trackBackground: 'rgba(0, 0, 0, 0)',
+                    trackPlayed: 'rgba(255, 255, 255, .95)',
+                    trackUnplayed: 'rgba(255, 255, 255, .1)',
+                    updatedAt: '2020-01-13T10:09:17+00:00',
+                  },
+                  {
+                    backgroundBottom: 'rgba(94, 95, 89, 1)',
+                    backgroundText: 'rgba(255, 255, 255, .95)',
+                    backgroundTop: 'rgba(72, 4, 45, 1)',
+                    createdAt: '2020-01-13T10:09:17+00:00',
+                    enableApi: true,
+                    enableControls: true,
+                    forceAutoplay: true,
+                    forceLoop: false,
+                    hideTitle: false,
+                    link: 'rgba(255, 0, 0, .95)',
+                    linkActive: 'rgba(255, 0, 0, .75)',
+                    linkHover: 'rgba(255, 255, 255, .75)',
+                    playerId: 'pl54fgtjy4tjyKDK45DRdfg',
+                    shapeAspect: 'flat',
+                    shapeBackgroundBottom: 'rgba(50, 50, 50, .8)',
+                    shapeBackgroundTop: 'rgba(50, 50, 50, .7)',
+                    shapeMargin: 10,
+                    shapeRadius: 3,
+                    text: 'rgba(255, 255, 255, .95)',
+                    trackBackground: 'rgba(0, 0, 0, 0)',
+                    trackPlayed: 'rgba(255, 255, 255, .95)',
+                    trackUnplayed: 'rgba(255, 255, 255, .1)',
+                    updatedAt: '2020-01-13T10:09:17+00:00',
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 4,
+                  itemsTotal: 4,
+                  links: [
+                    { rel: 'self', uri: 'https://ws.api.video/players?currentPage=1' },
+                    { rel: 'first', uri: 'https://ws.api.video/players?currentPage=1' },
+                    { rel: 'last', uri: 'https://ws.api.video/players?currentPage=1' },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'page',
+                problems: [
+                  {
+                    name: 'page',
+                    range: { min: 1 },
+                    title: 'This parameter is out of the allowed range of values.',
+                  },
+                  {
+                    name: 'pageSize',
+                    range: { max: 100, min: 10 },
+                    title: 'This parameter is out of the allowed range of values.',
+                  },
+                ],
+                range: { min: 1 },
+                status: 400,
+                title: 'This parameter is out of the allowed range of values.',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postPlayersRoute = createRoute({
+  method: 'post',
+  path: '/players',
+  tags: ['Players'],
+  summary: 'Create a player',
+  description: 'Create a player for your video, and customise it.',
+  operationId: 'POST_players',
+  request: {
+    body: {
+      content: { 'application/json': { schema: PlayerCreationPayloadSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: PlayerSchema,
+          examples: {
+            response: {
+              value: {
+                backgroundBottom: 'rgba(94, 95, 89, 1)',
+                backgroundText: 'rgba(255, 255, 255, .95)',
+                backgroundTop: 'rgba(72, 4, 45, 1)',
+                createdAt: '2020-01-13T10:09:17+00:00',
+                enableApi: false,
+                enableControls: false,
+                forceAutoplay: false,
+                forceLoop: false,
+                hideTitle: false,
+                link: 'rgba(255, 0, 0, .95)',
+                linkActive: 'rgba(255, 0, 0, .75)',
+                linkHover: 'rgba(255, 255, 255, .75)',
+                playerId: 'pl45d5vFFGrfdsdsd156dGhh',
+                shapeAspect: 'flat',
+                shapeBackgroundBottom: 'rgba(50, 50, 50, .8)',
+                shapeBackgroundTop: 'rgba(50, 50, 50, .7)',
+                shapeRadius: 3,
+                text: 'rgba(255, 255, 255, .95)',
+                trackBackground: 'rgba(0, 0, 0, 0)',
+                trackPlayed: 'rgba(255, 255, 255, .95)',
+                trackUnplayed: 'rgba(255, 255, 255, .1)',
+                updatedAt: '2020-01-13T10:09:17+00:00',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getPlayersPlayerIdRoute = createRoute({
+  method: 'get',
+  path: '/players/{playerId}',
+  tags: ['Players'],
+  summary: 'Show a player',
+  description: 'Use a player ID to retrieve details about the player and display it for viewers.',
+  operationId: 'GET_players-playerId',
+  request: {
+    params: z.object({
+      playerId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the player you want to retrieve. ',
+            example: 'pl45d5vFFGrfdsdsd156dGhh',
+            explode: false,
+            in: 'path',
+            name: 'playerId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: PlayerSchema,
+          examples: {
+            response: {
+              value: {
+                backgroundBottom: 'rgba(94, 95, 89, 1)',
+                backgroundText: 'rgba(255, 255, 255, .95)',
+                backgroundTop: 'rgba(72, 4, 45, 1)',
+                createdAt: '2020-01-13T10:09:17+00:00',
+                enableApi: false,
+                enableControls: false,
+                forceAutoplay: false,
+                forceLoop: false,
+                hideTitle: false,
+                link: 'rgba(255, 0, 0, .95)',
+                linkActive: 'rgba(255, 0, 0, .75)',
+                linkHover: 'rgba(255, 255, 255, .75)',
+                playerId: 'pl45d5vFFGrfdsdsd156dGhh',
+                shapeAspect: 'flat',
+                shapeBackgroundBottom: 'rgba(50, 50, 50, .8)',
+                shapeBackgroundTop: 'rgba(50, 50, 50, .7)',
+                shapeRadius: 3,
+                text: 'rgba(255, 255, 255, .95)',
+                trackBackground: 'rgba(0, 0, 0, 0)',
+                trackPlayed: 'rgba(255, 255, 255, .95)',
+                trackUnplayed: 'rgba(255, 255, 255, .1)',
+                updatedAt: '2020-01-13T11:12:14+00:00',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'playerId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deletePlayersPlayerIdRoute = createRoute({
+  method: 'delete',
+  path: '/players/{playerId}',
+  tags: ['Players'],
+  summary: 'Delete a player',
+  description:
+    'Delete a player if you no longer need it. You can delete any player that you have the player ID for.',
+  operationId: 'DELETE_players-playerId',
+  request: {
+    params: z.object({
+      playerId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the player you want to delete.',
+            example: 'pl45d5vFFGrfdsdsd156dGhh',
+            explode: false,
+            in: 'path',
+            name: 'playerId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'playerId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const patchPlayersPlayerIdRoute = createRoute({
+  method: 'patch',
+  path: '/players/{playerId}',
+  tags: ['Players'],
+  summary: 'Update a player',
+  description:
+    'Use a player ID to update specific details for a player. NOTE: It may take up to 10 min before the new player configuration is available from our CDN.',
+  operationId: 'PATCH_players-playerId',
+  request: {
+    params: z.object({
+      playerId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the player.',
+            example: 'pl45d5vFFGrfdsdsd156dGhh',
+            explode: false,
+            in: 'path',
+            name: 'playerId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: PlayerUpdatePayloadSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: PlayerSchema,
+          examples: {
+            response: {
+              value: {
+                backgroundBottom: 'rgba(94, 95, 89, 1)',
+                backgroundText: 'rgba(255, 255, 255, .95)',
+                backgroundTop: 'rgba(72, 4, 45, 1)',
+                createdAt: '2020-01-13T10:09:17+00:00',
+                enableApi: false,
+                enableControls: false,
+                forceAutoplay: false,
+                forceLoop: false,
+                hideTitle: false,
+                link: 'rgba(255, 0, 0, .95)',
+                linkActive: 'rgba(255, 0, 0, .75)',
+                linkHover: 'rgba(255, 255, 255, .75)',
+                playerId: 'pl45d5vFFGrfdsdsd156dGhh',
+                shapeAspect: 'flat',
+                shapeBackgroundBottom: 'rgba(50, 50, 50, .8)',
+                shapeBackgroundTop: 'rgba(50, 50, 50, .7)',
+                shapeRadius: 3,
+                text: 'rgba(255, 255, 255, .95)',
+                trackBackground: 'rgba(0, 0, 0, 0)',
+                trackPlayed: 'rgba(255, 255, 255, .95)',
+                trackUnplayed: 'rgba(255, 255, 255, .1)',
+                updatedAt: '2020-01-13T11:12:14+00:00',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'playerId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postPlayersPlayerIdLogoRoute = createRoute({
+  method: 'post',
+  path: '/players/{playerId}/logo',
+  tags: ['Players'],
+  summary: 'Upload a logo',
+  description:
+    'The uploaded image maximum size should be 200x100 and its weight should be 200KB.  It will be scaled down to 30px height and converted to PNG to be displayed in the player.',
+  operationId: 'POST_players-playerId-logo',
+  request: {
+    params: z.object({
+      playerId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the player.',
+            example: 'pl14Db6oMJRH6SRVoOwORacK',
+            explode: false,
+            in: 'path',
+            name: 'playerId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: { content: { 'multipart/form-data': { schema: PlayersUploadLogoPayloadSchema } } },
+  },
+  responses: {
+    201: { description: 'Created', content: { 'application/json': { schema: PlayerSchema } } },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'file',
+                status: 400,
+                title:
+                  "Only ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG'] extensions are supported.",
+                type: 'https://docs.api.video/docs/fileextension',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'playerId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deletePlayersPlayerIdLogoRoute = createRoute({
+  method: 'delete',
+  path: '/players/{playerId}/logo',
+  tags: ['Players'],
+  summary: 'Delete logo',
+  operationId: 'DELETE_players-playerId-logo',
+  request: {
+    params: z.object({
+      playerId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the player.',
+            example: 'pl14Db6oMJRH6SRVoOwORacK',
+            explode: false,
+            in: 'path',
+            name: 'playerId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content', content: { 'application/json': { schema: z.object({}) } } },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'playerId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postUploadRoute = createRoute({
+  method: 'post',
+  path: '/upload',
+  tags: ['Videos - Delegated upload'],
+  summary: 'Upload with an upload token',
+  description:
+    'When given a token, anyone can upload a file to the URI `https://ws.api.video/upload?token=<tokenId>`.\n\nExample with cURL:\n\n```curl\n$ curl  --request POST --url \'https://ws.api.video/upload?token=toXXX\'\n --header \'content-type: multipart/form-data\'\n -F file=@video.mp4\n```\n\nOr in an HTML form, with a little JavaScript to convert the form into JSON:\n```html\n<!--form for user interaction-->\n<form name="videoUploadForm" >\n  <label for=video>Video:</label>\n  <input type=file name=source/><br/>\n  <input value="Submit" type="submit">\n</form>\n<div></div>\n<!--JS takes the form data \n    uses FormData to turn the response into JSON.\n    then uses POST to upload the video file.\n    Update the token parameter in the url to your upload token.\n    -->\n<script>\n   var form = document.forms.namedItem("videoUploadForm");\t\n   form.addEventListener(\'submit\', function(ev) {\n\t ev.preventDefault();\n     var oOutput = document.querySelector("div"),\n         oData = new FormData(form);\n     var oReq = new XMLHttpRequest();\n\t \n     oReq.open("POST", "https://ws.api.video/upload?token=toXXX", true);\n     oReq.send(oData);\n\t oReq.onload = function(oEvent) {\n       if (oReq.status ==201) {\n         oOutput.innerHTML = "Your video is uploaded!<br/>"  + oReq.response;\n       } else {\n         oOutput.innerHTML = "Error " + oReq.status + " occurred when trying to upload your file.<br \\/>";\n       }\n     };\n   }, false);\t\n</script>\n```\n\n\n### Dealing with large files\n\nWe have created a <a href=\'https://api.video/blog/tutorials/uploading-large-files-with-javascript\'>tutorial</a> to walk through the steps required.',
+  operationId: 'POST_upload',
+  request: {
+    query: z.object({
+      token: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the token you want to use to upload a video.',
+            example: 'to1tcmSFHeYY5KzyhOqVKMKb',
+            explode: true,
+            in: 'query',
+            name: 'token',
+            required: true,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+    }),
+    headers: z.object({
+      'Content-Range': z
+        .string()
+        .regex(/^bytes [0-9]*-[0-9]*\/[0-9]*$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Content-Range represents the range of bytes that will be returned as a result of the request. Byte ranges are inclusive, meaning that bytes 0-999 represents the first 1000 bytes in a file or object.',
+            example: 'Content-Range: bytes 200-100/5000',
+            explode: false,
+            in: 'header',
+            name: 'Content-Range',
+            required: false,
+            schema: { pattern: '^bytes [0-9]*-[0-9]*\\/[0-9]*$', type: 'string' },
+            style: 'simple',
+            'x-client-ignore': true,
+          },
+        }),
+    }),
+    body: { content: { 'multipart/form-data': { schema: TokenUploadPayloadSchema } } },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: VideoSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                  iframe:
+                    '<iframe src="//embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  player:
+                    'https://embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                  thumbnail:
+                    'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                },
+                description: 'An amazing video explaining the string theory',
+                metadata: [
+                  { key: 'Author', value: 'John Doe' },
+                  { key: 'Format', value: 'Tutorial' },
+                ],
+                panoramic: false,
+                playerId: 'pl45KFKdlddgk654dspkze',
+                public: false,
+                publishedAt: '4665-07-14T23:36:18.598Z',
+                source: { uri: '/videos/vi4k0jvEUuaTdRAEjQ4Jfrgz/source' },
+                tags: ['maths', 'string theory', 'video'],
+                title: 'Maths video',
+                videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: BadRequestSchema } },
+    },
+  },
+  security: [],
+})
+
+export const getUploadTokensRoute = createRoute({
+  method: 'get',
+  path: '/upload-tokens',
+  tags: ['Videos - Delegated upload'],
+  summary: 'List all active upload tokens.',
+  description:
+    'A delegated token is used to allow secure uploads without exposing your API key. Use this endpoint to retrieve a list of all currently active delegated tokens.\nTutorials using [delegated upload](https://api.video/blog/endpoints/delegated-upload).',
+  operationId: 'GET_upload-tokens',
+  request: {
+    query: z.object({
+      sortBy: z
+        .enum(['createdAt', 'ttl'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Allowed: createdAt, ttl. You can use these to sort by when a token was created, or how much longer the token will be active (ttl - time to live). Date and time is presented in ISO-8601 format.',
+            example: 'ttl',
+            explode: true,
+            in: 'query',
+            name: 'sortBy',
+            required: false,
+            schema: { enum: ['createdAt', 'ttl'], type: 'string' },
+            style: 'form',
+          },
+        }),
+      sortOrder: z
+        .enum(['asc', 'desc'])
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Allowed: asc, desc. Ascending is 0-9 or A-Z. Descending is 9-0 or Z-A.',
+            example: 'asc',
+            explode: true,
+            in: 'query',
+            name: 'sortOrder',
+            required: false,
+            schema: { enum: ['asc', 'desc'], type: 'string' },
+            style: 'form',
+          },
+        }),
+      currentPage: CurrentPageParamsSchema,
+      pageSize: PageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: TokenListResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    createdAt: '2020-12-02T10:26:46+00:00',
+                    expiresAt: '2020-12-02T11:26:46+00:00',
+                    token: 'to37YfoPDRR2pcDKa6LsUE0M',
+                    ttl: 3600,
+                  },
+                  {
+                    createdAt: '2020-12-02T10:26:28+00:00',
+                    expiresAt: null,
+                    token: 'to1W3ZS9PdUBZWzzTEZr1B79',
+                    ttl: 0,
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 2,
+                  itemsTotal: 2,
+                  links: [
+                    { rel: 'self', uri: '/upload-tokens?currentPage=1&pageSize=25' },
+                    { rel: 'first', uri: '/upload-tokens?currentPage=1&pageSize=25' },
+                    { rel: 'last', uri: '/upload-tokens?currentPage=1&pageSize=25' },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postUploadTokensRoute = createRoute({
+  method: 'post',
+  path: '/upload-tokens',
+  tags: ['Videos - Delegated upload'],
+  summary: 'Generate an upload token',
+  description:
+    'Use this endpoint to generate an upload token. You can use this token to authenticate video uploads while keeping your API key safe. Tutorials using [delegated upload](https://api.video/blog/endpoints/delegated-upload).',
+  operationId: 'POST_upload-tokens',
+  request: { body: { content: { 'application/json': { schema: TokenCreatePayloadSchema } } } },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: UploadTokenSchema,
+          examples: {
+            response: {
+              value: {
+                createdAt: '2020-12-02T10:13:19+00:00',
+                expiresAt: '2020-12-02T11:13:19+00:00',
+                token: 'to1tcmSFHeYY5KzyhOqVKMKb',
+                ttl: 3600,
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: BadRequestSchema } },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getUploadTokensUploadTokenRoute = createRoute({
+  method: 'get',
+  path: '/upload-tokens/{uploadToken}',
+  tags: ['Videos - Delegated upload'],
+  summary: 'Show upload token',
+  description:
+    'You can retrieve details about a specific upload token if you have the unique identifier for the upload token. Add it in the path of the endpoint. Details include time-to-live (ttl), when the token was created, and when it will expire.',
+  operationId: 'GET_upload-tokens-uploadToken',
+  request: {
+    params: z.object({
+      uploadToken: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the token you want information about.',
+            example: 'to1tcmSFHeYY5KzyhOqVKMKb',
+            explode: false,
+            in: 'path',
+            name: 'uploadToken',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: UploadTokenSchema,
+          examples: {
+            response: {
+              value: {
+                createdAt: '2020-12-02T10:13:19+00:00',
+                expiresAt: null,
+                token: 'to1tcmSFHeYY5KzyhOqVKMKb',
+                ttl: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deleteUploadTokensUploadTokenRoute = createRoute({
+  method: 'delete',
+  path: '/upload-tokens/{uploadToken}',
+  tags: ['Videos - Delegated upload'],
+  summary: 'Delete an upload token',
+  description:
+    'Delete an existing upload token. This is especially useful for tokens you may have created that do not expire.',
+  operationId: 'DELETE_upload-tokens-uploadToken',
+  request: {
+    params: z.object({
+      uploadToken: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'The unique identifier for the upload token you want to delete. Deleting a token will make it so the token can no longer be used for authentication.',
+            example: 'to1tcmSFHeYY5KzyhOqVKMKb',
+            explode: false,
+            in: 'path',
+            name: 'uploadToken',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getVideosRoute = createRoute({
+  method: 'get',
+  path: '/videos',
+  tags: ['Videos'],
+  summary: 'List all videos',
+  description:
+    'Requests to this endpoint return a list of your videos (with all their details). With no parameters added to this query, the API returns all videos. You can filter what videos the API returns using the parameters described below.  We have [several tutorials](https://api.video/blog/endpoints/video-list) that demonstrate this endpoint.',
+  operationId: 'LIST-videos',
+  request: {
+    query: z.object({
+      title: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The title of a specific video you want to find. The search will match exactly to what term you provide and return any videos that contain the same term as part of their titles.',
+            example: 'My Video.mp4',
+            explode: true,
+            in: 'query',
+            name: 'title',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      tags: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A tag is a category you create and apply to videos. You can search for videos with particular tags by listing one or more here. Only videos that have all the tags you list will be returned.',
+            example: '"tags": ["captions", "dialogue"]',
+            explode: true,
+            in: 'query',
+            name: 'tags',
+            required: false,
+            schema: { items: { type: 'string' }, type: 'array' },
+            style: 'form',
+          },
+        }),
+      metadata: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Videos can be tagged with metadata tags in key:value pairs. You can search for videos with specific key value pairs using this parameter. [Dynamic Metadata](https://api.video/blog/endpoints/dynamic-metadata) allows you to define a key that allows any value pair.',
+            example: '[{"key":"Author", "value":"John Doe"}, {"key":"Format", "value":"Tutorial"}]',
+            explode: true,
+            in: 'query',
+            name: 'metadata',
+            required: false,
+            schema: { items: { type: 'string' }, type: 'array' },
+            style: 'form',
+          },
+        }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'If you described a video with a term or sentence, you can add it here to return videos containing this string.',
+            example: 'New Zealand',
+            explode: true,
+            in: 'query',
+            name: 'description',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      liveStreamId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'If you know the ID for a live stream, you can retrieve the stream by adding the ID for it here.',
+            example: 'li400mYKSgQ6xs7taUeSaEKr',
+            explode: true,
+            in: 'query',
+            name: 'liveStreamId',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      sortBy: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Allowed: publishedAt, title. You can search by the time videos were published at, or by title.',
+            example: 'publishedAt',
+            explode: true,
+            in: 'query',
+            name: 'sortBy',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      sortOrder: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Allowed: asc, desc. asc is ascending and sorts from A to Z. desc is descending and sorts from Z to A.',
+            example: 'asc',
+            explode: true,
+            in: 'query',
+            name: 'sortOrder',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      currentPage: CurrentPageParamsSchema,
+      pageSize: PageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: VideosListResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    assets: {
+                      hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                      iframe:
+                        '<iframe src="//embed.api.video/c188ed58-3403-46a2-b91b-44603d10b2c9?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                      mp4: 'https://cdn.api.video/vod/vi4k0jvEUuaTdRAEjQ4Jfrgz/token/8fd70443-d9f0-45d2-b01c-12c8cfc707c9/mp4/720/source.mp4',
+                      player:
+                        'https://embed.api.video/c188ed58-3403-46a2-b91b-44603d10b2c9?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                      thumbnail:
+                        'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                    },
+                    description: 'An amazing video explaining the string theory',
+                    metadata: [
+                      { key: 'Author', value: 'John Doe' },
+                      { key: 'Format', value: 'Tutorial' },
+                    ],
+                    mp4Support: true,
+                    panoramic: false,
+                    playerId: 'pl45KFKdlddgk654dspkze',
+                    public: false,
+                    publishedAt: '2019-12-16T08:25:51+00:00',
+                    source: { uri: '/videos/c188ed58-3403-46a2-b91b-44603d10b2c9/source' },
+                    tags: ['maths', 'string theory', 'video'],
+                    title: 'Maths video',
+                    updateddAt: '2019-12-16T08:48:49+00:00',
+                    videoId: 'vi4k0jvEUuaTdRAEjQ4Prklg',
+                  },
+                  {
+                    assets: {
+                      hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                      iframe:
+                        '<iframe src="//embed.api.video/1b9d6ae8-8f57-4b6d-8552-d636926b4f5f?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                      player:
+                        'https://embed.api.video/1b9d6ae8-8f57-4b6d-8552-d636926b4f5f?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                      thumbnail:
+                        'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                    },
+                    description: 'A description for your video.',
+                    metadata: [
+                      { key: 'Author', value: 'John Doe' },
+                      { key: 'Science Fiction', value: 'Cyberpunk' },
+                      { key: 'Technology', value: 'Computers' },
+                    ],
+                    mp4Support: true,
+                    panoramic: false,
+                    public: false,
+                    publishedAt: '2019-12-16T08:25:51+00:00',
+                    source: { uri: '/videos/1b9d6ae8-8f57-4b6d-8552-d636926b4f5f/source' },
+                    tags: ['books', 'short stories'],
+                    title: 'Video Title',
+                    updateddAt: '2019-12-16T08:48:49+00:00',
+                    videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+                  },
+                  {
+                    assets: {
+                      hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                      iframe:
+                        '<iframe src="//embed.api.video/73129412-e320-4b93-99f6-59a85e3cedcd?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                      player:
+                        'https://embed.api.video/73129412-e320-4b93-99f6-59a85e3cedcd?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                      thumbnail:
+                        'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                    },
+                    description: 'A brief description of the video.',
+                    metadata: [{ key: 'Length', value: 'Short' }],
+                    mp4Support: true,
+                    panoramic: false,
+                    playerId: 'pl45KFKdlddgk654dspkze',
+                    public: false,
+                    publishedAt: '2019-12-16T08:25:51+00:00',
+                    source: { uri: '/videos/73129412-e320-4b93-99f6-59a85e3cedcd/source' },
+                    tags: ['General', 'Videos'],
+                    title: 'My Video Title',
+                    updateddAt: '2019-12-16T08:48:49+00:00',
+                    videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 11,
+                  itemsTotal: 11,
+                  links: [
+                    { rel: 'self', uri: 'https://ws.api.video/videos?currentPage=1' },
+                    { rel: 'first', uri: 'https://ws.api.video/videos?currentPage=1' },
+                    { rel: 'last', uri: 'https://ws.api.video/videos?currentPage=1' },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'page',
+                problems: [
+                  {
+                    name: 'page',
+                    range: { min: 1 },
+                    title: 'This parameter is out of the allowed range of values.',
+                  },
+                  {
+                    name: 'pageSize',
+                    range: { max: 100, min: 10 },
+                    title: 'This parameter is out of the allowed range of values.',
+                  },
+                ],
+                range: { min: 1 },
+                status: 400,
+                title: 'This parameter is out of the allowed range of values.',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postVideosRoute = createRoute({
+  method: 'post',
+  path: '/videos',
+  tags: ['Videos'],
+  summary: 'Create a video',
+  description:
+    'To create a video, you create its container&parameters first, before adding the video file (exception - when using an existing HTTP source).\n* Videos are public by default. [Learn about Private videos](https://api.video/blog/tutorials/tutorial-private-videos)\n* Up to 6 responsive video streams will be created (from 240p to 4k)\n* Mp4 encoded versions are created at the highest quality (max 1080p) by default.\n* Panoramic videos are for videos recorded in 360 degrees.  You can toggle this after your 360 video upload.\n* Searchable parameters: title, description, tags and metadata\n\n ```shell\n$ curl https://ws.api.video/videos \\ -H \'Authorization: Bearer {access_token} \\ -d \'{"title":"My video", \n     "description":"so many details",\n     "mp4Support":true\n}\'\n```  \n\n## add an URL to upload on creation\nYou can also create a video directly from a video hosted on a third-party server by giving its URI in `source` parameter:\n```shell\n$ curl https://ws.api.video/videos \\\n-H \'Authorization: Bearer {access_token} \\\n-d \'{"source":"http://uri/to/video.mp4", "title":"My video"}\'\n```\n\nIn this case, the service will respond `202 Accepted` and ingest the video asynchronously.\n## Track users with Dynamic Metadata\nMetadata values can be a key:value where the values are predefined, but Dynamic metadata allows you to enter *any* value for a defined key.  To defined a dynamic metadata pair use:\n``` "metadata":[{"dynamicKey": "__dynamicKey__"}] ```\n\nThe double underscore on both sides of the value allows any variable to be added for a given video session. Added the the url you might have:\n``` <iframe type="text/html" src="https://embed.api.video/vod/vi6QvU9dhYCzW3BpPvPsZUa8?metadata[classUserName]=Doug" width="960" height="320" frameborder="0" scrollling="no"></iframe> ```\n\n\nThis video session will be tagged as watched by Doug - allowing for in-depth analysis on how each viewer interacts with the videos.\n### We have tutorials on:\n* [Creating and uploading videos](https://api.video/blog/tutorials/video-upload-tutorial)\n* [Uploading large videos](https://api.video/blog/tutorials/video-upload-tutorial-large-videos)\n\n\n* [Using tags with videos](https://api.video/blog/tutorials/video-tagging-best-practices)\n* [Private videos](https://api.video/blog/tutorials/tutorial-private-videos)\n* [Using Dynamic Metadata](https://api.video/blog/tutorials/dynamic-metadata)\n\n* Full list of [tutorials](https://api.video/blog/endpoints/video-create) that demonstrate this endpoint.\n',
+  operationId: 'POST-video',
+  request: {
+    body: {
+      description: 'video to create',
+      content: { 'application/json': { schema: VideoCreatePayloadSchema } },
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: VideoSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                  iframe:
+                    '<iframe src="//embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  mp4: 'https://cdn.api.video/vod/vi4k0jvEUuaTdRAEjQ4Jfrgz/token/8fd70443-d9f0-45d2-b01c-12c8cfc707c9/mp4/720/source.mp4',
+                  player:
+                    'https://embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                  thumbnail:
+                    'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                },
+                description: 'An amazing video explaining the string theory',
+                metadata: [
+                  { key: 'Author', value: 'John Doe' },
+                  { key: 'Format', value: 'Tutorial' },
+                ],
+                mp4Support: true,
+                panoramic: false,
+                playerId: 'pl4k0jvEUuaTdRAEjQ4Jfrgz',
+                public: false,
+                publishedAt: '4665-07-14T23:36:18.598Z',
+                source: { uri: '/videos/vi4k0jvEUuaTdRAEjQ4Jfrgz/source' },
+                tags: ['maths', 'string theory', 'video'],
+                title: 'Maths video',
+                videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+              },
+            },
+          },
+        },
+      },
+    },
+    202: { description: 'Accepted', content: { 'application/json': { schema: VideoSchema } } },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'title',
+                problems: [
+                  {
+                    name: 'title',
+                    title: 'This attribute is required.',
+                    type: 'https://docs.api.video/docs/attributerequired',
+                  },
+                  {
+                    name: 'scheduledAt',
+                    title: 'This attribute must be a ISO8601 date.',
+                    type: 'https://docs.api.video/docs/attributeinvalid',
+                  },
+                  {
+                    name: 'tags',
+                    title: 'This attribute must be an array.',
+                    type: 'https://docs.api.video/docs/attributeinvalid',
+                  },
+                  {
+                    name: 'metadata',
+                    title: 'This attribute must be an array.',
+                    type: 'https://docs.api.video/docs/attributeinvalid',
+                  },
+                ],
+                status: 400,
+                title: 'This attribute is required.',
+                type: 'https://docs.api.video/docs/attributerequired',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getVideosVideoIdRoute = createRoute({
+  method: 'get',
+  path: '/videos/{videoId}',
+  tags: ['Videos'],
+  summary: 'Show a video',
+  description:
+    'This call provides the same JSON information provided on video creation. For private videos, it will generate a unique token url. Use this to retrieve any details you need about a video, or set up a private viewing URL. Tutorials using [video GET](https://api.video/blog/endpoints/video-get).',
+  operationId: 'GET-video',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the video you want details about.',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: VideoSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                  iframe:
+                    '<iframe src="//embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  mp4: 'https://cdn.api.video/vod/vi4k0jvEUuaTdRAEjQ4Jfrgz/token/8fd70443-d9f0-45d2-b01c-12c8cfc707c9/mp4/720/source.mp4',
+                  player:
+                    'https://embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                  thumbnail:
+                    'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                },
+                description: 'An amazing video explaining string theory',
+                metadata: [
+                  { key: 'Author', value: 'John Doe' },
+                  { key: 'Format', value: 'Tutorial' },
+                ],
+                mp4Support: true,
+                panoramic: false,
+                playerId: 'pl45KFKdlddgk654dspkze',
+                public: false,
+                publishedAt: '2019-12-16T08:25:51+00:00',
+                source: { uri: '/videos/vi4k0jvEUuaTdRAEjQ4Jfrgz/source' },
+                tags: ['maths', 'string theory', 'video'],
+                title: 'Maths video',
+                updateddAt: '2019-12-16T08:48:49+00:00',
+                videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deleteVideosVideoIdRoute = createRoute({
+  method: 'delete',
+  path: '/videos/{videoId}',
+  tags: ['Videos'],
+  summary: 'Delete a video',
+  description:
+    'If you do not need a video any longer, you can send a request to delete it. All you need is the videoId. Tutorials using [video deletion](https://api.video/blog/endpoints/video-delete).',
+  operationId: 'DELETE-video',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The video ID for the video you want to delete.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const patchVideosVideoIdRoute = createRoute({
+  method: 'patch',
+  path: '/videos/{videoId}',
+  tags: ['Videos'],
+  summary: 'Update a video',
+  description:
+    'Use this endpoint to update the parameters associated with your video. The video you are updating is determined by the video ID you provide in the path. For each parameter you want to update, include the update in the request body. NOTE: If you are updating an array, you must provide the entire array as what you provide here overwrites what is in the system rather than appending to it. Tutorials using [video update](https://api.video/blog/endpoints/video-update).',
+  operationId: 'PATCH-video',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The video ID for the video you want to delete.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: VideoUpdatePayloadSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: VideoSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                  iframe:
+                    '<iframe src="//embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  mp4: 'https://cdn.api.video/vod/vi4k0jvEUuaTdRAEjQ4Jfrgz/token/8fd70443-d9f0-45d2-b01c-12c8cfc707c9/mp4/720/source.mp4',
+                  player:
+                    'https://embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                  thumbnail:
+                    'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                },
+                description: 'An amazing video explaining the string theory',
+                metadata: [
+                  { key: 'Author', value: 'John Doe' },
+                  { key: 'Format', value: 'Tutorial' },
+                ],
+                mp4Support: true,
+                panoramic: false,
+                playerId: 'pl45KFKdlddgk654dspkze',
+                public: false,
+                publishedAt: '2019-12-16T08:25:51+00:00',
+                source: { uri: '/videos/vi4k0jvEUuaTdRAEjQ4Jfrgz/source' },
+                tags: ['maths', 'string theory', 'video'],
+                title: 'Maths video',
+                updatedAt: '2019-12-16T08:48:49+00:00',
+                videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'scheduledAt',
+                problems: [
+                  {
+                    name: 'scheduledAt',
+                    title: 'This attribute must be a ISO-8601 date.',
+                    type: 'https://docs.api.video/docs/attributeinvalid',
+                  },
+                  {
+                    name: 'tags',
+                    title: 'This attribute must be an array.',
+                    type: 'https://docs.api.video/docs/attributeinvalid',
+                  },
+                  {
+                    name: 'metadata',
+                    title: 'This attribute must be an array.',
+                    type: 'https://docs.api.video/docs/attributeinvalid',
+                  },
+                ],
+                status: 400,
+                title: 'This attribute must be a ISO-8601 date.',
+                type: 'https://docs.api.video/docs/attributeinvalid',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getVideosVideoIdCaptionsRoute = createRoute({
+  method: 'get',
+  path: '/videos/{videoId}/captions',
+  tags: ['Captions'],
+  summary: 'List video captions',
+  description: 'Retrieve a list of available captions for the videoId you provide.',
+  operationId: 'GET_videos-videoId-captions',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'The unique identifier for the video you want to retrieve a list of captions for.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Prklg',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    query: z.object({ currentPage: CurrentPageParamsSchema, pageSize: PageSizeParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: CaptionsListResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    default: false,
+                    src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/captions/en.vtt',
+                    srclang: 'en',
+                    uri: '/videos/vi3N6cDinStg3oBbN79GklWS/captions/en',
+                  },
+                  {
+                    default: false,
+                    src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/captions/fr.vtt',
+                    srclang: 'fr',
+                    uri: '/videos/vi3N6cDinStg3oBbN79GklWS/captions/fr',
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 2,
+                  itemsTotal: 2,
+                  links: [
+                    {
+                      rel: 'self',
+                      uri: '/videos/vi3N6cDinStg3oBbN79GklWS/captions?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'first',
+                      uri: '/videos/vi3N6cDinStg3oBbN79GklWS/captions?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'last',
+                      uri: '/videos/vi3N6cDinStg3oBbN79GklWS/captions?currentPage=1&pageSize=25',
+                    },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getVideosVideoIdCaptionsLanguageRoute = createRoute({
+  method: 'get',
+  path: '/videos/{videoId}/captions/{language}',
+  tags: ['Captions'],
+  summary: 'Show a caption',
+  description:
+    'Display a caption for a video in a specific language. If the language is available, the caption is returned. Otherwise, you will get a response indicating the caption was not found.\nTutorials that use the [captions endpoint](https://api.video/blog/endpoints/captions).',
+  operationId: 'GET_videos-videoId-captions-language',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the video you want captions for.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Prklg',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+      language: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'A valid [BCP 47](https://github.com/libyal/libfwnt/wiki/Language-Code-identifiers) language representation',
+            example: 'en',
+            explode: false,
+            in: 'path',
+            name: 'language',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: SubtitleSchema,
+          examples: {
+            response: {
+              value: {
+                default: false,
+                src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/captions/en.vtt',
+                srclang: 'en',
+                uri: '/videos/vi3N6cDinStg3oBbN79GklWS/captions/en',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postVideosVideoIdCaptionsLanguageRoute = createRoute({
+  method: 'post',
+  path: '/videos/{videoId}/captions/{language}',
+  tags: ['Captions'],
+  summary: 'Upload a caption',
+  description:
+    'Upload a VTT file to add captions to your video.\n Read our [captioning tutorial](https://api.video/blog/tutorials/adding-captions) for more details.',
+  operationId: 'POST_videos-videoId-captions-language',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the video you want to add a caption to.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Prklg',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+      language: z
+        .string()
+        .openapi({
+          param: {
+            description: 'A valid BCP 47 language representation.',
+            example: 'en',
+            explode: false,
+            in: 'path',
+            name: 'language',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: { content: { 'multipart/form-data': { schema: CaptionsUploadPayloadSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: SubtitleSchema,
+          examples: {
+            response: {
+              value: {
+                default: false,
+                src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/captions/en.vtt',
+                srclang: 'en',
+                uri: '/videos/vi3N6cDinStg3oBbN79GklWS/captions/en',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: BadRequestSchema } },
+    },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deleteVideosVideoIdCaptionsLanguageRoute = createRoute({
+  method: 'delete',
+  path: '/videos/{videoId}/captions/{language}',
+  tags: ['Captions'],
+  summary: 'Delete a caption',
+  description:
+    'Delete a caption in a specific language by providing the video ID for the video you want to delete the caption from and the language the caption is in.',
+  operationId: 'DELETE_videos-videoId-captions-language',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the video you want to delete a caption from.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Prklgc',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+      language: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'A valid [BCP 47](https://github.com/libyal/libfwnt/wiki/Language-Code-identifiers) language representation.',
+            example: 'en',
+            explode: false,
+            in: 'path',
+            name: 'language',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const patchVideosVideoIdCaptionsLanguageRoute = createRoute({
+  method: 'patch',
+  path: '/videos/{videoId}/captions/{language}',
+  tags: ['Captions'],
+  summary: 'Update caption',
+  description: 'To have the captions on automatically, use this PATCH to set default: true.',
+  operationId: 'PATCH_videos-videoId-captions-language',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'The unique identifier for the video you want to have automatic captions for. ',
+            example: 'vi4k0jvEUuaTdRAEjQ4Prklg',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+      language: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'A valid [BCP 47](https://github.com/libyal/libfwnt/wiki/Language-Code-identifiers) language representation.',
+            example: 'en',
+            explode: false,
+            in: 'path',
+            name: 'language',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: CaptionsUpdatePayloadSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: SubtitleSchema,
+          examples: {
+            response: {
+              value: {
+                default: true,
+                src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/captions/en.vtt',
+                srclang: 'en',
+                uri: '/videos/vi3N6cDinStg3oBbN79GklWS/captions/en',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'string (required)',
+                problems: [null],
+                status: 'integer (required)',
+                title: 'string (required)',
+                type: 'string (required)',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'irure mollit aute',
+                status: 85925135,
+                title: 'sunt do fugiat tempor',
+                type: 'Lorem sit culpa non',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getVideosVideoIdChaptersRoute = createRoute({
+  method: 'get',
+  path: '/videos/{videoId}/chapters',
+  tags: ['Chapters'],
+  summary: 'List video chapters',
+  description: 'Retrieve a list of all chapters for a specified video.',
+  operationId: 'GET_videos-videoId-chapters',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'The unique identifier for the video you want to retrieve a list of chapters for.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    query: z.object({ currentPage: CurrentPageParamsSchema, pageSize: PageSizeParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: ChaptersListResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    language: 'fr',
+                    src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/chapters/fr.vtt',
+                    uri: '/videos/vi3N6cDinStg3oBbN79GklWS/chapters/fr',
+                  },
+                  {
+                    language: 'en',
+                    src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/chapters/en.vtt',
+                    uri: '/videos/vi3N6cDinStg3oBbN79GklWS/chapters/en',
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 2,
+                  itemsTotal: 2,
+                  links: [
+                    {
+                      rel: 'self',
+                      uri: '/videos/vi3N6cDinStg3oBbN79GklWS/chapters?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'first',
+                      uri: '/videos/vi3N6cDinStg3oBbN79GklWS/chapters?currentPage=1&pageSize=25',
+                    },
+                    {
+                      rel: 'last',
+                      uri: '/videos/vi3N6cDinStg3oBbN79GklWS/chapters?currentPage=1&pageSize=25',
+                    },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getVideosVideoIdChaptersLanguageRoute = createRoute({
+  method: 'get',
+  path: '/videos/{videoId}/chapters/{language}',
+  tags: ['Chapters'],
+  summary: 'Show a chapter',
+  description:
+    'Chapters help your viewers find the sections of the video they are most interested in viewing. Tutorials that use the [chapters endpoint](https://api.video/blog/endpoints/chapters).',
+  operationId: 'GET_videos-videoId-chapters-language',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the video you want to show a chapter for.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+      language: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'A valid [BCP 47](https://github.com/libyal/libfwnt/wiki/Language-Code-identifiers) language representation.',
+            example: 'en',
+            explode: false,
+            in: 'path',
+            name: 'language',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: ChapterSchema,
+          examples: {
+            response: {
+              value: {
+                language: 'fr',
+                src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/chapters/fr.vtt',
+                uri: '/videos/vi3N6cDinStg3oBbN79GklWS/chapters/fr',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postVideosVideoIdChaptersLanguageRoute = createRoute({
+  method: 'post',
+  path: '/videos/{videoId}/chapters/{language}',
+  tags: ['Chapters'],
+  summary: 'Upload a chapter',
+  description:
+    'Chapters help break the video into sections. Read our [tutorial](https://api.video/blog/tutorials/adding-chapters-to-your-videos) for more details.',
+  operationId: 'POST_videos-videoId-chapters-language',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the video you want to upload a chapter for.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+      language: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'A valid [BCP 47](https://github.com/libyal/libfwnt/wiki/Language-Code-identifiers) language representation.',
+            example: 'en',
+            explode: false,
+            in: 'path',
+            name: 'language',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: { content: { 'multipart/form-data': { schema: ChaptersUpdatePayloadSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: ChapterSchema,
+          examples: {
+            response: {
+              value: {
+                language: 'fr',
+                src: 'https://cdn.api.video/vod/vi3N6cDinStg3oBbN79GklWS/chapters/fr.vtt',
+                uri: '/videos/vi3N6cDinStg3oBbN79GklWS/chapters/fr',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: BadRequestSchema } },
+    },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deleteVideosVideoIdChaptersLanguageRoute = createRoute({
+  method: 'delete',
+  path: '/videos/{videoId}/chapters/{language}',
+  tags: ['Chapters'],
+  summary: 'Delete a chapter',
+  operationId: 'DELETE_videos-videoId-chapters-language',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the video you want to delete a chapter from. ',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+      language: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'A valid [BCP 47](https://github.com/libyal/libfwnt/wiki/Language-Code-identifiers) language representation.',
+            example: 'en',
+            explode: false,
+            in: 'path',
+            name: 'language',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    404: { description: 'Not Found', content: { 'application/json': { schema: NotFoundSchema } } },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postVideosVideoIdSourceRoute = createRoute({
+  method: 'post',
+  path: '/videos/{videoId}/source',
+  tags: ['Videos'],
+  summary: 'Upload a video',
+  description:
+    "To upload a video to the videoId you created. Replace {videoId} with the id you'd like to use, {access_token} with your token, and /path/to/video.mp4 with the path to the video you'd like to upload. You can only upload your video to the videoId once.\n```bash\ncurl https://ws.api.video/videos/{videoId}/source \\\n  -H 'Authorization: Bearer {access_token}' \\\n  -F file=@/path/to/video.mp4\n\n  ```\nTutorials using [video upload](https://api.video/blog/endpoints/video-upload).",
+  operationId: 'POST_videos-videoId-source',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'Enter the videoId you want to use to upload your video.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    headers: z.object({
+      'Content-Range': z
+        .string()
+        .regex(/^bytes [0-9]*-[0-9]*\/[0-9]*$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Content-Range represents the range of bytes that will be returned as a result of the request. Byte ranges are inclusive, meaning that bytes 0-999 represents the first 1000 bytes in a file or object.',
+            example: 'Content-Range: bytes 200-100/5000',
+            explode: false,
+            in: 'header',
+            name: 'Content-Range',
+            required: false,
+            schema: { pattern: '^bytes [0-9]*-[0-9]*\\/[0-9]*$', type: 'string' },
+            style: 'simple',
+            'x-client-ignore': true,
+          },
+        }),
+    }),
+    body: { content: { 'multipart/form-data': { schema: VideoUploadPayloadSchema } } },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: VideoSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                  iframe:
+                    '<iframe src="//embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  mp4: 'https://cdn.api.video/vod/vi4k0jvEUuaTdRAEjQ4Jfrgz/token/8fd70443-d9f0-45d2-b01c-12c8cfc707c9/mp4/720/source.mp4',
+                  player:
+                    'https://embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                  thumbnail:
+                    'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                },
+                description: 'An amazing video explaining the string theory.',
+                metadata: [
+                  { key: 'Author', value: 'John Doe' },
+                  { key: 'Format', value: 'Tutorial' },
+                ],
+                mp4Support: true,
+                panoramic: false,
+                playerId: 'pl45KFKdlddgk654dspkze',
+                public: false,
+                publishedAt: '4665-07-14T23:36:18.598Z',
+                source: { uri: '/videos/vi4k0jvEUuaTdRAEjQ4Jfrgz/source' },
+                tags: ['maths', 'string theory', 'video'],
+                title: 'Maths video',
+                videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'file',
+                problems: [
+                  {
+                    name: 'file',
+                    title: 'The source of the video is already uploaded.',
+                    type: 'https://docs.api.video/docs/filealreadyuploaded',
+                  },
+                  {
+                    name: 'video',
+                    title: 'The video xxxx has already been uploaded.',
+                    type: 'https://docs.api.video/docs/filealreadyuploaded',
+                  },
+                  {
+                    name: 'file',
+                    title: 'There is no uploaded file in the request.',
+                    type: 'https://docs.api.video/docs/filemissing',
+                  },
+                  {
+                    name: 'file',
+                    title: 'There is more than one uploaded file in the request.',
+                    type: 'https://docs.api.video/docs/multiplefilesuploaded',
+                  },
+                ],
+                status: 400,
+                title: 'The source of the video is already uploaded.',
+                type: 'https://docs.api.video/docs/filealreadyuploaded',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getVideosVideoIdStatusRoute = createRoute({
+  method: 'get',
+  path: '/videos/{videoId}/status',
+  tags: ['Videos'],
+  summary: 'Show video status',
+  description:
+    'This API provides upload status & encoding status to determine when the video is uploaded or ready to playback. Once encoding is completed, the response also lists the available stream qualities. Tutorials using [video status](https://api.video/blog/endpoints/video-status).',
+  operationId: 'GET-video-status',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique identifier for the video you want the status for.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: VideostatusSchema,
+          examples: {
+            response: {
+              value: {
+                encoding: {
+                  metadata: {
+                    aspectRatio: '16/9',
+                    audioCodec: 'aac',
+                    bitrate: 411.218,
+                    duration: 4176,
+                    framerate: 24,
+                    height: 240,
+                    samplerate: 48000,
+                    videoCodec: 'h264',
+                    width: 424,
+                  },
+                  playable: true,
+                  qualities: [
+                    { quality: '360p', status: 'encoded' },
+                    { quality: '480p', status: 'encoded' },
+                    { quality: '720p', status: 'encoded' },
+                    { quality: '1080p', status: 'encoding' },
+                    { quality: '2160p', status: 'waiting' },
+                  ],
+                },
+                ingest: {
+                  filesize: 273579401,
+                  receivedBytes: [
+                    { from: 0, to: 134217727, total: 273579401 },
+                    { from: 134217728, to: 268435455, total: 273579401 },
+                    { from: 268435456, to: 273579400, total: 273579401 },
+                  ],
+                  status: 'uploaded',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postVideosVideoIdThumbnailRoute = createRoute({
+  method: 'post',
+  path: '/videos/{videoId}/thumbnail',
+  tags: ['Videos'],
+  summary: 'Upload a thumbnail',
+  description:
+    'The thumbnail is the poster that appears in the player window before video playback begins.\nThis endpoint allows you to upload an image for the thumbnail.\nTo select a still frame from the video using a time stamp, use [Pick a Thumbnail](https://docs.api.video/reference#patch_videos-videoid-thumbnail) to pick a time in the video. \nNote: There may be a short delay before the new thumbnail is delivered to our CDN.\nTutorials using [Thumbnail upload](https://api.video/blog/endpoints/videos-upload-a-thumbnail).',
+  operationId: 'POST_videos-videoId-thumbnail',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'Unique identifier of the chosen video ',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: { content: { 'multipart/form-data': { schema: VideoThumbnailUploadPayloadSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: VideoSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                  iframe:
+                    '<iframe src="//embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  mp4: 'https://cdn.api.video/vod/vi4k0jvEUuaTdRAEjQ4Jfrgz/token/8fd70443-d9f0-45d2-b01c-12c8cfc707c9/mp4/720/source.mp4',
+                  player:
+                    'https://embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                  thumbnail:
+                    'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                },
+                description: 'An amazing video explaining the string theory',
+                metadata: [
+                  { key: 'Author', value: 'John Doe' },
+                  { key: 'Format', value: 'Tutorial' },
+                ],
+                mp4Support: true,
+                panoramic: false,
+                playerId: 'pl45KFKdlddgk654dspkze',
+                public: false,
+                publishedAt: '2020-07-14T23:36:18.598Z',
+                scheduledAt: '2020-03-03T12:52:03.085Z',
+                source: { uri: '/videos/vi4k0jvEUuaTdRAEjQ4Jfrgz/source' },
+                tags: ['maths', 'string theory', 'video'],
+                title: 'Maths video',
+                videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'file',
+                status: 400,
+                title: 'Only [jpeg, jpg, JPG, JPEG] extensions are supported.',
+                type: 'https://docs.api.video/docs/fileextension',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const patchVideosVideoIdThumbnailRoute = createRoute({
+  method: 'patch',
+  path: '/videos/{videoId}/thumbnail',
+  tags: ['Videos'],
+  summary: 'Pick a thumbnail',
+  description:
+    "Pick a thumbnail from the given time code. If you'd like to upload an image for your thumbnail, use the [Upload a Thumbnail](https://docs.api.video/reference#post_videos-videoid-thumbnail) endpoint. There may be a short delay for the thumbnail to update.\nTutorials using [Thumbnail picking](https://api.video/blog/endpoints/video-pick-a-thumbnail).",
+  operationId: 'PATCH_videos-videoId-thumbnail',
+  request: {
+    params: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'Unique identifier of the video you want to add a thumbnail to, where you use a section of your video as the thumbnail.',
+            example: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+            explode: false,
+            in: 'path',
+            name: 'videoId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: VideoThumbnailPickPayloadSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: VideoSchema,
+          examples: {
+            response: {
+              value: {
+                assets: {
+                  hls: 'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/hls/manifest.m3u8',
+                  iframe:
+                    '<iframe src="//embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen=""></iframe>',
+                  mp4: 'https://cdn.api.video/vod/vi4k0jvEUuaTdRAEjQ4Jfrgz/token/8fd70443-d9f0-45d2-b01c-12c8cfc707c9/mp4/720/source.mp4',
+                  player:
+                    'https://embed.api.video/vi4k0jvEUuaTdRAEjQ4Jfrgz?token=831a9bd9-9f50-464c-a369-8e9d914371ae',
+                  thumbnail:
+                    'https://cdn.api.video/stream/831a9bd9-9f50-464c-a369-8e9d914371ae/thumbnail.jpg',
+                },
+                description: 'An amazing video explaining string theory',
+                metadata: [
+                  { key: 'Author', value: 'John Doe' },
+                  { key: 'Format', value: 'Tutorial' },
+                ],
+                mp4Support: true,
+                panoramic: false,
+                playerId: 'pl45KFKdlddgk654dspkze',
+                public: false,
+                publishedAt: '4665-07-14T23:36:18.598Z',
+                source: { uri: '/videos/vi4k0jvEUuaTdRAEjQ4Jfrgz/source' },
+                tags: ['maths', 'string theory', 'video'],
+                title: 'Maths video',
+                videoId: 'vi4k0jvEUuaTdRAEjQ4Jfrgz',
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'videoId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getWebhooksRoute = createRoute({
+  method: 'get',
+  path: '/webhooks',
+  tags: ['Webhooks'],
+  summary: 'List all webhooks',
+  description:
+    'Requests to this endpoint return a list of your webhooks (with all their details). You can filter what the webhook list that the API returns using the parameters described below.',
+  operationId: 'LIST-webhooks',
+  request: {
+    query: z.object({
+      events: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'The webhook event that you wish to filter on.',
+            example: 'video.encoding.quality.completed',
+            explode: true,
+            in: 'query',
+            name: 'events',
+            required: false,
+            schema: { type: 'string' },
+            style: 'form',
+          },
+        }),
+      currentPage: CurrentPageParamsSchema,
+      pageSize: PageSizeParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: WebhooksListResponseSchema,
+          examples: {
+            response: {
+              value: {
+                data: [
+                  {
+                    createdAt: '2021-01-08T14:12:18.000+00:00',
+                    events: ['video.encoding.quality.completed'],
+                    url: 'http://clientnotificationserver.com/notif?myquery=query',
+                    webhookId: 'webhook_XXXXXXXXXXXXXXX',
+                  },
+                  {
+                    createdAt: '2021-01-12T12:12:12.000+00:00',
+                    events: ['video.encoding.quality.completed'],
+                    url: 'http://clientnotificationserver.com/notif?myquery=query2',
+                    webhookId: 'webhook_XXXXXXXXXYYYYYY',
+                  },
+                ],
+                pagination: {
+                  currentPage: 1,
+                  currentPageItems: 11,
+                  itemsTotal: 11,
+                  links: [
+                    { rel: 'self', uri: 'https://ws.api.video/webhooks?currentPage=1' },
+                    { rel: 'first', uri: 'https://ws.api.video/webhooks?currentPage=1' },
+                    { rel: 'last', uri: 'https://ws.api.video/webhooks?currentPage=1' },
+                  ],
+                  pageSize: 25,
+                  pagesTotal: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const postWebhooksRoute = createRoute({
+  method: 'post',
+  path: '/webhooks',
+  tags: ['Webhooks'],
+  summary: 'Create Webhook',
+  description:
+    'Webhooks can push notifications to your server, rather than polling api.video for changes. We currently offer four events: \n* ```video.encoding.quality.completed```  When a new video is uploaded into your account, it will be encoded into several different HLS sizes/bitrates.  When each version is encoded, your webhook will get a notification.  It will look like ```{ \\"type\\": \\"video.encoding.quality.completed\\", \\"emittedAt\\": \\"2021-01-29T16:46:25.217+01:00\\", \\"videoId\\": \\"viXXXXXXXX\\", \\"encoding\\": \\"hls\\", \\"quality\\": \\"720p\\"} ```. This request says that the 720p HLS encoding was completed.\n* ```live-stream.broadcast.started```  When a livestream begins broadcasting, the broadcasting parameter changes from false to true, and this webhook fires.\n* ```live-stream.broadcast.ended```  This event fores when the livestream has finished broadcasting, and the broadcasting parameter flips from false to true.\n* ```video.source.recorded```  This event is similar to ```video.encoding.quality.completed```, but tells you if a livestream has been recorded as a VOD.',
+  operationId: 'POST-webhooks',
+  request: { body: { content: { 'application/json': { schema: WebhooksCreatePayloadSchema } } } },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: WebhookSchema,
+          examples: {
+            response: {
+              value: {
+                createdAt: '2021-01-08T14:12:18.000+00:00',
+                events: ['video.encoding.quality.completed'],
+                url: 'http://clientnotificationserver.com/notif?myquery=query',
+                webhookId: 'webhook_XXXXXXXXXXXXXXX',
+              },
+            },
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: {
+        'application/json': {
+          schema: BadRequestSchema,
+          examples: {
+            response: {
+              value: {
+                events: 'This attribute is required.',
+                name: 'events',
+                problems: [
+                  {
+                    name: 'events',
+                    title: 'This attribute is required.',
+                    type: 'https://docs.api.video/docs/attributerequired',
+                  },
+                  {
+                    name: 'url',
+                    title: 'This attribute is required.',
+                    type: 'https://docs.api.video/docs/attributerequired',
+                  },
+                  {
+                    name: 'events',
+                    title: 'This attribute must be an array.',
+                    type: 'https://docs.api.video/docs/attributeinvalid',
+                  },
+                ],
+                status: 400,
+                type: 'https://docs.api.video/docs/attributerequired',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const getWebhooksWebhookIdRoute = createRoute({
+  method: 'get',
+  path: '/webhooks/{webhookId}',
+  tags: ['Webhooks'],
+  summary: 'Show Webhook details',
+  description: 'This call provides the same JSON information provided on Webjhook creation.',
+  operationId: 'GET-Webhook',
+  request: {
+    params: z.object({
+      webhookId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The unique webhook you wish to retreive details on.',
+            explode: false,
+            in: 'path',
+            name: 'webhookId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: WebhookSchema,
+          examples: {
+            response: {
+              value: {
+                createdAt: '2021-01-08T14:12:18.000+00:00',
+                events: ['video.encoding.quality.completed'],
+                url: 'http://clientnotificationserver.com/notif?myquery=query',
+                webhookId: 'webhook_XXXXXXXXXXXXXXX',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
+
+export const deleteWebhooksWebhookIdRoute = createRoute({
+  method: 'delete',
+  path: '/webhooks/{webhookId}',
+  tags: ['Webhooks'],
+  summary: 'Delete a Webhook',
+  description: 'This endpoint will delete the indicated webhook.',
+  operationId: 'DELETE-webhook',
+  request: {
+    params: z.object({
+      webhookId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The webhook you wish to delete.',
+            explode: false,
+            in: 'path',
+            name: 'webhookId',
+            required: true,
+            schema: { type: 'string' },
+            style: 'simple',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: NotFoundSchema,
+          examples: {
+            response: {
+              value: {
+                name: 'webhookId',
+                status: 404,
+                title: 'The requested resource was not found.',
+                type: 'https://docs.api.video/docs/resourcenot_found',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+})
