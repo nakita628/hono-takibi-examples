@@ -1,0 +1,20 @@
+{
+  "name": "@apps/readme-oas-examples",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/3-0-callbacks.config.ts; hono-takibi -c configs/3-0-circular-paths.config.ts; hono-takibi -c configs/3-0-circular.config.ts; hono-takibi -c configs/3-0-complex-nesting.config.ts; hono-takibi -c configs/3-0-discriminators.config.ts; hono-takibi -c configs/3-0-file-uploads.config.ts; hono-takibi -c configs/3-0-form-data.config.ts; hono-takibi -c configs/3-0-http-status-codes.config.ts; hono-takibi -c configs/3-0-link-example.config.ts; hono-takibi -c configs/3-0-parameters-common.config.ts; hono-takibi -c configs/3-0-parameters-cookies.config.ts; hono-takibi -c configs/3-0-parameters-extreme.config.ts; hono-takibi -c configs/3-0-parameters-style.config.ts; hono-takibi -c configs/3-0-petstore-expanded.config.ts; hono-takibi -c configs/3-0-petstore-simple-no-tags.config.ts; hono-takibi -c configs/3-0-petstore-simple.config.ts; hono-takibi -c configs/3-0-petstore.config.ts; hono-takibi -c configs/3-0-polymorphism.config.ts; hono-takibi -c configs/3-0-readme-extensions.config.ts; hono-takibi -c configs/3-0-readme.config.ts; hono-takibi -c configs/3-0-request-examples.config.ts; hono-takibi -c configs/3-0-response-examples.config.ts; hono-takibi -c configs/3-0-response-http-behavior.config.ts; hono-takibi -c configs/3-0-response-multiple-mediatypes.config.ts; hono-takibi -c configs/3-0-response-schemas.config.ts; hono-takibi -c configs/3-0-schema-additional-properties.config.ts; hono-takibi -c configs/3-0-schema-circular.config.ts; hono-takibi -c configs/3-0-schema-deprecated.config.ts; hono-takibi -c configs/3-0-schema-encoding-style.config.ts; hono-takibi -c configs/3-0-schema-enums.config.ts; hono-takibi -c configs/3-0-schema-types.config.ts; hono-takibi -c configs/3-0-schema-validation.config.ts; hono-takibi -c configs/3-0-schema-visibility.config.ts; hono-takibi -c configs/3-0-security-multiple.config.ts; hono-takibi -c configs/3-0-security.config.ts; hono-takibi -c configs/3-0-server-variables.config.ts; hono-takibi -c configs/3-0-star-trek.config.ts; hono-takibi -c configs/3-0-uspto.config.ts; hono-takibi -c configs/3-1-parameters-style.config.ts; hono-takibi -c configs/3-1-petstore-simple.config.ts; hono-takibi -c configs/3-1-petstore.config.ts; hono-takibi -c configs/3-1-readme-extensions.config.ts; hono-takibi -c configs/3-1-schema-encoding-style.config.ts; hono-takibi -c configs/3-1-schema-types.config.ts; hono-takibi -c configs/3-1-schema-validation-local.config.ts; hono-takibi -c configs/3-1-schema-validation-top-level.config.ts; hono-takibi -c configs/3-1-security.config.ts; hono-takibi -c configs/3-1-train-travel.config.ts; hono-takibi -c configs/3-1-webhooks.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

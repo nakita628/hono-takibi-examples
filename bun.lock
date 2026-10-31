@@ -1601,6 +1601,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/mermade-openapi3-examples": {
+      "name": "@apps/mermade-openapi3-examples",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/misp": {
       "name": "@apps/misp",
       "dependencies": {
@@ -2289,6 +2303,20 @@
     },
     "apps/radarr": {
       "name": "@apps/radarr",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/readme-oas-examples": {
+      "name": "@apps/readme-oas-examples",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -3156,6 +3184,8 @@
 
     "@apps/meilisearch": ["@apps/meilisearch@workspace:apps/meilisearch"],
 
+    "@apps/mermade-openapi3-examples": ["@apps/mermade-openapi3-examples@workspace:apps/mermade-openapi3-examples"],
+
     "@apps/misp": ["@apps/misp@workspace:apps/misp"],
 
     "@apps/mistral": ["@apps/mistral@workspace:apps/mistral"],
@@ -3255,6 +3285,8 @@
     "@apps/qstash": ["@apps/qstash@workspace:apps/qstash"],
 
     "@apps/radarr": ["@apps/radarr@workspace:apps/radarr"],
+
+    "@apps/readme-oas-examples": ["@apps/readme-oas-examples@workspace:apps/readme-oas-examples"],
 
     "@apps/redocly-museum": ["@apps/redocly-museum@workspace:apps/redocly-museum"],
 
