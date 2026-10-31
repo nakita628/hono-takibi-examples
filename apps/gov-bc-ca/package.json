@@ -1,0 +1,20 @@
+{
+  "name": "@apps/gov-bc-ca",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/bcdc.config.ts; hono-takibi -c configs/bcgnws.config.ts; hono-takibi -c configs/geocoder.config.ts; hono-takibi -c configs/geomark.config.ts; hono-takibi -c configs/gwells.config.ts; hono-takibi -c configs/jobposting.config.ts; hono-takibi -c configs/news.config.ts; hono-takibi -c configs/open511.config.ts; hono-takibi -c configs/router.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

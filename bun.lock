@@ -159,6 +159,48 @@
         "typescript": "catalog:",
       },
     },
+    "apps/apideck": {
+      "name": "@apps/apideck",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/apis-guru-misc": {
+      "name": "@apps/apis-guru-misc",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/apisetu-gov-in": {
+      "name": "@apps/apisetu-gov-in",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/appwrite": {
       "name": "@apps/appwrite",
       "dependencies": {
@@ -943,6 +985,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/gov-bc-ca": {
+      "name": "@apps/gov-bc-ca",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/grafana": {
       "name": "@apps/grafana",
       "dependencies": {
@@ -1127,6 +1183,20 @@
     },
     "apps/intercom": {
       "name": "@apps/intercom",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/interzoid": {
+      "name": "@apps/interzoid",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1965,6 +2035,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/ote-godaddy": {
+      "name": "@apps/ote-godaddy",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/outline": {
       "name": "@apps/outline",
       "dependencies": {
@@ -2009,6 +2093,20 @@
     },
     "apps/pagerduty": {
       "name": "@apps/pagerduty",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/parliament": {
+      "name": "@apps/parliament",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2303,6 +2401,20 @@
     },
     "apps/sonarr": {
       "name": "@apps/sonarr",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/sportsdata": {
+      "name": "@apps/sportsdata",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2679,6 +2791,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/vtex": {
+      "name": "@apps/vtex",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/wazuh": {
       "name": "@apps/wazuh",
       "dependencies": {
@@ -2824,6 +2950,12 @@
 
     "@apps/amadeus": ["@apps/amadeus@workspace:apps/amadeus"],
 
+    "@apps/apideck": ["@apps/apideck@workspace:apps/apideck"],
+
+    "@apps/apis-guru-misc": ["@apps/apis-guru-misc@workspace:apps/apis-guru-misc"],
+
+    "@apps/apisetu-gov-in": ["@apps/apisetu-gov-in@workspace:apps/apisetu-gov-in"],
+
     "@apps/appwrite": ["@apps/appwrite@workspace:apps/appwrite"],
 
     "@apps/asana": ["@apps/asana@workspace:apps/asana"],
@@ -2936,6 +3068,8 @@
 
     "@apps/google-apis": ["@apps/google-apis@workspace:apps/google-apis"],
 
+    "@apps/gov-bc-ca": ["@apps/gov-bc-ca@workspace:apps/gov-bc-ca"],
+
     "@apps/grafana": ["@apps/grafana@workspace:apps/grafana"],
 
     "@apps/growthbook": ["@apps/growthbook@workspace:apps/growthbook"],
@@ -2963,6 +3097,8 @@
     "@apps/influxdb-oss": ["@apps/influxdb-oss@workspace:apps/influxdb-oss"],
 
     "@apps/intercom": ["@apps/intercom@workspace:apps/intercom"],
+
+    "@apps/interzoid": ["@apps/interzoid@workspace:apps/interzoid"],
 
     "@apps/invoiceninja": ["@apps/invoiceninja@workspace:apps/invoiceninja"],
 
@@ -3082,6 +3218,8 @@
 
     "@apps/ory-keto": ["@apps/ory-keto@workspace:apps/ory-keto"],
 
+    "@apps/ote-godaddy": ["@apps/ote-godaddy@workspace:apps/ote-godaddy"],
+
     "@apps/outline": ["@apps/outline@workspace:apps/outline"],
 
     "@apps/overseerr": ["@apps/overseerr@workspace:apps/overseerr"],
@@ -3089,6 +3227,8 @@
     "@apps/owncast": ["@apps/owncast@workspace:apps/owncast"],
 
     "@apps/pagerduty": ["@apps/pagerduty@workspace:apps/pagerduty"],
+
+    "@apps/parliament": ["@apps/parliament@workspace:apps/parliament"],
 
     "@apps/paypal": ["@apps/paypal@workspace:apps/paypal"],
 
@@ -3131,6 +3271,8 @@
     "@apps/sentry": ["@apps/sentry@workspace:apps/sentry"],
 
     "@apps/sonarr": ["@apps/sonarr@workspace:apps/sonarr"],
+
+    "@apps/sportsdata": ["@apps/sportsdata@workspace:apps/sportsdata"],
 
     "@apps/spotify": ["@apps/spotify@workspace:apps/spotify"],
 
@@ -3183,6 +3325,8 @@
     "@apps/vercel": ["@apps/vercel@workspace:apps/vercel"],
 
     "@apps/vonage": ["@apps/vonage@workspace:apps/vonage"],
+
+    "@apps/vtex": ["@apps/vtex@workspace:apps/vtex"],
 
     "@apps/wazuh": ["@apps/wazuh@workspace:apps/wazuh"],
 

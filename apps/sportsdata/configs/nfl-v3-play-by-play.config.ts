@@ -1,0 +1,11 @@
+import { defineConfig } from 'hono-takibi'
+
+export default defineConfig({
+  input: 'https://api.apis.guru/v2/specs/sportsdata.io/nfl-v3-play-by-play/1.0/openapi.yaml',
+  output: './src/nfl-v3-play-by-play/routes.ts',
+  docs: {
+    output: './src/nfl-v3-play-by-play/api.md',
+    curl: true,
+    baseUrl: 'https://example.com',
+  },
+})

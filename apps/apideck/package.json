@@ -1,0 +1,20 @@
+{
+  "name": "@apps/apideck",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/accounting.config.ts; hono-takibi -c configs/ats.config.ts; hono-takibi -c configs/connector.config.ts; hono-takibi -c configs/crm.config.ts; hono-takibi -c configs/customer-support.config.ts; hono-takibi -c configs/ecommerce.config.ts; hono-takibi -c configs/ecosystem.config.ts; hono-takibi -c configs/file-storage.config.ts; hono-takibi -c configs/hris.config.ts; hono-takibi -c configs/issue-tracking.config.ts; hono-takibi -c configs/lead.config.ts; hono-takibi -c configs/pos.config.ts; hono-takibi -c configs/proxy.config.ts; hono-takibi -c configs/sms.config.ts; hono-takibi -c configs/vault.config.ts; hono-takibi -c configs/webhook.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

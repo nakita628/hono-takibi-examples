@@ -1,0 +1,20 @@
+{
+  "name": "@apps/interzoid",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/convertcurrency.config.ts; hono-takibi -c configs/getaddressmatch.config.ts; hono-takibi -c configs/getareacodefromnumber.config.ts; hono-takibi -c configs/getcitymatch.config.ts; hono-takibi -c configs/getcitystandard.config.ts; hono-takibi -c configs/getcompanymatch.config.ts; hono-takibi -c configs/getcountrymatch.config.ts; hono-takibi -c configs/getcountrystandard.config.ts; hono-takibi -c configs/getcurrencyrate.config.ts; hono-takibi -c configs/getemailinfo.config.ts; hono-takibi -c configs/getfullnamematch.config.ts; hono-takibi -c configs/getfullnameparsedmatch.config.ts; hono-takibi -c configs/getglobalnumberinfo.config.ts; hono-takibi -c configs/getglobaltime.config.ts; hono-takibi -c configs/getstateabbreviation.config.ts; hono-takibi -c configs/getweathercity.config.ts; hono-takibi -c configs/getweatherzip.config.ts; hono-takibi -c configs/getzipinfo.config.ts; hono-takibi -c configs/globalpageload.config.ts; hono-takibi -c configs/lookupareacode.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

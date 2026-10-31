@@ -1,0 +1,11 @@
+import { defineConfig } from 'hono-takibi'
+
+export default defineConfig({
+  input: 'https://api.apis.guru/v2/specs/apideck.com/issue-tracking/9.3.0/openapi.yaml',
+  output: './src/issue-tracking/routes.ts',
+  docs: {
+    output: './src/issue-tracking/api.md',
+    curl: true,
+    baseUrl: 'https://example.com',
+  },
+})

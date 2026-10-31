@@ -1,0 +1,20 @@
+{
+  "name": "@apps/parliament",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/bills.config.ts; hono-takibi -c configs/erskine-may.config.ts; hono-takibi -c configs/lordsvotes.config.ts; hono-takibi -c configs/members.config.ts; hono-takibi -c configs/now.config.ts; hono-takibi -c configs/oralquestions.config.ts; hono-takibi -c configs/search.config.ts; hono-takibi -c configs/statutoryinstruments.config.ts; hono-takibi -c configs/treaties.config.ts; hono-takibi -c configs/writtenquestions.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

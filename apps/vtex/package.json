@@ -1,0 +1,20 @@
+{
+  "name": "@apps/vtex",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/catalog-api.config.ts; hono-takibi -c configs/catalog-api-seller-portal.config.ts; hono-takibi -c configs/checkout-api.config.ts; hono-takibi -c configs/customer-credit-api.config.ts; hono-takibi -c configs/giftcard-api.config.ts; hono-takibi -c configs/giftcard-hub-api.config.ts; hono-takibi -c configs/headless-cms-api.config.ts; hono-takibi -c configs/intelligent-search-api.config.ts; hono-takibi -c configs/license-manager-api.config.ts; hono-takibi -c configs/logistics-api.config.ts; hono-takibi -c configs/marketplace-apis.config.ts; hono-takibi -c configs/marketplace-apis-2.config.ts; hono-takibi -c configs/marketplace-protocol.config.ts; hono-takibi -c configs/master-data-api.config.ts; hono-takibi -c configs/masterdata-api.config.ts; hono-takibi -c configs/message-center-api.config.ts; hono-takibi -c configs/orders-api.config.ts; hono-takibi -c configs/orders-api-pii-version.config.ts; hono-takibi -c configs/payments-gateway-api.config.ts; hono-takibi -c configs/policies-system-api.config.ts; hono-takibi -c configs/price-simulations.config.ts; hono-takibi -c configs/pricing-api.config.ts; hono-takibi -c configs/pricing-hub.config.ts; hono-takibi -c configs/profile-system.config.ts; hono-takibi -c configs/promotions.config.ts; hono-takibi -c configs/recurrence-v1.config.ts; hono-takibi -c configs/reviews-and-ratings-api.config.ts; hono-takibi -c configs/search-api.config.ts; hono-takibi -c configs/session-manager-api.config.ts; hono-takibi -c configs/sku-bindings-api.config.ts; hono-takibi -c configs/subscriptions-api-v2.config.ts; hono-takibi -c configs/subscriptions-api-v3.config.ts; hono-takibi -c configs/vtex-do-api.config.ts; hono-takibi -c configs/vtex-template.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

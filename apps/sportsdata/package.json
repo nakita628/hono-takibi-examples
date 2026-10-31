@@ -1,0 +1,20 @@
+{
+  "name": "@apps/sportsdata",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/cbb-v3-scores.config.ts; hono-takibi -c configs/cbb-v3-stats.config.ts; hono-takibi -c configs/cfb-v3-scores.config.ts; hono-takibi -c configs/csgo-v3-scores.config.ts; hono-takibi -c configs/csgo-v3-stats.config.ts; hono-takibi -c configs/golf-v2.config.ts; hono-takibi -c configs/lol-v3-projections.config.ts; hono-takibi -c configs/lol-v3-scores.config.ts; hono-takibi -c configs/lol-v3-stats.config.ts; hono-takibi -c configs/mlb-v3-play-by-play.config.ts; hono-takibi -c configs/mlb-v3-projections.config.ts; hono-takibi -c configs/mlb-v3-rotoballer-articles.config.ts; hono-takibi -c configs/mlb-v3-rotoballer-premium-news.config.ts; hono-takibi -c configs/mlb-v3-scores.config.ts; hono-takibi -c configs/mlb-v3-stats.config.ts; hono-takibi -c configs/nascar-v2.config.ts; hono-takibi -c configs/nba-v3-play-by-play.config.ts; hono-takibi -c configs/nba-v3-projections.config.ts; hono-takibi -c configs/nba-v3-rotoballer-articles.config.ts; hono-takibi -c configs/nba-v3-rotoballer-premium-news.config.ts; hono-takibi -c configs/nba-v3-scores.config.ts; hono-takibi -c configs/nba-v3-stats.config.ts; hono-takibi -c configs/nfl-v3-play-by-play.config.ts; hono-takibi -c configs/nfl-v3-projections.config.ts; hono-takibi -c configs/nfl-v3-rotoballer-articles.config.ts; hono-takibi -c configs/nfl-v3-rotoballer-premium-news.config.ts; hono-takibi -c configs/nfl-v3-scores.config.ts; hono-takibi -c configs/nfl-v3-stats.config.ts; hono-takibi -c configs/nhl-v3-play-by-play.config.ts; hono-takibi -c configs/nhl-v3-projections.config.ts; hono-takibi -c configs/nhl-v3-scores.config.ts; hono-takibi -c configs/nhl-v3-stats.config.ts; hono-takibi -c configs/soccer-v3-projections.config.ts; hono-takibi -c configs/soccer-v3-scores.config.ts; hono-takibi -c configs/soccer-v3-stats.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}
