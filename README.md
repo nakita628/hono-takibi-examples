@@ -315,3 +315,17 @@ Generation examples for [hono-takibi](https://github.com/nakita628/hono-takibi).
 | [onepassword-connect](./apps/onepassword-connect) | [spec.yaml](https://raw.githubusercontent.com/1password/connect/main/docs/openapi/spec.yaml) | [routes.ts](./apps/onepassword-connect/src/routes.ts) · [api.md](./apps/onepassword-connect/src/api.md) |
 | [vapi](./apps/vapi) | [api-json](https://api.vapi.ai/api-json) | [routes.ts](./apps/vapi/src/routes.ts) · [api.md](./apps/vapi/src/api.md) |
 | [unleash](./apps/unleash) | [openapi.json](https://app.getunleash.io/demo/docs/openapi.json) | not generated: the download times out where curl succeeds ([nakita628/hono-takibi#395](https://github.com/nakita628/hono-takibi/issues/395)) |
+| [alpaca-trading](./apps/alpaca-trading) | [trading-api.json](https://docs.alpaca.markets/openapi/trading-api.json) | [routes.ts](./apps/alpaca-trading/src/routes.ts) · [api.md](./apps/alpaca-trading/src/api.md) |
+| [alpaca-market-data](./apps/alpaca-market-data) | [market-data-api.json](https://docs.alpaca.markets/openapi/market-data-api.json) | [routes.ts](./apps/alpaca-market-data/src/routes.ts) · [api.md](./apps/alpaca-market-data/src/api.md) |
+| [alpaca-broker](./apps/alpaca-broker) | [broker-api.json](https://docs.alpaca.markets/openapi/broker-api.json) | [routes.ts](./apps/alpaca-broker/src/routes.ts) · [api.md](./apps/alpaca-broker/src/api.md) |
+| [polygon](./apps/polygon) | [openapi](https://api.polygon.io/openapi) | [routes.ts](./apps/polygon/src/routes.ts) · [api.md](./apps/polygon/src/api.md) |
+| [twelvedata](./apps/twelvedata) | [openapi.json](https://api.twelvedata.com/doc/swagger/openapi.json) | [routes.ts](./apps/twelvedata/src/routes.ts) · [api.md](./apps/twelvedata/src/api.md) |
+| [ibkr](./apps/ibkr) | [api-docs](https://api.ibkr.com/gw/api/v3/api-docs) | [routes.ts](./apps/ibkr/src/routes.ts) · [api.md](./apps/ibkr/src/api.md) |
+| [blockfrost](./apps/blockfrost) | [blockfrost-openapi.yaml](https://raw.githubusercontent.com/blockfrost/openapi/master/blockfrost-openapi.yaml) | [routes.ts](./apps/blockfrost/src/routes.ts) · [api.md](./apps/blockfrost/src/api.md) |
+| [pokeapi](./apps/pokeapi) | [openapi.yml](https://raw.githubusercontent.com/PokeAPI/pokeapi/master/openapi.yml) | [routes.ts](./apps/pokeapi/src/routes.ts) · [api.md](./apps/pokeapi/src/api.md) |
+| [lichess](./apps/lichess) | [openapi.yaml](https://lichess.org/api/openapi.yaml) | [routes.ts](./apps/lichess/src/routes.ts) · [api.md](./apps/lichess/src/api.md) |
+| [opendota](./apps/opendota) | [api](https://api.opendota.com/api) | [routes.ts](./apps/opendota/src/routes.ts) · [api.md](./apps/opendota/src/api.md) |
+| [bungie](./apps/bungie) | [openapi.json](https://raw.githubusercontent.com/bungie-net/api/master/openapi.json) | [routes.ts](./apps/bungie/src/routes.ts) · [api.md](./apps/bungie/src/api.md) |
+| [riot](./apps/riot) | [openapi-3.0.0.json](https://raw.githubusercontent.com/MingweiSamuel/riotapi-schema/gh-pages/openapi-3.0.0.json) | [routes.ts](./apps/riot/src/routes.ts) · [api.md](./apps/riot/src/api.md) |
+| [jikan](./apps/jikan) | [api-docs.json](https://raw.githubusercontent.com/jikan-me/jikan-rest/master/storage/api-docs/api-docs.json) | [routes.ts](./apps/jikan/src/routes.ts) · [api.md](./apps/jikan/src/api.md) |
+| [kabu-station](./apps/kabu-station) | [kabu_STATION_API.yaml](https://raw.githubusercontent.com/kabucom/kabusapi/master/reference/kabu_STATION_API.yaml) | not generated: the document is invalid YAML (deficient indentation at line 4028) |

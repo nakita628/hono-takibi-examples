@@ -61,6 +61,48 @@
         "typescript": "catalog:",
       },
     },
+    "apps/alpaca-broker": {
+      "name": "@apps/alpaca-broker",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/alpaca-market-data": {
+      "name": "@apps/alpaca-market-data",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/alpaca-trading": {
+      "name": "@apps/alpaca-trading",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/appwrite": {
       "name": "@apps/appwrite",
       "dependencies": {
@@ -145,6 +187,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/blockfrost": {
+      "name": "@apps/blockfrost",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/box": {
       "name": "@apps/box",
       "dependencies": {
@@ -175,6 +231,20 @@
     },
     "apps/brevo": {
       "name": "@apps/brevo",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/bungie": {
+      "name": "@apps/bungie",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -579,6 +649,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/ibkr": {
+      "name": "@apps/ibkr",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/immich": {
       "name": "@apps/immich",
       "dependencies": {
@@ -649,6 +733,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/jikan": {
+      "name": "@apps/jikan",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/jira": {
       "name": "@apps/jira",
       "dependencies": {
@@ -665,6 +763,20 @@
     },
     "apps/jira-service-management": {
       "name": "@apps/jira-service-management",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/kabu-station": {
+      "name": "@apps/kabu-station",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -749,6 +861,20 @@
     },
     "apps/launchdarkly": {
       "name": "@apps/launchdarkly",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/lichess": {
+      "name": "@apps/lichess",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1013,6 +1139,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/opendota": {
+      "name": "@apps/opendota",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/ory": {
       "name": "@apps/ory",
       "dependencies": {
@@ -1125,6 +1265,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/pokeapi": {
+      "name": "@apps/pokeapi",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/polygon": {
+      "name": "@apps/polygon",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/qdrant": {
       "name": "@apps/qdrant",
       "dependencies": {
@@ -1183,6 +1351,20 @@
     },
     "apps/resend": {
       "name": "@apps/resend",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/riot": {
+      "name": "@apps/riot",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1391,6 +1573,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/twelvedata": {
+      "name": "@apps/twelvedata",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/twilio": {
       "name": "@apps/twilio",
       "dependencies": {
@@ -1564,6 +1760,12 @@
 
     "@apps/aiven": ["@apps/aiven@workspace:apps/aiven"],
 
+    "@apps/alpaca-broker": ["@apps/alpaca-broker@workspace:apps/alpaca-broker"],
+
+    "@apps/alpaca-market-data": ["@apps/alpaca-market-data@workspace:apps/alpaca-market-data"],
+
+    "@apps/alpaca-trading": ["@apps/alpaca-trading@workspace:apps/alpaca-trading"],
+
     "@apps/appwrite": ["@apps/appwrite@workspace:apps/appwrite"],
 
     "@apps/asana": ["@apps/asana@workspace:apps/asana"],
@@ -1576,11 +1778,15 @@
 
     "@apps/bitbucket": ["@apps/bitbucket@workspace:apps/bitbucket"],
 
+    "@apps/blockfrost": ["@apps/blockfrost@workspace:apps/blockfrost"],
+
     "@apps/box": ["@apps/box@workspace:apps/box"],
 
     "@apps/box-versions": ["@apps/box-versions@workspace:apps/box-versions"],
 
     "@apps/brevo": ["@apps/brevo@workspace:apps/brevo"],
+
+    "@apps/bungie": ["@apps/bungie@workspace:apps/bungie"],
 
     "@apps/calcom": ["@apps/calcom@workspace:apps/calcom"],
 
@@ -1638,6 +1844,8 @@
 
     "@apps/huggingface": ["@apps/huggingface@workspace:apps/huggingface"],
 
+    "@apps/ibkr": ["@apps/ibkr@workspace:apps/ibkr"],
+
     "@apps/immich": ["@apps/immich@workspace:apps/immich"],
 
     "@apps/influxdb-cloud": ["@apps/influxdb-cloud@workspace:apps/influxdb-cloud"],
@@ -1648,9 +1856,13 @@
 
     "@apps/jellyfin": ["@apps/jellyfin@workspace:apps/jellyfin"],
 
+    "@apps/jikan": ["@apps/jikan@workspace:apps/jikan"],
+
     "@apps/jira": ["@apps/jira@workspace:apps/jira"],
 
     "@apps/jira-service-management": ["@apps/jira-service-management@workspace:apps/jira-service-management"],
+
+    "@apps/kabu-station": ["@apps/kabu-station@workspace:apps/kabu-station"],
 
     "@apps/keycloak": ["@apps/keycloak@workspace:apps/keycloak"],
 
@@ -1663,6 +1875,8 @@
     "@apps/langfuse": ["@apps/langfuse@workspace:apps/langfuse"],
 
     "@apps/launchdarkly": ["@apps/launchdarkly@workspace:apps/launchdarkly"],
+
+    "@apps/lichess": ["@apps/lichess@workspace:apps/lichess"],
 
     "@apps/line": ["@apps/line@workspace:apps/line"],
 
@@ -1700,6 +1914,8 @@
 
     "@apps/openai": ["@apps/openai@workspace:apps/openai"],
 
+    "@apps/opendota": ["@apps/opendota@workspace:apps/opendota"],
+
     "@apps/ory": ["@apps/ory@workspace:apps/ory"],
 
     "@apps/ory-hydra": ["@apps/ory-hydra@workspace:apps/ory-hydra"],
@@ -1716,6 +1932,10 @@
 
     "@apps/plaid": ["@apps/plaid@workspace:apps/plaid"],
 
+    "@apps/pokeapi": ["@apps/pokeapi@workspace:apps/pokeapi"],
+
+    "@apps/polygon": ["@apps/polygon@workspace:apps/polygon"],
+
     "@apps/qdrant": ["@apps/qdrant@workspace:apps/qdrant"],
 
     "@apps/qstash": ["@apps/qstash@workspace:apps/qstash"],
@@ -1725,6 +1945,8 @@
     "@apps/replicate": ["@apps/replicate@workspace:apps/replicate"],
 
     "@apps/resend": ["@apps/resend@workspace:apps/resend"],
+
+    "@apps/riot": ["@apps/riot@workspace:apps/riot"],
 
     "@apps/sendgrid": ["@apps/sendgrid@workspace:apps/sendgrid"],
 
@@ -1753,6 +1975,8 @@
     "@apps/trello": ["@apps/trello@workspace:apps/trello"],
 
     "@apps/trigger-dev": ["@apps/trigger-dev@workspace:apps/trigger-dev"],
+
+    "@apps/twelvedata": ["@apps/twelvedata@workspace:apps/twelvedata"],
 
     "@apps/twilio": ["@apps/twilio@workspace:apps/twilio"],
 
