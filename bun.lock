@@ -229,6 +229,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/backstage-events": {
+      "name": "@apps/backstage-events",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/backstage-notifications": {
+      "name": "@apps/backstage-notifications",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/backstage-scaffolder": {
       "name": "@apps/backstage-scaffolder",
       "dependencies": {
@@ -327,6 +355,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/budibase": {
+      "name": "@apps/budibase",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/bungie": {
       "name": "@apps/bungie",
       "dependencies": {
@@ -343,6 +385,20 @@
     },
     "apps/calcom": {
       "name": "@apps/calcom",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/canva": {
+      "name": "@apps/canva",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -453,6 +509,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/coinbase-cdp": {
+      "name": "@apps/coinbase-cdp",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/comfyui": {
       "name": "@apps/comfyui",
       "dependencies": {
@@ -483,6 +553,20 @@
     },
     "apps/coolify": {
       "name": "@apps/coolify",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/cvat": {
+      "name": "@apps/cvat",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1531,6 +1615,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/nextcloud-apps": {
+      "name": "@apps/nextcloud-apps",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/nextcloud-core": {
       "name": "@apps/nextcloud-core",
       "dependencies": {
@@ -2371,6 +2469,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/twitch": {
+      "name": "@apps/twitch",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/twitter": {
       "name": "@apps/twitter",
       "dependencies": {
@@ -2497,6 +2609,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/whatsapp-business": {
+      "name": "@apps/whatsapp-business",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/windmill": {
       "name": "@apps/windmill",
       "dependencies": {
@@ -2610,6 +2736,10 @@
 
     "@apps/backstage-catalog": ["@apps/backstage-catalog@workspace:apps/backstage-catalog"],
 
+    "@apps/backstage-events": ["@apps/backstage-events@workspace:apps/backstage-events"],
+
+    "@apps/backstage-notifications": ["@apps/backstage-notifications@workspace:apps/backstage-notifications"],
+
     "@apps/backstage-scaffolder": ["@apps/backstage-scaffolder@workspace:apps/backstage-scaffolder"],
 
     "@apps/backstage-search": ["@apps/backstage-search@workspace:apps/backstage-search"],
@@ -2624,9 +2754,13 @@
 
     "@apps/brevo": ["@apps/brevo@workspace:apps/brevo"],
 
+    "@apps/budibase": ["@apps/budibase@workspace:apps/budibase"],
+
     "@apps/bungie": ["@apps/bungie@workspace:apps/bungie"],
 
     "@apps/calcom": ["@apps/calcom@workspace:apps/calcom"],
+
+    "@apps/canva": ["@apps/canva@workspace:apps/canva"],
 
     "@apps/chatwoot": ["@apps/chatwoot@workspace:apps/chatwoot"],
 
@@ -2642,11 +2776,15 @@
 
     "@apps/cohere": ["@apps/cohere@workspace:apps/cohere"],
 
+    "@apps/coinbase-cdp": ["@apps/coinbase-cdp@workspace:apps/coinbase-cdp"],
+
     "@apps/comfyui": ["@apps/comfyui@workspace:apps/comfyui"],
 
     "@apps/confluence": ["@apps/confluence@workspace:apps/confluence"],
 
     "@apps/coolify": ["@apps/coolify@workspace:apps/coolify"],
+
+    "@apps/cvat": ["@apps/cvat@workspace:apps/cvat"],
 
     "@apps/datadog": ["@apps/datadog@workspace:apps/datadog"],
 
@@ -2796,6 +2934,8 @@
 
     "@apps/nextcloud-app-api": ["@apps/nextcloud-app-api@workspace:apps/nextcloud-app-api"],
 
+    "@apps/nextcloud-apps": ["@apps/nextcloud-apps@workspace:apps/nextcloud-apps"],
+
     "@apps/nextcloud-core": ["@apps/nextcloud-core@workspace:apps/nextcloud-core"],
 
     "@apps/nextcloud-talk": ["@apps/nextcloud-talk@workspace:apps/nextcloud-talk"],
@@ -2916,6 +3056,8 @@
 
     "@apps/twilio": ["@apps/twilio@workspace:apps/twilio"],
 
+    "@apps/twitch": ["@apps/twitch@workspace:apps/twitch"],
+
     "@apps/twitter": ["@apps/twitter@workspace:apps/twitter"],
 
     "@apps/tyk": ["@apps/tyk@workspace:apps/tyk"],
@@ -2933,6 +3075,8 @@
     "@apps/wazuh": ["@apps/wazuh@workspace:apps/wazuh"],
 
     "@apps/weather-gov": ["@apps/weather-gov@workspace:apps/weather-gov"],
+
+    "@apps/whatsapp-business": ["@apps/whatsapp-business@workspace:apps/whatsapp-business"],
 
     "@apps/windmill": ["@apps/windmill@workspace:apps/windmill"],
 

@@ -1,0 +1,20 @@
+{
+  "name": "@apps/nextcloud-apps",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/appstore.config.ts; hono-takibi -c configs/cloud-federation-api.config.ts; hono-takibi -c configs/comments.config.ts; hono-takibi -c configs/dashboard.config.ts; hono-takibi -c configs/dav.config.ts; hono-takibi -c configs/federatedfilesharing.config.ts; hono-takibi -c configs/federation.config.ts; hono-takibi -c configs/files.config.ts; hono-takibi -c configs/files-external.config.ts; hono-takibi -c configs/files-reminders.config.ts; hono-takibi -c configs/files-sharing.config.ts; hono-takibi -c configs/files-trashbin.config.ts; hono-takibi -c configs/files-versions.config.ts; hono-takibi -c configs/oauth2.config.ts; hono-takibi -c configs/profile.config.ts; hono-takibi -c configs/provisioning-api.config.ts; hono-takibi -c configs/settings.config.ts; hono-takibi -c configs/sharebymail.config.ts; hono-takibi -c configs/sharing.config.ts; hono-takibi -c configs/systemtags.config.ts; hono-takibi -c configs/theming.config.ts; hono-takibi -c configs/updatenotification.config.ts; hono-takibi -c configs/user-ldap.config.ts; hono-takibi -c configs/user-status.config.ts; hono-takibi -c configs/viewer.config.ts; hono-takibi -c configs/weather-status.config.ts; hono-takibi -c configs/webhook-listeners.config.ts; hono-takibi -c configs/workflowengine.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}
