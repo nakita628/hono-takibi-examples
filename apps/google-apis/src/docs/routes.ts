@@ -1,0 +1,4556 @@
+import { createRoute, z } from '@hono/zod-openapi'
+
+const RgbColorSchema = z
+  .object({
+    blue: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The blue component of the color, from 0.0 to 1.0.' }),
+    green: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The green component of the color, from 0.0 to 1.0.' }),
+    red: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The red component of the color, from 0.0 to 1.0.' }),
+  })
+  .openapi({ description: 'An RGB color.', required: [] })
+  .openapi('RgbColor')
+
+type ColorType = { rgbColor?: z.infer<typeof RgbColorSchema> }
+
+const ColorSchema: z.ZodType<ColorType> = z
+  .lazy(() =>
+    z
+      .object({
+        rgbColor: RgbColorSchema.exactOptional().openapi({ description: 'The RGB color value.' }),
+      })
+      .openapi({ description: 'A solid color.', required: [] }),
+  )
+  .openapi('Color')
+
+const OptionalColorSchema = z
+  .object({
+    color: ColorSchema.exactOptional().openapi({
+      description:
+        'If set, this will be used as an opaque color. If unset, this represents a transparent color.',
+    }),
+  })
+  .openapi({
+    description: 'A color that can either be fully opaque or fully transparent.',
+    required: [],
+  })
+  .openapi('OptionalColor')
+
+const DimensionSchema = z
+  .object({
+    magnitude: z.float64().exactOptional().openapi({ description: 'The magnitude.' }),
+    unit: z
+      .enum(['UNIT_UNSPECIFIED', 'PT'])
+      .exactOptional()
+      .openapi({ description: 'The units for magnitude.' }),
+  })
+  .openapi({
+    description: 'A magnitude in a single direction in the specified units.',
+    required: [],
+  })
+  .openapi('Dimension')
+
+const LinkSchema = z
+  .object({
+    bookmarkId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of a bookmark in this document.' }),
+    headingId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of a heading in this document.' }),
+    url: z.string().exactOptional().openapi({ description: 'An external URL.' }),
+  })
+  .openapi({
+    description: 'A reference to another portion of a document or an external URL resource.',
+    required: [],
+  })
+  .openapi('Link')
+
+const WeightedFontFamilySchema = z
+  .object({
+    fontFamily: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The font family of the text. The font family can be any font from the Font menu in Docs or from [Google Fonts] (https://fonts.google.com/). If the font name is unrecognized, the text is rendered in `Arial`.',
+      }),
+    weight: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The weight of the font. This field can have any value that\'s a multiple of `100` between `100` and `900`, inclusive. This range corresponds to the numerical values described in the CSS 2.1 Specification, [section 15.6](https://www.w3.org/TR/CSS21/fonts.html#font-boldness), with non-numerical values disallowed. The default value is `400` ("normal"). The font weight makes up just one component of the rendered font weight. A combination of the `weight` and the text style\'s resolved `bold` value determine the rendered weight, after accounting for inheritance: * If the text is bold and the weight is less than `400`, the rendered weight is 400. * If the text is bold and the weight is greater than or equal to `400` but is less than `700`, the rendered weight is `700`. * If the weight is greater than or equal to `700`, the rendered weight is equal to the weight. * If the text is not bold, the rendered weight is equal to the weight.',
+      }),
+  })
+  .openapi({ description: 'Represents a font family and weight of text.', required: [] })
+  .openapi('WeightedFontFamily')
+
+const TextStyleSchema = z
+  .object({
+    backgroundColor: OptionalColorSchema.exactOptional().openapi({
+      description:
+        'The background color of the text. If set, the color is either an RGB color or transparent, depending on the `color` field.',
+    }),
+    baselineOffset: z
+      .enum(['BASELINE_OFFSET_UNSPECIFIED', 'NONE', 'SUPERSCRIPT', 'SUBSCRIPT'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The text's vertical offset from its normal position. Text with `SUPERSCRIPT` or `SUBSCRIPT` baseline offsets is automatically rendered in a smaller font size, computed based on the `font_size` field. Changes in this field don't affect the `font_size`.",
+      }),
+    bold: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is rendered as bold.' }),
+    fontSize: DimensionSchema.exactOptional().openapi({
+      description: "The size of the text's font.",
+    }),
+    foregroundColor: OptionalColorSchema.exactOptional().openapi({
+      description:
+        'The foreground color of the text. If set, the color is either an RGB color or transparent, depending on the `color` field.',
+    }),
+    italic: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is italicized.' }),
+    link: LinkSchema.exactOptional().openapi({
+      description:
+        'The hyperlink destination of the text. If unset, there\'s no link. Links are not inherited from parent text. Changing the link in an update request causes some other changes to the text style of the range: * When setting a link, the text foreground color will be updated to the default link color and the text will be underlined. If these fields are modified in the same request, those values will be used instead of the link defaults. * Setting a link on a text range that overlaps with an existing link will also update the existing link to point to the new URL. * Links are not settable on newline characters. As a result, setting a link on a text range that crosses a paragraph boundary, such as `"ABC\\n123"`, will separate the newline character(s) into their own text runs. The link will be applied separately to the runs before and after the newline. * Removing a link will update the text style of the range to match the style of the preceding text (or the default text styles if the preceding text is another link) unless different styles are being set in the same request.',
+    }),
+    smallCaps: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is in small capital letters.' }),
+    strikethrough: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is struck through.' }),
+    underline: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is underlined.' }),
+    weightedFontFamily: WeightedFontFamilySchema.exactOptional().openapi({
+      description:
+        'The font family and rendered weight of the text. If an update request specifies values for both `weighted_font_family` and `bold`, the `weighted_font_family` is applied first, then `bold`. If `weighted_font_family#weight` is not set, it defaults to `400`. If `weighted_font_family` is set, then `weighted_font_family#font_family` must also be set with a non-empty value. Otherwise, a 400 bad request error is returned.',
+    }),
+  })
+  .openapi({
+    description:
+      "Represents the styling that can be applied to text. Inherited text styles are represented as unset fields in this message. A text style's parent depends on where the text style is defined: * The TextStyle of text in a Paragraph inherits from the paragraph's corresponding named style type. * The TextStyle on a named style inherits from the normal text named style. * The TextStyle of the normal text named style inherits from the default text style in the Docs editor. * The TextStyle on a Paragraph element that's contained in a table may inherit its text style from the table style. If the text style does not inherit from a parent, unsetting fields will revert the style to a value matching the defaults in the Docs editor.",
+    required: [],
+  })
+  .openapi('TextStyle')
+
+const BulletSchema = z
+  .object({
+    listId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the list this paragraph belongs to.' }),
+    nestingLevel: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The nesting level of this paragraph in the list.' }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The paragraph-specific text style applied to this bullet.',
+    }),
+  })
+  .openapi({ description: 'Describes the bullet of a paragraph.', required: [] })
+  .openapi('Bullet')
+
+const TextStyleSuggestionStateSchema = z
+  .object({
+    backgroundColorSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to background_color.' }),
+    baselineOffsetSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to baseline_offset.' }),
+    boldSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to bold.' }),
+    fontSizeSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to font_size.' }),
+    foregroundColorSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to foreground_color.' }),
+    italicSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to italic.' }),
+    linkSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to link.' }),
+    smallCapsSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to small_caps.' }),
+    strikethroughSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to strikethrough.' }),
+    underlineSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to underline.' }),
+    weightedFontFamilySuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to weighted_font_family.',
+      }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base TextStyle have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('TextStyleSuggestionState')
+
+const SuggestedTextStyleSchema = z
+  .object({
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description:
+        'A TextStyle that only includes the changes made in this suggestion. This can be used along with the text_style_suggestion_state to see which fields have changed and their new values.',
+    }),
+    textStyleSuggestionState: TextStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields on the base TextStyle have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggested change to a TextStyle.', required: [] })
+  .openapi('SuggestedTextStyle')
+
+const AutoTextSchema = z
+  .object({
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The suggested insertion IDs. An AutoText may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The suggested text style changes to this AutoText, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The text style of this AutoText.',
+    }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'PAGE_NUMBER', 'PAGE_COUNT'])
+      .exactOptional()
+      .openapi({ description: 'The type of this auto text.' }),
+  })
+  .openapi({
+    description:
+      "A ParagraphElement representing a spot in the text that's dynamically replaced with content that can change over time, like a page number.",
+    required: [],
+  })
+  .openapi('AutoText')
+
+const ColumnBreakSchema = z
+  .object({
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The suggested insertion IDs. A ColumnBreak may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested text style changes to this ColumnBreak, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description:
+        'The text style of this ColumnBreak. Similar to text content, like text runs and footnote references, the text style of a column break can affect content layout as well as the styling of text inserted next to it.',
+    }),
+  })
+  .openapi({
+    description:
+      'A ParagraphElement representing a column break. A column break makes the subsequent text start at the top of the next column.',
+    required: [],
+  })
+  .openapi('ColumnBreak')
+
+const EquationSchema = z
+  .object({
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The suggested insertion IDs. An Equation may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+      }),
+  })
+  .openapi({ description: 'A ParagraphElement representing an equation.', required: [] })
+  .openapi('Equation')
+
+const FootnoteReferenceSchema = z
+  .object({
+    footnoteId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the footnote that contains the content of this footnote reference.',
+      }),
+    footnoteNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The rendered number of this footnote.' }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The suggested insertion IDs. A FootnoteReference may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested text style changes to this FootnoteReference, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The text style of this FootnoteReference.',
+    }),
+  })
+  .openapi({
+    description:
+      'A ParagraphElement representing a footnote reference. A footnote reference is the inline content rendered with a number and is used to identify the footnote.',
+    required: [],
+  })
+  .openapi('FootnoteReference')
+
+const HorizontalRuleSchema = z
+  .object({
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested insertion IDs. A HorizontalRule may have multiple insertion IDs if it is a nested suggested change. If empty, then this is not a suggested insertion.',
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested text style changes to this HorizontalRule, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description:
+        'The text style of this HorizontalRule. Similar to text content, like text runs and footnote references, the text style of a horizontal rule can affect content layout as well as the styling of text inserted next to it.',
+    }),
+  })
+  .openapi({ description: 'A ParagraphElement representing a horizontal line.', required: [] })
+  .openapi('HorizontalRule')
+
+const InlineObjectElementSchema = z
+  .object({
+    inlineObjectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the InlineObject this element contains.' }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The suggested insertion IDs. An InlineObjectElement may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested text style changes to this InlineObject, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description:
+        'The text style of this InlineObjectElement. Similar to text content, like text runs and footnote references, the text style of an inline object element can affect content layout as well as the styling of text inserted next to it.',
+    }),
+  })
+  .openapi({ description: 'A ParagraphElement that contains an InlineObject.', required: [] })
+  .openapi('InlineObjectElement')
+
+const PageBreakSchema = z
+  .object({
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The suggested insertion IDs. A PageBreak may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The suggested text style changes to this PageBreak, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description:
+        'The text style of this PageBreak. Similar to text content, like text runs and footnote references, the text style of a page break can affect content layout as well as the styling of text inserted next to it.',
+    }),
+  })
+  .openapi({
+    description:
+      'A ParagraphElement representing a page break. A page break makes the subsequent text start at the top of the next page.',
+    required: [],
+  })
+  .openapi('PageBreak')
+
+const PersonPropertiesSchema = z
+  .object({
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The email address linked to this Person. This field is always present.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The name of the person if it's displayed in the link text instead of the person's email address.",
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Properties specific to a linked Person.', required: [] })
+  .openapi('PersonProperties')
+
+const PersonSchema = z
+  .object({
+    personId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The unique ID of this link.', readOnly: true }),
+    personProperties: PersonPropertiesSchema.exactOptional().openapi({
+      description: 'Output only. The properties of this Person. This field is always present.',
+      readOnly: true,
+    }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "IDs for suggestions that remove this person link from the document. A Person might have multiple deletion IDs if, for example, multiple users suggest deleting it. If empty, then this person link isn't suggested for deletion.",
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "IDs for suggestions that insert this person link into the document. A Person might have multiple insertion IDs if it's a nested suggested change (a suggestion within a suggestion made by a different user, for example). If empty, then this person link isn't a suggested insertion.",
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The suggested text style changes to this Person, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The text style of this Person.',
+    }),
+  })
+  .openapi({
+    description:
+      "A person or email address mentioned in a document. These mentions behave as a single, immutable element containing the person's name or email address.",
+    required: [],
+  })
+  .openapi('Person')
+
+const RichLinkPropertiesSchema = z
+  .object({
+    mimeType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The [MIME type](https://developers.google.com/drive/api/v3/mime-types) of the RichLink, if there's one (for example, when it's a file in Drive).",
+        readOnly: true,
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The title of the RichLink as displayed in the link. This title matches the title of the linked resource at the time of the insertion or last update of the link. This field is always present.',
+        readOnly: true,
+      }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The URI to the RichLink. This is always present.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Properties specific to a RichLink.', required: [] })
+  .openapi('RichLinkProperties')
+
+const RichLinkSchema = z
+  .object({
+    richLinkId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The ID of this link.', readOnly: true }),
+    richLinkProperties: RichLinkPropertiesSchema.exactOptional().openapi({
+      description: 'Output only. The properties of this RichLink. This field is always present.',
+      readOnly: true,
+    }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "IDs for suggestions that remove this link from the document. A RichLink might have multiple deletion IDs if, for example, multiple users suggest deleting it. If empty, then this person link isn't suggested for deletion.",
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "IDs for suggestions that insert this link into the document. A RichLink might have multiple insertion IDs if it's a nested suggested change (a suggestion within a suggestion made by a different user, for example). If empty, then this person link isn't a suggested insertion.",
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The suggested text style changes to this RichLink, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The text style of this RichLink.',
+    }),
+  })
+  .openapi({
+    description:
+      'A link to a Google resource (such as a file in Drive, a YouTube video, or a Calendar event).',
+    required: [],
+  })
+  .openapi('RichLink')
+
+const TextRunSchema = z
+  .object({
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text of this run. Any non-text elements in the run are replaced with the Unicode character U+E907.',
+      }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The suggested insertion IDs. A TextRun may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+      }),
+    suggestedTextStyleChanges: z
+      .record(z.string(), SuggestedTextStyleSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The suggested text style changes to this run, keyed by suggestion ID.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The text style of this run.',
+    }),
+  })
+  .openapi({
+    description: 'A ParagraphElement that represents a run of text that all has the same styling.',
+    required: [],
+  })
+  .openapi('TextRun')
+
+const ParagraphElementSchema = z
+  .object({
+    autoText: AutoTextSchema.exactOptional().openapi({
+      description: 'An auto text paragraph element.',
+    }),
+    columnBreak: ColumnBreakSchema.exactOptional().openapi({
+      description: 'A column break paragraph element.',
+    }),
+    endIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The zero-base end index of this paragraph element, exclusive, in UTF-16 code units.',
+      }),
+    equation: EquationSchema.exactOptional().openapi({
+      description: 'An equation paragraph element.',
+    }),
+    footnoteReference: FootnoteReferenceSchema.exactOptional().openapi({
+      description: 'A footnote reference paragraph element.',
+    }),
+    horizontalRule: HorizontalRuleSchema.exactOptional().openapi({
+      description: 'A horizontal rule paragraph element.',
+    }),
+    inlineObjectElement: InlineObjectElementSchema.exactOptional().openapi({
+      description: 'An inline object paragraph element.',
+    }),
+    pageBreak: PageBreakSchema.exactOptional().openapi({
+      description: 'A page break paragraph element.',
+    }),
+    person: PersonSchema.exactOptional().openapi({
+      description: 'A paragraph element that links to a person or email address.',
+    }),
+    richLink: RichLinkSchema.exactOptional().openapi({
+      description:
+        'A paragraph element that links to a Google resource (such as a file in Google Drive, a YouTube video, or a Calendar event.)',
+    }),
+    startIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The zero-based start index of this paragraph element, in UTF-16 code units.',
+      }),
+    textRun: TextRunSchema.exactOptional().openapi({
+      description: 'A text run paragraph element.',
+    }),
+  })
+  .openapi({
+    description: 'A ParagraphElement describes content within a Paragraph.',
+    required: [],
+  })
+  .openapi('ParagraphElement')
+
+const ParagraphBorderSchema = z
+  .object({
+    color: OptionalColorSchema.exactOptional().openapi({ description: 'The color of the border.' }),
+    dashStyle: z
+      .enum(['DASH_STYLE_UNSPECIFIED', 'SOLID', 'DOT', 'DASH'])
+      .exactOptional()
+      .openapi({ description: 'The dash style of the border.' }),
+    padding: DimensionSchema.exactOptional().openapi({ description: 'The padding of the border.' }),
+    width: DimensionSchema.exactOptional().openapi({ description: 'The width of the border.' }),
+  })
+  .openapi({ description: 'A border around a paragraph.', required: [] })
+  .openapi('ParagraphBorder')
+
+const ShadingSchema = z
+  .object({
+    backgroundColor: OptionalColorSchema.exactOptional().openapi({
+      description: 'The background color of this paragraph shading.',
+    }),
+  })
+  .openapi({ description: 'The shading of a paragraph.', required: [] })
+  .openapi('Shading')
+
+const TabStopSchema = z
+  .object({
+    alignment: z
+      .enum(['TAB_STOP_ALIGNMENT_UNSPECIFIED', 'START', 'CENTER', 'END'])
+      .exactOptional()
+      .openapi({
+        description: 'The alignment of this tab stop. If unset, the value defaults to START.',
+      }),
+    offset: DimensionSchema.exactOptional().openapi({
+      description: 'The offset between this tab stop and the start margin.',
+    }),
+  })
+  .openapi({ description: 'A tab stop within a paragraph.', required: [] })
+  .openapi('TabStop')
+
+const ParagraphStyleSchema = z
+  .object({
+    alignment: z
+      .enum(['ALIGNMENT_UNSPECIFIED', 'START', 'CENTER', 'END', 'JUSTIFIED'])
+      .exactOptional()
+      .openapi({ description: 'The text alignment for this paragraph.' }),
+    avoidWidowAndOrphan: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to avoid widows and orphans for the paragraph. If unset, the value is inherited from the parent.',
+      }),
+    borderBetween: ParagraphBorderSchema.exactOptional().openapi({
+      description:
+        'The border between this paragraph and the next and previous paragraphs. If unset, the value is inherited from the parent. The between border is rendered when the adjacent paragraph has the same border and indent properties. Paragraph borders cannot be partially updated. When changing a paragraph border, the new border must be specified in its entirety.',
+    }),
+    borderBottom: ParagraphBorderSchema.exactOptional().openapi({
+      description:
+        'The border at the bottom of this paragraph. If unset, the value is inherited from the parent. The bottom border is rendered when the paragraph below has different border and indent properties. Paragraph borders cannot be partially updated. When changing a paragraph border, the new border must be specified in its entirety.',
+    }),
+    borderLeft: ParagraphBorderSchema.exactOptional().openapi({
+      description:
+        'The border to the left of this paragraph. If unset, the value is inherited from the parent. Paragraph borders cannot be partially updated. When changing a paragraph border, the new border must be specified in its entirety.',
+    }),
+    borderRight: ParagraphBorderSchema.exactOptional().openapi({
+      description:
+        'The border to the right of this paragraph. If unset, the value is inherited from the parent. Paragraph borders cannot be partially updated. When changing a paragraph border, the new border must be specified in its entirety.',
+    }),
+    borderTop: ParagraphBorderSchema.exactOptional().openapi({
+      description:
+        'The border at the top of this paragraph. If unset, the value is inherited from the parent. The top border is rendered when the paragraph above has different border and indent properties. Paragraph borders cannot be partially updated. When changing a paragraph border, the new border must be specified in its entirety.',
+    }),
+    direction: z
+      .enum(['CONTENT_DIRECTION_UNSPECIFIED', 'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The text direction of this paragraph. If unset, the value defaults to LEFT_TO_RIGHT since paragraph direction is not inherited.',
+      }),
+    headingId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The heading ID of the paragraph. If empty, then this paragraph is not a heading. This property is read-only.',
+      }),
+    indentEnd: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of indentation for the paragraph on the side that corresponds to the end of the text, based on the current paragraph direction. If unset, the value is inherited from the parent.',
+    }),
+    indentFirstLine: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of indentation for the first line of the paragraph. If unset, the value is inherited from the parent.',
+    }),
+    indentStart: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of indentation for the paragraph on the side that corresponds to the start of the text, based on the current paragraph direction. If unset, the value is inherited from the parent.',
+    }),
+    keepLinesTogether: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether all lines of the paragraph should be laid out on the same page or column if possible. If unset, the value is inherited from the parent.',
+      }),
+    keepWithNext: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether at least a part of this paragraph should be laid out on the same page or column as the next paragraph if possible. If unset, the value is inherited from the parent.',
+      }),
+    lineSpacing: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of space between lines, as a percentage of normal, where normal is represented as 100.0. If unset, the value is inherited from the parent.',
+      }),
+    namedStyleType: z
+      .enum([
+        'NAMED_STYLE_TYPE_UNSPECIFIED',
+        'NORMAL_TEXT',
+        'TITLE',
+        'SUBTITLE',
+        'HEADING_1',
+        'HEADING_2',
+        'HEADING_3',
+        'HEADING_4',
+        'HEADING_5',
+        'HEADING_6',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The named style type of the paragraph. Since updating the named style type affects other properties within ParagraphStyle, the named style type is applied before the other properties are updated.',
+      }),
+    pageBreakBefore: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the current paragraph should always start at the beginning of a page. If unset, the value is inherited from the parent. Attempting to update page_break_before for paragraphs in unsupported regions, including Table, Header, Footer and Footnote, can result in an invalid document state that returns a 400 bad request error.',
+      }),
+    shading: ShadingSchema.exactOptional().openapi({
+      description:
+        'The shading of the paragraph. If unset, the value is inherited from the parent.',
+    }),
+    spaceAbove: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of extra space above the paragraph. If unset, the value is inherited from the parent.',
+    }),
+    spaceBelow: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of extra space below the paragraph. If unset, the value is inherited from the parent.',
+    }),
+    spacingMode: z
+      .enum(['SPACING_MODE_UNSPECIFIED', 'NEVER_COLLAPSE', 'COLLAPSE_LISTS'])
+      .exactOptional()
+      .openapi({ description: 'The spacing mode for the paragraph.' }),
+    tabStops: z
+      .array(TabStopSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of the tab stops for this paragraph. The list of tab stops is not inherited. This property is read-only.',
+      }),
+  })
+  .openapi({
+    description:
+      "Styles that apply to a whole paragraph. Inherited paragraph styles are represented as unset fields in this message. A paragraph style's parent depends on where the paragraph style is defined: * The ParagraphStyle on a Paragraph inherits from the paragraph's corresponding named style type. * The ParagraphStyle on a named style inherits from the normal text named style. * The ParagraphStyle of the normal text named style inherits from the default paragraph style in the Docs editor. * The ParagraphStyle on a Paragraph element that's contained in a table may inherit its paragraph style from the table style. If the paragraph style does not inherit from a parent, unsetting fields will revert the style to a value matching the defaults in the Docs editor.",
+    required: [],
+  })
+  .openapi('ParagraphStyle')
+
+const BulletSuggestionStateSchema = z
+  .object({
+    listIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to the list_id.' }),
+    nestingLevelSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to the nesting_level.' }),
+    textStyleSuggestionState: TextStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in text style have been changed in this suggestion.',
+    }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base Bullet have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('BulletSuggestionState')
+
+const SuggestedBulletSchema = z
+  .object({
+    bullet: BulletSchema.exactOptional().openapi({
+      description:
+        'A Bullet that only includes the changes made in this suggestion. This can be used along with the bullet_suggestion_state to see which fields have changed and their new values.',
+    }),
+    bulletSuggestionState: BulletSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields on the base Bullet have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggested change to a Bullet.', required: [] })
+  .openapi('SuggestedBullet')
+
+const ShadingSuggestionStateSchema = z
+  .object({
+    backgroundColorSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to the Shading.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base Shading have been changed in this suggested change. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('ShadingSuggestionState')
+
+const ParagraphStyleSuggestionStateSchema = z
+  .object({
+    alignmentSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to alignment.' }),
+    avoidWidowAndOrphanSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to avoid_widow_and_orphan.',
+      }),
+    borderBetweenSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_between.' }),
+    borderBottomSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_bottom.' }),
+    borderLeftSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_left.' }),
+    borderRightSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_right.' }),
+    borderTopSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_top.' }),
+    directionSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to direction.' }),
+    headingIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to heading_id.' }),
+    indentEndSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to indent_end.' }),
+    indentFirstLineSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to indent_first_line.' }),
+    indentStartSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to indent_start.' }),
+    keepLinesTogetherSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to keep_lines_together.',
+      }),
+    keepWithNextSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to keep_with_next.' }),
+    lineSpacingSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to line_spacing.' }),
+    namedStyleTypeSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to named_style_type.' }),
+    pageBreakBeforeSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to page_break_before.' }),
+    shadingSuggestionState: ShadingSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in shading have been changed in this suggestion.',
+    }),
+    spaceAboveSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to space_above.' }),
+    spaceBelowSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to space_below.' }),
+    spacingModeSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to spacing_mode.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base ParagraphStyle have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('ParagraphStyleSuggestionState')
+
+const SuggestedParagraphStyleSchema = z
+  .object({
+    paragraphStyle: ParagraphStyleSchema.exactOptional().openapi({
+      description:
+        'A ParagraphStyle that only includes the changes made in this suggestion. This can be used along with the paragraph_style_suggestion_state to see which fields have changed and their new values.',
+    }),
+    paragraphStyleSuggestionState: ParagraphStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields on the base ParagraphStyle have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggested change to a ParagraphStyle.', required: [] })
+  .openapi('SuggestedParagraphStyle')
+
+const ObjectReferencesSchema = z
+  .object({
+    objectIds: z.array(z.string()).exactOptional().openapi({ description: 'The object IDs.' }),
+  })
+  .openapi({ description: 'A collection of object IDs.', required: [] })
+  .openapi('ObjectReferences')
+
+type ParagraphType = {
+  bullet?: z.infer<typeof BulletSchema>
+  elements?: z.infer<typeof ParagraphElementSchema>[]
+  paragraphStyle?: z.infer<typeof ParagraphStyleSchema>
+  positionedObjectIds?: string[]
+  suggestedBulletChanges?: { [key: string]: z.infer<typeof SuggestedBulletSchema> }
+  suggestedParagraphStyleChanges?: { [key: string]: z.infer<typeof SuggestedParagraphStyleSchema> }
+  suggestedPositionedObjectIds?: { [key: string]: z.infer<typeof ObjectReferencesSchema> }
+}
+
+const LocationSchema = z
+  .object({
+    index: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The zero-based index, in UTF-16 code units. The index is relative to the beginning of the segment specified by segment_id.',
+      }),
+    segmentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the header, footer or footnote the location is in. An empty segment ID signifies the document's body.",
+      }),
+  })
+  .openapi({ description: 'A particular location in the document.', required: [] })
+  .openapi('Location')
+
+const CreateFooterRequestSchema = z
+  .object({
+    sectionBreakLocation: LocationSchema.exactOptional().openapi({
+      description:
+        'The location of the SectionBreak immediately preceding the section whose SectionStyle this footer should belong to. If this is unset or refers to the first section break in the document, the footer applies to the document style.',
+    }),
+    type: z
+      .enum(['HEADER_FOOTER_TYPE_UNSPECIFIED', 'DEFAULT'])
+      .exactOptional()
+      .openapi({ description: 'The type of footer to create.' }),
+  })
+  .openapi({
+    description:
+      'Creates a Footer. The new footer is applied to the SectionStyle at the location of the SectionBreak if specified, otherwise it is applied to the DocumentStyle. If a footer of the specified type already exists, a 400 bad request error is returned.',
+    required: [],
+  })
+  .openapi('CreateFooterRequest')
+
+const EndOfSegmentLocationSchema = z
+  .object({
+    segmentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the header, footer or footnote the location is in. An empty segment ID signifies the document's body.",
+      }),
+  })
+  .openapi({
+    description:
+      'Location at the end of a body, header, footer or footnote. The location is immediately before the last newline in the document segment.',
+    required: [],
+  })
+  .openapi('EndOfSegmentLocation')
+
+const CreateFootnoteRequestSchema = z
+  .object({
+    endOfSegmentLocation: EndOfSegmentLocationSchema.exactOptional().openapi({
+      description:
+        'Inserts the footnote reference at the end of the document body. Footnote references cannot be inserted inside a header, footer or footnote. Since footnote references can only be inserted in the body, the segment ID field must be empty.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        "Inserts the footnote reference at a specific index in the document. The footnote reference must be inserted inside the bounds of an existing Paragraph. For instance, it cannot be inserted at a table's start index (i.e. between the table and its preceding paragraph). Footnote references cannot be inserted inside an equation, header, footer or footnote. Since footnote references can only be inserted in the body, the segment ID field must be empty.",
+    }),
+  })
+  .openapi({
+    description:
+      'Creates a Footnote segment and inserts a new FootnoteReference to it at the given location. The new Footnote segment will contain a space followed by a newline character.',
+    required: [],
+  })
+  .openapi('CreateFootnoteRequest')
+
+const CreateHeaderRequestSchema = z
+  .object({
+    sectionBreakLocation: LocationSchema.exactOptional().openapi({
+      description:
+        "The location of the SectionBreak which begins the section this header should belong to. If `section_break_location' is unset or if it refers to the first section break in the document body, the header applies to the DocumentStyle",
+    }),
+    type: z
+      .enum(['HEADER_FOOTER_TYPE_UNSPECIFIED', 'DEFAULT'])
+      .exactOptional()
+      .openapi({ description: 'The type of header to create.' }),
+  })
+  .openapi({
+    description:
+      'Creates a Header. The new header is applied to the SectionStyle at the location of the SectionBreak if specified, otherwise it is applied to the DocumentStyle. If a header of the specified type already exists, a 400 bad request error is returned.',
+    required: [],
+  })
+  .openapi('CreateHeaderRequest')
+
+const RangeSchema = z
+  .object({
+    endIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The zero-based end index of this range, exclusive, in UTF-16 code units. In all current uses, an end index must be provided. This field is an Int32Value in order to accommodate future use cases with open-ended ranges.',
+      }),
+    segmentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the header, footer, or footnote that this range is contained in. An empty segment ID signifies the document's body.",
+      }),
+    startIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The zero-based start index of this range, in UTF-16 code units. In all current uses, a start index must be provided. This field is an Int32Value in order to accommodate future use cases with open-ended ranges.',
+      }),
+  })
+  .openapi({ description: 'Specifies a contiguous range of text.', required: [] })
+  .openapi('Range')
+
+const CreateNamedRangeRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the NamedRange. Names do not need to be unique. Names must be at least 1 character and no more than 256 characters, measured in UTF-16 code units.',
+      }),
+    range: RangeSchema.exactOptional().openapi({ description: 'The range to apply the name to.' }),
+  })
+  .openapi({ description: 'Creates a NamedRange referencing the given range.', required: [] })
+  .openapi('CreateNamedRangeRequest')
+
+const CreateParagraphBulletsRequestSchema = z
+  .object({
+    bulletPreset: z
+      .enum([
+        'BULLET_GLYPH_PRESET_UNSPECIFIED',
+        'BULLET_DISC_CIRCLE_SQUARE',
+        'BULLET_DIAMONDX_ARROW3D_SQUARE',
+        'BULLET_CHECKBOX',
+        'BULLET_ARROW_DIAMOND_DISC',
+        'BULLET_STAR_CIRCLE_SQUARE',
+        'BULLET_ARROW3D_CIRCLE_SQUARE',
+        'BULLET_LEFTTRIANGLE_DIAMOND_DISC',
+        'BULLET_DIAMONDX_HOLLOWDIAMOND_SQUARE',
+        'BULLET_DIAMOND_CIRCLE_SQUARE',
+        'NUMBERED_DECIMAL_ALPHA_ROMAN',
+        'NUMBERED_DECIMAL_ALPHA_ROMAN_PARENS',
+        'NUMBERED_DECIMAL_NESTED',
+        'NUMBERED_UPPERALPHA_ALPHA_ROMAN',
+        'NUMBERED_UPPERROMAN_UPPERALPHA_DECIMAL',
+        'NUMBERED_ZERODECIMAL_ALPHA_ROMAN',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The kinds of bullet glyphs to be used.' }),
+    range: RangeSchema.exactOptional().openapi({
+      description: 'The range to apply the bullet preset to.',
+    }),
+  })
+  .openapi({
+    description:
+      'Creates bullets for all of the paragraphs that overlap with the given range. The nesting level of each paragraph will be determined by counting leading tabs in front of each paragraph. To avoid excess space between the bullet and the corresponding paragraph, these leading tabs are removed by this request. This may change the indices of parts of the text. If the paragraph immediately before paragraphs being updated is in a list with a matching preset, the paragraphs being updated are added to that preceding list.',
+    required: [],
+  })
+  .openapi('CreateParagraphBulletsRequest')
+
+const DeleteContentRangeRequestSchema = z
+  .object({
+    range: RangeSchema.exactOptional().openapi({
+      description:
+        'The range of content to delete. Deleting text that crosses a paragraph boundary may result in changes to paragraph styles, lists, positioned objects and bookmarks as the two paragraphs are merged. Attempting to delete certain ranges can result in an invalid document structure in which case a 400 bad request error is returned. Some examples of invalid delete requests include: * Deleting one code unit of a surrogate pair. * Deleting the last newline character of a Body, Header, Footer, Footnote, TableCell or TableOfContents. * Deleting the start or end of a Table, TableOfContents or Equation without deleting the entire element. * Deleting the newline character before a Table, TableOfContents or SectionBreak without deleting the element. * Deleting individual rows or cells of a table. Deleting the content within a table cell is allowed.',
+    }),
+  })
+  .openapi({ description: 'Deletes content from the document.', required: [] })
+  .openapi('DeleteContentRangeRequest')
+
+const DeleteFooterRequestSchema = z
+  .object({
+    footerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the footer to delete. If this footer is defined on DocumentStyle, the reference to this footer is removed, resulting in no footer of that type for the first section of the document. If this footer is defined on a SectionStyle, the reference to this footer is removed and the footer of that type is now continued from the previous section.',
+      }),
+  })
+  .openapi({ description: 'Deletes a Footer from the document.', required: [] })
+  .openapi('DeleteFooterRequest')
+
+const DeleteHeaderRequestSchema = z
+  .object({
+    headerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the header to delete. If this header is defined on DocumentStyle, the reference to this header is removed, resulting in no header of that type for the first section of the document. If this header is defined on a SectionStyle, the reference to this header is removed and the header of that type is now continued from the previous section.',
+      }),
+  })
+  .openapi({ description: 'Deletes a Header from the document.', required: [] })
+  .openapi('DeleteHeaderRequest')
+
+const DeleteNamedRangeRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the range(s) to delete. All named ranges with the given name will be deleted.',
+      }),
+    namedRangeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the named range to delete.' }),
+  })
+  .openapi({ description: 'Deletes a NamedRange.', required: [] })
+  .openapi('DeleteNamedRangeRequest')
+
+const DeleteParagraphBulletsRequestSchema = z
+  .object({
+    range: RangeSchema.exactOptional().openapi({
+      description: 'The range to delete bullets from.',
+    }),
+  })
+  .openapi({
+    description:
+      'Deletes bullets from all of the paragraphs that overlap with the given range. The nesting level of each paragraph will be visually preserved by adding indent to the start of the corresponding paragraph.',
+    required: [],
+  })
+  .openapi('DeleteParagraphBulletsRequest')
+
+const DeletePositionedObjectRequestSchema = z
+  .object({
+    objectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the positioned object to delete.' }),
+  })
+  .openapi({ description: 'Deletes a PositionedObject from the document.', required: [] })
+  .openapi('DeletePositionedObjectRequest')
+
+const TableCellLocationSchema = z
+  .object({
+    columnIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The zero-based column index. For example, the second column in the table has a column index of 1.',
+      }),
+    rowIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The zero-based row index. For example, the second row in the table has a row index of 1.',
+      }),
+    tableStartLocation: LocationSchema.exactOptional().openapi({
+      description: 'The location where the table starts in the document.',
+    }),
+  })
+  .openapi({ description: 'Location of a single cell within a table.', required: [] })
+  .openapi('TableCellLocation')
+
+const DeleteTableColumnRequestSchema = z
+  .object({
+    tableCellLocation: TableCellLocationSchema.exactOptional().openapi({
+      description:
+        'The reference table cell location from which the column will be deleted. The column this cell spans will be deleted. If this is a merged cell that spans multiple columns, all columns that the cell spans will be deleted. If no columns remain in the table after this deletion, the whole table is deleted.',
+    }),
+  })
+  .openapi({ description: 'Deletes a column from a table.', required: [] })
+  .openapi('DeleteTableColumnRequest')
+
+const DeleteTableRowRequestSchema = z
+  .object({
+    tableCellLocation: TableCellLocationSchema.exactOptional().openapi({
+      description:
+        'The reference table cell location from which the row will be deleted. The row this cell spans will be deleted. If this is a merged cell that spans multiple rows, all rows that the cell spans will be deleted. If no rows remain in the table after this deletion, the whole table is deleted.',
+    }),
+  })
+  .openapi({ description: 'Deletes a row from a table.', required: [] })
+  .openapi('DeleteTableRowRequest')
+
+const SizeSchema = z
+  .object({
+    height: DimensionSchema.exactOptional().openapi({ description: 'The height of the object.' }),
+    width: DimensionSchema.exactOptional().openapi({ description: 'The width of the object.' }),
+  })
+  .openapi({ description: 'A width and height.', required: [] })
+  .openapi('Size')
+
+const InsertInlineImageRequestSchema = z
+  .object({
+    endOfSegmentLocation: EndOfSegmentLocationSchema.exactOptional().openapi({
+      description:
+        'Inserts the text at the end of a header, footer or the document body. Inline images cannot be inserted inside a footnote.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        "Inserts the image at a specific index in the document. The image must be inserted inside the bounds of an existing Paragraph. For instance, it cannot be inserted at a table's start index (i.e. between the table and its preceding paragraph). Inline images cannot be inserted inside a footnote or equation.",
+    }),
+    objectSize: SizeSchema.exactOptional().openapi({
+      description:
+        'The size that the image should appear as in the document. This property is optional and the final size of the image in the document is determined by the following rules: * If neither width nor height is specified, then a default size of the image is calculated based on its resolution. * If one dimension is specified then the other dimension is calculated to preserve the aspect ratio of the image. * If both width and height are specified, the image is scaled to fit within the provided dimensions while maintaining its aspect ratio.',
+    }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The image URI. The image is fetched once at insertion time and a copy is stored for display inside the document. Images must be less than 50MB in size, cannot exceed 25 megapixels, and must be in one of PNG, JPEG, or GIF format. The provided URI must be publicly accessible and at most 2 kB in length. The URI itself is saved with the image, and exposed via the ImageProperties.content_uri field.',
+      }),
+  })
+  .openapi({
+    description: 'Inserts an InlineObject containing an image at the given location.',
+    required: [],
+  })
+  .openapi('InsertInlineImageRequest')
+
+const InsertPageBreakRequestSchema = z
+  .object({
+    endOfSegmentLocation: EndOfSegmentLocationSchema.exactOptional().openapi({
+      description:
+        'Inserts the page break at the end of the document body. Page breaks cannot be inserted inside a footnote, header or footer. Since page breaks can only be inserted inside the body, the segment ID field must be empty.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        "Inserts the page break at a specific index in the document. The page break must be inserted inside the bounds of an existing Paragraph. For instance, it cannot be inserted at a table's start index (i.e. between the table and its preceding paragraph). Page breaks cannot be inserted inside a table, equation, footnote, header or footer. Since page breaks can only be inserted inside the body, the segment ID field must be empty.",
+    }),
+  })
+  .openapi({
+    description: 'Inserts a page break followed by a newline at the specified location.',
+    required: [],
+  })
+  .openapi('InsertPageBreakRequest')
+
+const InsertSectionBreakRequestSchema = z
+  .object({
+    endOfSegmentLocation: EndOfSegmentLocationSchema.exactOptional().openapi({
+      description:
+        'Inserts a newline and a section break at the end of the document body. Section breaks cannot be inserted inside a footnote, header or footer. Because section breaks can only be inserted inside the body, the segment ID field must be empty.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        "Inserts a newline and a section break at a specific index in the document. The section break must be inserted inside the bounds of an existing Paragraph. For instance, it cannot be inserted at a table's start index (i.e. between the table and its preceding paragraph). Section breaks cannot be inserted inside a table, equation, footnote, header, or footer. Since section breaks can only be inserted inside the body, the segment ID field must be empty.",
+    }),
+    sectionType: z
+      .enum(['SECTION_TYPE_UNSPECIFIED', 'CONTINUOUS', 'NEXT_PAGE'])
+      .exactOptional()
+      .openapi({ description: 'The type of section to insert.' }),
+  })
+  .openapi({
+    description:
+      'Inserts a section break at the given location. A newline character will be inserted before the section break.',
+    required: [],
+  })
+  .openapi('InsertSectionBreakRequest')
+
+const InsertTableRequestSchema = z
+  .object({
+    columns: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of columns in the table.' }),
+    endOfSegmentLocation: EndOfSegmentLocationSchema.exactOptional().openapi({
+      description:
+        'Inserts the table at the end of the given header, footer or document body. A newline character will be inserted before the inserted table. Tables cannot be inserted inside a footnote.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        "Inserts the table at a specific model index. A newline character will be inserted before the inserted table, therefore the table start index will be at the specified location index + 1. The table must be inserted inside the bounds of an existing Paragraph. For instance, it cannot be inserted at a table's start index (i.e. between an existing table and its preceding paragraph). Tables cannot be inserted inside a footnote or equation.",
+    }),
+    rows: z.int32().exactOptional().openapi({ description: 'The number of rows in the table.' }),
+  })
+  .openapi({
+    description:
+      'Inserts a table at the specified location. A newline character will be inserted before the inserted table.',
+    required: [],
+  })
+  .openapi('InsertTableRequest')
+
+const InsertTableColumnRequestSchema = z
+  .object({
+    insertRight: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to insert new column to the right of the reference cell location. - `True`: insert to the right. - `False`: insert to the left.',
+      }),
+    tableCellLocation: TableCellLocationSchema.exactOptional().openapi({
+      description:
+        'The reference table cell location from which columns will be inserted. A new column will be inserted to the left (or right) of the column where the reference cell is. If the reference cell is a merged cell, a new column will be inserted to the left (or right) of the merged cell.',
+    }),
+  })
+  .openapi({ description: 'Inserts an empty column into a table.', required: [] })
+  .openapi('InsertTableColumnRequest')
+
+const InsertTableRowRequestSchema = z
+  .object({
+    insertBelow: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to insert new row below the reference cell location. - `True`: insert below the cell. - `False`: insert above the cell.',
+      }),
+    tableCellLocation: TableCellLocationSchema.exactOptional().openapi({
+      description:
+        'The reference table cell location from which rows will be inserted. A new row will be inserted above (or below) the row where the reference cell is. If the reference cell is a merged cell, a new row will be inserted above (or below) the merged cell.',
+    }),
+  })
+  .openapi({ description: 'Inserts an empty row into a table.', required: [] })
+  .openapi('InsertTableRowRequest')
+
+const InsertTextRequestSchema = z
+  .object({
+    endOfSegmentLocation: EndOfSegmentLocationSchema.exactOptional().openapi({
+      description:
+        'Inserts the text at the end of a header, footer, footnote or the document body.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        "Inserts the text at a specific index in the document. Text must be inserted inside the bounds of an existing Paragraph. For instance, text cannot be inserted at a table's start index (i.e. between the table and its preceding paragraph). The text must be inserted in the preceding paragraph.",
+    }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text to be inserted. Inserting a newline character will implicitly create a new Paragraph at that index. The paragraph style of the new paragraph will be copied from the paragraph at the current insertion index, including lists and bullets. Text styles for inserted text will be determined automatically, generally preserving the styling of neighboring text. In most cases, the text style for the inserted text will match the text immediately before the insertion index. Some control characters (U+0000-U+0008, U+000C-U+001F) and characters from the Unicode Basic Multilingual Plane Private Use Area (U+E000-U+F8FF) will be stripped out of the inserted text.',
+      }),
+  })
+  .openapi({ description: 'Inserts text at the specified location.', required: [] })
+  .openapi('InsertTextRequest')
+
+const TableRangeSchema = z
+  .object({
+    columnSpan: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The column span of the table range.' }),
+    rowSpan: z.int32().exactOptional().openapi({ description: 'The row span of the table range.' }),
+    tableCellLocation: TableCellLocationSchema.exactOptional().openapi({
+      description: 'The cell location where the table range starts.',
+    }),
+  })
+  .openapi({
+    description:
+      "A table range represents a reference to a subset of a table. It's important to note that the cells specified by a table range do not necessarily form a rectangle. For example, let's say we have a 3 x 3 table where all the cells of the last row are merged together. The table looks like this: [ ] A table range with table cell location = (table_start_location, row = 0, column = 0), row span = 3 and column span = 2 specifies the following cells: x x [ x x x ]",
+    required: [],
+  })
+  .openapi('TableRange')
+
+const MergeTableCellsRequestSchema = z
+  .object({
+    tableRange: TableRangeSchema.exactOptional().openapi({
+      description:
+        'The table range specifying which cells of the table to merge. Any text in the cells being merged will be concatenated and stored in the "head" cell of the range. This is the upper-left cell of the range when the content direction is left to right, and the upper-right cell of the range otherwise. If the range is non-rectangular (which can occur in some cases where the range covers cells that are already merged or where the table is non-rectangular), a 400 bad request error is returned.',
+    }),
+  })
+  .openapi({ description: 'Merges cells in a Table.', required: [] })
+  .openapi('MergeTableCellsRequest')
+
+const PinTableHeaderRowsRequestSchema = z
+  .object({
+    pinnedHeaderRowsCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of table rows to pin, where 0 implies that all rows are unpinned.',
+      }),
+    tableStartLocation: LocationSchema.exactOptional().openapi({
+      description: 'The location where the table starts in the document.',
+    }),
+  })
+  .openapi({
+    description: 'Updates the number of pinned table header rows in a table.',
+    required: [],
+  })
+  .openapi('PinTableHeaderRowsRequest')
+
+const SubstringMatchCriteriaSchema = z
+  .object({
+    matchCase: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the search should respect case: - `True`: the search is case sensitive. - `False`: the search is case insensitive.',
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text to search for in the document.' }),
+  })
+  .openapi({
+    description: 'A criteria that matches a specific string of text in the document.',
+    required: [],
+  })
+  .openapi('SubstringMatchCriteria')
+
+const ReplaceAllTextRequestSchema = z
+  .object({
+    containsText: SubstringMatchCriteriaSchema.exactOptional().openapi({
+      description: 'Finds text in the document matching this substring.',
+    }),
+    replaceText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text that will replace the matched text.' }),
+  })
+  .openapi({
+    description: 'Replaces all instances of text matching a criteria with replace text.',
+    required: [],
+  })
+  .openapi('ReplaceAllTextRequest')
+
+const ReplaceImageRequestSchema = z
+  .object({
+    imageObjectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the existing image that will be replaced. The ID can be retrieved from the response of a get request.',
+      }),
+    imageReplaceMethod: z
+      .enum(['IMAGE_REPLACE_METHOD_UNSPECIFIED', 'CENTER_CROP'])
+      .exactOptional()
+      .openapi({ description: 'The replacement method.' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URI of the new image. The image is fetched once at insertion time and a copy is stored for display inside the document. Images must be less than 50MB, cannot exceed 25 megapixels, and must be in PNG, JPEG, or GIF format. The provided URI can't surpass 2 KB in length. The URI is saved with the image, and exposed through the ImageProperties.source_uri field.",
+      }),
+  })
+  .openapi({
+    description:
+      'Replaces an existing image with a new image. Replacing an image removes some image effects from the existing image in order to mirror the behavior of the Docs editor.',
+    required: [],
+  })
+  .openapi('ReplaceImageRequest')
+
+const ReplaceNamedRangeContentRequestSchema = z
+  .object({
+    namedRangeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the named range whose content will be replaced. If there is no named range with the given ID a 400 bad request error is returned.',
+      }),
+    namedRangeName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the NamedRanges whose content will be replaced. If there are multiple named ranges with the given name, then the content of each one will be replaced. If there are no named ranges with the given name, then the request will be a no-op.',
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Replaces the content of the specified named range(s) with the given text.',
+      }),
+  })
+  .openapi({
+    description:
+      'Replaces the contents of the specified NamedRange or NamedRanges with the given replacement content. Note that an individual NamedRange may consist of multiple discontinuous ranges. In this case, only the content in the first range will be replaced. The other ranges and their content will be deleted. In cases where replacing or deleting any ranges would result in an invalid document structure, a 400 bad request error is returned.',
+    required: [],
+  })
+  .openapi('ReplaceNamedRangeContentRequest')
+
+const UnmergeTableCellsRequestSchema = z
+  .object({
+    tableRange: TableRangeSchema.exactOptional().openapi({
+      description:
+        'The table range specifying which cells of the table to unmerge. All merged cells in this range will be unmerged, and cells that are already unmerged will not be affected. If the range has no merged cells, the request will do nothing. If there is text in any of the merged cells, the text will remain in the "head" cell of the resulting block of unmerged cells. The "head" cell is the upper-left cell when the content direction is from left to right, and the upper-right otherwise.',
+    }),
+  })
+  .openapi({ description: 'Unmerges cells in a Table.', required: [] })
+  .openapi('UnmergeTableCellsRequest')
+
+const BackgroundSchema = z
+  .object({
+    color: OptionalColorSchema.exactOptional().openapi({ description: 'The background color.' }),
+  })
+  .openapi({ description: 'Represents the background of a document.', required: [] })
+  .openapi('Background')
+
+const DocumentStyleSchema = z
+  .object({
+    background: BackgroundSchema.exactOptional().openapi({
+      description:
+        'The background of the document. Documents cannot have a transparent background color.',
+    }),
+    defaultFooterId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the default footer. If not set, there's no default footer. This property is read-only.",
+      }),
+    defaultHeaderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the default header. If not set, there's no default header. This property is read-only.",
+      }),
+    evenPageFooterId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the footer used only for even pages. The value of use_even_page_header_footer determines whether to use the default_footer_id or this value for the footer on even pages. If not set, there's no even page footer. This property is read-only.",
+      }),
+    evenPageHeaderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the header used only for even pages. The value of use_even_page_header_footer determines whether to use the default_header_id or this value for the header on even pages. If not set, there's no even page header. This property is read-only.",
+      }),
+    firstPageFooterId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the footer used only for the first page. If not set then a unique footer for the first page does not exist. The value of use_first_page_header_footer determines whether to use the default_footer_id or this value for the footer on the first page. If not set, there's no first page footer. This property is read-only.",
+      }),
+    firstPageHeaderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the header used only for the first page. If not set then a unique header for the first page does not exist. The value of use_first_page_header_footer determines whether to use the default_header_id or this value for the header on the first page. If not set, there's no first page header. This property is read-only.",
+      }),
+    flipPageOrientation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Indicates whether to flip the dimensions of the page_size, which allows changing the page orientation between portrait and landscape.',
+      }),
+    marginBottom: DimensionSchema.exactOptional().openapi({
+      description:
+        'The bottom page margin. Updating the bottom page margin on the document style clears the bottom page margin on all section styles.',
+    }),
+    marginFooter: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of space between the bottom of the page and the contents of the footer.',
+    }),
+    marginHeader: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of space between the top of the page and the contents of the header.',
+    }),
+    marginLeft: DimensionSchema.exactOptional().openapi({
+      description:
+        'The left page margin. Updating the left page margin on the document style clears the left page margin on all section styles. It may also cause columns to resize in all sections.',
+    }),
+    marginRight: DimensionSchema.exactOptional().openapi({
+      description:
+        'The right page margin. Updating the right page margin on the document style clears the right page margin on all section styles. It may also cause columns to resize in all sections.',
+    }),
+    marginTop: DimensionSchema.exactOptional().openapi({
+      description:
+        'The top page margin. Updating the top page margin on the document style clears the top page margin on all section styles.',
+    }),
+    pageNumberStart: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The page number from which to start counting the number of pages.',
+      }),
+    pageSize: SizeSchema.exactOptional().openapi({
+      description: 'The size of a page in the document.',
+    }),
+    useCustomHeaderFooterMargins: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether DocumentStyle margin_header, SectionStyle margin_header and DocumentStyle margin_footer, SectionStyle margin_footer are respected. When false, the default values in the Docs editor for header and footer margin are used. This property is read-only.',
+      }),
+    useEvenPageHeaderFooter: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether to use the even page header / footer IDs for the even pages.',
+      }),
+    useFirstPageHeaderFooter: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether to use the first page header / footer IDs for the first page.',
+      }),
+  })
+  .openapi({ description: 'The style of the document.', required: [] })
+  .openapi('DocumentStyle')
+
+const UpdateDocumentStyleRequestSchema = z
+  .object({
+    documentStyle: DocumentStyleSchema.exactOptional().openapi({
+      description:
+        'The styles to set on the document. Certain document style changes may cause other changes in order to mirror the behavior of the Docs editor. See the documentation of DocumentStyle for more information.',
+    }),
+    fields: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fields that should be updated. At least one field must be specified. The root `document_style` is implied and should not be specified. A single `"*"` can be used as short-hand for listing every field. For example to update the background, set `fields` to `"background"`.',
+      }),
+  })
+  .openapi({ description: 'Updates the DocumentStyle.', required: [] })
+  .openapi('UpdateDocumentStyleRequest')
+
+const UpdateParagraphStyleRequestSchema = z
+  .object({
+    fields: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fields that should be updated. At least one field must be specified. The root `paragraph_style` is implied and should not be specified. A single `"*"` can be used as short-hand for listing every field. For example, to update the paragraph style\'s alignment property, set `fields` to `"alignment"`. To reset a property to its default value, include its field name in the field mask but leave the field itself unset.',
+      }),
+    paragraphStyle: ParagraphStyleSchema.exactOptional().openapi({
+      description:
+        'The styles to set on the paragraphs. Certain paragraph style changes may cause other changes in order to mirror the behavior of the Docs editor. See the documentation of ParagraphStyle for more information.',
+    }),
+    range: RangeSchema.exactOptional().openapi({
+      description: 'The range overlapping the paragraphs to style.',
+    }),
+  })
+  .openapi({
+    description: 'Update the styling of all paragraphs that overlap with the given range.',
+    required: [],
+  })
+  .openapi('UpdateParagraphStyleRequest')
+
+const SectionColumnPropertiesSchema = z
+  .object({
+    paddingEnd: DimensionSchema.exactOptional().openapi({
+      description: 'The padding at the end of the column.',
+    }),
+    width: DimensionSchema.exactOptional().openapi({
+      description: 'Output only. The width of the column.',
+    }),
+  })
+  .openapi({ description: "Properties that apply to a section's column.", required: [] })
+  .openapi('SectionColumnProperties')
+
+const SectionStyleSchema = z
+  .object({
+    columnProperties: z
+      .array(SectionColumnPropertiesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The section's columns properties. If empty, the section contains one column with the default properties in the Docs editor. A section can be updated to have no more than 3 columns. When updating this property, setting a concrete value is required. Unsetting this property will result in a 400 bad request error.",
+      }),
+    columnSeparatorStyle: z
+      .enum(['COLUMN_SEPARATOR_STYLE_UNSPECIFIED', 'NONE', 'BETWEEN_EACH_COLUMN'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The style of column separators. This style can be set even when there's one column in the section. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.",
+      }),
+    contentDirection: z
+      .enum(['CONTENT_DIRECTION_UNSPECIFIED', 'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The content direction of this section. If unset, the value defaults to LEFT_TO_RIGHT. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.',
+      }),
+    defaultFooterId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the default footer. If unset, the value inherits from the previous SectionBreak's SectionStyle. If the value is unset in the first SectionBreak, it inherits from DocumentStyle's default_footer_id. This property is read-only.",
+      }),
+    defaultHeaderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the default header. If unset, the value inherits from the previous SectionBreak's SectionStyle. If the value is unset in the first SectionBreak, it inherits from DocumentStyle's default_header_id. This property is read-only.",
+      }),
+    evenPageFooterId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the footer used only for even pages. If the value of DocumentStyle's use_even_page_header_footer is true, this value is used for the footers on even pages in the section. If it is false, the footers on even pages use the default_footer_id. If unset, the value inherits from the previous SectionBreak's SectionStyle. If the value is unset in the first SectionBreak, it inherits from DocumentStyle's even_page_footer_id. This property is read-only.",
+      }),
+    evenPageHeaderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the header used only for even pages. If the value of DocumentStyle's use_even_page_header_footer is true, this value is used for the headers on even pages in the section. If it is false, the headers on even pages use the default_header_id. If unset, the value inherits from the previous SectionBreak's SectionStyle. If the value is unset in the first SectionBreak, it inherits from DocumentStyle's even_page_header_id. This property is read-only.",
+      }),
+    firstPageFooterId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the footer used only for the first page of the section. If use_first_page_header_footer is true, this value is used for the footer on the first page of the section. If it's false, the footer on the first page of the section uses the default_footer_id. If unset, the value inherits from the previous SectionBreak's SectionStyle. If the value is unset in the first SectionBreak, it inherits from DocumentStyle's first_page_footer_id. This property is read-only.",
+      }),
+    firstPageHeaderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the header used only for the first page of the section. If use_first_page_header_footer is true, this value is used for the header on the first page of the section. If it's false, the header on the first page of the section uses the default_header_id. If unset, the value inherits from the previous SectionBreak's SectionStyle. If the value is unset in the first SectionBreak, it inherits from DocumentStyle's first_page_header_id. This property is read-only.",
+      }),
+    flipPageOrientation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Indicates whether to flip the dimensions of DocumentStyle's page_size for this section, which allows changing the page orientation between portrait and landscape. If unset, the value inherits from DocumentStyle's flip_page_orientation. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.",
+      }),
+    marginBottom: DimensionSchema.exactOptional().openapi({
+      description:
+        'The bottom page margin of the section. If unset, the value defaults to margin_bottom from DocumentStyle. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.',
+    }),
+    marginFooter: DimensionSchema.exactOptional().openapi({
+      description:
+        'The footer margin of the section. If unset, the value defaults to margin_footer from DocumentStyle. If updated, use_custom_header_footer_margins is set to true on DocumentStyle. The value of use_custom_header_footer_margins on DocumentStyle indicates if a footer margin is being respected for this section When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.',
+    }),
+    marginHeader: DimensionSchema.exactOptional().openapi({
+      description:
+        'The header margin of the section. If unset, the value defaults to margin_header from DocumentStyle. If updated, use_custom_header_footer_margins is set to true on DocumentStyle. The value of use_custom_header_footer_margins on DocumentStyle indicates if a header margin is being respected for this section. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.',
+    }),
+    marginLeft: DimensionSchema.exactOptional().openapi({
+      description:
+        "The left page margin of the section. If unset, the value defaults to margin_left from DocumentStyle. Updating the left margin causes columns in this section to resize. Since the margin affects column width, it's applied before column properties. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.",
+    }),
+    marginRight: DimensionSchema.exactOptional().openapi({
+      description:
+        "The right page margin of the section. If unset, the value defaults to margin_right from DocumentStyle. Updating the right margin causes columns in this section to resize. Since the margin affects column width, it's applied before column properties. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.",
+    }),
+    marginTop: DimensionSchema.exactOptional().openapi({
+      description:
+        'The top page margin of the section. If unset, the value defaults to margin_top from DocumentStyle. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.',
+    }),
+    pageNumberStart: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The page number from which to start counting the number of pages for this section. If unset, page numbering continues from the previous section. If the value is unset in the first SectionBreak, refer to DocumentStyle's page_number_start. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.",
+      }),
+    sectionType: z
+      .enum(['SECTION_TYPE_UNSPECIFIED', 'CONTINUOUS', 'NEXT_PAGE'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The type of section.' }),
+    useFirstPageHeaderFooter: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates whether to use the first page header / footer IDs for the first page of the section. If unset, it inherits from DocumentStyle's use_first_page_header_footer for the first section. If the value is unset for subsequent sectors, it should be interpreted as false. When updating this property, setting a concrete value is required. Unsetting this property results in a 400 bad request error.",
+      }),
+  })
+  .openapi({ description: 'The styling that applies to a section.', required: [] })
+  .openapi('SectionStyle')
+
+const UpdateSectionStyleRequestSchema = z
+  .object({
+    fields: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fields that should be updated. At least one field must be specified. The root `section_style` is implied and must not be specified. A single `"*"` can be used as short-hand for listing every field. For example to update the left margin, set `fields` to `"margin_left"`.',
+      }),
+    range: RangeSchema.exactOptional().openapi({
+      description:
+        'The range overlapping the sections to style. Because section breaks can only be inserted inside the body, the segment ID field must be empty.',
+    }),
+    sectionStyle: SectionStyleSchema.exactOptional().openapi({
+      description:
+        'The styles to be set on the section. Certain section style changes may cause other changes in order to mirror the behavior of the Docs editor. See the documentation of SectionStyle for more information.',
+    }),
+  })
+  .openapi({ description: 'Updates the SectionStyle.', required: [] })
+  .openapi('UpdateSectionStyleRequest')
+
+const TableCellBorderSchema = z
+  .object({
+    color: OptionalColorSchema.exactOptional().openapi({
+      description: 'The color of the border. This color cannot be transparent.',
+    }),
+    dashStyle: z
+      .enum(['DASH_STYLE_UNSPECIFIED', 'SOLID', 'DOT', 'DASH'])
+      .exactOptional()
+      .openapi({ description: 'The dash style of the border.' }),
+    width: DimensionSchema.exactOptional().openapi({ description: 'The width of the border.' }),
+  })
+  .openapi({
+    description:
+      'A border around a table cell. Table cell borders cannot be transparent. To hide a table cell border, make its width 0.',
+    required: [],
+  })
+  .openapi('TableCellBorder')
+
+type TableCellStyleType = {
+  backgroundColor?: z.infer<typeof OptionalColorSchema>
+  borderBottom?: z.infer<typeof TableCellBorderSchema>
+  borderLeft?: z.infer<typeof TableCellBorderSchema>
+  borderRight?: z.infer<typeof TableCellBorderSchema>
+  borderTop?: z.infer<typeof TableCellBorderSchema>
+  columnSpan?: number
+  contentAlignment?:
+    | 'CONTENT_ALIGNMENT_UNSPECIFIED'
+    | 'CONTENT_ALIGNMENT_UNSUPPORTED'
+    | 'TOP'
+    | 'MIDDLE'
+    | 'BOTTOM'
+  paddingBottom?: z.infer<typeof DimensionSchema>
+  paddingLeft?: z.infer<typeof DimensionSchema>
+  paddingRight?: z.infer<typeof DimensionSchema>
+  paddingTop?: z.infer<typeof DimensionSchema>
+  rowSpan?: number
+}
+
+const TableCellStyleSchema: z.ZodType<TableCellStyleType> = z
+  .object({
+    backgroundColor: OptionalColorSchema.exactOptional().openapi({
+      description: 'The background color of the cell.',
+    }),
+    borderBottom: TableCellBorderSchema.exactOptional().openapi({
+      description: 'The bottom border of the cell.',
+    }),
+    borderLeft: TableCellBorderSchema.exactOptional().openapi({
+      description: 'The left border of the cell.',
+    }),
+    borderRight: TableCellBorderSchema.exactOptional().openapi({
+      description: 'The right border of the cell.',
+    }),
+    borderTop: TableCellBorderSchema.exactOptional().openapi({
+      description: 'The top border of the cell.',
+    }),
+    columnSpan: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The column span of the cell. This property is read-only.' }),
+    contentAlignment: z
+      .enum([
+        'CONTENT_ALIGNMENT_UNSPECIFIED',
+        'CONTENT_ALIGNMENT_UNSUPPORTED',
+        'TOP',
+        'MIDDLE',
+        'BOTTOM',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The alignment of the content in the table cell. The default alignment matches the alignment for newly created table cells in the Docs editor.',
+      }),
+    paddingBottom: DimensionSchema.exactOptional().openapi({
+      description: 'The bottom padding of the cell.',
+    }),
+    paddingLeft: DimensionSchema.exactOptional().openapi({
+      description: 'The left padding of the cell.',
+    }),
+    paddingRight: DimensionSchema.exactOptional().openapi({
+      description: 'The right padding of the cell.',
+    }),
+    paddingTop: DimensionSchema.exactOptional().openapi({
+      description: 'The top padding of the cell.',
+    }),
+    rowSpan: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The row span of the cell. This property is read-only.' }),
+  })
+  .openapi({
+    description:
+      "The style of a TableCell. Inherited table cell styles are represented as unset fields in this message. A table cell style can inherit from the table's style.",
+    required: [],
+  })
+  .openapi('TableCellStyle')
+
+const UpdateTableCellStyleRequestSchema = z
+  .object({
+    fields: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fields that should be updated. At least one field must be specified. The root `tableCellStyle` is implied and should not be specified. A single `"*"` can be used as short-hand for listing every field. For example to update the table cell background color, set `fields` to `"backgroundColor"`. To reset a property to its default value, include its field name in the field mask but leave the field itself unset.',
+      }),
+    tableCellStyle: TableCellStyleSchema.exactOptional().openapi({
+      description:
+        'The style to set on the table cells. When updating borders, if a cell shares a border with an adjacent cell, the corresponding border property of the adjacent cell is updated as well. Borders that are merged and invisible are not updated. Since updating a border shared by adjacent cells in the same request can cause conflicting border updates, border updates are applied in the following order: - `border_right` - `border_left` - `border_bottom` - `border_top`',
+    }),
+    tableRange: TableRangeSchema.exactOptional().openapi({
+      description:
+        'The table range representing the subset of the table to which the updates are applied.',
+    }),
+    tableStartLocation: LocationSchema.exactOptional().openapi({
+      description:
+        'The location where the table starts in the document. When specified, the updates are applied to all the cells in the table.',
+    }),
+  })
+  .openapi({ description: 'Updates the style of a range of table cells.', required: [] })
+  .openapi('UpdateTableCellStyleRequest')
+
+const TableColumnPropertiesSchema = z
+  .object({
+    width: DimensionSchema.exactOptional().openapi({
+      description: "The width of the column. Set when the column's `width_type` is FIXED_WIDTH.",
+    }),
+    widthType: z
+      .enum(['WIDTH_TYPE_UNSPECIFIED', 'EVENLY_DISTRIBUTED', 'FIXED_WIDTH'])
+      .exactOptional()
+      .openapi({ description: 'The width type of the column.' }),
+  })
+  .openapi({ description: 'The properties of a column in a table.', required: [] })
+  .openapi('TableColumnProperties')
+
+const UpdateTableColumnPropertiesRequestSchema = z
+  .object({
+    columnIndices: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of zero-based column indices whose property should be updated. If no indices are specified, all columns will be updated.',
+      }),
+    fields: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fields that should be updated. At least one field must be specified. The root `tableColumnProperties` is implied and should not be specified. A single `"*"` can be used as short-hand for listing every field. For example to update the column width, set `fields` to `"width"`.',
+      }),
+    tableColumnProperties: TableColumnPropertiesSchema.exactOptional().openapi({
+      description:
+        'The table column properties to update. If the value of `table_column_properties#width` is less than 5 points (5/72 inch), a 400 bad request error is returned.',
+    }),
+    tableStartLocation: LocationSchema.exactOptional().openapi({
+      description: 'The location where the table starts in the document.',
+    }),
+  })
+  .openapi({
+    description: 'Updates the TableColumnProperties of columns in a table.',
+    required: [],
+  })
+  .openapi('UpdateTableColumnPropertiesRequest')
+
+type TableRowStyleType = {
+  minRowHeight?: z.infer<typeof DimensionSchema>
+  preventOverflow?: boolean
+  tableHeader?: boolean
+}
+
+const TableRowStyleSchema: z.ZodType<TableRowStyleType> = z
+  .object({
+    minRowHeight: DimensionSchema.exactOptional().openapi({
+      description:
+        "The minimum height of the row. The row will be rendered in the Docs editor at a height equal to or greater than this value in order to show all the content in the row's cells.",
+    }),
+    preventOverflow: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the row cannot overflow across page or column boundaries.',
+      }),
+    tableHeader: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the row is a table header.' }),
+  })
+  .openapi({ description: 'Styles that apply to a table row.', required: [] })
+  .openapi('TableRowStyle')
+
+const UpdateTableRowStyleRequestSchema = z
+  .object({
+    fields: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fields that should be updated. At least one field must be specified. The root `tableRowStyle` is implied and should not be specified. A single `"*"` can be used as short-hand for listing every field. For example to update the minimum row height, set `fields` to `"min_row_height"`.',
+      }),
+    rowIndices: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of zero-based row indices whose style should be updated. If no indices are specified, all rows will be updated.',
+      }),
+    tableRowStyle: TableRowStyleSchema.exactOptional().openapi({
+      description: 'The styles to be set on the rows.',
+    }),
+    tableStartLocation: LocationSchema.exactOptional().openapi({
+      description: 'The location where the table starts in the document.',
+    }),
+  })
+  .openapi({ description: 'Updates the TableRowStyle of rows in a table.', required: [] })
+  .openapi('UpdateTableRowStyleRequest')
+
+const UpdateTextStyleRequestSchema = z
+  .object({
+    fields: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fields that should be updated. At least one field must be specified. The root `text_style` is implied and should not be specified. A single `"*"` can be used as short-hand for listing every field. For example, to update the text style to bold, set `fields` to `"bold"`. To reset a property to its default value, include its field name in the field mask but leave the field itself unset.',
+      }),
+    range: RangeSchema.exactOptional().openapi({
+      description:
+        "The range of text to style. The range may be extended to include adjacent newlines. If the range fully contains a paragraph belonging to a list, the paragraph's bullet is also updated with the matching text style. Ranges cannot be inserted inside a relative UpdateTextStyleRequest.",
+    }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description:
+        'The styles to set on the text. If the value for a particular style matches that of the parent, that style will be set to inherit. Certain text style changes may cause other changes in order to to mirror the behavior of the Docs editor. See the documentation of TextStyle for more information.',
+    }),
+  })
+  .openapi({ description: 'Update the styling of text.', required: [] })
+  .openapi('UpdateTextStyleRequest')
+
+type RequestType = {
+  createFooter?: z.infer<typeof CreateFooterRequestSchema>
+  createFootnote?: z.infer<typeof CreateFootnoteRequestSchema>
+  createHeader?: z.infer<typeof CreateHeaderRequestSchema>
+  createNamedRange?: z.infer<typeof CreateNamedRangeRequestSchema>
+  createParagraphBullets?: z.infer<typeof CreateParagraphBulletsRequestSchema>
+  deleteContentRange?: z.infer<typeof DeleteContentRangeRequestSchema>
+  deleteFooter?: z.infer<typeof DeleteFooterRequestSchema>
+  deleteHeader?: z.infer<typeof DeleteHeaderRequestSchema>
+  deleteNamedRange?: z.infer<typeof DeleteNamedRangeRequestSchema>
+  deleteParagraphBullets?: z.infer<typeof DeleteParagraphBulletsRequestSchema>
+  deletePositionedObject?: z.infer<typeof DeletePositionedObjectRequestSchema>
+  deleteTableColumn?: z.infer<typeof DeleteTableColumnRequestSchema>
+  deleteTableRow?: z.infer<typeof DeleteTableRowRequestSchema>
+  insertInlineImage?: z.infer<typeof InsertInlineImageRequestSchema>
+  insertPageBreak?: z.infer<typeof InsertPageBreakRequestSchema>
+  insertSectionBreak?: z.infer<typeof InsertSectionBreakRequestSchema>
+  insertTable?: z.infer<typeof InsertTableRequestSchema>
+  insertTableColumn?: z.infer<typeof InsertTableColumnRequestSchema>
+  insertTableRow?: z.infer<typeof InsertTableRowRequestSchema>
+  insertText?: z.infer<typeof InsertTextRequestSchema>
+  mergeTableCells?: z.infer<typeof MergeTableCellsRequestSchema>
+  pinTableHeaderRows?: z.infer<typeof PinTableHeaderRowsRequestSchema>
+  replaceAllText?: z.infer<typeof ReplaceAllTextRequestSchema>
+  replaceImage?: z.infer<typeof ReplaceImageRequestSchema>
+  replaceNamedRangeContent?: z.infer<typeof ReplaceNamedRangeContentRequestSchema>
+  unmergeTableCells?: z.infer<typeof UnmergeTableCellsRequestSchema>
+  updateDocumentStyle?: z.infer<typeof UpdateDocumentStyleRequestSchema>
+  updateParagraphStyle?: z.infer<typeof UpdateParagraphStyleRequestSchema>
+  updateSectionStyle?: z.infer<typeof UpdateSectionStyleRequestSchema>
+  updateTableCellStyle?: z.infer<typeof UpdateTableCellStyleRequestSchema>
+  updateTableColumnProperties?: z.infer<typeof UpdateTableColumnPropertiesRequestSchema>
+  updateTableRowStyle?: z.infer<typeof UpdateTableRowStyleRequestSchema>
+  updateTextStyle?: z.infer<typeof UpdateTextStyleRequestSchema>
+}
+
+const CreateFooterResponseSchema = z
+  .object({
+    footerId: z.string().exactOptional().openapi({ description: 'The ID of the created footer.' }),
+  })
+  .openapi({ description: 'The result of creating a footer.', required: [] })
+  .openapi('CreateFooterResponse')
+
+const CreateFootnoteResponseSchema = z
+  .object({
+    footnoteId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the created footnote.' }),
+  })
+  .openapi({ description: 'The result of creating a footnote.', required: [] })
+  .openapi('CreateFootnoteResponse')
+
+const CreateHeaderResponseSchema = z
+  .object({
+    headerId: z.string().exactOptional().openapi({ description: 'The ID of the created header.' }),
+  })
+  .openapi({ description: 'The result of creating a header.', required: [] })
+  .openapi('CreateHeaderResponse')
+
+const CreateNamedRangeResponseSchema = z
+  .object({
+    namedRangeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the created named range.' }),
+  })
+  .openapi({ description: 'The result of creating a named range.', required: [] })
+  .openapi('CreateNamedRangeResponse')
+
+const InsertInlineImageResponseSchema = z
+  .object({
+    objectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the created InlineObject.' }),
+  })
+  .openapi({ description: 'The result of inserting an inline image.', required: [] })
+  .openapi('InsertInlineImageResponse')
+
+const InsertInlineSheetsChartResponseSchema = z
+  .object({
+    objectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The object ID of the inserted chart.' }),
+  })
+  .openapi({
+    description: 'The result of inserting an embedded Google Sheets chart.',
+    required: [],
+  })
+  .openapi('InsertInlineSheetsChartResponse')
+
+const ReplaceAllTextResponseSchema = z
+  .object({
+    occurrencesChanged: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of occurrences changed by replacing all text.' }),
+  })
+  .openapi({ description: 'The result of replacing text.', required: [] })
+  .openapi('ReplaceAllTextResponse')
+
+type ResponseType = {
+  createFooter?: z.infer<typeof CreateFooterResponseSchema>
+  createFootnote?: z.infer<typeof CreateFootnoteResponseSchema>
+  createHeader?: z.infer<typeof CreateHeaderResponseSchema>
+  createNamedRange?: z.infer<typeof CreateNamedRangeResponseSchema>
+  insertInlineImage?: z.infer<typeof InsertInlineImageResponseSchema>
+  insertInlineSheetsChart?: z.infer<typeof InsertInlineSheetsChartResponseSchema>
+  replaceAllText?: z.infer<typeof ReplaceAllTextResponseSchema>
+}
+
+type SectionBreakType = {
+  sectionStyle?: z.infer<typeof SectionStyleSchema>
+  suggestedDeletionIds?: string[]
+  suggestedInsertionIds?: string[]
+}
+
+const ParagraphSchema: z.ZodType<ParagraphType> = z
+  .object({
+    bullet: BulletSchema.exactOptional().openapi({
+      description:
+        'The bullet for this paragraph. If not present, the paragraph does not belong to a list.',
+    }),
+    elements: z
+      .array(ParagraphElementSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The content of the paragraph, broken down into its component parts.',
+      }),
+    paragraphStyle: ParagraphStyleSchema.exactOptional().openapi({
+      description: 'The style of this paragraph.',
+    }),
+    positionedObjectIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The IDs of the positioned objects tethered to this paragraph.' }),
+    suggestedBulletChanges: z
+      .record(z.string(), SuggestedBulletSchema)
+      .exactOptional()
+      .openapi({ description: "The suggested changes to this paragraph's bullet." }),
+    suggestedParagraphStyleChanges: z
+      .record(z.string(), SuggestedParagraphStyleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested paragraph style changes to this paragraph, keyed by suggestion ID.',
+      }),
+    suggestedPositionedObjectIds: z
+      .record(z.string(), ObjectReferencesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The IDs of the positioned objects suggested to be attached to this paragraph, keyed by suggestion ID.',
+      }),
+  })
+  .openapi({
+    description:
+      "A StructuralElement representing a paragraph. A paragraph is a range of content that's terminated with a newline character.",
+    required: [],
+  })
+  .openapi('Paragraph')
+
+const SectionBreakSchema: z.ZodType<SectionBreakType> = z
+  .object({
+    sectionStyle: SectionStyleSchema.exactOptional().openapi({
+      description: 'The style of the section after this section break.',
+    }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The suggested insertion IDs. A SectionBreak may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+      }),
+  })
+  .openapi({
+    description:
+      'A StructuralElement representing a section break. A section is a range of content that has the same SectionStyle. A section break represents the start of a new section, and the section style applies to the section after the section break. The document body always begins with a section break.',
+    required: [],
+  })
+  .openapi('SectionBreak')
+
+const TableSchema: z.ZodType<TableType> = z
+  .lazy(() =>
+    z
+      .object({
+        columns: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              "Number of columns in the table. It's possible for a table to be non-rectangular, so some rows may have a different number of cells.",
+          }),
+        rows: z.int32().exactOptional().openapi({ description: 'Number of rows in the table.' }),
+        suggestedDeletionIds: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+          }),
+        suggestedInsertionIds: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              "The suggested insertion IDs. A Table may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+          }),
+        tableRows: z
+          .array(TableRowSchema)
+          .exactOptional()
+          .openapi({ description: 'The contents and style of each row.' }),
+        tableStyle: TableStyleSchema.exactOptional().openapi({
+          description: 'The style of the table.',
+        }),
+      })
+      .openapi({ description: 'A StructuralElement representing a table.', required: [] }),
+  )
+  .openapi('Table')
+
+const TableOfContentsSchema: z.ZodType<TableOfContentsType> = z
+  .lazy(() =>
+    z
+      .object({
+        content: z
+          .array(StructuralElementSchema)
+          .exactOptional()
+          .openapi({ description: 'The content of the table of contents.' }),
+        suggestedDeletionIds: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+          }),
+        suggestedInsertionIds: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The suggested insertion IDs. A TableOfContents may have multiple insertion IDs if it is a nested suggested change. If empty, then this is not a suggested insertion.',
+          }),
+      })
+      .openapi({
+        description: 'A StructuralElement representing a table of contents.',
+        required: [],
+      }),
+  )
+  .openapi('TableOfContents')
+
+type StructuralElementType = {
+  endIndex?: number
+  paragraph?: z.infer<typeof ParagraphSchema>
+  sectionBreak?: z.infer<typeof SectionBreakSchema>
+  startIndex?: number
+  table?: z.infer<typeof TableSchema>
+  tableOfContents?: z.infer<typeof TableOfContentsSchema>
+}
+
+const TableCellStyleSuggestionStateSchema = z
+  .object({
+    backgroundColorSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to background_color.' }),
+    borderBottomSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_bottom.' }),
+    borderLeftSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_left.' }),
+    borderRightSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_right.' }),
+    borderTopSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to border_top.' }),
+    columnSpanSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to column_span.' }),
+    contentAlignmentSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to content_alignment.' }),
+    paddingBottomSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to padding_bottom.' }),
+    paddingLeftSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to padding_left.' }),
+    paddingRightSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to padding_right.' }),
+    paddingTopSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to padding_top.' }),
+    rowSpanSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to row_span.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base TableCellStyle have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('TableCellStyleSuggestionState')
+
+type SuggestedTableCellStyleType = {
+  tableCellStyle?: z.infer<typeof TableCellStyleSchema>
+  tableCellStyleSuggestionState?: z.infer<typeof TableCellStyleSuggestionStateSchema>
+}
+
+const TableRowStyleSuggestionStateSchema = z
+  .object({
+    minRowHeightSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to min_row_height.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base TableRowStyle have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('TableRowStyleSuggestionState')
+
+type SuggestedTableRowStyleType = {
+  tableRowStyle?: z.infer<typeof TableRowStyleSchema>
+  tableRowStyleSuggestionState?: z.infer<typeof TableRowStyleSuggestionStateSchema>
+}
+
+const TableRowSchema: z.ZodType<TableRowType> = z
+  .lazy(() =>
+    z
+      .object({
+        endIndex: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The zero-based end index of this row, exclusive, in UTF-16 code units.',
+          }),
+        startIndex: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The zero-based start index of this row, in UTF-16 code units.',
+          }),
+        suggestedDeletionIds: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+          }),
+        suggestedInsertionIds: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              "The suggested insertion IDs. A TableRow may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+          }),
+        suggestedTableRowStyleChanges: z
+          .record(z.string(), SuggestedTableRowStyleSchema)
+          .exactOptional()
+          .openapi({
+            description: 'The suggested style changes to this row, keyed by suggestion ID.',
+          }),
+        tableCells: z
+          .array(TableCellSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              "The contents and style of each cell in this row. It's possible for a table to be non-rectangular, so some rows may have a different number of cells than other rows in the same table.",
+          }),
+        tableRowStyle: TableRowStyleSchema.exactOptional().openapi({
+          description: 'The style of the table row.',
+        }),
+      })
+      .openapi({ description: 'The contents and style of a row in a Table.', required: [] }),
+  )
+  .openapi('TableRow')
+
+type TableStyleType = { tableColumnProperties?: z.infer<typeof TableColumnPropertiesSchema>[] }
+
+const TableStyleSchema: z.ZodType<TableStyleType> = z
+  .object({
+    tableColumnProperties: z
+      .array(TableColumnPropertiesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The properties of each column. Note that in Docs, tables contain rows and rows contain cells, similar to HTML. So the properties for a row can be found on the row's table_row_style.",
+      }),
+  })
+  .openapi({ description: 'Styles that apply to a table.', required: [] })
+  .openapi('TableStyle')
+
+type TableType = {
+  columns?: number
+  rows?: number
+  suggestedDeletionIds?: string[]
+  suggestedInsertionIds?: string[]
+  tableRows?: z.infer<typeof TableRowSchema>[]
+  tableStyle?: z.infer<typeof TableStyleSchema>
+}
+
+const StructuralElementSchema: z.ZodType<StructuralElementType> = z
+  .lazy(() =>
+    z
+      .object({
+        endIndex: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'The zero-based end index of this structural element, exclusive, in UTF-16 code units.',
+          }),
+        paragraph: ParagraphSchema.exactOptional().openapi({
+          description: 'A paragraph type of structural element.',
+        }),
+        sectionBreak: SectionBreakSchema.exactOptional().openapi({
+          description: 'A section break type of structural element.',
+        }),
+        startIndex: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'The zero-based start index of this structural element, in UTF-16 code units.',
+          }),
+        table: TableSchema.exactOptional().openapi({
+          description: 'A table type of structural element.',
+        }),
+        tableOfContents: TableOfContentsSchema.exactOptional().openapi({
+          description: 'A table of contents type of structural element.',
+        }),
+      })
+      .openapi({
+        description:
+          'A StructuralElement describes content that provides structure to the document.',
+        required: [],
+      }),
+  )
+  .openapi('StructuralElement')
+
+const SuggestedTableCellStyleSchema: z.ZodType<SuggestedTableCellStyleType> = z
+  .object({
+    tableCellStyle: TableCellStyleSchema.exactOptional().openapi({
+      description:
+        'A TableCellStyle that only includes the changes made in this suggestion. This can be used along with the table_cell_style_suggestion_state to see which fields have changed and their new values.',
+    }),
+    tableCellStyleSuggestionState: TableCellStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields on the base TableCellStyle have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggested change to a TableCellStyle.', required: [] })
+  .openapi('SuggestedTableCellStyle')
+
+type TableCellType = {
+  content?: z.infer<typeof StructuralElementSchema>[]
+  endIndex?: number
+  startIndex?: number
+  suggestedDeletionIds?: string[]
+  suggestedInsertionIds?: string[]
+  suggestedTableCellStyleChanges?: { [key: string]: z.infer<typeof SuggestedTableCellStyleSchema> }
+  tableCellStyle?: z.infer<typeof TableCellStyleSchema>
+}
+
+type TableOfContentsType = {
+  content?: z.infer<typeof StructuralElementSchema>[]
+  suggestedDeletionIds?: string[]
+  suggestedInsertionIds?: string[]
+}
+
+const SuggestedTableRowStyleSchema: z.ZodType<SuggestedTableRowStyleType> = z
+  .object({
+    tableRowStyle: TableRowStyleSchema.exactOptional().openapi({
+      description:
+        'A TableRowStyle that only includes the changes made in this suggestion. This can be used along with the table_row_style_suggestion_state to see which fields have changed and their new values.',
+    }),
+    tableRowStyleSuggestionState: TableRowStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields on the base TableRowStyle have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggested change to a TableRowStyle.', required: [] })
+  .openapi('SuggestedTableRowStyle')
+
+const TableCellSchema: z.ZodType<TableCellType> = z
+  .lazy(() =>
+    z
+      .object({
+        content: z
+          .array(StructuralElementSchema)
+          .exactOptional()
+          .openapi({ description: 'The content of the cell.' }),
+        endIndex: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The zero-based end index of this cell, exclusive, in UTF-16 code units.',
+          }),
+        startIndex: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The zero-based start index of this cell, in UTF-16 code units.',
+          }),
+        suggestedDeletionIds: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+          }),
+        suggestedInsertionIds: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              "The suggested insertion IDs. A TableCell may have multiple insertion IDs if it's a nested suggested change. If empty, then this is not a suggested insertion.",
+          }),
+        suggestedTableCellStyleChanges: z
+          .record(z.string(), SuggestedTableCellStyleSchema)
+          .exactOptional()
+          .openapi({
+            description: 'The suggested changes to the table cell style, keyed by suggestion ID.',
+          }),
+        tableCellStyle: TableCellStyleSchema.exactOptional().openapi({
+          description: 'The style of the cell.',
+        }),
+      })
+      .openapi({ description: 'The contents and style of a cell in a Table.', required: [] }),
+  )
+  .openapi('TableCell')
+
+type TableRowType = {
+  endIndex?: number
+  startIndex?: number
+  suggestedDeletionIds?: string[]
+  suggestedInsertionIds?: string[]
+  suggestedTableRowStyleChanges?: { [key: string]: z.infer<typeof SuggestedTableRowStyleSchema> }
+  tableCells?: z.infer<typeof TableCellSchema>[]
+  tableRowStyle?: z.infer<typeof TableRowStyleSchema>
+}
+
+const BackgroundSuggestionStateSchema = z
+  .object({
+    backgroundColorSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the current background color has been modified in this suggestion.',
+      }),
+  })
+  .openapi({
+    description:
+      'A mask that indicates which of the fields on the base Background have been changed in this suggestion. For any field set to true, the Backgound has a new suggested value.',
+    required: [],
+  })
+  .openapi('BackgroundSuggestionState')
+
+const RequestSchema: z.ZodType<RequestType> = z
+  .lazy(() =>
+    z
+      .object({
+        createFooter: CreateFooterRequestSchema.exactOptional().openapi({
+          description: 'Creates a footer.',
+        }),
+        createFootnote: CreateFootnoteRequestSchema.exactOptional().openapi({
+          description: 'Creates a footnote.',
+        }),
+        createHeader: CreateHeaderRequestSchema.exactOptional().openapi({
+          description: 'Creates a header.',
+        }),
+        createNamedRange: CreateNamedRangeRequestSchema.exactOptional().openapi({
+          description: 'Creates a named range.',
+        }),
+        createParagraphBullets: CreateParagraphBulletsRequestSchema.exactOptional().openapi({
+          description: 'Creates bullets for paragraphs.',
+        }),
+        deleteContentRange: DeleteContentRangeRequestSchema.exactOptional().openapi({
+          description: 'Deletes content from the document.',
+        }),
+        deleteFooter: DeleteFooterRequestSchema.exactOptional().openapi({
+          description: 'Deletes a footer from the document.',
+        }),
+        deleteHeader: DeleteHeaderRequestSchema.exactOptional().openapi({
+          description: 'Deletes a header from the document.',
+        }),
+        deleteNamedRange: DeleteNamedRangeRequestSchema.exactOptional().openapi({
+          description: 'Deletes a named range.',
+        }),
+        deleteParagraphBullets: DeleteParagraphBulletsRequestSchema.exactOptional().openapi({
+          description: 'Deletes bullets from paragraphs.',
+        }),
+        deletePositionedObject: DeletePositionedObjectRequestSchema.exactOptional().openapi({
+          description: 'Deletes a positioned object from the document.',
+        }),
+        deleteTableColumn: DeleteTableColumnRequestSchema.exactOptional().openapi({
+          description: 'Deletes a column from a table.',
+        }),
+        deleteTableRow: DeleteTableRowRequestSchema.exactOptional().openapi({
+          description: 'Deletes a row from a table.',
+        }),
+        insertInlineImage: InsertInlineImageRequestSchema.exactOptional().openapi({
+          description: 'Inserts an inline image at the specified location.',
+        }),
+        insertPageBreak: InsertPageBreakRequestSchema.exactOptional().openapi({
+          description: 'Inserts a page break at the specified location.',
+        }),
+        insertSectionBreak: InsertSectionBreakRequestSchema.exactOptional().openapi({
+          description: 'Inserts a section break at the specified location.',
+        }),
+        insertTable: InsertTableRequestSchema.exactOptional().openapi({
+          description: 'Inserts a table at the specified location.',
+        }),
+        insertTableColumn: InsertTableColumnRequestSchema.exactOptional().openapi({
+          description: 'Inserts an empty column into a table.',
+        }),
+        insertTableRow: InsertTableRowRequestSchema.exactOptional().openapi({
+          description: 'Inserts an empty row into a table.',
+        }),
+        insertText: InsertTextRequestSchema.exactOptional().openapi({
+          description: 'Inserts text at the specified location.',
+        }),
+        mergeTableCells: MergeTableCellsRequestSchema.exactOptional().openapi({
+          description: 'Merges cells in a table.',
+        }),
+        pinTableHeaderRows: PinTableHeaderRowsRequestSchema.exactOptional().openapi({
+          description: 'Updates the number of pinned header rows in a table.',
+        }),
+        replaceAllText: ReplaceAllTextRequestSchema.exactOptional().openapi({
+          description: 'Replaces all instances of the specified text.',
+        }),
+        replaceImage: ReplaceImageRequestSchema.exactOptional().openapi({
+          description: 'Replaces an image in the document.',
+        }),
+        replaceNamedRangeContent: ReplaceNamedRangeContentRequestSchema.exactOptional().openapi({
+          description: 'Replaces the content in a named range.',
+        }),
+        unmergeTableCells: UnmergeTableCellsRequestSchema.exactOptional().openapi({
+          description: 'Unmerges cells in a table.',
+        }),
+        updateDocumentStyle: UpdateDocumentStyleRequestSchema.exactOptional().openapi({
+          description: 'Updates the style of the document.',
+        }),
+        updateParagraphStyle: UpdateParagraphStyleRequestSchema.exactOptional().openapi({
+          description: 'Updates the paragraph style at the specified range.',
+        }),
+        updateSectionStyle: UpdateSectionStyleRequestSchema.exactOptional().openapi({
+          description: 'Updates the section style of the specified range.',
+        }),
+        updateTableCellStyle: UpdateTableCellStyleRequestSchema.exactOptional().openapi({
+          description: 'Updates the style of table cells.',
+        }),
+        updateTableColumnProperties:
+          UpdateTableColumnPropertiesRequestSchema.exactOptional().openapi({
+            description: 'Updates the properties of columns in a table.',
+          }),
+        updateTableRowStyle: UpdateTableRowStyleRequestSchema.exactOptional().openapi({
+          description: 'Updates the row style in a table.',
+        }),
+        updateTextStyle: UpdateTextStyleRequestSchema.exactOptional().openapi({
+          description: 'Updates the text style at the specified range.',
+        }),
+      })
+      .openapi({ description: 'A single update to apply to a document.', required: [] }),
+  )
+  .openapi('Request')
+
+const WriteControlSchema = z
+  .object({
+    requiredRevisionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional revision ID of the document the write request is applied to. If this is not the latest revision of the document, the request is not processed and returns a 400 bad request error. When a required revision ID is returned in a response, it indicates the revision ID of the document after the request was applied.',
+      }),
+    targetRevisionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The optional target revision ID of the document the write request is applied to. If collaborator changes have occurred after the document was read using the API, the changes produced by this write request are applied against the collaborator changes. This results in a new revision of the document that incorporates both the collaborator changes and the changes in the request, with the Docs server resolving conflicting changes. When using target revision ID, the API client can be thought of as another collaborator of the document. The target revision ID can only be used to write to recent versions of a document. If the target revision is too far behind the latest revision, the request is not processed and returns a 400 bad request error. The request should be tried again after retrieving the latest version of the document. Usually a revision ID remains valid for use as a target revision for several minutes after it's read, but for frequently edited documents this window might be shorter.",
+      }),
+  })
+  .openapi({ description: 'Provides control over how write requests are executed.', required: [] })
+  .openapi('WriteControl')
+
+const BatchUpdateDocumentRequestSchema = z
+  .object({
+    requests: z
+      .array(RequestSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of updates to apply to the document.' }),
+    writeControl: WriteControlSchema.exactOptional().openapi({
+      description: 'Provides control over how write requests are executed.',
+    }),
+  })
+  .openapi({ description: 'Request message for BatchUpdateDocument.', required: [] })
+  .openapi('BatchUpdateDocumentRequest')
+
+const ResponseSchema: z.ZodType<ResponseType> = z
+  .lazy(() =>
+    z
+      .object({
+        createFooter: CreateFooterResponseSchema.exactOptional().openapi({
+          description: 'The result of creating a footer.',
+        }),
+        createFootnote: CreateFootnoteResponseSchema.exactOptional().openapi({
+          description: 'The result of creating a footnote.',
+        }),
+        createHeader: CreateHeaderResponseSchema.exactOptional().openapi({
+          description: 'The result of creating a header.',
+        }),
+        createNamedRange: CreateNamedRangeResponseSchema.exactOptional().openapi({
+          description: 'The result of creating a named range.',
+        }),
+        insertInlineImage: InsertInlineImageResponseSchema.exactOptional().openapi({
+          description: 'The result of inserting an inline image.',
+        }),
+        insertInlineSheetsChart: InsertInlineSheetsChartResponseSchema.exactOptional().openapi({
+          description: 'The result of inserting an inline Google Sheets chart.',
+        }),
+        replaceAllText: ReplaceAllTextResponseSchema.exactOptional().openapi({
+          description: 'The result of replacing text.',
+        }),
+      })
+      .openapi({ description: 'A single response from an update.', required: [] }),
+  )
+  .openapi('Response')
+
+const BatchUpdateDocumentResponseSchema = z
+  .object({
+    documentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the document to which the updates were applied to.' }),
+    replies: z
+      .array(ResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reply of the updates. This maps 1:1 with the updates, although replies to some requests may be empty.',
+      }),
+    writeControl: WriteControlSchema.exactOptional().openapi({
+      description: 'The updated write control after applying the request.',
+    }),
+  })
+  .openapi({ description: 'Response message from a BatchUpdateDocument request.', required: [] })
+  .openapi('BatchUpdateDocumentResponse')
+
+const BodySchema = z
+  .object({
+    content: z
+      .array(StructuralElementSchema)
+      .exactOptional()
+      .openapi({
+        description: "The contents of the body. The indexes for the body's content begin at zero.",
+      }),
+  })
+  .openapi({
+    description:
+      'The document body. The body typically contains the full document contents except for headers, footers, and footnotes.',
+    required: [],
+  })
+  .openapi('Body')
+
+const CropPropertiesSchema = z
+  .object({
+    angle: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The clockwise rotation angle of the crop rectangle around its center, in radians. Rotation is applied after the offsets.',
+      }),
+    offsetBottom: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The offset specifies how far inwards the bottom edge of the crop rectangle is from the bottom edge of the original content as a fraction of the original content's height.",
+      }),
+    offsetLeft: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The offset specifies how far inwards the left edge of the crop rectangle is from the left edge of the original content as a fraction of the original content's width.",
+      }),
+    offsetRight: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The offset specifies how far inwards the right edge of the crop rectangle is from the right edge of the original content as a fraction of the original content's width.",
+      }),
+    offsetTop: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The offset specifies how far inwards the top edge of the crop rectangle is from the top edge of the original content as a fraction of the original content's height.",
+      }),
+  })
+  .openapi({
+    description:
+      "The crop properties of an image. The crop rectangle is represented using fractional offsets from the original content's 4 edges. - If the offset is in the interval (0, 1), the corresponding edge of crop rectangle is positioned inside of the image's original bounding rectangle. - If the offset is negative or greater than 1, the corresponding edge of crop rectangle is positioned outside of the image's original bounding rectangle. - If all offsets and rotation angle are 0, the image is not cropped.",
+    required: [],
+  })
+  .openapi('CropProperties')
+
+const CropPropertiesSuggestionStateSchema = z
+  .object({
+    angleSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to angle.' }),
+    offsetBottomSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to offset_bottom.' }),
+    offsetLeftSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to offset_left.' }),
+    offsetRightSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to offset_right.' }),
+    offsetTopSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to offset_top.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base CropProperties have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('CropPropertiesSuggestionState')
+
+const FooterSchema = z
+  .object({
+    content: z
+      .array(StructuralElementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The contents of the footer. The indexes for a footer's content begin at zero.",
+      }),
+    footerId: z.string().exactOptional().openapi({ description: 'The ID of the footer.' }),
+  })
+  .openapi({ description: 'A document footer.', required: [] })
+  .openapi('Footer')
+
+const FootnoteSchema = z
+  .object({
+    content: z
+      .array(StructuralElementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The contents of the footnote. The indexes for a footnote's content begin at zero.",
+      }),
+    footnoteId: z.string().exactOptional().openapi({ description: 'The ID of the footnote.' }),
+  })
+  .openapi({ description: 'A document footnote.', required: [] })
+  .openapi('Footnote')
+
+const HeaderSchema = z
+  .object({
+    content: z
+      .array(StructuralElementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The contents of the header. The indexes for a header's content begin at zero.",
+      }),
+    headerId: z.string().exactOptional().openapi({ description: 'The ID of the header.' }),
+  })
+  .openapi({ description: 'A document header.', required: [] })
+  .openapi('Header')
+
+const EmbeddedDrawingPropertiesSchema = z
+  .object({})
+  .openapi({
+    description:
+      "The properties of an embedded drawing and used to differentiate the object type. An embedded drawing is one that's created and edited within a document. Note that extensive details are not supported.",
+  })
+  .openapi('EmbeddedDrawingProperties')
+
+const EmbeddedObjectBorderSchema = z
+  .object({
+    color: OptionalColorSchema.exactOptional().openapi({ description: 'The color of the border.' }),
+    dashStyle: z
+      .enum(['DASH_STYLE_UNSPECIFIED', 'SOLID', 'DOT', 'DASH'])
+      .exactOptional()
+      .openapi({ description: 'The dash style of the border.' }),
+    propertyState: z
+      .enum(['RENDERED', 'NOT_RENDERED'])
+      .exactOptional()
+      .openapi({ description: 'The property state of the border property.' }),
+    width: DimensionSchema.exactOptional().openapi({ description: 'The width of the border.' }),
+  })
+  .openapi({ description: 'A border around an EmbeddedObject.', required: [] })
+  .openapi('EmbeddedObjectBorder')
+
+const ImagePropertiesSchema = z
+  .object({
+    angle: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The clockwise rotation angle of the image, in radians.' }),
+    brightness: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The brightness effect of the image. The value should be in the interval [-1.0, 1.0], where 0 means no effect.',
+      }),
+    contentUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A URI to the image with a default lifetime of 30 minutes. This URI is tagged with the account of the requester. Anyone with the URI effectively accesses the image as the original requester. Access to the image may be lost if the document's sharing settings change.",
+      }),
+    contrast: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The contrast effect of the image. The value should be in the interval [-1.0, 1.0], where 0 means no effect.',
+      }),
+    cropProperties: CropPropertiesSchema.exactOptional().openapi({
+      description: 'The crop properties of the image.',
+    }),
+    sourceUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The source URI is the URI used to insert the image. The source URI can be empty.',
+      }),
+    transparency: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The transparency effect of the image. The value should be in the interval [0.0, 1.0], where 0 means no effect and 1 means transparent.',
+      }),
+  })
+  .openapi({ description: 'The properties of an image.', required: [] })
+  .openapi('ImageProperties')
+
+const SheetsChartReferenceSchema = z
+  .object({
+    chartId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the specific chart in the Google Sheets spreadsheet that's embedded.",
+      }),
+    spreadsheetId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the Google Sheets spreadsheet that contains the source chart.',
+      }),
+  })
+  .openapi({
+    description: 'A reference to a linked chart embedded from Google Sheets.',
+    required: [],
+  })
+  .openapi('SheetsChartReference')
+
+const LinkedContentReferenceSchema = z
+  .object({
+    sheetsChartReference: SheetsChartReferenceSchema.exactOptional().openapi({
+      description: 'A reference to the linked chart.',
+    }),
+  })
+  .openapi({ description: 'A reference to the external linked source content.', required: [] })
+  .openapi('LinkedContentReference')
+
+const EmbeddedObjectSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description of the embedded object. The `title` and `description` are both combined to display alt text.',
+      }),
+    embeddedDrawingProperties: EmbeddedDrawingPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of an embedded drawing.',
+    }),
+    embeddedObjectBorder: EmbeddedObjectBorderSchema.exactOptional().openapi({
+      description: 'The border of the embedded object.',
+    }),
+    imageProperties: ImagePropertiesSchema.exactOptional().openapi({
+      description: 'The properties of an image.',
+    }),
+    linkedContentReference: LinkedContentReferenceSchema.exactOptional().openapi({
+      description:
+        'A reference to the external linked source content. For example, it contains a reference to the source Google Sheets chart when the embedded object is a linked chart. If unset, then the embedded object is not linked.',
+    }),
+    marginBottom: DimensionSchema.exactOptional().openapi({
+      description: 'The bottom margin of the embedded object.',
+    }),
+    marginLeft: DimensionSchema.exactOptional().openapi({
+      description: 'The left margin of the embedded object.',
+    }),
+    marginRight: DimensionSchema.exactOptional().openapi({
+      description: 'The right margin of the embedded object.',
+    }),
+    marginTop: DimensionSchema.exactOptional().openapi({
+      description: 'The top margin of the embedded object.',
+    }),
+    size: SizeSchema.exactOptional().openapi({
+      description: 'The visible size of the image after cropping.',
+    }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The title of the embedded object. The `title` and `description` are both combined to display alt text.',
+      }),
+  })
+  .openapi({ description: 'An embedded object in the document.', required: [] })
+  .openapi('EmbeddedObject')
+
+const InlineObjectPropertiesSchema = z
+  .object({
+    embeddedObject: EmbeddedObjectSchema.exactOptional().openapi({
+      description: 'The embedded object of this inline object.',
+    }),
+  })
+  .openapi({ description: 'Properties of an InlineObject.', required: [] })
+  .openapi('InlineObjectProperties')
+
+const EmbeddedDrawingPropertiesSuggestionStateSchema = z
+  .object({})
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base EmbeddedDrawingProperties have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+  })
+  .openapi('EmbeddedDrawingPropertiesSuggestionState')
+
+const EmbeddedObjectBorderSuggestionStateSchema = z
+  .object({
+    colorSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to color.' }),
+    dashStyleSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to dash_style.' }),
+    propertyStateSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to property_state.' }),
+    widthSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to width.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base EmbeddedObjectBorder have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('EmbeddedObjectBorderSuggestionState')
+
+const ImagePropertiesSuggestionStateSchema = z
+  .object({
+    angleSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to angle.' }),
+    brightnessSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to brightness.' }),
+    contentUriSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to content_uri.' }),
+    contrastSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to contrast.' }),
+    cropPropertiesSuggestionState: CropPropertiesSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in crop_properties have been changed in this suggestion.',
+    }),
+    sourceUriSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to source_uri.' }),
+    transparencySuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to transparency.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base ImageProperties have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('ImagePropertiesSuggestionState')
+
+const SheetsChartReferenceSuggestionStateSchema = z
+  .object({
+    chartIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to chart_id.' }),
+    spreadsheetIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to spreadsheet_id.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base SheetsChartReference have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('SheetsChartReferenceSuggestionState')
+
+const LinkedContentReferenceSuggestionStateSchema = z
+  .object({
+    sheetsChartReferenceSuggestionState:
+      SheetsChartReferenceSuggestionStateSchema.exactOptional().openapi({
+        description:
+          'A mask that indicates which of the fields in sheets_chart_reference have been changed in this suggestion.',
+      }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base LinkedContentReference have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('LinkedContentReferenceSuggestionState')
+
+const SizeSuggestionStateSchema = z
+  .object({
+    heightSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to height.' }),
+    widthSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to width.' }),
+  })
+  .openapi({
+    description:
+      'A mask that indicates which of the fields on the base Size have been changed in this suggestion. For any field set to true, the Size has a new suggested value.',
+    required: [],
+  })
+  .openapi('SizeSuggestionState')
+
+const EmbeddedObjectSuggestionStateSchema = z
+  .object({
+    descriptionSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to description.' }),
+    embeddedDrawingPropertiesSuggestionState:
+      EmbeddedDrawingPropertiesSuggestionStateSchema.exactOptional().openapi({
+        description:
+          'A mask that indicates which of the fields in embedded_drawing_properties have been changed in this suggestion.',
+      }),
+    embeddedObjectBorderSuggestionState:
+      EmbeddedObjectBorderSuggestionStateSchema.exactOptional().openapi({
+        description:
+          'A mask that indicates which of the fields in embedded_object_border have been changed in this suggestion.',
+      }),
+    imagePropertiesSuggestionState: ImagePropertiesSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in image_properties have been changed in this suggestion.',
+    }),
+    linkedContentReferenceSuggestionState:
+      LinkedContentReferenceSuggestionStateSchema.exactOptional().openapi({
+        description:
+          'A mask that indicates which of the fields in linked_content_reference have been changed in this suggestion.',
+      }),
+    marginBottomSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_bottom.' }),
+    marginLeftSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_left.' }),
+    marginRightSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_right.' }),
+    marginTopSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_top.' }),
+    sizeSuggestionState: SizeSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in size have been changed in this suggestion.',
+    }),
+    titleSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to title.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base EmbeddedObject have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('EmbeddedObjectSuggestionState')
+
+const InlineObjectPropertiesSuggestionStateSchema = z
+  .object({
+    embeddedObjectSuggestionState: EmbeddedObjectSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in embedded_object have been changed in this suggestion.',
+    }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base InlineObjectProperties have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('InlineObjectPropertiesSuggestionState')
+
+const SuggestedInlineObjectPropertiesSchema = z
+  .object({
+    inlineObjectProperties: InlineObjectPropertiesSchema.exactOptional().openapi({
+      description:
+        'An InlineObjectProperties that only includes the changes made in this suggestion. This can be used along with the inline_object_properties_suggestion_state to see which fields have changed and their new values.',
+    }),
+    inlineObjectPropertiesSuggestionState:
+      InlineObjectPropertiesSuggestionStateSchema.exactOptional().openapi({
+        description:
+          'A mask that indicates which of the fields on the base InlineObjectProperties have been changed in this suggestion.',
+      }),
+  })
+  .openapi({ description: 'A suggested change to InlineObjectProperties.', required: [] })
+  .openapi('SuggestedInlineObjectProperties')
+
+const InlineObjectSchema = z
+  .object({
+    inlineObjectProperties: InlineObjectPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of this inline object.',
+    }),
+    objectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of this inline object. Can be used to update an object’s properties.',
+      }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInlineObjectPropertiesChanges: z
+      .record(z.string(), SuggestedInlineObjectPropertiesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested changes to the inline object properties, keyed by suggestion ID.',
+      }),
+    suggestedInsertionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested insertion ID. If empty, then this is not a suggested insertion.',
+      }),
+  })
+  .openapi({
+    description:
+      'An object that appears inline with text. An InlineObject contains an EmbeddedObject such as an image.',
+    required: [],
+  })
+  .openapi('InlineObject')
+
+const NestingLevelSchema = z
+  .object({
+    bulletAlignment: z
+      .enum(['BULLET_ALIGNMENT_UNSPECIFIED', 'START', 'CENTER', 'END'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The alignment of the bullet within the space allotted for rendering the bullet.',
+      }),
+    glyphFormat: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The format string used by bullets at this level of nesting. The glyph format contains one or more placeholders, and these placeholders are replaced with the appropriate values depending on the glyph_type or glyph_symbol. The placeholders follow the pattern `%[nesting_level]`. Furthermore, placeholders can have prefixes and suffixes. Thus, the glyph format follows the pattern `%[nesting_level]`. Note that the prefix and suffix are optional and can be arbitrary strings. For example, the glyph format `%0.` indicates that the rendered glyph will replace the placeholder with the corresponding glyph for nesting level 0 followed by a period as the suffix. So a list with a glyph type of UPPER_ALPHA and glyph format `%0.` at nesting level 0 will result in a list with rendered glyphs `A.` `B.` `C.` The glyph format can contain placeholders for the current nesting level as well as placeholders for parent nesting levels. For example, a list can have a glyph format of `%0.` at nesting level 0 and a glyph format of `%0.%1.` at nesting level 1. Assuming both nesting levels have DECIMAL glyph types, this would result in a list with rendered glyphs `1.` `2.` ` 2.1.` ` 2.2.` `3.` For nesting levels that are ordered, the string that replaces a placeholder in the glyph format for a particular paragraph depends on the paragraph's order within the list.",
+      }),
+    glyphSymbol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A custom glyph symbol used by bullets when paragraphs at this level of nesting are unordered. The glyph symbol replaces placeholders within the glyph_format. For example, if the glyph_symbol is the solid circle corresponding to Unicode U+25cf code point and the glyph_format is `%0`, the rendered glyph would be the solid circle.',
+      }),
+    glyphType: z
+      .enum([
+        'GLYPH_TYPE_UNSPECIFIED',
+        'NONE',
+        'DECIMAL',
+        'ZERO_DECIMAL',
+        'UPPER_ALPHA',
+        'ALPHA',
+        'UPPER_ROMAN',
+        'ROMAN',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "The type of glyph used by bullets when paragraphs at this level of nesting are ordered. The glyph type determines the type of glyph used to replace placeholders within the glyph_format when paragraphs at this level of nesting are ordered. For example, if the nesting level is 0, the glyph_format is `%0.` and the glyph type is DECIMAL, then the rendered glyph would replace the placeholder `%0` in the glyph format with a number corresponding to list item's order within the list.",
+      }),
+    indentFirstLine: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of indentation for the first line of paragraphs at this level of nesting.',
+    }),
+    indentStart: DimensionSchema.exactOptional().openapi({
+      description:
+        "The amount of indentation for paragraphs at this level of nesting. Applied to the side that corresponds to the start of the text, based on the paragraph's content direction.",
+    }),
+    startNumber: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of the first list item at this nesting level. A value of 0 is treated as a value of 1 for lettered lists and Roman numeral lists. For values of both 0 and 1, lettered and Roman numeral lists will begin at `a` and `i` respectively. This value is ignored for nesting levels with unordered glyphs.',
+      }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The text style of bullets at this level of nesting.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains properties describing the look and feel of a list bullet at a given level of nesting.',
+    required: [],
+  })
+  .openapi('NestingLevel')
+
+const ListPropertiesSchema = z
+  .object({
+    nestingLevels: z
+      .array(NestingLevelSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Describes the properties of the bullets at the associated level. A list has at most 9 levels of nesting with nesting level 0 corresponding to the top-most level and nesting level 8 corresponding to the most nested level. The nesting levels are returned in ascending order with the least nested returned first.',
+      }),
+  })
+  .openapi({
+    description:
+      'The properties of a list that describe the look and feel of bullets belonging to paragraphs associated with a list.',
+    required: [],
+  })
+  .openapi('ListProperties')
+
+const NestingLevelSuggestionStateSchema = z
+  .object({
+    bulletAlignmentSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to bullet_alignment.' }),
+    glyphFormatSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to glyph_format.' }),
+    glyphSymbolSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to glyph_symbol.' }),
+    glyphTypeSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to glyph_type.' }),
+    indentFirstLineSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to indent_first_line.' }),
+    indentStartSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to indent_start.' }),
+    startNumberSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to start_number.' }),
+    textStyleSuggestionState: TextStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in text style have been changed in this suggestion.',
+    }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base NestingLevel have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('NestingLevelSuggestionState')
+
+const ListPropertiesSuggestionStateSchema = z
+  .object({
+    nestingLevelsSuggestionStates: z
+      .array(NestingLevelSuggestionStateSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A mask that indicates which of the fields on the corresponding NestingLevel in nesting_levels have been changed in this suggestion. The nesting level suggestion states are returned in ascending order of the nesting level with the least nested returned first.',
+      }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base ListProperties have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('ListPropertiesSuggestionState')
+
+const SuggestedListPropertiesSchema = z
+  .object({
+    listProperties: ListPropertiesSchema.exactOptional().openapi({
+      description:
+        'A ListProperties that only includes the changes made in this suggestion. This can be used along with the list_properties_suggestion_state to see which fields have changed and their new values.',
+    }),
+    listPropertiesSuggestionState: ListPropertiesSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields on the base ListProperties have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggested change to ListProperties.', required: [] })
+  .openapi('SuggestedListProperties')
+
+const ListSchema = z
+  .object({
+    listProperties: ListPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the list.',
+    }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this list.',
+      }),
+    suggestedInsertionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested insertion ID. If empty, then this is not a suggested insertion.',
+      }),
+    suggestedListPropertiesChanges: z
+      .record(z.string(), SuggestedListPropertiesSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The suggested changes to the list properties, keyed by suggestion ID.',
+      }),
+  })
+  .openapi({
+    description:
+      "A List represents the list attributes for a group of paragraphs that all belong to the same list. A paragraph that's part of a list has a reference to the list's ID in its bullet.",
+    required: [],
+  })
+  .openapi('List')
+
+const NamedRangeSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the named range.' }),
+    namedRangeId: z.string().exactOptional().openapi({ description: 'The ID of the named range.' }),
+    ranges: z
+      .array(RangeSchema)
+      .exactOptional()
+      .openapi({ description: 'The ranges that belong to this named range.' }),
+  })
+  .openapi({
+    description:
+      'A collection of Ranges with the same named range ID. Named ranges allow developers to associate parts of a document with an arbitrary user-defined label so their contents can be programmatically read or edited later. A document can contain multiple named ranges with the same name, but every named range has a unique ID. A named range is created with a single Range, and content inserted inside a named range generally expands that range. However, certain document changes can cause the range to be split into multiple ranges. Named ranges are not private. All applications and collaborators that have access to the document can see its named ranges.',
+    required: [],
+  })
+  .openapi('NamedRange')
+
+const NamedRangesSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name that all the named ranges share.' }),
+    namedRanges: z
+      .array(NamedRangeSchema)
+      .exactOptional()
+      .openapi({ description: 'The NamedRanges that share the same name.' }),
+  })
+  .openapi({
+    description: 'A collection of all the NamedRanges in the document that share a given name.',
+    required: [],
+  })
+  .openapi('NamedRanges')
+
+const NamedStyleSchema = z
+  .object({
+    namedStyleType: z
+      .enum([
+        'NAMED_STYLE_TYPE_UNSPECIFIED',
+        'NORMAL_TEXT',
+        'TITLE',
+        'SUBTITLE',
+        'HEADING_1',
+        'HEADING_2',
+        'HEADING_3',
+        'HEADING_4',
+        'HEADING_5',
+        'HEADING_6',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of this named style.' }),
+    paragraphStyle: ParagraphStyleSchema.exactOptional().openapi({
+      description: 'The paragraph style of this named style.',
+    }),
+    textStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The text style of this named style.',
+    }),
+  })
+  .openapi({
+    description:
+      'A named style. Paragraphs in the document can inherit their TextStyle and ParagraphStyle from this named style when they have the same named style type.',
+    required: [],
+  })
+  .openapi('NamedStyle')
+
+const NamedStylesSchema = z
+  .object({
+    styles: z
+      .array(NamedStyleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The named styles. There's an entry for each of the possible named style types.",
+      }),
+  })
+  .openapi({
+    description:
+      'The named styles. Paragraphs in the document can inherit their TextStyle and ParagraphStyle from these named styles.',
+    required: [],
+  })
+  .openapi('NamedStyles')
+
+const PositionedObjectPositioningSchema = z
+  .object({
+    layout: z
+      .enum([
+        'POSITIONED_OBJECT_LAYOUT_UNSPECIFIED',
+        'WRAP_TEXT',
+        'BREAK_LEFT',
+        'BREAK_RIGHT',
+        'BREAK_LEFT_RIGHT',
+        'IN_FRONT_OF_TEXT',
+        'BEHIND_TEXT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The layout of this positioned object.' }),
+    leftOffset: DimensionSchema.exactOptional().openapi({
+      description:
+        "The offset of the left edge of the positioned object relative to the beginning of the Paragraph it's tethered to. The exact positioning of the object can depend on other content in the document and the document's styling.",
+    }),
+    topOffset: DimensionSchema.exactOptional().openapi({
+      description:
+        "The offset of the top edge of the positioned object relative to the beginning of the Paragraph it's tethered to. The exact positioning of the object can depend on other content in the document and the document's styling.",
+    }),
+  })
+  .openapi({
+    description:
+      "The positioning of a PositionedObject. The positioned object is positioned relative to the beginning of the Paragraph it's tethered to.",
+    required: [],
+  })
+  .openapi('PositionedObjectPositioning')
+
+const PositionedObjectPropertiesSchema = z
+  .object({
+    embeddedObject: EmbeddedObjectSchema.exactOptional().openapi({
+      description: 'The embedded object of this positioned object.',
+    }),
+    positioning: PositionedObjectPositioningSchema.exactOptional().openapi({
+      description:
+        'The positioning of this positioned object relative to the newline of the Paragraph that references this positioned object.',
+    }),
+  })
+  .openapi({ description: 'Properties of a PositionedObject.', required: [] })
+  .openapi('PositionedObjectProperties')
+
+const PositionedObjectPositioningSuggestionStateSchema = z
+  .object({
+    layoutSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to layout.' }),
+    leftOffsetSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to left_offset.' }),
+    topOffsetSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to top_offset.' }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base PositionedObjectPositioning have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('PositionedObjectPositioningSuggestionState')
+
+const PositionedObjectPropertiesSuggestionStateSchema = z
+  .object({
+    embeddedObjectSuggestionState: EmbeddedObjectSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in embedded_object have been changed in this suggestion.',
+    }),
+    positioningSuggestionState:
+      PositionedObjectPositioningSuggestionStateSchema.exactOptional().openapi({
+        description:
+          'A mask that indicates which of the fields in positioning have been changed in this suggestion.',
+      }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base PositionedObjectProperties have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('PositionedObjectPropertiesSuggestionState')
+
+const SuggestedPositionedObjectPropertiesSchema = z
+  .object({
+    positionedObjectProperties: PositionedObjectPropertiesSchema.exactOptional().openapi({
+      description:
+        'A PositionedObjectProperties that only includes the changes made in this suggestion. This can be used along with the positioned_object_properties_suggestion_state to see which fields have changed and their new values.',
+    }),
+    positionedObjectPropertiesSuggestionState:
+      PositionedObjectPropertiesSuggestionStateSchema.exactOptional().openapi({
+        description:
+          'A mask that indicates which of the fields on the base PositionedObjectProperties have been changed in this suggestion.',
+      }),
+  })
+  .openapi({ description: 'A suggested change to PositionedObjectProperties.', required: [] })
+  .openapi('SuggestedPositionedObjectProperties')
+
+const PositionedObjectSchema = z
+  .object({
+    objectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of this positioned object.' }),
+    positionedObjectProperties: PositionedObjectPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of this positioned object.',
+    }),
+    suggestedDeletionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested deletion IDs. If empty, then there are no suggested deletions of this content.',
+      }),
+    suggestedInsertionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested insertion ID. If empty, then this is not a suggested insertion.',
+      }),
+    suggestedPositionedObjectPropertiesChanges: z
+      .record(z.string(), SuggestedPositionedObjectPropertiesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The suggested changes to the positioned object properties, keyed by suggestion ID.',
+      }),
+  })
+  .openapi({
+    description:
+      "An object that's tethered to a Paragraph and positioned relative to the beginning of the paragraph. A PositionedObject contains an EmbeddedObject such as an image.",
+    required: [],
+  })
+  .openapi('PositionedObject')
+
+const DocumentStyleSuggestionStateSchema = z
+  .object({
+    backgroundSuggestionState: BackgroundSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in background have been changed in this suggestion.',
+    }),
+    defaultFooterIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to default_footer_id.' }),
+    defaultHeaderIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to default_header_id.' }),
+    evenPageFooterIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to even_page_footer_id.',
+      }),
+    evenPageHeaderIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to even_page_header_id.',
+      }),
+    firstPageFooterIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to first_page_footer_id.',
+      }),
+    firstPageHeaderIdSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to first_page_header_id.',
+      }),
+    flipPageOrientationSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Indicates if there was a suggested change to flip_page_orientation.',
+      }),
+    marginBottomSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_bottom.' }),
+    marginFooterSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_footer.' }),
+    marginHeaderSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_header.' }),
+    marginLeftSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_left.' }),
+    marginRightSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_right.' }),
+    marginTopSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to margin_top.' }),
+    pageNumberStartSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if there was a suggested change to page_number_start.' }),
+    pageSizeSuggestionState: SizeSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in size have been changed in this suggestion.',
+    }),
+    useCustomHeaderFooterMarginsSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if there was a suggested change to use_custom_header_footer_margins.',
+      }),
+    useEvenPageHeaderFooterSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to use_even_page_header_footer.',
+      }),
+    useFirstPageHeaderFooterSuggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if there was a suggested change to use_first_page_header_footer.',
+      }),
+  })
+  .openapi({
+    description:
+      "A mask that indicates which of the fields on the base DocumentStyle have been changed in this suggestion. For any field set to true, there's a new suggested value.",
+    required: [],
+  })
+  .openapi('DocumentStyleSuggestionState')
+
+const SuggestedDocumentStyleSchema = z
+  .object({
+    documentStyle: DocumentStyleSchema.exactOptional().openapi({
+      description:
+        'A DocumentStyle that only includes the changes made in this suggestion. This can be used along with the document_style_suggestion_state to see which fields have changed and their new values.',
+    }),
+    documentStyleSuggestionState: DocumentStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields on the base DocumentStyle have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggested change to the DocumentStyle.', required: [] })
+  .openapi('SuggestedDocumentStyle')
+
+const NamedStyleSuggestionStateSchema = z
+  .object({
+    namedStyleType: z
+      .enum([
+        'NAMED_STYLE_TYPE_UNSPECIFIED',
+        'NORMAL_TEXT',
+        'TITLE',
+        'SUBTITLE',
+        'HEADING_1',
+        'HEADING_2',
+        'HEADING_3',
+        'HEADING_4',
+        'HEADING_5',
+        'HEADING_6',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The named style type that this suggestion state corresponds to. This field is provided as a convenience for matching the NamedStyleSuggestionState with its corresponding NamedStyle.',
+      }),
+    paragraphStyleSuggestionState: ParagraphStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in paragraph style have been changed in this suggestion.',
+    }),
+    textStyleSuggestionState: TextStyleSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields in text style have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggestion state of a NamedStyle message.', required: [] })
+  .openapi('NamedStyleSuggestionState')
+
+const NamedStylesSuggestionStateSchema = z
+  .object({
+    stylesSuggestionStates: z
+      .array(NamedStyleSuggestionStateSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A mask that indicates which of the fields on the corresponding NamedStyle in styles have been changed in this suggestion. The order of these named style suggestion states matches the order of the corresponding named style within the named styles suggestion.',
+      }),
+  })
+  .openapi({ description: 'The suggestion state of a NamedStyles message.', required: [] })
+  .openapi('NamedStylesSuggestionState')
+
+const SuggestedNamedStylesSchema = z
+  .object({
+    namedStyles: NamedStylesSchema.exactOptional().openapi({
+      description:
+        'A NamedStyles that only includes the changes made in this suggestion. This can be used along with the named_styles_suggestion_state to see which fields have changed and their new values.',
+    }),
+    namedStylesSuggestionState: NamedStylesSuggestionStateSchema.exactOptional().openapi({
+      description:
+        'A mask that indicates which of the fields on the base NamedStyles have been changed in this suggestion.',
+    }),
+  })
+  .openapi({ description: 'A suggested change to the NamedStyles.', required: [] })
+  .openapi('SuggestedNamedStyles')
+
+const DocumentSchema = z
+  .object({
+    body: BodySchema.exactOptional().openapi({
+      description: 'Output only. The main body of the document.',
+    }),
+    documentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The ID of the document.' }),
+    documentStyle: DocumentStyleSchema.exactOptional().openapi({
+      description: 'Output only. The style of the document.',
+    }),
+    footers: z
+      .record(z.string(), FooterSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. The footers in the document, keyed by footer ID.' }),
+    footnotes: z
+      .record(z.string(), FootnoteSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The footnotes in the document, keyed by footnote ID.',
+      }),
+    headers: z
+      .record(z.string(), HeaderSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. The headers in the document, keyed by header ID.' }),
+    inlineObjects: z
+      .record(z.string(), InlineObjectSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The inline objects in the document, keyed by object ID.',
+      }),
+    lists: z
+      .record(z.string(), ListSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. The lists in the document, keyed by list ID.' }),
+    namedRanges: z
+      .record(z.string(), NamedRangesSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. The named ranges in the document, keyed by name.' }),
+    namedStyles: NamedStylesSchema.exactOptional().openapi({
+      description: 'Output only. The named styles of the document.',
+    }),
+    positionedObjects: z
+      .record(z.string(), PositionedObjectSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The positioned objects in the document, keyed by object ID.',
+      }),
+    revisionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The revision ID of the document. Can be used in update requests to specify which revision of a document to apply updates to and how the request should behave if the document has been edited since that revision. Only populated if the user has edit access to the document. The revision ID is not a sequential number but an opaque string. The format of the revision ID might change over time. A returned revision ID is only guaranteed to be valid for 24 hours after it has been returned and cannot be shared across users. If the revision ID is unchanged between calls, then the document has not changed. Conversely, a changed ID (for the same document and user) usually means the document has been updated. However, a changed ID can also be due to internal factors such as ID format changes.',
+      }),
+    suggestedDocumentStyleChanges: z
+      .record(z.string(), SuggestedDocumentStyleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The suggested changes to the style of the document, keyed by suggestion ID.',
+      }),
+    suggestedNamedStylesChanges: z
+      .record(z.string(), SuggestedNamedStylesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The suggested changes to the named styles of the document, keyed by suggestion ID.',
+      }),
+    suggestionsViewMode: z
+      .enum([
+        'DEFAULT_FOR_CURRENT_ACCESS',
+        'SUGGESTIONS_INLINE',
+        'PREVIEW_SUGGESTIONS_ACCEPTED',
+        'PREVIEW_WITHOUT_SUGGESTIONS',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The suggestions view mode applied to the document. Note: When editing a document, changes must be based on a document with SUGGESTIONS_INLINE.',
+      }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the document.' }),
+  })
+  .openapi({ description: 'A Google Docs document.', required: [] })
+  .openapi('Document')
+
+const XgafvParamsSchema = z
+  .enum(['1', '2'])
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'V1 error format.',
+      in: 'query',
+      name: '$.xgafv',
+      schema: { enum: ['1', '2'], type: 'string' },
+      required: false,
+    },
+  })
+
+const AccessTokenParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'OAuth access token.',
+      in: 'query',
+      name: 'access_token',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const AltParamsSchema = z
+  .enum(['json', 'media', 'proto'])
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'Data format for response.',
+      in: 'query',
+      name: 'alt',
+      schema: { enum: ['json', 'media', 'proto'], type: 'string' },
+      required: false,
+    },
+  })
+
+const CallbackParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'JSONP',
+      in: 'query',
+      name: 'callback',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const FieldsParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'Selector specifying which fields to include in a partial response.',
+      in: 'query',
+      name: 'fields',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const KeyParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      description:
+        'API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.',
+      in: 'query',
+      name: 'key',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const OauthTokenParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'OAuth 2.0 token for the current user.',
+      in: 'query',
+      name: 'oauth_token',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const PrettyPrintParamsSchema = z
+  .stringbool()
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'Returns response with indentations and line breaks.',
+      in: 'query',
+      name: 'prettyPrint',
+      schema: { type: 'boolean' },
+      required: false,
+    },
+  })
+
+const QuotaUserParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      description:
+        'Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.',
+      in: 'query',
+      name: 'quotaUser',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const UploadTypeParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'Legacy upload protocol for media (e.g. "media", "multipart").',
+      in: 'query',
+      name: 'uploadType',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const UploadProtocolParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      description: 'Upload protocol for media (e.g. "raw", "multipart").',
+      in: 'query',
+      name: 'upload_protocol',
+      schema: { type: 'string' },
+      required: false,
+    },
+  })
+
+const Oauth2SecurityScheme = {
+  description: 'Oauth 2.0 implicit authentication',
+  flows: {
+    implicit: {
+      authorizationUrl: 'https://accounts.google.com/o/oauth2/auth',
+      scopes: {
+        'https://www.googleapis.com/auth/documents':
+          'See, edit, create, and delete all your Google Docs documents',
+        'https://www.googleapis.com/auth/documents.readonly': 'See all your Google Docs documents',
+        'https://www.googleapis.com/auth/drive':
+          'See, edit, create, and delete all of your Google Drive files',
+        'https://www.googleapis.com/auth/drive.file':
+          'See, edit, create, and delete only the specific Google Drive files you use with this app',
+        'https://www.googleapis.com/auth/drive.readonly':
+          'See and download all your Google Drive files',
+      },
+    },
+  },
+  type: 'oauth2',
+}
+
+const Oauth2cSecurityScheme = {
+  description: 'Oauth 2.0 authorizationCode authentication',
+  flows: {
+    authorizationCode: {
+      authorizationUrl: 'https://accounts.google.com/o/oauth2/auth',
+      scopes: {
+        'https://www.googleapis.com/auth/documents':
+          'See, edit, create, and delete all your Google Docs documents',
+        'https://www.googleapis.com/auth/documents.readonly': 'See all your Google Docs documents',
+        'https://www.googleapis.com/auth/drive':
+          'See, edit, create, and delete all of your Google Drive files',
+        'https://www.googleapis.com/auth/drive.file':
+          'See, edit, create, and delete only the specific Google Drive files you use with this app',
+        'https://www.googleapis.com/auth/drive.readonly':
+          'See and download all your Google Drive files',
+      },
+      tokenUrl: 'https://accounts.google.com/o/oauth2/token',
+    },
+  },
+  type: 'oauth2',
+}
+
+export const postV1DocumentsRoute = createRoute({
+  method: 'post',
+  path: '/v1/documents',
+  tags: ['documents'],
+  description:
+    'Creates a blank document using the title given in the request. Other fields in the request, including any provided content, are ignored. Returns the created document.',
+  operationId: 'docs.documents.create',
+  request: {
+    query: z.object({
+      '$.xgafv': XgafvParamsSchema,
+      access_token: AccessTokenParamsSchema,
+      alt: AltParamsSchema,
+      callback: CallbackParamsSchema,
+      fields: FieldsParamsSchema,
+      key: KeyParamsSchema,
+      oauth_token: OauthTokenParamsSchema,
+      prettyPrint: PrettyPrintParamsSchema,
+      quotaUser: QuotaUserParamsSchema,
+      upload_protocol: UploadProtocolParamsSchema,
+      uploadType: UploadTypeParamsSchema,
+    }),
+    body: { content: { 'application/json': { schema: DocumentSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: { 'application/json': { schema: DocumentSchema } },
+    },
+  },
+  security: [
+    {
+      Oauth2: ['https://www.googleapis.com/auth/documents'],
+      Oauth2c: ['https://www.googleapis.com/auth/documents'],
+    },
+    {
+      Oauth2: ['https://www.googleapis.com/auth/drive'],
+      Oauth2c: ['https://www.googleapis.com/auth/drive'],
+    },
+    {
+      Oauth2: ['https://www.googleapis.com/auth/drive.file'],
+      Oauth2c: ['https://www.googleapis.com/auth/drive.file'],
+    },
+  ],
+})
+
+export const getV1DocumentsDocumentIdRoute = createRoute({
+  method: 'get',
+  path: '/v1/documents/{documentId}',
+  tags: ['documents'],
+  description: 'Gets the latest version of the specified document.',
+  operationId: 'docs.documents.get',
+  request: {
+    query: z.object({
+      '$.xgafv': XgafvParamsSchema,
+      access_token: AccessTokenParamsSchema,
+      alt: AltParamsSchema,
+      callback: CallbackParamsSchema,
+      fields: FieldsParamsSchema,
+      key: KeyParamsSchema,
+      oauth_token: OauthTokenParamsSchema,
+      prettyPrint: PrettyPrintParamsSchema,
+      quotaUser: QuotaUserParamsSchema,
+      upload_protocol: UploadProtocolParamsSchema,
+      uploadType: UploadTypeParamsSchema,
+      suggestionsViewMode: z
+        .enum([
+          'DEFAULT_FOR_CURRENT_ACCESS',
+          'SUGGESTIONS_INLINE',
+          'PREVIEW_SUGGESTIONS_ACCEPTED',
+          'PREVIEW_WITHOUT_SUGGESTIONS',
+        ])
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The suggestions view mode to apply to the document. This allows viewing the document with all suggestions inline, accepted or rejected. If one is not specified, DEFAULT_FOR_CURRENT_ACCESS is used.',
+            in: 'query',
+            name: 'suggestionsViewMode',
+            schema: {
+              enum: [
+                'DEFAULT_FOR_CURRENT_ACCESS',
+                'SUGGESTIONS_INLINE',
+                'PREVIEW_SUGGESTIONS_ACCEPTED',
+                'PREVIEW_WITHOUT_SUGGESTIONS',
+              ],
+              type: 'string',
+            },
+            required: false,
+          },
+        }),
+    }),
+    params: z.object({
+      documentId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The ID of the document to retrieve.',
+            in: 'path',
+            name: 'documentId',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: { 'application/json': { schema: DocumentSchema } },
+    },
+  },
+  security: [
+    {
+      Oauth2: ['https://www.googleapis.com/auth/documents'],
+      Oauth2c: ['https://www.googleapis.com/auth/documents'],
+    },
+    {
+      Oauth2: ['https://www.googleapis.com/auth/documents.readonly'],
+      Oauth2c: ['https://www.googleapis.com/auth/documents.readonly'],
+    },
+    {
+      Oauth2: ['https://www.googleapis.com/auth/drive'],
+      Oauth2c: ['https://www.googleapis.com/auth/drive'],
+    },
+    {
+      Oauth2: ['https://www.googleapis.com/auth/drive.file'],
+      Oauth2c: ['https://www.googleapis.com/auth/drive.file'],
+    },
+    {
+      Oauth2: ['https://www.googleapis.com/auth/drive.readonly'],
+      Oauth2c: ['https://www.googleapis.com/auth/drive.readonly'],
+    },
+  ],
+})
+
+export const postV1DocumentsDocumentIdBatchUpdateRoute = createRoute({
+  method: 'post',
+  path: '/v1/documents/{documentId}:batchUpdate',
+  tags: ['documents'],
+  description:
+    'Applies one or more updates to the document. Each request is validated before being applied. If any request is not valid, then the entire request will fail and nothing will be applied. Some requests have replies to give you some information about how they are applied. Other requests do not need to return information; these each return an empty reply. The order of replies matches that of the requests. For example, suppose you call batchUpdate with four updates, and only the third one returns information. The response would have two empty replies, the reply to the third request, and another empty reply, in that order. Because other users may be editing the document, the document might not exactly reflect your changes: your changes may be altered with respect to collaborator changes. If there are no collaborators, the document should reflect your changes. In any case, the updates in your request are guaranteed to be applied together atomically.',
+  operationId: 'docs.documents.batchUpdate',
+  request: {
+    query: z.object({
+      '$.xgafv': XgafvParamsSchema,
+      access_token: AccessTokenParamsSchema,
+      alt: AltParamsSchema,
+      callback: CallbackParamsSchema,
+      fields: FieldsParamsSchema,
+      key: KeyParamsSchema,
+      oauth_token: OauthTokenParamsSchema,
+      prettyPrint: PrettyPrintParamsSchema,
+      quotaUser: QuotaUserParamsSchema,
+      upload_protocol: UploadProtocolParamsSchema,
+      uploadType: UploadTypeParamsSchema,
+    }),
+    params: z.object({
+      documentId: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The ID of the document to update.',
+            in: 'path',
+            name: 'documentId',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: BatchUpdateDocumentRequestSchema } } },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: { 'application/json': { schema: BatchUpdateDocumentResponseSchema } },
+    },
+  },
+  security: [
+    {
+      Oauth2: ['https://www.googleapis.com/auth/documents'],
+      Oauth2c: ['https://www.googleapis.com/auth/documents'],
+    },
+    {
+      Oauth2: ['https://www.googleapis.com/auth/drive'],
+      Oauth2c: ['https://www.googleapis.com/auth/drive'],
+    },
+    {
+      Oauth2: ['https://www.googleapis.com/auth/drive.file'],
+      Oauth2c: ['https://www.googleapis.com/auth/drive.file'],
+    },
+  ],
+})

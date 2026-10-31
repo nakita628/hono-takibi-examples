@@ -145,6 +145,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/amadeus": {
+      "name": "@apps/amadeus",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/appwrite": {
       "name": "@apps/appwrite",
       "dependencies": {
@@ -621,6 +635,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/deutschebahn": {
+      "name": "@apps/deutschebahn",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/digitalocean": {
       "name": "@apps/digitalocean",
       "dependencies": {
@@ -707,6 +735,20 @@
     },
     "apps/e2b": {
       "name": "@apps/e2b",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/ebay": {
+      "name": "@apps/ebay",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1699,6 +1741,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/nytimes": {
+      "name": "@apps/nytimes",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/octobox": {
       "name": "@apps/octobox",
       "dependencies": {
@@ -2609,6 +2665,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/vonage": {
+      "name": "@apps/vonage",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/wazuh": {
       "name": "@apps/wazuh",
       "dependencies": {
@@ -2752,6 +2822,8 @@
 
     "@apps/alpaca-trading": ["@apps/alpaca-trading@workspace:apps/alpaca-trading"],
 
+    "@apps/amadeus": ["@apps/amadeus@workspace:apps/amadeus"],
+
     "@apps/appwrite": ["@apps/appwrite@workspace:apps/appwrite"],
 
     "@apps/asana": ["@apps/asana@workspace:apps/asana"],
@@ -2820,6 +2892,8 @@
 
     "@apps/deepgram": ["@apps/deepgram@workspace:apps/deepgram"],
 
+    "@apps/deutschebahn": ["@apps/deutschebahn@workspace:apps/deutschebahn"],
+
     "@apps/digitalocean": ["@apps/digitalocean@workspace:apps/digitalocean"],
 
     "@apps/directus": ["@apps/directus@workspace:apps/directus"],
@@ -2833,6 +2907,8 @@
     "@apps/e-gov-law": ["@apps/e-gov-law@workspace:apps/e-gov-law"],
 
     "@apps/e2b": ["@apps/e2b@workspace:apps/e2b"],
+
+    "@apps/ebay": ["@apps/ebay@workspace:apps/ebay"],
 
     "@apps/elasticsearch": ["@apps/elasticsearch@workspace:apps/elasticsearch"],
 
@@ -2974,6 +3050,8 @@
 
     "@apps/nocodb": ["@apps/nocodb@workspace:apps/nocodb"],
 
+    "@apps/nytimes": ["@apps/nytimes@workspace:apps/nytimes"],
+
     "@apps/octobox": ["@apps/octobox@workspace:apps/octobox"],
 
     "@apps/okta": ["@apps/okta@workspace:apps/okta"],
@@ -3103,6 +3181,8 @@
     "@apps/vault": ["@apps/vault@workspace:apps/vault"],
 
     "@apps/vercel": ["@apps/vercel@workspace:apps/vercel"],
+
+    "@apps/vonage": ["@apps/vonage@workspace:apps/vonage"],
 
     "@apps/wazuh": ["@apps/wazuh@workspace:apps/wazuh"],
 

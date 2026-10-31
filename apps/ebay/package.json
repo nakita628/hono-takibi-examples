@@ -1,0 +1,20 @@
+{
+  "name": "@apps/ebay",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/buy-deal.config.ts; hono-takibi -c configs/commerce-catalog.config.ts; hono-takibi -c configs/commerce-charity.config.ts; hono-takibi -c configs/commerce-translation.config.ts; hono-takibi -c configs/developer-analytics.config.ts; hono-takibi -c configs/sell-account.config.ts; hono-takibi -c configs/sell-analytics.config.ts; hono-takibi -c configs/sell-compliance.config.ts; hono-takibi -c configs/sell-feed.config.ts; hono-takibi -c configs/sell-fulfillment.config.ts; hono-takibi -c configs/sell-listing.config.ts; hono-takibi -c configs/sell-logistics.config.ts; hono-takibi -c configs/sell-marketing.config.ts; hono-takibi -c configs/sell-metadata.config.ts; hono-takibi -c configs/sell-negotiation.config.ts; hono-takibi -c configs/sell-recommendation.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

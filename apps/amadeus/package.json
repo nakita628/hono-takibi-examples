@@ -1,0 +1,20 @@
+{
+  "name": "@apps/amadeus",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/amadeus.config.ts; hono-takibi -c configs/amadeus-flight-price-analysis.config.ts; hono-takibi -c configs/amadeus-location-score.config.ts; hono-takibi -c configs/amadeus-travel-recommendations.config.ts; hono-takibi -c configs/amadeus-trip-parser.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@apps/nytimes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/archive.config.ts; hono-takibi -c configs/article-search.config.ts; hono-takibi -c configs/books-api.config.ts; hono-takibi -c configs/community.config.ts; hono-takibi -c configs/geo-api.config.ts; hono-takibi -c configs/most-popular-api.config.ts; hono-takibi -c configs/movie-reviews.config.ts; hono-takibi -c configs/semantic-api.config.ts; hono-takibi -c configs/times-tags.config.ts; hono-takibi -c configs/timeswire.config.ts; hono-takibi -c configs/top-stories.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

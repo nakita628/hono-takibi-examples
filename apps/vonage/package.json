@@ -1,0 +1,20 @@
+{
+  "name": "@apps/vonage",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/account.config.ts; hono-takibi -c configs/application.config.ts; hono-takibi -c configs/application-v2.config.ts; hono-takibi -c configs/audit.config.ts; hono-takibi -c configs/conversation.config.ts; hono-takibi -c configs/conversation-v2.config.ts; hono-takibi -c configs/conversion.config.ts; hono-takibi -c configs/dispatch.config.ts; hono-takibi -c configs/external-accounts.config.ts; hono-takibi -c configs/media.config.ts; hono-takibi -c configs/messages-olympus.config.ts; hono-takibi -c configs/number-insight.config.ts; hono-takibi -c configs/numbers.config.ts; hono-takibi -c configs/pricing.config.ts; hono-takibi -c configs/redact.config.ts; hono-takibi -c configs/reports.config.ts; hono-takibi -c configs/sms.config.ts; hono-takibi -c configs/subaccounts.config.ts; hono-takibi -c configs/verify.config.ts; hono-takibi -c configs/voice.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}
