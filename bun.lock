@@ -229,6 +229,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/backstage-scaffolder": {
+      "name": "@apps/backstage-scaffolder",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/backstage-search": {
+      "name": "@apps/backstage-search",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/bitbucket": {
       "name": "@apps/bitbucket",
       "dependencies": {
@@ -371,6 +399,20 @@
     },
     "apps/clickhouse-cloud": {
       "name": "@apps/clickhouse-cloud",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/cloud-hypervisor": {
+      "name": "@apps/cloud-hypervisor",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -553,6 +595,20 @@
     },
     "apps/e-gov-law": {
       "name": "@apps/e-gov-law",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/e2b": {
+      "name": "@apps/e2b",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -873,6 +929,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/infinity": {
+      "name": "@apps/infinity",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/influxdb-cloud": {
       "name": "@apps/influxdb-cloud",
       "dependencies": {
@@ -999,6 +1069,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/kafka-rest": {
+      "name": "@apps/kafka-rest",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/karakeep": {
       "name": "@apps/karakeep",
       "dependencies": {
@@ -1111,6 +1195,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/lancedb": {
+      "name": "@apps/lancedb",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/langfuse": {
       "name": "@apps/langfuse",
       "dependencies": {
@@ -1127,6 +1225,20 @@
     },
     "apps/launchdarkly": {
       "name": "@apps/launchdarkly",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/libre-graph": {
+      "name": "@apps/libre-graph",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1265,6 +1377,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/misp": {
+      "name": "@apps/misp",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/mistral": {
       "name": "@apps/mistral",
       "dependencies": {
@@ -1351,6 +1477,20 @@
     },
     "apps/netbox": {
       "name": "@apps/netbox",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/netdata": {
+      "name": "@apps/netdata",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1573,6 +1713,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/opensearch": {
+      "name": "@apps/opensearch",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/opik": {
+      "name": "@apps/opik",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/ory": {
       "name": "@apps/ory",
       "dependencies": {
@@ -1713,6 +1881,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/phoenix": {
+      "name": "@apps/phoenix",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/pihole": {
       "name": "@apps/pihole",
       "dependencies": {
@@ -1839,6 +2021,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/redocly-museum": {
+      "name": "@apps/redocly-museum",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/render": {
       "name": "@apps/render",
       "dependencies": {
@@ -1953,6 +2149,20 @@
     },
     "apps/square": {
       "name": "@apps/square",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/strimzi-kafka-bridge": {
+      "name": "@apps/strimzi-kafka-bridge",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2175,6 +2385,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/tyk": {
+      "name": "@apps/tyk",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/typesense": {
       "name": "@apps/typesense",
       "dependencies": {
@@ -2233,6 +2457,20 @@
     },
     "apps/vercel": {
       "name": "@apps/vercel",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/wazuh": {
+      "name": "@apps/wazuh",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2372,6 +2610,10 @@
 
     "@apps/backstage-catalog": ["@apps/backstage-catalog@workspace:apps/backstage-catalog"],
 
+    "@apps/backstage-scaffolder": ["@apps/backstage-scaffolder@workspace:apps/backstage-scaffolder"],
+
+    "@apps/backstage-search": ["@apps/backstage-search@workspace:apps/backstage-search"],
+
     "@apps/bitbucket": ["@apps/bitbucket@workspace:apps/bitbucket"],
 
     "@apps/blockfrost": ["@apps/blockfrost@workspace:apps/blockfrost"],
@@ -2393,6 +2635,8 @@
     "@apps/clerk": ["@apps/clerk@workspace:apps/clerk"],
 
     "@apps/clickhouse-cloud": ["@apps/clickhouse-cloud@workspace:apps/clickhouse-cloud"],
+
+    "@apps/cloud-hypervisor": ["@apps/cloud-hypervisor@workspace:apps/cloud-hypervisor"],
 
     "@apps/cloudflare": ["@apps/cloudflare@workspace:apps/cloudflare"],
 
@@ -2419,6 +2663,8 @@
     "@apps/docker-hub": ["@apps/docker-hub@workspace:apps/docker-hub"],
 
     "@apps/e-gov-law": ["@apps/e-gov-law@workspace:apps/e-gov-law"],
+
+    "@apps/e2b": ["@apps/e2b@workspace:apps/e2b"],
 
     "@apps/elasticsearch": ["@apps/elasticsearch@workspace:apps/elasticsearch"],
 
@@ -2464,6 +2710,8 @@
 
     "@apps/immich": ["@apps/immich@workspace:apps/immich"],
 
+    "@apps/infinity": ["@apps/infinity@workspace:apps/infinity"],
+
     "@apps/influxdb-cloud": ["@apps/influxdb-cloud@workspace:apps/influxdb-cloud"],
 
     "@apps/influxdb-oss": ["@apps/influxdb-oss@workspace:apps/influxdb-oss"],
@@ -2482,6 +2730,8 @@
 
     "@apps/kabu-station": ["@apps/kabu-station@workspace:apps/kabu-station"],
 
+    "@apps/kafka-rest": ["@apps/kafka-rest@workspace:apps/kafka-rest"],
+
     "@apps/karakeep": ["@apps/karakeep@workspace:apps/karakeep"],
 
     "@apps/kavita": ["@apps/kavita@workspace:apps/kavita"],
@@ -2498,9 +2748,13 @@
 
     "@apps/lago": ["@apps/lago@workspace:apps/lago"],
 
+    "@apps/lancedb": ["@apps/lancedb@workspace:apps/lancedb"],
+
     "@apps/langfuse": ["@apps/langfuse@workspace:apps/langfuse"],
 
     "@apps/launchdarkly": ["@apps/launchdarkly@workspace:apps/launchdarkly"],
+
+    "@apps/libre-graph": ["@apps/libre-graph@workspace:apps/libre-graph"],
 
     "@apps/lichess": ["@apps/lichess@workspace:apps/lichess"],
 
@@ -2520,6 +2774,8 @@
 
     "@apps/meilisearch": ["@apps/meilisearch@workspace:apps/meilisearch"],
 
+    "@apps/misp": ["@apps/misp@workspace:apps/misp"],
+
     "@apps/mistral": ["@apps/mistral@workspace:apps/mistral"],
 
     "@apps/mongodb-atlas": ["@apps/mongodb-atlas@workspace:apps/mongodb-atlas"],
@@ -2533,6 +2789,8 @@
     "@apps/netbird": ["@apps/netbird@workspace:apps/netbird"],
 
     "@apps/netbox": ["@apps/netbox@workspace:apps/netbox"],
+
+    "@apps/netdata": ["@apps/netdata@workspace:apps/netdata"],
 
     "@apps/netlify": ["@apps/netlify@workspace:apps/netlify"],
 
@@ -2564,6 +2822,10 @@
 
     "@apps/openproject": ["@apps/openproject@workspace:apps/openproject"],
 
+    "@apps/opensearch": ["@apps/opensearch@workspace:apps/opensearch"],
+
+    "@apps/opik": ["@apps/opik@workspace:apps/opik"],
+
     "@apps/ory": ["@apps/ory@workspace:apps/ory"],
 
     "@apps/ory-hydra": ["@apps/ory-hydra@workspace:apps/ory-hydra"],
@@ -2584,6 +2846,8 @@
 
     "@apps/petstore": ["@apps/petstore@workspace:apps/petstore"],
 
+    "@apps/phoenix": ["@apps/phoenix@workspace:apps/phoenix"],
+
     "@apps/pihole": ["@apps/pihole@workspace:apps/pihole"],
 
     "@apps/pinecone": ["@apps/pinecone@workspace:apps/pinecone"],
@@ -2602,6 +2866,8 @@
 
     "@apps/radarr": ["@apps/radarr@workspace:apps/radarr"],
 
+    "@apps/redocly-museum": ["@apps/redocly-museum@workspace:apps/redocly-museum"],
+
     "@apps/render": ["@apps/render@workspace:apps/render"],
 
     "@apps/replicate": ["@apps/replicate@workspace:apps/replicate"],
@@ -2619,6 +2885,8 @@
     "@apps/spotify": ["@apps/spotify@workspace:apps/spotify"],
 
     "@apps/square": ["@apps/square@workspace:apps/square"],
+
+    "@apps/strimzi-kafka-bridge": ["@apps/strimzi-kafka-bridge@workspace:apps/strimzi-kafka-bridge"],
 
     "@apps/stripe": ["@apps/stripe@workspace:apps/stripe"],
 
@@ -2650,6 +2918,8 @@
 
     "@apps/twitter": ["@apps/twitter@workspace:apps/twitter"],
 
+    "@apps/tyk": ["@apps/tyk@workspace:apps/tyk"],
+
     "@apps/typesense": ["@apps/typesense@workspace:apps/typesense"],
 
     "@apps/unleash": ["@apps/unleash@workspace:apps/unleash"],
@@ -2659,6 +2929,8 @@
     "@apps/vault": ["@apps/vault@workspace:apps/vault"],
 
     "@apps/vercel": ["@apps/vercel@workspace:apps/vercel"],
+
+    "@apps/wazuh": ["@apps/wazuh@workspace:apps/wazuh"],
 
     "@apps/weather-gov": ["@apps/weather-gov@workspace:apps/weather-gov"],
 
