@@ -1,0 +1,20 @@
+{
+  "name": "@apps/google-apis",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/youtube-v3.config.ts; hono-takibi -c configs/gmail-v1.config.ts; hono-takibi -c configs/drive-v3.config.ts; hono-takibi -c configs/calendar-v3.config.ts; hono-takibi -c configs/sheets-v4.config.ts; hono-takibi -c configs/translate-v3.config.ts; hono-takibi -c configs/storage-v1.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

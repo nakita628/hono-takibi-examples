@@ -1,0 +1,20 @@
+{
+  "name": "@apps/aws-apis",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/s3.config.ts; hono-takibi -c configs/dynamodb.config.ts; hono-takibi -c configs/lambda.config.ts; hono-takibi -c configs/sqs.config.ts; hono-takibi -c configs/sns.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

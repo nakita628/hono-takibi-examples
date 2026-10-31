@@ -215,6 +215,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/aws-apis": {
+      "name": "@apps/aws-apis",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/backstage-catalog": {
       "name": "@apps/backstage-catalog",
       "dependencies": {
@@ -861,6 +875,20 @@
     },
     "apps/gitlab": {
       "name": "@apps/gitlab",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/google-apis": {
+      "name": "@apps/google-apis",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2734,6 +2762,8 @@
 
     "@apps/authentik": ["@apps/authentik@workspace:apps/authentik"],
 
+    "@apps/aws-apis": ["@apps/aws-apis@workspace:apps/aws-apis"],
+
     "@apps/backstage-catalog": ["@apps/backstage-catalog@workspace:apps/backstage-catalog"],
 
     "@apps/backstage-events": ["@apps/backstage-events@workspace:apps/backstage-events"],
@@ -2827,6 +2857,8 @@
     "@apps/github-next": ["@apps/github-next@workspace:apps/github-next"],
 
     "@apps/gitlab": ["@apps/gitlab@workspace:apps/gitlab"],
+
+    "@apps/google-apis": ["@apps/google-apis@workspace:apps/google-apis"],
 
     "@apps/grafana": ["@apps/grafana@workspace:apps/grafana"],
 
