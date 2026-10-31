@@ -1,0 +1,8878 @@
+<h1 id="amazon-inspector">Amazon Inspector v2016-02-16</h1>
+
+> Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+
+<fullname>Amazon Inspector</fullname> <p>Amazon Inspector enables you to analyze the behavior of your AWS resources and to identify potential security issues. For more information, see <a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_introduction.html"> Amazon Inspector User Guide</a>.</p>
+
+Base URLs:
+
+* <a href="http://inspector.us-east-1.amazonaws.com">http://inspector.us-east-1.amazonaws.com</a> - The Amazon Inspector multi-region endpoint
+
+* <a href="https://inspector.us-east-1.amazonaws.com">https://inspector.us-east-1.amazonaws.com</a> - The Amazon Inspector multi-region endpoint
+
+* <a href="http://inspector.cn-north-1.amazonaws.com.cn">http://inspector.cn-north-1.amazonaws.com.cn</a> - The Amazon Inspector endpoint for China (Beijing) and China (Ningxia)
+
+* <a href="https://inspector.cn-north-1.amazonaws.com.cn">https://inspector.cn-north-1.amazonaws.com.cn</a> - The Amazon Inspector endpoint for China (Beijing) and China (Ningxia)
+
+<a href="https://aws.amazon.com/service-terms/">Terms of service</a>
+Email: <a href="mailto:mike.ralphson@gmail.com">Mike Ralphson</a> 
+Web: <a href="https://github.com/mermade/aws2openapi">Mike Ralphson</a> 
+License: <a href="http://www.apache.org/licenses/">Apache 2.0 License</a>
+
+<a href="https://docs.aws.amazon.com/inspector/">Amazon Web Services documentation</a>
+
+# Authentication
+
+* API Key (hmac)
+    - Parameter Name: **Authorization**, in: header. Amazon Signature authorization v4
+
+<h1 id="amazon-inspector-default">Default</h1>
+
+## AddAttributesToFindings
+
+<a id="opIdAddAttributesToFindings"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.AddAttributesToFindings' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.AddAttributesToFindings' \
+  -d '{
+    "findingArns": {},
+    "attributes": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.AddAttributesToFindings`
+
+Assigns attributes (key and value pairs) to the findings that are specified by the ARNs of the findings.
+
+> Body parameter
+
+```json
+{
+  "findingArns": {},
+  "attributes": {}
+}
+```
+
+<h3 id="addattributestofindings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[AddAttributesToFindingsRequest](#schemaaddattributestofindingsrequest)|true|none|
+|» findingArns|body|object|true|none|
+|» attributes|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.AddAttributesToFindings|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "failedItems": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="addattributestofindings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[AddAttributesToFindingsResponse](#schemaaddattributestofindingsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|484|484|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## CreateAssessmentTarget
+
+<a id="opIdCreateAssessmentTarget"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.CreateAssessmentTarget' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.CreateAssessmentTarget' \
+  -d '{
+    "assessmentTargetName": {},
+    "resourceGroupArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.CreateAssessmentTarget`
+
+Creates a new assessment target using the ARN of the resource group that is generated by <a>CreateResourceGroup</a>. If resourceGroupArn is not specified, all EC2 instances in the current AWS account and region are included in the assessment target. If the <a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_slr.html">service-linked role</a> isn’t already registered, this action also creates and registers a service-linked role to grant Amazon Inspector access to AWS Services needed to perform security assessments. You can create up to 50 assessment targets per AWS account. You can run up to 500 concurrent agents per AWS account. For more information, see <a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_applications.html"> Amazon Inspector Assessment Targets</a>.
+
+> Body parameter
+
+```json
+{
+  "assessmentTargetName": {},
+  "resourceGroupArn": {}
+}
+```
+
+<h3 id="createassessmenttarget-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[CreateAssessmentTargetRequest](#schemacreateassessmenttargetrequest)|true|none|
+|» assessmentTargetName|body|object|true|none|
+|» resourceGroupArn|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.CreateAssessmentTarget|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentTargetArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+> 486 Response
+
+```json
+null
+```
+
+<h3 id="createassessmenttarget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[CreateAssessmentTargetResponse](#schemacreateassessmenttargetresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|LimitExceededException|[LimitExceededException](#schemalimitexceededexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|485|485|InvalidCrossAccountRoleException|[InvalidCrossAccountRoleException](#schemainvalidcrossaccountroleexception)|
+|486|486|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## CreateAssessmentTemplate
+
+<a id="opIdCreateAssessmentTemplate"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.CreateAssessmentTemplate' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.CreateAssessmentTemplate' \
+  -d '{
+    "assessmentTargetArn": {},
+    "assessmentTemplateName": {},
+    "durationInSeconds": {},
+    "rulesPackageArns": {},
+    "userAttributesForFindings": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.CreateAssessmentTemplate`
+
+Creates an assessment template for the assessment target that is specified by the ARN of the assessment target. If the <a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_slr.html">service-linked role</a> isn’t already registered, this action also creates and registers a service-linked role to grant Amazon Inspector access to AWS Services needed to perform security assessments.
+
+> Body parameter
+
+```json
+{
+  "assessmentTargetArn": {},
+  "assessmentTemplateName": {},
+  "durationInSeconds": {},
+  "rulesPackageArns": {},
+  "userAttributesForFindings": {}
+}
+```
+
+<h3 id="createassessmenttemplate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[CreateAssessmentTemplateRequest](#schemacreateassessmenttemplaterequest)|true|none|
+|» assessmentTargetArn|body|object|true|none|
+|» assessmentTemplateName|body|object|true|none|
+|» durationInSeconds|body|object|true|none|
+|» rulesPackageArns|body|object|true|none|
+|» userAttributesForFindings|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.CreateAssessmentTemplate|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentTemplateArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-it5r2S4T"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+<h3 id="createassessmenttemplate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[CreateAssessmentTemplateResponse](#schemacreateassessmenttemplateresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|LimitExceededException|[LimitExceededException](#schemalimitexceededexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|485|485|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## CreateExclusionsPreview
+
+<a id="opIdCreateExclusionsPreview"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.CreateExclusionsPreview' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.CreateExclusionsPreview' \
+  -d '{
+    "assessmentTemplateArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.CreateExclusionsPreview`
+
+Starts the generation of an exclusions preview for the specified assessment template. The exclusions preview lists the potential exclusions (ExclusionPreview) that Inspector can detect before it runs the assessment. 
+
+> Body parameter
+
+```json
+{
+  "assessmentTemplateArn": {}
+}
+```
+
+<h3 id="createexclusionspreview-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[CreateExclusionsPreviewRequest](#schemacreateexclusionspreviewrequest)|true|none|
+|» assessmentTemplateArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.CreateExclusionsPreview|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "previewToken": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+<h3 id="createexclusionspreview-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[CreateExclusionsPreviewResponse](#schemacreateexclusionspreviewresponse)|
+|480|480|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|481|481|PreviewGenerationInProgressException|[PreviewGenerationInProgressException](#schemapreviewgenerationinprogressexception)|
+|482|482|InternalException|[InternalException](#schemainternalexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|485|485|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## CreateResourceGroup
+
+<a id="opIdCreateResourceGroup"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.CreateResourceGroup' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.CreateResourceGroup' \
+  -d '{
+    "resourceGroupTags": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.CreateResourceGroup`
+
+Creates a resource group using the specified set of tags (key and value pairs) that are used to select the EC2 instances to be included in an Amazon Inspector assessment target. The created resource group is then used to create an Amazon Inspector assessment target. For more information, see <a>CreateAssessmentTarget</a>.
+
+> Body parameter
+
+```json
+{
+  "resourceGroupTags": {}
+}
+```
+
+<h3 id="createresourcegroup-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[CreateResourceGroupRequest](#schemacreateresourcegrouprequest)|true|none|
+|» resourceGroupTags|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.CreateResourceGroup|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "resourceGroupArn": "arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-AB6DMKnv"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="createresourcegroup-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[CreateResourceGroupResponse](#schemacreateresourcegroupresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|LimitExceededException|[LimitExceededException](#schemalimitexceededexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DeleteAssessmentRun
+
+<a id="opIdDeleteAssessmentRun"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DeleteAssessmentRun' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DeleteAssessmentRun' \
+  -d '{
+    "assessmentRunArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DeleteAssessmentRun`
+
+Deletes the assessment run that is specified by the ARN of the assessment run.
+
+> Body parameter
+
+```json
+{
+  "assessmentRunArn": {}
+}
+```
+
+<h3 id="deleteassessmentrun-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DeleteAssessmentRunRequest](#schemadeleteassessmentrunrequest)|true|none|
+|» assessmentRunArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DeleteAssessmentRun|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+<h3 id="deleteassessmentrun-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AssessmentRunInProgressException|[AssessmentRunInProgressException](#schemaassessmentruninprogressexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|485|485|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DeleteAssessmentTarget
+
+<a id="opIdDeleteAssessmentTarget"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DeleteAssessmentTarget' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DeleteAssessmentTarget' \
+  -d '{
+    "assessmentTargetArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DeleteAssessmentTarget`
+
+Deletes the assessment target that is specified by the ARN of the assessment target.
+
+> Body parameter
+
+```json
+{
+  "assessmentTargetArn": {}
+}
+```
+
+<h3 id="deleteassessmenttarget-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DeleteAssessmentTargetRequest](#schemadeleteassessmenttargetrequest)|true|none|
+|» assessmentTargetArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DeleteAssessmentTarget|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+<h3 id="deleteassessmenttarget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AssessmentRunInProgressException|[AssessmentRunInProgressException](#schemaassessmentruninprogressexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|485|485|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DeleteAssessmentTemplate
+
+<a id="opIdDeleteAssessmentTemplate"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DeleteAssessmentTemplate' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DeleteAssessmentTemplate' \
+  -d '{
+    "assessmentTemplateArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DeleteAssessmentTemplate`
+
+Deletes the assessment template that is specified by the ARN of the assessment template.
+
+> Body parameter
+
+```json
+{
+  "assessmentTemplateArn": {}
+}
+```
+
+<h3 id="deleteassessmenttemplate-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DeleteAssessmentTemplateRequest](#schemadeleteassessmenttemplaterequest)|true|none|
+|» assessmentTemplateArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DeleteAssessmentTemplate|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+<h3 id="deleteassessmenttemplate-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AssessmentRunInProgressException|[AssessmentRunInProgressException](#schemaassessmentruninprogressexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|485|485|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DescribeAssessmentRuns
+
+<a id="opIdDescribeAssessmentRuns"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DescribeAssessmentRuns' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DescribeAssessmentRuns' \
+  -d '{
+    "assessmentRunArns": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DescribeAssessmentRuns`
+
+Describes the assessment runs that are specified by the ARNs of the assessment runs.
+
+> Body parameter
+
+```json
+{
+  "assessmentRunArns": {}
+}
+```
+
+<h3 id="describeassessmentruns-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DescribeAssessmentRunsRequest](#schemadescribeassessmentrunsrequest)|true|none|
+|» assessmentRunArns|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DescribeAssessmentRuns|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentRuns": [
+    {
+      "name": "Run 1 for ExampleAssessmentTemplate",
+      "arn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE",
+      "assessmentTemplateArn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw",
+      "completedAt": "1458680301.4",
+      "createdAt": "1458680170.035",
+      "dataCollected": true,
+      "durationInSeconds": 3600,
+      "findingCounts": {
+        "High": 14,
+        "Informational": 0,
+        "Low": 0,
+        "Medium": 2,
+        "Undefined": 0
+      },
+      "notifications": [],
+      "rulesPackageArns": [
+        "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-X1KXtawP"
+      ],
+      "startedAt": "1458680170.161",
+      "state": "COMPLETED",
+      "stateChangedAt": "1458680301.4",
+      "stateChanges": [
+        {
+          "state": "CREATED",
+          "stateChangedAt": "1458680170.035"
+        },
+        {
+          "state": "START_DATA_COLLECTION_PENDING",
+          "stateChangedAt": "1458680170.065"
+        },
+        {
+          "state": "START_DATA_COLLECTION_IN_PROGRESS",
+          "stateChangedAt": "1458680170.096"
+        },
+        {
+          "state": "COLLECTING_DATA",
+          "stateChangedAt": "1458680170.161"
+        },
+        {
+          "state": "STOP_DATA_COLLECTION_PENDING",
+          "stateChangedAt": "1458680239.883"
+        },
+        {
+          "state": "DATA_COLLECTED",
+          "stateChangedAt": "1458680299.847"
+        },
+        {
+          "state": "EVALUATING_RULES",
+          "stateChangedAt": "1458680300.099"
+        },
+        {
+          "state": "COMPLETED",
+          "stateChangedAt": "1458680301.4"
+        }
+      ],
+      "userAttributesForFindings": []
+    }
+  ],
+  "failedItems": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+<h3 id="describeassessmentruns-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[DescribeAssessmentRunsResponse](#schemadescribeassessmentrunsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DescribeAssessmentTargets
+
+<a id="opIdDescribeAssessmentTargets"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DescribeAssessmentTargets' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DescribeAssessmentTargets' \
+  -d '{
+    "assessmentTargetArns": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DescribeAssessmentTargets`
+
+Describes the assessment targets that are specified by the ARNs of the assessment targets.
+
+> Body parameter
+
+```json
+{
+  "assessmentTargetArns": {}
+}
+```
+
+<h3 id="describeassessmenttargets-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DescribeAssessmentTargetsRequest](#schemadescribeassessmenttargetsrequest)|true|none|
+|» assessmentTargetArns|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DescribeAssessmentTargets|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentTargets": [
+    {
+      "name": "ExampleAssessmentTarget",
+      "arn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq",
+      "createdAt": "1458074191.459",
+      "resourceGroupArn": "arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-PyGXopAI",
+      "updatedAt": "1458074191.459"
+    }
+  ],
+  "failedItems": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+<h3 id="describeassessmenttargets-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[DescribeAssessmentTargetsResponse](#schemadescribeassessmenttargetsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DescribeAssessmentTemplates
+
+<a id="opIdDescribeAssessmentTemplates"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DescribeAssessmentTemplates' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DescribeAssessmentTemplates' \
+  -d '{
+    "assessmentTemplateArns": [
+      "string"
+    ]
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DescribeAssessmentTemplates`
+
+Describes the assessment templates that are specified by the ARNs of the assessment templates.
+
+> Body parameter
+
+```json
+{
+  "assessmentTemplateArns": [
+    "string"
+  ]
+}
+```
+
+<h3 id="describeassessmenttemplates-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DescribeAssessmentTemplatesRequest](#schemadescribeassessmenttemplatesrequest)|true|none|
+|» assessmentTemplateArns|body|[BatchDescribeArnList](#schemabatchdescribearnlist)|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DescribeAssessmentTemplates|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentTemplates": [
+    {
+      "name": "ExampleAssessmentTemplate",
+      "arn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw",
+      "assessmentRunCount": 0,
+      "assessmentTargetArn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq",
+      "createdAt": "1458074191.844",
+      "durationInSeconds": 3600,
+      "rulesPackageArns": [
+        "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-X1KXtawP"
+      ],
+      "userAttributesForFindings": []
+    }
+  ],
+  "failedItems": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+<h3 id="describeassessmenttemplates-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[DescribeAssessmentTemplatesResponse](#schemadescribeassessmenttemplatesresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DescribeCrossAccountAccessRole
+
+<a id="opIdDescribeCrossAccountAccessRole"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DescribeCrossAccountAccessRole' \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DescribeCrossAccountAccessRole'
+```
+
+`POST /#X-Amz-Target=InspectorService.DescribeCrossAccountAccessRole`
+
+Describes the IAM role that enables Amazon Inspector to access your AWS account.
+
+<h3 id="describecrossaccountaccessrole-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DescribeCrossAccountAccessRole|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "registeredAt": "1458069182.826",
+  "roleArn": "arn:aws:iam::123456789012:role/inspector",
+  "valid": true
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+<h3 id="describecrossaccountaccessrole-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[DescribeCrossAccountAccessRoleResponse](#schemadescribecrossaccountaccessroleresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DescribeExclusions
+
+<a id="opIdDescribeExclusions"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DescribeExclusions' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DescribeExclusions' \
+  -d '{
+    "exclusionArns": {},
+    "locale": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DescribeExclusions`
+
+Describes the exclusions that are specified by the exclusions' ARNs.
+
+> Body parameter
+
+```json
+{
+  "exclusionArns": {},
+  "locale": {}
+}
+```
+
+<h3 id="describeexclusions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DescribeExclusionsRequest](#schemadescribeexclusionsrequest)|true|none|
+|» exclusionArns|body|object|true|none|
+|» locale|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DescribeExclusions|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "exclusions": {
+    "property1": {
+      "arn": {},
+      "title": {},
+      "description": {},
+      "recommendation": {},
+      "scopes": {},
+      "attributes": {}
+    },
+    "property2": {
+      "arn": {},
+      "title": {},
+      "description": {},
+      "recommendation": {},
+      "scopes": {},
+      "attributes": {}
+    }
+  },
+  "failedItems": {
+    "property1": {
+      "failureCode": {},
+      "retryable": {}
+    },
+    "property2": {
+      "failureCode": {},
+      "retryable": {}
+    }
+  }
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+<h3 id="describeexclusions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[DescribeExclusionsResponse](#schemadescribeexclusionsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DescribeFindings
+
+<a id="opIdDescribeFindings"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DescribeFindings' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DescribeFindings' \
+  -d '{
+    "findingArns": {},
+    "locale": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DescribeFindings`
+
+Describes the findings that are specified by the ARNs of the findings.
+
+> Body parameter
+
+```json
+{
+  "findingArns": {},
+  "locale": {}
+}
+```
+
+<h3 id="describefindings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DescribeFindingsRequest](#schemadescribefindingsrequest)|true|none|
+|» findingArns|body|object|true|none|
+|» locale|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DescribeFindings|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "failedItems": {},
+  "findings": [
+    {
+      "arn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE/finding/0-HwPnsDm4",
+      "assetAttributes": {
+        "ipv4Addresses": [],
+        "schemaVersion": 1
+      },
+      "assetType": "ec2-instance",
+      "attributes": [],
+      "confidence": 10,
+      "createdAt": "1458680301.37",
+      "description": "Amazon Inspector did not find any potential security issues during this assessment.",
+      "indicatorOfCompromise": false,
+      "numericSeverity": 0,
+      "recommendation": "No remediation needed.",
+      "schemaVersion": 1,
+      "service": "Inspector",
+      "serviceAttributes": {
+        "assessmentRunArn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE",
+        "rulesPackageArn": "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-X1KXtawP",
+        "schemaVersion": 1
+      },
+      "severity": "Informational",
+      "title": "No potential security issues found",
+      "updatedAt": "1458680301.37",
+      "userAttributes": []
+    }
+  ]
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+<h3 id="describefindings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[DescribeFindingsResponse](#schemadescribefindingsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DescribeResourceGroups
+
+<a id="opIdDescribeResourceGroups"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DescribeResourceGroups' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DescribeResourceGroups' \
+  -d '{
+    "resourceGroupArns": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DescribeResourceGroups`
+
+Describes the resource groups that are specified by the ARNs of the resource groups.
+
+> Body parameter
+
+```json
+{
+  "resourceGroupArns": {}
+}
+```
+
+<h3 id="describeresourcegroups-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DescribeResourceGroupsRequest](#schemadescriberesourcegroupsrequest)|true|none|
+|» resourceGroupArns|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DescribeResourceGroups|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "failedItems": {},
+  "resourceGroups": [
+    {
+      "arn": "arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-PyGXopAI",
+      "createdAt": "1458074191.098",
+      "tags": [
+        {
+          "key": "Name",
+          "value": "example"
+        }
+      ]
+    }
+  ]
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+<h3 id="describeresourcegroups-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[DescribeResourceGroupsResponse](#schemadescriberesourcegroupsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## DescribeRulesPackages
+
+<a id="opIdDescribeRulesPackages"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.DescribeRulesPackages' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.DescribeRulesPackages' \
+  -d '{
+    "rulesPackageArns": {},
+    "locale": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.DescribeRulesPackages`
+
+Describes the rules packages that are specified by the ARNs of the rules packages.
+
+> Body parameter
+
+```json
+{
+  "rulesPackageArns": {},
+  "locale": {}
+}
+```
+
+<h3 id="describerulespackages-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[DescribeRulesPackagesRequest](#schemadescriberulespackagesrequest)|true|none|
+|» rulesPackageArns|body|object|true|none|
+|» locale|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.DescribeRulesPackages|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "failedItems": {},
+  "rulesPackages": [
+    {
+      "version": "1.1",
+      "name": "Security Best Practices",
+      "arn": "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-JJOtZiqQ",
+      "description": "The rules in this package help determine whether your systems are configured securely.",
+      "provider": "Amazon Web Services, Inc."
+    }
+  ]
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+<h3 id="describerulespackages-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[DescribeRulesPackagesResponse](#schemadescriberulespackagesresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## GetAssessmentReport
+
+<a id="opIdGetAssessmentReport"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.GetAssessmentReport' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.GetAssessmentReport' \
+  -d '{
+    "assessmentRunArn": {},
+    "reportFileFormat": {},
+    "reportType": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.GetAssessmentReport`
+
+Produces an assessment report that includes detailed and comprehensive results of a specified assessment run. 
+
+> Body parameter
+
+```json
+{
+  "assessmentRunArn": {},
+  "reportFileFormat": {},
+  "reportType": {}
+}
+```
+
+<h3 id="getassessmentreport-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[GetAssessmentReportRequest](#schemagetassessmentreportrequest)|true|none|
+|» assessmentRunArn|body|object|true|none|
+|» reportFileFormat|body|object|true|none|
+|» reportType|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.GetAssessmentReport|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": {},
+  "url": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+> 486 Response
+
+```json
+null
+```
+
+<h3 id="getassessmentreport-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[GetAssessmentReportResponse](#schemagetassessmentreportresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|484|484|AssessmentRunInProgressException|[AssessmentRunInProgressException](#schemaassessmentruninprogressexception)|
+|485|485|UnsupportedFeatureException|[UnsupportedFeatureException](#schemaunsupportedfeatureexception)|
+|486|486|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## GetExclusionsPreview
+
+<a id="opIdGetExclusionsPreview"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.GetExclusionsPreview' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.GetExclusionsPreview' \
+  -d '{
+    "assessmentTemplateArn": {},
+    "previewToken": {},
+    "nextToken": {},
+    "maxResults": {},
+    "locale": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.GetExclusionsPreview`
+
+Retrieves the exclusions preview (a list of ExclusionPreview objects) specified by the preview token. You can obtain the preview token by running the CreateExclusionsPreview API.
+
+> Body parameter
+
+```json
+{
+  "assessmentTemplateArn": {},
+  "previewToken": {},
+  "nextToken": {},
+  "maxResults": {},
+  "locale": {}
+}
+```
+
+<h3 id="getexclusionspreview-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[GetExclusionsPreviewRequest](#schemagetexclusionspreviewrequest)|true|none|
+|» assessmentTemplateArn|body|object|true|none|
+|» previewToken|body|object|true|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+|» locale|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.GetExclusionsPreview|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "previewStatus": {},
+  "exclusionPreviews": {},
+  "nextToken": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="getexclusionspreview-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[GetExclusionsPreviewResponse](#schemagetexclusionspreviewresponse)|
+|480|480|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|481|481|InternalException|[InternalException](#schemainternalexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## GetTelemetryMetadata
+
+<a id="opIdGetTelemetryMetadata"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.GetTelemetryMetadata' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.GetTelemetryMetadata' \
+  -d '{
+    "assessmentRunArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.GetTelemetryMetadata`
+
+Information about the data that is collected for the specified assessment run.
+
+> Body parameter
+
+```json
+{
+  "assessmentRunArn": {}
+}
+```
+
+<h3 id="gettelemetrymetadata-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[GetTelemetryMetadataRequest](#schemagettelemetrymetadatarequest)|true|none|
+|» assessmentRunArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.GetTelemetryMetadata|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "telemetryMetadata": [
+    {
+      "count": 2,
+      "dataSize": 345,
+      "messageType": "InspectorDuplicateProcess"
+    },
+    {
+      "count": 3,
+      "dataSize": 255,
+      "messageType": "InspectorTimeEventMsg"
+    },
+    {
+      "count": 4,
+      "dataSize": 1082,
+      "messageType": "InspectorNetworkInterface"
+    },
+    {
+      "count": 2,
+      "dataSize": 349,
+      "messageType": "InspectorDnsEntry"
+    },
+    {
+      "count": 11,
+      "dataSize": 2514,
+      "messageType": "InspectorDirectoryInfoMsg"
+    },
+    {
+      "count": 1,
+      "dataSize": 179,
+      "messageType": "InspectorTcpV6ListeningPort"
+    },
+    {
+      "count": 101,
+      "dataSize": 10949,
+      "messageType": "InspectorTerminal"
+    },
+    {
+      "count": 26,
+      "dataSize": 5916,
+      "messageType": "InspectorUser"
+    },
+    {
+      "count": 282,
+      "dataSize": 32148,
+      "messageType": "InspectorDynamicallyLoadedCodeModule"
+    },
+    {
+      "count": 18,
+      "dataSize": 10172,
+      "messageType": "InspectorCreateProcess"
+    },
+    {
+      "count": 3,
+      "dataSize": 8001,
+      "messageType": "InspectorProcessPerformance"
+    },
+    {
+      "count": 1,
+      "dataSize": 360,
+      "messageType": "InspectorOperatingSystem"
+    },
+    {
+      "count": 6,
+      "dataSize": 546,
+      "messageType": "InspectorStopProcess"
+    },
+    {
+      "count": 1,
+      "dataSize": 1553,
+      "messageType": "InspectorInstanceMetaData"
+    },
+    {
+      "count": 2,
+      "dataSize": 434,
+      "messageType": "InspectorTcpV4Connection"
+    },
+    {
+      "count": 474,
+      "dataSize": 2960322,
+      "messageType": "InspectorPackageInfo"
+    },
+    {
+      "count": 3,
+      "dataSize": 2235,
+      "messageType": "InspectorSystemPerformance"
+    },
+    {
+      "count": 105,
+      "dataSize": 46048,
+      "messageType": "InspectorCodeModule"
+    },
+    {
+      "count": 1,
+      "dataSize": 182,
+      "messageType": "InspectorUdpV6ListeningPort"
+    },
+    {
+      "count": 2,
+      "dataSize": 371,
+      "messageType": "InspectorUdpV4ListeningPort"
+    },
+    {
+      "count": 18,
+      "dataSize": 8362,
+      "messageType": "InspectorKernelModule"
+    },
+    {
+      "count": 29,
+      "dataSize": 48788,
+      "messageType": "InspectorConfigurationInfo"
+    },
+    {
+      "count": 1,
+      "dataSize": 79,
+      "messageType": "InspectorMonitoringStart"
+    },
+    {
+      "count": 5,
+      "dataSize": 0,
+      "messageType": "InspectorSplitMsgBegin"
+    },
+    {
+      "count": 51,
+      "dataSize": 4593,
+      "messageType": "InspectorGroup"
+    },
+    {
+      "count": 1,
+      "dataSize": 184,
+      "messageType": "InspectorTcpV4ListeningPort"
+    },
+    {
+      "count": 1159,
+      "dataSize": 3146579,
+      "messageType": "Total"
+    },
+    {
+      "count": 5,
+      "dataSize": 0,
+      "messageType": "InspectorSplitMsgEnd"
+    },
+    {
+      "count": 1,
+      "dataSize": 612,
+      "messageType": "InspectorLoadImageInProcess"
+    }
+  ]
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="gettelemetrymetadata-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[GetTelemetryMetadataResponse](#schemagettelemetrymetadataresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListAssessmentRunAgents
+
+<a id="opIdListAssessmentRunAgents"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListAssessmentRunAgents' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListAssessmentRunAgents' \
+  -d '{
+    "assessmentRunArn": {},
+    "filter": {
+      "agentHealths": {},
+      "agentHealthCodes": {}
+    },
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListAssessmentRunAgents`
+
+Lists the agents of the assessment runs that are specified by the ARNs of the assessment runs.
+
+> Body parameter
+
+```json
+{
+  "assessmentRunArn": {},
+  "filter": {
+    "agentHealths": {},
+    "agentHealthCodes": {}
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="listassessmentrunagents-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListAssessmentRunAgentsRequest](#schemalistassessmentrunagentsrequest)|true|none|
+|» assessmentRunArn|body|object|true|none|
+|» filter|body|object|false|none|
+|» » agentHealths|body|object|true|none|
+|» » agentHealthCodes|body|object|true|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListAssessmentRunAgents|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentRunAgents": [
+    {
+      "agentHealth": "HEALTHY",
+      "agentHealthCode": "RUNNING",
+      "agentId": "i-49113b93",
+      "assessmentRunArn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE",
+      "telemetryMetadata": [
+        {
+          "count": 2,
+          "dataSize": 345,
+          "messageType": "InspectorDuplicateProcess"
+        },
+        {
+          "count": 3,
+          "dataSize": 255,
+          "messageType": "InspectorTimeEventMsg"
+        },
+        {
+          "count": 4,
+          "dataSize": 1082,
+          "messageType": "InspectorNetworkInterface"
+        },
+        {
+          "count": 2,
+          "dataSize": 349,
+          "messageType": "InspectorDnsEntry"
+        },
+        {
+          "count": 11,
+          "dataSize": 2514,
+          "messageType": "InspectorDirectoryInfoMsg"
+        },
+        {
+          "count": 1,
+          "dataSize": 179,
+          "messageType": "InspectorTcpV6ListeningPort"
+        },
+        {
+          "count": 101,
+          "dataSize": 10949,
+          "messageType": "InspectorTerminal"
+        },
+        {
+          "count": 26,
+          "dataSize": 5916,
+          "messageType": "InspectorUser"
+        },
+        {
+          "count": 282,
+          "dataSize": 32148,
+          "messageType": "InspectorDynamicallyLoadedCodeModule"
+        },
+        {
+          "count": 18,
+          "dataSize": 10172,
+          "messageType": "InspectorCreateProcess"
+        },
+        {
+          "count": 3,
+          "dataSize": 8001,
+          "messageType": "InspectorProcessPerformance"
+        },
+        {
+          "count": 1,
+          "dataSize": 360,
+          "messageType": "InspectorOperatingSystem"
+        },
+        {
+          "count": 6,
+          "dataSize": 546,
+          "messageType": "InspectorStopProcess"
+        },
+        {
+          "count": 1,
+          "dataSize": 1553,
+          "messageType": "InspectorInstanceMetaData"
+        },
+        {
+          "count": 2,
+          "dataSize": 434,
+          "messageType": "InspectorTcpV4Connection"
+        },
+        {
+          "count": 474,
+          "dataSize": 2960322,
+          "messageType": "InspectorPackageInfo"
+        },
+        {
+          "count": 3,
+          "dataSize": 2235,
+          "messageType": "InspectorSystemPerformance"
+        },
+        {
+          "count": 105,
+          "dataSize": 46048,
+          "messageType": "InspectorCodeModule"
+        },
+        {
+          "count": 1,
+          "dataSize": 182,
+          "messageType": "InspectorUdpV6ListeningPort"
+        },
+        {
+          "count": 2,
+          "dataSize": 371,
+          "messageType": "InspectorUdpV4ListeningPort"
+        },
+        {
+          "count": 18,
+          "dataSize": 8362,
+          "messageType": "InspectorKernelModule"
+        },
+        {
+          "count": 29,
+          "dataSize": 48788,
+          "messageType": "InspectorConfigurationInfo"
+        },
+        {
+          "count": 1,
+          "dataSize": 79,
+          "messageType": "InspectorMonitoringStart"
+        },
+        {
+          "count": 5,
+          "dataSize": 0,
+          "messageType": "InspectorSplitMsgBegin"
+        },
+        {
+          "count": 51,
+          "dataSize": 4593,
+          "messageType": "InspectorGroup"
+        },
+        {
+          "count": 1,
+          "dataSize": 184,
+          "messageType": "InspectorTcpV4ListeningPort"
+        },
+        {
+          "count": 1159,
+          "dataSize": 3146579,
+          "messageType": "Total"
+        },
+        {
+          "count": 5,
+          "dataSize": 0,
+          "messageType": "InspectorSplitMsgEnd"
+        },
+        {
+          "count": 1,
+          "dataSize": 612,
+          "messageType": "InspectorLoadImageInProcess"
+        }
+      ]
+    }
+  ],
+  "nextToken": "1"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="listassessmentrunagents-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListAssessmentRunAgentsResponse](#schemalistassessmentrunagentsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListAssessmentRuns
+
+<a id="opIdListAssessmentRuns"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListAssessmentRuns' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListAssessmentRuns' \
+  -d '{
+    "assessmentTemplateArns": {},
+    "filter": {
+      "namePattern": {},
+      "states": {},
+      "durationRange": {
+        "minSeconds": {},
+        "maxSeconds": {}
+      },
+      "rulesPackageArns": {},
+      "startTimeRange": {
+        "beginDate": {},
+        "endDate": {}
+      },
+      "completionTimeRange": {
+        "beginDate": {},
+        "endDate": {}
+      },
+      "stateChangeTimeRange": {
+        "beginDate": {},
+        "endDate": {}
+      }
+    },
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListAssessmentRuns`
+
+Lists the assessment runs that correspond to the assessment templates that are specified by the ARNs of the assessment templates.
+
+> Body parameter
+
+```json
+{
+  "assessmentTemplateArns": {},
+  "filter": {
+    "namePattern": {},
+    "states": {},
+    "durationRange": {
+      "minSeconds": {},
+      "maxSeconds": {}
+    },
+    "rulesPackageArns": {},
+    "startTimeRange": {
+      "beginDate": {},
+      "endDate": {}
+    },
+    "completionTimeRange": {
+      "beginDate": {},
+      "endDate": {}
+    },
+    "stateChangeTimeRange": {
+      "beginDate": {},
+      "endDate": {}
+    }
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="listassessmentruns-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListAssessmentRunsRequest](#schemalistassessmentrunsrequest)|true|none|
+|» assessmentTemplateArns|body|object|false|none|
+|» filter|body|object|false|none|
+|» » namePattern|body|object|false|none|
+|» » states|body|object|false|none|
+|» » durationRange|body|object|false|none|
+|» » » minSeconds|body|object|false|none|
+|» » » maxSeconds|body|object|false|none|
+|» » rulesPackageArns|body|object|false|none|
+|» » startTimeRange|body|object|false|none|
+|» » » beginDate|body|object|false|none|
+|» » » endDate|body|object|false|none|
+|» » completionTimeRange|body|object|false|none|
+|» » » beginDate|body|object|false|none|
+|» » » endDate|body|object|false|none|
+|» » stateChangeTimeRange|body|object|false|none|
+|» » » beginDate|body|object|false|none|
+|» » » endDate|body|object|false|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListAssessmentRuns|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentRunArns": [
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE",
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-v5D6fI3v"
+  ],
+  "nextToken": "1"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="listassessmentruns-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListAssessmentRunsResponse](#schemalistassessmentrunsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListAssessmentTargets
+
+<a id="opIdListAssessmentTargets"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListAssessmentTargets' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListAssessmentTargets' \
+  -d '{
+    "filter": {
+      "assessmentTargetNamePattern": {}
+    },
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListAssessmentTargets`
+
+Lists the ARNs of the assessment targets within this AWS account. For more information about assessment targets, see <a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_applications.html">Amazon Inspector Assessment Targets</a>.
+
+> Body parameter
+
+```json
+{
+  "filter": {
+    "assessmentTargetNamePattern": {}
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="listassessmenttargets-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListAssessmentTargetsRequest](#schemalistassessmenttargetsrequest)|true|none|
+|» filter|body|object|false|none|
+|» » assessmentTargetNamePattern|body|object|false|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListAssessmentTargets|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentTargetArns": [
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq"
+  ],
+  "nextToken": "1"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+<h3 id="listassessmenttargets-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListAssessmentTargetsResponse](#schemalistassessmenttargetsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListAssessmentTemplates
+
+<a id="opIdListAssessmentTemplates"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListAssessmentTemplates' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListAssessmentTemplates' \
+  -d '{
+    "assessmentTargetArns": {},
+    "filter": {
+      "namePattern": {},
+      "durationRange": {
+        "minSeconds": {},
+        "maxSeconds": {}
+      },
+      "rulesPackageArns": {}
+    },
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListAssessmentTemplates`
+
+Lists the assessment templates that correspond to the assessment targets that are specified by the ARNs of the assessment targets.
+
+> Body parameter
+
+```json
+{
+  "assessmentTargetArns": {},
+  "filter": {
+    "namePattern": {},
+    "durationRange": {
+      "minSeconds": {},
+      "maxSeconds": {}
+    },
+    "rulesPackageArns": {}
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="listassessmenttemplates-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListAssessmentTemplatesRequest](#schemalistassessmenttemplatesrequest)|true|none|
+|» assessmentTargetArns|body|object|false|none|
+|» filter|body|object|false|none|
+|» » namePattern|body|object|false|none|
+|» » durationRange|body|object|false|none|
+|» » » minSeconds|body|object|false|none|
+|» » » maxSeconds|body|object|false|none|
+|» » rulesPackageArns|body|object|false|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListAssessmentTemplates|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentTemplateArns": [
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw",
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-Uza6ihLh"
+  ],
+  "nextToken": "1"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="listassessmenttemplates-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListAssessmentTemplatesResponse](#schemalistassessmenttemplatesresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListEventSubscriptions
+
+<a id="opIdListEventSubscriptions"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListEventSubscriptions' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListEventSubscriptions' \
+  -d '{
+    "resourceArn": {},
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListEventSubscriptions`
+
+Lists all the event subscriptions for the assessment template that is specified by the ARN of the assessment template. For more information, see <a>SubscribeToEvent</a> and <a>UnsubscribeFromEvent</a>.
+
+> Body parameter
+
+```json
+{
+  "resourceArn": {},
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="listeventsubscriptions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListEventSubscriptionsRequest](#schemalisteventsubscriptionsrequest)|true|none|
+|» resourceArn|body|object|false|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListEventSubscriptions|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "nextToken": "1",
+  "subscriptions": [
+    {
+      "eventSubscriptions": [
+        {
+          "event": "ASSESSMENT_RUN_COMPLETED",
+          "subscribedAt": "1459455440.867"
+        }
+      ],
+      "resourceArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-7sbz2Kz0",
+      "topicArn": "arn:aws:sns:us-west-2:123456789012:exampletopic"
+    }
+  ]
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="listeventsubscriptions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListEventSubscriptionsResponse](#schemalisteventsubscriptionsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListExclusions
+
+<a id="opIdListExclusions"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListExclusions' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListExclusions' \
+  -d '{
+    "assessmentRunArn": {},
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListExclusions`
+
+List exclusions that are generated by the assessment run.
+
+> Body parameter
+
+```json
+{
+  "assessmentRunArn": {},
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="listexclusions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListExclusionsRequest](#schemalistexclusionsrequest)|true|none|
+|» assessmentRunArn|body|object|true|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListExclusions|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "exclusionArns": {},
+  "nextToken": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="listexclusions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListExclusionsResponse](#schemalistexclusionsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListFindings
+
+<a id="opIdListFindings"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListFindings' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListFindings' \
+  -d '{
+    "assessmentRunArns": {},
+    "filter": {
+      "agentIds": {},
+      "autoScalingGroups": {},
+      "ruleNames": {},
+      "severities": {},
+      "rulesPackageArns": {},
+      "attributes": {},
+      "userAttributes": {},
+      "creationTimeRange": {
+        "beginDate": {},
+        "endDate": {}
+      }
+    },
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListFindings`
+
+Lists findings that are generated by the assessment runs that are specified by the ARNs of the assessment runs.
+
+> Body parameter
+
+```json
+{
+  "assessmentRunArns": {},
+  "filter": {
+    "agentIds": {},
+    "autoScalingGroups": {},
+    "ruleNames": {},
+    "severities": {},
+    "rulesPackageArns": {},
+    "attributes": {},
+    "userAttributes": {},
+    "creationTimeRange": {
+      "beginDate": {},
+      "endDate": {}
+    }
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="listfindings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListFindingsRequest](#schemalistfindingsrequest)|true|none|
+|» assessmentRunArns|body|object|false|none|
+|» filter|body|object|false|none|
+|» » agentIds|body|object|false|none|
+|» » autoScalingGroups|body|object|false|none|
+|» » ruleNames|body|object|false|none|
+|» » severities|body|object|false|none|
+|» » rulesPackageArns|body|object|false|none|
+|» » attributes|body|object|false|none|
+|» » userAttributes|body|object|false|none|
+|» » creationTimeRange|body|object|false|none|
+|» » » beginDate|body|object|false|none|
+|» » » endDate|body|object|false|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListFindings|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "findingArns": [
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE/finding/0-HwPnsDm4",
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-v5D6fI3v/finding/0-tyvmqBLy"
+  ],
+  "nextToken": "1"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="listfindings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListFindingsResponse](#schemalistfindingsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListRulesPackages
+
+<a id="opIdListRulesPackages"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListRulesPackages' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListRulesPackages' \
+  -d '{
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListRulesPackages`
+
+Lists all available Amazon Inspector rules packages.
+
+> Body parameter
+
+```json
+{
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="listrulespackages-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListRulesPackagesRequest](#schemalistrulespackagesrequest)|true|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListRulesPackages|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "nextToken": "1",
+  "rulesPackageArns": [
+    "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-9hgA516p",
+    "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-H5hpSawc",
+    "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-JJOtZiqQ",
+    "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-vg5GGHSD"
+  ]
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+<h3 id="listrulespackages-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListRulesPackagesResponse](#schemalistrulespackagesresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## ListTagsForResource
+
+<a id="opIdListTagsForResource"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.ListTagsForResource' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.ListTagsForResource' \
+  -d '{
+    "resourceArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.ListTagsForResource`
+
+Lists all tags associated with an assessment template.
+
+> Body parameter
+
+```json
+{
+  "resourceArn": {}
+}
+```
+
+<h3 id="listtagsforresource-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[ListTagsForResourceRequest](#schemalisttagsforresourcerequest)|true|none|
+|» resourceArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.ListTagsForResource|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "tags": [
+    {
+      "key": "Name",
+      "value": "Example"
+    }
+  ]
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+<h3 id="listtagsforresource-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[ListTagsForResourceResponse](#schemalisttagsforresourceresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## PreviewAgents
+
+<a id="opIdPreviewAgents"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.PreviewAgents' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.PreviewAgents' \
+  -d '{
+    "previewAgentsArn": {},
+    "nextToken": {},
+    "maxResults": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.PreviewAgents`
+
+Previews the agents installed on the EC2 instances that are part of the specified assessment target.
+
+> Body parameter
+
+```json
+{
+  "previewAgentsArn": {},
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+<h3 id="previewagents-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|maxResults|query|string|false|Pagination limit|
+|nextToken|query|string|false|Pagination token|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[PreviewAgentsRequest](#schemapreviewagentsrequest)|true|none|
+|» previewAgentsArn|body|object|true|none|
+|» nextToken|body|object|false|none|
+|» maxResults|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.PreviewAgents|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "agentPreviews": [
+    {
+      "agentId": "i-49113b93"
+    }
+  ],
+  "nextToken": "1"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="previewagents-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[PreviewAgentsResponse](#schemapreviewagentsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|484|484|InvalidCrossAccountRoleException|[InvalidCrossAccountRoleException](#schemainvalidcrossaccountroleexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## RegisterCrossAccountAccessRole
+
+<a id="opIdRegisterCrossAccountAccessRole"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.RegisterCrossAccountAccessRole' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.RegisterCrossAccountAccessRole' \
+  -d '{
+    "roleArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.RegisterCrossAccountAccessRole`
+
+Registers the IAM role that grants Amazon Inspector access to AWS Services needed to perform security assessments.
+
+> Body parameter
+
+```json
+{
+  "roleArn": {}
+}
+```
+
+<h3 id="registercrossaccountaccessrole-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[RegisterCrossAccountAccessRoleRequest](#schemaregistercrossaccountaccessrolerequest)|true|none|
+|» roleArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.RegisterCrossAccountAccessRole|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="registercrossaccountaccessrole-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|InvalidCrossAccountRoleException|[InvalidCrossAccountRoleException](#schemainvalidcrossaccountroleexception)|
+|484|484|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## RemoveAttributesFromFindings
+
+<a id="opIdRemoveAttributesFromFindings"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.RemoveAttributesFromFindings' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.RemoveAttributesFromFindings' \
+  -d '{
+    "findingArns": {},
+    "attributeKeys": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.RemoveAttributesFromFindings`
+
+Removes entire attributes (key and value pairs) from the findings that are specified by the ARNs of the findings where an attribute with the specified key exists.
+
+> Body parameter
+
+```json
+{
+  "findingArns": {},
+  "attributeKeys": {}
+}
+```
+
+<h3 id="removeattributesfromfindings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[RemoveAttributesFromFindingsRequest](#schemaremoveattributesfromfindingsrequest)|true|none|
+|» findingArns|body|object|true|none|
+|» attributeKeys|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.RemoveAttributesFromFindings|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "failedItems": {}
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="removeattributesfromfindings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[RemoveAttributesFromFindingsResponse](#schemaremoveattributesfromfindingsresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|484|484|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## SetTagsForResource
+
+<a id="opIdSetTagsForResource"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.SetTagsForResource' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.SetTagsForResource' \
+  -d '{
+    "resourceArn": {},
+    "tags": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.SetTagsForResource`
+
+Sets tags (key and value pairs) to the assessment template that is specified by the ARN of the assessment template.
+
+> Body parameter
+
+```json
+{
+  "resourceArn": {},
+  "tags": {}
+}
+```
+
+<h3 id="settagsforresource-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[SetTagsForResourceRequest](#schemasettagsforresourcerequest)|true|none|
+|» resourceArn|body|object|true|none|
+|» tags|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.SetTagsForResource|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="settagsforresource-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|484|484|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## StartAssessmentRun
+
+<a id="opIdStartAssessmentRun"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.StartAssessmentRun' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.StartAssessmentRun' \
+  -d '{
+    "assessmentTemplateArn": {},
+    "assessmentRunName": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.StartAssessmentRun`
+
+Starts the assessment run specified by the ARN of the assessment template. For this API to function properly, you must not exceed the limit of running up to 500 concurrent agents per AWS account.
+
+> Body parameter
+
+```json
+{
+  "assessmentTemplateArn": {},
+  "assessmentRunName": {}
+}
+```
+
+<h3 id="startassessmentrun-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[StartAssessmentRunRequest](#schemastartassessmentrunrequest)|true|none|
+|» assessmentTemplateArn|body|object|true|none|
+|» assessmentRunName|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.StartAssessmentRun|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assessmentRunArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-it5r2S4T/run/0-jOoroxyY"
+}
+```
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+> 486 Response
+
+```json
+null
+```
+
+> 487 Response
+
+```json
+null
+```
+
+<h3 id="startassessmentrun-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|[StartAssessmentRunResponse](#schemastartassessmentrunresponse)|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|LimitExceededException|[LimitExceededException](#schemalimitexceededexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|485|485|InvalidCrossAccountRoleException|[InvalidCrossAccountRoleException](#schemainvalidcrossaccountroleexception)|
+|486|486|AgentsAlreadyRunningAssessmentException|[AgentsAlreadyRunningAssessmentException](#schemaagentsalreadyrunningassessmentexception)|
+|487|487|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## StopAssessmentRun
+
+<a id="opIdStopAssessmentRun"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.StopAssessmentRun' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.StopAssessmentRun' \
+  -d '{
+    "assessmentRunArn": {},
+    "stopAction": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.StopAssessmentRun`
+
+Stops the assessment run that is specified by the ARN of the assessment run.
+
+> Body parameter
+
+```json
+{
+  "assessmentRunArn": {},
+  "stopAction": {}
+}
+```
+
+<h3 id="stopassessmentrun-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[StopAssessmentRunRequest](#schemastopassessmentrunrequest)|true|none|
+|» assessmentRunArn|body|object|true|none|
+|» stopAction|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.StopAssessmentRun|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="stopassessmentrun-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|484|484|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## SubscribeToEvent
+
+<a id="opIdSubscribeToEvent"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.SubscribeToEvent' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.SubscribeToEvent' \
+  -d '{
+    "resourceArn": {},
+    "event": {},
+    "topicArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.SubscribeToEvent`
+
+Enables the process of sending Amazon Simple Notification Service (SNS) notifications about a specified event to a specified SNS topic.
+
+> Body parameter
+
+```json
+{
+  "resourceArn": {},
+  "event": {},
+  "topicArn": {}
+}
+```
+
+<h3 id="subscribetoevent-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[SubscribeToEventRequest](#schemasubscribetoeventrequest)|true|none|
+|» resourceArn|body|object|true|none|
+|» event|body|object|true|none|
+|» topicArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.SubscribeToEvent|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+> 485 Response
+
+```json
+null
+```
+
+<h3 id="subscribetoevent-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|LimitExceededException|[LimitExceededException](#schemalimitexceededexception)|
+|483|483|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|484|484|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|485|485|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## UnsubscribeFromEvent
+
+<a id="opIdUnsubscribeFromEvent"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.UnsubscribeFromEvent' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.UnsubscribeFromEvent' \
+  -d '{
+    "resourceArn": {},
+    "event": {},
+    "topicArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.UnsubscribeFromEvent`
+
+Disables the process of sending Amazon Simple Notification Service (SNS) notifications about a specified event to a specified SNS topic.
+
+> Body parameter
+
+```json
+{
+  "resourceArn": {},
+  "event": {},
+  "topicArn": {}
+}
+```
+
+<h3 id="unsubscribefromevent-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[UnsubscribeFromEventRequest](#schemaunsubscribefromeventrequest)|true|none|
+|» resourceArn|body|object|true|none|
+|» event|body|object|true|none|
+|» topicArn|body|object|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.UnsubscribeFromEvent|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="unsubscribefromevent-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|484|484|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+## UpdateAssessmentTarget
+
+<a id="opIdUpdateAssessmentTarget"></a>
+
+> Code samples
+
+```bash
+curl 'https://inspector.us-east-1.amazonaws.com/#X-Amz-Target=InspectorService.UpdateAssessmentTarget' \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -H 'X-Amz-Target: InspectorService.UpdateAssessmentTarget' \
+  -d '{
+    "assessmentTargetArn": {},
+    "assessmentTargetName": {},
+    "resourceGroupArn": {}
+  }'
+```
+
+`POST /#X-Amz-Target=InspectorService.UpdateAssessmentTarget`
+
+<p>Updates the assessment target that is specified by the ARN of the assessment target.</p> <p>If resourceGroupArn is not specified, all EC2 instances in the current AWS account and region are included in the assessment target.</p>
+
+> Body parameter
+
+```json
+{
+  "assessmentTargetArn": {},
+  "assessmentTargetName": {},
+  "resourceGroupArn": {}
+}
+```
+
+<h3 id="updateassessmenttarget-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Amz-Target|header|string|true|none|
+|X-Amz-Content-Sha256|header|string|false|none|
+|X-Amz-Date|header|string|false|none|
+|X-Amz-Algorithm|header|string|false|none|
+|X-Amz-Credential|header|string|false|none|
+|X-Amz-Security-Token|header|string|false|none|
+|X-Amz-Signature|header|string|false|none|
+|X-Amz-SignedHeaders|header|string|false|none|
+|body|body|[UpdateAssessmentTargetRequest](#schemaupdateassessmenttargetrequest)|true|none|
+|» assessmentTargetArn|body|object|true|none|
+|» assessmentTargetName|body|object|true|none|
+|» resourceGroupArn|body|object|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|X-Amz-Target|InspectorService.UpdateAssessmentTarget|
+
+> Example responses
+
+> 480 Response
+
+```json
+null
+```
+
+> 481 Response
+
+```json
+null
+```
+
+> 482 Response
+
+```json
+null
+```
+
+> 483 Response
+
+```json
+null
+```
+
+> 484 Response
+
+```json
+null
+```
+
+<h3 id="updateassessmenttarget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Success|None|
+|480|480|InternalException|[InternalException](#schemainternalexception)|
+|481|481|InvalidInputException|[InvalidInputException](#schemainvalidinputexception)|
+|482|482|AccessDeniedException|[AccessDeniedException](#schemaaccessdeniedexception)|
+|483|483|NoSuchEntityException|[NoSuchEntityException](#schemanosuchentityexception)|
+|484|484|ServiceTemporarilyUnavailableException|[ServiceTemporarilyUnavailableException](#schemaservicetemporarilyunavailableexception)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+hmac
+</aside>
+
+# Schemas
+
+<h2 id="tocS_AddAttributesToFindingsResponse">AddAttributesToFindingsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddattributestofindingsresponse"></a>
+<a id="schema_AddAttributesToFindingsResponse"></a>
+<a id="tocSaddattributestofindingsresponse"></a>
+<a id="tocsaddattributestofindingsresponse"></a>
+
+```json
+{
+  "failedItems": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_AddAttributesToFindingsRequest">AddAttributesToFindingsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddattributestofindingsrequest"></a>
+<a id="schema_AddAttributesToFindingsRequest"></a>
+<a id="tocSaddattributestofindingsrequest"></a>
+<a id="tocsaddattributestofindingsrequest"></a>
+
+```json
+{
+  "findingArns": {},
+  "attributes": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|findingArns|object|true|none|none|
+|attributes|object|true|none|none|
+
+<h2 id="tocS_InternalException">InternalException</h2>
+<!-- backwards compatibility -->
+<a id="schemainternalexception"></a>
+<a id="schema_InternalException"></a>
+<a id="tocSinternalexception"></a>
+<a id="tocsinternalexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_InvalidInputException">InvalidInputException</h2>
+<!-- backwards compatibility -->
+<a id="schemainvalidinputexception"></a>
+<a id="schema_InvalidInputException"></a>
+<a id="tocSinvalidinputexception"></a>
+<a id="tocsinvalidinputexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_AccessDeniedException">AccessDeniedException</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccessdeniedexception"></a>
+<a id="schema_AccessDeniedException"></a>
+<a id="tocSaccessdeniedexception"></a>
+<a id="tocsaccessdeniedexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_NoSuchEntityException">NoSuchEntityException</h2>
+<!-- backwards compatibility -->
+<a id="schemanosuchentityexception"></a>
+<a id="schema_NoSuchEntityException"></a>
+<a id="tocSnosuchentityexception"></a>
+<a id="tocsnosuchentityexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_ServiceTemporarilyUnavailableException">ServiceTemporarilyUnavailableException</h2>
+<!-- backwards compatibility -->
+<a id="schemaservicetemporarilyunavailableexception"></a>
+<a id="schema_ServiceTemporarilyUnavailableException"></a>
+<a id="tocSservicetemporarilyunavailableexception"></a>
+<a id="tocsservicetemporarilyunavailableexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CreateAssessmentTargetResponse">CreateAssessmentTargetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateassessmenttargetresponse"></a>
+<a id="schema_CreateAssessmentTargetResponse"></a>
+<a id="tocScreateassessmenttargetresponse"></a>
+<a id="tocscreateassessmenttargetresponse"></a>
+
+```json
+{
+  "assessmentTargetArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetArn|object|true|none|none|
+
+<h2 id="tocS_CreateAssessmentTargetRequest">CreateAssessmentTargetRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateassessmenttargetrequest"></a>
+<a id="schema_CreateAssessmentTargetRequest"></a>
+<a id="tocScreateassessmenttargetrequest"></a>
+<a id="tocscreateassessmenttargetrequest"></a>
+
+```json
+{
+  "assessmentTargetName": {},
+  "resourceGroupArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetName|object|true|none|none|
+|resourceGroupArn|object|false|none|none|
+
+<h2 id="tocS_LimitExceededException">LimitExceededException</h2>
+<!-- backwards compatibility -->
+<a id="schemalimitexceededexception"></a>
+<a id="schema_LimitExceededException"></a>
+<a id="tocSlimitexceededexception"></a>
+<a id="tocslimitexceededexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_InvalidCrossAccountRoleException">InvalidCrossAccountRoleException</h2>
+<!-- backwards compatibility -->
+<a id="schemainvalidcrossaccountroleexception"></a>
+<a id="schema_InvalidCrossAccountRoleException"></a>
+<a id="tocSinvalidcrossaccountroleexception"></a>
+<a id="tocsinvalidcrossaccountroleexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CreateAssessmentTemplateResponse">CreateAssessmentTemplateResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateassessmenttemplateresponse"></a>
+<a id="schema_CreateAssessmentTemplateResponse"></a>
+<a id="tocScreateassessmenttemplateresponse"></a>
+<a id="tocscreateassessmenttemplateresponse"></a>
+
+```json
+{
+  "assessmentTemplateArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-it5r2S4T"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplateArn|object|true|none|none|
+
+<h2 id="tocS_CreateAssessmentTemplateRequest">CreateAssessmentTemplateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateassessmenttemplaterequest"></a>
+<a id="schema_CreateAssessmentTemplateRequest"></a>
+<a id="tocScreateassessmenttemplaterequest"></a>
+<a id="tocscreateassessmenttemplaterequest"></a>
+
+```json
+{
+  "assessmentTargetArn": {},
+  "assessmentTemplateName": {},
+  "durationInSeconds": {},
+  "rulesPackageArns": {},
+  "userAttributesForFindings": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetArn|object|true|none|none|
+|assessmentTemplateName|object|true|none|none|
+|durationInSeconds|object|true|none|none|
+|rulesPackageArns|object|true|none|none|
+|userAttributesForFindings|object|false|none|none|
+
+<h2 id="tocS_CreateExclusionsPreviewResponse">CreateExclusionsPreviewResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateexclusionspreviewresponse"></a>
+<a id="schema_CreateExclusionsPreviewResponse"></a>
+<a id="tocScreateexclusionspreviewresponse"></a>
+<a id="tocscreateexclusionspreviewresponse"></a>
+
+```json
+{
+  "previewToken": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|previewToken|object|true|none|none|
+
+<h2 id="tocS_CreateExclusionsPreviewRequest">CreateExclusionsPreviewRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateexclusionspreviewrequest"></a>
+<a id="schema_CreateExclusionsPreviewRequest"></a>
+<a id="tocScreateexclusionspreviewrequest"></a>
+<a id="tocscreateexclusionspreviewrequest"></a>
+
+```json
+{
+  "assessmentTemplateArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplateArn|object|true|none|none|
+
+<h2 id="tocS_PreviewGenerationInProgressException">PreviewGenerationInProgressException</h2>
+<!-- backwards compatibility -->
+<a id="schemapreviewgenerationinprogressexception"></a>
+<a id="schema_PreviewGenerationInProgressException"></a>
+<a id="tocSpreviewgenerationinprogressexception"></a>
+<a id="tocspreviewgenerationinprogressexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CreateResourceGroupResponse">CreateResourceGroupResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateresourcegroupresponse"></a>
+<a id="schema_CreateResourceGroupResponse"></a>
+<a id="tocScreateresourcegroupresponse"></a>
+<a id="tocscreateresourcegroupresponse"></a>
+
+```json
+{
+  "resourceGroupArn": "arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-AB6DMKnv"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceGroupArn|object|true|none|none|
+
+<h2 id="tocS_CreateResourceGroupRequest">CreateResourceGroupRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateresourcegrouprequest"></a>
+<a id="schema_CreateResourceGroupRequest"></a>
+<a id="tocScreateresourcegrouprequest"></a>
+<a id="tocscreateresourcegrouprequest"></a>
+
+```json
+{
+  "resourceGroupTags": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceGroupTags|object|true|none|none|
+
+<h2 id="tocS_DeleteAssessmentRunRequest">DeleteAssessmentRunRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadeleteassessmentrunrequest"></a>
+<a id="schema_DeleteAssessmentRunRequest"></a>
+<a id="tocSdeleteassessmentrunrequest"></a>
+<a id="tocsdeleteassessmentrunrequest"></a>
+
+```json
+{
+  "assessmentRunArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArn|object|true|none|none|
+
+<h2 id="tocS_AssessmentRunInProgressException">AssessmentRunInProgressException</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentruninprogressexception"></a>
+<a id="schema_AssessmentRunInProgressException"></a>
+<a id="tocSassessmentruninprogressexception"></a>
+<a id="tocsassessmentruninprogressexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_DeleteAssessmentTargetRequest">DeleteAssessmentTargetRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadeleteassessmenttargetrequest"></a>
+<a id="schema_DeleteAssessmentTargetRequest"></a>
+<a id="tocSdeleteassessmenttargetrequest"></a>
+<a id="tocsdeleteassessmenttargetrequest"></a>
+
+```json
+{
+  "assessmentTargetArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetArn|object|true|none|none|
+
+<h2 id="tocS_DeleteAssessmentTemplateRequest">DeleteAssessmentTemplateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadeleteassessmenttemplaterequest"></a>
+<a id="schema_DeleteAssessmentTemplateRequest"></a>
+<a id="tocSdeleteassessmenttemplaterequest"></a>
+<a id="tocsdeleteassessmenttemplaterequest"></a>
+
+```json
+{
+  "assessmentTemplateArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplateArn|object|true|none|none|
+
+<h2 id="tocS_DescribeAssessmentRunsResponse">DescribeAssessmentRunsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribeassessmentrunsresponse"></a>
+<a id="schema_DescribeAssessmentRunsResponse"></a>
+<a id="tocSdescribeassessmentrunsresponse"></a>
+<a id="tocsdescribeassessmentrunsresponse"></a>
+
+```json
+{
+  "assessmentRuns": [
+    {
+      "name": "Run 1 for ExampleAssessmentTemplate",
+      "arn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE",
+      "assessmentTemplateArn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw",
+      "completedAt": "1458680301.4",
+      "createdAt": "1458680170.035",
+      "dataCollected": true,
+      "durationInSeconds": 3600,
+      "findingCounts": {
+        "High": 14,
+        "Informational": 0,
+        "Low": 0,
+        "Medium": 2,
+        "Undefined": 0
+      },
+      "notifications": [],
+      "rulesPackageArns": [
+        "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-X1KXtawP"
+      ],
+      "startedAt": "1458680170.161",
+      "state": "COMPLETED",
+      "stateChangedAt": "1458680301.4",
+      "stateChanges": [
+        {
+          "state": "CREATED",
+          "stateChangedAt": "1458680170.035"
+        },
+        {
+          "state": "START_DATA_COLLECTION_PENDING",
+          "stateChangedAt": "1458680170.065"
+        },
+        {
+          "state": "START_DATA_COLLECTION_IN_PROGRESS",
+          "stateChangedAt": "1458680170.096"
+        },
+        {
+          "state": "COLLECTING_DATA",
+          "stateChangedAt": "1458680170.161"
+        },
+        {
+          "state": "STOP_DATA_COLLECTION_PENDING",
+          "stateChangedAt": "1458680239.883"
+        },
+        {
+          "state": "DATA_COLLECTED",
+          "stateChangedAt": "1458680299.847"
+        },
+        {
+          "state": "EVALUATING_RULES",
+          "stateChangedAt": "1458680300.099"
+        },
+        {
+          "state": "COMPLETED",
+          "stateChangedAt": "1458680301.4"
+        }
+      ],
+      "userAttributesForFindings": []
+    }
+  ],
+  "failedItems": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRuns|object|true|none|none|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_DescribeAssessmentRunsRequest">DescribeAssessmentRunsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribeassessmentrunsrequest"></a>
+<a id="schema_DescribeAssessmentRunsRequest"></a>
+<a id="tocSdescribeassessmentrunsrequest"></a>
+<a id="tocsdescribeassessmentrunsrequest"></a>
+
+```json
+{
+  "assessmentRunArns": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArns|object|true|none|none|
+
+<h2 id="tocS_DescribeAssessmentTargetsResponse">DescribeAssessmentTargetsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribeassessmenttargetsresponse"></a>
+<a id="schema_DescribeAssessmentTargetsResponse"></a>
+<a id="tocSdescribeassessmenttargetsresponse"></a>
+<a id="tocsdescribeassessmenttargetsresponse"></a>
+
+```json
+{
+  "assessmentTargets": [
+    {
+      "name": "ExampleAssessmentTarget",
+      "arn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq",
+      "createdAt": "1458074191.459",
+      "resourceGroupArn": "arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-PyGXopAI",
+      "updatedAt": "1458074191.459"
+    }
+  ],
+  "failedItems": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargets|object|true|none|none|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_DescribeAssessmentTargetsRequest">DescribeAssessmentTargetsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribeassessmenttargetsrequest"></a>
+<a id="schema_DescribeAssessmentTargetsRequest"></a>
+<a id="tocSdescribeassessmenttargetsrequest"></a>
+<a id="tocsdescribeassessmenttargetsrequest"></a>
+
+```json
+{
+  "assessmentTargetArns": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetArns|object|true|none|none|
+
+<h2 id="tocS_DescribeAssessmentTemplatesResponse">DescribeAssessmentTemplatesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribeassessmenttemplatesresponse"></a>
+<a id="schema_DescribeAssessmentTemplatesResponse"></a>
+<a id="tocSdescribeassessmenttemplatesresponse"></a>
+<a id="tocsdescribeassessmenttemplatesresponse"></a>
+
+```json
+{
+  "assessmentTemplates": [
+    {
+      "name": "ExampleAssessmentTemplate",
+      "arn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw",
+      "assessmentRunCount": 0,
+      "assessmentTargetArn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq",
+      "createdAt": "1458074191.844",
+      "durationInSeconds": 3600,
+      "rulesPackageArns": [
+        "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-X1KXtawP"
+      ],
+      "userAttributesForFindings": []
+    }
+  ],
+  "failedItems": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplates|object|true|none|none|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_DescribeAssessmentTemplatesRequest">DescribeAssessmentTemplatesRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribeassessmenttemplatesrequest"></a>
+<a id="schema_DescribeAssessmentTemplatesRequest"></a>
+<a id="tocSdescribeassessmenttemplatesrequest"></a>
+<a id="tocsdescribeassessmenttemplatesrequest"></a>
+
+```json
+{
+  "assessmentTemplateArns": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplateArns|[BatchDescribeArnList](#schemabatchdescribearnlist)|true|none|none|
+
+<h2 id="tocS_DescribeCrossAccountAccessRoleResponse">DescribeCrossAccountAccessRoleResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribecrossaccountaccessroleresponse"></a>
+<a id="schema_DescribeCrossAccountAccessRoleResponse"></a>
+<a id="tocSdescribecrossaccountaccessroleresponse"></a>
+<a id="tocsdescribecrossaccountaccessroleresponse"></a>
+
+```json
+{
+  "registeredAt": "1458069182.826",
+  "roleArn": "arn:aws:iam::123456789012:role/inspector",
+  "valid": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|roleArn|object|true|none|none|
+|valid|object|true|none|none|
+|registeredAt|object|true|none|none|
+
+<h2 id="tocS_DescribeExclusionsResponse">DescribeExclusionsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribeexclusionsresponse"></a>
+<a id="schema_DescribeExclusionsResponse"></a>
+<a id="tocSdescribeexclusionsresponse"></a>
+<a id="tocsdescribeexclusionsresponse"></a>
+
+```json
+{
+  "exclusions": {
+    "property1": {
+      "arn": {},
+      "title": {},
+      "description": {},
+      "recommendation": {},
+      "scopes": {},
+      "attributes": {}
+    },
+    "property2": {
+      "arn": {},
+      "title": {},
+      "description": {},
+      "recommendation": {},
+      "scopes": {},
+      "attributes": {}
+    }
+  },
+  "failedItems": {
+    "property1": {
+      "failureCode": {},
+      "retryable": {}
+    },
+    "property2": {
+      "failureCode": {},
+      "retryable": {}
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|exclusions|object|true|none|none|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_DescribeExclusionsRequest">DescribeExclusionsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribeexclusionsrequest"></a>
+<a id="schema_DescribeExclusionsRequest"></a>
+<a id="tocSdescribeexclusionsrequest"></a>
+<a id="tocsdescribeexclusionsrequest"></a>
+
+```json
+{
+  "exclusionArns": {},
+  "locale": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|exclusionArns|object|true|none|none|
+|locale|object|false|none|none|
+
+<h2 id="tocS_DescribeFindingsResponse">DescribeFindingsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribefindingsresponse"></a>
+<a id="schema_DescribeFindingsResponse"></a>
+<a id="tocSdescribefindingsresponse"></a>
+<a id="tocsdescribefindingsresponse"></a>
+
+```json
+{
+  "failedItems": {},
+  "findings": [
+    {
+      "arn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE/finding/0-HwPnsDm4",
+      "assetAttributes": {
+        "ipv4Addresses": [],
+        "schemaVersion": 1
+      },
+      "assetType": "ec2-instance",
+      "attributes": [],
+      "confidence": 10,
+      "createdAt": "1458680301.37",
+      "description": "Amazon Inspector did not find any potential security issues during this assessment.",
+      "indicatorOfCompromise": false,
+      "numericSeverity": 0,
+      "recommendation": "No remediation needed.",
+      "schemaVersion": 1,
+      "service": "Inspector",
+      "serviceAttributes": {
+        "assessmentRunArn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE",
+        "rulesPackageArn": "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-X1KXtawP",
+        "schemaVersion": 1
+      },
+      "severity": "Informational",
+      "title": "No potential security issues found",
+      "updatedAt": "1458680301.37",
+      "userAttributes": []
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|findings|object|true|none|none|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_DescribeFindingsRequest">DescribeFindingsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadescribefindingsrequest"></a>
+<a id="schema_DescribeFindingsRequest"></a>
+<a id="tocSdescribefindingsrequest"></a>
+<a id="tocsdescribefindingsrequest"></a>
+
+```json
+{
+  "findingArns": {},
+  "locale": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|findingArns|object|true|none|none|
+|locale|object|false|none|none|
+
+<h2 id="tocS_DescribeResourceGroupsResponse">DescribeResourceGroupsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadescriberesourcegroupsresponse"></a>
+<a id="schema_DescribeResourceGroupsResponse"></a>
+<a id="tocSdescriberesourcegroupsresponse"></a>
+<a id="tocsdescriberesourcegroupsresponse"></a>
+
+```json
+{
+  "failedItems": {},
+  "resourceGroups": [
+    {
+      "arn": "arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-PyGXopAI",
+      "createdAt": "1458074191.098",
+      "tags": [
+        {
+          "key": "Name",
+          "value": "example"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceGroups|object|true|none|none|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_DescribeResourceGroupsRequest">DescribeResourceGroupsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadescriberesourcegroupsrequest"></a>
+<a id="schema_DescribeResourceGroupsRequest"></a>
+<a id="tocSdescriberesourcegroupsrequest"></a>
+<a id="tocsdescriberesourcegroupsrequest"></a>
+
+```json
+{
+  "resourceGroupArns": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceGroupArns|object|true|none|none|
+
+<h2 id="tocS_DescribeRulesPackagesResponse">DescribeRulesPackagesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadescriberulespackagesresponse"></a>
+<a id="schema_DescribeRulesPackagesResponse"></a>
+<a id="tocSdescriberulespackagesresponse"></a>
+<a id="tocsdescriberulespackagesresponse"></a>
+
+```json
+{
+  "failedItems": {},
+  "rulesPackages": [
+    {
+      "version": "1.1",
+      "name": "Security Best Practices",
+      "arn": "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-JJOtZiqQ",
+      "description": "The rules in this package help determine whether your systems are configured securely.",
+      "provider": "Amazon Web Services, Inc."
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|rulesPackages|object|true|none|none|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_DescribeRulesPackagesRequest">DescribeRulesPackagesRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadescriberulespackagesrequest"></a>
+<a id="schema_DescribeRulesPackagesRequest"></a>
+<a id="tocSdescriberulespackagesrequest"></a>
+<a id="tocsdescriberulespackagesrequest"></a>
+
+```json
+{
+  "rulesPackageArns": {},
+  "locale": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|rulesPackageArns|object|true|none|none|
+|locale|object|false|none|none|
+
+<h2 id="tocS_GetAssessmentReportResponse">GetAssessmentReportResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetassessmentreportresponse"></a>
+<a id="schema_GetAssessmentReportResponse"></a>
+<a id="tocSgetassessmentreportresponse"></a>
+<a id="tocsgetassessmentreportresponse"></a>
+
+```json
+{
+  "status": {},
+  "url": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|object|true|none|none|
+|url|object|false|none|none|
+
+<h2 id="tocS_GetAssessmentReportRequest">GetAssessmentReportRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemagetassessmentreportrequest"></a>
+<a id="schema_GetAssessmentReportRequest"></a>
+<a id="tocSgetassessmentreportrequest"></a>
+<a id="tocsgetassessmentreportrequest"></a>
+
+```json
+{
+  "assessmentRunArn": {},
+  "reportFileFormat": {},
+  "reportType": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArn|object|true|none|none|
+|reportFileFormat|object|true|none|none|
+|reportType|object|true|none|none|
+
+<h2 id="tocS_UnsupportedFeatureException">UnsupportedFeatureException</h2>
+<!-- backwards compatibility -->
+<a id="schemaunsupportedfeatureexception"></a>
+<a id="schema_UnsupportedFeatureException"></a>
+<a id="tocSunsupportedfeatureexception"></a>
+<a id="tocsunsupportedfeatureexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_GetExclusionsPreviewResponse">GetExclusionsPreviewResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetexclusionspreviewresponse"></a>
+<a id="schema_GetExclusionsPreviewResponse"></a>
+<a id="tocSgetexclusionspreviewresponse"></a>
+<a id="tocsgetexclusionspreviewresponse"></a>
+
+```json
+{
+  "previewStatus": {},
+  "exclusionPreviews": {},
+  "nextToken": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|previewStatus|object|true|none|none|
+|exclusionPreviews|object|false|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_GetExclusionsPreviewRequest">GetExclusionsPreviewRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemagetexclusionspreviewrequest"></a>
+<a id="schema_GetExclusionsPreviewRequest"></a>
+<a id="tocSgetexclusionspreviewrequest"></a>
+<a id="tocsgetexclusionspreviewrequest"></a>
+
+```json
+{
+  "assessmentTemplateArn": {},
+  "previewToken": {},
+  "nextToken": {},
+  "maxResults": {},
+  "locale": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplateArn|object|true|none|none|
+|previewToken|object|true|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+|locale|object|false|none|none|
+
+<h2 id="tocS_GetTelemetryMetadataResponse">GetTelemetryMetadataResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagettelemetrymetadataresponse"></a>
+<a id="schema_GetTelemetryMetadataResponse"></a>
+<a id="tocSgettelemetrymetadataresponse"></a>
+<a id="tocsgettelemetrymetadataresponse"></a>
+
+```json
+{
+  "telemetryMetadata": [
+    {
+      "count": 2,
+      "dataSize": 345,
+      "messageType": "InspectorDuplicateProcess"
+    },
+    {
+      "count": 3,
+      "dataSize": 255,
+      "messageType": "InspectorTimeEventMsg"
+    },
+    {
+      "count": 4,
+      "dataSize": 1082,
+      "messageType": "InspectorNetworkInterface"
+    },
+    {
+      "count": 2,
+      "dataSize": 349,
+      "messageType": "InspectorDnsEntry"
+    },
+    {
+      "count": 11,
+      "dataSize": 2514,
+      "messageType": "InspectorDirectoryInfoMsg"
+    },
+    {
+      "count": 1,
+      "dataSize": 179,
+      "messageType": "InspectorTcpV6ListeningPort"
+    },
+    {
+      "count": 101,
+      "dataSize": 10949,
+      "messageType": "InspectorTerminal"
+    },
+    {
+      "count": 26,
+      "dataSize": 5916,
+      "messageType": "InspectorUser"
+    },
+    {
+      "count": 282,
+      "dataSize": 32148,
+      "messageType": "InspectorDynamicallyLoadedCodeModule"
+    },
+    {
+      "count": 18,
+      "dataSize": 10172,
+      "messageType": "InspectorCreateProcess"
+    },
+    {
+      "count": 3,
+      "dataSize": 8001,
+      "messageType": "InspectorProcessPerformance"
+    },
+    {
+      "count": 1,
+      "dataSize": 360,
+      "messageType": "InspectorOperatingSystem"
+    },
+    {
+      "count": 6,
+      "dataSize": 546,
+      "messageType": "InspectorStopProcess"
+    },
+    {
+      "count": 1,
+      "dataSize": 1553,
+      "messageType": "InspectorInstanceMetaData"
+    },
+    {
+      "count": 2,
+      "dataSize": 434,
+      "messageType": "InspectorTcpV4Connection"
+    },
+    {
+      "count": 474,
+      "dataSize": 2960322,
+      "messageType": "InspectorPackageInfo"
+    },
+    {
+      "count": 3,
+      "dataSize": 2235,
+      "messageType": "InspectorSystemPerformance"
+    },
+    {
+      "count": 105,
+      "dataSize": 46048,
+      "messageType": "InspectorCodeModule"
+    },
+    {
+      "count": 1,
+      "dataSize": 182,
+      "messageType": "InspectorUdpV6ListeningPort"
+    },
+    {
+      "count": 2,
+      "dataSize": 371,
+      "messageType": "InspectorUdpV4ListeningPort"
+    },
+    {
+      "count": 18,
+      "dataSize": 8362,
+      "messageType": "InspectorKernelModule"
+    },
+    {
+      "count": 29,
+      "dataSize": 48788,
+      "messageType": "InspectorConfigurationInfo"
+    },
+    {
+      "count": 1,
+      "dataSize": 79,
+      "messageType": "InspectorMonitoringStart"
+    },
+    {
+      "count": 5,
+      "dataSize": 0,
+      "messageType": "InspectorSplitMsgBegin"
+    },
+    {
+      "count": 51,
+      "dataSize": 4593,
+      "messageType": "InspectorGroup"
+    },
+    {
+      "count": 1,
+      "dataSize": 184,
+      "messageType": "InspectorTcpV4ListeningPort"
+    },
+    {
+      "count": 1159,
+      "dataSize": 3146579,
+      "messageType": "Total"
+    },
+    {
+      "count": 5,
+      "dataSize": 0,
+      "messageType": "InspectorSplitMsgEnd"
+    },
+    {
+      "count": 1,
+      "dataSize": 612,
+      "messageType": "InspectorLoadImageInProcess"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|telemetryMetadata|object|true|none|none|
+
+<h2 id="tocS_GetTelemetryMetadataRequest">GetTelemetryMetadataRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemagettelemetrymetadatarequest"></a>
+<a id="schema_GetTelemetryMetadataRequest"></a>
+<a id="tocSgettelemetrymetadatarequest"></a>
+<a id="tocsgettelemetrymetadatarequest"></a>
+
+```json
+{
+  "assessmentRunArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArn|object|true|none|none|
+
+<h2 id="tocS_ListAssessmentRunAgentsResponse">ListAssessmentRunAgentsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistassessmentrunagentsresponse"></a>
+<a id="schema_ListAssessmentRunAgentsResponse"></a>
+<a id="tocSlistassessmentrunagentsresponse"></a>
+<a id="tocslistassessmentrunagentsresponse"></a>
+
+```json
+{
+  "assessmentRunAgents": [
+    {
+      "agentHealth": "HEALTHY",
+      "agentHealthCode": "RUNNING",
+      "agentId": "i-49113b93",
+      "assessmentRunArn": "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE",
+      "telemetryMetadata": [
+        {
+          "count": 2,
+          "dataSize": 345,
+          "messageType": "InspectorDuplicateProcess"
+        },
+        {
+          "count": 3,
+          "dataSize": 255,
+          "messageType": "InspectorTimeEventMsg"
+        },
+        {
+          "count": 4,
+          "dataSize": 1082,
+          "messageType": "InspectorNetworkInterface"
+        },
+        {
+          "count": 2,
+          "dataSize": 349,
+          "messageType": "InspectorDnsEntry"
+        },
+        {
+          "count": 11,
+          "dataSize": 2514,
+          "messageType": "InspectorDirectoryInfoMsg"
+        },
+        {
+          "count": 1,
+          "dataSize": 179,
+          "messageType": "InspectorTcpV6ListeningPort"
+        },
+        {
+          "count": 101,
+          "dataSize": 10949,
+          "messageType": "InspectorTerminal"
+        },
+        {
+          "count": 26,
+          "dataSize": 5916,
+          "messageType": "InspectorUser"
+        },
+        {
+          "count": 282,
+          "dataSize": 32148,
+          "messageType": "InspectorDynamicallyLoadedCodeModule"
+        },
+        {
+          "count": 18,
+          "dataSize": 10172,
+          "messageType": "InspectorCreateProcess"
+        },
+        {
+          "count": 3,
+          "dataSize": 8001,
+          "messageType": "InspectorProcessPerformance"
+        },
+        {
+          "count": 1,
+          "dataSize": 360,
+          "messageType": "InspectorOperatingSystem"
+        },
+        {
+          "count": 6,
+          "dataSize": 546,
+          "messageType": "InspectorStopProcess"
+        },
+        {
+          "count": 1,
+          "dataSize": 1553,
+          "messageType": "InspectorInstanceMetaData"
+        },
+        {
+          "count": 2,
+          "dataSize": 434,
+          "messageType": "InspectorTcpV4Connection"
+        },
+        {
+          "count": 474,
+          "dataSize": 2960322,
+          "messageType": "InspectorPackageInfo"
+        },
+        {
+          "count": 3,
+          "dataSize": 2235,
+          "messageType": "InspectorSystemPerformance"
+        },
+        {
+          "count": 105,
+          "dataSize": 46048,
+          "messageType": "InspectorCodeModule"
+        },
+        {
+          "count": 1,
+          "dataSize": 182,
+          "messageType": "InspectorUdpV6ListeningPort"
+        },
+        {
+          "count": 2,
+          "dataSize": 371,
+          "messageType": "InspectorUdpV4ListeningPort"
+        },
+        {
+          "count": 18,
+          "dataSize": 8362,
+          "messageType": "InspectorKernelModule"
+        },
+        {
+          "count": 29,
+          "dataSize": 48788,
+          "messageType": "InspectorConfigurationInfo"
+        },
+        {
+          "count": 1,
+          "dataSize": 79,
+          "messageType": "InspectorMonitoringStart"
+        },
+        {
+          "count": 5,
+          "dataSize": 0,
+          "messageType": "InspectorSplitMsgBegin"
+        },
+        {
+          "count": 51,
+          "dataSize": 4593,
+          "messageType": "InspectorGroup"
+        },
+        {
+          "count": 1,
+          "dataSize": 184,
+          "messageType": "InspectorTcpV4ListeningPort"
+        },
+        {
+          "count": 1159,
+          "dataSize": 3146579,
+          "messageType": "Total"
+        },
+        {
+          "count": 5,
+          "dataSize": 0,
+          "messageType": "InspectorSplitMsgEnd"
+        },
+        {
+          "count": 1,
+          "dataSize": 612,
+          "messageType": "InspectorLoadImageInProcess"
+        }
+      ]
+    }
+  ],
+  "nextToken": "1"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunAgents|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_ListAssessmentRunAgentsRequest">ListAssessmentRunAgentsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalistassessmentrunagentsrequest"></a>
+<a id="schema_ListAssessmentRunAgentsRequest"></a>
+<a id="tocSlistassessmentrunagentsrequest"></a>
+<a id="tocslistassessmentrunagentsrequest"></a>
+
+```json
+{
+  "assessmentRunArn": {},
+  "filter": {
+    "agentHealths": {},
+    "agentHealthCodes": {}
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArn|object|true|none|none|
+|filter|object|false|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_ListAssessmentRunsResponse">ListAssessmentRunsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistassessmentrunsresponse"></a>
+<a id="schema_ListAssessmentRunsResponse"></a>
+<a id="tocSlistassessmentrunsresponse"></a>
+<a id="tocslistassessmentrunsresponse"></a>
+
+```json
+{
+  "assessmentRunArns": [
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE",
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-v5D6fI3v"
+  ],
+  "nextToken": "1"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArns|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_ListAssessmentRunsRequest">ListAssessmentRunsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalistassessmentrunsrequest"></a>
+<a id="schema_ListAssessmentRunsRequest"></a>
+<a id="tocSlistassessmentrunsrequest"></a>
+<a id="tocslistassessmentrunsrequest"></a>
+
+```json
+{
+  "assessmentTemplateArns": {},
+  "filter": {
+    "namePattern": {},
+    "states": {},
+    "durationRange": {
+      "minSeconds": {},
+      "maxSeconds": {}
+    },
+    "rulesPackageArns": {},
+    "startTimeRange": {
+      "beginDate": {},
+      "endDate": {}
+    },
+    "completionTimeRange": {
+      "beginDate": {},
+      "endDate": {}
+    },
+    "stateChangeTimeRange": {
+      "beginDate": {},
+      "endDate": {}
+    }
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplateArns|object|false|none|none|
+|filter|object|false|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_ListAssessmentTargetsResponse">ListAssessmentTargetsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistassessmenttargetsresponse"></a>
+<a id="schema_ListAssessmentTargetsResponse"></a>
+<a id="tocSlistassessmenttargetsresponse"></a>
+<a id="tocslistassessmenttargetsresponse"></a>
+
+```json
+{
+  "assessmentTargetArns": [
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq"
+  ],
+  "nextToken": "1"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetArns|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_ListAssessmentTargetsRequest">ListAssessmentTargetsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalistassessmenttargetsrequest"></a>
+<a id="schema_ListAssessmentTargetsRequest"></a>
+<a id="tocSlistassessmenttargetsrequest"></a>
+<a id="tocslistassessmenttargetsrequest"></a>
+
+```json
+{
+  "filter": {
+    "assessmentTargetNamePattern": {}
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|filter|object|false|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_ListAssessmentTemplatesResponse">ListAssessmentTemplatesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistassessmenttemplatesresponse"></a>
+<a id="schema_ListAssessmentTemplatesResponse"></a>
+<a id="tocSlistassessmenttemplatesresponse"></a>
+<a id="tocslistassessmenttemplatesresponse"></a>
+
+```json
+{
+  "assessmentTemplateArns": [
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw",
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-Uza6ihLh"
+  ],
+  "nextToken": "1"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplateArns|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_ListAssessmentTemplatesRequest">ListAssessmentTemplatesRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalistassessmenttemplatesrequest"></a>
+<a id="schema_ListAssessmentTemplatesRequest"></a>
+<a id="tocSlistassessmenttemplatesrequest"></a>
+<a id="tocslistassessmenttemplatesrequest"></a>
+
+```json
+{
+  "assessmentTargetArns": {},
+  "filter": {
+    "namePattern": {},
+    "durationRange": {
+      "minSeconds": {},
+      "maxSeconds": {}
+    },
+    "rulesPackageArns": {}
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetArns|object|false|none|none|
+|filter|object|false|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_ListEventSubscriptionsResponse">ListEventSubscriptionsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalisteventsubscriptionsresponse"></a>
+<a id="schema_ListEventSubscriptionsResponse"></a>
+<a id="tocSlisteventsubscriptionsresponse"></a>
+<a id="tocslisteventsubscriptionsresponse"></a>
+
+```json
+{
+  "nextToken": "1",
+  "subscriptions": [
+    {
+      "eventSubscriptions": [
+        {
+          "event": "ASSESSMENT_RUN_COMPLETED",
+          "subscribedAt": "1459455440.867"
+        }
+      ],
+      "resourceArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-7sbz2Kz0",
+      "topicArn": "arn:aws:sns:us-west-2:123456789012:exampletopic"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|subscriptions|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_ListEventSubscriptionsRequest">ListEventSubscriptionsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalisteventsubscriptionsrequest"></a>
+<a id="schema_ListEventSubscriptionsRequest"></a>
+<a id="tocSlisteventsubscriptionsrequest"></a>
+<a id="tocslisteventsubscriptionsrequest"></a>
+
+```json
+{
+  "resourceArn": {},
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceArn|object|false|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_ListExclusionsResponse">ListExclusionsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistexclusionsresponse"></a>
+<a id="schema_ListExclusionsResponse"></a>
+<a id="tocSlistexclusionsresponse"></a>
+<a id="tocslistexclusionsresponse"></a>
+
+```json
+{
+  "exclusionArns": {},
+  "nextToken": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|exclusionArns|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_ListExclusionsRequest">ListExclusionsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalistexclusionsrequest"></a>
+<a id="schema_ListExclusionsRequest"></a>
+<a id="tocSlistexclusionsrequest"></a>
+<a id="tocslistexclusionsrequest"></a>
+
+```json
+{
+  "assessmentRunArn": {},
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArn|object|true|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_ListFindingsResponse">ListFindingsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistfindingsresponse"></a>
+<a id="schema_ListFindingsResponse"></a>
+<a id="tocSlistfindingsresponse"></a>
+<a id="tocslistfindingsresponse"></a>
+
+```json
+{
+  "findingArns": [
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-MKkpXXPE/finding/0-HwPnsDm4",
+    "arn:aws:inspector:us-west-2:123456789012:target/0-0kFIPusq/template/0-4r1V2mAw/run/0-v5D6fI3v/finding/0-tyvmqBLy"
+  ],
+  "nextToken": "1"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|findingArns|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_ListFindingsRequest">ListFindingsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalistfindingsrequest"></a>
+<a id="schema_ListFindingsRequest"></a>
+<a id="tocSlistfindingsrequest"></a>
+<a id="tocslistfindingsrequest"></a>
+
+```json
+{
+  "assessmentRunArns": {},
+  "filter": {
+    "agentIds": {},
+    "autoScalingGroups": {},
+    "ruleNames": {},
+    "severities": {},
+    "rulesPackageArns": {},
+    "attributes": {},
+    "userAttributes": {},
+    "creationTimeRange": {
+      "beginDate": {},
+      "endDate": {}
+    }
+  },
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArns|object|false|none|none|
+|filter|object|false|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_ListRulesPackagesResponse">ListRulesPackagesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistrulespackagesresponse"></a>
+<a id="schema_ListRulesPackagesResponse"></a>
+<a id="tocSlistrulespackagesresponse"></a>
+<a id="tocslistrulespackagesresponse"></a>
+
+```json
+{
+  "nextToken": "1",
+  "rulesPackageArns": [
+    "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-9hgA516p",
+    "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-H5hpSawc",
+    "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-JJOtZiqQ",
+    "arn:aws:inspector:us-west-2:758058086616:rulespackage/0-vg5GGHSD"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|rulesPackageArns|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_ListRulesPackagesRequest">ListRulesPackagesRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalistrulespackagesrequest"></a>
+<a id="schema_ListRulesPackagesRequest"></a>
+<a id="tocSlistrulespackagesrequest"></a>
+<a id="tocslistrulespackagesrequest"></a>
+
+```json
+{
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_ListTagsForResourceResponse">ListTagsForResourceResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalisttagsforresourceresponse"></a>
+<a id="schema_ListTagsForResourceResponse"></a>
+<a id="tocSlisttagsforresourceresponse"></a>
+<a id="tocslisttagsforresourceresponse"></a>
+
+```json
+{
+  "tags": [
+    {
+      "key": "Name",
+      "value": "Example"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|tags|object|true|none|none|
+
+<h2 id="tocS_ListTagsForResourceRequest">ListTagsForResourceRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemalisttagsforresourcerequest"></a>
+<a id="schema_ListTagsForResourceRequest"></a>
+<a id="tocSlisttagsforresourcerequest"></a>
+<a id="tocslisttagsforresourcerequest"></a>
+
+```json
+{
+  "resourceArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceArn|object|true|none|none|
+
+<h2 id="tocS_PreviewAgentsResponse">PreviewAgentsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemapreviewagentsresponse"></a>
+<a id="schema_PreviewAgentsResponse"></a>
+<a id="tocSpreviewagentsresponse"></a>
+<a id="tocspreviewagentsresponse"></a>
+
+```json
+{
+  "agentPreviews": [
+    {
+      "agentId": "i-49113b93"
+    }
+  ],
+  "nextToken": "1"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|agentPreviews|object|true|none|none|
+|nextToken|object|false|none|none|
+
+<h2 id="tocS_PreviewAgentsRequest">PreviewAgentsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapreviewagentsrequest"></a>
+<a id="schema_PreviewAgentsRequest"></a>
+<a id="tocSpreviewagentsrequest"></a>
+<a id="tocspreviewagentsrequest"></a>
+
+```json
+{
+  "previewAgentsArn": {},
+  "nextToken": {},
+  "maxResults": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|previewAgentsArn|object|true|none|none|
+|nextToken|object|false|none|none|
+|maxResults|object|false|none|none|
+
+<h2 id="tocS_RegisterCrossAccountAccessRoleRequest">RegisterCrossAccountAccessRoleRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaregistercrossaccountaccessrolerequest"></a>
+<a id="schema_RegisterCrossAccountAccessRoleRequest"></a>
+<a id="tocSregistercrossaccountaccessrolerequest"></a>
+<a id="tocsregistercrossaccountaccessrolerequest"></a>
+
+```json
+{
+  "roleArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|roleArn|object|true|none|none|
+
+<h2 id="tocS_RemoveAttributesFromFindingsResponse">RemoveAttributesFromFindingsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaremoveattributesfromfindingsresponse"></a>
+<a id="schema_RemoveAttributesFromFindingsResponse"></a>
+<a id="tocSremoveattributesfromfindingsresponse"></a>
+<a id="tocsremoveattributesfromfindingsresponse"></a>
+
+```json
+{
+  "failedItems": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|failedItems|object|true|none|none|
+
+<h2 id="tocS_RemoveAttributesFromFindingsRequest">RemoveAttributesFromFindingsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaremoveattributesfromfindingsrequest"></a>
+<a id="schema_RemoveAttributesFromFindingsRequest"></a>
+<a id="tocSremoveattributesfromfindingsrequest"></a>
+<a id="tocsremoveattributesfromfindingsrequest"></a>
+
+```json
+{
+  "findingArns": {},
+  "attributeKeys": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|findingArns|object|true|none|none|
+|attributeKeys|object|true|none|none|
+
+<h2 id="tocS_SetTagsForResourceRequest">SetTagsForResourceRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemasettagsforresourcerequest"></a>
+<a id="schema_SetTagsForResourceRequest"></a>
+<a id="tocSsettagsforresourcerequest"></a>
+<a id="tocssettagsforresourcerequest"></a>
+
+```json
+{
+  "resourceArn": {},
+  "tags": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceArn|object|true|none|none|
+|tags|object|false|none|none|
+
+<h2 id="tocS_StartAssessmentRunResponse">StartAssessmentRunResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemastartassessmentrunresponse"></a>
+<a id="schema_StartAssessmentRunResponse"></a>
+<a id="tocSstartassessmentrunresponse"></a>
+<a id="tocsstartassessmentrunresponse"></a>
+
+```json
+{
+  "assessmentRunArn": "arn:aws:inspector:us-west-2:123456789012:target/0-nvgVhaxX/template/0-it5r2S4T/run/0-jOoroxyY"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArn|object|true|none|none|
+
+<h2 id="tocS_StartAssessmentRunRequest">StartAssessmentRunRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemastartassessmentrunrequest"></a>
+<a id="schema_StartAssessmentRunRequest"></a>
+<a id="tocSstartassessmentrunrequest"></a>
+<a id="tocsstartassessmentrunrequest"></a>
+
+```json
+{
+  "assessmentTemplateArn": {},
+  "assessmentRunName": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTemplateArn|object|true|none|none|
+|assessmentRunName|object|false|none|none|
+
+<h2 id="tocS_AgentsAlreadyRunningAssessmentException">AgentsAlreadyRunningAssessmentException</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentsalreadyrunningassessmentexception"></a>
+<a id="schema_AgentsAlreadyRunningAssessmentException"></a>
+<a id="tocSagentsalreadyrunningassessmentexception"></a>
+<a id="tocsagentsalreadyrunningassessmentexception"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_StopAssessmentRunRequest">StopAssessmentRunRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemastopassessmentrunrequest"></a>
+<a id="schema_StopAssessmentRunRequest"></a>
+<a id="tocSstopassessmentrunrequest"></a>
+<a id="tocsstopassessmentrunrequest"></a>
+
+```json
+{
+  "assessmentRunArn": {},
+  "stopAction": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentRunArn|object|true|none|none|
+|stopAction|object|false|none|none|
+
+<h2 id="tocS_SubscribeToEventRequest">SubscribeToEventRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemasubscribetoeventrequest"></a>
+<a id="schema_SubscribeToEventRequest"></a>
+<a id="tocSsubscribetoeventrequest"></a>
+<a id="tocssubscribetoeventrequest"></a>
+
+```json
+{
+  "resourceArn": {},
+  "event": {},
+  "topicArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceArn|object|true|none|none|
+|event|object|true|none|none|
+|topicArn|object|true|none|none|
+
+<h2 id="tocS_UnsubscribeFromEventRequest">UnsubscribeFromEventRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaunsubscribefromeventrequest"></a>
+<a id="schema_UnsubscribeFromEventRequest"></a>
+<a id="tocSunsubscribefromeventrequest"></a>
+<a id="tocsunsubscribefromeventrequest"></a>
+
+```json
+{
+  "resourceArn": {},
+  "event": {},
+  "topicArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceArn|object|true|none|none|
+|event|object|true|none|none|
+|topicArn|object|true|none|none|
+
+<h2 id="tocS_UpdateAssessmentTargetRequest">UpdateAssessmentTargetRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdateassessmenttargetrequest"></a>
+<a id="schema_UpdateAssessmentTargetRequest"></a>
+<a id="tocSupdateassessmenttargetrequest"></a>
+<a id="tocsupdateassessmenttargetrequest"></a>
+
+```json
+{
+  "assessmentTargetArn": {},
+  "assessmentTargetName": {},
+  "resourceGroupArn": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetArn|object|true|none|none|
+|assessmentTargetName|object|true|none|none|
+|resourceGroupArn|object|false|none|none|
+
+<h2 id="tocS_AddRemoveAttributesFindingArnList">AddRemoveAttributesFindingArnList</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddremoveattributesfindingarnlist"></a>
+<a id="schema_AddRemoveAttributesFindingArnList"></a>
+<a id="tocSaddremoveattributesfindingarnlist"></a>
+<a id="tocsaddremoveattributesfindingarnlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_UserAttributeList">UserAttributeList</h2>
+<!-- backwards compatibility -->
+<a id="schemauserattributelist"></a>
+<a id="schema_UserAttributeList"></a>
+<a id="tocSuserattributelist"></a>
+<a id="tocsuserattributelist"></a>
+
+```json
+[
+  {
+    "key": {},
+    "value": {}
+  }
+]
+```
+
+<h2 id="tocS_FailedItems">FailedItems</h2>
+<!-- backwards compatibility -->
+<a id="schemafaileditems"></a>
+<a id="schema_FailedItems"></a>
+<a id="tocSfaileditems"></a>
+<a id="tocsfaileditems"></a>
+
+```json
+{
+  "property1": {
+    "failureCode": {},
+    "retryable": {}
+  },
+  "property2": {
+    "failureCode": {},
+    "retryable": {}
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|[FailedItemDetails](#schemafaileditemdetails)|false|none|Includes details about the failed items.|
+
+<h2 id="tocS_Arn">Arn</h2>
+<!-- backwards compatibility -->
+<a id="schemaarn"></a>
+<a id="schema_Arn"></a>
+<a id="tocSarn"></a>
+<a id="tocsarn"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AgentHealthList">AgentHealthList</h2>
+<!-- backwards compatibility -->
+<a id="schemaagenthealthlist"></a>
+<a id="schema_AgentHealthList"></a>
+<a id="tocSagenthealthlist"></a>
+<a id="tocsagenthealthlist"></a>
+
+```json
+[
+  "HEALTHY"
+]
+```
+
+<h2 id="tocS_AgentHealthCodeList">AgentHealthCodeList</h2>
+<!-- backwards compatibility -->
+<a id="schemaagenthealthcodelist"></a>
+<a id="schema_AgentHealthCodeList"></a>
+<a id="tocSagenthealthcodelist"></a>
+<a id="tocsagenthealthcodelist"></a>
+
+```json
+[
+  "IDLE"
+]
+```
+
+<h2 id="tocS_AgentFilter">AgentFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentfilter"></a>
+<a id="schema_AgentFilter"></a>
+<a id="tocSagentfilter"></a>
+<a id="tocsagentfilter"></a>
+
+```json
+{
+  "agentHealths": {},
+  "agentHealthCodes": {}
+}
+```
+
+Contains information about an Amazon Inspector agent. This data type is used as a request parameter in the <a>ListAssessmentRunAgents</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|agentHealths|object|true|none|none|
+|agentHealthCodes|object|true|none|none|
+
+<h2 id="tocS_AgentHealth">AgentHealth</h2>
+<!-- backwards compatibility -->
+<a id="schemaagenthealth"></a>
+<a id="schema_AgentHealth"></a>
+<a id="tocSagenthealth"></a>
+<a id="tocsagenthealth"></a>
+
+```json
+"HEALTHY"
+```
+
+<h2 id="tocS_AgentHealthCode">AgentHealthCode</h2>
+<!-- backwards compatibility -->
+<a id="schemaagenthealthcode"></a>
+<a id="schema_AgentHealthCode"></a>
+<a id="tocSagenthealthcode"></a>
+<a id="tocsagenthealthcode"></a>
+
+```json
+"IDLE"
+```
+
+<h2 id="tocS_AgentId">AgentId</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentid"></a>
+<a id="schema_AgentId"></a>
+<a id="tocSagentid"></a>
+<a id="tocsagentid"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AgentIdList">AgentIdList</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentidlist"></a>
+<a id="schema_AgentIdList"></a>
+<a id="tocSagentidlist"></a>
+<a id="tocsagentidlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_Hostname">Hostname</h2>
+<!-- backwards compatibility -->
+<a id="schemahostname"></a>
+<a id="schema_Hostname"></a>
+<a id="tocShostname"></a>
+<a id="tocshostname"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AutoScalingGroup">AutoScalingGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemaautoscalinggroup"></a>
+<a id="schema_AutoScalingGroup"></a>
+<a id="tocSautoscalinggroup"></a>
+<a id="tocsautoscalinggroup"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AgentVersion">AgentVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentversion"></a>
+<a id="schema_AgentVersion"></a>
+<a id="tocSagentversion"></a>
+<a id="tocsagentversion"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_OperatingSystem">OperatingSystem</h2>
+<!-- backwards compatibility -->
+<a id="schemaoperatingsystem"></a>
+<a id="schema_OperatingSystem"></a>
+<a id="tocSoperatingsystem"></a>
+<a id="tocsoperatingsystem"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_KernelVersion">KernelVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemakernelversion"></a>
+<a id="schema_KernelVersion"></a>
+<a id="tocSkernelversion"></a>
+<a id="tocskernelversion"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_Ipv4Address">Ipv4Address</h2>
+<!-- backwards compatibility -->
+<a id="schemaipv4address"></a>
+<a id="schema_Ipv4Address"></a>
+<a id="tocSipv4address"></a>
+<a id="tocsipv4address"></a>
+
+```json
+"strings"
+```
+
+<h2 id="tocS_AgentPreview">AgentPreview</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentpreview"></a>
+<a id="schema_AgentPreview"></a>
+<a id="tocSagentpreview"></a>
+<a id="tocsagentpreview"></a>
+
+```json
+{
+  "hostname": {},
+  "agentId": {},
+  "autoScalingGroup": {},
+  "agentHealth": {},
+  "agentVersion": {},
+  "operatingSystem": {},
+  "kernelVersion": {},
+  "ipv4Address": {}
+}
+```
+
+Used as a response element in the <a>PreviewAgents</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|hostname|object|false|none|none|
+|agentId|object|true|none|none|
+|autoScalingGroup|object|false|none|none|
+|agentHealth|object|false|none|none|
+|agentVersion|object|false|none|none|
+|operatingSystem|object|false|none|none|
+|kernelVersion|object|false|none|none|
+|ipv4Address|object|false|none|none|
+
+<h2 id="tocS_AgentPreviewList">AgentPreviewList</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentpreviewlist"></a>
+<a id="schema_AgentPreviewList"></a>
+<a id="tocSagentpreviewlist"></a>
+<a id="tocsagentpreviewlist"></a>
+
+```json
+[
+  {
+    "hostname": {},
+    "agentId": {},
+    "autoScalingGroup": {},
+    "agentHealth": {},
+    "agentVersion": {},
+    "operatingSystem": {},
+    "kernelVersion": {},
+    "ipv4Address": {}
+  }
+]
+```
+
+<h2 id="tocS_AmiId">AmiId</h2>
+<!-- backwards compatibility -->
+<a id="schemaamiid"></a>
+<a id="schema_AmiId"></a>
+<a id="tocSamiid"></a>
+<a id="tocsamiid"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_ArnCount">ArnCount</h2>
+<!-- backwards compatibility -->
+<a id="schemaarncount"></a>
+<a id="schema_ArnCount"></a>
+<a id="tocSarncount"></a>
+<a id="tocsarncount"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_AssessmentRulesPackageArnList">AssessmentRulesPackageArnList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrulespackagearnlist"></a>
+<a id="schema_AssessmentRulesPackageArnList"></a>
+<a id="tocSassessmentrulespackagearnlist"></a>
+<a id="tocsassessmentrulespackagearnlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_AssessmentRunName">AssessmentRunName</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunname"></a>
+<a id="schema_AssessmentRunName"></a>
+<a id="tocSassessmentrunname"></a>
+<a id="tocsassessmentrunname"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AssessmentRunState">AssessmentRunState</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunstate"></a>
+<a id="schema_AssessmentRunState"></a>
+<a id="tocSassessmentrunstate"></a>
+<a id="tocsassessmentrunstate"></a>
+
+```json
+"CREATED"
+```
+
+<h2 id="tocS_AssessmentRunDuration">AssessmentRunDuration</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunduration"></a>
+<a id="schema_AssessmentRunDuration"></a>
+<a id="tocSassessmentrunduration"></a>
+<a id="tocsassessmentrunduration"></a>
+
+```json
+180
+```
+
+<h2 id="tocS_Timestamp">Timestamp</h2>
+<!-- backwards compatibility -->
+<a id="schematimestamp"></a>
+<a id="schema_Timestamp"></a>
+<a id="tocStimestamp"></a>
+<a id="tocstimestamp"></a>
+
+```json
+"1970-01-01T00:00:00Z"
+```
+
+<h2 id="tocS_Bool">Bool</h2>
+<!-- backwards compatibility -->
+<a id="schemabool"></a>
+<a id="schema_Bool"></a>
+<a id="tocSbool"></a>
+<a id="tocsbool"></a>
+
+```json
+true
+```
+
+<h2 id="tocS_AssessmentRunStateChangeList">AssessmentRunStateChangeList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunstatechangelist"></a>
+<a id="schema_AssessmentRunStateChangeList"></a>
+<a id="tocSassessmentrunstatechangelist"></a>
+<a id="tocsassessmentrunstatechangelist"></a>
+
+```json
+[
+  {
+    "stateChangedAt": {},
+    "state": {}
+  }
+]
+```
+
+<h2 id="tocS_AssessmentRunNotificationList">AssessmentRunNotificationList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunnotificationlist"></a>
+<a id="schema_AssessmentRunNotificationList"></a>
+<a id="tocSassessmentrunnotificationlist"></a>
+<a id="tocsassessmentrunnotificationlist"></a>
+
+```json
+[
+  {
+    "date": {},
+    "event": {},
+    "message": {},
+    "error": {},
+    "snsTopicArn": {},
+    "snsPublishStatusCode": {}
+  }
+]
+```
+
+<h2 id="tocS_AssessmentRunFindingCounts">AssessmentRunFindingCounts</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunfindingcounts"></a>
+<a id="schema_AssessmentRunFindingCounts"></a>
+<a id="tocSassessmentrunfindingcounts"></a>
+<a id="tocsassessmentrunfindingcounts"></a>
+
+```json
+{
+  "property1": 0,
+  "property2": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|[FindingCount](#schemafindingcount)|false|none|none|
+
+<h2 id="tocS_AssessmentRun">AssessmentRun</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrun"></a>
+<a id="schema_AssessmentRun"></a>
+<a id="tocSassessmentrun"></a>
+<a id="tocsassessmentrun"></a>
+
+```json
+{
+  "arn": {},
+  "name": {},
+  "assessmentTemplateArn": {},
+  "state": {},
+  "durationInSeconds": {},
+  "rulesPackageArns": {},
+  "userAttributesForFindings": {},
+  "createdAt": {},
+  "startedAt": {},
+  "completedAt": {},
+  "stateChangedAt": {},
+  "dataCollected": {},
+  "stateChanges": {},
+  "notifications": {},
+  "findingCounts": {
+    "property1": 0,
+    "property2": 0
+  }
+}
+```
+
+<p>A snapshot of an Amazon Inspector assessment run that contains the findings of the assessment run .</p> <p>Used as the response element in the <a>DescribeAssessmentRuns</a> action.</p>
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|arn|object|true|none|none|
+|name|object|true|none|none|
+|assessmentTemplateArn|object|true|none|none|
+|state|object|true|none|none|
+|durationInSeconds|object|true|none|none|
+|rulesPackageArns|object|true|none|none|
+|userAttributesForFindings|object|true|none|none|
+|createdAt|object|true|none|none|
+|startedAt|object|false|none|none|
+|completedAt|object|false|none|none|
+|stateChangedAt|object|true|none|none|
+|dataCollected|object|true|none|none|
+|stateChanges|object|true|none|none|
+|notifications|object|true|none|none|
+|findingCounts|object|true|none|none|
+
+<h2 id="tocS_Message">Message</h2>
+<!-- backwards compatibility -->
+<a id="schemamessage"></a>
+<a id="schema_Message"></a>
+<a id="tocSmessage"></a>
+<a id="tocsmessage"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_TelemetryMetadataList">TelemetryMetadataList</h2>
+<!-- backwards compatibility -->
+<a id="schematelemetrymetadatalist"></a>
+<a id="schema_TelemetryMetadataList"></a>
+<a id="tocStelemetrymetadatalist"></a>
+<a id="tocstelemetrymetadatalist"></a>
+
+```json
+[
+  {
+    "messageType": {},
+    "count": {},
+    "dataSize": {}
+  }
+]
+```
+
+<h2 id="tocS_AssessmentRunAgent">AssessmentRunAgent</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunagent"></a>
+<a id="schema_AssessmentRunAgent"></a>
+<a id="tocSassessmentrunagent"></a>
+<a id="tocsassessmentrunagent"></a>
+
+```json
+{
+  "agentId": {},
+  "assessmentRunArn": {},
+  "agentHealth": {},
+  "agentHealthCode": {},
+  "agentHealthDetails": {},
+  "autoScalingGroup": {},
+  "telemetryMetadata": {}
+}
+```
+
+Contains information about an Amazon Inspector agent. This data type is used as a response element in the <a>ListAssessmentRunAgents</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|agentId|object|true|none|none|
+|assessmentRunArn|object|true|none|none|
+|agentHealth|object|true|none|none|
+|agentHealthCode|object|true|none|none|
+|agentHealthDetails|object|false|none|none|
+|autoScalingGroup|object|false|none|none|
+|telemetryMetadata|object|true|none|none|
+
+<h2 id="tocS_AssessmentRunAgentList">AssessmentRunAgentList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunagentlist"></a>
+<a id="schema_AssessmentRunAgentList"></a>
+<a id="tocSassessmentrunagentlist"></a>
+<a id="tocsassessmentrunagentlist"></a>
+
+```json
+[
+  {
+    "agentId": {},
+    "assessmentRunArn": {},
+    "agentHealth": {},
+    "agentHealthCode": {},
+    "agentHealthDetails": {},
+    "autoScalingGroup": {},
+    "telemetryMetadata": {}
+  }
+]
+```
+
+<h2 id="tocS_NamePattern">NamePattern</h2>
+<!-- backwards compatibility -->
+<a id="schemanamepattern"></a>
+<a id="schema_NamePattern"></a>
+<a id="tocSnamepattern"></a>
+<a id="tocsnamepattern"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AssessmentRunStateList">AssessmentRunStateList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunstatelist"></a>
+<a id="schema_AssessmentRunStateList"></a>
+<a id="tocSassessmentrunstatelist"></a>
+<a id="tocsassessmentrunstatelist"></a>
+
+```json
+[
+  "CREATED"
+]
+```
+
+<h2 id="tocS_DurationRange">DurationRange</h2>
+<!-- backwards compatibility -->
+<a id="schemadurationrange"></a>
+<a id="schema_DurationRange"></a>
+<a id="tocSdurationrange"></a>
+<a id="tocsdurationrange"></a>
+
+```json
+{
+  "minSeconds": {},
+  "maxSeconds": {}
+}
+```
+
+This data type is used in the <a>AssessmentTemplateFilter</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|minSeconds|object|false|none|none|
+|maxSeconds|object|false|none|none|
+
+<h2 id="tocS_FilterRulesPackageArnList">FilterRulesPackageArnList</h2>
+<!-- backwards compatibility -->
+<a id="schemafilterrulespackagearnlist"></a>
+<a id="schema_FilterRulesPackageArnList"></a>
+<a id="tocSfilterrulespackagearnlist"></a>
+<a id="tocsfilterrulespackagearnlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_TimestampRange">TimestampRange</h2>
+<!-- backwards compatibility -->
+<a id="schematimestamprange"></a>
+<a id="schema_TimestampRange"></a>
+<a id="tocStimestamprange"></a>
+<a id="tocstimestamprange"></a>
+
+```json
+{
+  "beginDate": {},
+  "endDate": {}
+}
+```
+
+This data type is used in the <a>AssessmentRunFilter</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|beginDate|object|false|none|none|
+|endDate|object|false|none|none|
+
+<h2 id="tocS_AssessmentRunFilter">AssessmentRunFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunfilter"></a>
+<a id="schema_AssessmentRunFilter"></a>
+<a id="tocSassessmentrunfilter"></a>
+<a id="tocsassessmentrunfilter"></a>
+
+```json
+{
+  "namePattern": {},
+  "states": {},
+  "durationRange": {
+    "minSeconds": {},
+    "maxSeconds": {}
+  },
+  "rulesPackageArns": {},
+  "startTimeRange": {
+    "beginDate": {},
+    "endDate": {}
+  },
+  "completionTimeRange": {
+    "beginDate": {},
+    "endDate": {}
+  },
+  "stateChangeTimeRange": {
+    "beginDate": {},
+    "endDate": {}
+  }
+}
+```
+
+Used as the request parameter in the <a>ListAssessmentRuns</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|namePattern|object|false|none|none|
+|states|object|false|none|none|
+|durationRange|object|false|none|none|
+|rulesPackageArns|object|false|none|none|
+|startTimeRange|object|false|none|none|
+|completionTimeRange|object|false|none|none|
+|stateChangeTimeRange|object|false|none|none|
+
+<h2 id="tocS_FindingCount">FindingCount</h2>
+<!-- backwards compatibility -->
+<a id="schemafindingcount"></a>
+<a id="schema_FindingCount"></a>
+<a id="tocSfindingcount"></a>
+<a id="tocsfindingcount"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_AssessmentRunList">AssessmentRunList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunlist"></a>
+<a id="schema_AssessmentRunList"></a>
+<a id="tocSassessmentrunlist"></a>
+<a id="tocsassessmentrunlist"></a>
+
+```json
+[
+  {
+    "arn": {},
+    "name": {},
+    "assessmentTemplateArn": {},
+    "state": {},
+    "durationInSeconds": {},
+    "rulesPackageArns": {},
+    "userAttributesForFindings": {},
+    "createdAt": {},
+    "startedAt": {},
+    "completedAt": {},
+    "stateChangedAt": {},
+    "dataCollected": {},
+    "stateChanges": {},
+    "notifications": {},
+    "findingCounts": {
+      "property1": 0,
+      "property2": 0
+    }
+  }
+]
+```
+
+<h2 id="tocS_InspectorEvent">InspectorEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemainspectorevent"></a>
+<a id="schema_InspectorEvent"></a>
+<a id="tocSinspectorevent"></a>
+<a id="tocsinspectorevent"></a>
+
+```json
+"ASSESSMENT_RUN_STARTED"
+```
+
+<h2 id="tocS_AssessmentRunNotificationSnsStatusCode">AssessmentRunNotificationSnsStatusCode</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunnotificationsnsstatuscode"></a>
+<a id="schema_AssessmentRunNotificationSnsStatusCode"></a>
+<a id="tocSassessmentrunnotificationsnsstatuscode"></a>
+<a id="tocsassessmentrunnotificationsnsstatuscode"></a>
+
+```json
+"SUCCESS"
+```
+
+<h2 id="tocS_AssessmentRunNotification">AssessmentRunNotification</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunnotification"></a>
+<a id="schema_AssessmentRunNotification"></a>
+<a id="tocSassessmentrunnotification"></a>
+<a id="tocsassessmentrunnotification"></a>
+
+```json
+{
+  "date": {},
+  "event": {},
+  "message": {},
+  "error": {},
+  "snsTopicArn": {},
+  "snsPublishStatusCode": {}
+}
+```
+
+Used as one of the elements of the <a>AssessmentRun</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|date|object|true|none|none|
+|event|object|true|none|none|
+|message|object|false|none|none|
+|error|object|true|none|none|
+|snsTopicArn|object|false|none|none|
+|snsPublishStatusCode|object|false|none|none|
+
+<h2 id="tocS_AssessmentRunStateChange">AssessmentRunStateChange</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmentrunstatechange"></a>
+<a id="schema_AssessmentRunStateChange"></a>
+<a id="tocSassessmentrunstatechange"></a>
+<a id="tocsassessmentrunstatechange"></a>
+
+```json
+{
+  "stateChangedAt": {},
+  "state": {}
+}
+```
+
+Used as one of the elements of the <a>AssessmentRun</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|stateChangedAt|object|true|none|none|
+|state|object|true|none|none|
+
+<h2 id="tocS_AssessmentTargetName">AssessmentTargetName</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttargetname"></a>
+<a id="schema_AssessmentTargetName"></a>
+<a id="tocSassessmenttargetname"></a>
+<a id="tocsassessmenttargetname"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AssessmentTarget">AssessmentTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttarget"></a>
+<a id="schema_AssessmentTarget"></a>
+<a id="tocSassessmenttarget"></a>
+<a id="tocsassessmenttarget"></a>
+
+```json
+{
+  "arn": {},
+  "name": {},
+  "resourceGroupArn": {},
+  "createdAt": {},
+  "updatedAt": {}
+}
+```
+
+Contains information about an Amazon Inspector application. This data type is used as the response element in the <a>DescribeAssessmentTargets</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|arn|object|true|none|none|
+|name|object|true|none|none|
+|resourceGroupArn|object|false|none|none|
+|createdAt|object|true|none|none|
+|updatedAt|object|true|none|none|
+
+<h2 id="tocS_AssessmentTargetFilter">AssessmentTargetFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttargetfilter"></a>
+<a id="schema_AssessmentTargetFilter"></a>
+<a id="tocSassessmenttargetfilter"></a>
+<a id="tocsassessmenttargetfilter"></a>
+
+```json
+{
+  "assessmentTargetNamePattern": {}
+}
+```
+
+Used as the request parameter in the <a>ListAssessmentTargets</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assessmentTargetNamePattern|object|false|none|none|
+
+<h2 id="tocS_AssessmentTargetList">AssessmentTargetList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttargetlist"></a>
+<a id="schema_AssessmentTargetList"></a>
+<a id="tocSassessmenttargetlist"></a>
+<a id="tocsassessmenttargetlist"></a>
+
+```json
+[
+  {
+    "arn": {},
+    "name": {},
+    "resourceGroupArn": {},
+    "createdAt": {},
+    "updatedAt": {}
+  }
+]
+```
+
+<h2 id="tocS_AssessmentTemplateName">AssessmentTemplateName</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttemplatename"></a>
+<a id="schema_AssessmentTemplateName"></a>
+<a id="tocSassessmenttemplatename"></a>
+<a id="tocsassessmenttemplatename"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AssessmentTemplateRulesPackageArnList">AssessmentTemplateRulesPackageArnList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttemplaterulespackagearnlist"></a>
+<a id="schema_AssessmentTemplateRulesPackageArnList"></a>
+<a id="tocSassessmenttemplaterulespackagearnlist"></a>
+<a id="tocsassessmenttemplaterulespackagearnlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_AssessmentTemplate">AssessmentTemplate</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttemplate"></a>
+<a id="schema_AssessmentTemplate"></a>
+<a id="tocSassessmenttemplate"></a>
+<a id="tocsassessmenttemplate"></a>
+
+```json
+{
+  "arn": {},
+  "name": {},
+  "assessmentTargetArn": {},
+  "durationInSeconds": {},
+  "rulesPackageArns": {},
+  "userAttributesForFindings": {},
+  "lastAssessmentRunArn": {},
+  "assessmentRunCount": {},
+  "createdAt": {}
+}
+```
+
+Contains information about an Amazon Inspector assessment template. This data type is used as the response element in the <a>DescribeAssessmentTemplates</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|arn|object|true|none|none|
+|name|object|true|none|none|
+|assessmentTargetArn|object|true|none|none|
+|durationInSeconds|object|true|none|none|
+|rulesPackageArns|object|true|none|none|
+|userAttributesForFindings|object|true|none|none|
+|lastAssessmentRunArn|object|false|none|none|
+|assessmentRunCount|object|true|none|none|
+|createdAt|object|true|none|none|
+
+<h2 id="tocS_AssessmentTemplateFilter">AssessmentTemplateFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttemplatefilter"></a>
+<a id="schema_AssessmentTemplateFilter"></a>
+<a id="tocSassessmenttemplatefilter"></a>
+<a id="tocsassessmenttemplatefilter"></a>
+
+```json
+{
+  "namePattern": {},
+  "durationRange": {
+    "minSeconds": {},
+    "maxSeconds": {}
+  },
+  "rulesPackageArns": {}
+}
+```
+
+Used as the request parameter in the <a>ListAssessmentTemplates</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|namePattern|object|false|none|none|
+|durationRange|object|false|none|none|
+|rulesPackageArns|object|false|none|none|
+
+<h2 id="tocS_AssessmentTemplateList">AssessmentTemplateList</h2>
+<!-- backwards compatibility -->
+<a id="schemaassessmenttemplatelist"></a>
+<a id="schema_AssessmentTemplateList"></a>
+<a id="tocSassessmenttemplatelist"></a>
+<a id="tocsassessmenttemplatelist"></a>
+
+```json
+[
+  {
+    "arn": {},
+    "name": {},
+    "assessmentTargetArn": {},
+    "durationInSeconds": {},
+    "rulesPackageArns": {},
+    "userAttributesForFindings": {},
+    "lastAssessmentRunArn": {},
+    "assessmentRunCount": {},
+    "createdAt": {}
+  }
+]
+```
+
+<h2 id="tocS_NumericVersion">NumericVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemanumericversion"></a>
+<a id="schema_NumericVersion"></a>
+<a id="tocSnumericversion"></a>
+<a id="tocsnumericversion"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_Ipv4AddressList">Ipv4AddressList</h2>
+<!-- backwards compatibility -->
+<a id="schemaipv4addresslist"></a>
+<a id="schema_Ipv4AddressList"></a>
+<a id="tocSipv4addresslist"></a>
+<a id="tocsipv4addresslist"></a>
+
+```json
+[
+  "strings"
+]
+```
+
+<h2 id="tocS_Tags">Tags</h2>
+<!-- backwards compatibility -->
+<a id="schematags"></a>
+<a id="schema_Tags"></a>
+<a id="tocStags"></a>
+<a id="tocstags"></a>
+
+```json
+[
+  {
+    "key": {},
+    "value": {}
+  }
+]
+```
+
+<h2 id="tocS_NetworkInterfaces">NetworkInterfaces</h2>
+<!-- backwards compatibility -->
+<a id="schemanetworkinterfaces"></a>
+<a id="schema_NetworkInterfaces"></a>
+<a id="tocSnetworkinterfaces"></a>
+<a id="tocsnetworkinterfaces"></a>
+
+```json
+[
+  {
+    "networkInterfaceId": {},
+    "subnetId": {},
+    "vpcId": {},
+    "privateDnsName": {},
+    "privateIpAddress": {},
+    "privateIpAddresses": {},
+    "publicDnsName": {},
+    "publicIp": {},
+    "ipv6Addresses": {},
+    "securityGroups": {}
+  }
+]
+```
+
+<h2 id="tocS_AssetAttributes">AssetAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemaassetattributes"></a>
+<a id="schema_AssetAttributes"></a>
+<a id="tocSassetattributes"></a>
+<a id="tocsassetattributes"></a>
+
+```json
+{
+  "schemaVersion": {},
+  "agentId": {},
+  "autoScalingGroup": {},
+  "amiId": {},
+  "hostname": {},
+  "ipv4Addresses": {},
+  "tags": {},
+  "networkInterfaces": {}
+}
+```
+
+A collection of attributes of the host from which the finding is generated.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|schemaVersion|object|true|none|none|
+|agentId|object|false|none|none|
+|autoScalingGroup|object|false|none|none|
+|amiId|object|false|none|none|
+|hostname|object|false|none|none|
+|ipv4Addresses|object|false|none|none|
+|tags|object|false|none|none|
+|networkInterfaces|object|false|none|none|
+
+<h2 id="tocS_AssetType">AssetType</h2>
+<!-- backwards compatibility -->
+<a id="schemaassettype"></a>
+<a id="schema_AssetType"></a>
+<a id="tocSassettype"></a>
+<a id="tocsassettype"></a>
+
+```json
+"ec2-instance"
+```
+
+<h2 id="tocS_AttributeKey">AttributeKey</h2>
+<!-- backwards compatibility -->
+<a id="schemaattributekey"></a>
+<a id="schema_AttributeKey"></a>
+<a id="tocSattributekey"></a>
+<a id="tocsattributekey"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_AttributeValue">AttributeValue</h2>
+<!-- backwards compatibility -->
+<a id="schemaattributevalue"></a>
+<a id="schema_AttributeValue"></a>
+<a id="tocSattributevalue"></a>
+<a id="tocsattributevalue"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_Attribute">Attribute</h2>
+<!-- backwards compatibility -->
+<a id="schemaattribute"></a>
+<a id="schema_Attribute"></a>
+<a id="tocSattribute"></a>
+<a id="tocsattribute"></a>
+
+```json
+{
+  "key": {},
+  "value": {}
+}
+```
+
+This data type is used as a request parameter in the <a>AddAttributesToFindings</a> and <a>CreateAssessmentTemplate</a> actions.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|object|true|none|none|
+|value|object|false|none|none|
+
+<h2 id="tocS_AttributeList">AttributeList</h2>
+<!-- backwards compatibility -->
+<a id="schemaattributelist"></a>
+<a id="schema_AttributeList"></a>
+<a id="tocSattributelist"></a>
+<a id="tocsattributelist"></a>
+
+```json
+[
+  {
+    "key": {},
+    "value": {}
+  }
+]
+```
+
+<h2 id="tocS_AutoScalingGroupList">AutoScalingGroupList</h2>
+<!-- backwards compatibility -->
+<a id="schemaautoscalinggrouplist"></a>
+<a id="schema_AutoScalingGroupList"></a>
+<a id="tocSautoscalinggrouplist"></a>
+<a id="tocsautoscalinggrouplist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_BatchDescribeArnList">BatchDescribeArnList</h2>
+<!-- backwards compatibility -->
+<a id="schemabatchdescribearnlist"></a>
+<a id="schema_BatchDescribeArnList"></a>
+<a id="tocSbatchdescribearnlist"></a>
+<a id="tocsbatchdescribearnlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_BatchDescribeExclusionsArnList">BatchDescribeExclusionsArnList</h2>
+<!-- backwards compatibility -->
+<a id="schemabatchdescribeexclusionsarnlist"></a>
+<a id="schema_BatchDescribeExclusionsArnList"></a>
+<a id="tocSbatchdescribeexclusionsarnlist"></a>
+<a id="tocsbatchdescribeexclusionsarnlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_UUID">UUID</h2>
+<!-- backwards compatibility -->
+<a id="schemauuid"></a>
+<a id="schema_UUID"></a>
+<a id="tocSuuid"></a>
+<a id="tocsuuid"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_ResourceGroupTags">ResourceGroupTags</h2>
+<!-- backwards compatibility -->
+<a id="schemaresourcegrouptags"></a>
+<a id="schema_ResourceGroupTags"></a>
+<a id="tocSresourcegrouptags"></a>
+<a id="tocsresourcegrouptags"></a>
+
+```json
+[
+  {
+    "key": {},
+    "value": {}
+  }
+]
+```
+
+<h2 id="tocS_Locale">Locale</h2>
+<!-- backwards compatibility -->
+<a id="schemalocale"></a>
+<a id="schema_Locale"></a>
+<a id="tocSlocale"></a>
+<a id="tocslocale"></a>
+
+```json
+"EN_US"
+```
+
+<h2 id="tocS_ExclusionMap">ExclusionMap</h2>
+<!-- backwards compatibility -->
+<a id="schemaexclusionmap"></a>
+<a id="schema_ExclusionMap"></a>
+<a id="tocSexclusionmap"></a>
+<a id="tocsexclusionmap"></a>
+
+```json
+{
+  "property1": {
+    "arn": {},
+    "title": {},
+    "description": {},
+    "recommendation": {},
+    "scopes": {},
+    "attributes": {}
+  },
+  "property2": {
+    "arn": {},
+    "title": {},
+    "description": {},
+    "recommendation": {},
+    "scopes": {},
+    "attributes": {}
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|[Exclusion](#schemaexclusion)|false|none|Contains information about what was excluded from an assessment run.|
+
+<h2 id="tocS_FindingList">FindingList</h2>
+<!-- backwards compatibility -->
+<a id="schemafindinglist"></a>
+<a id="schema_FindingList"></a>
+<a id="tocSfindinglist"></a>
+<a id="tocsfindinglist"></a>
+
+```json
+[
+  {
+    "arn": {},
+    "schemaVersion": {},
+    "service": {},
+    "serviceAttributes": {
+      "schemaVersion": {},
+      "assessmentRunArn": {},
+      "rulesPackageArn": {}
+    },
+    "assetType": {},
+    "assetAttributes": {
+      "schemaVersion": {},
+      "agentId": {},
+      "autoScalingGroup": {},
+      "amiId": {},
+      "hostname": {},
+      "ipv4Addresses": {},
+      "tags": {},
+      "networkInterfaces": {}
+    },
+    "id": {},
+    "title": {},
+    "description": {},
+    "recommendation": {},
+    "severity": {},
+    "numericSeverity": {},
+    "confidence": {},
+    "indicatorOfCompromise": {},
+    "attributes": {},
+    "userAttributes": {},
+    "createdAt": {},
+    "updatedAt": {}
+  }
+]
+```
+
+<h2 id="tocS_ResourceGroupList">ResourceGroupList</h2>
+<!-- backwards compatibility -->
+<a id="schemaresourcegrouplist"></a>
+<a id="schema_ResourceGroupList"></a>
+<a id="tocSresourcegrouplist"></a>
+<a id="tocsresourcegrouplist"></a>
+
+```json
+[
+  {
+    "arn": {},
+    "tags": {},
+    "createdAt": {}
+  }
+]
+```
+
+<h2 id="tocS_RulesPackageList">RulesPackageList</h2>
+<!-- backwards compatibility -->
+<a id="schemarulespackagelist"></a>
+<a id="schema_RulesPackageList"></a>
+<a id="tocSrulespackagelist"></a>
+<a id="tocsrulespackagelist"></a>
+
+```json
+[
+  {
+    "arn": {},
+    "name": {},
+    "version": {},
+    "provider": {},
+    "description": {}
+  }
+]
+```
+
+<h2 id="tocS_EventSubscription">EventSubscription</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventsubscription"></a>
+<a id="schema_EventSubscription"></a>
+<a id="tocSeventsubscription"></a>
+<a id="tocseventsubscription"></a>
+
+```json
+{
+  "event": {},
+  "subscribedAt": {}
+}
+```
+
+This data type is used in the <a>Subscription</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|event|object|true|none|none|
+|subscribedAt|object|true|none|none|
+
+<h2 id="tocS_EventSubscriptionList">EventSubscriptionList</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventsubscriptionlist"></a>
+<a id="schema_EventSubscriptionList"></a>
+<a id="tocSeventsubscriptionlist"></a>
+<a id="tocseventsubscriptionlist"></a>
+
+```json
+[
+  {
+    "event": {},
+    "subscribedAt": {}
+  }
+]
+```
+
+<h2 id="tocS_Text">Text</h2>
+<!-- backwards compatibility -->
+<a id="schematext"></a>
+<a id="schema_Text"></a>
+<a id="tocStext"></a>
+<a id="tocstext"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_ScopeList">ScopeList</h2>
+<!-- backwards compatibility -->
+<a id="schemascopelist"></a>
+<a id="schema_ScopeList"></a>
+<a id="tocSscopelist"></a>
+<a id="tocsscopelist"></a>
+
+```json
+[
+  {
+    "key": {},
+    "value": {}
+  }
+]
+```
+
+<h2 id="tocS_Exclusion">Exclusion</h2>
+<!-- backwards compatibility -->
+<a id="schemaexclusion"></a>
+<a id="schema_Exclusion"></a>
+<a id="tocSexclusion"></a>
+<a id="tocsexclusion"></a>
+
+```json
+{
+  "arn": {},
+  "title": {},
+  "description": {},
+  "recommendation": {},
+  "scopes": {},
+  "attributes": {}
+}
+```
+
+Contains information about what was excluded from an assessment run.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|arn|object|true|none|none|
+|title|object|true|none|none|
+|description|object|true|none|none|
+|recommendation|object|true|none|none|
+|scopes|object|true|none|none|
+|attributes|object|false|none|none|
+
+<h2 id="tocS_ExclusionPreview">ExclusionPreview</h2>
+<!-- backwards compatibility -->
+<a id="schemaexclusionpreview"></a>
+<a id="schema_ExclusionPreview"></a>
+<a id="tocSexclusionpreview"></a>
+<a id="tocsexclusionpreview"></a>
+
+```json
+{
+  "title": {},
+  "description": {},
+  "recommendation": {},
+  "scopes": {},
+  "attributes": {}
+}
+```
+
+Contains information about what is excluded from an assessment run given the current state of the assessment template.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|title|object|true|none|none|
+|description|object|true|none|none|
+|recommendation|object|true|none|none|
+|scopes|object|true|none|none|
+|attributes|object|false|none|none|
+
+<h2 id="tocS_ExclusionPreviewList">ExclusionPreviewList</h2>
+<!-- backwards compatibility -->
+<a id="schemaexclusionpreviewlist"></a>
+<a id="schema_ExclusionPreviewList"></a>
+<a id="tocSexclusionpreviewlist"></a>
+<a id="tocsexclusionpreviewlist"></a>
+
+```json
+[
+  {
+    "title": {},
+    "description": {},
+    "recommendation": {},
+    "scopes": {},
+    "attributes": {}
+  }
+]
+```
+
+<h2 id="tocS_FailedItemErrorCode">FailedItemErrorCode</h2>
+<!-- backwards compatibility -->
+<a id="schemafaileditemerrorcode"></a>
+<a id="schema_FailedItemErrorCode"></a>
+<a id="tocSfaileditemerrorcode"></a>
+<a id="tocsfaileditemerrorcode"></a>
+
+```json
+"INVALID_ARN"
+```
+
+<h2 id="tocS_FailedItemDetails">FailedItemDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemafaileditemdetails"></a>
+<a id="schema_FailedItemDetails"></a>
+<a id="tocSfaileditemdetails"></a>
+<a id="tocsfaileditemdetails"></a>
+
+```json
+{
+  "failureCode": {},
+  "retryable": {}
+}
+```
+
+Includes details about the failed items.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|failureCode|object|true|none|none|
+|retryable|object|true|none|none|
+
+<h2 id="tocS_ServiceName">ServiceName</h2>
+<!-- backwards compatibility -->
+<a id="schemaservicename"></a>
+<a id="schema_ServiceName"></a>
+<a id="tocSservicename"></a>
+<a id="tocsservicename"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_InspectorServiceAttributes">InspectorServiceAttributes</h2>
+<!-- backwards compatibility -->
+<a id="schemainspectorserviceattributes"></a>
+<a id="schema_InspectorServiceAttributes"></a>
+<a id="tocSinspectorserviceattributes"></a>
+<a id="tocsinspectorserviceattributes"></a>
+
+```json
+{
+  "schemaVersion": {},
+  "assessmentRunArn": {},
+  "rulesPackageArn": {}
+}
+```
+
+This data type is used in the <a>Finding</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|schemaVersion|object|true|none|none|
+|assessmentRunArn|object|false|none|none|
+|rulesPackageArn|object|false|none|none|
+
+<h2 id="tocS_FindingId">FindingId</h2>
+<!-- backwards compatibility -->
+<a id="schemafindingid"></a>
+<a id="schema_FindingId"></a>
+<a id="tocSfindingid"></a>
+<a id="tocsfindingid"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_Severity">Severity</h2>
+<!-- backwards compatibility -->
+<a id="schemaseverity"></a>
+<a id="schema_Severity"></a>
+<a id="tocSseverity"></a>
+<a id="tocsseverity"></a>
+
+```json
+"Low"
+```
+
+<h2 id="tocS_NumericSeverity">NumericSeverity</h2>
+<!-- backwards compatibility -->
+<a id="schemanumericseverity"></a>
+<a id="schema_NumericSeverity"></a>
+<a id="tocSnumericseverity"></a>
+<a id="tocsnumericseverity"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_IocConfidence">IocConfidence</h2>
+<!-- backwards compatibility -->
+<a id="schemaiocconfidence"></a>
+<a id="schema_IocConfidence"></a>
+<a id="tocSiocconfidence"></a>
+<a id="tocsiocconfidence"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_Finding">Finding</h2>
+<!-- backwards compatibility -->
+<a id="schemafinding"></a>
+<a id="schema_Finding"></a>
+<a id="tocSfinding"></a>
+<a id="tocsfinding"></a>
+
+```json
+{
+  "arn": {},
+  "schemaVersion": {},
+  "service": {},
+  "serviceAttributes": {
+    "schemaVersion": {},
+    "assessmentRunArn": {},
+    "rulesPackageArn": {}
+  },
+  "assetType": {},
+  "assetAttributes": {
+    "schemaVersion": {},
+    "agentId": {},
+    "autoScalingGroup": {},
+    "amiId": {},
+    "hostname": {},
+    "ipv4Addresses": {},
+    "tags": {},
+    "networkInterfaces": {}
+  },
+  "id": {},
+  "title": {},
+  "description": {},
+  "recommendation": {},
+  "severity": {},
+  "numericSeverity": {},
+  "confidence": {},
+  "indicatorOfCompromise": {},
+  "attributes": {},
+  "userAttributes": {},
+  "createdAt": {},
+  "updatedAt": {}
+}
+```
+
+Contains information about an Amazon Inspector finding. This data type is used as the response element in the <a>DescribeFindings</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|arn|object|true|none|none|
+|schemaVersion|object|false|none|none|
+|service|object|false|none|none|
+|serviceAttributes|object|false|none|none|
+|assetType|object|false|none|none|
+|assetAttributes|object|false|none|none|
+|id|object|false|none|none|
+|title|object|false|none|none|
+|description|object|false|none|none|
+|recommendation|object|false|none|none|
+|severity|object|false|none|none|
+|numericSeverity|object|false|none|none|
+|confidence|object|false|none|none|
+|indicatorOfCompromise|object|false|none|none|
+|attributes|object|true|none|none|
+|userAttributes|object|true|none|none|
+|createdAt|object|true|none|none|
+|updatedAt|object|true|none|none|
+
+<h2 id="tocS_RuleNameList">RuleNameList</h2>
+<!-- backwards compatibility -->
+<a id="schemarulenamelist"></a>
+<a id="schema_RuleNameList"></a>
+<a id="tocSrulenamelist"></a>
+<a id="tocsrulenamelist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_SeverityList">SeverityList</h2>
+<!-- backwards compatibility -->
+<a id="schemaseveritylist"></a>
+<a id="schema_SeverityList"></a>
+<a id="tocSseveritylist"></a>
+<a id="tocsseveritylist"></a>
+
+```json
+[
+  "Low"
+]
+```
+
+<h2 id="tocS_FindingFilter">FindingFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemafindingfilter"></a>
+<a id="schema_FindingFilter"></a>
+<a id="tocSfindingfilter"></a>
+<a id="tocsfindingfilter"></a>
+
+```json
+{
+  "agentIds": {},
+  "autoScalingGroups": {},
+  "ruleNames": {},
+  "severities": {},
+  "rulesPackageArns": {},
+  "attributes": {},
+  "userAttributes": {},
+  "creationTimeRange": {
+    "beginDate": {},
+    "endDate": {}
+  }
+}
+```
+
+This data type is used as a request parameter in the <a>ListFindings</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|agentIds|object|false|none|none|
+|autoScalingGroups|object|false|none|none|
+|ruleNames|object|false|none|none|
+|severities|object|false|none|none|
+|rulesPackageArns|object|false|none|none|
+|attributes|object|false|none|none|
+|userAttributes|object|false|none|none|
+|creationTimeRange|object|false|none|none|
+
+<h2 id="tocS_ReportFileFormat">ReportFileFormat</h2>
+<!-- backwards compatibility -->
+<a id="schemareportfileformat"></a>
+<a id="schema_ReportFileFormat"></a>
+<a id="tocSreportfileformat"></a>
+<a id="tocsreportfileformat"></a>
+
+```json
+"HTML"
+```
+
+<h2 id="tocS_ReportType">ReportType</h2>
+<!-- backwards compatibility -->
+<a id="schemareporttype"></a>
+<a id="schema_ReportType"></a>
+<a id="tocSreporttype"></a>
+<a id="tocsreporttype"></a>
+
+```json
+"FINDING"
+```
+
+<h2 id="tocS_ReportStatus">ReportStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemareportstatus"></a>
+<a id="schema_ReportStatus"></a>
+<a id="tocSreportstatus"></a>
+<a id="tocsreportstatus"></a>
+
+```json
+"WORK_IN_PROGRESS"
+```
+
+<h2 id="tocS_Url">Url</h2>
+<!-- backwards compatibility -->
+<a id="schemaurl"></a>
+<a id="schema_Url"></a>
+<a id="tocSurl"></a>
+<a id="tocsurl"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_PaginationToken">PaginationToken</h2>
+<!-- backwards compatibility -->
+<a id="schemapaginationtoken"></a>
+<a id="schema_PaginationToken"></a>
+<a id="tocSpaginationtoken"></a>
+<a id="tocspaginationtoken"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_ListMaxResults">ListMaxResults</h2>
+<!-- backwards compatibility -->
+<a id="schemalistmaxresults"></a>
+<a id="schema_ListMaxResults"></a>
+<a id="tocSlistmaxresults"></a>
+<a id="tocslistmaxresults"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_PreviewStatus">PreviewStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemapreviewstatus"></a>
+<a id="schema_PreviewStatus"></a>
+<a id="tocSpreviewstatus"></a>
+<a id="tocspreviewstatus"></a>
+
+```json
+"WORK_IN_PROGRESS"
+```
+
+<h2 id="tocS_Ipv6Addresses">Ipv6Addresses</h2>
+<!-- backwards compatibility -->
+<a id="schemaipv6addresses"></a>
+<a id="schema_Ipv6Addresses"></a>
+<a id="tocSipv6addresses"></a>
+<a id="tocsipv6addresses"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_ListParentArnList">ListParentArnList</h2>
+<!-- backwards compatibility -->
+<a id="schemalistparentarnlist"></a>
+<a id="schema_ListParentArnList"></a>
+<a id="tocSlistparentarnlist"></a>
+<a id="tocslistparentarnlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_ListReturnedArnList">ListReturnedArnList</h2>
+<!-- backwards compatibility -->
+<a id="schemalistreturnedarnlist"></a>
+<a id="schema_ListReturnedArnList"></a>
+<a id="tocSlistreturnedarnlist"></a>
+<a id="tocslistreturnedarnlist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_ListEventSubscriptionsMaxResults">ListEventSubscriptionsMaxResults</h2>
+<!-- backwards compatibility -->
+<a id="schemalisteventsubscriptionsmaxresults"></a>
+<a id="schema_ListEventSubscriptionsMaxResults"></a>
+<a id="tocSlisteventsubscriptionsmaxresults"></a>
+<a id="tocslisteventsubscriptionsmaxresults"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_SubscriptionList">SubscriptionList</h2>
+<!-- backwards compatibility -->
+<a id="schemasubscriptionlist"></a>
+<a id="schema_SubscriptionList"></a>
+<a id="tocSsubscriptionlist"></a>
+<a id="tocssubscriptionlist"></a>
+
+```json
+[
+  {
+    "resourceArn": {},
+    "topicArn": {},
+    "eventSubscriptions": {}
+  }
+]
+```
+
+<h2 id="tocS_TagList">TagList</h2>
+<!-- backwards compatibility -->
+<a id="schemataglist"></a>
+<a id="schema_TagList"></a>
+<a id="tocStaglist"></a>
+<a id="tocstaglist"></a>
+
+```json
+[
+  {
+    "key": {},
+    "value": {}
+  }
+]
+```
+
+<h2 id="tocS_Long">Long</h2>
+<!-- backwards compatibility -->
+<a id="schemalong"></a>
+<a id="schema_Long"></a>
+<a id="tocSlong"></a>
+<a id="tocslong"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_MessageType">MessageType</h2>
+<!-- backwards compatibility -->
+<a id="schemamessagetype"></a>
+<a id="schema_MessageType"></a>
+<a id="tocSmessagetype"></a>
+<a id="tocsmessagetype"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_PrivateIpAddresses">PrivateIpAddresses</h2>
+<!-- backwards compatibility -->
+<a id="schemaprivateipaddresses"></a>
+<a id="schema_PrivateIpAddresses"></a>
+<a id="tocSprivateipaddresses"></a>
+<a id="tocsprivateipaddresses"></a>
+
+```json
+[
+  {
+    "privateDnsName": {},
+    "privateIpAddress": {}
+  }
+]
+```
+
+<h2 id="tocS_SecurityGroups">SecurityGroups</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuritygroups"></a>
+<a id="schema_SecurityGroups"></a>
+<a id="tocSsecuritygroups"></a>
+<a id="tocssecuritygroups"></a>
+
+```json
+[
+  {
+    "groupName": {},
+    "groupId": {}
+  }
+]
+```
+
+<h2 id="tocS_NetworkInterface">NetworkInterface</h2>
+<!-- backwards compatibility -->
+<a id="schemanetworkinterface"></a>
+<a id="schema_NetworkInterface"></a>
+<a id="tocSnetworkinterface"></a>
+<a id="tocsnetworkinterface"></a>
+
+```json
+{
+  "networkInterfaceId": {},
+  "subnetId": {},
+  "vpcId": {},
+  "privateDnsName": {},
+  "privateIpAddress": {},
+  "privateIpAddresses": {},
+  "publicDnsName": {},
+  "publicIp": {},
+  "ipv6Addresses": {},
+  "securityGroups": {}
+}
+```
+
+Contains information about the network interfaces interacting with an EC2 instance. This data type is used as one of the elements of the <a>AssetAttributes</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|networkInterfaceId|object|false|none|none|
+|subnetId|object|false|none|none|
+|vpcId|object|false|none|none|
+|privateDnsName|object|false|none|none|
+|privateIpAddress|object|false|none|none|
+|privateIpAddresses|object|false|none|none|
+|publicDnsName|object|false|none|none|
+|publicIp|object|false|none|none|
+|ipv6Addresses|object|false|none|none|
+|securityGroups|object|false|none|none|
+
+<h2 id="tocS_PreviewAgentsMaxResults">PreviewAgentsMaxResults</h2>
+<!-- backwards compatibility -->
+<a id="schemapreviewagentsmaxresults"></a>
+<a id="schema_PreviewAgentsMaxResults"></a>
+<a id="tocSpreviewagentsmaxresults"></a>
+<a id="tocspreviewagentsmaxresults"></a>
+
+```json
+0
+```
+
+<h2 id="tocS_PrivateIp">PrivateIp</h2>
+<!-- backwards compatibility -->
+<a id="schemaprivateip"></a>
+<a id="schema_PrivateIp"></a>
+<a id="tocSprivateip"></a>
+<a id="tocsprivateip"></a>
+
+```json
+{
+  "privateDnsName": {},
+  "privateIpAddress": {}
+}
+```
+
+Contains information about a private IP address associated with a network interface. This data type is used as a response element in the <a>DescribeFindings</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|privateDnsName|object|false|none|none|
+|privateIpAddress|object|false|none|none|
+
+<h2 id="tocS_ProviderName">ProviderName</h2>
+<!-- backwards compatibility -->
+<a id="schemaprovidername"></a>
+<a id="schema_ProviderName"></a>
+<a id="tocSprovidername"></a>
+<a id="tocsprovidername"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_UserAttributeKeyList">UserAttributeKeyList</h2>
+<!-- backwards compatibility -->
+<a id="schemauserattributekeylist"></a>
+<a id="schema_UserAttributeKeyList"></a>
+<a id="tocSuserattributekeylist"></a>
+<a id="tocsuserattributekeylist"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_ResourceGroup">ResourceGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemaresourcegroup"></a>
+<a id="schema_ResourceGroup"></a>
+<a id="tocSresourcegroup"></a>
+<a id="tocsresourcegroup"></a>
+
+```json
+{
+  "arn": {},
+  "tags": {},
+  "createdAt": {}
+}
+```
+
+Contains information about a resource group. The resource group defines a set of tags that, when queried, identify the AWS resources that make up the assessment target. This data type is used as the response element in the <a>DescribeResourceGroups</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|arn|object|true|none|none|
+|tags|object|true|none|none|
+|createdAt|object|true|none|none|
+
+<h2 id="tocS_TagKey">TagKey</h2>
+<!-- backwards compatibility -->
+<a id="schematagkey"></a>
+<a id="schema_TagKey"></a>
+<a id="tocStagkey"></a>
+<a id="tocstagkey"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_TagValue">TagValue</h2>
+<!-- backwards compatibility -->
+<a id="schematagvalue"></a>
+<a id="schema_TagValue"></a>
+<a id="tocStagvalue"></a>
+<a id="tocstagvalue"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_ResourceGroupTag">ResourceGroupTag</h2>
+<!-- backwards compatibility -->
+<a id="schemaresourcegrouptag"></a>
+<a id="schema_ResourceGroupTag"></a>
+<a id="tocSresourcegrouptag"></a>
+<a id="tocsresourcegrouptag"></a>
+
+```json
+{
+  "key": {},
+  "value": {}
+}
+```
+
+This data type is used as one of the elements of the <a>ResourceGroup</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|object|true|none|none|
+|value|object|false|none|none|
+
+<h2 id="tocS_RuleName">RuleName</h2>
+<!-- backwards compatibility -->
+<a id="schemarulename"></a>
+<a id="schema_RuleName"></a>
+<a id="tocSrulename"></a>
+<a id="tocsrulename"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_RulesPackageName">RulesPackageName</h2>
+<!-- backwards compatibility -->
+<a id="schemarulespackagename"></a>
+<a id="schema_RulesPackageName"></a>
+<a id="tocSrulespackagename"></a>
+<a id="tocsrulespackagename"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_Version">Version</h2>
+<!-- backwards compatibility -->
+<a id="schemaversion"></a>
+<a id="schema_Version"></a>
+<a id="tocSversion"></a>
+<a id="tocsversion"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_RulesPackage">RulesPackage</h2>
+<!-- backwards compatibility -->
+<a id="schemarulespackage"></a>
+<a id="schema_RulesPackage"></a>
+<a id="tocSrulespackage"></a>
+<a id="tocsrulespackage"></a>
+
+```json
+{
+  "arn": {},
+  "name": {},
+  "version": {},
+  "provider": {},
+  "description": {}
+}
+```
+
+Contains information about an Amazon Inspector rules package. This data type is used as the response element in the <a>DescribeRulesPackages</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|arn|object|true|none|none|
+|name|object|true|none|none|
+|version|object|true|none|none|
+|provider|object|true|none|none|
+|description|object|false|none|none|
+
+<h2 id="tocS_ScopeType">ScopeType</h2>
+<!-- backwards compatibility -->
+<a id="schemascopetype"></a>
+<a id="schema_ScopeType"></a>
+<a id="tocSscopetype"></a>
+<a id="tocsscopetype"></a>
+
+```json
+"INSTANCE_ID"
+```
+
+<h2 id="tocS_ScopeValue">ScopeValue</h2>
+<!-- backwards compatibility -->
+<a id="schemascopevalue"></a>
+<a id="schema_ScopeValue"></a>
+<a id="tocSscopevalue"></a>
+<a id="tocsscopevalue"></a>
+
+```json
+"string"
+```
+
+<h2 id="tocS_Scope">Scope</h2>
+<!-- backwards compatibility -->
+<a id="schemascope"></a>
+<a id="schema_Scope"></a>
+<a id="tocSscope"></a>
+<a id="tocsscope"></a>
+
+```json
+{
+  "key": {},
+  "value": {}
+}
+```
+
+This data type contains key-value pairs that identify various Amazon resources.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|object|false|none|none|
+|value|object|false|none|none|
+
+<h2 id="tocS_SecurityGroup">SecurityGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemasecuritygroup"></a>
+<a id="schema_SecurityGroup"></a>
+<a id="tocSsecuritygroup"></a>
+<a id="tocssecuritygroup"></a>
+
+```json
+{
+  "groupName": {},
+  "groupId": {}
+}
+```
+
+Contains information about a security group associated with a network interface. This data type is used as one of the elements of the <a>NetworkInterface</a> data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|groupName|object|false|none|none|
+|groupId|object|false|none|none|
+
+<h2 id="tocS_StopAction">StopAction</h2>
+<!-- backwards compatibility -->
+<a id="schemastopaction"></a>
+<a id="schema_StopAction"></a>
+<a id="tocSstopaction"></a>
+<a id="tocsstopaction"></a>
+
+```json
+"START_EVALUATION"
+```
+
+<h2 id="tocS_Subscription">Subscription</h2>
+<!-- backwards compatibility -->
+<a id="schemasubscription"></a>
+<a id="schema_Subscription"></a>
+<a id="tocSsubscription"></a>
+<a id="tocssubscription"></a>
+
+```json
+{
+  "resourceArn": {},
+  "topicArn": {},
+  "eventSubscriptions": {}
+}
+```
+
+This data type is used as a response element in the <a>ListEventSubscriptions</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceArn|object|true|none|none|
+|topicArn|object|true|none|none|
+|eventSubscriptions|object|true|none|none|
+
+<h2 id="tocS_Tag">Tag</h2>
+<!-- backwards compatibility -->
+<a id="schematag"></a>
+<a id="schema_Tag"></a>
+<a id="tocStag"></a>
+<a id="tocstag"></a>
+
+```json
+{
+  "key": {},
+  "value": {}
+}
+```
+
+A key and value pair. This data type is used as a request parameter in the <a>SetTagsForResource</a> action and a response element in the <a>ListTagsForResource</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|object|true|none|none|
+|value|object|false|none|none|
+
+<h2 id="tocS_TelemetryMetadata">TelemetryMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schematelemetrymetadata"></a>
+<a id="schema_TelemetryMetadata"></a>
+<a id="tocStelemetrymetadata"></a>
+<a id="tocstelemetrymetadata"></a>
+
+```json
+{
+  "messageType": {},
+  "count": {},
+  "dataSize": {}
+}
+```
+
+The metadata about the Amazon Inspector application data metrics collected by the agent. This data type is used as the response element in the <a>GetTelemetryMetadata</a> action.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|messageType|object|true|none|none|
+|count|object|true|none|none|
+|dataSize|object|false|none|none|
