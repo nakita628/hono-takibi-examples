@@ -609,7 +609,7 @@ const VehicleRegistrationSchemaSchema = z
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 class: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 color: z
@@ -617,11 +617,11 @@ const VehicleRegistrationSchemaSchema = z
                   .exactOptional()
                   .openapi({ example: '', xml: { attribute: true } }),
                 cubicCapacity: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 cylinder: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 engineNo: z
@@ -629,19 +629,19 @@ const VehicleRegistrationSchemaSchema = z
                   .exactOptional()
                   .openapi({ example: '', xml: { attribute: true } }),
                 fitTill: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 fuelDesc: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 make: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 mfgDate: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 model: z
@@ -660,7 +660,7 @@ const VehicleRegistrationSchemaSchema = z
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 standingCapacity: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 unladenWeight: z
@@ -669,7 +669,7 @@ const VehicleRegistrationSchemaSchema = z
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
                 wheelbase: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ xml: { attribute: true } }),
               })
