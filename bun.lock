@@ -635,6 +635,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/congress-gov": {
+      "name": "@apps/congress-gov",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/consul-terraform-sync": {
       "name": "@apps/consul-terraform-sync",
       "dependencies": {
@@ -901,6 +915,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/exoscale": {
+      "name": "@apps/exoscale",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/figma": {
       "name": "@apps/figma",
       "dependencies": {
@@ -943,6 +971,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/fluss-gateway": {
+      "name": "@apps/fluss-gateway",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/freee": {
       "name": "@apps/freee",
       "dependencies": {
@@ -959,6 +1001,20 @@
     },
     "apps/frigate": {
       "name": "@apps/frigate",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/fusionauth": {
+      "name": "@apps/fusionauth",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1139,6 +1195,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/grocy": {
+      "name": "@apps/grocy",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/growthbook": {
       "name": "@apps/growthbook",
       "dependencies": {
@@ -1183,6 +1253,20 @@
     },
     "apps/hf-text-generation-inference": {
       "name": "@apps/hf-text-generation-inference",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/homer": {
+      "name": "@apps/homer",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -1699,6 +1783,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/martin": {
+      "name": "@apps/martin",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/medusa-admin": {
       "name": "@apps/medusa-admin",
       "dependencies": {
@@ -1841,6 +1939,20 @@
     },
     "apps/n8n": {
       "name": "@apps/n8n",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/navidrome": {
+      "name": "@apps/navidrome",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2007,8 +2119,36 @@
         "typescript": "catalog:",
       },
     },
+    "apps/novu": {
+      "name": "@apps/novu",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/nytimes": {
       "name": "@apps/nytimes",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/obsidian-local-rest-api": {
+      "name": "@apps/obsidian-local-rest-api",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2287,6 +2427,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/paddle": {
+      "name": "@apps/paddle",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/pagerduty": {
       "name": "@apps/pagerduty",
       "dependencies": {
@@ -2455,6 +2609,34 @@
         "typescript": "catalog:",
       },
     },
+    "apps/profilarr": {
+      "name": "@apps/profilarr",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/prometheus": {
+      "name": "@apps/prometheus",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/prowlarr": {
       "name": "@apps/prowlarr",
       "dependencies": {
@@ -2499,6 +2681,20 @@
     },
     "apps/radarr": {
       "name": "@apps/radarr",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/ray-jobs": {
+      "name": "@apps/ray-jobs",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2569,6 +2765,34 @@
     },
     "apps/resend": {
       "name": "@apps/resend",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/revolut-business": {
+      "name": "@apps/revolut-business",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/revolut-merchant": {
+      "name": "@apps/revolut-merchant",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2749,6 +2973,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/supertokens": {
+      "name": "@apps/supertokens",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/svix": {
       "name": "@apps/svix",
       "dependencies": {
@@ -2765,6 +3003,20 @@
     },
     "apps/tailscale": {
       "name": "@apps/tailscale",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/teampass": {
+      "name": "@apps/teampass",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -3099,6 +3351,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/wukongim": {
+      "name": "@apps/wukongim",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/xero": {
       "name": "@apps/xero",
       "dependencies": {
@@ -3256,6 +3522,8 @@
 
     "@apps/confluence": ["@apps/confluence@workspace:apps/confluence"],
 
+    "@apps/congress-gov": ["@apps/congress-gov@workspace:apps/congress-gov"],
+
     "@apps/consul-terraform-sync": ["@apps/consul-terraform-sync@workspace:apps/consul-terraform-sync"],
 
     "@apps/coolify": ["@apps/coolify@workspace:apps/coolify"],
@@ -3294,15 +3562,21 @@
 
     "@apps/exa": ["@apps/exa@workspace:apps/exa"],
 
+    "@apps/exoscale": ["@apps/exoscale@workspace:apps/exoscale"],
+
     "@apps/figma": ["@apps/figma@workspace:apps/figma"],
 
     "@apps/filerise": ["@apps/filerise@workspace:apps/filerise"],
 
     "@apps/firecrawl": ["@apps/firecrawl@workspace:apps/firecrawl"],
 
+    "@apps/fluss-gateway": ["@apps/fluss-gateway@workspace:apps/fluss-gateway"],
+
     "@apps/freee": ["@apps/freee@workspace:apps/freee"],
 
     "@apps/frigate": ["@apps/frigate@workspace:apps/frigate"],
+
+    "@apps/fusionauth": ["@apps/fusionauth@workspace:apps/fusionauth"],
 
     "@apps/getbible": ["@apps/getbible@workspace:apps/getbible"],
 
@@ -3328,6 +3602,8 @@
 
     "@apps/grafana-synthetic-monitoring": ["@apps/grafana-synthetic-monitoring@workspace:apps/grafana-synthetic-monitoring"],
 
+    "@apps/grocy": ["@apps/grocy@workspace:apps/grocy"],
+
     "@apps/growthbook": ["@apps/growthbook@workspace:apps/growthbook"],
 
     "@apps/hetzner": ["@apps/hetzner@workspace:apps/hetzner"],
@@ -3335,6 +3611,8 @@
     "@apps/hf-text-embeddings-inference": ["@apps/hf-text-embeddings-inference@workspace:apps/hf-text-embeddings-inference"],
 
     "@apps/hf-text-generation-inference": ["@apps/hf-text-generation-inference@workspace:apps/hf-text-generation-inference"],
+
+    "@apps/homer": ["@apps/homer@workspace:apps/homer"],
 
     "@apps/hubspot": ["@apps/hubspot@workspace:apps/hubspot"],
 
@@ -3408,6 +3686,8 @@
 
     "@apps/lob": ["@apps/lob@workspace:apps/lob"],
 
+    "@apps/martin": ["@apps/martin@workspace:apps/martin"],
+
     "@apps/medusa-admin": ["@apps/medusa-admin@workspace:apps/medusa-admin"],
 
     "@apps/medusa-store": ["@apps/medusa-store@workspace:apps/medusa-store"],
@@ -3429,6 +3709,8 @@
     "@apps/msgraph": ["@apps/msgraph@workspace:apps/msgraph"],
 
     "@apps/n8n": ["@apps/n8n@workspace:apps/n8n"],
+
+    "@apps/navidrome": ["@apps/navidrome@workspace:apps/navidrome"],
 
     "@apps/neon": ["@apps/neon@workspace:apps/neon"],
 
@@ -3452,7 +3734,11 @@
 
     "@apps/nocodb": ["@apps/nocodb@workspace:apps/nocodb"],
 
+    "@apps/novu": ["@apps/novu@workspace:apps/novu"],
+
     "@apps/nytimes": ["@apps/nytimes@workspace:apps/nytimes"],
+
+    "@apps/obsidian-local-rest-api": ["@apps/obsidian-local-rest-api@workspace:apps/obsidian-local-rest-api"],
 
     "@apps/octobox": ["@apps/octobox@workspace:apps/octobox"],
 
@@ -3492,6 +3778,8 @@
 
     "@apps/owncast": ["@apps/owncast@workspace:apps/owncast"],
 
+    "@apps/paddle": ["@apps/paddle@workspace:apps/paddle"],
+
     "@apps/pagerduty": ["@apps/pagerduty@workspace:apps/pagerduty"],
 
     "@apps/parliament": ["@apps/parliament@workspace:apps/parliament"],
@@ -3516,6 +3804,10 @@
 
     "@apps/polygon": ["@apps/polygon@workspace:apps/polygon"],
 
+    "@apps/profilarr": ["@apps/profilarr@workspace:apps/profilarr"],
+
+    "@apps/prometheus": ["@apps/prometheus@workspace:apps/prometheus"],
+
     "@apps/prowlarr": ["@apps/prowlarr@workspace:apps/prowlarr"],
 
     "@apps/qdrant": ["@apps/qdrant@workspace:apps/qdrant"],
@@ -3523,6 +3815,8 @@
     "@apps/qstash": ["@apps/qstash@workspace:apps/qstash"],
 
     "@apps/radarr": ["@apps/radarr@workspace:apps/radarr"],
+
+    "@apps/ray-jobs": ["@apps/ray-jobs@workspace:apps/ray-jobs"],
 
     "@apps/readme-oas-examples": ["@apps/readme-oas-examples@workspace:apps/readme-oas-examples"],
 
@@ -3533,6 +3827,10 @@
     "@apps/replicate": ["@apps/replicate@workspace:apps/replicate"],
 
     "@apps/resend": ["@apps/resend@workspace:apps/resend"],
+
+    "@apps/revolut-business": ["@apps/revolut-business@workspace:apps/revolut-business"],
+
+    "@apps/revolut-merchant": ["@apps/revolut-merchant@workspace:apps/revolut-merchant"],
 
     "@apps/riot": ["@apps/riot@workspace:apps/riot"],
 
@@ -3558,9 +3856,13 @@
 
     "@apps/superset": ["@apps/superset@workspace:apps/superset"],
 
+    "@apps/supertokens": ["@apps/supertokens@workspace:apps/supertokens"],
+
     "@apps/svix": ["@apps/svix@workspace:apps/svix"],
 
     "@apps/tailscale": ["@apps/tailscale@workspace:apps/tailscale"],
+
+    "@apps/teampass": ["@apps/teampass@workspace:apps/teampass"],
 
     "@apps/temporal": ["@apps/temporal@workspace:apps/temporal"],
 
@@ -3607,6 +3909,8 @@
     "@apps/whatsapp-business": ["@apps/whatsapp-business@workspace:apps/whatsapp-business"],
 
     "@apps/windmill": ["@apps/windmill@workspace:apps/windmill"],
+
+    "@apps/wukongim": ["@apps/wukongim@workspace:apps/wukongim"],
 
     "@apps/xero": ["@apps/xero@workspace:apps/xero"],
 
