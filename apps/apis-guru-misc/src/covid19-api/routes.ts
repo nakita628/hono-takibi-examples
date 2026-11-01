@@ -15,7 +15,10 @@ const CountryReadSchema = z
   .openapi({ description: '', required: [] })
   .openapi('CountryRead')
 
-const DailyReportReadSchema = z.object({}).openapi({ description: '' }).openapi('DailyReportRead')
+const DailyReportReadSchema = z
+  .looseObject({})
+  .openapi({ description: '' })
+  .openapi('DailyReportRead')
 
 export const getCountryRoute = createRoute({
   method: 'get',

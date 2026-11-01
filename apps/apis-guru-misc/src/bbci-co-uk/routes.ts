@@ -1,17 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type CategoryType = {
-  child_episode_count?: number
-  child_programme_count?: number
-  contextual_title?: string
-  id: string
-  kind: 'genre' | 'accessibility' | 'national' | 'childrens'
-  parent_category?: string
-  sub_categories?: CategoryType[]
-  title: string
-  type: 'category'
-}
-
 const MasterBrandSchema = z
   .strictObject({
     attribution: z.string(),
@@ -341,7 +329,30 @@ const EpisodeSchema = z
   })
   .openapi('Episode')
 
-const ProgrammeSchema = z
+type ProgrammeType = {
+  categories: string[]
+  count: number
+  id: string
+  images: { inherited_from?: string; standard: string; type: 'image' }
+  initial_children: z.infer<typeof EpisodeSchema>[]
+  labels?: { category?: string }
+  lexical_sort_letter: string
+  master_brand: z.infer<typeof MasterBrandSchema>
+  programme_type?:
+    | 'narrative'
+    | 'sequential'
+    | 'self-contained'
+    | 'strand'
+    | 'unclassified'
+    | 'one-off'
+  status: 'available' | 'unavailable'
+  synopses: { large?: string; medium?: string; small?: string }
+  title: string
+  tleo_type?: 'brand' | 'series' | 'episode'
+  type: 'programme' | 'programme_large'
+}
+
+const ProgrammeSchema: z.ZodType<ProgrammeType> = z
   .strictObject({
     categories: z.array(z.string()),
     count: z.number(),
@@ -392,12 +403,40 @@ const ProgrammeSchema = z
   })
   .openapi('Programme')
 
-const AddedSchema = z
-  .strictObject({ programme: ProgrammeSchema, type: z.literal('added'), urn: z.string() })
-  .openapi({ required: ['urn', 'type', 'programme'] })
-  .openapi('Added')
+type AddedType = { programme: z.infer<typeof ProgrammeSchema>; type: 'added'; urn: string }
 
-const BroadcastSchema = z
+type BroadcastType = {
+  available_on_hd_service?: string | null
+  blanked: boolean
+  channel_title?: string
+  duration?: { text: string; value: string }
+  episode: z.infer<typeof EpisodeSchema>
+  episode_id: string
+  events?: { name: string; system: string; time: string }[]
+  id: string
+  repeat: boolean
+  scheduled_end: string
+  scheduled_start: string
+  service_id: string
+  transmission_end?: string
+  transmission_start?: string
+  type: 'broadcast'
+  version_id: string
+}
+
+type CategoryType = {
+  child_episode_count?: number
+  child_programme_count?: number
+  contextual_title?: string
+  id: string
+  kind: 'genre' | 'accessibility' | 'national' | 'childrens'
+  parent_category?: string
+  sub_categories?: CategoryType[]
+  title: string
+  type: 'category'
+}
+
+const BroadcastSchema: z.ZodType<BroadcastType> = z
   .strictObject({
     available_on_hd_service: z.string().nullable().exactOptional(),
     blanked: z.boolean(),
@@ -440,6 +479,136 @@ const BroadcastSchema = z
     ],
   })
   .openapi('Broadcast')
+
+type GroupType = {
+  count?: number
+  episode_sort_direction?: string
+  group_type?: 'tleo' | 'curated' | 'automated' | 'event'
+  id: string
+  images?: { standard: string; type: 'image'; vertical: string }
+  initial_children?: (z.infer<typeof EpisodeSchema> | z.infer<typeof BroadcastSchema>)[]
+  master_brand?: z.infer<typeof MasterBrandSchema>
+  related_links?: { kind: string; title: string; url: string }[]
+  short_title?: string
+  stacked?: boolean
+  synopses?: { large?: string; medium?: string; small?: string }
+  title?: string
+  type: 'group' | 'group_large'
+}
+
+type SearchGroupType = { episode: z.infer<typeof EpisodeSchema>; id: string; type: 'search_group' }
+
+type UserRecommendationType = {
+  algorithm: string
+  episode: z.infer<typeof EpisodeSchema>
+  type: 'user_recommendation'
+}
+
+const VersionSchema = z
+  .strictObject({
+    availability: z
+      .strictObject({
+        accurate_start: z.string().exactOptional(),
+        end: z.string().exactOptional(),
+        remaining: z
+          .strictObject({ text: z.string() })
+          .exactOptional()
+          .openapi({ required: ['text'] }),
+        start: z.string(),
+      })
+      .openapi({ required: ['start'] }),
+    credits_start: z.number().exactOptional(),
+    download: z.boolean(),
+    duration: z
+      .strictObject({ text: z.string(), value: z.string() })
+      .openapi({ required: ['text', 'value'] }),
+    events: z
+      .array(
+        z.xor([
+          z
+            .strictObject({ name: z.string(), offset: z.int(), system: z.string() })
+            .openapi({ required: ['name', 'system', 'offset'] }),
+          z
+            .strictObject({ name: z.string(), system: z.string(), time: z.string() })
+            .openapi({ required: ['name', 'system', 'time'] }),
+        ]),
+      )
+      .exactOptional(),
+    first_broadcast: z.string().exactOptional(),
+    first_broadcast_date_time: z.string().exactOptional(),
+    guidance: z
+      .strictObject({
+        id: z.string(),
+        text: z
+          .strictObject({
+            large: z.string().exactOptional(),
+            medium: z.string().exactOptional(),
+            small: z.string().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: ['id'] }),
+    hd: z.boolean(),
+    id: z.string(),
+    interactions: z.array(InteractionSchema).exactOptional(),
+    kind: z.enum([
+      'legal',
+      'editorial',
+      'technical-replacement',
+      'original',
+      'iplayer-version',
+      'lengthened',
+      'shortened',
+      'pre-watershed',
+      'post-watershed',
+      'warnings-higher',
+      'warnings-lower',
+      'warnings-none',
+      'duplication',
+      'open-subtitled',
+      'other',
+      'audio-described',
+      'signed',
+      'webcast',
+      'simulcast',
+    ]),
+    rrc: z
+      .strictObject({
+        description: z
+          .strictObject({ large: z.string(), small: z.string() })
+          .openapi({ required: ['small', 'large'] }),
+        url: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: ['description'] }),
+    service_id: z.string().exactOptional(),
+    type: z.enum(['version', 'version_large']),
+    uhd: z.boolean(),
+  })
+  .openapi({
+    required: ['id', 'type', 'hd', 'uhd', 'download', 'duration', 'kind', 'availability'],
+  })
+  .openapi('Version')
+
+type WatchingType = {
+  episode: z.infer<typeof EpisodeSchema>
+  has_next: boolean
+  offset?: number
+  programme: z.infer<typeof ProgrammeSchema>
+  progress?: number
+  remaining?: number
+  status?: 'current' | 'next' | 'ended'
+  type: 'watching'
+  urn: string
+  version: z.infer<typeof VersionSchema>
+}
+
+const AddedSchema: z.ZodType<AddedType> = z
+  .strictObject({ programme: ProgrammeSchema, type: z.literal('added'), urn: z.string() })
+  .openapi({ required: ['urn', 'type', 'programme'] })
+  .openapi('Added')
 
 const CategorySchema: z.ZodType<CategoryType> = z
   .lazy(() =>
@@ -600,7 +769,7 @@ const ClipSchema = z
   })
   .openapi('Clip')
 
-const GroupSchema = z
+const GroupSchema: z.ZodType<GroupType> = z
   .strictObject({
     count: z.number().exactOptional(),
     episode_sort_direction: z.string().exactOptional(),
@@ -679,7 +848,7 @@ const RegionSchema = z
   .openapi({ required: ['id', 'short_id', 'type', 'title', 'kind'] })
   .openapi('Region')
 
-const SearchGroupSchema = z
+const SearchGroupSchema: z.ZodType<SearchGroupType> = z
   .strictObject({ episode: EpisodeSchema, id: z.string(), type: z.literal('search_group') })
   .openapi({ required: ['id', 'type', 'episode'] })
   .openapi('SearchGroup')
@@ -747,7 +916,7 @@ const TrailerSchema = z
   .openapi({ required: ['id', 'type', 'title', 'kind', 'version_id', 'message'] })
   .openapi('Trailer')
 
-const UserRecommendationSchema = z
+const UserRecommendationSchema: z.ZodType<UserRecommendationType> = z
   .strictObject({
     algorithm: z.string(),
     episode: EpisodeSchema,
@@ -756,95 +925,7 @@ const UserRecommendationSchema = z
   .openapi({ required: ['algorithm', 'type', 'episode'] })
   .openapi('UserRecommendation')
 
-const VersionSchema = z
-  .strictObject({
-    availability: z
-      .strictObject({
-        accurate_start: z.string().exactOptional(),
-        end: z.string().exactOptional(),
-        remaining: z
-          .strictObject({ text: z.string() })
-          .exactOptional()
-          .openapi({ required: ['text'] }),
-        start: z.string(),
-      })
-      .openapi({ required: ['start'] }),
-    credits_start: z.number().exactOptional(),
-    download: z.boolean(),
-    duration: z
-      .strictObject({ text: z.string(), value: z.string() })
-      .openapi({ required: ['text', 'value'] }),
-    events: z
-      .array(
-        z.xor([
-          z
-            .strictObject({ name: z.string(), offset: z.int(), system: z.string() })
-            .openapi({ required: ['name', 'system', 'offset'] }),
-          z
-            .strictObject({ name: z.string(), system: z.string(), time: z.string() })
-            .openapi({ required: ['name', 'system', 'time'] }),
-        ]),
-      )
-      .exactOptional(),
-    first_broadcast: z.string().exactOptional(),
-    first_broadcast_date_time: z.string().exactOptional(),
-    guidance: z
-      .strictObject({
-        id: z.string(),
-        text: z
-          .strictObject({
-            large: z.string().exactOptional(),
-            medium: z.string().exactOptional(),
-            small: z.string().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: ['id'] }),
-    hd: z.boolean(),
-    id: z.string(),
-    interactions: z.array(InteractionSchema).exactOptional(),
-    kind: z.enum([
-      'legal',
-      'editorial',
-      'technical-replacement',
-      'original',
-      'iplayer-version',
-      'lengthened',
-      'shortened',
-      'pre-watershed',
-      'post-watershed',
-      'warnings-higher',
-      'warnings-lower',
-      'warnings-none',
-      'duplication',
-      'open-subtitled',
-      'other',
-      'audio-described',
-      'signed',
-      'webcast',
-      'simulcast',
-    ]),
-    rrc: z
-      .strictObject({
-        description: z
-          .strictObject({ large: z.string(), small: z.string() })
-          .openapi({ required: ['small', 'large'] }),
-        url: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: ['description'] }),
-    service_id: z.string().exactOptional(),
-    type: z.enum(['version', 'version_large']),
-    uhd: z.boolean(),
-  })
-  .openapi({
-    required: ['id', 'type', 'hd', 'uhd', 'download', 'duration', 'kind', 'availability'],
-  })
-  .openapi('Version')
-
-const WatchingSchema = z
+const WatchingSchema: z.ZodType<WatchingType> = z
   .strictObject({
     episode: EpisodeSchema,
     has_next: z.boolean(),

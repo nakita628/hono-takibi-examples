@@ -77,7 +77,7 @@ const TypeSchema = z
   .openapi({ description: 'The Type resource.', required: [] })
   .openapi('Type')
 
-const AddressTypeSchema = TypeSchema.and(z.object({})).openapi('AddressType')
+const AddressTypeSchema = TypeSchema.and(z.looseObject({})).openapi('AddressType')
 
 const BusinessNameSchema = z
   .object({
@@ -116,7 +116,7 @@ const BusinessNameSchema = z
   .openapi({ description: 'The Business Name resource.', required: [] })
   .openapi('BusinessName')
 
-const BusinessNameLifecycleStateSchema = TypeSchema.and(z.object({})).openapi(
+const BusinessNameLifecycleStateSchema = TypeSchema.and(z.looseObject({})).openapi(
   'BusinessNameLifecycleState',
 )
 
@@ -183,7 +183,9 @@ const ElectronicAddressSchema = z
   .openapi({ description: 'The Electronic Address resource.', required: [] })
   .openapi('ElectronicAddress')
 
-const ElectronicAddressTypeSchema = TypeSchema.and(z.object({})).openapi('ElectronicAddressType')
+const ElectronicAddressTypeSchema = TypeSchema.and(z.looseObject({})).openapi(
+  'ElectronicAddressType',
+)
 
 const ErrorDetailsSchema = z
   .object({
@@ -409,7 +411,7 @@ const InvalidArgumentSchema = z
   .openapi({ required: [] })
   .openapi('InvalidArgument')
 
-const LegalEntityTypeSchema = TypeSchema.and(z.object({})).openapi('LegalEntityType')
+const LegalEntityTypeSchema = TypeSchema.and(z.looseObject({})).openapi('LegalEntityType')
 
 const LicenseSchema = z
   .object({
@@ -449,15 +451,17 @@ const LicenseSchema = z
   .openapi({ description: 'The License resource.', required: [] })
   .openapi('License')
 
-const LicenseLifecycleStateSchema = TypeSchema.and(z.object({})).openapi('LicenseLifecycleState')
+const LicenseLifecycleStateSchema = TypeSchema.and(z.looseObject({})).openapi(
+  'LicenseLifecycleState',
+)
 
-const LicenseTypeSchema = TypeSchema.and(z.object({})).openapi('LicenseType')
+const LicenseTypeSchema = TypeSchema.and(z.looseObject({})).openapi('LicenseType')
 
-const NameDirectionSchema = TypeSchema.and(z.object({})).openapi('NameDirection')
+const NameDirectionSchema = TypeSchema.and(z.looseObject({})).openapi('NameDirection')
 
-const NamePrefixSchema = TypeSchema.and(z.object({})).openapi('NamePrefix')
+const NamePrefixSchema = TypeSchema.and(z.looseObject({})).openapi('NamePrefix')
 
-const NameTypeSchema = TypeSchema.and(z.object({})).openapi('NameType')
+const NameTypeSchema = TypeSchema.and(z.looseObject({})).openapi('NameType')
 
 const NotFoundSchema = z
   .object({
@@ -692,7 +696,7 @@ const PermissionDeniedSchema = z
   .openapi({ required: [] })
   .openapi('PermissionDenied')
 
-const RegisteredIdentifierTypeSchema = TypeSchema.and(z.object({})).openapi(
+const RegisteredIdentifierTypeSchema = TypeSchema.and(z.looseObject({})).openapi(
   'RegisteredIdentifierType',
 )
 
@@ -928,18 +932,14 @@ export const getBusinessNamesRoute = createRoute({
       description: 'A list of business names was retrieved successfully',
       content: { 'application/json': { schema: z.array(BusinessNameSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -976,18 +976,14 @@ export const getClassificationsAddressTypesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1038,18 +1034,14 @@ export const getClassificationsBusinessNameLifecycleStatesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1085,18 +1077,14 @@ export const getClassificationsElectronicAddressTypesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1126,18 +1114,14 @@ export const getClassificationsGendersRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1193,18 +1177,14 @@ export const getClassificationsLegalEntityTypesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1255,18 +1235,14 @@ export const getClassificationsLicenseLifecycleStatesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1303,18 +1279,14 @@ export const getClassificationsLicenseTypesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1350,18 +1322,14 @@ export const getClassificationsNameDirectionsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1399,18 +1367,14 @@ export const getClassificationsNamePrefixesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1446,18 +1410,14 @@ export const getClassificationsNameTypesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1495,18 +1455,14 @@ export const getClassificationsRegisteredIdentifierTypesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1549,18 +1505,14 @@ export const getClassificationsRolesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1586,18 +1538,14 @@ export const getIndividualsRoute = createRoute({
       description: 'A list of individuals was retrieved successfully',
       content: { 'application/json': { schema: z.array(IndividualSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1617,18 +1565,14 @@ export const postIndividualsRoute = createRoute({
       description: 'Individual was created',
       content: { 'application/json': { schema: IndividualSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -1710,18 +1654,14 @@ export const getIndividualsPartyIdAddressesRoute = createRoute({
       description: 'Addresses were retrieved successfully',
       content: { 'application/json': { schema: z.array(AddressSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1745,18 +1685,14 @@ export const postIndividualsPartyIdAddressesRoute = createRoute({
       description: 'Address was created',
       content: { 'application/json': { schema: AddressSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -1837,18 +1773,14 @@ export const getIndividualsPartyIdBusinessNamesRoute = createRoute({
       description: 'Business Names were retrieved successfully',
       content: { 'application/json': { schema: z.array(BusinessNameSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1872,18 +1804,14 @@ export const postIndividualsPartyIdBusinessNamesRoute = createRoute({
       description: 'Business Name was created',
       content: { 'application/json': { schema: BusinessNameSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -1964,18 +1892,14 @@ export const getIndividualsPartyIdElectronicAddressesRoute = createRoute({
       description: 'Electronic addresses were retrieved successfully',
       content: { 'application/json': { schema: z.array(ElectronicAddressSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -1999,18 +1923,14 @@ export const postIndividualsPartyIdElectronicAddressesRoute = createRoute({
       description: 'Electronic Address was created',
       content: { 'application/json': { schema: ElectronicAddressSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -2091,18 +2011,14 @@ export const getIndividualsPartyIdLicensesRoute = createRoute({
       description: 'Licenses were retrieved successfully',
       content: { 'application/json': { schema: z.array(LicenseSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -2126,18 +2042,14 @@ export const postIndividualsPartyIdLicensesRoute = createRoute({
       description: 'License was created',
       content: { 'application/json': { schema: LicenseSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -2218,18 +2130,14 @@ export const getIndividualsPartyIdRolesRoute = createRoute({
       description: 'Roles were retrieved successfully',
       content: { 'application/json': { schema: z.array(PartyRoleSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -2253,18 +2161,14 @@ export const postIndividualsPartyIdRolesRoute = createRoute({
       description: 'Role was created',
       content: { 'application/json': { schema: PartyRoleSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -2343,18 +2247,14 @@ export const getLicensesRoute = createRoute({
       description: 'A list of licenses was retrieved successfully',
       content: { 'application/json': { schema: z.array(LicenseSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -2380,18 +2280,14 @@ export const getOrganisationsRoute = createRoute({
       description: 'A list of organisations was retrieved successfully',
       content: { 'application/json': { schema: z.array(OrganisationSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -2411,18 +2307,14 @@ export const postOrganisationsRoute = createRoute({
       description: 'Organisation was created',
       content: { 'application/json': { schema: OrganisationSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -2504,18 +2396,14 @@ export const getOrganisationsPartyIdAddressesRoute = createRoute({
       description: 'Addresses were retrieved successfully',
       content: { 'application/json': { schema: z.array(AddressSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -2539,18 +2427,14 @@ export const postOrganisationsPartyIdAddressesRoute = createRoute({
       description: 'Address was created',
       content: { 'application/json': { schema: AddressSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -2631,18 +2515,14 @@ export const getOrganisationsPartyIdBusinessNamesRoute = createRoute({
       description: 'Business Names were retrieved successfully',
       content: { 'application/json': { schema: z.array(BusinessNameSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -2666,18 +2546,14 @@ export const postOrganisationsPartyIdBusinessNamesRoute = createRoute({
       description: 'Business Name was created',
       content: { 'application/json': { schema: BusinessNameSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -2758,18 +2634,14 @@ export const getOrganisationsPartyIdElectronicAddressesRoute = createRoute({
       description: 'Electronic addresses were retrieved successfully',
       content: { 'application/json': { schema: z.array(ElectronicAddressSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -2793,18 +2665,14 @@ export const postOrganisationsPartyIdElectronicAddressesRoute = createRoute({
       description: 'Electronic Address was created',
       content: { 'application/json': { schema: ElectronicAddressSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -2885,18 +2753,14 @@ export const getOrganisationsPartyIdLicensesRoute = createRoute({
       description: 'Licenses were retrieved successfully',
       content: { 'application/json': { schema: z.array(LicenseSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -2920,18 +2784,14 @@ export const postOrganisationsPartyIdLicensesRoute = createRoute({
       description: 'License was created',
       content: { 'application/json': { schema: LicenseSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,
@@ -3012,18 +2872,14 @@ export const getOrganisationsPartyIdRolesRoute = createRoute({
       description: 'Roles were retrieved successfully',
       content: { 'application/json': { schema: z.array(PartyRoleSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Information about pagination is provided in the [Link](https://tools.ietf.org/html/rfc5988#page-6) header.\nFor example:\n\n    Link: <https://api.abr.ato.gov.au/individuals?page=2>; rel="next",\n          <https://api.abr.ato.gov.au/individuals?page=34>; rel="last"\n\n`rel="next"` states that the next page is `page=2`. This makes sense, since by default, all paginated queries start at page `1`. `rel="last"` provides some more information, stating that the last page of results is on `page 34`. Accordingly, we have 33 more pages of information that we can consume.\n',
+            param: { required: false },
+          }),
       }),
     },
     401: UnauthenticatedResponse,
@@ -3047,18 +2903,14 @@ export const postOrganisationsPartyIdRolesRoute = createRoute({
       description: 'Role was created',
       content: { 'application/json': { schema: PartyRoleSchema } },
       headers: z.object({
-        Location: {
-          description:
-            'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A [Location](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30) header pointing to the location of the new resource.\n',
+            param: { required: false },
+          }),
       }),
     },
     400: InvalidArgumentResponse,

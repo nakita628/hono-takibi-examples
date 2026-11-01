@@ -517,13 +517,13 @@ export const postCanvasTriggerScheduleCreateRoute = createRoute({
                 .exactOptional()
                 .openapi({ required: [] }),
               broadcast: z.boolean().exactOptional().openapi({ example: false }),
-              canvas_entry_properties: z.object({}).exactOptional(),
+              canvas_entry_properties: z.looseObject({}).exactOptional(),
               canvas_id: z.string().exactOptional().openapi({ example: 'canvas_identifier' }),
               recipients: z
                 .array(
                   z
                     .object({
-                      canvas_entry_properties: z.object({}).exactOptional(),
+                      canvas_entry_properties: z.looseObject({}).exactOptional(),
                       external_user_id: z
                         .string()
                         .exactOptional()

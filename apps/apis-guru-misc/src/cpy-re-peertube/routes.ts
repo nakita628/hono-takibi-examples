@@ -5625,16 +5625,10 @@ export const postApiV1UsersMeAvatarPickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the avatar',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the avatar',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the avatar', param: { required: false } }),
       }),
     },
   },
@@ -5860,7 +5854,7 @@ export const getApiV1UsersMeSubscriptionsExistRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   security: [{ OAuth2: ['user'] }],
@@ -6743,16 +6737,10 @@ export const postApiV1VideoChannelsChannelHandleAvatarPickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the avatar',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the avatar',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the avatar', param: { required: false } }),
       }),
     },
   },
@@ -6806,16 +6794,10 @@ export const postApiV1VideoChannelsChannelHandleBannerPickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the banner',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the banner',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the banner', param: { required: false } }),
       }),
     },
   },
@@ -8237,16 +8219,10 @@ export const postApiV1VideosUploadRoute = createRoute({
       description:
         "If the response has no body, it means the reverse-proxy didn't let it through. Otherwise disambiguate via `type`:\n- `quota_reached` for quota limits whether daily or global\n",
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the video',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the video',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the video', param: { required: false } }),
       }),
     },
     415: { description: 'video type unsupported' },
@@ -8327,29 +8303,23 @@ export const putApiV1VideosUploadResumableRoute = createRoute({
       description: 'last chunk received',
       content: { 'application/json': { schema: VideoUploadResponseSchema } },
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     308: {
       description: 'resume incomplete',
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
-        Range: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'bytes=0-262143' }),
-        },
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
+        Range: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'bytes=0-262143' }),
       }),
     },
     403: { description: "video didn't pass upload filter" },
@@ -8360,12 +8330,10 @@ export const putApiV1VideosUploadResumableRoute = createRoute({
     503: {
       description: 'upload is already being processed',
       headers: z.object({
-        'Retry-After': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 300 }),
-        },
+        'Retry-After': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 300 }),
       }),
     },
   },
@@ -8427,21 +8395,17 @@ export const postApiV1VideosUploadResumableRoute = createRoute({
     201: {
       description: 'created',
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '/api/v1/videos/upload-resumable?upload_id=471e97554f21dec3b8bb5d4602939c51',
-            }),
-        },
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '/api/v1/videos/upload-resumable?upload_id=471e97554f21dec3b8bb5d4602939c51',
+          }),
       }),
     },
     413: {
@@ -8502,12 +8466,10 @@ export const deleteApiV1VideosUploadResumableRoute = createRoute({
     204: {
       description: 'upload cancelled',
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
     404: { description: 'upload not found' },
@@ -9380,19 +9342,17 @@ export const getFeedsSubscriptionsFormatRoute = createRoute({
       description: 'successful operation',
       content: {
         'application/atom+xml': { schema: VideosForXMLSchema },
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'application/rss+xml': { schema: VideosForXMLSchema },
         'application/xml': { schema: VideosForXMLSchema },
         'text/xml': { schema: VideosForXMLSchema },
       },
       headers: z.object({
-        'Cache-Control': {
-          schema: z
-            .string()
-            .default('max-age=900')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=900')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     406: { description: 'accept header unsupported' },
@@ -9499,7 +9459,7 @@ export const getFeedsVideoCommentsFormatRoute = createRoute({
           },
         },
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             nightly: {
               externalValue: 'https://peertube2.cpy.re/feeds/video-comments.json?filter=local',
@@ -9532,13 +9492,11 @@ export const getFeedsVideoCommentsFormatRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          schema: z
-            .string()
-            .default('max-age=900')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=900')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: { description: 'Arises when:\n  - videoId filter is mixed with a channel filter\n' },
@@ -9640,7 +9598,7 @@ export const getFeedsVideosFormatRoute = createRoute({
           },
         },
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             nightly: { externalValue: 'https://peertube2.cpy.re/feeds/videos.json?filter=local' },
           },
@@ -9665,13 +9623,11 @@ export const getFeedsVideosFormatRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          schema: z
-            .string()
-            .default('max-age=900')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=900')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: { description: 'video channel or account not found' },

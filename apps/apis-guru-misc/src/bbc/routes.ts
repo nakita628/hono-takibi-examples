@@ -1,590 +1,56 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ReleaseStatusTypeSchema = z
-  .enum(['alpha', 'beta', 'supported', 'deprecated'])
-  .openapi('ReleaseStatusType')
-
-const OptionSchema = z
-  .strictObject({
-    href: z.string().exactOptional(),
-    release_status: ReleaseStatusTypeSchema.exactOptional(),
-    title: z.string(),
-    value: z.string(),
-  })
-  .openapi({ required: ['value', 'title'] })
-  .openapi('Option')
-
-const ProhibitsSchema = z
-  .strictObject({
-    filter: z
-      .array(z.strictObject({ name: z.string() }).openapi({ required: ['name'] }))
-      .exactOptional(),
-    mixin: z
-      .array(
-        z
-          .strictObject({
-            filter: z
-              .array(z.strictObject({ name: z.string() }).openapi({ required: ['name'] }))
-              .exactOptional(),
-            mixin: z
-              .array(z.strictObject({ name: z.string() }).openapi({ required: ['name'] }))
-              .exactOptional(),
-            name: z.string(),
-          })
-          .openapi({ required: ['name'] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Prohibits')
-
-const FilterSchema = z
-  .strictObject({
-    default: z.string().exactOptional(),
-    depends_on: z.string().exactOptional(),
-    deprecated: z.boolean().exactOptional(),
-    deprecated_since: z
-      .string()
-      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
-      .exactOptional(),
-    guaranteed_until: z
-      .string()
-      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
-      .exactOptional(),
-    max_value: z.int().exactOptional(),
-    min_value: z.int().exactOptional(),
-    multiple_values: z.boolean().exactOptional(),
-    name: z.string(),
-    option: z.array(OptionSchema).exactOptional(),
-    prefer: z.string().exactOptional(),
-    prohibits: z.array(ProhibitsSchema).exactOptional(),
-    release_status: ReleaseStatusTypeSchema.exactOptional(),
-    replaced_by: z.string().exactOptional(),
-    required: z.boolean().exactOptional(),
-    title: z.string(),
-    type: z.string(),
-  })
-  .openapi({ required: ['name', 'title', 'type'] })
-  .openapi('Filter')
-
-const UnstableFiltersSchema = z
-  .strictObject({ filter: z.array(FilterSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('UnstableFilters')
-
-type FiltersType = {
-  filter?: z.infer<typeof FilterSchema>[]
-  unstable_filters?: z.infer<typeof UnstableFiltersSchema>
-}
-
-const AffectedBySchema = z
-  .strictObject({
-    filter: z
-      .array(
-        z
-          .strictObject({
-            description: z.string(),
-            filter: z
-              .array(
-                z
-                  .strictObject({ description: z.string(), name: z.string() })
-                  .openapi({ required: ['name', 'description'] }),
-              )
-              .exactOptional(),
-            name: z.string(),
-          })
-          .openapi({ required: ['name', 'description'] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AffectedBy')
-
-const DependencyOnSchema = z
-  .strictObject({ filter: z.string().exactOptional(), value: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('DependencyOn')
-
-const MixinSchema = z
-  .strictObject({
-    affected_by: z.array(AffectedBySchema).exactOptional(),
-    dependency_on: z.array(DependencyOnSchema).exactOptional(),
-    depends_on: z.string().exactOptional(),
-    deprecated: z.boolean().exactOptional(),
-    deprecated_since: z
-      .string()
-      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
-      .exactOptional(),
-    guaranteed_until: z
-      .string()
-      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
-      .exactOptional(),
-    href: z.string().exactOptional(),
-    name: z.string(),
-    prohibits: z.array(ProhibitsSchema).exactOptional(),
-    release_status: ReleaseStatusTypeSchema.exactOptional(),
-    replaced_by: z.string().exactOptional(),
-    title: z.string(),
-  })
-  .openapi({ required: ['name', 'title'] })
-  .openapi('Mixin')
-
-const UnstableMixinsSchema = z
-  .strictObject({ mixin: z.array(MixinSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('UnstableMixins')
-
-type MixinsType = {
-  mixin?: z.infer<typeof MixinSchema>[]
-  unstable_mixins?: z.infer<typeof UnstableMixinsSchema>
-}
-
-const SortDirectionSchema = z
-  .strictObject({ href: z.string(), is_default: z.string(), name: z.string(), value: z.string() })
-  .openapi({ required: ['name', 'value', 'is_default', 'href'] })
-  .openapi('SortDirection')
-
-const SortSchema = z
-  .strictObject({
-    deprecated: z.boolean().exactOptional(),
-    deprecated_since: z
-      .string()
-      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
-      .exactOptional(),
-    guaranteed_until: z
-      .string()
-      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
-      .exactOptional(),
-    is_default: z.string().exactOptional(),
-    name: z.string(),
-    release_status: ReleaseStatusTypeSchema.exactOptional(),
-    replaced_by: z.string().exactOptional(),
-    sort_direction: z.array(SortDirectionSchema).exactOptional(),
-    title: z.string(),
-  })
-  .openapi({ required: ['name', 'title'] })
-  .openapi('Sort')
-
-const UnstableSortsSchema = z
-  .strictObject({ sort: z.array(SortSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('UnstableSorts')
-
-type SortsType = {
-  sort?: z.infer<typeof SortSchema>[]
-  unstable_sorts?: z.infer<typeof UnstableSortsSchema>
-}
-
-const ErrorModelSchema = z
-  .object({
-    fault: z
-      .object({
-        detail: z
-          .object({ errorcode: z.string().exactOptional() })
-          .exactOptional()
-          .openapi({ required: [] }),
-        faultString: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('ErrorModel')
-
-const DateRangeSchema = z
-  .strictObject({
-    end: z.iso.datetime({ offset: true }).exactOptional(),
-    start: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DateRange')
-
-const AccurateProgrammeTimeSchema = DateRangeSchema.openapi('AccurateProgrammeTime')
-
-const BroadcastTimeSchema = DateRangeSchema.and(
-  z
-    .looseObject({
-      duration: z
-        .string()
-        .regex(
-          /^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$/,
-        )
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('BroadcastTime')
-
-const AccurateTimeSchema = BroadcastTimeSchema.openapi('AccurateTime')
-
-const ActualStartSchema = z.iso.datetime({ offset: true }).openapi('ActualStart')
-
-const AdvertisingAllowedSchema = z
-  .string()
-  .regex(/[a-z0-9_]+/)
-  .openapi('AdvertisingAllowed')
-
-const AlternateImagesMixinSchema = z
-  .strictObject({
-    alternate_images: z
-      .strictObject({
-        alternate_image: z
-          .array(
-            z
-              .strictObject({
-                alternate_images: z
-                  .strictObject({
-                    alternate_image: z
-                      .array(
-                        z
-                          .strictObject({
-                            href: z.string().exactOptional(),
-                            template_url: z.string(),
-                            type: z.string().exactOptional(),
-                          })
-                          .openapi({ required: ['template_url'] }),
-                      )
-                      .exactOptional(),
-                  })
-                  .openapi({ required: [] }),
-                href: z.string().exactOptional(),
-                template_url: z.string(),
-                type: z.string().exactOptional(),
-              })
-              .openapi({ required: ['template_url', 'alternate_images'] }),
-          )
-          .exactOptional(),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['alternate_images'] })
-  .openapi('AlternateImagesMixin')
-
-const PidSchema = z
-  .string()
-  .regex(/([a-z0-9\.\-]+|.*PID.*)/)
-  .openapi('Pid')
-
-const TitleSchema = z.string().openapi('Title')
-
-const ContainersTitleSchema = z.string().openapi('ContainersTitle')
-
-const PresentationTitleSchema = z.string().openapi('PresentationTitle')
-
-const AncestorTitlesSchema = z
-  .strictObject({
-    brand: z
-      .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
-      .exactOptional()
-      .openapi({ required: ['pid'] }),
-    episode: z
-      .strictObject({
-        brand: z
-          .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
-          .exactOptional()
-          .openapi({ required: ['pid'] }),
-        containers_title: ContainersTitleSchema.exactOptional(),
-        episode: z
-          .strictObject({
-            containers_title: ContainersTitleSchema.exactOptional(),
-            pid: PidSchema,
-            presentation_title: PresentationTitleSchema.exactOptional(),
-            title: TitleSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: ['pid'] }),
-        pid: PidSchema,
-        presentation_title: PresentationTitleSchema.exactOptional(),
-        series: z
-          .array(
-            z
-              .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
-              .openapi({ required: ['pid'] }),
-          )
-          .max(5)
-          .exactOptional(),
-        title: TitleSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: ['pid'] }),
-    series: z
-      .array(
-        z
-          .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
-          .openapi({ required: ['pid'] }),
-      )
-      .max(5)
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AncestorTitles')
-
-const ReferenceAttributesSchema = z
-  .strictObject({ href: z.string(), result_type: z.string() })
-  .openapi({ required: ['href', 'result_type'] })
-  .openapi('ReferenceAttributes')
-
-const ReferenceSchema = ReferenceAttributesSchema.and(
-  z
-    .looseObject({
-      href_deprecated: z.boolean().exactOptional(),
-      result_type_deprecated: z.boolean().exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('Reference')
-
-const AncestorsSchema = ReferenceSchema.openapi('Ancestors')
-
-const AncestorsTitlesSchema = z
-  .strictObject({
-    brand: z
-      .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
-      .exactOptional()
-      .openapi({ required: ['pid'] }),
-    episode: z
-      .strictObject({
-        brand: z
-          .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
-          .exactOptional()
-          .openapi({ required: ['pid'] }),
-        containers_title: ContainersTitleSchema.exactOptional(),
-        episode: z
-          .strictObject({
-            containers_title: ContainersTitleSchema.exactOptional(),
-            pid: PidSchema,
-            presentation_title: PresentationTitleSchema.exactOptional(),
-            title: TitleSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: ['pid'] }),
-        pid: PidSchema,
-        presentation_title: PresentationTitleSchema.exactOptional(),
-        series: z
-          .array(
-            z
-              .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
-              .openapi({ required: ['pid'] }),
-          )
-          .max(5)
-          .exactOptional(),
-        title: TitleSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: ['pid'] }),
-    series: z
-      .array(
-        z
-          .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
-          .openapi({ required: ['pid'] }),
-      )
-      .max(5)
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AncestorsTitles')
-
-const PidReferenceSchema = z
-  .strictObject({
-    href: z.string().exactOptional(),
-    pid: PidSchema,
-    position: z.int().exactOptional(),
-    result_type: z.string(),
-  })
-  .openapi({ required: ['pid', 'result_type'] })
-  .openapi('PidReference')
-
-const MediaProfileGroupSchema = z
-  .strictObject({
-    '#text': z.string().exactOptional(),
-    context: z.string().exactOptional(),
-    pid: PidSchema.exactOptional(),
-    platform: z.string().exactOptional(),
-    territory: z.string().exactOptional(),
-    transport: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaProfileGroup')
-
-const MediaProfileGroupsSchema = z
-  .strictObject({ media_profile_group: z.array(MediaProfileGroupSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('MediaProfileGroups')
-
-const ServiceReferenceSchema = z
-  .strictObject({ href: z.string(), result_type: z.string(), sid: z.string() })
-  .openapi({ required: ['result_type', 'href', 'sid'] })
-  .openapi('ServiceReference')
-
-const AvailabilityDebugSchema = z
-  .strictObject({
-    availability_of: PidReferenceSchema,
-    media_profile_groups: MediaProfileGroupsSchema.exactOptional(),
-    service: ServiceReferenceSchema.exactOptional(),
-    territory: z.string().exactOptional(),
-  })
-  .openapi({ required: ['availability_of'] })
-  .openapi('AvailabilityDebug')
-
-const AvailabilityOfSchema = z
-  .strictObject({
-    href: z.string(),
-    pid: PidSchema,
-    result_type: z.string(),
-    type: z.string().exactOptional(),
-  })
-  .openapi({ required: ['result_type', 'pid', 'href'] })
-  .openapi('AvailabilityOf')
-
-const AvailabilityTypeSchema = z
-  .enum(['ondemand', 'simulcast', 'webcast'])
-  .openapi('AvailabilityType')
-
-const MediaSetSchema = z.string().openapi('MediaSet')
-
-const RevocationStatusSchema = z.string().openapi('RevocationStatus')
-
-const ScheduledTimeSchema = z
-  .strictObject({
-    end: z.iso.datetime({ offset: true }).exactOptional(),
-    start: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduledTime')
-
 const StatusSchema = z.string().openapi('Status')
 
-const AvailabilitySchema = z
-  .strictObject({
-    accurate_programme_time: DateRangeSchema.exactOptional(),
-    actual_start: ActualStartSchema.exactOptional(),
-    'availability-debug': AvailabilityDebugSchema.exactOptional(),
-    availability_of: z.array(AvailabilityOfSchema).exactOptional(),
-    availability_type: AvailabilityTypeSchema,
-    media_availability_time: DateRangeSchema.exactOptional(),
-    media_set: z.array(MediaSetSchema).exactOptional(),
-    revocation_status: RevocationStatusSchema.exactOptional(),
-    scheduled_time: ScheduledTimeSchema.exactOptional(),
-    status: StatusSchema,
-  })
-  .openapi({ required: ['status', 'availability_type'] })
-  .openapi('Availability')
+type AvailabilityMixinType = {
+  availability?: {
+    status: z.infer<typeof StatusSchema>
+    version_types: {
+      version_type: {
+        end?: string
+        id?: string
+        start?: string
+        version_type: {
+          availability?: {
+            status: z.infer<typeof StatusSchema>
+            version_types: {
+              version_type: {
+                end?: string
+                id?: string
+                start?: string
+                version_type: { end?: string; id?: string; start?: string }[]
+              }[]
+            }
+          }[]
+          end?: string
+          id?: string
+          start?: string
+        }[]
+      }[]
+    }
+  }[]
+}
 
-const AvailabilityMixinSchema = z
-  .strictObject({
-    availability: z
-      .array(
-        z
-          .strictObject({
-            status: StatusSchema,
-            version_types: z
-              .strictObject({
-                version_type: z
-                  .array(
-                    z
-                      .strictObject({
-                        end: z.iso.datetime({ offset: true }).exactOptional(),
-                        id: z.string().exactOptional(),
-                        start: z.iso.datetime({ offset: true }).exactOptional(),
-                        version_type: z
-                          .array(
-                            z
-                              .strictObject({
-                                availability: z
-                                  .array(
-                                    z
-                                      .strictObject({
-                                        status: StatusSchema,
-                                        version_types: z
-                                          .strictObject({
-                                            version_type: z
-                                              .array(
-                                                z
-                                                  .strictObject({
-                                                    end: z.iso
-                                                      .datetime({ offset: true })
-                                                      .exactOptional(),
-                                                    id: z.string().exactOptional(),
-                                                    start: z.iso
-                                                      .datetime({ offset: true })
-                                                      .exactOptional(),
-                                                    version_type: z
-                                                      .array(
-                                                        z
-                                                          .strictObject({
-                                                            end: z.iso
-                                                              .datetime({ offset: true })
-                                                              .exactOptional(),
-                                                            id: z.string().exactOptional(),
-                                                            start: z.iso
-                                                              .datetime({ offset: true })
-                                                              .exactOptional(),
-                                                          })
-                                                          .openapi({ required: [] }),
-                                                      )
-                                                      .min(1),
-                                                  })
-                                                  .openapi({ required: ['version_type'] }),
-                                              )
-                                              .min(1),
-                                          })
-                                          .openapi({ required: ['version_type'] }),
-                                      })
-                                      .openapi({ required: ['status', 'version_types'] }),
-                                  )
-                                  .exactOptional(),
-                                end: z.iso.datetime({ offset: true }).exactOptional(),
-                                id: z.string().exactOptional(),
-                                start: z.iso.datetime({ offset: true }).exactOptional(),
-                              })
-                              .openapi({ required: [] }),
-                          )
-                          .min(1),
-                      })
-                      .openapi({ required: ['version_type'] }),
-                  )
-                  .min(1),
-              })
-              .openapi({ required: ['version_type'] }),
-          })
-          .openapi({ required: ['status', 'version_types'] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AvailabilityMixin')
+type AvailableVersionsMediaSetsType = {
+  media_sets?: {
+    media_set: {
+      actual_start?: string
+      name: string
+      territories?: {
+        media_sets?: {
+          media_set: {
+            actual_start?: string
+            name: string
+            territories?: { territory?: string[] }
+          }[]
+        }
+        territory?: string[]
+      }
+    }[]
+  }
+}
 
-const AvailableMediaSetsSchema = z
-  .strictObject({
-    media_sets: z
-      .strictObject({
-        media_set: z
-          .array(
-            z
-              .strictObject({
-                '#text': z.string().exactOptional(),
-                media_sets: z
-                  .strictObject({
-                    media_set: z
-                      .array(
-                        z
-                          .strictObject({ '#text': z.string().exactOptional() })
-                          .openapi({ required: [] }),
-                      )
-                      .min(1),
-                  })
-                  .exactOptional()
-                  .openapi({ required: ['media_set'] }),
-              })
-              .openapi({ required: [] }),
-          )
-          .min(1),
-      })
-      .exactOptional()
-      .openapi({ required: ['media_set'] }),
-  })
-  .openapi({ required: [] })
-  .openapi('AvailableMediaSets')
-
-const AvailableVersionsMediaSetsSchema = z
+const AvailableVersionsMediaSetsSchema: z.ZodType<AvailableVersionsMediaSetsType> = z
   .strictObject({
     media_sets: z
       .strictObject({
@@ -630,7 +96,40 @@ const AvailableVersionsMediaSetsSchema = z
   .openapi({ required: [] })
   .openapi('AvailableVersionsMediaSets')
 
-const AvailableMixinsSchema = z
+type AvailableMixinsType = {
+  availabilities: {
+    availabilities: {
+      availability: {
+        accurate_end?: string
+        accurate_start?: string
+        available_versions_media_sets: z.infer<typeof AvailableVersionsMediaSetsSchema>
+        media_availability_end?: string
+        media_availability_start?: string
+        payment_type?: string
+        scheduled_end?: string
+        scheduled_start?: string
+        status?: string
+        type?: string
+      }[]
+      type?: string
+    }
+    availability: {
+      accurate_end?: string
+      accurate_start?: string
+      available_versions_media_sets: z.infer<typeof AvailableVersionsMediaSetsSchema>
+      media_availability_end?: string
+      media_availability_start?: string
+      payment_type?: string
+      scheduled_end?: string
+      scheduled_start?: string
+      status?: string
+      type?: string
+    }[]
+    type?: string
+  }
+}
+
+const AvailableMixinsSchema: z.ZodType<AvailableMixinsType> = z
   .strictObject({
     availabilities: z
       .strictObject({
@@ -736,7 +235,18 @@ const WarningTextsSchema = z
   .openapi({ required: [] })
   .openapi('WarningTexts')
 
-const GuidanceWarningsSchema = z
+type GuidanceWarningsType = {
+  warnings?: {
+    warning_items?: z.infer<typeof WarningItemsSchema>
+    warning_texts?: z.infer<typeof WarningTextsSchema>
+    warnings?: {
+      warning_items?: z.infer<typeof WarningItemsSchema>
+      warning_texts?: z.infer<typeof WarningTextsSchema>
+    }
+  }
+}
+
+const GuidanceWarningsSchema: z.ZodType<GuidanceWarningsType> = z
   .strictObject({
     warnings: z
       .strictObject({
@@ -756,7 +266,31 @@ const GuidanceWarningsSchema = z
   .openapi({ required: [] })
   .openapi('GuidanceWarnings')
 
-const AvailableVersionsElementSchema = z
+const PidSchema = z
+  .string()
+  .regex(/([a-z0-9\.\-]+|.*PID.*)/)
+  .openapi('Pid')
+
+type AvailableVersionsElementType = {
+  version?: {
+    available_mixins?: z.infer<typeof AvailableMixinsSchema>
+    competition_warning?: boolean
+    duration?: string
+    guidance_warnings?: z.infer<typeof GuidanceWarningsSchema>
+    pid?: z.infer<typeof PidSchema>
+    types: { type?: string[] }[]
+    version?: {
+      available_mixins?: z.infer<typeof AvailableMixinsSchema>
+      competition_warning?: boolean
+      duration?: string
+      guidance_warnings?: z.infer<typeof GuidanceWarningsSchema>
+      pid?: z.infer<typeof PidSchema>
+      types: { type?: string[] }[]
+    }[]
+  }[]
+}
+
+const AvailableVersionsElementSchema: z.ZodType<AvailableVersionsElementType> = z
   .strictObject({
     version: z
       .array(
@@ -812,20 +346,140 @@ const AvailableVersionsElementSchema = z
   .openapi({ required: [] })
   .openapi('AvailableVersionsElement')
 
-const AvailableSimulcastsSchema = z
-  .strictObject({ available: z.int(), available_versions_element: AvailableVersionsElementSchema })
-  .openapi({ required: ['available_versions_element', 'available'] })
-  .openapi('AvailableSimulcasts')
+type AvailableSimulcastsType = {
+  available: number
+  available_versions_element: z.infer<typeof AvailableVersionsElementSchema>
+}
 
-const AvailableVersionsSchema = z
-  .strictObject({ available: z.int(), available_versions_element: AvailableVersionsElementSchema })
-  .openapi({ required: ['available_versions_element', 'available'] })
-  .openapi('AvailableVersions')
+type AvailableVersionsType = {
+  available: number
+  available_versions_element: z.infer<typeof AvailableVersionsElementSchema>
+}
 
-const AvailableWebcastsSchema = z
-  .strictObject({ available: z.int(), available_versions_element: AvailableVersionsElementSchema })
-  .openapi({ required: ['available_versions_element', 'available'] })
-  .openapi('AvailableWebcasts')
+type AvailableWebcastsType = {
+  available: number
+  available_versions_element: z.infer<typeof AvailableVersionsElementSchema>
+}
+
+const AlternateImagesMixinSchema = z
+  .strictObject({
+    alternate_images: z
+      .strictObject({
+        alternate_image: z
+          .array(
+            z
+              .strictObject({
+                alternate_images: z
+                  .strictObject({
+                    alternate_image: z
+                      .array(
+                        z
+                          .strictObject({
+                            href: z.string().exactOptional(),
+                            template_url: z.string(),
+                            type: z.string().exactOptional(),
+                          })
+                          .openapi({ required: ['template_url'] }),
+                      )
+                      .exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+                href: z.string().exactOptional(),
+                template_url: z.string(),
+                type: z.string().exactOptional(),
+              })
+              .openapi({ required: ['template_url', 'alternate_images'] }),
+          )
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['alternate_images'] })
+  .openapi('AlternateImagesMixin')
+
+const AvailabilityMixinSchema: z.ZodType<AvailabilityMixinType> = z
+  .strictObject({
+    availability: z
+      .array(
+        z
+          .strictObject({
+            status: StatusSchema,
+            version_types: z
+              .strictObject({
+                version_type: z
+                  .array(
+                    z
+                      .strictObject({
+                        end: z.iso.datetime({ offset: true }).exactOptional(),
+                        id: z.string().exactOptional(),
+                        start: z.iso.datetime({ offset: true }).exactOptional(),
+                        version_type: z
+                          .array(
+                            z
+                              .strictObject({
+                                availability: z
+                                  .array(
+                                    z
+                                      .strictObject({
+                                        status: StatusSchema,
+                                        version_types: z
+                                          .strictObject({
+                                            version_type: z
+                                              .array(
+                                                z
+                                                  .strictObject({
+                                                    end: z.iso
+                                                      .datetime({ offset: true })
+                                                      .exactOptional(),
+                                                    id: z.string().exactOptional(),
+                                                    start: z.iso
+                                                      .datetime({ offset: true })
+                                                      .exactOptional(),
+                                                    version_type: z
+                                                      .array(
+                                                        z
+                                                          .strictObject({
+                                                            end: z.iso
+                                                              .datetime({ offset: true })
+                                                              .exactOptional(),
+                                                            id: z.string().exactOptional(),
+                                                            start: z.iso
+                                                              .datetime({ offset: true })
+                                                              .exactOptional(),
+                                                          })
+                                                          .openapi({ required: [] }),
+                                                      )
+                                                      .min(1),
+                                                  })
+                                                  .openapi({ required: ['version_type'] }),
+                                              )
+                                              .min(1),
+                                          })
+                                          .openapi({ required: ['version_type'] }),
+                                      })
+                                      .openapi({ required: ['status', 'version_types'] }),
+                                  )
+                                  .exactOptional(),
+                                end: z.iso.datetime({ offset: true }).exactOptional(),
+                                id: z.string().exactOptional(),
+                                start: z.iso.datetime({ offset: true }).exactOptional(),
+                              })
+                              .openapi({ required: [] }),
+                          )
+                          .min(1),
+                      })
+                      .openapi({ required: ['version_type'] }),
+                  )
+                  .min(1),
+              })
+              .openapi({ required: ['version_type'] }),
+          })
+          .openapi({ required: ['status', 'version_types'] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AvailabilityMixin')
 
 const ContributionsMixinContributorNameSchema = z
   .strictObject({
@@ -873,7 +527,20 @@ const ContributionsMixinContributorSchema = z
   .openapi({ required: ['contributor'] })
   .openapi('ContributionsMixinContributor')
 
-const ContributionsMixinContributionSchema = z
+type ContributionsMixinContributionType = {
+  contribution: {
+    character_name?: string
+    contribution: {
+      character_name?: string
+      contributions_mixin_contributor?: z.infer<typeof ContributionsMixinContributorSchema>
+      credit_role?: { '#text'?: string; id?: string }
+    }
+    contributions_mixin_contributor?: z.infer<typeof ContributionsMixinContributorSchema>
+    credit_role?: { '#text'?: string; id?: string }
+  }
+}
+
+const ContributionsMixinContributionSchema: z.ZodType<ContributionsMixinContributionType> = z
   .strictObject({
     contribution: z
       .strictObject({
@@ -899,7 +566,18 @@ const ContributionsMixinContributionSchema = z
   .openapi({ required: ['contribution'] })
   .openapi('ContributionsMixinContribution')
 
-const ContributionsMixinSchema = z
+type ContributionsMixinType = {
+  contributions: {
+    contributions: {
+      contributions_mixin_contribution?: z.infer<typeof ContributionsMixinContributionSchema>[]
+      href?: string
+    }
+    contributions_mixin_contribution?: z.infer<typeof ContributionsMixinContributionSchema>[]
+    href?: string
+  }
+}
+
+const ContributionsMixinSchema: z.ZodType<ContributionsMixinType> = z
   .strictObject({
     contributions: z
       .strictObject({
@@ -924,6 +602,20 @@ const ContributionsMixinSchema = z
 const EmbargoedSchema = z.enum(['true', 'false']).openapi('Embargoed')
 
 const ExpectedChildCountSchema = z.int().openapi('ExpectedChildCount')
+
+const ReferenceAttributesSchema = z
+  .strictObject({ href: z.string(), result_type: z.string() })
+  .openapi({ required: ['href', 'result_type'] })
+  .openapi('ReferenceAttributes')
+
+const ReferenceSchema = ReferenceAttributesSchema.and(
+  z
+    .looseObject({
+      href_deprecated: z.boolean().exactOptional(),
+      result_type_deprecated: z.boolean().exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('Reference')
 
 const GenreSchema = z
   .strictObject({
@@ -1107,6 +799,8 @@ const SynopsesSchema = z
   .openapi({ required: [] })
   .openapi('Synopses')
 
+const TitleSchema = z.string().openapi('Title')
+
 const UriSchema = z.string().openapi('Uri')
 
 const RelatedLinkSchema = z
@@ -1154,35 +848,34 @@ const ReleaseDateGroupSchema = z
 
 const UpdatedTimeSchema = z.iso.datetime({ offset: true }).openapi('UpdatedTime')
 
-const BrandSchema = z
-  .strictObject({
-    alternate_images_mixin: AlternateImagesMixinSchema.exactOptional(),
-    availability_mixin: AvailabilityMixinSchema.exactOptional(),
-    contributions_mixin: ContributionsMixinSchema.exactOptional(),
-    embargoed: EmbargoedSchema,
-    expected_child_count: ExpectedChildCountSchema.exactOptional(),
-    franchises: ReferenceSchema.exactOptional(),
-    genre_groupings: GenreGroupingsTypeSchema.exactOptional(),
-    identifiers: IdentifiersSchema.exactOptional(),
-    image_link: ImageLinkSchema.exactOptional(),
-    images_mixin: ImagesMixinSchema.exactOptional(),
-    is_embeddable: IsEmbeddableSchema.exactOptional(),
-    items_for: ReferenceSchema.exactOptional(),
-    master_brand_link: MasterBrandLinkSchema.exactOptional(),
-    partner: PidSchema,
-    pid: PidSchema,
-    previous_next_mixin: PreviousNextMixinSchema.exactOptional(),
-    programme_formats: ProgrammeFormatsSchema.exactOptional(),
-    programme_type: ProgrammeTypeSchema.exactOptional(),
-    related_links: RelatedLinksSchema.exactOptional(),
-    release_date_group: ReleaseDateGroupSchema.exactOptional(),
-    synopses: SynopsesSchema.exactOptional(),
-    title: TitleSchema.exactOptional(),
-    updated_time: UpdatedTimeSchema,
-    uri: UriSchema.exactOptional(),
-  })
-  .openapi({ required: ['pid', 'partner', 'updated_time', 'embargoed'] })
-  .openapi('Brand')
+type BrandType = {
+  alternate_images_mixin?: z.infer<typeof AlternateImagesMixinSchema>
+  availability_mixin?: z.infer<typeof AvailabilityMixinSchema>
+  contributions_mixin?: z.infer<typeof ContributionsMixinSchema>
+  embargoed: z.infer<typeof EmbargoedSchema>
+  expected_child_count?: z.infer<typeof ExpectedChildCountSchema>
+  franchises?: z.infer<typeof ReferenceSchema>
+  genre_groupings?: z.infer<typeof GenreGroupingsTypeSchema>
+  identifiers?: z.infer<typeof IdentifiersSchema>
+  image_link?: z.infer<typeof ImageLinkSchema>
+  images_mixin?: z.infer<typeof ImagesMixinSchema>
+  is_embeddable?: z.infer<typeof IsEmbeddableSchema>
+  items_for?: z.infer<typeof ReferenceSchema>
+  master_brand_link?: z.infer<typeof MasterBrandLinkSchema>
+  partner: z.infer<typeof PidSchema>
+  pid: z.infer<typeof PidSchema>
+  previous_next_mixin?: z.infer<typeof PreviousNextMixinSchema>
+  programme_formats?: z.infer<typeof ProgrammeFormatsSchema>
+  programme_type?: z.infer<typeof ProgrammeTypeSchema>
+  related_links?: z.infer<typeof RelatedLinksSchema>
+  release_date_group?: z.infer<typeof ReleaseDateGroupSchema>
+  synopses?: z.infer<typeof SynopsesSchema>
+  title?: z.infer<typeof TitleSchema>
+  updated_time: z.infer<typeof UpdatedTimeSchema>
+  uri?: z.infer<typeof UriSchema>
+}
+
+const CatalogueNumberSchema = z.string().min(1).max(32).openapi('CatalogueNumber')
 
 const IdSchema = z
   .strictObject({
@@ -1197,65 +890,6 @@ const IdsSchema = z
   .strictObject({ id: z.array(IdSchema).min(1) })
   .openapi({ required: ['id'] })
   .openapi('Ids')
-
-const IsAudioDescribedSchema = z.boolean().openapi('IsAudioDescribed')
-
-const IsBlankedSchema = z.boolean().openapi('IsBlanked')
-
-const IsCriticalSchema = z.boolean().openapi('IsCritical')
-
-const IsRepeatSchema = z.boolean().openapi('IsRepeat')
-
-const IsSimulcastSchema = z.boolean().openapi('IsSimulcast')
-
-const TxTimeSchema = z
-  .strictObject({
-    credits_showing: z.iso.datetime({ offset: true }).exactOptional(),
-    end: z.iso.datetime({ offset: true }).exactOptional(),
-    start: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TxTime')
-
-const BroadcastSchema = z
-  .strictObject({
-    ancestor_titles: AncestorTitlesSchema.exactOptional(),
-    ancestors_titles: AncestorsTitlesSchema.exactOptional(),
-    broadcast_of: z.array(PidReferenceSchema).exactOptional(),
-    identifiers: IdentifiersSchema.exactOptional(),
-    ids: IdsSchema.exactOptional(),
-    image_link: ImageLinkSchema.exactOptional(),
-    images_mixin: ImagesMixinSchema.exactOptional(),
-    is_audio_described: IsAudioDescribedSchema.exactOptional(),
-    is_blanked: IsBlankedSchema.exactOptional(),
-    is_critical: IsCriticalSchema.exactOptional(),
-    is_repeat: IsRepeatSchema.exactOptional(),
-    is_simulcast: IsSimulcastSchema.exactOptional(),
-    partner: PidSchema,
-    pid: PidSchema,
-    published_time: BroadcastTimeSchema.exactOptional(),
-    service: ServiceReferenceSchema.exactOptional(),
-    tx_time: TxTimeSchema.exactOptional(),
-    updated_time: UpdatedTimeSchema.exactOptional(),
-  })
-  .openapi({ required: ['pid', 'partner'] })
-  .openapi('Broadcast')
-
-const BroadcastOfSchema = PidReferenceSchema.openapi('BroadcastOf')
-
-const SidSchema = z
-  .string()
-  .regex(/[a-z0-9A-Z_\.\-]+/)
-  .openapi('Sid')
-
-const BroadcasterSchema = z
-  .strictObject({ href: z.string(), result_type: z.string(), sid: SidSchema })
-  .openapi({ required: ['href', 'sid', 'result_type'] })
-  .openapi('Broadcaster')
-
-const CaptionSchema = z.string().openapi('Caption')
-
-const CatalogueNumberSchema = z.string().min(1).max(32).openapi('CatalogueNumber')
 
 const MusicCodeSchema = z.string().min(1).max(8).openapi('MusicCode')
 
@@ -1328,7 +962,34 @@ const TrackNumberSchema = z.string().min(1).max(8).openapi('TrackNumber')
 
 const TrackSideSchema = z.string().min(1).max(8).openapi('TrackSide')
 
-const ItemSchema = z
+type ItemType = {
+  catalogue_number?: z.infer<typeof CatalogueNumberSchema>
+  contributions_mixin?: z.infer<typeof ContributionsMixinSchema>
+  duration?: number
+  identifiers?: z.infer<typeof IdentifiersSchema>
+  ids?: z.infer<typeof IdsSchema>
+  images_mixin?: z.infer<typeof ImagesMixinSchema>
+  item_of?: z.infer<typeof ReferenceSchema>
+  music_code?: z.infer<typeof MusicCodeSchema>
+  offsets?: z.infer<typeof OffsetsSchema>
+  partner: z.infer<typeof PidSchema>
+  pid: z.infer<typeof PidSchema>
+  play_events?: z.infer<typeof PlayEventsSchema>
+  publisher?: z.infer<typeof PublisherSchema>
+  record_label?: z.infer<typeof RecordLabelSchema>
+  recording_date?: z.infer<typeof RecordingDateSchema>
+  release_title?: z.infer<typeof ReleaseTitleSchema>
+  snippet_url?: z.infer<typeof SnippetUrlSchema>
+  source_media?: z.infer<typeof SourceMediaSchema>
+  synopses?: z.infer<typeof SynopsesSchema>
+  title?: z.infer<typeof TitleSchema>
+  track_number?: z.infer<typeof TrackNumberSchema>
+  track_side?: z.infer<typeof TrackSideSchema>
+  type?: string
+  updated_time?: z.infer<typeof UpdatedTimeSchema>
+}
+
+const ItemSchema: z.ZodType<ItemType> = z
   .strictObject({
     catalogue_number: CatalogueNumberSchema.exactOptional(),
     contributions_mixin: ContributionsMixinSchema.exactOptional(),
@@ -1358,7 +1019,124 @@ const ItemSchema = z
   .openapi({ required: ['pid', 'partner'] })
   .openapi('Item')
 
-const ChapterSchema = ItemSchema.openapi('Chapter')
+type ChapterType = z.infer<typeof ItemSchema>
+
+const AdvertisingAllowedSchema = z
+  .string()
+  .regex(/[a-z0-9_]+/)
+  .openapi('AdvertisingAllowed')
+
+const ContainersTitleSchema = z.string().openapi('ContainersTitle')
+
+const PresentationTitleSchema = z.string().openapi('PresentationTitle')
+
+const AncestorTitlesSchema = z
+  .strictObject({
+    brand: z
+      .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
+      .exactOptional()
+      .openapi({ required: ['pid'] }),
+    episode: z
+      .strictObject({
+        brand: z
+          .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
+          .exactOptional()
+          .openapi({ required: ['pid'] }),
+        containers_title: ContainersTitleSchema.exactOptional(),
+        episode: z
+          .strictObject({
+            containers_title: ContainersTitleSchema.exactOptional(),
+            pid: PidSchema,
+            presentation_title: PresentationTitleSchema.exactOptional(),
+            title: TitleSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: ['pid'] }),
+        pid: PidSchema,
+        presentation_title: PresentationTitleSchema.exactOptional(),
+        series: z
+          .array(
+            z
+              .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
+              .openapi({ required: ['pid'] }),
+          )
+          .max(5)
+          .exactOptional(),
+        title: TitleSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: ['pid'] }),
+    series: z
+      .array(
+        z
+          .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
+          .openapi({ required: ['pid'] }),
+      )
+      .max(5)
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AncestorTitles')
+
+const AncestorsTitlesSchema = z
+  .strictObject({
+    brand: z
+      .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
+      .exactOptional()
+      .openapi({ required: ['pid'] }),
+    episode: z
+      .strictObject({
+        brand: z
+          .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
+          .exactOptional()
+          .openapi({ required: ['pid'] }),
+        containers_title: ContainersTitleSchema.exactOptional(),
+        episode: z
+          .strictObject({
+            containers_title: ContainersTitleSchema.exactOptional(),
+            pid: PidSchema,
+            presentation_title: PresentationTitleSchema.exactOptional(),
+            title: TitleSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: ['pid'] }),
+        pid: PidSchema,
+        presentation_title: PresentationTitleSchema.exactOptional(),
+        series: z
+          .array(
+            z
+              .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
+              .openapi({ required: ['pid'] }),
+          )
+          .max(5)
+          .exactOptional(),
+        title: TitleSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: ['pid'] }),
+    series: z
+      .array(
+        z
+          .strictObject({ pid: PidSchema, title: TitleSchema.exactOptional() })
+          .openapi({ required: ['pid'] }),
+      )
+      .max(5)
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AncestorsTitles')
+
+const CaptionSchema = z.string().openapi('Caption')
+
+const PidReferenceSchema = z
+  .strictObject({
+    href: z.string().exactOptional(),
+    pid: PidSchema,
+    position: z.int().exactOptional(),
+    result_type: z.string(),
+  })
+  .openapi({ required: ['pid', 'result_type'] })
+  .openapi('PidReference')
 
 const DeprecatedReferenceElementSchema = ReferenceAttributesSchema.and(
   DeprecationAttributesSchema,
@@ -1404,7 +1182,69 @@ const OriginalVersionDurationSchema = z
   .openapi({ required: [] })
   .openapi('OriginalVersionDuration')
 
-const VersionAvailabilitySchema = z
+const AvailableSimulcastsSchema: z.ZodType<AvailableSimulcastsType> = z
+  .strictObject({ available: z.int(), available_versions_element: AvailableVersionsElementSchema })
+  .openapi({ required: ['available_versions_element', 'available'] })
+  .openapi('AvailableSimulcasts')
+
+const AvailableVersionsSchema: z.ZodType<AvailableVersionsType> = z
+  .strictObject({ available: z.int(), available_versions_element: AvailableVersionsElementSchema })
+  .openapi({ required: ['available_versions_element', 'available'] })
+  .openapi('AvailableVersions')
+
+const AvailableWebcastsSchema: z.ZodType<AvailableWebcastsType> = z
+  .strictObject({ available: z.int(), available_versions_element: AvailableVersionsElementSchema })
+  .openapi({ required: ['available_versions_element', 'available'] })
+  .openapi('AvailableWebcasts')
+
+const AvailableMediaSetsSchema = z
+  .strictObject({
+    media_sets: z
+      .strictObject({
+        media_set: z
+          .array(
+            z
+              .strictObject({
+                '#text': z.string().exactOptional(),
+                media_sets: z
+                  .strictObject({
+                    media_set: z
+                      .array(
+                        z
+                          .strictObject({ '#text': z.string().exactOptional() })
+                          .openapi({ required: [] }),
+                      )
+                      .min(1),
+                  })
+                  .exactOptional()
+                  .openapi({ required: ['media_set'] }),
+              })
+              .openapi({ required: [] }),
+          )
+          .min(1),
+      })
+      .exactOptional()
+      .openapi({ required: ['media_set'] }),
+  })
+  .openapi({ required: [] })
+  .openapi('AvailableMediaSets')
+
+type VersionAvailabilityType = {
+  availability: {
+    availability: {
+      availability_end?: string
+      availability_start?: string
+      available_media_sets: z.infer<typeof AvailableMediaSetsSchema>
+      status?: string
+    }
+    availability_end?: string
+    availability_start?: string
+    available_media_sets: z.infer<typeof AvailableMediaSetsSchema>
+    status?: string
+  }
+}
+
+const VersionAvailabilitySchema: z.ZodType<VersionAvailabilityType> = z
   .strictObject({
     availability: z
       .strictObject({
@@ -1426,7 +1266,26 @@ const VersionAvailabilitySchema = z
   .openapi({ required: ['availability'] })
   .openapi('VersionAvailability')
 
-const VersionAvailabilityMixinSchema = z
+type VersionAvailabilityMixinType = {
+  version?: {
+    availabilities?: { version_availability: z.infer<typeof VersionAvailabilitySchema>[] }[]
+    competition_warning?: string
+    duration?: string
+    guidance_warnings?: z.infer<typeof GuidanceWarningsSchema>
+    pid?: z.infer<typeof PidSchema>
+    types: { type?: string[] }[]
+    version?: {
+      availabilities?: { version_availability: z.infer<typeof VersionAvailabilitySchema>[] }[]
+      competition_warning?: string
+      duration?: string
+      guidance_warnings?: z.infer<typeof GuidanceWarningsSchema>
+      pid?: z.infer<typeof PidSchema>
+      types: { type?: string[] }[]
+    }[]
+  }[]
+}
+
+const VersionAvailabilityMixinSchema: z.ZodType<VersionAvailabilityMixinType> = z
   .strictObject({
     version: z
       .array(
@@ -1496,12 +1355,24 @@ const VersionAvailabilityMixinSchema = z
   .openapi({ required: [] })
   .openapi('VersionAvailabilityMixin')
 
-const VersionsSchema = z
+type VersionsType = {
+  available: number
+  version_availability_mixin: z.infer<typeof VersionAvailabilityMixinSchema>
+}
+
+const VersionsSchema: z.ZodType<VersionsType> = z
   .strictObject({ available: z.int(), version_availability_mixin: VersionAvailabilityMixinSchema })
   .openapi({ required: ['version_availability_mixin', 'available'] })
   .openapi('Versions')
 
-const VersionsMixinSchema = z
+type VersionsMixinType = {
+  available_simulcasts?: z.infer<typeof AvailableSimulcastsSchema>
+  available_versions?: z.infer<typeof AvailableVersionsSchema>
+  available_webcasts?: z.infer<typeof AvailableWebcastsSchema>
+  versions?: z.infer<typeof VersionsSchema>[]
+}
+
+const VersionsMixinSchema: z.ZodType<VersionsMixinType> = z
   .strictObject({
     available_simulcasts: AvailableSimulcastsSchema.exactOptional(),
     available_versions: AvailableVersionsSchema.exactOptional(),
@@ -1511,7 +1382,583 @@ const VersionsMixinSchema = z
   .openapi({ required: [] })
   .openapi('VersionsMixin')
 
-const ClipSchema = z
+type ClipType = {
+  advertising_allowed: z.infer<typeof AdvertisingAllowedSchema>
+  alternate_images_mixin?: z.infer<typeof AlternateImagesMixinSchema>
+  ancestor_titles?: z.infer<typeof AncestorTitlesSchema>
+  ancestors?: z.infer<typeof ReferenceSchema>
+  ancestors_titles?: z.infer<typeof AncestorsTitlesSchema>
+  availability_mixin?: z.infer<typeof AvailabilityMixinSchema>
+  caption?: z.infer<typeof CaptionSchema>
+  clip_of?: z.infer<typeof PidReferenceSchema>
+  contributions_mixin?: z.infer<typeof ContributionsMixinSchema>
+  embargoed: z.infer<typeof EmbargoedSchema>
+  genre_groupings?: z.infer<typeof GenreGroupingsTypeSchema>
+  genre_groups?: z.infer<typeof GenreGroupsTypeSchema>
+  identifiers?: z.infer<typeof IdentifiersSchema>
+  image_link?: z.infer<typeof ImageLinkSchema>
+  images_mixin?: z.infer<typeof ImagesMixinSchema>
+  is_embeddable?: z.infer<typeof IsEmbeddableSchema>
+  items_for?: z.infer<typeof ReferenceSchema>
+  master_brand_link?: z.infer<typeof MasterBrandLinkSchema>
+  media_type?: z.infer<typeof MediaTypeSchema>
+  original_version_duration?: z.infer<typeof OriginalVersionDurationSchema>
+  partner: z.infer<typeof PidSchema>
+  pid: z.infer<typeof PidSchema>
+  previous_next_mixin?: z.infer<typeof PreviousNextMixinSchema>
+  programme_formats?: z.infer<typeof ProgrammeFormatsSchema>
+  related_links?: z.infer<typeof RelatedLinksSchema>
+  release_date_group?: z.infer<typeof ReleaseDateGroupSchema>
+  synopses?: z.infer<typeof SynopsesSchema>
+  title?: z.infer<typeof TitleSchema>
+  updated_time: z.infer<typeof UpdatedTimeSchema>
+  uri?: z.infer<typeof UriSchema>
+  versions_mixin?: z.infer<typeof VersionsMixinSchema>
+}
+
+const ForProgrammeSchema = z
+  .strictObject({ href: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ForProgramme')
+
+const ForProgrammesSchema = z
+  .strictObject({ for_programme: z.array(ForProgrammeSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ForProgrammes')
+
+const ScheduledSchema = z
+  .strictObject({
+    end: z.iso.datetime({ offset: true }).exactOptional(),
+    start: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Scheduled')
+
+const UrlKeySchema = z.string().openapi('UrlKey')
+
+type GroupBodyType = {
+  alternate_images_mixin?: z.infer<typeof AlternateImagesMixinSchema>
+  embargoed: z.infer<typeof EmbargoedSchema>
+  for_programmes?: z.infer<typeof ForProgrammesSchema>
+  identifiers?: z.infer<typeof IdentifiersSchema>
+  ids?: z.infer<typeof IdsSchema>
+  images_mixin?: z.infer<typeof ImagesMixinSchema>
+  master_brand_link?: z.infer<typeof MasterBrandLinkSchema>
+  partner: z.infer<typeof PidSchema>
+  pid: z.infer<typeof PidSchema>
+  related_links?: z.infer<typeof RelatedLinksSchema>
+  scheduled?: z.infer<typeof ScheduledSchema>
+  synopses?: z.infer<typeof SynopsesSchema>
+  title?: z.infer<typeof TitleSchema>
+  updated_time: z.infer<typeof UpdatedTimeSchema>
+  url_key?: z.infer<typeof UrlKeySchema>
+}
+
+const GroupBodySchema: z.ZodType<GroupBodyType> = z
+  .strictObject({
+    alternate_images_mixin: AlternateImagesMixinSchema.exactOptional(),
+    embargoed: EmbargoedSchema,
+    for_programmes: ForProgrammesSchema.exactOptional(),
+    identifiers: IdentifiersSchema.exactOptional(),
+    ids: IdsSchema.exactOptional(),
+    images_mixin: ImagesMixinSchema.exactOptional(),
+    master_brand_link: MasterBrandLinkSchema.exactOptional(),
+    partner: PidSchema,
+    pid: PidSchema,
+    related_links: RelatedLinksSchema.exactOptional(),
+    scheduled: ScheduledSchema.exactOptional(),
+    synopses: SynopsesSchema.exactOptional(),
+    title: TitleSchema.exactOptional(),
+    updated_time: UpdatedTimeSchema,
+    url_key: UrlKeySchema.exactOptional(),
+  })
+  .openapi({ required: ['pid', 'embargoed', 'partner', 'updated_time'] })
+  .openapi('GroupBody')
+
+type CollectionType = z.infer<typeof GroupBodySchema>
+
+const HasGuidanceSchema = z.boolean().openapi('HasGuidance')
+
+const IsStackedSchema = z.boolean().openapi('IsStacked')
+
+type EpisodeType = {
+  advertising_allowed: z.infer<typeof AdvertisingAllowedSchema>
+  alternate_images_mixin?: z.infer<typeof AlternateImagesMixinSchema>
+  ancestor_titles?: z.infer<typeof AncestorTitlesSchema>
+  ancestors?: z.infer<typeof ReferenceSchema>
+  ancestors_titles?: z.infer<typeof AncestorsTitlesSchema>
+  availability_mixin?: z.infer<typeof AvailabilityMixinSchema>
+  contributions_mixin?: z.infer<typeof ContributionsMixinSchema>
+  embargoed: z.infer<typeof EmbargoedSchema>
+  episode_of?: z.infer<typeof PidReferenceSchema>
+  genre_groupings?: z.infer<typeof GenreGroupingsTypeSchema>
+  genre_groups?: z.infer<typeof GenreGroupsTypeSchema>
+  has_guidance?: z.infer<typeof HasGuidanceSchema>
+  identifiers?: z.infer<typeof IdentifiersSchema>
+  image_link?: z.infer<typeof ImageLinkSchema>
+  images_mixin?: z.infer<typeof ImagesMixinSchema>
+  is_embeddable?: z.infer<typeof IsEmbeddableSchema>
+  is_stacked?: z.infer<typeof IsStackedSchema>
+  items_for?: z.infer<typeof ReferenceSchema>
+  master_brand_link?: z.infer<typeof MasterBrandLinkSchema>
+  media_type?: z.infer<typeof MediaTypeSchema>
+  original_version_duration?: z.infer<typeof OriginalVersionDurationSchema>
+  partner: z.infer<typeof PidSchema>
+  pid: z.infer<typeof PidSchema>
+  presentation_title?: z.infer<typeof PresentationTitleSchema>
+  previous_next_mixin?: z.infer<typeof PreviousNextMixinSchema>
+  programme_formats?: z.infer<typeof ProgrammeFormatsSchema>
+  programme_type?: z.infer<typeof ProgrammeTypeSchema>
+  related_links?: z.infer<typeof RelatedLinksSchema>
+  release_date_group?: z.infer<typeof ReleaseDateGroupSchema>
+  synopses?: z.infer<typeof SynopsesSchema>
+  title?: z.infer<typeof TitleSchema>
+  updated_time: z.infer<typeof UpdatedTimeSchema>
+  uri?: z.infer<typeof UriSchema>
+  versions_mixin?: z.infer<typeof VersionsMixinSchema>
+}
+
+const DeprecatedSchema = z
+  .strictObject({
+    deprecated_since: z.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/),
+    name: z.string(),
+    replaced_by: z.string().exactOptional(),
+    replacement_type: z.string().exactOptional(),
+    type: z.string(),
+  })
+  .openapi({ required: ['name', 'type', 'deprecated_since'] })
+  .openapi('Deprecated')
+
+const DeprecationsSchema = z
+  .strictObject({ deprecated: z.array(DeprecatedSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Deprecations')
+
+const ReleaseStatusTypeSchema = z
+  .enum(['alpha', 'beta', 'supported', 'deprecated'])
+  .openapi('ReleaseStatusType')
+
+const OptionSchema = z
+  .strictObject({
+    href: z.string().exactOptional(),
+    release_status: ReleaseStatusTypeSchema.exactOptional(),
+    title: z.string(),
+    value: z.string(),
+  })
+  .openapi({ required: ['value', 'title'] })
+  .openapi('Option')
+
+const ProhibitsSchema = z
+  .strictObject({
+    filter: z
+      .array(z.strictObject({ name: z.string() }).openapi({ required: ['name'] }))
+      .exactOptional(),
+    mixin: z
+      .array(
+        z
+          .strictObject({
+            filter: z
+              .array(z.strictObject({ name: z.string() }).openapi({ required: ['name'] }))
+              .exactOptional(),
+            mixin: z
+              .array(z.strictObject({ name: z.string() }).openapi({ required: ['name'] }))
+              .exactOptional(),
+            name: z.string(),
+          })
+          .openapi({ required: ['name'] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Prohibits')
+
+const FilterSchema = z
+  .strictObject({
+    default: z.string().exactOptional(),
+    depends_on: z.string().exactOptional(),
+    deprecated: z.boolean().exactOptional(),
+    deprecated_since: z
+      .string()
+      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
+      .exactOptional(),
+    guaranteed_until: z
+      .string()
+      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
+      .exactOptional(),
+    max_value: z.int().exactOptional(),
+    min_value: z.int().exactOptional(),
+    multiple_values: z.boolean().exactOptional(),
+    name: z.string(),
+    option: z.array(OptionSchema).exactOptional(),
+    prefer: z.string().exactOptional(),
+    prohibits: z.array(ProhibitsSchema).exactOptional(),
+    release_status: ReleaseStatusTypeSchema.exactOptional(),
+    replaced_by: z.string().exactOptional(),
+    required: z.boolean().exactOptional(),
+    title: z.string(),
+    type: z.string(),
+  })
+  .openapi({ required: ['name', 'title', 'type'] })
+  .openapi('Filter')
+
+type UnstableFiltersType = { filter?: z.infer<typeof FilterSchema>[] }
+
+const UnstableFiltersSchema: z.ZodType<UnstableFiltersType> = z
+  .strictObject({ filter: z.array(FilterSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UnstableFilters')
+
+type FiltersType = {
+  filter?: z.infer<typeof FilterSchema>[]
+  unstable_filters?: z.infer<typeof UnstableFiltersSchema>
+}
+
+const FiltersSchema: z.ZodType<FiltersType> = z
+  .strictObject({
+    filter: z.array(FilterSchema).exactOptional(),
+    unstable_filters: UnstableFiltersSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Filters')
+
+const AffectedBySchema = z
+  .strictObject({
+    filter: z
+      .array(
+        z
+          .strictObject({
+            description: z.string(),
+            filter: z
+              .array(
+                z
+                  .strictObject({ description: z.string(), name: z.string() })
+                  .openapi({ required: ['name', 'description'] }),
+              )
+              .exactOptional(),
+            name: z.string(),
+          })
+          .openapi({ required: ['name', 'description'] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AffectedBy')
+
+const DependencyOnSchema = z
+  .strictObject({ filter: z.string().exactOptional(), value: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('DependencyOn')
+
+const MixinSchema = z
+  .strictObject({
+    affected_by: z.array(AffectedBySchema).exactOptional(),
+    dependency_on: z.array(DependencyOnSchema).exactOptional(),
+    depends_on: z.string().exactOptional(),
+    deprecated: z.boolean().exactOptional(),
+    deprecated_since: z
+      .string()
+      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
+      .exactOptional(),
+    guaranteed_until: z
+      .string()
+      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
+      .exactOptional(),
+    href: z.string().exactOptional(),
+    name: z.string(),
+    prohibits: z.array(ProhibitsSchema).exactOptional(),
+    release_status: ReleaseStatusTypeSchema.exactOptional(),
+    replaced_by: z.string().exactOptional(),
+    title: z.string(),
+  })
+  .openapi({ required: ['name', 'title'] })
+  .openapi('Mixin')
+
+type UnstableMixinsType = { mixin?: z.infer<typeof MixinSchema>[] }
+
+const UnstableMixinsSchema: z.ZodType<UnstableMixinsType> = z
+  .strictObject({ mixin: z.array(MixinSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UnstableMixins')
+
+type MixinsType = {
+  mixin?: z.infer<typeof MixinSchema>[]
+  unstable_mixins?: z.infer<typeof UnstableMixinsSchema>
+}
+
+const MixinsSchema: z.ZodType<MixinsType> = z
+  .strictObject({
+    mixin: z.array(MixinSchema).exactOptional(),
+    unstable_mixins: UnstableMixinsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Mixins')
+
+const SortDirectionSchema = z
+  .strictObject({ href: z.string(), is_default: z.string(), name: z.string(), value: z.string() })
+  .openapi({ required: ['name', 'value', 'is_default', 'href'] })
+  .openapi('SortDirection')
+
+const SortSchema = z
+  .strictObject({
+    deprecated: z.boolean().exactOptional(),
+    deprecated_since: z
+      .string()
+      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
+      .exactOptional(),
+    guaranteed_until: z
+      .string()
+      .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
+      .exactOptional(),
+    is_default: z.string().exactOptional(),
+    name: z.string(),
+    release_status: ReleaseStatusTypeSchema.exactOptional(),
+    replaced_by: z.string().exactOptional(),
+    sort_direction: z.array(SortDirectionSchema).exactOptional(),
+    title: z.string(),
+  })
+  .openapi({ required: ['name', 'title'] })
+  .openapi('Sort')
+
+const UnstableSortsSchema = z
+  .strictObject({ sort: z.array(SortSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UnstableSorts')
+
+const SortsSchema = z
+  .strictObject({
+    sort: z.array(SortSchema).exactOptional(),
+    unstable_sorts: UnstableSortsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Sorts')
+
+type FeedType = {
+  deprecations?: z.infer<typeof DeprecationsSchema>
+  filters?: z.infer<typeof FiltersSchema>
+  href: string
+  mixins?: z.infer<typeof MixinsSchema>
+  name: string
+  rel: string
+  release_status?: z.infer<typeof ReleaseStatusTypeSchema>
+  sorts?: z.infer<typeof SortsSchema>
+  title: string
+}
+
+const FeedSchema: z.ZodType<FeedType> = z
+  .strictObject({
+    deprecations: DeprecationsSchema.exactOptional(),
+    filters: FiltersSchema.exactOptional(),
+    href: z.string(),
+    mixins: MixinsSchema.exactOptional(),
+    name: z.string(),
+    rel: z.string(),
+    release_status: ReleaseStatusTypeSchema.exactOptional(),
+    sorts: SortsSchema.exactOptional(),
+    title: z.string(),
+  })
+  .openapi({ required: ['href', 'name', 'rel', 'title'] })
+  .openapi('Feed')
+
+type FeedsType = {
+  deployment_root?: string
+  deprecations?: z.infer<typeof DeprecationsSchema>
+  feed?: z.infer<typeof FeedSchema>[]
+}
+
+type FranchiseType = z.infer<typeof GroupBodySchema>
+
+type GalleryType = z.infer<typeof GroupBodySchema>
+
+type HighlightType = z.infer<typeof ItemSchema>
+
+type MusicType = z.infer<typeof ItemSchema>
+
+const NextSchema = z
+  .strictObject({ href: z.string() })
+  .openapi({ required: ['href'] })
+  .openapi('Next')
+
+const PreviousSchema = z
+  .strictObject({ href: z.string() })
+  .openapi({ required: ['href'] })
+  .openapi('Previous')
+
+const PaginationSchema = z
+  .strictObject({ next: NextSchema.exactOptional(), previous: PreviousSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Pagination')
+
+const DateRangeSchema = z
+  .strictObject({
+    end: z.iso.datetime({ offset: true }).exactOptional(),
+    start: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DateRange')
+
+const ActualStartSchema = z.iso.datetime({ offset: true }).openapi('ActualStart')
+
+const MediaProfileGroupSchema = z
+  .strictObject({
+    '#text': z.string().exactOptional(),
+    context: z.string().exactOptional(),
+    pid: PidSchema.exactOptional(),
+    platform: z.string().exactOptional(),
+    territory: z.string().exactOptional(),
+    transport: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaProfileGroup')
+
+const MediaProfileGroupsSchema = z
+  .strictObject({ media_profile_group: z.array(MediaProfileGroupSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('MediaProfileGroups')
+
+const ServiceReferenceSchema = z
+  .strictObject({ href: z.string(), result_type: z.string(), sid: z.string() })
+  .openapi({ required: ['result_type', 'href', 'sid'] })
+  .openapi('ServiceReference')
+
+const AvailabilityDebugSchema = z
+  .strictObject({
+    availability_of: PidReferenceSchema,
+    media_profile_groups: MediaProfileGroupsSchema.exactOptional(),
+    service: ServiceReferenceSchema.exactOptional(),
+    territory: z.string().exactOptional(),
+  })
+  .openapi({ required: ['availability_of'] })
+  .openapi('AvailabilityDebug')
+
+const AvailabilityOfSchema = z
+  .strictObject({
+    href: z.string(),
+    pid: PidSchema,
+    result_type: z.string(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ required: ['result_type', 'pid', 'href'] })
+  .openapi('AvailabilityOf')
+
+const AvailabilityTypeSchema = z
+  .enum(['ondemand', 'simulcast', 'webcast'])
+  .openapi('AvailabilityType')
+
+const MediaSetSchema = z.string().openapi('MediaSet')
+
+const RevocationStatusSchema = z.string().openapi('RevocationStatus')
+
+const ScheduledTimeSchema = z
+  .strictObject({
+    end: z.iso.datetime({ offset: true }).exactOptional(),
+    start: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ScheduledTime')
+
+const AvailabilitySchema = z
+  .strictObject({
+    accurate_programme_time: DateRangeSchema.exactOptional(),
+    actual_start: ActualStartSchema.exactOptional(),
+    'availability-debug': AvailabilityDebugSchema.exactOptional(),
+    availability_of: z.array(AvailabilityOfSchema).exactOptional(),
+    availability_type: AvailabilityTypeSchema,
+    media_availability_time: DateRangeSchema.exactOptional(),
+    media_set: z.array(MediaSetSchema).exactOptional(),
+    revocation_status: RevocationStatusSchema.exactOptional(),
+    scheduled_time: ScheduledTimeSchema.exactOptional(),
+    status: StatusSchema,
+  })
+  .openapi({ required: ['status', 'availability_type'] })
+  .openapi('Availability')
+
+const BrandSchema: z.ZodType<BrandType> = z
+  .strictObject({
+    alternate_images_mixin: AlternateImagesMixinSchema.exactOptional(),
+    availability_mixin: AvailabilityMixinSchema.exactOptional(),
+    contributions_mixin: ContributionsMixinSchema.exactOptional(),
+    embargoed: EmbargoedSchema,
+    expected_child_count: ExpectedChildCountSchema.exactOptional(),
+    franchises: ReferenceSchema.exactOptional(),
+    genre_groupings: GenreGroupingsTypeSchema.exactOptional(),
+    identifiers: IdentifiersSchema.exactOptional(),
+    image_link: ImageLinkSchema.exactOptional(),
+    images_mixin: ImagesMixinSchema.exactOptional(),
+    is_embeddable: IsEmbeddableSchema.exactOptional(),
+    items_for: ReferenceSchema.exactOptional(),
+    master_brand_link: MasterBrandLinkSchema.exactOptional(),
+    partner: PidSchema,
+    pid: PidSchema,
+    previous_next_mixin: PreviousNextMixinSchema.exactOptional(),
+    programme_formats: ProgrammeFormatsSchema.exactOptional(),
+    programme_type: ProgrammeTypeSchema.exactOptional(),
+    related_links: RelatedLinksSchema.exactOptional(),
+    release_date_group: ReleaseDateGroupSchema.exactOptional(),
+    synopses: SynopsesSchema.exactOptional(),
+    title: TitleSchema.exactOptional(),
+    updated_time: UpdatedTimeSchema,
+    uri: UriSchema.exactOptional(),
+  })
+  .openapi({ required: ['pid', 'partner', 'updated_time', 'embargoed'] })
+  .openapi('Brand')
+
+const IsAudioDescribedSchema = z.boolean().openapi('IsAudioDescribed')
+
+const IsBlankedSchema = z.boolean().openapi('IsBlanked')
+
+const IsCriticalSchema = z.boolean().openapi('IsCritical')
+
+const IsRepeatSchema = z.boolean().openapi('IsRepeat')
+
+const IsSimulcastSchema = z.boolean().openapi('IsSimulcast')
+
+const BroadcastTimeSchema = DateRangeSchema.and(
+  z
+    .looseObject({
+      duration: z
+        .string()
+        .regex(
+          /^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$/,
+        )
+        .exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('BroadcastTime')
+
+const TxTimeSchema = z
+  .strictObject({
+    credits_showing: z.iso.datetime({ offset: true }).exactOptional(),
+    end: z.iso.datetime({ offset: true }).exactOptional(),
+    start: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TxTime')
+
+const BroadcastSchema = z
+  .strictObject({
+    ancestor_titles: AncestorTitlesSchema.exactOptional(),
+    ancestors_titles: AncestorsTitlesSchema.exactOptional(),
+    broadcast_of: z.array(PidReferenceSchema).exactOptional(),
+    identifiers: IdentifiersSchema.exactOptional(),
+    ids: IdsSchema.exactOptional(),
+    image_link: ImageLinkSchema.exactOptional(),
+    images_mixin: ImagesMixinSchema.exactOptional(),
+    is_audio_described: IsAudioDescribedSchema.exactOptional(),
+    is_blanked: IsBlankedSchema.exactOptional(),
+    is_critical: IsCriticalSchema.exactOptional(),
+    is_repeat: IsRepeatSchema.exactOptional(),
+    is_simulcast: IsSimulcastSchema.exactOptional(),
+    partner: PidSchema,
+    pid: PidSchema,
+    published_time: BroadcastTimeSchema.exactOptional(),
+    service: ServiceReferenceSchema.exactOptional(),
+    tx_time: TxTimeSchema.exactOptional(),
+    updated_time: UpdatedTimeSchema.exactOptional(),
+  })
+  .openapi({ required: ['pid', 'partner'] })
+  .openapi('Broadcast')
+
+const ClipSchema: z.ZodType<ClipType> = z
   .strictObject({
     advertising_allowed: AdvertisingAllowedSchema,
     alternate_images_mixin: AlternateImagesMixinSchema.exactOptional(),
@@ -1547,65 +1994,6 @@ const ClipSchema = z
   })
   .openapi({ required: ['pid', 'partner', 'updated_time', 'embargoed', 'advertising_allowed'] })
   .openapi('Clip')
-
-const ClipOfSchema = PidReferenceSchema.openapi('ClipOf')
-
-const CodeSchema = z.string().openapi('Code')
-
-const ForProgrammeSchema = z
-  .strictObject({ href: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ForProgramme')
-
-const ForProgrammesSchema = z
-  .strictObject({ for_programme: z.array(ForProgrammeSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ForProgrammes')
-
-const ScheduledSchema = z
-  .strictObject({
-    end: z.iso.datetime({ offset: true }).exactOptional(),
-    start: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Scheduled')
-
-const UrlKeySchema = z.string().openapi('UrlKey')
-
-const GroupBodySchema = z
-  .strictObject({
-    alternate_images_mixin: AlternateImagesMixinSchema.exactOptional(),
-    embargoed: EmbargoedSchema,
-    for_programmes: ForProgrammesSchema.exactOptional(),
-    identifiers: IdentifiersSchema.exactOptional(),
-    ids: IdsSchema.exactOptional(),
-    images_mixin: ImagesMixinSchema.exactOptional(),
-    master_brand_link: MasterBrandLinkSchema.exactOptional(),
-    partner: PidSchema,
-    pid: PidSchema,
-    related_links: RelatedLinksSchema.exactOptional(),
-    scheduled: ScheduledSchema.exactOptional(),
-    synopses: SynopsesSchema.exactOptional(),
-    title: TitleSchema.exactOptional(),
-    updated_time: UpdatedTimeSchema,
-    url_key: UrlKeySchema.exactOptional(),
-  })
-  .openapi({ required: ['pid', 'embargoed', 'partner', 'updated_time'] })
-  .openapi('GroupBody')
-
-const CollectionSchema = GroupBodySchema.openapi('Collection')
-
-const CompetitionWarningSchema = z.boolean().openapi('CompetitionWarning')
-
-const ContextSchema = z
-  .strictObject({
-    cascades_to_descendants: z.boolean().exactOptional(),
-    href: z.string().exactOptional(),
-    pid: PidSchema,
-    result_type: z.string(),
-  })
-  .openapi({ required: ['pid', 'result_type'] })
-  .openapi('Context')
 
 const ContributorNameSchema = z
   .strictObject({
@@ -1653,55 +2041,7 @@ const ContributorSchema = z
   .openapi({ required: ['pid', 'partner'] })
   .openapi('Contributor')
 
-const CreditsTimeSchema = z
-  .strictObject({
-    squeeze_end: z.iso.datetime({ offset: true }).exactOptional(),
-    squeeze_start: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreditsTime')
-
-const DatumSchema = z.string().openapi('Datum')
-
-const DataSchema = z
-  .strictObject({ datum: DatumSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Data')
-
-const DateRange2Schema = DateRangeSchema.openapi('DateRange2')
-
-const DeprecatedSchema = z
-  .strictObject({
-    deprecated_since: z.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/),
-    name: z.string(),
-    replaced_by: z.string().exactOptional(),
-    replacement_type: z.string().exactOptional(),
-    type: z.string(),
-  })
-  .openapi({ required: ['name', 'type', 'deprecated_since'] })
-  .openapi('Deprecated')
-
-const DeprecationsSchema = z
-  .strictObject({ deprecated: z.array(DeprecatedSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Deprecations')
-
-const DescriptionSchema = z.string().openapi('Description')
-
-const DimensionsSchema = z
-  .strictObject({ height: z.int().exactOptional(), width: z.int().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Dimensions')
-
-const EndSchema = z.iso.datetime({ offset: true }).openapi('End')
-
-const EndTimeSchema = z.iso.datetime({ offset: true }).openapi('EndTime')
-
-const HasGuidanceSchema = z.boolean().openapi('HasGuidance')
-
-const IsStackedSchema = z.boolean().openapi('IsStacked')
-
-const EpisodeSchema = z
+const EpisodeSchema: z.ZodType<EpisodeType> = z
   .strictObject({
     advertising_allowed: AdvertisingAllowedSchema,
     alternate_images_mixin: AlternateImagesMixinSchema.exactOptional(),
@@ -1741,126 +2081,15 @@ const EpisodeSchema = z
   .openapi({ required: ['pid', 'partner', 'updated_time', 'embargoed', 'advertising_allowed'] })
   .openapi('Episode')
 
-const EpisodeOfSchema = PidReferenceSchema.openapi('EpisodeOf')
-
-const ErrorNameSchema = z.string().openapi('ErrorName')
-
-const ExprSchema = z.string().openapi('Expr')
-
-const FormatStringSchema = z.string().openapi('FormatString')
-
-const MessageSchema = z.string().openapi('Message')
-
-const RetryableSchema = z.boolean().openapi('Retryable')
-
-const XqueryVersionSchema = z
-  .enum(['1.0-ml', '0.9-ml', '1.0', 'XSLT'])
-  .openapi({ description: 'The XQuery language version.' })
-  .openapi('XqueryVersion')
-
-const ErrorSchema = z
-  .strictObject({
-    code: CodeSchema,
-    data: DataSchema,
-    'error-name': ErrorNameSchema,
-    expr: ExprSchema,
-    'format-string': FormatStringSchema,
-    message: MessageSchema,
-    retryable: RetryableSchema,
-    'xquery-version': XqueryVersionSchema,
-  })
-  .openapi({
-    required: [
-      'code',
-      'error-name',
-      'xquery-version',
-      'message',
-      'format-string',
-      'retryable',
-      'expr',
-      'data',
-    ],
-  })
-  .openapi('Error')
-
-const ErrorsSchema = z
-  .strictObject({ error: ErrorSchema.exactOptional() })
+const DimensionsSchema = z
+  .strictObject({ height: z.int().exactOptional(), width: z.int().exactOptional() })
   .openapi({ required: [] })
-  .openapi('Errors')
-
-const FiltersSchema: z.ZodType<FiltersType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        filter: z.array(FilterSchema).exactOptional(),
-        unstable_filters: UnstableFiltersSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Filters')
-
-const MixinsSchema: z.ZodType<MixinsType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        mixin: z.array(MixinSchema).exactOptional(),
-        unstable_mixins: UnstableMixinsSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Mixins')
-
-const SortsSchema: z.ZodType<SortsType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        sort: z.array(SortSchema).exactOptional(),
-        unstable_sorts: UnstableSortsSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Sorts')
-
-const FeedSchema = z
-  .strictObject({
-    deprecations: DeprecationsSchema.exactOptional(),
-    filters: FiltersSchema.exactOptional(),
-    href: z.string(),
-    mixins: MixinsSchema.exactOptional(),
-    name: z.string(),
-    rel: z.string(),
-    release_status: ReleaseStatusTypeSchema.exactOptional(),
-    sorts: SortsSchema.exactOptional(),
-    title: z.string(),
-  })
-  .openapi({ required: ['href', 'name', 'rel', 'title'] })
-  .openapi('Feed')
-
-const FeedsSchema = z
-  .strictObject({
-    deployment_root: z.string().exactOptional(),
-    deprecations: DeprecationsSchema.exactOptional(),
-    feed: z.array(FeedSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Feeds')
+  .openapi('Dimensions')
 
 const FocusPointSchema = z
   .strictObject({ x: z.int().exactOptional(), y: z.int().exactOptional() })
   .openapi({ required: [] })
   .openapi('FocusPoint')
-
-const FranchiseSchema = GroupBodySchema.openapi('Franchise')
-
-const FranchisesSchema = ReferenceSchema.openapi('Franchises')
-
-const GallerySchema = GroupBodySchema.openapi('Gallery')
-
-const GenreGroupingsSchema = GenreGroupingsTypeSchema.openapi('GenreGroupings')
-
-const GenreGroupsSchema = GenreGroupsTypeSchema.openapi('GenreGroups')
-
-const HighlightSchema = ItemSchema.openapi('Highlight')
 
 const SizeSchema = z
   .strictObject({ units: z.string().exactOptional() })
@@ -1894,18 +2123,6 @@ const ImageSchema = z
   })
   .openapi({ required: ['pid', 'embargoed', 'partner'] })
   .openapi('Image')
-
-const IsConcreteSchema = z.boolean().openapi('IsConcrete')
-
-const IsDownloadableSchema = z.boolean().openapi('IsDownloadable')
-
-const IsSignedSchema = z.boolean().openapi('IsSigned')
-
-const IsStreamableSchema = z.boolean().openapi('IsStreamable')
-
-const ItemOfSchema = ReferenceSchema.openapi('ItemOf')
-
-const ItemsForSchema = ReferenceSchema.openapi('ItemsFor')
 
 const NameSchema = z.string().openapi('Name')
 
@@ -1945,24 +2162,17 @@ const MasterBrandSchema = z
   .openapi({ required: ['mid', 'partner'] })
   .openapi('MasterBrand')
 
-const MediaAvailabilityTimeSchema = DateRangeSchema.openapi('MediaAvailabilityTime')
+const ContextSchema = z
+  .strictObject({
+    cascades_to_descendants: z.boolean().exactOptional(),
+    href: z.string().exactOptional(),
+    pid: PidSchema,
+    result_type: z.string(),
+  })
+  .openapi({ required: ['pid', 'result_type'] })
+  .openapi('Context')
 
-const MusicSchema = ItemSchema.openapi('Music')
-
-const NextSchema = z
-  .strictObject({ href: z.string() })
-  .openapi({ required: ['href'] })
-  .openapi('Next')
-
-const PreviousSchema = z
-  .strictObject({ href: z.string() })
-  .openapi({ required: ['href'] })
-  .openapi('Previous')
-
-const PaginationSchema = z
-  .strictObject({ next: NextSchema.exactOptional(), previous: PreviousSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Pagination')
+const EndTimeSchema = z.iso.datetime({ offset: true }).openapi('EndTime')
 
 const PrioritySchema = z.int().openapi('Priority')
 
@@ -1997,7 +2207,37 @@ const PromotionSchema = z
   .openapi({ required: ['pid', 'partner', 'updated_time'] })
   .openapi('Promotion')
 
-const SeriesSchema = z
+type SeriesType = {
+  alternate_images_mixin?: z.infer<typeof AlternateImagesMixinSchema>
+  ancestor_titles?: z.infer<typeof AncestorTitlesSchema>
+  ancestors?: z.infer<typeof ReferenceSchema>
+  ancestors_titles?: z.infer<typeof AncestorsTitlesSchema>
+  availability_mixin?: z.infer<typeof AvailabilityMixinSchema>
+  contributions_mixin?: z.infer<typeof ContributionsMixinSchema>
+  embargoed: z.infer<typeof EmbargoedSchema>
+  expected_child_count?: z.infer<typeof ExpectedChildCountSchema>
+  genre_groupings?: z.infer<typeof GenreGroupingsTypeSchema>
+  identifiers?: z.infer<typeof IdentifiersSchema>
+  image_link?: z.infer<typeof ImageLinkSchema>
+  images_mixin?: z.infer<typeof ImagesMixinSchema>
+  is_embeddable?: z.infer<typeof IsEmbeddableSchema>
+  items_for?: z.infer<typeof ReferenceSchema>
+  master_brand_link?: z.infer<typeof MasterBrandLinkSchema>
+  partner: z.infer<typeof PidSchema>
+  pid: z.infer<typeof PidSchema>
+  previous_next_mixin?: z.infer<typeof PreviousNextMixinSchema>
+  programme_formats?: z.infer<typeof ProgrammeFormatsSchema>
+  programme_type?: z.infer<typeof ProgrammeTypeSchema>
+  related_links?: z.infer<typeof RelatedLinksSchema>
+  release_date_group?: z.infer<typeof ReleaseDateGroupSchema>
+  series_of?: z.infer<typeof PidReferenceSchema>
+  synopses?: z.infer<typeof SynopsesSchema>
+  title?: z.infer<typeof TitleSchema>
+  updated_time: z.infer<typeof UpdatedTimeSchema>
+  uri?: z.infer<typeof UriSchema>
+}
+
+const SeriesSchema: z.ZodType<SeriesType> = z
   .strictObject({
     alternate_images_mixin: AlternateImagesMixinSchema.exactOptional(),
     ancestor_titles: AncestorTitlesSchema.exactOptional(),
@@ -2030,7 +2270,20 @@ const SeriesSchema = z
   .openapi({ required: ['pid', 'partner', 'updated_time', 'embargoed'] })
   .openapi('Series')
 
+const DescriptionSchema = z.string().openapi('Description')
+
+const IsConcreteSchema = z.boolean().openapi('IsConcrete')
+
+const IsDownloadableSchema = z.boolean().openapi('IsDownloadable')
+
+const IsStreamableSchema = z.boolean().openapi('IsStreamable')
+
 const RegionSchema = z.string().openapi('Region')
+
+const SidSchema = z
+  .string()
+  .regex(/[a-z0-9A-Z_\.\-]+/)
+  .openapi('Sid')
 
 const ServiceSchema = z
   .strictObject({
@@ -2052,6 +2305,8 @@ const ServiceSchema = z
   })
   .openapi({ required: ['sid', 'partner'] })
   .openapi('Service')
+
+const CompetitionWarningSchema = z.boolean().openapi('CompetitionWarning')
 
 const TypesWithIdSchema = z
   .strictObject({
@@ -2135,7 +2390,36 @@ const WarningsSchema = z
   .openapi({ required: [] })
   .openapi('Warnings')
 
-const VersionGroupSchema = z
+type VersionGroupType = {
+  version: {
+    aspect_ratio?: string
+    competition_warning?: z.infer<typeof CompetitionWarningSchema>
+    duration?: string
+    identifiers?: z.infer<typeof IdentifiersSchema>
+    ids?: z.infer<typeof IdsSchema>
+    pid: z.infer<typeof PidSchema>
+    types_with_id?: z.infer<typeof TypesWithIdSchema>
+    updated_time: z.infer<typeof UpdatedTimeSchema>
+    version: {
+      aspect_ratio?: string
+      competition_warning?: z.infer<typeof CompetitionWarningSchema>
+      duration?: string
+      identifiers?: z.infer<typeof IdentifiersSchema>
+      ids?: z.infer<typeof IdsSchema>
+      pid: z.infer<typeof PidSchema>
+      types_with_id?: z.infer<typeof TypesWithIdSchema>
+      updated_time: z.infer<typeof UpdatedTimeSchema>
+      version_of?: z.infer<typeof PidReferenceSchema>
+      version_types_with_id?: z.infer<typeof VersionTypesWithIdSchema>
+      warnings?: z.infer<typeof WarningsSchema>
+    }
+    version_of?: z.infer<typeof PidReferenceSchema>
+    version_types_with_id?: z.infer<typeof VersionTypesWithIdSchema>
+    warnings?: z.infer<typeof WarningsSchema>
+  }
+}
+
+const VersionGroupSchema: z.ZodType<VersionGroupType> = z
   .strictObject({
     version: z
       .strictObject({
@@ -2218,7 +2502,36 @@ const WindowSchema = z
   .openapi({ required: ['pid', 'partner'] })
   .openapi('Window')
 
-const ResultsSchema = z
+type ResultsType = {
+  availability?: z.infer<typeof AvailabilitySchema>
+  brand?: z.infer<typeof BrandSchema>
+  broadcast?: z.infer<typeof BroadcastSchema>
+  chapter?: z.infer<typeof ItemSchema>
+  clip?: z.infer<typeof ClipSchema>
+  collection?: z.infer<typeof GroupBodySchema>
+  contributor?: z.infer<typeof ContributorSchema>
+  episode?: z.infer<typeof EpisodeSchema>
+  franchise?: z.infer<typeof GroupBodySchema>
+  gallery?: z.infer<typeof GroupBodySchema>
+  highlight?: z.infer<typeof ItemSchema>
+  image?: z.infer<typeof ImageSchema>
+  master_brand?: z.infer<typeof MasterBrandSchema>
+  more_than?: number
+  music?: z.infer<typeof ItemSchema>
+  other?: z.infer<typeof ItemSchema>
+  page: number
+  page_size: number
+  promotion?: z.infer<typeof PromotionSchema>
+  season?: z.infer<typeof GroupBodySchema>
+  series?: z.infer<typeof SeriesSchema>
+  service?: z.infer<typeof ServiceSchema>
+  speech?: z.infer<typeof ItemSchema>
+  total?: number
+  version_group?: z.infer<typeof VersionGroupSchema>
+  window?: z.infer<typeof WindowSchema>
+}
+
+const ResultsSchema: z.ZodType<ResultsType> = z
   .strictObject({
     availability: AvailabilitySchema.exactOptional(),
     brand: BrandSchema.exactOptional(),
@@ -2250,7 +2563,156 @@ const ResultsSchema = z
   .openapi({ required: ['page', 'page_size'] })
   .openapi('Results')
 
-const NitroSchema = z
+type NitroType = {
+  deprecations?: z.infer<typeof DeprecationsSchema>
+  filters?: z.infer<typeof FiltersSchema>
+  mixins?: z.infer<typeof MixinsSchema>
+  pagination?: z.infer<typeof PaginationSchema>
+  results?: z.infer<typeof ResultsSchema>
+  sorts?: z.infer<typeof SortsSchema>
+}
+
+type OtherType = z.infer<typeof ItemSchema>
+
+type SeasonType = z.infer<typeof GroupBodySchema>
+
+type SpeechType = z.infer<typeof ItemSchema>
+
+const ErrorModelSchema = z
+  .object({
+    fault: z
+      .object({
+        detail: z
+          .object({ errorcode: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        faultString: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('ErrorModel')
+
+const AccurateProgrammeTimeSchema = DateRangeSchema.openapi('AccurateProgrammeTime')
+
+const AccurateTimeSchema = BroadcastTimeSchema.openapi('AccurateTime')
+
+const AncestorsSchema = ReferenceSchema.openapi('Ancestors')
+
+const BroadcastOfSchema = PidReferenceSchema.openapi('BroadcastOf')
+
+const BroadcasterSchema = z
+  .strictObject({ href: z.string(), result_type: z.string(), sid: SidSchema })
+  .openapi({ required: ['href', 'sid', 'result_type'] })
+  .openapi('Broadcaster')
+
+const ChapterSchema: z.ZodType<ChapterType> = ItemSchema.openapi('Chapter')
+
+const ClipOfSchema = PidReferenceSchema.openapi('ClipOf')
+
+const CodeSchema = z.string().openapi('Code')
+
+const CollectionSchema: z.ZodType<CollectionType> = GroupBodySchema.openapi('Collection')
+
+const CreditsTimeSchema = z
+  .strictObject({
+    squeeze_end: z.iso.datetime({ offset: true }).exactOptional(),
+    squeeze_start: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreditsTime')
+
+const DatumSchema = z.string().openapi('Datum')
+
+const DataSchema = z
+  .strictObject({ datum: DatumSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Data')
+
+const DateRange2Schema = DateRangeSchema.openapi('DateRange2')
+
+const EndSchema = z.iso.datetime({ offset: true }).openapi('End')
+
+const EpisodeOfSchema = PidReferenceSchema.openapi('EpisodeOf')
+
+const ErrorNameSchema = z.string().openapi('ErrorName')
+
+const ExprSchema = z.string().openapi('Expr')
+
+const FormatStringSchema = z.string().openapi('FormatString')
+
+const MessageSchema = z.string().openapi('Message')
+
+const RetryableSchema = z.boolean().openapi('Retryable')
+
+const XqueryVersionSchema = z
+  .enum(['1.0-ml', '0.9-ml', '1.0', 'XSLT'])
+  .openapi({ description: 'The XQuery language version.' })
+  .openapi('XqueryVersion')
+
+const ErrorSchema = z
+  .strictObject({
+    code: CodeSchema,
+    data: DataSchema,
+    'error-name': ErrorNameSchema,
+    expr: ExprSchema,
+    'format-string': FormatStringSchema,
+    message: MessageSchema,
+    retryable: RetryableSchema,
+    'xquery-version': XqueryVersionSchema,
+  })
+  .openapi({
+    required: [
+      'code',
+      'error-name',
+      'xquery-version',
+      'message',
+      'format-string',
+      'retryable',
+      'expr',
+      'data',
+    ],
+  })
+  .openapi('Error')
+
+const ErrorsSchema = z
+  .strictObject({ error: ErrorSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Errors')
+
+const FeedsSchema: z.ZodType<FeedsType> = z
+  .strictObject({
+    deployment_root: z.string().exactOptional(),
+    deprecations: DeprecationsSchema.exactOptional(),
+    feed: z.array(FeedSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Feeds')
+
+const FranchiseSchema: z.ZodType<FranchiseType> = GroupBodySchema.openapi('Franchise')
+
+const FranchisesSchema = ReferenceSchema.openapi('Franchises')
+
+const GallerySchema: z.ZodType<GalleryType> = GroupBodySchema.openapi('Gallery')
+
+const GenreGroupingsSchema = GenreGroupingsTypeSchema.openapi('GenreGroupings')
+
+const GenreGroupsSchema = GenreGroupsTypeSchema.openapi('GenreGroups')
+
+const HighlightSchema: z.ZodType<HighlightType> = ItemSchema.openapi('Highlight')
+
+const IsSignedSchema = z.boolean().openapi('IsSigned')
+
+const ItemOfSchema = ReferenceSchema.openapi('ItemOf')
+
+const ItemsForSchema = ReferenceSchema.openapi('ItemsFor')
+
+const MediaAvailabilityTimeSchema = DateRangeSchema.openapi('MediaAvailabilityTime')
+
+const MusicSchema: z.ZodType<MusicType> = ItemSchema.openapi('Music')
+
+const NitroSchema: z.ZodType<NitroType> = z
   .looseObject({
     deprecations: DeprecationsSchema.exactOptional(),
     filters: FiltersSchema.exactOptional(),
@@ -2262,7 +2724,7 @@ const NitroSchema = z
   .openapi({ required: [] })
   .openapi('Nitro')
 
-const OtherSchema = ItemSchema.openapi('Other')
+const OtherSchema: z.ZodType<OtherType> = ItemSchema.openapi('Other')
 
 const PartnerSchema = PidSchema.openapi('Partner')
 
@@ -2275,11 +2737,11 @@ const ScheduleDateSchema = z
   .regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$/)
   .openapi('ScheduleDate')
 
-const SeasonSchema = GroupBodySchema.openapi('Season')
+const SeasonSchema: z.ZodType<SeasonType> = GroupBodySchema.openapi('Season')
 
 const SeriesOfSchema = PidReferenceSchema.openapi('SeriesOf')
 
-const SpeechSchema = ItemSchema.openapi('Speech')
+const SpeechSchema: z.ZodType<SpeechType> = ItemSchema.openapi('Speech')
 
 const VersionOfSchema = PidReferenceSchema.openapi('VersionOf')
 

@@ -10,7 +10,7 @@ const ErrorSchema = z
 const FieldSchema = z.string().openapi({ description: 'The name of a field' }).openapi('Field')
 
 const HitSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'One item returned (object of fields and values)' })
   .openapi('Hit')
 

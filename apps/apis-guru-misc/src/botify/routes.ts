@@ -397,8 +397,8 @@ const CrawlStatisticsUrlsSchema = z
 const UrlsQuerySchema = z
   .object({
     fields: z.array(z.string()).exactOptional().openapi({ description: '', readOnly: false }),
-    filters: z.object({}).exactOptional().openapi({ description: '', readOnly: false }),
-    sort: z.array(z.object({})).exactOptional().openapi({ description: '', readOnly: false }),
+    filters: z.looseObject({}).exactOptional().openapi({ description: '', readOnly: false }),
+    sort: z.array(z.looseObject({})).exactOptional().openapi({ description: '', readOnly: false }),
   })
   .openapi({ required: [] })
   .openapi('UrlsQuery')
@@ -422,7 +422,6 @@ const CsvExportStatusSchema = z
         default: 'current',
         description: '',
         readOnly: false,
-        default: 'current',
       }),
     date_created: z.iso
       .datetime({ offset: true })
@@ -456,7 +455,7 @@ const CsvExportStatusSchema = z
   .openapi({ required: ['query'] })
   .openapi('CsvExportStatus')
 
-const DefaultSchema = z.object({}).openapi('Default')
+const DefaultSchema = z.looseObject({}).openapi('Default')
 
 const DefaultPayloadSchema = z
   .object({
@@ -464,7 +463,7 @@ const DefaultPayloadSchema = z
       .object({
         error_code: z.string().exactOptional().openapi({ description: 'Error Code' }),
         error_detail: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'If available, detailed error' }),
         message: z.string().exactOptional().openapi({ description: 'Error Message' }),
@@ -849,7 +848,7 @@ const ProjectSchema = z
 
 const ProjectSavedFilterSchema = z
   .object({
-    filters: z.object({}).openapi({ description: '', readOnly: false }),
+    filters: z.looseObject({}).openapi({ description: '', readOnly: false }),
     identifier: z.string().exactOptional().openapi({ description: '', readOnly: true }),
     name: z.string().openapi({ description: '', readOnly: false }),
   })
@@ -969,11 +968,11 @@ const URLRewritingRulesSerializerSchema = z
   .openapi({ required: ['urls', 'rules'] })
   .openapi('URLRewritingRulesSerializer')
 
-const UrlDetailSchema = z.object({}).openapi('UrlDetail')
+const UrlDetailSchema = z.looseObject({}).openapi('UrlDetail')
 
 const UrlsAggSchema = z
   .object({
-    aggs: z.array(z.object({})).exactOptional().openapi({ description: '', readOnly: false }),
+    aggs: z.array(z.looseObject({})).exactOptional().openapi({ description: '', readOnly: false }),
     count: z
       .preprocess(
         (val) =>
@@ -1018,15 +1017,15 @@ const UrlsAggsSchema = z
 
 const UrlsAggsQuerySchema = z
   .object({
-    aggs: z.array(z.object({})).exactOptional().openapi({ description: '', readOnly: false }),
-    filters: z.object({}).exactOptional().openapi({ description: '', readOnly: false }),
+    aggs: z.array(z.looseObject({})).exactOptional().openapi({ description: '', readOnly: false }),
+    filters: z.looseObject({}).exactOptional().openapi({ description: '', readOnly: false }),
   })
   .openapi({ required: [] })
   .openapi('UrlsAggsQuery')
 
 const UrlsAggsQueriesSchema = z.array(UrlsAggsQuerySchema).openapi('UrlsAggsQueries')
 
-const StringSchema = z.object({}).openapi('String')
+const StringSchema = z.looseObject({}).openapi('String')
 
 const UrlsAggsQueriesRequestBody = {
   content: { 'application/json': { schema: UrlsAggsQueriesSchema } },

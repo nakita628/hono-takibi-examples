@@ -64,7 +64,7 @@ const DispatchLocationSchema = z
       .exactOptional()
       .openapi({ description: 'Percentage of energy', example: 0.2345677 }),
     location: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'GeoJSON encoded location of target or source of green energy.' }),
   })
@@ -504,11 +504,11 @@ export const getGsiDispatchRoute = createRoute({
                     'List of current targets of green energy (out of requested location)',
                 }),
               postmix: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Green Energy Mix after dispatch of given city' }),
               premix: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Green Energy Mix prior to dispatch of given city' }),
               timeframe: z

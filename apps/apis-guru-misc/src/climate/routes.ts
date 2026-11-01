@@ -139,7 +139,7 @@ const CreatedUploadSchema = z
   .openapi({ description: 'Successfully created upload request' })
   .openapi('CreatedUpload')
 
-const EmptySchema = z.object({}).openapi('Empty')
+const EmptySchema = z.looseObject({}).openapi('Empty')
 
 const ErrorSchema = z
   .object({
@@ -164,7 +164,7 @@ const ExportSchema = z
           'Content type representing data being exported (e.g. application/vnd.climate.acrsi.geojson).',
       }),
     definition: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -666,32 +666,26 @@ const UploadedBoundaryIdSchema = z
 const _200Response = {
   description: 'OK',
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _204Response = {
   description: 'No Content',
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -699,26 +693,20 @@ const _304Response = {
   description: 'Not Modified',
   content: { 'application/json': { schema: EmptySchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'A token which may be used to poll for updates.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'A token which may be used to poll for updates.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A token which may be used to poll for updates.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -726,16 +714,13 @@ const _400Response = {
   description: 'Bad Input',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -743,16 +728,13 @@ const _401Response = {
   description: 'Unauthorized',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -760,16 +742,13 @@ const _403Response = {
   description: 'Forbidden',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -777,16 +756,13 @@ const _404Response = {
   description: 'Not Found',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -794,16 +770,13 @@ const _409Response = {
   description: 'Conflict',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -811,16 +784,13 @@ const _410Response = {
   description: 'Gone',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -828,16 +798,13 @@ const _416Response = {
   description: 'Range Not Satisfiable',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -845,16 +812,13 @@ const _429Response = {
   description: 'Too Many Requests',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -862,16 +826,13 @@ const _500Response = {
   description: 'Internal Server Error',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -879,26 +840,20 @@ const _503Response = {
   description: 'Server Busy',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'Retry-After': {
-      description: 'Number of seconds to wait before retrying the request.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'Number of seconds to wait before retrying the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Number of seconds to wait before retrying the request.',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -906,23 +861,17 @@ const FetchApplicationActivitiesOkResponse = {
   description: 'OK',
   content: { 'application/json': { schema: ApplicationActivitiesSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to poll for updates.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
   }),
 }
 
@@ -930,26 +879,20 @@ const FetchApplicationActivitiesPartialResponse = {
   description: 'Partial Result',
   content: { 'application/json': { schema: ApplicationActivitiesSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to fetch next batch of results.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Token used to fetch next batch of results.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Token used to fetch next batch of results.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -957,28 +900,21 @@ const FetchApplicationActivityOkResponse = {
   description: 'OK',
   content: { 'application/octet-stream': { schema: ApplicationActivityContentsSchema } },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -986,28 +922,21 @@ const FetchApplicationActivityPartialResponse = {
   description: 'Partial Result',
   content: { 'application/octet-stream': { schema: ApplicationActivityContentsSchema } },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1025,28 +954,21 @@ const FetchExportContentsByIdPartialResponse = {
   description: 'Partial Result',
   content: { 'application/octet-stream': { schema: ExportContentsSchema } },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242879/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242879/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242879/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1054,16 +976,13 @@ const FetchExportStatusByIdOkResponse = {
   description: 'OK',
   content: { 'application/json': { schema: ExportStatusSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1071,12 +990,10 @@ const FetchFarmOrganizationByTypeAndIdOkResponse = {
   description: 'Returns the requested farm organization.',
   content: { 'application/json': { schema: FarmOrganizationSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({ param: { required: false } }),
   }),
 }
 
@@ -1084,12 +1001,10 @@ const FetchFieldByIdOkResponse = {
   description: 'Returns the requested Field.',
   content: { 'application/json': { schema: FieldSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({ param: { required: false } }),
   }),
 }
 
@@ -1097,23 +1012,17 @@ const FetchFieldsOkResponse = {
   description: 'OK',
   content: { 'application/json': { schema: FieldsSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to poll for updates.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
   }),
 }
 
@@ -1121,26 +1030,20 @@ const FetchFieldsPartialResponse = {
   description: 'Partial Result',
   content: { 'application/json': { schema: FieldsSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to fetch next batch of results.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Token used to fetch next batch of results.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Token used to fetch next batch of results.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1148,23 +1051,17 @@ const FetchHarvestActivitiesOkResponse = {
   description: 'OK',
   content: { 'application/json': { schema: HarvestActivitiesSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to poll for updates.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
   }),
 }
 
@@ -1172,26 +1069,20 @@ const FetchHarvestActivitiesPartialResponse = {
   description: 'Partial Result',
   content: { 'application/json': { schema: HarvestActivitiesSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to fetch next batch of results.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Token used to fetch next batch of results.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Token used to fetch next batch of results.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1199,28 +1090,21 @@ const FetchHarvestActivityOkResponse = {
   description: 'OK',
   content: { 'application/octet-stream': { schema: HarvestActivityContentsSchema } },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1228,28 +1112,21 @@ const FetchHarvestActivityPartialResponse = {
   description: 'Partial Result',
   content: { 'application/octet-stream': { schema: HarvestActivityContentsSchema } },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1257,12 +1134,10 @@ const FetchOperationsOkResponse = {
   description: 'Returns the requested operations.',
   content: { 'application/json': { schema: OperationsSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({ param: { required: false } }),
   }),
 }
 
@@ -1270,23 +1145,17 @@ const FetchPlantingActivitiesOkResponse = {
   description: 'OK',
   content: { 'application/json': { schema: PlantingActivitiesSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to poll for updates.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
   }),
 }
 
@@ -1294,26 +1163,20 @@ const FetchPlantingActivitiesPartialResponse = {
   description: 'Partial Result',
   content: { 'application/json': { schema: PlantingActivitiesSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to fetch next batch of results.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Token used to fetch next batch of results.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Token used to fetch next batch of results.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1321,28 +1184,21 @@ const FetchPlantingActivityOkResponse = {
   description: 'OK',
   content: { 'application/octet-stream': { schema: PlantingActivityContentsSchema } },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1350,28 +1206,21 @@ const FetchPlantingActivityPartialResponse = {
   description: 'Partial Result',
   content: { 'application/octet-stream': { schema: PlantingActivityContentsSchema } },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1387,28 +1236,21 @@ const FetchScoutingObservationAttachmentContentsOkResponse = {
     'image/png': { schema: ScoutingObservationAttachmentContentsSchema },
   },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1416,28 +1258,21 @@ const FetchScoutingObservationAttachmentContentsPartialResponse = {
   description: 'Partial Result',
   content: { 'image/jpeg': { schema: ScoutingObservationAttachmentContentsSchema } },
   headers: z.object({
-    'Content-Range': {
-      description:
-        'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
-          param: { required: false },
-        }),
-    },
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'Content-Range': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Byte range `bytes start-end/total` (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16). e.g. bytes 0-5242880/10242880. Downloads larger than 5MiB (5242880 bytes) in size must be downloaded in chunks no larger than 5MiB (5242880 bytes) and no smaller than 1MiB (1048576 bytes). The last chunk could be less than 1MiB (1048576 bytes).',
+        param: { required: false },
+      }),
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1450,26 +1285,20 @@ const FetchScoutingObservationAttachmentsPartialResponse = {
   description: 'Partial Result',
   content: { 'application/json': { schema: ScoutingObservationAttachmentsSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to fetch next batch of results.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Token used to fetch next batch of results.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Token used to fetch next batch of results.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1477,12 +1306,10 @@ const FetchScoutingObservationByIdOkResponse = {
   description: 'Returns the requested scouting observation.',
   content: { 'application/json': { schema: ScoutingObservationSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({ param: { required: false } }),
   }),
 }
 
@@ -1490,23 +1317,17 @@ const FetchScoutingObservationsOkResponse = {
   description: 'OK',
   content: { 'application/json': { schema: ScoutingObservationsSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to poll for updates.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Token used to poll for updates.', param: { required: false } }),
   }),
 }
 
@@ -1514,26 +1335,20 @@ const FetchScoutingObservationsPartialResponse = {
   description: 'Partial Result',
   content: { 'application/json': { schema: ScoutingObservationsSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
-    'X-Next-Token': {
-      description: 'Token used to fetch next batch of results.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Token used to fetch next batch of results.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
+    'X-Next-Token': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Token used to fetch next batch of results.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1556,16 +1371,13 @@ const PostExportOkResponse = {
   description: 'OK',
   content: { 'application/json': { schema: CreatedExportSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1573,12 +1385,10 @@ const PostUploadOkResponse = {
   description: 'Returns a new upload with ID used to PUT file contents.',
   content: { 'application/json': { schema: CreatedUploadSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ param: { required: false } }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({ param: { required: false } }),
   }),
 }
 
@@ -1586,16 +1396,13 @@ const ReportConflictResponse = {
   description: 'Conflict (Report generation is still in progress)',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1603,16 +1410,13 @@ const ReportGoneResponse = {
   description: 'Gone (Report is expired)',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'X-Http-Request-Id': {
-      description: 'Unique identifier assigned to the request.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Unique identifier assigned to the request.',
-          param: { required: false },
-        }),
-    },
+    'X-Http-Request-Id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unique identifier assigned to the request.',
+        param: { required: false },
+      }),
   }),
 }
 

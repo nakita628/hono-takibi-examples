@@ -17,10 +17,6 @@ type AmountType = { currency?: string; value?: string }
 
 type AttachmentMonetaryAccountPaymentType = { id?: number; monetary_account_id?: number }
 
-type ErrorType = { error_description?: string; error_description_translated?: string }[]
-
-type GeolocationType = { altitude?: number; latitude?: number; longitude?: number; radius?: number }
-
 const ImageSchema = z
   .object({
     attachment_public_uuid: z
@@ -177,62 +173,6 @@ type LabelMonetaryAccountType = {
   transferwise_bank_code?: string
 }
 
-const AttachmentMasterCardActionRefundSchema = z
-  .object({
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the attached Attachment.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentMasterCardActionRefund')
-
-const AdditionalInformationSchema = z
-  .object({
-    attachment: z
-      .array(AttachmentMasterCardActionRefundSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The Attachments to attach to the refund request.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The category of the refund, required for chargeback.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    comment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Comment about the refund.', readOnly: true, writeOnly: false }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The reason to refund, required for chargeback.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    terms_and_conditions: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Proof that the user acknowledged the terms and conditions for chargebacks.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AdditionalInformation')
-
 const LabelMonetaryAccountSchema: z.ZodType<LabelMonetaryAccountType> = z
   .object({
     avatar: AvatarSchema.exactOptional().openapi({
@@ -323,411 +263,78 @@ const LabelMonetaryAccountSchema: z.ZodType<LabelMonetaryAccountType> = z
   .openapi({ required: [] })
   .openapi('LabelMonetaryAccount')
 
-const AmountSchema: z.ZodType<AmountType> = z
+const AttachmentPublicSchema = z.looseObject({}).openapi('AttachmentPublic')
+
+const BunqMeFundraiserProfileSchema = z
   .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount with the public information of the User and the MonetaryAccount that created the bunq.me fundraiser profile.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    attachment: AttachmentPublicSchema.exactOptional().openapi({
+      description: 'The attachment attached to the fundraiser profile.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    color: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The color chosen for the bunq.me fundraiser profile in hexadecimal format.',
+        readOnly: true,
+        writeOnly: false,
+      }),
     currency: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The currency of the amount. It is an ISO 4217 formatted currency code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The amount formatted to two decimal places.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Amount')
-
-const LabelCardSchema = z
-  .object({
-    expiry_date: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The date this card will expire.',
+        description:
+          'The currency of the MonetaryAccount that created the bunq.me fundraiser profile.',
         readOnly: true,
         writeOnly: false,
       }),
-    label_user: LabelUserSchema.exactOptional().openapi({
-      description: 'The owner of this card.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    second_line: z
+    description: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The second line on the card.', readOnly: true, writeOnly: false }),
+      .openapi({
+        description: 'The description of the bunq.me fundraiser profile.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    invite_profile_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Provided if the user has enabled their invite link.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    pointer: PointerSchema.exactOptional().openapi({
+      description: 'The pointer (url) which will be used to access the bunq.me fundraiser profile.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    redirect_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL which the user is sent to when a payment is completed.',
+        readOnly: true,
+        writeOnly: false,
+      }),
     status: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The status of the card.', readOnly: true, writeOnly: false }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the card.', readOnly: true, writeOnly: false }),
-    uuid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The public UUID.', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('LabelCard')
-
-const MasterCardActionReferenceSchema = z
-  .object({
-    event_id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the event.', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('MasterCardActionReference')
-
-type MasterCardActionRefundType = {
-  additional_information?: z.infer<typeof AdditionalInformationSchema>
-  alias?: z.infer<typeof LabelMonetaryAccountSchema>
-  amount?: z.infer<typeof AmountSchema>
-  attachment?: z.infer<typeof AttachmentMasterCardActionRefundSchema>[]
-  category?: string
-  comment?: string
-  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
-  created?: string
-  description?: string
-  id?: number
-  label_card?: z.infer<typeof LabelCardSchema>
-  label_user_creator?: z.infer<typeof LabelUserSchema>
-  mastercard_action_id?: number
-  reason?: string
-  reference_mastercard_action_event?: z.infer<typeof MasterCardActionReferenceSchema>[]
-  status?: string
-  status_description?: string
-  status_description_translated?: string
-  status_together_url?: string
-  sub_type?: string
-  terms_and_conditions?: string
-  time_refund?: string
-  type?: string
-  updated?: string
-}
-
-type NotificationFilterEmailType = { notification_filters?: NotificationFilterEmailType[] }
-
-type NotificationFilterPushType = { notification_filters?: NotificationFilterPushType[] }
-
-type NotificationFilterUrlType = { notification_filters?: NotificationFilterUrlType[] }
-
-const AddressSchema: z.ZodType<AddressType> = z
-  .object({
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The city.', readOnly: false, writeOnly: false }),
-    country: z
-      .string()
-      .exactOptional()
       .openapi({
-        description: 'The country as an ISO 3166-1 alpha-2 country code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    extra: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The apartment, building or other extra information for addresses.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    house_number: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The house number.', readOnly: false, writeOnly: false }),
-    is_user_address_updated: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'To show whether user created or updated her address for app event listing.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    mailbox_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name on the mailbox (only used for Postal addresses).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    po_box: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The PO box.', readOnly: false, writeOnly: false }),
-    postal_code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The postal code.', readOnly: false, writeOnly: false }),
-    province: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The province according to local standard.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    street: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The street.', readOnly: false, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('Address')
-
-const AttachmentMonetaryAccountPaymentSchema: z.ZodType<AttachmentMonetaryAccountPaymentType> = z
-  .object({
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the attached Attachment.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the MonetaryAccount this Attachment is attached from.',
+        description: 'The status of the bunq.me fundraiser profile, can be ACTIVE or DEACTIVATED.',
         readOnly: true,
         writeOnly: false,
       }),
   })
   .openapi({ required: [] })
-  .openapi('AttachmentMonetaryAccountPayment')
-
-const GeolocationSchema: z.ZodType<GeolocationType> = z
-  .object({
-    altitude: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The altitude for a geolocation restriction.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    latitude: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The latitude for a geolocation restriction.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    longitude: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The longitude for a geolocation restriction.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    radius: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The radius for a geolocation restriction.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Geolocation')
-
-const PaymentAutoAllocateInstanceSchema: z.ZodType<PaymentAutoAllocateInstanceType> = z
-  .lazy(() =>
-    z
-      .object({
-        created: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The timestamp when the PaymentAutoAllocateInstance was created.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        error_message: z
-          .array(ErrorSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The error message, if the payment auto allocating failed.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        id: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description: 'The id of the PaymentAutoAllocateInstance.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        payment_auto_allocate_id: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description: 'The ID of the payment auto allocate this instance belongs to.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        payment_batch: PaymentBatchSchema.exactOptional().openapi({
-          description: 'The payment batch allocating all the payments.',
-          readOnly: true,
-          writeOnly: false,
-        }),
-        payment_id: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description: 'The ID of the payment that triggered the allocating of the payments.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        status: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The status of the payment auto allocate instance. SUCCEEDED or FAILED.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        updated: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The timestamp when the PaymentAutoAllocateInstance was last updated.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('PaymentAutoAllocateInstance')
-
-type RequestInquiryReferenceType = { id?: number; type?: string }
-
-const RequestInquiryReferenceSchema: z.ZodType<RequestInquiryReferenceType> = z
-  .object({
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the request inquiry (batch).',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of request inquiry. Can be RequestInquiry or RequestInquiryBatch.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('RequestInquiryReference')
-
-type PaymentType = {
-  address_billing?: z.infer<typeof AddressSchema>
-  address_shipping?: z.infer<typeof AddressSchema>
-  alias?: z.infer<typeof LabelMonetaryAccountSchema>
-  allow_bunqto?: boolean
-  amount?: z.infer<typeof AmountSchema>
-  attachment?: z.infer<typeof AttachmentMonetaryAccountPaymentSchema>[]
-  balance_after_mutation?: z.infer<typeof AmountSchema>
-  batch_id?: number
-  bunqto_expiry?: string
-  bunqto_share_url?: string
-  bunqto_status?: string
-  bunqto_sub_status?: string
-  bunqto_time_responded?: string
-  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
-  created?: string
-  description?: string
-  geolocation?: z.infer<typeof GeolocationSchema>
-  id?: number
-  merchant_reference?: string
-  monetary_account_id?: number
-  payment_auto_allocate_instance?: z.infer<typeof PaymentAutoAllocateInstanceSchema>
-  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
-  scheduled_id?: number
-  sub_type?: string
-  type?: string
-  updated?: string
-}
-
-const ErrorSchema: z.ZodType<ErrorType> = z
-  .array(
-    z
-      .object({
-        error_description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The error description in English.' }),
-        error_description_translated: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "The error description translated to the user's language." }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Error')
-
-const PaymentBatchSchema: z.ZodType<PaymentBatchType> = z
-  .lazy(() =>
-    z
-      .object({
-        payments: PaymentBatchAnchoredPaymentSchema.exactOptional().openapi({
-          description: 'The list of mutations that were made.',
-          readOnly: false,
-          writeOnly: false,
-        }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('PaymentBatch')
-
-type PaymentAutoAllocateInstanceType = {
-  created?: string
-  error_message?: z.infer<typeof ErrorSchema>[]
-  id?: number
-  payment_auto_allocate_id?: number
-  payment_batch?: z.infer<typeof PaymentBatchSchema>
-  payment_id?: number
-  status?: string
-  updated?: string
-}
-
-const PaymentBatchAnchoredPaymentSchema: z.ZodType<PaymentBatchAnchoredPaymentType> = z
-  .lazy(() =>
-    z
-      .object({
-        Payment: z
-          .array(PaymentSchema)
-          .exactOptional()
-          .openapi({ description: '', readOnly: true, writeOnly: false }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('PaymentBatchAnchoredPayment')
-
-type PaymentBatchType = { payments?: z.infer<typeof PaymentBatchAnchoredPaymentSchema> }
+  .openapi('BunqMeFundraiserProfile')
 
 const PaymentSchema: z.ZodType<PaymentType> = z
   .lazy(() =>
@@ -931,7 +538,1058 @@ const PaymentSchema: z.ZodType<PaymentType> = z
   )
   .openapi('Payment')
 
-type PaymentBatchAnchoredPaymentType = { Payment?: z.infer<typeof PaymentSchema>[] }
+type BunqMeFundraiserResultType = {
+  bunqme_fundraiser_profile?: z.infer<typeof BunqMeFundraiserProfileSchema>
+  created?: string
+  id?: number
+  payments?: z.infer<typeof PaymentSchema>[]
+  updated?: string
+}
+
+type BunqMeFundraiserResultReadType = {
+  bunqme_fundraiser_profile?: z.infer<typeof BunqMeFundraiserProfileSchema>
+  created?: string
+  id?: number
+  payments?: z.infer<typeof PaymentSchema>[]
+  updated?: string
+}
+
+const AmountSchema: z.ZodType<AmountType> = z
+  .object({
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The currency of the amount. It is an ISO 4217 formatted currency code.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The amount formatted to two decimal places.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Amount')
+
+const BunqMeMerchantAvailableSchema = z
+  .object({
+    available: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not the merchant is available for the user.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    merchant_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A merchant type supported by bunq.me.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BunqMeMerchantAvailable')
+
+const BunqMeTabEntrySchema = z
+  .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount with the public information of the User and the MonetaryAccount that created the bunq.me link.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_inquired: AmountSchema.exactOptional().openapi({
+      description: 'The requested Amount.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description for the bunq.me. Maximum 9000 characters.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    invite_profile_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Provided if the user has enabled their invite link.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    merchant_available: z
+      .array(BunqMeMerchantAvailableSchema)
+      .exactOptional()
+      .openapi({ description: 'List of available merchants.', readOnly: true, writeOnly: false }),
+    redirect_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL which the user is sent to when a payment is completed.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the bunq.me. Can be WAITING_FOR_PAYMENT, CANCELLED or EXPIRED.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The uuid of the bunq.me.', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('BunqMeTabEntry')
+
+const BunqMeTabResultInquirySchema = z
+  .object({
+    bunq_me_tab_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The Id of the bunq.me tab that this BunqMeTabResultInquiry belongs to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    payment: PaymentSchema.exactOptional().openapi({
+      description: 'The payment made for the Tab.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BunqMeTabResultInquiry')
+
+type BunqMeTabListingType = {
+  alias_monetary_account?: z.infer<typeof LabelMonetaryAccountSchema>
+  bunqme_tab_entries?: z.infer<typeof BunqMeTabEntrySchema>[]
+  bunqme_tab_entry?: z.infer<typeof BunqMeTabEntrySchema>
+  bunqme_tab_share_url?: string
+  created?: string
+  id?: number
+  monetary_account_id?: number
+  result_inquiries?: z.infer<typeof BunqMeTabResultInquirySchema>[]
+  status?: string
+  time_expiry?: string
+  type?: string
+  updated?: string
+}
+
+type BunqMeTabReadType = {
+  alias_monetary_account?: z.infer<typeof LabelMonetaryAccountSchema>
+  bunqme_tab_entries?: z.infer<typeof BunqMeTabEntrySchema>[]
+  bunqme_tab_entry?: z.infer<typeof BunqMeTabEntrySchema>
+  bunqme_tab_share_url?: string
+  created?: string
+  id?: number
+  monetary_account_id?: number
+  result_inquiries?: z.infer<typeof BunqMeTabResultInquirySchema>[]
+  status?: string
+  time_expiry?: string
+  type?: string
+  updated?: string
+}
+
+const AddressSchema: z.ZodType<AddressType> = z
+  .object({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The city.', readOnly: false, writeOnly: false }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The country as an ISO 3166-1 alpha-2 country code.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    extra: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The apartment, building or other extra information for addresses.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    house_number: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The house number.', readOnly: false, writeOnly: false }),
+    is_user_address_updated: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'To show whether user created or updated her address for app event listing.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    mailbox_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name on the mailbox (only used for Postal addresses).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    po_box: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The PO box.', readOnly: false, writeOnly: false }),
+    postal_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The postal code.', readOnly: false, writeOnly: false }),
+    province: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The province according to local standard.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    street: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The street.', readOnly: false, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('Address')
+
+const BillingContractSubscriptionSchema = z
+  .object({
+    contract_date_end: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date until when the billing contract is valid.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    contract_date_start: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date from when the billing contract is valid.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    contract_version: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The version of the billing contract.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp when the billing contract was made.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the billing contract.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subscription status.', readOnly: true, writeOnly: false }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subscription substatus.', readOnly: true, writeOnly: false }),
+    subscription_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The subscription type of the user. Can be one of PERSON_SUPER_LIGHT_V1, PERSON_LIGHT_V1, PERSON_MORE_V1, PERSON_FREE_V1, PERSON_PREMIUM_V1, COMPANY_V1, or COMPANY_V2.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    subscription_type_downgrade: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The subscription type the user will have after a subscription downgrade. Will be null if downgrading is not possible.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp when the billing contract was last updated.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BillingContractSubscription')
+
+const CustomerSchema = z
+  .object({
+    billing_account_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The primary billing account account's id.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the customer object's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the customer.', readOnly: true, writeOnly: false }),
+    invoice_notification_preference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The preferred notification type for invoices.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the customer object's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Customer')
+
+const CustomerLimitSchema = z
+  .object({
+    limit_amount_monthly: AmountSchema.exactOptional().openapi({
+      description: 'The maximum amount a user is allowed to spend in a month.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    limit_card_debit_maestro: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The limit of Maestro cards.', readOnly: true, writeOnly: false }),
+    limit_card_debit_mastercard: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The limit of MasterCard cards.', readOnly: true, writeOnly: false }),
+    limit_card_debit_wildcard: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'DEPRECTATED: The limit of wildcards, e.g. Maestro or MasterCard cards.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    limit_card_replacement: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The limit of free replacement cards.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    limit_card_wildcard: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The limit of wildcards, e.g. Maestro or MasterCard cards.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    limit_monetary_account: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The limit of monetary accounts.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    limit_monetary_account_remaining: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The amount of additional monetary accounts you can create.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    spent_amount_monthly: AmountSchema.exactOptional().openapi({
+      description: 'The amount the user has spent in the last month.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerLimit')
+
+const NotificationFilterSchema = z
+  .object({
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The notification category that will match this notification filter. Possible choices are BILLING, CARD_TRANSACTION_FAILED, CARD_TRANSACTION_SUCCESSFUL, CHAT, DRAFT_PAYMENT, IDEAL, SOFORT, MONETARY_ACCOUNT_PROFILE, MUTATION, PAYMENT, PROMOTION, REQUEST, SCHEDULE_RESULT, SCHEDULE_STATUS, SHARE, SUPPORT, TAB_RESULT, USER_APPROVAL.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    notification_delivery_method: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The delivery method via which notifications that match this notification filter will be delivered. Possible choices are PUSH for delivery via push notification and URL for delivery via URL callback.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    notification_target: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The target of notifications that match this notification filter. For URL notification filters this is the URL to which the callback will be made. For PUSH notifications filters this should always be null.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NotificationFilter')
+
+const RelationUserSchema = z
+  .object({
+    counter_label_user: LabelUserSchema.exactOptional().openapi({
+      description: "The counter user's label.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    counter_user_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The counter user's ID.", readOnly: true, writeOnly: false }),
+    counter_user_status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The account status of a user', readOnly: true, writeOnly: false }),
+    label_user: LabelUserSchema.exactOptional().openapi({
+      description: "The user's label.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    relationship: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The requested relation type.', readOnly: true, writeOnly: false }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The request's status, only for UPDATE.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The user's ID.", readOnly: true, writeOnly: false }),
+    user_status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The account status of a user', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('RelationUser')
+
+const TaxResidentSchema = z
+  .object({
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The country of the tax number.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the tax number. Either CONFIRMED or UNCONFIRMED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    tax_number: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tax number.', readOnly: false, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('TaxResident')
+
+const UboSchema = z
+  .object({
+    date_of_birth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date of birth of the ultimate beneficiary owner.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the ultimate beneficiary owner.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    nationality: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The nationality of the ultimate beneficiary owner.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Ubo')
+
+const UserCompanySchema = z
+  .object({
+    address_main: AddressSchema.exactOptional().openapi({
+      description: "The company's main address.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    address_postal: AddressSchema.exactOptional().openapi({
+      description: "The company's postal address.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    alias: z
+      .array(PointerSchema)
+      .exactOptional()
+      .openapi({ description: 'The aliases of the account.', readOnly: true, writeOnly: false }),
+    avatar: AvatarSchema.exactOptional().openapi({
+      description: "The company's avatar.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    avatar_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The public UUID of the company's avatar.",
+        readOnly: false,
+        writeOnly: true,
+      }),
+    billing_contract: z
+      .array(BillingContractSubscriptionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The subscription of the company.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    chamber_of_commerce_number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The company's chamber of commerce number.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    counter_bank_iban: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The company's other bank account IBAN, through which we verify it.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The country as an ISO 3166-1 alpha-2 country code.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the company object's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    customer: CustomerSchema.exactOptional().openapi({
+      description: 'The customer profile of the company.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    customer_limit: CustomerLimitSchema.exactOptional().openapi({
+      description: 'The customer limits of the company.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    daily_limit_without_confirmation_login: AmountSchema.exactOptional().openapi({
+      description: 'The amount the company can pay in the session without asking for credentials.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    deny_reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The user deny reason.', readOnly: true, writeOnly: false }),
+    directors: z
+      .array(LabelUserSchema)
+      .exactOptional()
+      .openapi({
+        description: "The existing bunq aliases for the company's directors.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    display_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The company's display name.", readOnly: true, writeOnly: false }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the modified company.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The person's preferred language. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, seperated by an underscore.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    legal_form: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The company's legal form.", readOnly: false, writeOnly: false }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The company name.', readOnly: false, writeOnly: false }),
+    notification_filters: z
+      .array(NotificationFilterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The types of notifications that will result in a push notification or URL callback for this UserCompany.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    public_nick_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The company's public nick name.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    public_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The company's public UUID.", readOnly: true, writeOnly: false }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The person's preferred region. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, seperated by an underscore.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    relations: z
+      .array(RelationUserSchema)
+      .exactOptional()
+      .openapi({ description: 'The relations for this user.', readOnly: true, writeOnly: false }),
+    sector_of_industry: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The sector of industry.', readOnly: true, writeOnly: false }),
+    session_timeout: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The setting for the session timeout of the company in seconds.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The user status. Can be: ACTIVE, SIGNUP, RECOVERY.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user sub-status. Can be: NONE, FACE_RESET, APPROVAL, APPROVAL_DIRECTOR, APPROVAL_PARENT, APPROVAL_SUPPORT, COUNTER_IBAN, IDEAL or SUBMIT.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    tax_resident: z
+      .array(TaxResidentSchema)
+      .exactOptional()
+      .openapi({
+        description: "The user's tax residence numbers for different countries.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    type_of_business_entity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of business entity.', readOnly: true, writeOnly: false }),
+    ubo: z
+      .array(UboSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The names of the company's ultimate beneficiary owners. Minimum zero, maximum four.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the company object's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    version_terms_of_service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The version of the terms of service accepted by the user.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UserCompany')
+
+type CompanyListingType = { UserCompany?: z.infer<typeof UserCompanySchema> }
+
+type CompanyReadType = { UserCompany?: z.infer<typeof UserCompanySchema> }
+
+const AttachmentMonetaryAccountPaymentSchema: z.ZodType<AttachmentMonetaryAccountPaymentType> = z
+  .object({
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the attached Attachment.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the MonetaryAccount this Attachment is attached from.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentMonetaryAccountPayment')
+
+const DraftPaymentEntrySchema = z
+  .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        "The LabelMonetaryAccount containing the public information of 'this' (party) side of the DraftPayment.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the payment.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    attachment: z
+      .array(AttachmentMonetaryAccountPaymentSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Attachments attached to the DraftPayment.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount containing the public information of the other (counterparty) side of the DraftPayment.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description for the DraftPayment. Maximum 140 characters for DraftPayments to external IBANs, 9000 characters for DraftPayments to only other bunq MonetaryAccounts.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the draft payment entry.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    merchant_reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional data to be included with the Payment specific to the merchant.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of the draft payment entry.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DraftPaymentEntry')
+
+const PaymentBatchSchema: z.ZodType<PaymentBatchType> = z
+  .lazy(() =>
+    z
+      .object({
+        payments: PaymentBatchAnchoredPaymentSchema.exactOptional().openapi({
+          description: 'The list of mutations that were made.',
+          readOnly: false,
+          writeOnly: false,
+        }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('PaymentBatch')
+
+const ScheduleAnchorObjectSchema = z
+  .object({
+    Payment: PaymentSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ScheduleAnchorObject')
+
+type ScheduleType = {
+  object?: z.infer<typeof ScheduleAnchorObjectSchema>
+  recurrence_size?: number
+  recurrence_unit?: string
+  status?: string
+  time_end?: string
+  time_start?: string
+}
+
+const ScheduleSchema: z.ZodType<ScheduleType> = z
+  .object({
+    object: ScheduleAnchorObjectSchema.exactOptional().openapi({
+      description: 'The scheduled object. (Payment, PaymentBatch)',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    recurrence_size: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The schedule recurrence size. For example size 4 and unit WEEKLY means the recurrence is every 4 weeks.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    recurrence_unit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The schedule recurrence unit, options: ONCE, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The schedule status, options: ACTIVE, FINISHED, CANCELLED.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    time_end: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The schedule end time (UTC).', readOnly: false, writeOnly: false }),
+    time_start: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The schedule start time (UTC).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Schedule')
+
+type DraftPaymentType = {
+  entries: z.infer<typeof DraftPaymentEntrySchema>[]
+  number_of_required_accepts: number
+  previous_updated_timestamp?: string
+  schedule?: z.infer<typeof ScheduleSchema>
+  status?: string
+}
+
+const DraftPaymentAnchorObjectSchema = z
+  .object({
+    Payment: PaymentSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DraftPaymentAnchorObject')
+
+type RequestInquiryReferenceType = { id?: number; type?: string }
+
+const RequestInquiryReferenceSchema: z.ZodType<RequestInquiryReferenceType> = z
+  .object({
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the request inquiry (batch).',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of request inquiry. Can be RequestInquiry or RequestInquiryBatch.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RequestInquiryReference')
+
+const DraftPaymentResponseSchema = z
+  .object({
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status with which was responded.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    user_alias_created: LabelUserSchema.exactOptional().openapi({
+      description: 'The user that responded to the DraftPayment.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DraftPaymentResponse')
+
+type DraftPaymentListingType = {
+  entries?: z.infer<typeof DraftPaymentEntrySchema>[]
+  id?: number
+  monetary_account_id?: number
+  object?: z.infer<typeof DraftPaymentAnchorObjectSchema>
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  responses?: z.infer<typeof DraftPaymentResponseSchema>[]
+  schedule?: z.infer<typeof ScheduleSchema>
+  status?: string
+  type?: string
+  user_alias_created?: z.infer<typeof LabelUserSchema>
+}
+
+type DraftPaymentReadType = {
+  entries?: z.infer<typeof DraftPaymentEntrySchema>[]
+  id?: number
+  monetary_account_id?: number
+  object?: z.infer<typeof DraftPaymentAnchorObjectSchema>
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  responses?: z.infer<typeof DraftPaymentResponseSchema>[]
+  schedule?: z.infer<typeof ScheduleSchema>
+  status?: string
+  type?: string
+  user_alias_created?: z.infer<typeof LabelUserSchema>
+}
+
+type ErrorType = { error_description?: string; error_description_translated?: string }[]
 
 const AttachmentUrlSchema = z
   .object({
@@ -980,155 +1638,6 @@ const AttachmentSchema = z
   })
   .openapi({ required: [] })
   .openapi('Attachment')
-
-const AttachmentConversationContentListingSchema = z
-  .object({})
-  .openapi('AttachmentConversationContentListing')
-
-const AttachmentMonetaryAccountSchema = z.object({}).openapi('AttachmentMonetaryAccount')
-
-const AttachmentMonetaryAccountContentListingSchema = z
-  .object({})
-  .openapi('AttachmentMonetaryAccountContentListing')
-
-const AttachmentMonetaryAccountCreateSchema = z
-  .object({
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the attachment created.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentMonetaryAccountCreate')
-
-const AttachmentPublicSchema = z.object({}).openapi('AttachmentPublic')
-
-const AttachmentPublicContentListingSchema = z.object({}).openapi('AttachmentPublicContentListing')
-
-const BunqIdSchema = z
-  .object({
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'An integer ID of an object. Unique per object type.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BunqId')
-
-const AttachmentPublicCreateSchema = z
-  .object({
-    Id: BunqIdSchema.exactOptional().openapi({
-      description: 'The id of the created item',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentPublicCreate')
-
-const AttachmentPublicReadSchema = z
-  .object({
-    attachment: AttachmentSchema.exactOptional().openapi({
-      description: 'The attachment.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the attachment's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the attachment's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    uuid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The UUID of the attachment.', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentPublicRead')
-
-const AttachmentUserContentListingSchema = z.object({}).openapi('AttachmentUserContentListing')
-
-const AttachmentUserReadSchema = z
-  .object({
-    attachment: AttachmentSchema.exactOptional().openapi({
-      description: 'The attachment.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the attachment's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the attachment.', readOnly: true, writeOnly: false }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the attachment's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentUserRead')
-
-const AvatarCreateSchema = z
-  .object({
-    uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The UUID of the created avatar.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AvatarCreate')
-
-const AvatarReadSchema = z
-  .object({
-    image: z
-      .array(ImageSchema)
-      .exactOptional()
-      .openapi({ description: 'The content type of the image.', readOnly: true, writeOnly: false }),
-    uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The UUID of the created avatar.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AvatarRead')
 
 const BankSwitchServiceNetherlandsIncomingSchema = z
   .object({
@@ -1212,133 +1721,1221 @@ const BankSwitchServiceNetherlandsIncomingPaymentSchema = z
   .openapi({ required: [] })
   .openapi('BankSwitchServiceNetherlandsIncomingPayment')
 
-const BankSwitchServiceNetherlandsIncomingPaymentReadSchema = z
+const BunqMeFundraiserResultSchema: z.ZodType<BunqMeFundraiserResultType> = z
   .object({
-    bank_switch_service: BankSwitchServiceNetherlandsIncomingSchema.exactOptional().openapi({
-      description: 'The bank switch service details.',
+    bunqme_fundraiser_profile: BunqMeFundraiserProfileSchema.exactOptional().openapi({
+      description: 'The bunq.me fundraiser profile.',
       readOnly: true,
       writeOnly: false,
     }),
-    payment: PaymentSchema.exactOptional().openapi({
-      description: 'The payment made using bank switch service.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('BankSwitchServiceNetherlandsIncomingPaymentRead')
-
-const BillingContractSubscriptionSchema = z
-  .object({
-    contract_date_end: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The date until when the billing contract is valid.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    contract_date_start: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The date from when the billing contract is valid.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    contract_version: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The version of the billing contract.',
-        readOnly: true,
-        writeOnly: false,
-      }),
     created: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The timestamp when the billing contract was made.',
+        description: 'The timestamp when the bunq.me was created.',
         readOnly: true,
         writeOnly: false,
       }),
     id: z
       .int()
       .exactOptional()
+      .openapi({ description: 'The id of the bunq.me.', readOnly: true, writeOnly: false }),
+    payments: z
+      .array(PaymentSchema)
+      .exactOptional()
       .openapi({
-        description: 'The id of the billing contract.',
+        description: 'The list of payments, paid to the bunq.me fundraiser profile.',
         readOnly: true,
         writeOnly: false,
       }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp when the bunq.me was last updated.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BunqMeFundraiserResult')
+
+const BunqMeTabSchema = z
+  .object({
+    bunqme_tab_entry: BunqMeTabEntrySchema.openapi({
+      description: 'The bunq.me entry containing the payment information.',
+      readOnly: false,
+      writeOnly: false,
+    }),
     status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subscription status.', readOnly: true, writeOnly: false }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subscription substatus.', readOnly: true, writeOnly: false }),
-    subscription_type: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The subscription type of the user. Can be one of PERSON_SUPER_LIGHT_V1, PERSON_LIGHT_V1, PERSON_MORE_V1, PERSON_FREE_V1, PERSON_PREMIUM_V1, COMPANY_V1, or COMPANY_V2.',
+          'The status of the bunq.me. Ignored in POST requests but can be used for cancelling the bunq.me by setting status as CANCELLED with a PUT request.',
         readOnly: false,
         writeOnly: false,
       }),
-    subscription_type_downgrade: z
+  })
+  .openapi({ required: ['bunqme_tab_entry'] })
+  .openapi('BunqMeTab')
+
+const BunqMeTabResultResponseSchema = z
+  .object({
+    payment: PaymentSchema.exactOptional().openapi({
+      description: 'The payment made for the bunq.me tab.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BunqMeTabResultResponse')
+
+const CardCountryPermissionSchema = z
+  .object({
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The country to allow transactions in (e.g. NL, DE).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    expiry_time: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Expiry time of this rule.', readOnly: false, writeOnly: true }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the card country permission entry.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CardCountryPermission')
+
+const CardPinAssignmentSchema = z
+  .object({
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the monetary account to assign to this pin for the card.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    pin_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The 4 digit PIN to be assigned to this account.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    routing_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Routing type. Can be MANUAL or AUTOMATIC',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'PIN type. Can be PRIMARY, SECONDARY or TERTIARY',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CardPinAssignment')
+
+const CardPrimaryAccountNumberSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description for this PAN.', readOnly: false, writeOnly: false }),
+    four_digit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The last four digits of the PAN.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The ID for this Virtual PAN.', readOnly: false, writeOnly: false }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the monetary account to assign to this PAN, only for Online Cards.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status for this PAN, only for Online Cards.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The UUID for this Virtual PAN.', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('CardPrimaryAccountNumber')
+
+const CardSchema = z
+  .object({
+    activation_code: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The subscription type the user will have after a subscription downgrade. Will be null if downgrading is not possible.',
+          'DEPRECATED: Activate a card by setting status to ACTIVE when the order_status is ACCEPTED_FOR_PRODUCTION.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    card_limit: AmountSchema.exactOptional().openapi({
+      description: 'The spending limit for the card.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    card_limit_atm: AmountSchema.exactOptional().openapi({
+      description: 'The ATM spending limit for the card.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    country_permission: z
+      .array(CardCountryPermissionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The countries for which to grant (temporary) permissions to use the card.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    monetary_account_id_fallback: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the MA to be used as fallback for this card if insufficient balance. Fallback account is removed if not supplied.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    order_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The order status to set for the card. Set to CARD_REQUEST_PENDING to get a virtual card produced.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    pin_code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The plaintext pin code. Requests require encryption to be enabled.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    pin_code_assignment: z
+      .array(CardPinAssignmentSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Array of Types, PINs, account IDs assigned to the card.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    primary_account_numbers: z
+      .array(CardPrimaryAccountNumberSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Array of PANs and their attributes.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status to set for the card. Can be ACTIVE, DEACTIVATED, LOST, STOLEN or CANCELLED, and can only be set to LOST/STOLEN/CANCELLED when order status is ACCEPTED_FOR_PRODUCTION/DELIVERED_TO_CUSTOMER/CARD_UPDATE_REQUESTED/CARD_UPDATE_SENT/CARD_UPDATE_ACCEPTED. Can only be set to DEACTIVATED after initial activation, i.e. order_status is DELIVERED_TO_CUSTOMER/CARD_UPDATE_REQUESTED/CARD_UPDATE_SENT/CARD_UPDATE_ACCEPTED. Mind that all the possible choices (apart from ACTIVE and DEACTIVATED) are permanent and cannot be changed after.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Card')
+
+const CardDebitSchema = z
+  .object({
+    alias: PointerSchema.exactOptional().openapi({
+      description:
+        'The pointer to the monetary account that will be connected at first with the card. Its IBAN code is also the one that will be printed on the card itself. The pointer must be of type IBAN.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    monetary_account_id_fallback: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the MA to be used as fallback for this card if insufficient balance. Fallback account is removed if not supplied.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    name_on_card: z
+      .string()
+      .openapi({
+        description:
+          "The user's name as it will be on the card. Check 'card-name' for the available card names for a user.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    order_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The order status of this card. Can be CARD_REQUEST_PENDING or VIRTUAL_DELIVERY.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    pin_code_assignment: z
+      .array(CardPinAssignmentSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Array of Types, PINs, account IDs assigned to the card.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    preferred_name_on_card: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The user's preferred name that can be put on the card.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    product_type: z
+      .string()
+      .openapi({
+        description: 'The product type of the card to order.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    second_line: z
+      .string()
+      .openapi({
+        description:
+          'The second line of text on the card, used as name/description for it. It can contain at most 17 characters and it can be empty.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    type: z
+      .string()
+      .openapi({
+        description: 'The type of card to order. Can be MAESTRO or MASTERCARD.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: ['second_line', 'name_on_card', 'type', 'product_type'] })
+  .openapi('CardDebit')
+
+const DraftPaymentSchema: z.ZodType<DraftPaymentType> = z
+  .object({
+    entries: z
+      .array(DraftPaymentEntrySchema)
+      .openapi({
+        description:
+          'The list of entries in the DraftPayment. Each entry will result in a payment when the DraftPayment is accepted.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    number_of_required_accepts: z
+      .int()
+      .openapi({
+        description:
+          'The number of accepts that are required for the draft payment to receive status ACCEPTED. Currently only 1 is valid.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    previous_updated_timestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last updated_timestamp that you received for this DraftPayment. This needs to be provided to prevent race conditions.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    schedule: ScheduleSchema.exactOptional().openapi({
+      description: 'The schedule details when creating or updating a scheduled payment.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the DraftPayment.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: ['entries', 'number_of_required_accepts'] })
+  .openapi('DraftPayment')
+
+const FeatureAnnouncementSchema = z
+  .object({
+    avatar: AvatarSchema.exactOptional().openapi({
+      description: 'The Avatar of the event overview.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    sub_title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The event overview subtitle of the feature display',
         readOnly: true,
+        writeOnly: false,
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The event overview title of the feature display',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the feature announcement so apps can override with their own stuff if desired',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('FeatureAnnouncement')
+
+const IdealMerchantTransactionSchema = z
+  .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The alias of the monetary account to add money to.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_guaranteed: AmountSchema.exactOptional().openapi({
+      description:
+        'In case of a successful transaction, the amount of money that will be transferred.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_requested: AmountSchema.exactOptional().openapi({
+      description: 'The requested amount of money to add.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The alias of the monetary account the money comes from.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    expiration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'When the transaction will expire.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    issuer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The BIC of the issuer.', readOnly: false, writeOnly: false }),
+    issuer_authentication_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL to visit to ', readOnly: true, writeOnly: false }),
+    issuer_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Name of the issuer.', readOnly: true, writeOnly: false }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the monetary account this ideal merchant transaction links to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    purchase_identifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The 'purchase ID' of the iDEAL transaction.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the transaction.', readOnly: true, writeOnly: false }),
+    status_timestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'When the status was last updated.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    transaction_identifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The 'transaction ID' of the iDEAL transaction.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('IdealMerchantTransaction')
+
+const InvoiceItemSchema = z
+  .object({
+    billing_date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The billing date of the item.', readOnly: true, writeOnly: false }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the invoice item.', readOnly: true, writeOnly: false }),
+    quantity: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of items priced.', readOnly: true, writeOnly: false }),
+    total_vat_exclusive: AmountSchema.exactOptional().openapi({
+      description: 'The item price excluding VAT.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    total_vat_inclusive: AmountSchema.exactOptional().openapi({
+      description: 'The item price including VAT.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    type_description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The price description.', readOnly: true, writeOnly: false }),
+    type_description_translated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The translated price description.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    unit_vat_exclusive: AmountSchema.exactOptional().openapi({
+      description: 'The unit item price excluding VAT.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    unit_vat_inclusive: AmountSchema.exactOptional().openapi({
+      description: 'The unit item price including VAT.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    vat: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The VAT tax fraction.', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('InvoiceItem')
+
+const InvoiceItemGroupSchema = z
+  .object({
+    instance_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The identifier of the invoice item group.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    item: z
+      .array(InvoiceItemSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The invoice items in the group.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    product_vat_exclusive: AmountSchema.exactOptional().openapi({
+      description: 'The unit item price excluding VAT.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    product_vat_inclusive: AmountSchema.exactOptional().openapi({
+      description: 'The unit item price including VAT.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of the invoice item group.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    type_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the type of the invoice item group.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    type_description_translated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The translated description of the type of the invoice item group.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InvoiceItemGroup')
+
+const InvoiceSchema = z
+  .object({
+    address: AddressSchema.exactOptional().openapi({
+      description: "The customer's address.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        "The label that's displayed to the counterparty with the invoice. Includes user.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The category to display to the user.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    chamber_of_commerce_number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The company's chamber of commerce number.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    counterparty_address: AddressSchema.exactOptional().openapi({
+      description: "The company's address.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The label of the counterparty of the invoice. Includes user.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the invoice object's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    description: z
+      .string()
+      .openapi({
+        description: 'The description provided by the admin.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    external_url: z
+      .string()
+      .openapi({
+        description: 'The external url provided by the admin.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    group: z
+      .array(InvoiceItemGroupSchema)
+      .exactOptional()
+      .openapi({ description: 'The invoice item groups.', readOnly: true, writeOnly: false }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the invoice object.', readOnly: true, writeOnly: false }),
+    invoice_date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The invoice date.', readOnly: true, writeOnly: false }),
+    invoice_number: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The invoice number.', readOnly: true, writeOnly: false }),
+    request_reference_split_the_bill: z
+      .array(RequestInquiryReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The invoice status.', readOnly: false, writeOnly: false }),
+    total_vat: AmountSchema.exactOptional().openapi({
+      description: 'The VAT on the total discounted item price.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    total_vat_exclusive: AmountSchema.exactOptional().openapi({
+      description: 'The total discounted item price excluding VAT.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    total_vat_inclusive: AmountSchema.exactOptional().openapi({
+      description: 'The total discounted item price including VAT.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the invoice object's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    vat_number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The company's chamber of commerce number.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: ['description', 'external_url'] })
+  .openapi('Invoice')
+
+const AttachmentMasterCardActionRefundSchema = z
+  .object({
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the attached Attachment.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentMasterCardActionRefund')
+
+const AdditionalInformationSchema = z
+  .object({
+    attachment: z
+      .array(AttachmentMasterCardActionRefundSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Attachments to attach to the refund request.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The category of the refund, required for chargeback.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    comment: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Comment about the refund.', readOnly: true, writeOnly: false }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The reason to refund, required for chargeback.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    terms_and_conditions: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Proof that the user acknowledged the terms and conditions for chargebacks.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalInformation')
+
+const LabelCardSchema = z
+  .object({
+    expiry_date: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date this card will expire.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    label_user: LabelUserSchema.exactOptional().openapi({
+      description: 'The owner of this card.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    second_line: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The second line on the card.', readOnly: true, writeOnly: false }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the card.', readOnly: true, writeOnly: false }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the card.', readOnly: true, writeOnly: false }),
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The public UUID.', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('LabelCard')
+
+const MasterCardActionReferenceSchema = z
+  .object({
+    event_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the event.', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('MasterCardActionReference')
+
+const MasterCardActionRefundSchema = z
+  .object({
+    additional_information: AdditionalInformationSchema.exactOptional().openapi({
+      description: 'All additional information provided by the user.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The monetary account label of the account that this action is created for.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The amount to refund.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    attachment: z
+      .array(AttachmentMasterCardActionRefundSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Attachments to attach to the refund request.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The category of the refund, required for chargeback.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    comment: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Comment about the refund.', readOnly: false, writeOnly: true }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The monetary account label of the counterparty.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the refund's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description for this transaction to display.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the refund.', readOnly: true, writeOnly: false }),
+    label_card: LabelCardSchema.exactOptional().openapi({
+      description: 'The label of the card.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    label_user_creator: LabelUserSchema.exactOptional().openapi({
+      description: 'The label of the user who created this note.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    mastercard_action_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of mastercard action being refunded.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason of the refund. Can be REFUND_EXPIRED_TRANSACTION, REFUND_REQUESTED, REFUND_MERCHANT, REFUND_CHARGEBACK.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reference_mastercard_action_event: z
+      .array(MasterCardActionReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The reference to the object this refund applies to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the refunded mastercard action. Can be AUTO_APPROVED, AUTO_APPROVED_WAITING_FOR_EXPIRY, PENDING_APPROVAL, APPROVED, REFUNDED, DENIED or FAILED',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Description of the refund's current status.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status_description_translated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Description of the refund's current status, translated in user's language.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status_together_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Together topic concerning the refund's current status.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    sub_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sub type of this refund indicating whether the chargeback will be FULL or PARTIAL.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    terms_and_conditions: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Proof that the user acknowledged the terms and conditions for chargebacks.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    time_refund: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time the refund will take place.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Type of this refund. Can de REFUND or CHARGEBACK',
+        readOnly: false,
         writeOnly: false,
       }),
     updated: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The timestamp when the billing contract was last updated.',
+        description: "The timestamp of the refund's last update.",
         readOnly: true,
         writeOnly: false,
       }),
   })
   .openapi({ required: [] })
-  .openapi('BillingContractSubscription')
+  .openapi('MasterCardActionRefund')
 
-const BillingContractSubscriptionListingSchema = z
+type MasterCardActionType = {
+  alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  all_mastercard_action_refund?: z.infer<typeof MasterCardActionRefundSchema>[]
+  amount_billing?: z.infer<typeof AmountSchema>
+  amount_converted?: z.infer<typeof AmountSchema>
+  amount_fee?: z.infer<typeof AmountSchema>
+  amount_local?: z.infer<typeof AmountSchema>
+  amount_original_billing?: z.infer<typeof AmountSchema>
+  amount_original_local?: z.infer<typeof AmountSchema>
+  applied_limit?: string
+  authorisation_status?: string
+  authorisation_type?: string
+  card_authorisation_id_response?: string
+  card_id?: number
+  city?: string
+  clearing_expiry_time?: string
+  clearing_status?: string
+  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  decision?: string
+  decision_description?: string
+  decision_description_translated?: string
+  decision_together_url?: string
+  description?: string
+  eligible_whitelist_id?: number
+  id?: number
+  label_card?: z.infer<typeof LabelCardSchema>
+  maturity_date?: string
+  monetary_account_id?: number
+  pan_entry_mode_user?: string
+  payment_status?: string
+  pos_card_holder_presence?: string
+  pos_card_presence?: string
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  reservation_expiry_time?: string
+  secure_code_id?: number
+  settlement_status?: string
+  token_status?: string
+  wallet_provider_id?: string
+}
+
+const MasterCardActionSchema: z.ZodType<MasterCardActionType> = z
   .object({
-    contract_date_end: z
-      .string()
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The monetary account label of the account that this action is created for.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    all_mastercard_action_refund: z
+      .array(MasterCardActionRefundSchema)
       .exactOptional()
       .openapi({
-        description: 'The date until when the billing contract is valid.',
+        description: 'A reference to the Refunds if they exist.',
         readOnly: true,
         writeOnly: false,
       }),
-    contract_date_start: z
+    amount_billing: AmountSchema.exactOptional().openapi({
+      description: "The amount of the transaction in the monetary account's currency.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_converted: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the transaction in local currency.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_fee: AmountSchema.exactOptional().openapi({
+      description: 'The fee amount as charged by the merchant, if applicable.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_local: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the transaction in local currency.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_original_billing: AmountSchema.exactOptional().openapi({
+      description: "The original amount in the monetary account's currency.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_original_local: AmountSchema.exactOptional().openapi({
+      description: 'The original amount in local currency.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    applied_limit: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The date from when the billing contract is valid.',
+        description:
+          'The type of the limit applied to validate if this MasterCardAction was within the spending limits. The returned string matches the limit types as defined in the card endpoint.',
         readOnly: true,
         writeOnly: false,
       }),
-    contract_version: z
+    authorisation_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status in the authorisation process.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    authorisation_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of transaction that was delivered using the card.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    card_authorisation_id_response: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The response code by which authorised transaction can be identified as authorised by bunq.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    card_id: z
       .int()
       .exactOptional()
       .openapi({
-        description: 'The version of the billing contract.',
+        description: 'The id of the card this action links to.',
         readOnly: true,
         writeOnly: false,
       }),
-    created: z
+    city: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The timestamp when the billing contract was made.',
+        description: 'The city where the message originates from as announced by the terminal.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    clearing_expiry_time: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the processing of the clearing is expired, refunding the authorisation.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    clearing_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The clearing status of the authorisation. Can be 'PENDING', 'FIRST_PRESENTMENT_COMPLETE' or 'REFUND_LENIENCY'.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The monetary account label of the counterparty.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    decision: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Why the transaction was denied, if it was denied, or just ALLOWED.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    decision_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Empty if allowed, otherwise a textual explanation of why it was denied.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    decision_description_translated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Empty if allowed, otherwise a textual explanation of why it was denied in user's language.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    decision_together_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Empty if allowed or if no relevant Together topic exists, otherwise contains the URL for a Together topic with more information about the decision.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description for this transaction to display.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    eligible_whitelist_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The whitelist id for this action or null.',
         readOnly: true,
         writeOnly: false,
       }),
@@ -1346,33 +2943,373 @@ const BillingContractSubscriptionListingSchema = z
       .int()
       .exactOptional()
       .openapi({
-        description: 'The id of the billing contract.',
+        description: 'The id of the MastercardAction.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    label_card: LabelCardSchema.exactOptional().openapi({
+      description: 'The label of the card.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    maturity_date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The maturity date.', readOnly: true, writeOnly: false }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the monetary account this action links to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    pan_entry_mode_user: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The type of entry mode the user used. Can be 'ATM', 'ICC', 'MAGNETIC_STRIPE' or 'E_COMMERCE'.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    payment_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The payment status of the transaction. For example PAYMENT_SUCCESSFUL, for a successful payment.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    pos_card_holder_presence: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The Card Holder Presence type of the POS.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    pos_card_presence: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The Card Presence type of the POS.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    request_reference_split_the_bill: z
+      .array(RequestInquiryReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    reservation_expiry_time: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If this is a reservation, the moment the reservation will expire.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    secure_code_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The secure code id for this mastercard action or null.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    settlement_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The setlement status in the authorisation process.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    token_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If this is a tokenisation action, this shows the status of the token.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    wallet_provider_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the wallet provider as defined by MasterCard. 420 = bunq Android app with Tap&Pay; 103 = Apple Pay.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MasterCardAction')
+
+const BunqIdSchema = z
+  .object({
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'An integer ID of an object. Unique per object type.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BunqId')
+
+type GeolocationType = { altitude?: number; latitude?: number; longitude?: number; radius?: number }
+
+const GeolocationSchema: z.ZodType<GeolocationType> = z
+  .object({
+    altitude: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The altitude for a geolocation restriction.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    latitude: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The latitude for a geolocation restriction.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    longitude: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The longitude for a geolocation restriction.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    radius: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The radius for a geolocation restriction.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Geolocation')
+
+const RequestResponseSchema = z
+  .object({
+    address_billing: AddressSchema.exactOptional().openapi({
+      description:
+        'The billing address provided by the accepting user if an address was requested.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    address_shipping: AddressSchema.exactOptional().openapi({
+      description:
+        'The shipping address provided by the accepting user if an address was requested.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount with the public information of the MonetaryAccount this RequestResponse was received on.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_inquired: AmountSchema.exactOptional().openapi({
+      description: 'The requested Amount.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_responded: AmountSchema.exactOptional().openapi({
+      description: 'The Amount the RequestResponse was accepted with.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    attachment: z
+      .array(AttachmentSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Attachments attached to the RequestResponse.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount with the public information of the MonetaryAccount that is requesting money with this RequestResponse.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp when the Request Response was created.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    credit_scheme_identifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The credit scheme id provided by the counterparty for DIRECT_DEBIT inquiries.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description for the RequestResponse provided by the requesting party. Maximum 9000 characters.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    eligible_whitelist_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The whitelist id for this action or null.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    event_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the latest event for the request.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    geolocation: GeolocationSchema.exactOptional().openapi({
+      description: 'The Geolocation where the RequestResponse was created.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the Request Response.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    mandate_identifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The mandate id provided by the counterparty for DIRECT_DEBIT inquiries.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    minimum_age: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The minimum age the user accepting the RequestResponse must have.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the MonetaryAccount the RequestResponse was received on.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    redirect_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL which the user is sent to after accepting or rejecting the Request.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    request_reference_split_the_bill: z
+      .array(RequestInquiryReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    require_address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not an address must be provided on accept.',
         readOnly: true,
         writeOnly: false,
       }),
     status: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The subscription status.', readOnly: true, writeOnly: false }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subscription substatus.', readOnly: true, writeOnly: false }),
-    subscription_type: z
+      .openapi({
+        description:
+          'The status of the RequestResponse. Can be ACCEPTED, PENDING, REJECTED, REFUND_REQUESTED, REFUNDED or REVOKED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_type: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The subscription type of the user. Can be one of PERSON_SUPER_LIGHT_V1, PERSON_LIGHT_V1, PERSON_MORE_V1, PERSON_FREE_V1, PERSON_PREMIUM_V1, COMPANY_V1, or COMPANY_V2.',
+          'The subtype of the RequestInquiry. Can be ONCE or RECURRING for DIRECT_DEBIT RequestInquiries and NONE for all other.',
         readOnly: true,
         writeOnly: false,
       }),
-    subscription_type_downgrade: z
+    time_expiry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of when the RequestResponse expired or will expire.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    time_refund_requested: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of when a refund request for the RequestResponse was claimed.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    time_refunded: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of when the RequestResponse was refunded.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    time_responded: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of when the RequestResponse was responded to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    type: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The subscription type the user will have after a subscription downgrade. Will be null if downgrading is not possible.',
+          'The type of the RequestInquiry. Can be DIRECT_DEBIT, DIRECT_DEBIT_B2B, IDEAL, SOFORT or INTERNAL.',
         readOnly: true,
         writeOnly: false,
       }),
@@ -1380,13 +3317,1908 @@ const BillingContractSubscriptionListingSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The timestamp when the billing contract was last updated.',
+        description:
+          'The timestamp when the Request Response was last updated (will be updated when chat messages are received).',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    user_refund_requested: LabelUserSchema.exactOptional().openapi({
+      description: 'The label of the user that requested the refund.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('RequestResponse')
+
+const ErrorSchema: z.ZodType<ErrorType> = z
+  .array(
+    z
+      .object({
+        error_description: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The error description in English.' }),
+        error_description_translated: z
+          .string()
+          .exactOptional()
+          .openapi({ description: "The error description translated to the user's language." }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('Error')
+
+const ScheduleInstanceAnchorObjectSchema = z
+  .object({
+    Payment: PaymentSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ScheduleInstanceAnchorObject')
+
+type ScheduleInstanceType = {
+  error_message?: z.infer<typeof ErrorSchema>[]
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  result_object?: z.infer<typeof ScheduleInstanceAnchorObjectSchema>
+  scheduled_object?: z.infer<typeof ScheduleAnchorObjectSchema>
+  state?: string
+  time_end?: string
+  time_start?: string
+}
+
+const ScheduleInstanceSchema: z.ZodType<ScheduleInstanceType> = z
+  .object({
+    error_message: z
+      .array(ErrorSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The message when the scheduled instance has run and failed due to user error.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    request_reference_split_the_bill: z
+      .array(RequestInquiryReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    result_object: ScheduleInstanceAnchorObjectSchema.exactOptional().openapi({
+      description: 'The result object of this schedule instance. (Payment, PaymentBatch)',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    scheduled_object: ScheduleAnchorObjectSchema.exactOptional().openapi({
+      description: 'The scheduled object. (Payment, PaymentBatch)',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The state of the scheduleInstance. (FINISHED_SUCCESSFULLY, RETRY, FAILED_USER_ERROR)',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    time_end: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The schedule end time (UTC).', readOnly: true, writeOnly: false }),
+    time_start: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The schedule start time (UTC).', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('ScheduleInstance')
+
+const TransferwiseQuoteSchema = z
+  .object({
+    amount_fee: AmountSchema.exactOptional().openapi({
+      description: 'The fee amount.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_source: AmountSchema.exactOptional().openapi({
+      description: 'The source amount.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    amount_target: AmountSchema.exactOptional().openapi({
+      description: 'The target amount.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the quote's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    currency_source: z
+      .string()
+      .openapi({ description: 'The source currency.', readOnly: false, writeOnly: true }),
+    currency_target: z
+      .string()
+      .openapi({ description: 'The target currency.', readOnly: false, writeOnly: true }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the quote.', readOnly: true, writeOnly: false }),
+    quote_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The quote id Transferwise needs.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    rate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The rate.', readOnly: true, writeOnly: false }),
+    time_delivery_estimate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The estimated delivery time.', readOnly: true, writeOnly: false }),
+    time_expiry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The expiration timestamp of the quote.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the quote's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: ['currency_source', 'currency_target'] })
+  .openapi('TransferwiseQuote')
+
+const TransferwiseTransferSchema = z
+  .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        "The LabelMonetaryAccount containing the public information of 'this' (party) side of the Payment.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_source: AmountSchema.exactOptional().openapi({
+      description: 'The source amount.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_target: AmountSchema.exactOptional().openapi({
+      description: 'The target amount.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount containing the public information of the other (counterparty) side of the Payment.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    monetary_account_id: z
+      .string()
+      .openapi({
+        description: 'The id of the monetary account the payment should be made from.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    pay_in_reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The Pay-In reference of the payment.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    quote: TransferwiseQuoteSchema.exactOptional().openapi({
+      description: 'The quote details used to created the payment.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    rate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The rate of the payment.', readOnly: true, writeOnly: false }),
+    recipient_id: z
+      .string()
+      .openapi({ description: 'The id of the target account.', readOnly: false, writeOnly: true }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference of the payment.', readOnly: true, writeOnly: false }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status.', readOnly: true, writeOnly: false }),
+    status_transferwise: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status as Transferwise reports it.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status_transferwise_issue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A status to indicatie if Transferwise has an issue with this payment and requires more information.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subStatus.', readOnly: true, writeOnly: false }),
+    time_delivery_estimate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The estimated delivery time.', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: ['monetary_account_id', 'recipient_id'] })
+  .openapi('TransferwiseTransfer')
+
+type WhitelistResultViewAnchoredObjectType = {
+  draftPayment?: z.infer<typeof DraftPaymentSchema>
+  id?: number
+  requestResponse?: z.infer<typeof RequestResponseSchema>
+}
+
+const WhitelistResultViewAnchoredObjectSchema: z.ZodType<WhitelistResultViewAnchoredObjectType> = z
+  .object({
+    draftPayment: DraftPaymentSchema.exactOptional().openapi({
+      description: 'The DraftPayment object',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The ID of the whitelist entry.', readOnly: true, writeOnly: false }),
+    requestResponse: RequestResponseSchema.exactOptional().openapi({
+      description: 'The RequestResponse object',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('WhitelistResultViewAnchoredObject')
+
+const WhitelistSchema = z.looseObject({}).openapi('Whitelist')
+
+type WhitelistResultType = {
+  error_message?: z.infer<typeof ErrorSchema>[]
+  id?: number
+  monetary_account_paying_id?: number
+  object?: z.infer<typeof WhitelistResultViewAnchoredObjectSchema>
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  status?: string
+  sub_status?: string
+  whitelist?: z.infer<typeof WhitelistSchema>
+}
+
+const WhitelistResultSchema: z.ZodType<WhitelistResultType> = z
+  .object({
+    error_message: z
+      .array(ErrorSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The message when the whitelist result has failed due to user error.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The ID of the whitelist entry.', readOnly: true, writeOnly: false }),
+    monetary_account_paying_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The account from which payments will be deducted when a transaction is matched with this whitelist.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    object: WhitelistResultViewAnchoredObjectSchema.exactOptional().openapi({
+      description: 'The details of the external object the event was created for.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    request_reference_split_the_bill: z
+      .array(RequestInquiryReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the WhitelistResult.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The subStatus of the WhitelistResult.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    whitelist: WhitelistSchema.exactOptional().openapi({
+      description: 'The corresponding whitelist.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('WhitelistResult')
+
+type RequestReferenceSplitTheBillAnchorObjectType = {
+  BillingInvoice?: z.infer<typeof InvoiceSchema>
+  DraftPayment?: z.infer<typeof DraftPaymentSchema>
+  MasterCardAction?: z.infer<typeof MasterCardActionSchema>
+  Payment?: z.infer<typeof PaymentSchema>
+  PaymentBatch?: z.infer<typeof PaymentBatchSchema>
+  RequestResponse?: z.infer<typeof RequestResponseSchema>
+  ScheduleInstance?: z.infer<typeof ScheduleInstanceSchema>
+  TransferwisePayment?: z.infer<typeof TransferwiseTransferSchema>
+  WhitelistResult?: z.infer<typeof WhitelistResultSchema>
+}
+
+const RequestReferenceSplitTheBillAnchorObjectSchema: z.ZodType<RequestReferenceSplitTheBillAnchorObjectType> =
+  z
+    .object({
+      BillingInvoice: InvoiceSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+      DraftPayment: DraftPaymentSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+      MasterCardAction: MasterCardActionSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+      Payment: PaymentSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+      PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+      RequestResponse: RequestResponseSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+      ScheduleInstance: ScheduleInstanceSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+      TransferwisePayment: TransferwiseTransferSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+      WhitelistResult: WhitelistResultSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('RequestReferenceSplitTheBillAnchorObject')
+
+type RequestInquiryType = {
+  address_billing?: z.infer<typeof AddressSchema>
+  address_shipping?: z.infer<typeof AddressSchema>
+  allow_amount_higher?: boolean
+  allow_amount_lower?: boolean
+  allow_bunqme: boolean
+  amount_inquired?: z.infer<typeof AmountSchema>
+  amount_responded?: z.infer<typeof AmountSchema>
+  attachment?: z.infer<typeof BunqIdSchema>[]
+  batch_id?: number
+  bunqme_share_url?: string
+  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  created?: string
+  description?: string
+  event_id?: number
+  geolocation?: z.infer<typeof GeolocationSchema>
+  id?: number
+  merchant_reference?: string
+  minimum_age?: number
+  monetary_account_id?: number
+  redirect_url?: string
+  reference_split_the_bill?: z.infer<typeof RequestReferenceSplitTheBillAnchorObjectSchema>
+  require_address?: string
+  scheduled_id?: number
+  status?: string
+  time_expiry?: string
+  time_responded?: string
+  updated?: string
+  user_alias_created?: z.infer<typeof LabelUserSchema>
+  user_alias_revoked?: z.infer<typeof LabelUserSchema>
+  want_tip?: boolean
+}
+
+const RequestInquirySchema: z.ZodType<RequestInquiryType> = z
+  .object({
+    address_billing: AddressSchema.exactOptional().openapi({
+      description:
+        'The billing address provided by the accepting user if an address was requested.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    address_shipping: AddressSchema.exactOptional().openapi({
+      description:
+        'The shipping address provided by the accepting user if an address was requested.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    allow_amount_higher: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          '[DEPRECATED] Whether or not the accepting user can choose to accept with a higher amount than requested. Defaults to false.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    allow_amount_lower: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          '[DEPRECATED] Whether or not the accepting user can choose to accept with a lower amount than requested. Defaults to false.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    allow_bunqme: z
+      .boolean()
+      .openapi({
+        description: 'Whether or not sending a bunq.me request is allowed.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    amount_inquired: AmountSchema.exactOptional().openapi({
+      description: 'The requested amount.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    amount_responded: AmountSchema.exactOptional().openapi({
+      description: 'The responded amount.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    attachment: z
+      .array(BunqIdSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The attachments attached to the payment.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    batch_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the batch if the request was part of a batch.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    bunqme_share_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The url that points to the bunq.me request.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount with the public information of the MonetaryAccount the money was requested from.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the payment request's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the inquiry.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    event_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the associated event if the request was made using 'split the bill'.",
+        readOnly: false,
+        writeOnly: true,
+      }),
+    geolocation: GeolocationSchema.exactOptional().openapi({
+      description: 'The geolocation where the payment was done.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the created RequestInquiry.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    merchant_reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The client's custom reference that was attached to the request and the mutation.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    minimum_age: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The minimum age the user accepting the RequestInquiry must have.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the monetary account the request response applies to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    redirect_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL which the user is sent to after accepting or rejecting the Request.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reference_split_the_bill:
+      RequestReferenceSplitTheBillAnchorObjectSchema.exactOptional().openapi({
+        description:
+          'The reference to the object used for split the bill. Can be Payment, PaymentBatch, ScheduleInstance, RequestResponse and MasterCardAction',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    require_address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not an address must be provided on accept.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    scheduled_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the scheduled job if the request was scheduled.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the request.', readOnly: false, writeOnly: false }),
+    time_expiry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of when the payment request expired.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    time_responded: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of when the payment request was responded to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the payment request's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    user_alias_created: LabelUserSchema.exactOptional().openapi({
+      description:
+        "The label that's displayed to the counterparty with the mutation. Includes user.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    user_alias_revoked: LabelUserSchema.exactOptional().openapi({
+      description:
+        "The label that's displayed to the counterparty with the mutation. Includes user.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    want_tip: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          '[DEPRECATED] Whether or not the accepting user can give an extra tip on top of the requested Amount. Defaults to false.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+  })
+  .openapi({ required: ['allow_bunqme'] })
+  .openapi('RequestInquiry')
+
+type RequestInquiryBatchType = {
+  event_id?: number
+  reference_split_the_bill?: z.infer<typeof RequestReferenceSplitTheBillAnchorObjectSchema>
+  request_inquiries?: z.infer<typeof RequestInquirySchema>[]
+  status?: string
+  total_amount_inquired?: z.infer<typeof AmountSchema>
+}
+
+const RequestInquiryBatchSchema: z.ZodType<RequestInquiryBatchType> = z
+  .object({
+    event_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the associated event if the request batch was made using 'split the bill'.",
+        readOnly: false,
+        writeOnly: true,
+      }),
+    reference_split_the_bill:
+      RequestReferenceSplitTheBillAnchorObjectSchema.exactOptional().openapi({
+        description:
+          'The reference to the object used for split the bill. Can be Payment, PaymentBatch, ScheduleInstance, RequestResponse and MasterCardAction',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    request_inquiries: z
+      .array(RequestInquirySchema)
+      .exactOptional()
+      .openapi({
+        description: 'The list of requests that were made.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the request.', readOnly: false, writeOnly: true }),
+    total_amount_inquired: AmountSchema.exactOptional().openapi({
+      description: 'The total amount originally inquired for this batch.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('RequestInquiryBatch')
+
+const RewardRecipientSchema = z
+  .object({
+    amount_reward: AmountSchema.exactOptional().openapi({
+      description: 'The amount that will be/was awarded as reward for the reward.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    counterparty_alias: LabelUserSchema.exactOptional().openapi({
+      description: 'The alias of the other user eligible for the reward award.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time the reward was created.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the reward.', readOnly: true, writeOnly: false }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the reward.', readOnly: true, writeOnly: false }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subStatus of the reward.', readOnly: true, writeOnly: false }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the reward.', readOnly: true, writeOnly: false }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time the reward was last updated.',
         readOnly: true,
         writeOnly: false,
       }),
   })
   .openapi({ required: [] })
-  .openapi('BillingContractSubscriptionListing')
+  .openapi('RewardRecipient')
+
+const RewardSenderSchema = z
+  .object({
+    amount_reward: AmountSchema.exactOptional().openapi({
+      description: 'The amount that will be/was awarded as reward for the reward.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    counterparty_alias: LabelUserSchema.exactOptional().openapi({
+      description: 'The alias of the other user eligible for the reward award.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time the reward was created.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the reward.', readOnly: true, writeOnly: false }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the reward.', readOnly: true, writeOnly: false }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subStatus of the reward.', readOnly: true, writeOnly: false }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the reward.', readOnly: true, writeOnly: false }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time the reward was last updated.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RewardSender')
+
+const SchedulePaymentEntrySchema = z
+  .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        "The LabelMonetaryAccount containing the public information of 'this' (party) side of the Payment.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    allow_bunqto: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not sending a bunq.to payment is allowed.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        'The Amount transferred by the Payment. Will be negative for outgoing Payments and positive for incoming Payments (relative to the MonetaryAccount indicated by monetary_account_id).',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    attachment: z
+      .array(AttachmentMonetaryAccountPaymentSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Attachments attached to the Payment.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount containing the public information of the other (counterparty) side of the Payment.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description for the Payment. Maximum 140 characters for Payments to external IBANs, 9000 characters for Payments to only other bunq MonetaryAccounts.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    merchant_reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional data included with the Payment specific to the merchant.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SchedulePaymentEntry')
+
+type SchedulePaymentType = {
+  payment?: z.infer<typeof SchedulePaymentEntrySchema>
+  schedule?: z.infer<typeof ScheduleSchema>
+  status?: string
+}
+
+const SchedulePaymentSchema: z.ZodType<SchedulePaymentType> = z
+  .object({
+    payment: SchedulePaymentEntrySchema.exactOptional().openapi({
+      description: 'The payment details.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    schedule: ScheduleSchema.exactOptional().openapi({
+      description: 'The schedule details.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The schedule status, options: ACTIVE, FINISHED, CANCELLED.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SchedulePayment')
+
+type SchedulePaymentBatchType = {
+  payments?: z.infer<typeof SchedulePaymentEntrySchema>[]
+  schedule?: z.infer<typeof ScheduleSchema>
+}
+
+const SchedulePaymentBatchSchema: z.ZodType<SchedulePaymentBatchType> = z
+  .object({
+    payments: z
+      .array(SchedulePaymentEntrySchema)
+      .exactOptional()
+      .openapi({ description: 'The payment details.', readOnly: false, writeOnly: false }),
+    schedule: ScheduleSchema.exactOptional().openapi({
+      description: 'The schedule details.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('SchedulePaymentBatch')
+
+const ShareDetailDraftPaymentSchema = z
+  .object({
+    make_draft_payments: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to make draft payments from the shared account.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    view_balance: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If set to true, the invited user will be able to view the account balance.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    view_new_events: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to view events starting from the time the share became active.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    view_old_events: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to view events from before the share was active.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShareDetailDraftPayment')
+
+const ShareDetailPaymentSchema = z
+  .object({
+    make_draft_payments: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to make draft payments from the shared account.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    make_payments: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to make payments from the shared account.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    view_balance: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If set to true, the invited user will be able to view the account balance.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    view_new_events: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to view events starting from the time the share became active.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    view_old_events: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to view events from before the share was active.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShareDetailPayment')
+
+const ShareDetailReadOnlySchema = z
+  .object({
+    view_balance: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If set to true, the invited user will be able to view the account balance.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    view_new_events: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to view events starting from the time the share became active.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    view_old_events: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, the invited user will be able to view events from before the share was active.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShareDetailReadOnly')
+
+const ShareDetailSchema = z
+  .object({
+    draft_payment: ShareDetailDraftPaymentSchema.exactOptional().openapi({
+      description:
+        "The share details for a draft payment share. In the response 'draft_payment' is replaced by 'ShareDetailDraftPayment'.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    payment: ShareDetailPaymentSchema.exactOptional().openapi({
+      description:
+        "The share details for a payment share. In the response 'payment' is replaced by 'ShareDetailPayment'.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    read_only: ShareDetailReadOnlySchema.exactOptional().openapi({
+      description:
+        "The share details for viewing a share. In the response 'read_only' is replaced by 'ShareDetailReadOnly'.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShareDetail')
+
+const ShareInviteMonetaryAccountInquirySchema = z
+  .object({
+    access_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Type of access that is in place.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: "The label of the monetary account that's being shared.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    counter_user_alias: LabelUserSchema.exactOptional().openapi({
+      description: 'The label of the user to share with.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    draft_share_invite_bank_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'DEPRECATED: USE `access_type` INSTEAD | The id of the draft share invite bank.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    end_date: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'DEPRECATED: USE `access_type` INSTEAD | The expiration date of this share.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the newly created share invite.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the monetary account the share applies to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    relationship: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The relationship: COMPANY_DIRECTOR, COMPANY_EMPLOYEE, etc',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    share_detail: ShareDetailSchema.exactOptional().openapi({
+      description:
+        'DEPRECATED: USE `access_type` INSTEAD | The share details. Only one of these objects may be passed.',
+      readOnly: false,
+      writeOnly: true,
+    }),
+    share_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'DEPRECATED: USE `access_type` INSTEAD | The share type, either STANDARD or MUTUAL.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    start_date: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'DEPRECATED: USE `access_type` INSTEAD | The start date of this share.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the share. Can be ACTIVE, REVOKED, REJECTED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    user_alias_created: LabelUserSchema.exactOptional().openapi({
+      description: 'The user who created the share.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    user_alias_revoked: LabelUserSchema.exactOptional().openapi({
+      description: 'The user who revoked the share.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShareInviteMonetaryAccountInquiry')
+
+const ShareInviteMonetaryAccountResponseSchema = z
+  .object({
+    access_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of access that is wanted, one of VIEW_BALANCE, VIEW_TRANSACTION, DRAFT_PAYMENT or FULL_TRANSIENT',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    card_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The card to link to the shared monetary account. Used only if share_detail is ShareDetailCardPayment.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    counter_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The monetary account and user who created the share.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of the ShareInviteBankResponse creation.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description of this share. It is basically the monetary account description.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    draft_share_invite_bank_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the draft share invite bank.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    end_date: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The expiration date of this share.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the ShareInviteBankResponse.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the monetary account the ACCEPTED share applies to. null otherwise.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    relation_user: RelationUserSchema.exactOptional().openapi({
+      description: 'All of the relation users towards this MA.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    share_detail: ShareDetailSchema.exactOptional().openapi({
+      description: 'The share details.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    share_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The share type, either STANDARD or MUTUAL.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    start_date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The start date of this share.', readOnly: true, writeOnly: false }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the share. Can be ACTIVE, REVOKED, REJECTED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of the ShareInviteBankResponse last update.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    user_alias_cancelled: LabelUserSchema.exactOptional().openapi({
+      description: 'The user who cancelled the share if it has been revoked or rejected.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShareInviteMonetaryAccountResponse')
+
+const SofortMerchantTransactionSchema = z
+  .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The alias of the monetary account to add money to.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_guaranteed: AmountSchema.exactOptional().openapi({
+      description:
+        'In case of a successful transaction, the amount of money that will be transferred.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount_requested: AmountSchema.exactOptional().openapi({
+      description: 'The requested amount of money to add.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The alias of the monetary account the money comes from.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    error_message: z
+      .array(ErrorSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The error message of the transaction.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    issuer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The BIC of the issuer.', readOnly: false, writeOnly: false }),
+    issuer_authentication_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL to visit to ', readOnly: true, writeOnly: false }),
+    monetary_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the monetary account this sofort merchant transaction links to.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the transaction.', readOnly: true, writeOnly: false }),
+    transaction_identifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The 'transaction ID' of the Sofort transaction.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SofortMerchantTransaction')
+
+type EventObjectType = {
+  BankSwitchServiceNetherlandsIncomingPayment?: z.infer<
+    typeof BankSwitchServiceNetherlandsIncomingPaymentSchema
+  >
+  BunqMeFundraiserResult?: z.infer<typeof BunqMeFundraiserResultSchema>
+  BunqMeTab?: z.infer<typeof BunqMeTabSchema>
+  BunqMeTabResultResponse?: z.infer<typeof BunqMeTabResultResponseSchema>
+  Card?: z.infer<typeof CardSchema>
+  CardDebit?: z.infer<typeof CardDebitSchema>
+  DraftPayment?: z.infer<typeof DraftPaymentSchema>
+  FeatureAnnouncement?: z.infer<typeof FeatureAnnouncementSchema>
+  IdealMerchantTransaction?: z.infer<typeof IdealMerchantTransactionSchema>
+  Invoice?: z.infer<typeof InvoiceSchema>
+  MasterCardAction?: z.infer<typeof MasterCardActionSchema>
+  Payment?: z.infer<typeof PaymentSchema>
+  PaymentBatch?: z.infer<typeof PaymentBatchSchema>
+  RequestInquiry?: z.infer<typeof RequestInquirySchema>
+  RequestInquiryBatch?: z.infer<typeof RequestInquiryBatchSchema>
+  RequestResponse?: z.infer<typeof RequestResponseSchema>
+  RewardRecipient?: z.infer<typeof RewardRecipientSchema>
+  RewardSender?: z.infer<typeof RewardSenderSchema>
+  ScheduledInstance?: z.infer<typeof ScheduleInstanceSchema>
+  ScheduledPayment?: z.infer<typeof SchedulePaymentSchema>
+  ScheduledPaymentBatch?: z.infer<typeof SchedulePaymentBatchSchema>
+  ShareInviteBankInquiry?: z.infer<typeof ShareInviteMonetaryAccountInquirySchema>
+  ShareInviteBankResponse?: z.infer<typeof ShareInviteMonetaryAccountResponseSchema>
+  SofortMerchantTransaction?: z.infer<typeof SofortMerchantTransactionSchema>
+  TransferwisePayment?: z.infer<typeof TransferwiseTransferSchema>
+}
+
+const EventObjectSchema: z.ZodType<EventObjectType> = z
+  .object({
+    BankSwitchServiceNetherlandsIncomingPayment:
+      BankSwitchServiceNetherlandsIncomingPaymentSchema.exactOptional().openapi({
+        description: '',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    BunqMeFundraiserResult: BunqMeFundraiserResultSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    BunqMeTab: BunqMeTabSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    BunqMeTabResultResponse: BunqMeTabResultResponseSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    Card: CardSchema.exactOptional().openapi({ description: '', readOnly: true, writeOnly: false }),
+    CardDebit: CardDebitSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    DraftPayment: DraftPaymentSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    FeatureAnnouncement: FeatureAnnouncementSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    IdealMerchantTransaction: IdealMerchantTransactionSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    Invoice: InvoiceSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    MasterCardAction: MasterCardActionSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    Payment: PaymentSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    RequestInquiry: RequestInquirySchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    RequestInquiryBatch: RequestInquiryBatchSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    RequestResponse: RequestResponseSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    RewardRecipient: RewardRecipientSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    RewardSender: RewardSenderSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    ScheduledInstance: ScheduleInstanceSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    ScheduledPayment: SchedulePaymentSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    ScheduledPaymentBatch: SchedulePaymentBatchSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    ShareInviteBankInquiry: ShareInviteMonetaryAccountInquirySchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    ShareInviteBankResponse: ShareInviteMonetaryAccountResponseSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    SofortMerchantTransaction: SofortMerchantTransactionSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    TransferwisePayment: TransferwiseTransferSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('EventObject')
+
+type EventListingType = {
+  action?: string
+  created?: string
+  id?: number
+  monetary_account_id?: string
+  object?: z.infer<typeof EventObjectSchema>
+  status?: string
+  updated?: string
+  user_id?: string
+}
+
+type EventReadType = {
+  action?: string
+  created?: string
+  id?: number
+  monetary_account_id?: string
+  object?: z.infer<typeof EventObjectSchema>
+  status?: string
+  updated?: string
+  user_id?: string
+}
+
+type InsightEventListingType = {
+  action?: string
+  created?: string
+  id?: number
+  monetary_account_id?: string
+  object?: z.infer<typeof EventObjectSchema>
+  status?: string
+  updated?: string
+  user_id?: string
+}
+
+type MasterCardActionListingType = {
+  alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  all_mastercard_action_refund?: z.infer<typeof MasterCardActionRefundSchema>[]
+  amount_billing?: z.infer<typeof AmountSchema>
+  amount_converted?: z.infer<typeof AmountSchema>
+  amount_fee?: z.infer<typeof AmountSchema>
+  amount_local?: z.infer<typeof AmountSchema>
+  amount_original_billing?: z.infer<typeof AmountSchema>
+  amount_original_local?: z.infer<typeof AmountSchema>
+  applied_limit?: string
+  authorisation_status?: string
+  authorisation_type?: string
+  card_authorisation_id_response?: string
+  card_id?: number
+  city?: string
+  clearing_expiry_time?: string
+  clearing_status?: string
+  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  decision?: string
+  decision_description?: string
+  decision_description_translated?: string
+  decision_together_url?: string
+  description?: string
+  eligible_whitelist_id?: number
+  id?: number
+  label_card?: z.infer<typeof LabelCardSchema>
+  maturity_date?: string
+  monetary_account_id?: number
+  pan_entry_mode_user?: string
+  payment_status?: string
+  pos_card_holder_presence?: string
+  pos_card_presence?: string
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  reservation_expiry_time?: string
+  secure_code_id?: number
+  settlement_status?: string
+  token_status?: string
+  wallet_provider_id?: string
+}
+
+type MasterCardActionReadType = {
+  alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  all_mastercard_action_refund?: z.infer<typeof MasterCardActionRefundSchema>[]
+  amount_billing?: z.infer<typeof AmountSchema>
+  amount_converted?: z.infer<typeof AmountSchema>
+  amount_fee?: z.infer<typeof AmountSchema>
+  amount_local?: z.infer<typeof AmountSchema>
+  amount_original_billing?: z.infer<typeof AmountSchema>
+  amount_original_local?: z.infer<typeof AmountSchema>
+  applied_limit?: string
+  authorisation_status?: string
+  authorisation_type?: string
+  card_authorisation_id_response?: string
+  card_id?: number
+  city?: string
+  clearing_expiry_time?: string
+  clearing_status?: string
+  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  decision?: string
+  decision_description?: string
+  decision_description_translated?: string
+  decision_together_url?: string
+  description?: string
+  eligible_whitelist_id?: number
+  id?: number
+  label_card?: z.infer<typeof LabelCardSchema>
+  maturity_date?: string
+  monetary_account_id?: number
+  pan_entry_mode_user?: string
+  payment_status?: string
+  pos_card_holder_presence?: string
+  pos_card_presence?: string
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  reservation_expiry_time?: string
+  secure_code_id?: number
+  settlement_status?: string
+  token_status?: string
+  wallet_provider_id?: string
+}
+
+const MonetaryAccountProfileDrainSchema = z
+  .object({
+    balance_preferred: AmountSchema.exactOptional().openapi({
+      description: 'The goal balance.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    balance_threshold_high: AmountSchema.exactOptional().openapi({
+      description: 'The high threshold balance.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    savings_account_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The savings monetary account.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the profile.', readOnly: false, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('MonetaryAccountProfileDrain')
+
+const IssuerSchema = z
+  .object({
+    bic: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The BIC code.', readOnly: false, writeOnly: false }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the bank.', readOnly: false, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('Issuer')
+
+const MonetaryAccountProfileFillSchema = z
+  .object({
+    balance_preferred: AmountSchema.exactOptional().openapi({
+      description: 'The goal balance.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    balance_threshold_low: AmountSchema.exactOptional().openapi({
+      description: 'The low threshold balance.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    issuer: IssuerSchema.exactOptional().openapi({
+      description: 'The bank the fill is supposed to happen from, with BIC and bank name.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    method_fill: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The method used to fill the monetary account. Currently only iDEAL is supported, and it is the default one.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status of the profile.', readOnly: false, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('MonetaryAccountProfileFill')
+
+const MonetaryAccountProfileSchema = z
+  .object({
+    profile_drain: MonetaryAccountProfileDrainSchema.exactOptional().openapi({
+      description: 'The profile settings for moving excesses to a savings account',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    profile_fill: MonetaryAccountProfileFillSchema.exactOptional().openapi({
+      description: 'The profile settings for triggering the fill of a monetary account.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('MonetaryAccountProfile')
+
+const MonetaryAccountSettingSchema = z
+  .object({
+    color: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The color chosen for the MonetaryAccount.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    default_avatar_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the avatar. Can be either AVATAR_DEFAULT, AVATAR_CUSTOM or AVATAR_UNDETERMINED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    icon: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The icon chosen for the MonetaryAccount.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    restriction_chat: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The chat restriction. Possible values are ALLOW_INCOMING or BLOCK_INCOMING',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sdd_expiration_action: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The preference for this monetary account on whether to automatically accept or reject expiring SDDs.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MonetaryAccountSetting')
+
+type MonetaryAccountBankListingType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  display_name?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+type MonetaryAccountBankReadType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  display_name?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+type MonetaryAccountExternalType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  avatar_uuid?: string
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  display_name?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+type MonetaryAccountExternalListingType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  display_name?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+type MonetaryAccountExternalReadType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  display_name?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
 
 const BirdeePortfolioAllocationSchema = z
   .object({
@@ -1582,24 +5414,226 @@ const BirdeeInvestmentPortfolioSchema = z
   .openapi({ required: [] })
   .openapi('BirdeeInvestmentPortfolio')
 
-const BunqMeFundraiserProfileSchema = z
+type MonetaryAccountInvestmentType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  avatar_uuid?: string
+  balance?: z.infer<typeof AmountSchema>
+  birdee_investment_portfolio?: z.infer<typeof BirdeeInvestmentPortfolioSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  display_name?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  provider: string
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+const CoOwnerSchema = z
   .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount with the public information of the User and the MonetaryAccount that created the bunq.me fundraiser profile.',
-      readOnly: true,
+    alias: LabelUserSchema.exactOptional().openapi({
+      description: 'The Alias of the co-owner.',
+      readOnly: false,
       writeOnly: false,
     }),
-    attachment: AttachmentPublicSchema.exactOptional().openapi({
-      description: 'The attachment attached to the fundraiser profile.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    color: z
+    status: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The color chosen for the bunq.me fundraiser profile in hexadecimal format.',
+        description: 'Can be: ACCEPTED, REJECTED, PENDING or REVOKED',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CoOwner')
+
+type MonetaryAccountJointListingType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  all_co_owner?: z.infer<typeof CoOwnerSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+type MonetaryAccountJointReadType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  all_co_owner?: z.infer<typeof CoOwnerSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+const MonetaryAccountBankSchema = z
+  .object({
+    avatar_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The UUID of the Avatar of the MonetaryAccountBank.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    country_iban: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The country of the monetary account IBAN.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The currency of the MonetaryAccountBank as an ISO 4217 formatted currency code.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    daily_limit: AmountSchema.exactOptional().openapi({
+      description:
+        "The daily spending limit Amount of the MonetaryAccountBank. Defaults to 1000 EUR. Currency must match the MonetaryAccountBank's currency. Limited to 10000 EUR.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The description of the MonetaryAccountBank. Defaults to 'bunq account'.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    display_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The legal name of the user / company using this monetary account.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for voluntarily cancelling (closing) the MonetaryAccountBank, can only be OTHER. Should only be specified if updating the status to CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reason_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountBank. Can be any user provided message. Should only be specified if updating the status to CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
+      description: 'The settings of the MonetaryAccountBank.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the MonetaryAccountBank. Ignored in POST requests (always set to ACTIVE) can be CANCELLED or PENDING_REOPEN in PUT requests to cancel (close) or reopen the MonetaryAccountBank. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sub-status of the MonetaryAccountBank providing extra information regarding the status. Should be ignored for POST requests. In case of PUT requests with status CANCELLED it can only be REDEMPTION_VOLUNTARY, while with status PENDING_REOPEN it can only be NONE. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: ['currency'] })
+  .openapi('MonetaryAccountBank')
+
+const MonetaryAccountExternalSchema: z.ZodType<MonetaryAccountExternalType> = z
+  .object({
+    alias: z
+      .array(PointerSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Aliases for the MonetaryAccountExternal.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    all_auto_save_id: z
+      .array(BunqIdSchema)
+      .exactOptional()
+      .openapi({ description: 'The ids of the AutoSave.', readOnly: true, writeOnly: false }),
+    avatar: AvatarSchema.exactOptional().openapi({
+      description: 'The Avatar of the MonetaryAccountExternal.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    avatar_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The UUID of the Avatar of the MonetaryAccountExternal.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    balance: AmountSchema.exactOptional().openapi({
+      description: 'The current available balance Amount of the MonetaryAccountExternal.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the MonetaryAccountExternal's creation.",
         readOnly: true,
         writeOnly: false,
       }),
@@ -1608,36 +5642,1205 @@ const BunqMeFundraiserProfileSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The currency of the MonetaryAccount that created the bunq.me fundraiser profile.',
-        readOnly: true,
+          'The currency of the MonetaryAccountExternal as an ISO 4217 formatted currency code.',
+        readOnly: false,
         writeOnly: false,
       }),
+    daily_limit: AmountSchema.exactOptional().openapi({
+      description:
+        "The daily spending limit Amount of the MonetaryAccountExternal. Defaults to 1000 EUR. Currency must match the MonetaryAccountExternal's currency. Limited to 10000 EUR.",
+      readOnly: false,
+      writeOnly: false,
+    }),
     description: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The description of the bunq.me fundraiser profile.',
-        readOnly: true,
+        description: "The description of the MonetaryAccountExternal. Defaults to 'bunq account'.",
+        readOnly: false,
         writeOnly: false,
       }),
-    invite_profile_name: z
+    display_name: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Provided if the user has enabled their invite link.',
+        description: 'The legal name of the user / company using this monetary account.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the MonetaryAccountExternal.',
         readOnly: true,
         writeOnly: false,
       }),
-    pointer: PointerSchema.exactOptional().openapi({
-      description: 'The pointer (url) which will be used to access the bunq.me fundraiser profile.',
+    monetary_account_profile: MonetaryAccountProfileSchema.exactOptional().openapi({
+      description: 'The profile of the account.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    overdraft_limit: AmountSchema.exactOptional().openapi({
+      description: "The maximum Amount the MonetaryAccountExternal can be 'in the red'.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    public_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The MonetaryAccountExternal's public UUID.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for voluntarily cancelling (closing) the MonetaryAccountExternal, can only be OTHER.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reason_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountExternal. Can be any user provided message.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
+      description: 'The settings of the MonetaryAccountExternal.',
       readOnly: false,
       writeOnly: false,
     }),
-    redirect_url: z
+    status: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The URL which the user is sent to when a payment is completed.',
+        description:
+          'The status of the MonetaryAccountExternal. Can be: ACTIVE, BLOCKED, CANCELLED or PENDING_REOPEN',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sub-status of the MonetaryAccountExternal providing extra information regarding the status. Will be NONE for ACTIVE or PENDING_REOPEN, COMPLETELY or ONLY_ACCEPTING_INCOMING for BLOCKED and REDEMPTION_INVOLUNTARY, REDEMPTION_VOLUNTARY or PERMANENT for CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the MonetaryAccountExternal's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    user_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the User who owns the MonetaryAccountExternal.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MonetaryAccountExternal')
+
+const MonetaryAccountInvestmentSchema: z.ZodType<MonetaryAccountInvestmentType> = z
+  .object({
+    alias: z
+      .array(PointerSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Aliases for the MonetaryAccountInvestment.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    all_auto_save_id: z
+      .array(BunqIdSchema)
+      .exactOptional()
+      .openapi({ description: 'The ids of the AutoSave.', readOnly: true, writeOnly: false }),
+    avatar: AvatarSchema.exactOptional().openapi({
+      description: 'The Avatar of the MonetaryAccountInvestment.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    avatar_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The UUID of the Avatar of the MonetaryAccountInvestment.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    balance: AmountSchema.exactOptional().openapi({
+      description: 'The current available balance Amount of the MonetaryAccountInvestment.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    birdee_investment_portfolio: BirdeeInvestmentPortfolioSchema.exactOptional().openapi({
+      description: 'The Birdee investment portfolio.',
+      readOnly: false,
+      writeOnly: true,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the MonetaryAccountInvestment's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The currency of the MonetaryAccountInvestment as an ISO 4217 formatted currency code.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    daily_limit: AmountSchema.exactOptional().openapi({
+      description:
+        "The daily spending limit Amount of the MonetaryAccountInvestment. Defaults to 1000 EUR. Currency must match the MonetaryAccountInvestment's currency. Limited to 10000 EUR.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The description of the MonetaryAccountInvestment. Defaults to 'bunq account'.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    display_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The legal name of the user / company using this monetary account.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the MonetaryAccountInvestment.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    monetary_account_profile: MonetaryAccountProfileSchema.exactOptional().openapi({
+      description: 'The profile of the account.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    provider: z
+      .string()
+      .openapi({
+        description: 'The provider of the investment service.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    public_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The MonetaryAccountInvestment's public UUID.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for voluntarily cancelling (closing) the MonetaryAccountInvestment, can only be OTHER.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reason_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountInvestment. Can be any user provided message.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
+      description: 'The settings of the MonetaryAccountInvestment.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the MonetaryAccountInvestment. Can be: ACTIVE, BLOCKED, CANCELLED or PENDING_REOPEN',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sub-status of the MonetaryAccountInvestment providing extra information regarding the status. Will be NONE for ACTIVE or PENDING_REOPEN, COMPLETELY or ONLY_ACCEPTING_INCOMING for BLOCKED and REDEMPTION_INVOLUNTARY, REDEMPTION_VOLUNTARY or PERMANENT for CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the MonetaryAccountInvestment's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    user_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the User who owns the MonetaryAccountInvestment.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: ['provider'] })
+  .openapi('MonetaryAccountInvestment')
+
+const MonetaryAccountJointSchema = z
+  .object({
+    alias: z
+      .array(PointerSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The Aliases to add to MonetaryAccountJoint. Must all be confirmed first. Can mostly be ignored.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    all_co_owner: z
+      .array(CoOwnerSchema)
+      .openapi({
+        description: 'The users the account will be joint with.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    avatar_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The UUID of the Avatar of the MonetaryAccountJoint.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The currency of the MonetaryAccountJoint as an ISO 4217 formatted currency code.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    daily_limit: AmountSchema.exactOptional().openapi({
+      description:
+        "The daily spending limit Amount of the MonetaryAccountJoint. Defaults to 1000 EUR. Currency must match the MonetaryAccountJoint's currency. Limited to 10000 EUR.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The description of the MonetaryAccountJoint. Defaults to 'bunq account'.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    overdraft_limit: AmountSchema.exactOptional().openapi({
+      description:
+        "The maximum Amount the MonetaryAccountJoint can be 'in the red'. Must be 0 EUR or omitted.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for voluntarily cancelling (closing) the MonetaryAccountJoint, can only be OTHER. Should only be specified if updating the status to CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reason_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountJoint. Can be any user provided message. Should only be specified if updating the status to CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
+      description: 'The settings of the MonetaryAccountJoint.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the MonetaryAccountJoint. Ignored in POST requests (always set to ACTIVE) can be CANCELLED or PENDING_REOPEN in PUT requests to cancel (close) or reopen the MonetaryAccountJoint. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sub-status of the MonetaryAccountJoint providing extra information regarding the status. Should be ignored for POST requests. In case of PUT requests with status CANCELLED it can only be REDEMPTION_VOLUNTARY, while with status PENDING_REOPEN it can only be NONE. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: ['currency', 'all_co_owner'] })
+  .openapi('MonetaryAccountJoint')
+
+const MonetaryAccountLightSchema = z
+  .object({
+    alias: z
+      .array(PointerSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Aliases for the MonetaryAccountLight.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    avatar: AvatarSchema.exactOptional().openapi({
+      description: 'The Avatar of the MonetaryAccountLight.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    avatar_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The UUID of the Avatar of the MonetaryAccountLight.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    balance: AmountSchema.exactOptional().openapi({
+      description: 'The current available balance Amount of the MonetaryAccountLight.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    balance_maximum: AmountSchema.exactOptional().openapi({
+      description: 'The maximum balance Amount of the MonetaryAccountLight.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    budget_month_maximum: AmountSchema.exactOptional().openapi({
+      description: 'The total amount of the monthly budget.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    budget_month_used: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the monthly budget used.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    budget_withdrawal_year_maximum: AmountSchema.exactOptional().openapi({
+      description: 'The total amount of the yearly withdrawal budget.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    budget_withdrawal_year_used: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the yearly withdrawal budget used.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    budget_year_maximum: AmountSchema.exactOptional().openapi({
+      description: 'The total amount of the yearly budget.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    budget_year_used: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the yearly budget used.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the MonetaryAccountLight's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The currency of the MonetaryAccountLight as an ISO 4217 formatted currency code.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    daily_limit: AmountSchema.exactOptional().openapi({
+      description:
+        "The daily spending limit Amount of the MonetaryAccountLight. Defaults to 1000 EUR. Currency must match the MonetaryAccountLight's currency. Limited to 10000 EUR.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The description of the MonetaryAccountLight. Defaults to 'bunq account'.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the MonetaryAccountLight.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    public_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The MonetaryAccountLight's public UUID.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for voluntarily cancelling (closing) the MonetaryAccountBank, can only be OTHER.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reason_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountBank. Can be any user provided message.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
+      description: 'The settings of the MonetaryAccountLight.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the MonetaryAccountLight. Can be: ACTIVE, BLOCKED, CANCELLED or PENDING_REOPEN',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sub-status of the MonetaryAccountLight providing extra information regarding the status. Will be NONE for ACTIVE or PENDING_REOPEN, COMPLETELY or ONLY_ACCEPTING_INCOMING for BLOCKED and REDEMPTION_INVOLUNTARY, REDEMPTION_VOLUNTARY or PERMANENT for CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the MonetaryAccountLight's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    user_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the User who owns the MonetaryAccountLight.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MonetaryAccountLight')
+
+const MonetaryAccountSavingsSchema = z
+  .object({
+    all_co_owner: z
+      .array(CoOwnerSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The users the account will be joint with.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    avatar_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The UUID of the Avatar of the MonetaryAccountSavings.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The currency of the MonetaryAccountSavings as an ISO 4217 formatted currency code.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    daily_limit: AmountSchema.exactOptional().openapi({
+      description:
+        "The daily spending limit Amount of the MonetaryAccountSavings. Defaults to 1000 EUR. Currency must match the MonetaryAccountSavings's currency. Limited to 10000 EUR.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The description of the MonetaryAccountSavings. Defaults to 'bunq account'.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for voluntarily cancelling (closing) the MonetaryAccountSavings, can only be OTHER. Should only be specified if updating the status to CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    reason_description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountSavings. Can be any user provided message. Should only be specified if updating the status to CANCELLED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    savings_goal: AmountSchema.exactOptional().openapi({
+      description: 'The Savings Goal set for this MonetaryAccountSavings.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
+      description: 'The settings of the MonetaryAccountSavings.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the MonetaryAccountSavings. Ignored in POST requests (always set to ACTIVE) can be CANCELLED or PENDING_REOPEN in PUT requests to cancel (close) or reopen the MonetaryAccountSavings. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sub-status of the MonetaryAccountSavings providing extra information regarding the status. Should be ignored for POST requests. In case of PUT requests with status CANCELLED it can only be REDEMPTION_VOLUNTARY, while with status PENDING_REOPEN it can only be NONE. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
+        readOnly: false,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: ['currency'] })
+  .openapi('MonetaryAccountSavings')
+
+type MonetaryAccountListingType = {
+  MonetaryAccountBank?: z.infer<typeof MonetaryAccountBankSchema>
+  MonetaryAccountExternal?: z.infer<typeof MonetaryAccountExternalSchema>
+  MonetaryAccountInvestment?: z.infer<typeof MonetaryAccountInvestmentSchema>
+  MonetaryAccountJoint?: z.infer<typeof MonetaryAccountJointSchema>
+  MonetaryAccountLight?: z.infer<typeof MonetaryAccountLightSchema>
+  MonetaryAccountSavings?: z.infer<typeof MonetaryAccountSavingsSchema>
+}
+
+type MonetaryAccountReadType = {
+  MonetaryAccountBank?: z.infer<typeof MonetaryAccountBankSchema>
+  MonetaryAccountExternal?: z.infer<typeof MonetaryAccountExternalSchema>
+  MonetaryAccountInvestment?: z.infer<typeof MonetaryAccountInvestmentSchema>
+  MonetaryAccountJoint?: z.infer<typeof MonetaryAccountJointSchema>
+  MonetaryAccountLight?: z.infer<typeof MonetaryAccountLightSchema>
+  MonetaryAccountSavings?: z.infer<typeof MonetaryAccountSavingsSchema>
+}
+
+type MonetaryAccountSavingsListingType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  all_co_owner?: z.infer<typeof CoOwnerSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  savings_goal?: z.infer<typeof AmountSchema>
+  savings_goal_progress?: number
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+type MonetaryAccountSavingsReadType = {
+  alias?: z.infer<typeof PointerSchema>[]
+  all_auto_save_id?: z.infer<typeof BunqIdSchema>[]
+  all_co_owner?: z.infer<typeof CoOwnerSchema>[]
+  avatar?: z.infer<typeof AvatarSchema>
+  balance?: z.infer<typeof AmountSchema>
+  created?: string
+  currency?: string
+  daily_limit?: z.infer<typeof AmountSchema>
+  description?: string
+  id?: number
+  monetary_account_profile?: z.infer<typeof MonetaryAccountProfileSchema>
+  overdraft_limit?: z.infer<typeof AmountSchema>
+  public_uuid?: string
+  reason?: string
+  reason_description?: string
+  savings_goal?: z.infer<typeof AmountSchema>
+  savings_goal_progress?: number
+  setting?: z.infer<typeof MonetaryAccountSettingSchema>
+  status?: string
+  sub_status?: string
+  updated?: string
+  user_id?: number
+}
+
+type NotificationFilterEmailType = { notification_filters?: NotificationFilterEmailType[] }
+
+type NotificationFilterPushType = { notification_filters?: NotificationFilterPushType[] }
+
+type NotificationFilterUrlType = { notification_filters?: NotificationFilterUrlType[] }
+
+const PaymentAutoAllocateInstanceSchema: z.ZodType<PaymentAutoAllocateInstanceType> = z
+  .lazy(() =>
+    z
+      .object({
+        created: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp when the PaymentAutoAllocateInstance was created.',
+            readOnly: true,
+            writeOnly: false,
+          }),
+        error_message: z
+          .array(ErrorSchema)
+          .exactOptional()
+          .openapi({
+            description: 'The error message, if the payment auto allocating failed.',
+            readOnly: true,
+            writeOnly: false,
+          }),
+        id: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The id of the PaymentAutoAllocateInstance.',
+            readOnly: true,
+            writeOnly: false,
+          }),
+        payment_auto_allocate_id: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The ID of the payment auto allocate this instance belongs to.',
+            readOnly: true,
+            writeOnly: false,
+          }),
+        payment_batch: PaymentBatchSchema.exactOptional().openapi({
+          description: 'The payment batch allocating all the payments.',
+          readOnly: true,
+          writeOnly: false,
+        }),
+        payment_id: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The ID of the payment that triggered the allocating of the payments.',
+            readOnly: true,
+            writeOnly: false,
+          }),
+        status: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The status of the payment auto allocate instance. SUCCEEDED or FAILED.',
+            readOnly: true,
+            writeOnly: false,
+          }),
+        updated: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp when the PaymentAutoAllocateInstance was last updated.',
+            readOnly: true,
+            writeOnly: false,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('PaymentAutoAllocateInstance')
+
+type PaymentType = {
+  address_billing?: z.infer<typeof AddressSchema>
+  address_shipping?: z.infer<typeof AddressSchema>
+  alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  allow_bunqto?: boolean
+  amount?: z.infer<typeof AmountSchema>
+  attachment?: z.infer<typeof AttachmentMonetaryAccountPaymentSchema>[]
+  balance_after_mutation?: z.infer<typeof AmountSchema>
+  batch_id?: number
+  bunqto_expiry?: string
+  bunqto_share_url?: string
+  bunqto_status?: string
+  bunqto_sub_status?: string
+  bunqto_time_responded?: string
+  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  created?: string
+  description?: string
+  geolocation?: z.infer<typeof GeolocationSchema>
+  id?: number
+  merchant_reference?: string
+  monetary_account_id?: number
+  payment_auto_allocate_instance?: z.infer<typeof PaymentAutoAllocateInstanceSchema>
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  scheduled_id?: number
+  sub_type?: string
+  type?: string
+  updated?: string
+}
+
+type PaymentAutoAllocateInstanceType = {
+  created?: string
+  error_message?: z.infer<typeof ErrorSchema>[]
+  id?: number
+  payment_auto_allocate_id?: number
+  payment_batch?: z.infer<typeof PaymentBatchSchema>
+  payment_id?: number
+  status?: string
+  updated?: string
+}
+
+const PaymentBatchAnchoredPaymentSchema: z.ZodType<PaymentBatchAnchoredPaymentType> = z
+  .lazy(() =>
+    z
+      .object({
+        Payment: z
+          .array(PaymentSchema)
+          .exactOptional()
+          .openapi({ description: '', readOnly: true, writeOnly: false }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('PaymentBatchAnchoredPayment')
+
+type PaymentBatchType = { payments?: z.infer<typeof PaymentBatchAnchoredPaymentSchema> }
+
+type PaymentBatchAnchoredPaymentType = { Payment?: z.infer<typeof PaymentSchema>[] }
+
+const RegistryMembershipSchema = z
+  .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The LabelMonetaryAccount of the user who belongs to this RegistryMembership.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    auto_add_card_transaction: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The setting for for adding automatically card transactions to the registry.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    balance: AmountSchema.exactOptional().openapi({
+      description: 'The balance of this RegistryMembership.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    invitor: LabelUserSchema.exactOptional().openapi({
+      description: 'The label of the user that sent the invite.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    registry_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The registry id.', readOnly: true, writeOnly: false }),
+    registry_title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The registry title.', readOnly: true, writeOnly: false }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the RegistryMembership.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    status_settlement: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The status of the settlement of the Registry. Can be PENDING or SETTLED.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    total_amount_spent: AmountSchema.exactOptional().openapi({
+      description: 'The total amount spent of this RegistryMembership.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The UUID of the membership.', readOnly: false, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('RegistryMembership')
+
+const RegistrySettlementItemSchema = z
+  .object({
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the RegistrySettlementItem.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    membership_paying: RegistryMembershipSchema.exactOptional().openapi({
+      description: 'The membership of the user that has to pay.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    membership_receiving: RegistryMembershipSchema.exactOptional().openapi({
+      description: 'The membership of the user that will receive money.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    paying_user_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The LabelMonetaryAccount of the user that has to pay the request.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    receiving_user_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description: 'The LabelMonetaryAccount of the user that will receive the amount.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('RegistrySettlementItem')
+
+type RegistrySettlementListingType = {
+  created?: string
+  id?: number
+  items?: z.infer<typeof RegistrySettlementItemSchema>[]
+  membership_settled?: z.infer<typeof RegistryMembershipSchema>
+  number_of_entries?: number
+  settled_by_alias?: z.infer<typeof RegistryMembershipSchema>
+  settlement_time?: string
+  total_amount_spent?: z.infer<typeof AmountSchema>
+  updated?: string
+}
+
+type RegistrySettlementReadType = {
+  created?: string
+  id?: number
+  items?: z.infer<typeof RegistrySettlementItemSchema>[]
+  membership_settled?: z.infer<typeof RegistryMembershipSchema>
+  number_of_entries?: number
+  settled_by_alias?: z.infer<typeof RegistryMembershipSchema>
+  settlement_time?: string
+  total_amount_spent?: z.infer<typeof AmountSchema>
+  updated?: string
+}
+
+type RequestInquiryBatchListingType = {
+  reference_split_the_bill?: z.infer<typeof RequestReferenceSplitTheBillAnchorObjectSchema>
+  request_inquiries?: z.infer<typeof RequestInquirySchema>[]
+  total_amount_inquired?: z.infer<typeof AmountSchema>
+}
+
+type RequestInquiryBatchReadType = {
+  reference_split_the_bill?: z.infer<typeof RequestReferenceSplitTheBillAnchorObjectSchema>
+  request_inquiries?: z.infer<typeof RequestInquirySchema>[]
+  total_amount_inquired?: z.infer<typeof AmountSchema>
+}
+
+type RequestInquiryListingType = {
+  address_billing?: z.infer<typeof AddressSchema>
+  address_shipping?: z.infer<typeof AddressSchema>
+  amount_inquired?: z.infer<typeof AmountSchema>
+  amount_responded?: z.infer<typeof AmountSchema>
+  attachment?: z.infer<typeof BunqIdSchema>[]
+  batch_id?: number
+  bunqme_share_url?: string
+  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  created?: string
+  description?: string
+  geolocation?: z.infer<typeof GeolocationSchema>
+  id?: number
+  merchant_reference?: string
+  minimum_age?: number
+  monetary_account_id?: number
+  redirect_url?: string
+  reference_split_the_bill?: z.infer<typeof RequestReferenceSplitTheBillAnchorObjectSchema>
+  require_address?: string
+  scheduled_id?: number
+  status?: string
+  time_expiry?: string
+  time_responded?: string
+  updated?: string
+  user_alias_created?: z.infer<typeof LabelUserSchema>
+  user_alias_revoked?: z.infer<typeof LabelUserSchema>
+}
+
+type RequestInquiryReadType = {
+  address_billing?: z.infer<typeof AddressSchema>
+  address_shipping?: z.infer<typeof AddressSchema>
+  amount_inquired?: z.infer<typeof AmountSchema>
+  amount_responded?: z.infer<typeof AmountSchema>
+  attachment?: z.infer<typeof BunqIdSchema>[]
+  batch_id?: number
+  bunqme_share_url?: string
+  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  created?: string
+  description?: string
+  geolocation?: z.infer<typeof GeolocationSchema>
+  id?: number
+  merchant_reference?: string
+  minimum_age?: number
+  monetary_account_id?: number
+  redirect_url?: string
+  reference_split_the_bill?: z.infer<typeof RequestReferenceSplitTheBillAnchorObjectSchema>
+  require_address?: string
+  scheduled_id?: number
+  status?: string
+  time_expiry?: string
+  time_responded?: string
+  updated?: string
+  user_alias_created?: z.infer<typeof LabelUserSchema>
+  user_alias_revoked?: z.infer<typeof LabelUserSchema>
+}
+
+type RequestInquiryUpdateType = {
+  address_billing?: z.infer<typeof AddressSchema>
+  address_shipping?: z.infer<typeof AddressSchema>
+  amount_inquired?: z.infer<typeof AmountSchema>
+  amount_responded?: z.infer<typeof AmountSchema>
+  attachment?: z.infer<typeof BunqIdSchema>[]
+  batch_id?: number
+  counterparty_alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  created?: string
+  description?: string
+  geolocation?: z.infer<typeof GeolocationSchema>
+  id?: number
+  merchant_reference?: string
+  minimum_age?: number
+  monetary_account_id?: number
+  reference_split_the_bill?: z.infer<typeof RequestReferenceSplitTheBillAnchorObjectSchema>
+  require_address?: string
+  scheduled_id?: number
+  status?: string
+  time_expiry?: string
+  time_responded?: string
+  updated?: string
+  user_alias_created?: z.infer<typeof LabelUserSchema>
+  user_alias_revoked?: z.infer<typeof LabelUserSchema>
+}
+
+type ScheduleInstanceListingType = {
+  error_message?: z.infer<typeof ErrorSchema>[]
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  result_object?: z.infer<typeof ScheduleInstanceAnchorObjectSchema>
+  scheduled_object?: z.infer<typeof ScheduleAnchorObjectSchema>
+  state?: string
+  time_end?: string
+  time_start?: string
+}
+
+type ScheduleInstanceReadType = {
+  error_message?: z.infer<typeof ErrorSchema>[]
+  request_reference_split_the_bill?: z.infer<typeof RequestInquiryReferenceSchema>[]
+  result_object?: z.infer<typeof ScheduleInstanceAnchorObjectSchema>
+  scheduled_object?: z.infer<typeof ScheduleAnchorObjectSchema>
+  state?: string
+  time_end?: string
+  time_start?: string
+}
+
+type ScheduleListingType = {
+  object?: z.infer<typeof ScheduleAnchorObjectSchema>
+  recurrence_size?: number
+  recurrence_unit?: string
+  status?: string
+  time_end?: string
+  time_start?: string
+}
+
+type SchedulePaymentBatchReadType = {
+  payments?: z.infer<typeof SchedulePaymentEntrySchema>[]
+  schedule?: z.infer<typeof ScheduleSchema>
+}
+
+type SchedulePaymentListingType = {
+  payment?: z.infer<typeof SchedulePaymentEntrySchema>
+  schedule?: z.infer<typeof ScheduleSchema>
+  status?: string
+}
+
+type SchedulePaymentReadType = {
+  payment?: z.infer<typeof SchedulePaymentEntrySchema>
+  schedule?: z.infer<typeof ScheduleSchema>
+  status?: string
+}
+
+type ScheduleReadType = {
+  object?: z.infer<typeof ScheduleAnchorObjectSchema>
+  recurrence_size?: number
+  recurrence_unit?: string
+  status?: string
+  time_end?: string
+  time_start?: string
+}
+
+const SessionServerTokenSchema = z
+  .object({
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the Token.', readOnly: true, writeOnly: false }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Session token is the token the client has to provide in the "X-Bunq-Client-Authentication" header for each API call that requires a Session (only the creation of a Installation and DeviceServer don\'t require a Session).',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SessionServerToken')
+
+const UserPaymentServiceProviderSchema = z
+  .object({
+    alias: z
+      .array(PointerSchema)
+      .exactOptional()
+      .openapi({ description: 'The aliases of the user.', readOnly: true, writeOnly: false }),
+    avatar: AvatarSchema.exactOptional().openapi({
+      description: "The user's avatar.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    certificate_distinguished_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The distinguished name from the certificate used to identify this user.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the user object's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    display_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The display name for the provider.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the user.', readOnly: true, writeOnly: false }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The provider's language. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, separated by an underscore.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    public_nick_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The public nick name for the provider.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    public_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The providers's public UUID.", readOnly: true, writeOnly: false }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The provider's region. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, separated by an underscore.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    session_timeout: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The setting for the session timeout of the user in seconds.',
         readOnly: true,
         writeOnly: false,
       }),
@@ -1645,13 +6848,713 @@ const BunqMeFundraiserProfileSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The status of the bunq.me fundraiser profile, can be ACTIVE or DEACTIVATED.',
+        description: 'The user status. The user status. Can be: ACTIVE, BLOCKED or DENIED.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The user sub-status. Can be: NONE',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the user object's last update.",
         readOnly: true,
         writeOnly: false,
       }),
   })
   .openapi({ required: [] })
-  .openapi('BunqMeFundraiserProfile')
+  .openapi('UserPaymentServiceProvider')
+
+const UserPersonSchema = z
+  .object({
+    address_main: AddressSchema.exactOptional().openapi({
+      description: "The person's main address.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    address_postal: AddressSchema.exactOptional().openapi({
+      description: "The person's postal address.",
+      readOnly: false,
+      writeOnly: false,
+    }),
+    alias: z
+      .array(PointerSchema)
+      .exactOptional()
+      .openapi({ description: 'The aliases of the user.', readOnly: true, writeOnly: false }),
+    avatar: AvatarSchema.exactOptional().openapi({
+      description: "The user's avatar.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    avatar_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The public UUID of the user's avatar.",
+        readOnly: false,
+        writeOnly: true,
+      }),
+    country_of_birth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The person's country of birth. Formatted as a SO 3166-1 alpha-2 country code.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the person object's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    daily_limit_without_confirmation_login: AmountSchema.exactOptional().openapi({
+      description: 'The amount the user can pay in the session without asking for credentials.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    date_of_birth: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The person's date of birth. Accepts ISO8601 date formats.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    display_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The display name for the person.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    document_back_attachment_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to the uploaded picture/scan of the back side of the identification document.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    document_country_of_issuance: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country which issued the identification document the person registered with.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    document_front_attachment_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference to the uploaded picture/scan of the front side of the identification document.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    document_number: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The identification document number the person registered with.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    document_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of identification document the person registered with.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    first_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The person's first name.", readOnly: false, writeOnly: false }),
+    gender: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The person's gender. Can be MALE, FEMALE or UNKNOWN.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the modified person object.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The person's preferred language. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, seperated by an underscore.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    last_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The person's last name.", readOnly: false, writeOnly: false }),
+    legal_guardian_alias: PointerSchema.exactOptional().openapi({
+      description: 'The legal guardian of the user. Required for minors.',
+      readOnly: false,
+      writeOnly: true,
+    }),
+    legal_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The person's legal name.", readOnly: true, writeOnly: false }),
+    middle_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The person's middle name.", readOnly: false, writeOnly: false }),
+    nationality: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The person's nationality. Formatted as a SO 3166-1 alpha-2 country code.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    notification_filters: z
+      .array(NotificationFilterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The types of notifications that will result in a push notification or URL callback for this UserPerson.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    place_of_birth: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The person's place of birth.", readOnly: true, writeOnly: false }),
+    public_nick_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The public nick name for the person.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    public_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The person's public UUID.", readOnly: true, writeOnly: false }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The person's preferred region. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, seperated by an underscore.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    relations: z
+      .array(RelationUserSchema)
+      .exactOptional()
+      .openapi({ description: 'The relations for this user.', readOnly: true, writeOnly: false }),
+    session_timeout: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The setting for the session timeout of the user in seconds.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    signup_track_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of signup track the user is following.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user status. The user status. Can be: ACTIVE, BLOCKED, SIGNUP, RECOVERY, DENIED or ABORTED.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user sub-status. Can be: NONE, FACE_RESET, APPROVAL, APPROVAL_DIRECTOR, APPROVAL_PARENT, APPROVAL_SUPPORT, COUNTER_IBAN, IDEAL or SUBMIT.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    subscription_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The subscription type the user should start on.',
+        readOnly: false,
+        writeOnly: true,
+      }),
+    tax_resident: z
+      .array(TaxResidentSchema)
+      .exactOptional()
+      .openapi({
+        description: "The user's tax residence numbers for different countries.",
+        readOnly: false,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the person object's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    version_terms_of_service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The version of the terms of service accepted by the user.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UserPerson')
+
+type UserApiKeyAnchoredUserType = {
+  UserCompany?: z.infer<typeof UserCompanySchema>
+  UserPaymentServiceProvider?: z.infer<typeof UserPaymentServiceProviderSchema>
+  UserPerson?: z.infer<typeof UserPersonSchema>
+}
+
+const UserApiKeyAnchoredUserSchema: z.ZodType<UserApiKeyAnchoredUserType> = z
+  .object({
+    UserCompany: UserCompanySchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    UserPaymentServiceProvider: UserPaymentServiceProviderSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    UserPerson: UserPersonSchema.exactOptional().openapi({
+      description: '',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('UserApiKeyAnchoredUser')
+
+type UserApiKeyType = {
+  created?: string
+  granted_by_user?: z.infer<typeof UserApiKeyAnchoredUserSchema>
+  id?: number
+  requested_by_user?: z.infer<typeof UserApiKeyAnchoredUserSchema>
+  updated?: string
+}
+
+const UserApiKeySchema: z.ZodType<UserApiKeyType> = z
+  .object({
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the user object's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    granted_by_user: UserApiKeyAnchoredUserSchema.exactOptional().openapi({
+      description: 'The user who granted access.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the user.', readOnly: true, writeOnly: false }),
+    requested_by_user: UserApiKeyAnchoredUserSchema.exactOptional().openapi({
+      description: 'The user who requested access.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the user object's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UserApiKey')
+
+type SessionServerCreateType = {
+  Id?: z.infer<typeof BunqIdSchema>
+  Token?: z.infer<typeof SessionServerTokenSchema>
+  UserApiKey?: z.infer<typeof UserApiKeySchema>
+  UserCompany?: z.infer<typeof UserCompanySchema>
+  UserPaymentServiceProvider?: z.infer<typeof UserPaymentServiceProviderSchema>
+  UserPerson?: z.infer<typeof UserPersonSchema>
+}
+
+type TranslinkTransactionType = {
+  description: string
+  payments: z.infer<typeof PaymentSchema>[]
+  reference: string
+  type: string
+}
+
+const TranslinkTransactionEntrySchema = z
+  .object({
+    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        "The LabelMonetaryAccount containing the public information of 'this' (party) side of the payment.",
+      readOnly: true,
+      writeOnly: false,
+    }),
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The amount of the payment.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    attachment: z
+      .array(AttachmentMonetaryAccountPaymentSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The Attachments attached to the payment.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
+      description:
+        'The LabelMonetaryAccount containing the public information of the other (counterparty) side of the payment.',
+      readOnly: false,
+      writeOnly: false,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description for the payment. Maximum 140 characters for payments to external IBANs, 9000 characters for payments to only other bunq MonetaryAccounts.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the payment entry.', readOnly: true, writeOnly: false }),
+    merchant_reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional data to be included with the Payment specific to the merchant.',
+        readOnly: false,
+        writeOnly: false,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the payment entry.', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('TranslinkTransactionEntry')
+
+type TranslinkTransactionListingType = {
+  alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  amount?: z.infer<typeof AmountSchema>
+  description?: string
+  entries?: z.infer<typeof TranslinkTransactionEntrySchema>[]
+  failure_reason?: z.infer<typeof ErrorSchema>[]
+  payments?: z.infer<typeof PaymentBatchAnchoredPaymentSchema>
+  reference?: string
+  status?: string
+  type?: string
+}
+
+type TranslinkTransactionReadType = {
+  alias?: z.infer<typeof LabelMonetaryAccountSchema>
+  amount?: z.infer<typeof AmountSchema>
+  description?: string
+  entries?: z.infer<typeof TranslinkTransactionEntrySchema>[]
+  failure_reason?: z.infer<typeof ErrorSchema>[]
+  payments?: z.infer<typeof PaymentBatchAnchoredPaymentSchema>
+  reference?: string
+  status?: string
+  type?: string
+}
+
+type UserListingType = {
+  UserApiKey?: z.infer<typeof UserApiKeySchema>
+  UserCompany?: z.infer<typeof UserCompanySchema>
+  UserPaymentServiceProvider?: z.infer<typeof UserPaymentServiceProviderSchema>
+  UserPerson?: z.infer<typeof UserPersonSchema>
+}
+
+type UserReadType = {
+  UserApiKey?: z.infer<typeof UserApiKeySchema>
+  UserCompany?: z.infer<typeof UserCompanySchema>
+  UserPaymentServiceProvider?: z.infer<typeof UserPaymentServiceProviderSchema>
+  UserPerson?: z.infer<typeof UserPersonSchema>
+}
+
+const AttachmentConversationContentListingSchema = z
+  .looseObject({})
+  .openapi('AttachmentConversationContentListing')
+
+const AttachmentMonetaryAccountSchema = z.looseObject({}).openapi('AttachmentMonetaryAccount')
+
+const AttachmentMonetaryAccountContentListingSchema = z
+  .looseObject({})
+  .openapi('AttachmentMonetaryAccountContentListing')
+
+const AttachmentMonetaryAccountCreateSchema = z
+  .object({
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the attachment created.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentMonetaryAccountCreate')
+
+const AttachmentPublicContentListingSchema = z
+  .looseObject({})
+  .openapi('AttachmentPublicContentListing')
+
+const AttachmentPublicCreateSchema = z
+  .object({
+    Id: BunqIdSchema.exactOptional().openapi({
+      description: 'The id of the created item',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentPublicCreate')
+
+const AttachmentPublicReadSchema = z
+  .object({
+    attachment: AttachmentSchema.exactOptional().openapi({
+      description: 'The attachment.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the attachment's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the attachment's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The UUID of the attachment.', readOnly: true, writeOnly: false }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentPublicRead')
+
+const AttachmentUserContentListingSchema = z.looseObject({}).openapi('AttachmentUserContentListing')
+
+const AttachmentUserReadSchema = z
+  .object({
+    attachment: AttachmentSchema.exactOptional().openapi({
+      description: 'The attachment.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the attachment's creation.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The id of the attachment.', readOnly: true, writeOnly: false }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The timestamp of the attachment's last update.",
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentUserRead')
+
+const AvatarCreateSchema = z
+  .object({
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The UUID of the created avatar.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AvatarCreate')
+
+const AvatarReadSchema = z
+  .object({
+    image: z
+      .array(ImageSchema)
+      .exactOptional()
+      .openapi({ description: 'The content type of the image.', readOnly: true, writeOnly: false }),
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The UUID of the created avatar.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AvatarRead')
+
+const BankSwitchServiceNetherlandsIncomingPaymentReadSchema = z
+  .object({
+    bank_switch_service: BankSwitchServiceNetherlandsIncomingSchema.exactOptional().openapi({
+      description: 'The bank switch service details.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+    payment: PaymentSchema.exactOptional().openapi({
+      description: 'The payment made using bank switch service.',
+      readOnly: true,
+      writeOnly: false,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BankSwitchServiceNetherlandsIncomingPaymentRead')
+
+const BillingContractSubscriptionListingSchema = z
+  .object({
+    contract_date_end: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date until when the billing contract is valid.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    contract_date_start: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date from when the billing contract is valid.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    contract_version: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The version of the billing contract.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp when the billing contract was made.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the billing contract.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subscription status.', readOnly: true, writeOnly: false }),
+    sub_status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subscription substatus.', readOnly: true, writeOnly: false }),
+    subscription_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The subscription type of the user. Can be one of PERSON_SUPER_LIGHT_V1, PERSON_LIGHT_V1, PERSON_MORE_V1, PERSON_FREE_V1, PERSON_PREMIUM_V1, COMPANY_V1, or COMPANY_V2.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    subscription_type_downgrade: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The subscription type the user will have after a subscription downgrade. Will be null if downgrading is not possible.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp when the billing contract was last updated.',
+        readOnly: true,
+        writeOnly: false,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BillingContractSubscriptionListing')
 
 const BunqMeFundraiserProfileUserListingSchema = z
   .object({
@@ -1811,46 +7714,7 @@ const BunqMeFundraiserProfileUserReadSchema = z
   .openapi({ required: [] })
   .openapi('BunqMeFundraiserProfileUserRead')
 
-const BunqMeFundraiserResultSchema = z
-  .object({
-    bunqme_fundraiser_profile: BunqMeFundraiserProfileSchema.exactOptional().openapi({
-      description: 'The bunq.me fundraiser profile.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp when the bunq.me was created.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the bunq.me.', readOnly: true, writeOnly: false }),
-    payments: z
-      .array(PaymentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of payments, paid to the bunq.me fundraiser profile.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp when the bunq.me was last updated.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BunqMeFundraiserResult')
-
-const BunqMeFundraiserResultReadSchema = z
+const BunqMeFundraiserResultReadSchema: z.ZodType<BunqMeFundraiserResultReadType> = z
   .object({
     bunqme_fundraiser_profile: BunqMeFundraiserProfileSchema.exactOptional().openapi({
       description: 'The bunq.me fundraiser profile.',
@@ -1889,105 +7753,6 @@ const BunqMeFundraiserResultReadSchema = z
   .openapi({ required: [] })
   .openapi('BunqMeFundraiserResultRead')
 
-const BunqMeMerchantAvailableSchema = z
-  .object({
-    available: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not the merchant is available for the user.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    merchant_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A merchant type supported by bunq.me.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BunqMeMerchantAvailable')
-
-const BunqMeTabEntrySchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount with the public information of the User and the MonetaryAccount that created the bunq.me link.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_inquired: AmountSchema.exactOptional().openapi({
-      description: 'The requested Amount.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description for the bunq.me. Maximum 9000 characters.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    invite_profile_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Provided if the user has enabled their invite link.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    merchant_available: z
-      .array(BunqMeMerchantAvailableSchema)
-      .exactOptional()
-      .openapi({ description: 'List of available merchants.', readOnly: true, writeOnly: false }),
-    redirect_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The URL which the user is sent to when a payment is completed.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the bunq.me. Can be WAITING_FOR_PAYMENT, CANCELLED or EXPIRED.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    uuid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The uuid of the bunq.me.', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('BunqMeTabEntry')
-
-const BunqMeTabSchema = z
-  .object({
-    bunqme_tab_entry: BunqMeTabEntrySchema.openapi({
-      description: 'The bunq.me entry containing the payment information.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the bunq.me. Ignored in POST requests but can be used for cancelling the bunq.me by setting status as CANCELLED with a PUT request.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['bunqme_tab_entry'] })
-  .openapi('BunqMeTab')
-
 const BunqMeTabCreateSchema = z
   .object({
     id: z
@@ -1998,26 +7763,7 @@ const BunqMeTabCreateSchema = z
   .openapi({ required: [] })
   .openapi('BunqMeTabCreate')
 
-const BunqMeTabResultInquirySchema = z
-  .object({
-    bunq_me_tab_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The Id of the bunq.me tab that this BunqMeTabResultInquiry belongs to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    payment: PaymentSchema.exactOptional().openapi({
-      description: 'The payment made for the Tab.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('BunqMeTabResultInquiry')
-
-const BunqMeTabListingSchema = z
+const BunqMeTabListingSchema: z.ZodType<BunqMeTabListingType> = z
   .object({
     alias_monetary_account: LabelMonetaryAccountSchema.exactOptional().openapi({
       description:
@@ -2110,7 +7856,7 @@ const BunqMeTabListingSchema = z
   .openapi({ required: [] })
   .openapi('BunqMeTabListing')
 
-const BunqMeTabReadSchema = z
+const BunqMeTabReadSchema: z.ZodType<BunqMeTabReadType> = z
   .object({
     alias_monetary_account: LabelMonetaryAccountSchema.exactOptional().openapi({
       description:
@@ -2203,17 +7949,6 @@ const BunqMeTabReadSchema = z
   .openapi({ required: [] })
   .openapi('BunqMeTabRead')
 
-const BunqMeTabResultResponseSchema = z
-  .object({
-    payment: PaymentSchema.exactOptional().openapi({
-      description: 'The payment made for the bunq.me tab.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('BunqMeTabResultResponse')
-
 const BunqMeTabResultResponseReadSchema = z
   .object({
     payment: PaymentSchema.exactOptional().openapi({
@@ -2235,196 +7970,6 @@ const BunqMeTabUpdateSchema = z
   })
   .openapi({ required: [] })
   .openapi('BunqMeTabUpdate')
-
-const CardCountryPermissionSchema = z
-  .object({
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The country to allow transactions in (e.g. NL, DE).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    expiry_time: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Expiry time of this rule.', readOnly: false, writeOnly: true }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the card country permission entry.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CardCountryPermission')
-
-const CardPinAssignmentSchema = z
-  .object({
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the monetary account to assign to this pin for the card.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    pin_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The 4 digit PIN to be assigned to this account.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    routing_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Routing type. Can be MANUAL or AUTOMATIC',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'PIN type. Can be PRIMARY, SECONDARY or TERTIARY',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CardPinAssignment')
-
-const CardPrimaryAccountNumberSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description for this PAN.', readOnly: false, writeOnly: false }),
-    four_digit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The last four digits of the PAN.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The ID for this Virtual PAN.', readOnly: false, writeOnly: false }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the monetary account to assign to this PAN, only for Online Cards.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status for this PAN, only for Online Cards.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    uuid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The UUID for this Virtual PAN.', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('CardPrimaryAccountNumber')
-
-const CardSchema = z
-  .object({
-    activation_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'DEPRECATED: Activate a card by setting status to ACTIVE when the order_status is ACCEPTED_FOR_PRODUCTION.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    card_limit: AmountSchema.exactOptional().openapi({
-      description: 'The spending limit for the card.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    card_limit_atm: AmountSchema.exactOptional().openapi({
-      description: 'The ATM spending limit for the card.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    country_permission: z
-      .array(CardCountryPermissionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The countries for which to grant (temporary) permissions to use the card.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    monetary_account_id_fallback: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the MA to be used as fallback for this card if insufficient balance. Fallback account is removed if not supplied.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    order_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The order status to set for the card. Set to CARD_REQUEST_PENDING to get a virtual card produced.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    pin_code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The plaintext pin code. Requests require encryption to be enabled.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    pin_code_assignment: z
-      .array(CardPinAssignmentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Array of Types, PINs, account IDs assigned to the card.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    primary_account_numbers: z
-      .array(CardPrimaryAccountNumberSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Array of PANs and their attributes.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status to set for the card. Can be ACTIVE, DEACTIVATED, LOST, STOLEN or CANCELLED, and can only be set to LOST/STOLEN/CANCELLED when order status is ACCEPTED_FOR_PRODUCTION/DELIVERED_TO_CUSTOMER/CARD_UPDATE_REQUESTED/CARD_UPDATE_SENT/CARD_UPDATE_ACCEPTED. Can only be set to DEACTIVATED after initial activation, i.e. order_status is DELIVERED_TO_CUSTOMER/CARD_UPDATE_REQUESTED/CARD_UPDATE_SENT/CARD_UPDATE_ACCEPTED. Mind that all the possible choices (apart from ACTIVE and DEACTIVATED) are permanent and cannot be changed after.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Card')
 
 const CardBatchEntrySchema = z
   .object({
@@ -2649,82 +8194,6 @@ const CardCreditCreateSchema = z
   })
   .openapi({ required: [] })
   .openapi('CardCreditCreate')
-
-const CardDebitSchema = z
-  .object({
-    alias: PointerSchema.exactOptional().openapi({
-      description:
-        'The pointer to the monetary account that will be connected at first with the card. Its IBAN code is also the one that will be printed on the card itself. The pointer must be of type IBAN.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    monetary_account_id_fallback: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the MA to be used as fallback for this card if insufficient balance. Fallback account is removed if not supplied.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    name_on_card: z
-      .string()
-      .openapi({
-        description:
-          "The user's name as it will be on the card. Check 'card-name' for the available card names for a user.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    order_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The order status of this card. Can be CARD_REQUEST_PENDING or VIRTUAL_DELIVERY.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    pin_code_assignment: z
-      .array(CardPinAssignmentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Array of Types, PINs, account IDs assigned to the card.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    preferred_name_on_card: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The user's preferred name that can be put on the card.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    product_type: z
-      .string()
-      .openapi({
-        description: 'The product type of the card to order.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    second_line: z
-      .string()
-      .openapi({
-        description:
-          'The second line of text on the card, used as name/description for it. It can contain at most 17 characters and it can be empty.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    type: z
-      .string()
-      .openapi({
-        description: 'The type of card to order. Can be MAESTRO or MASTERCARD.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['second_line', 'name_on_card', 'type', 'product_type'] })
-  .openapi('CardDebit')
 
 const CardDebitCreateSchema = z
   .object({
@@ -3330,7 +8799,7 @@ const CertificatePinnedCreateSchema = z
   .openapi({ required: [] })
   .openapi('CertificatePinnedCreate')
 
-const CertificatePinnedDeleteSchema = z.object({}).openapi('CertificatePinnedDelete')
+const CertificatePinnedDeleteSchema = z.looseObject({}).openapi('CertificatePinnedDelete')
 
 const CertificatePinnedListingSchema = z
   .object({
@@ -3377,55 +8846,6 @@ const CertificatePinnedReadSchema = z
   })
   .openapi({ required: [] })
   .openapi('CertificatePinnedRead')
-
-const CoOwnerSchema = z
-  .object({
-    alias: LabelUserSchema.exactOptional().openapi({
-      description: 'The Alias of the co-owner.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Can be: ACCEPTED, REJECTED, PENDING or REVOKED',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CoOwner')
-
-const UboSchema = z
-  .object({
-    date_of_birth: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The date of birth of the ultimate beneficiary owner.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the ultimate beneficiary owner.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    nationality: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The nationality of the ultimate beneficiary owner.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Ubo')
 
 const CompanyVatNumberSchema = z
   .object({
@@ -3543,445 +8963,7 @@ const CompanyCreateSchema = z
   .openapi({ required: [] })
   .openapi('CompanyCreate')
 
-const CustomerSchema = z
-  .object({
-    billing_account_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The primary billing account account's id.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the customer object's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the customer.', readOnly: true, writeOnly: false }),
-    invoice_notification_preference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The preferred notification type for invoices.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the customer object's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Customer')
-
-const CustomerLimitSchema = z
-  .object({
-    limit_amount_monthly: AmountSchema.exactOptional().openapi({
-      description: 'The maximum amount a user is allowed to spend in a month.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    limit_card_debit_maestro: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The limit of Maestro cards.', readOnly: true, writeOnly: false }),
-    limit_card_debit_mastercard: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The limit of MasterCard cards.', readOnly: true, writeOnly: false }),
-    limit_card_debit_wildcard: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'DEPRECTATED: The limit of wildcards, e.g. Maestro or MasterCard cards.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    limit_card_replacement: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The limit of free replacement cards.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    limit_card_wildcard: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The limit of wildcards, e.g. Maestro or MasterCard cards.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    limit_monetary_account: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The limit of monetary accounts.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    limit_monetary_account_remaining: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The amount of additional monetary accounts you can create.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    spent_amount_monthly: AmountSchema.exactOptional().openapi({
-      description: 'The amount the user has spent in the last month.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerLimit')
-
-const NotificationFilterSchema = z
-  .object({
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The notification category that will match this notification filter. Possible choices are BILLING, CARD_TRANSACTION_FAILED, CARD_TRANSACTION_SUCCESSFUL, CHAT, DRAFT_PAYMENT, IDEAL, SOFORT, MONETARY_ACCOUNT_PROFILE, MUTATION, PAYMENT, PROMOTION, REQUEST, SCHEDULE_RESULT, SCHEDULE_STATUS, SHARE, SUPPORT, TAB_RESULT, USER_APPROVAL.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    notification_delivery_method: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The delivery method via which notifications that match this notification filter will be delivered. Possible choices are PUSH for delivery via push notification and URL for delivery via URL callback.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    notification_target: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target of notifications that match this notification filter. For URL notification filters this is the URL to which the callback will be made. For PUSH notifications filters this should always be null.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('NotificationFilter')
-
-const RelationUserSchema = z
-  .object({
-    counter_label_user: LabelUserSchema.exactOptional().openapi({
-      description: "The counter user's label.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    counter_user_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The counter user's ID.", readOnly: true, writeOnly: false }),
-    counter_user_status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The account status of a user', readOnly: true, writeOnly: false }),
-    label_user: LabelUserSchema.exactOptional().openapi({
-      description: "The user's label.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    relationship: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The requested relation type.', readOnly: true, writeOnly: false }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The request's status, only for UPDATE.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    user_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The user's ID.", readOnly: true, writeOnly: false }),
-    user_status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The account status of a user', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('RelationUser')
-
-const TaxResidentSchema = z
-  .object({
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The country of the tax number.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the tax number. Either CONFIRMED or UNCONFIRMED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    tax_number: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The tax number.', readOnly: false, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('TaxResident')
-
-const UserCompanySchema = z
-  .object({
-    address_main: AddressSchema.exactOptional().openapi({
-      description: "The company's main address.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    address_postal: AddressSchema.exactOptional().openapi({
-      description: "The company's postal address.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    alias: z
-      .array(PointerSchema)
-      .exactOptional()
-      .openapi({ description: 'The aliases of the account.', readOnly: true, writeOnly: false }),
-    avatar: AvatarSchema.exactOptional().openapi({
-      description: "The company's avatar.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    avatar_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The public UUID of the company's avatar.",
-        readOnly: false,
-        writeOnly: true,
-      }),
-    billing_contract: z
-      .array(BillingContractSubscriptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The subscription of the company.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    chamber_of_commerce_number: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The company's chamber of commerce number.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    counter_bank_iban: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The company's other bank account IBAN, through which we verify it.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The country as an ISO 3166-1 alpha-2 country code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the company object's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    customer: CustomerSchema.exactOptional().openapi({
-      description: 'The customer profile of the company.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    customer_limit: CustomerLimitSchema.exactOptional().openapi({
-      description: 'The customer limits of the company.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    daily_limit_without_confirmation_login: AmountSchema.exactOptional().openapi({
-      description: 'The amount the company can pay in the session without asking for credentials.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    deny_reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The user deny reason.', readOnly: true, writeOnly: false }),
-    directors: z
-      .array(LabelUserSchema)
-      .exactOptional()
-      .openapi({
-        description: "The existing bunq aliases for the company's directors.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The company's display name.", readOnly: true, writeOnly: false }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the modified company.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The person's preferred language. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, seperated by an underscore.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    legal_form: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The company's legal form.", readOnly: false, writeOnly: false }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The company name.', readOnly: false, writeOnly: false }),
-    notification_filters: z
-      .array(NotificationFilterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The types of notifications that will result in a push notification or URL callback for this UserCompany.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    public_nick_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The company's public nick name.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    public_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The company's public UUID.", readOnly: true, writeOnly: false }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The person's preferred region. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, seperated by an underscore.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    relations: z
-      .array(RelationUserSchema)
-      .exactOptional()
-      .openapi({ description: 'The relations for this user.', readOnly: true, writeOnly: false }),
-    sector_of_industry: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The sector of industry.', readOnly: true, writeOnly: false }),
-    session_timeout: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The setting for the session timeout of the company in seconds.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The user status. Can be: ACTIVE, SIGNUP, RECOVERY.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user sub-status. Can be: NONE, FACE_RESET, APPROVAL, APPROVAL_DIRECTOR, APPROVAL_PARENT, APPROVAL_SUPPORT, COUNTER_IBAN, IDEAL or SUBMIT.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    tax_resident: z
-      .array(TaxResidentSchema)
-      .exactOptional()
-      .openapi({
-        description: "The user's tax residence numbers for different countries.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    type_of_business_entity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of business entity.', readOnly: true, writeOnly: false }),
-    ubo: z
-      .array(UboSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The names of the company's ultimate beneficiary owners. Minimum zero, maximum four.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the company object's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    version_terms_of_service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The version of the terms of service accepted by the user.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserCompany')
-
-const CompanyListingSchema = z
+const CompanyListingSchema: z.ZodType<CompanyListingType> = z
   .object({
     UserCompany: UserCompanySchema.exactOptional().openapi({
       description: '',
@@ -3992,7 +8974,7 @@ const CompanyListingSchema = z
   .openapi({ required: [] })
   .openapi('CompanyListing')
 
-const CompanyReadSchema = z
+const CompanyReadSchema: z.ZodType<CompanyReadType> = z
   .object({
     UserCompany: UserCompanySchema.exactOptional().openapi({
       description: '',
@@ -4805,195 +9787,6 @@ const DeviceServerReadSchema = z
   .openapi({ required: [] })
   .openapi('DeviceServerRead')
 
-const DraftPaymentEntrySchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        "The LabelMonetaryAccount containing the public information of 'this' (party) side of the DraftPayment.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount: AmountSchema.exactOptional().openapi({
-      description: 'The amount of the payment.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    attachment: z
-      .array(AttachmentMonetaryAccountPaymentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The Attachments attached to the DraftPayment.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount containing the public information of the other (counterparty) side of the DraftPayment.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description for the DraftPayment. Maximum 140 characters for DraftPayments to external IBANs, 9000 characters for DraftPayments to only other bunq MonetaryAccounts.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the draft payment entry.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    merchant_reference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional data to be included with the Payment specific to the merchant.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of the draft payment entry.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DraftPaymentEntry')
-
-const ScheduleAnchorObjectSchema = z
-  .object({
-    Payment: PaymentSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduleAnchorObject')
-
-const ScheduleSchema = z
-  .object({
-    object: ScheduleAnchorObjectSchema.exactOptional().openapi({
-      description: 'The scheduled object. (Payment, PaymentBatch)',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    recurrence_size: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The schedule recurrence size. For example size 4 and unit WEEKLY means the recurrence is every 4 weeks.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    recurrence_unit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The schedule recurrence unit, options: ONCE, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The schedule status, options: ACTIVE, FINISHED, CANCELLED.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    time_end: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The schedule end time (UTC).', readOnly: false, writeOnly: false }),
-    time_start: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The schedule start time (UTC).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Schedule')
-
-const DraftPaymentSchema = z
-  .object({
-    entries: z
-      .array(DraftPaymentEntrySchema)
-      .openapi({
-        description:
-          'The list of entries in the DraftPayment. Each entry will result in a payment when the DraftPayment is accepted.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    number_of_required_accepts: z
-      .int()
-      .openapi({
-        description:
-          'The number of accepts that are required for the draft payment to receive status ACCEPTED. Currently only 1 is valid.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    previous_updated_timestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The last updated_timestamp that you received for this DraftPayment. This needs to be provided to prevent race conditions.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    schedule: ScheduleSchema.exactOptional().openapi({
-      description: 'The schedule details when creating or updating a scheduled payment.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the DraftPayment.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['entries', 'number_of_required_accepts'] })
-  .openapi('DraftPayment')
-
-const DraftPaymentAnchorObjectSchema = z
-  .object({
-    Payment: PaymentSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('DraftPaymentAnchorObject')
-
 const DraftPaymentCreateSchema = z
   .object({
     id: z
@@ -5008,26 +9801,7 @@ const DraftPaymentCreateSchema = z
   .openapi({ required: [] })
   .openapi('DraftPaymentCreate')
 
-const DraftPaymentResponseSchema = z
-  .object({
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status with which was responded.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    user_alias_created: LabelUserSchema.exactOptional().openapi({
-      description: 'The user that responded to the DraftPayment.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('DraftPaymentResponse')
-
-const DraftPaymentListingSchema = z
+const DraftPaymentListingSchema: z.ZodType<DraftPaymentListingType> = z
   .object({
     entries: z
       .array(DraftPaymentEntrySchema)
@@ -5102,7 +9876,7 @@ const DraftPaymentListingSchema = z
   .openapi({ required: [] })
   .openapi('DraftPaymentListing')
 
-const DraftPaymentReadSchema = z
+const DraftPaymentReadSchema: z.ZodType<DraftPaymentReadType> = z
   .object({
     entries: z
       .array(DraftPaymentEntrySchema)
@@ -5191,2431 +9965,7 @@ const DraftPaymentUpdateSchema = z
   .openapi({ required: [] })
   .openapi('DraftPaymentUpdate')
 
-const FeatureAnnouncementSchema = z
-  .object({
-    avatar: AvatarSchema.exactOptional().openapi({
-      description: 'The Avatar of the event overview.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    sub_title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The event overview subtitle of the feature display',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The event overview title of the feature display',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the feature announcement so apps can override with their own stuff if desired',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('FeatureAnnouncement')
-
-const IdealMerchantTransactionSchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The alias of the monetary account to add money to.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_guaranteed: AmountSchema.exactOptional().openapi({
-      description:
-        'In case of a successful transaction, the amount of money that will be transferred.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_requested: AmountSchema.exactOptional().openapi({
-      description: 'The requested amount of money to add.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The alias of the monetary account the money comes from.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    expiration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'When the transaction will expire.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    issuer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The BIC of the issuer.', readOnly: false, writeOnly: false }),
-    issuer_authentication_url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL to visit to ', readOnly: true, writeOnly: false }),
-    issuer_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Name of the issuer.', readOnly: true, writeOnly: false }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the monetary account this ideal merchant transaction links to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    purchase_identifier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The 'purchase ID' of the iDEAL transaction.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status of the transaction.', readOnly: true, writeOnly: false }),
-    status_timestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'When the status was last updated.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    transaction_identifier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The 'transaction ID' of the iDEAL transaction.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('IdealMerchantTransaction')
-
-const InvoiceItemSchema = z
-  .object({
-    billing_date: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The billing date of the item.', readOnly: true, writeOnly: false }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the invoice item.', readOnly: true, writeOnly: false }),
-    quantity: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The number of items priced.', readOnly: true, writeOnly: false }),
-    total_vat_exclusive: AmountSchema.exactOptional().openapi({
-      description: 'The item price excluding VAT.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    total_vat_inclusive: AmountSchema.exactOptional().openapi({
-      description: 'The item price including VAT.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    type_description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The price description.', readOnly: true, writeOnly: false }),
-    type_description_translated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The translated price description.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    unit_vat_exclusive: AmountSchema.exactOptional().openapi({
-      description: 'The unit item price excluding VAT.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    unit_vat_inclusive: AmountSchema.exactOptional().openapi({
-      description: 'The unit item price including VAT.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    vat: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The VAT tax fraction.', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('InvoiceItem')
-
-const InvoiceItemGroupSchema = z
-  .object({
-    instance_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The identifier of the invoice item group.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    item: z
-      .array(InvoiceItemSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The invoice items in the group.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    product_vat_exclusive: AmountSchema.exactOptional().openapi({
-      description: 'The unit item price excluding VAT.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    product_vat_inclusive: AmountSchema.exactOptional().openapi({
-      description: 'The unit item price including VAT.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of the invoice item group.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    type_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the type of the invoice item group.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    type_description_translated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The translated description of the type of the invoice item group.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('InvoiceItemGroup')
-
-const InvoiceSchema = z
-  .object({
-    address: AddressSchema.exactOptional().openapi({
-      description: "The customer's address.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        "The label that's displayed to the counterparty with the invoice. Includes user.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The category to display to the user.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    chamber_of_commerce_number: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The company's chamber of commerce number.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    counterparty_address: AddressSchema.exactOptional().openapi({
-      description: "The company's address.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The label of the counterparty of the invoice. Includes user.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the invoice object's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    description: z
-      .string()
-      .openapi({
-        description: 'The description provided by the admin.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    external_url: z
-      .string()
-      .openapi({
-        description: 'The external url provided by the admin.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    group: z
-      .array(InvoiceItemGroupSchema)
-      .exactOptional()
-      .openapi({ description: 'The invoice item groups.', readOnly: true, writeOnly: false }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the invoice object.', readOnly: true, writeOnly: false }),
-    invoice_date: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The invoice date.', readOnly: true, writeOnly: false }),
-    invoice_number: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The invoice number.', readOnly: true, writeOnly: false }),
-    request_reference_split_the_bill: z
-      .array(RequestInquiryReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The invoice status.', readOnly: false, writeOnly: false }),
-    total_vat: AmountSchema.exactOptional().openapi({
-      description: 'The VAT on the total discounted item price.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    total_vat_exclusive: AmountSchema.exactOptional().openapi({
-      description: 'The total discounted item price excluding VAT.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    total_vat_inclusive: AmountSchema.exactOptional().openapi({
-      description: 'The total discounted item price including VAT.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the invoice object's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    vat_number: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The company's chamber of commerce number.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['description', 'external_url'] })
-  .openapi('Invoice')
-
-const MasterCardActionRefundSchema: z.ZodType<MasterCardActionRefundType> = z
-  .lazy(() =>
-    z
-      .object({
-        additional_information: AdditionalInformationSchema.exactOptional().openapi({
-          description: 'All additional information provided by the user.',
-          readOnly: true,
-          writeOnly: false,
-        }),
-        alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-          description: 'The monetary account label of the account that this action is created for.',
-          readOnly: true,
-          writeOnly: false,
-        }),
-        amount: AmountSchema.exactOptional().openapi({
-          description: 'The amount to refund.',
-          readOnly: false,
-          writeOnly: false,
-        }),
-        attachment: z
-          .array(AttachmentMasterCardActionRefundSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The Attachments to attach to the refund request.',
-            readOnly: false,
-            writeOnly: true,
-          }),
-        category: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The category of the refund, required for chargeback.',
-            readOnly: false,
-            writeOnly: true,
-          }),
-        comment: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Comment about the refund.', readOnly: false, writeOnly: true }),
-        counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-          description: 'The monetary account label of the counterparty.',
-          readOnly: true,
-          writeOnly: false,
-        }),
-        created: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "The timestamp of the refund's creation.",
-            readOnly: true,
-            writeOnly: false,
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The description for this transaction to display.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        id: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The id of the refund.', readOnly: true, writeOnly: false }),
-        label_card: LabelCardSchema.exactOptional().openapi({
-          description: 'The label of the card.',
-          readOnly: true,
-          writeOnly: false,
-        }),
-        label_user_creator: LabelUserSchema.exactOptional().openapi({
-          description: 'The label of the user who created this note.',
-          readOnly: true,
-          writeOnly: false,
-        }),
-        mastercard_action_id: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description: 'The id of mastercard action being refunded.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        reason: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The reason of the refund. Can be REFUND_EXPIRED_TRANSACTION, REFUND_REQUESTED, REFUND_MERCHANT, REFUND_CHARGEBACK.',
-            readOnly: false,
-            writeOnly: false,
-          }),
-        reference_mastercard_action_event: z
-          .array(MasterCardActionReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The reference to the object this refund applies to.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        status: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The status of the refunded mastercard action. Can be AUTO_APPROVED, AUTO_APPROVED_WAITING_FOR_EXPIRY, PENDING_APPROVAL, APPROVED, REFUNDED, DENIED or FAILED',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        status_description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "Description of the refund's current status.",
-            readOnly: true,
-            writeOnly: false,
-          }),
-        status_description_translated: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Description of the refund's current status, translated in user's language.",
-            readOnly: true,
-            writeOnly: false,
-          }),
-        status_together_url: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "Together topic concerning the refund's current status.",
-            readOnly: true,
-            writeOnly: false,
-          }),
-        sub_type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The sub type of this refund indicating whether the chargeback will be FULL or PARTIAL.',
-            readOnly: false,
-            writeOnly: false,
-          }),
-        terms_and_conditions: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Proof that the user acknowledged the terms and conditions for chargebacks.',
-            readOnly: false,
-            writeOnly: true,
-          }),
-        time_refund: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The time the refund will take place.',
-            readOnly: true,
-            writeOnly: false,
-          }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Type of this refund. Can de REFUND or CHARGEBACK',
-            readOnly: false,
-            writeOnly: false,
-          }),
-        updated: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "The timestamp of the refund's last update.",
-            readOnly: true,
-            writeOnly: false,
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('MasterCardActionRefund')
-
-const MasterCardActionSchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The monetary account label of the account that this action is created for.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    all_mastercard_action_refund: z
-      .array(MasterCardActionRefundSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A reference to the Refunds if they exist.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    amount_billing: AmountSchema.exactOptional().openapi({
-      description: "The amount of the transaction in the monetary account's currency.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_converted: AmountSchema.exactOptional().openapi({
-      description: 'The amount of the transaction in local currency.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_fee: AmountSchema.exactOptional().openapi({
-      description: 'The fee amount as charged by the merchant, if applicable.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_local: AmountSchema.exactOptional().openapi({
-      description: 'The amount of the transaction in local currency.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_original_billing: AmountSchema.exactOptional().openapi({
-      description: "The original amount in the monetary account's currency.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_original_local: AmountSchema.exactOptional().openapi({
-      description: 'The original amount in local currency.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    applied_limit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the limit applied to validate if this MasterCardAction was within the spending limits. The returned string matches the limit types as defined in the card endpoint.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    authorisation_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status in the authorisation process.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    authorisation_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of transaction that was delivered using the card.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    card_authorisation_id_response: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The response code by which authorised transaction can be identified as authorised by bunq.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    card_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the card this action links to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The city where the message originates from as announced by the terminal.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    clearing_expiry_time: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the processing of the clearing is expired, refunding the authorisation.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    clearing_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The clearing status of the authorisation. Can be 'PENDING', 'FIRST_PRESENTMENT_COMPLETE' or 'REFUND_LENIENCY'.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The monetary account label of the counterparty.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    decision: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Why the transaction was denied, if it was denied, or just ALLOWED.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    decision_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Empty if allowed, otherwise a textual explanation of why it was denied.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    decision_description_translated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Empty if allowed, otherwise a textual explanation of why it was denied in user's language.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    decision_together_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Empty if allowed or if no relevant Together topic exists, otherwise contains the URL for a Together topic with more information about the decision.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description for this transaction to display.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    eligible_whitelist_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The whitelist id for this action or null.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the MastercardAction.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    label_card: LabelCardSchema.exactOptional().openapi({
-      description: 'The label of the card.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    maturity_date: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The maturity date.', readOnly: true, writeOnly: false }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the monetary account this action links to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    pan_entry_mode_user: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The type of entry mode the user used. Can be 'ATM', 'ICC', 'MAGNETIC_STRIPE' or 'E_COMMERCE'.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    payment_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The payment status of the transaction. For example PAYMENT_SUCCESSFUL, for a successful payment.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    pos_card_holder_presence: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Card Holder Presence type of the POS.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    pos_card_presence: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Card Presence type of the POS.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    request_reference_split_the_bill: z
-      .array(RequestInquiryReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    reservation_expiry_time: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If this is a reservation, the moment the reservation will expire.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    secure_code_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The secure code id for this mastercard action or null.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    settlement_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The setlement status in the authorisation process.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    token_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If this is a tokenisation action, this shows the status of the token.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    wallet_provider_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the wallet provider as defined by MasterCard. 420 = bunq Android app with Tap&Pay; 103 = Apple Pay.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MasterCardAction')
-
-const RequestResponseSchema = z
-  .object({
-    address_billing: AddressSchema.exactOptional().openapi({
-      description:
-        'The billing address provided by the accepting user if an address was requested.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    address_shipping: AddressSchema.exactOptional().openapi({
-      description:
-        'The shipping address provided by the accepting user if an address was requested.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount with the public information of the MonetaryAccount this RequestResponse was received on.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_inquired: AmountSchema.exactOptional().openapi({
-      description: 'The requested Amount.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_responded: AmountSchema.exactOptional().openapi({
-      description: 'The Amount the RequestResponse was accepted with.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    attachment: z
-      .array(AttachmentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The Attachments attached to the RequestResponse.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount with the public information of the MonetaryAccount that is requesting money with this RequestResponse.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp when the Request Response was created.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    credit_scheme_identifier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The credit scheme id provided by the counterparty for DIRECT_DEBIT inquiries.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description for the RequestResponse provided by the requesting party. Maximum 9000 characters.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    eligible_whitelist_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The whitelist id for this action or null.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    event_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the latest event for the request.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    geolocation: GeolocationSchema.exactOptional().openapi({
-      description: 'The Geolocation where the RequestResponse was created.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the Request Response.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    mandate_identifier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The mandate id provided by the counterparty for DIRECT_DEBIT inquiries.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    minimum_age: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The minimum age the user accepting the RequestResponse must have.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the MonetaryAccount the RequestResponse was received on.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    redirect_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The URL which the user is sent to after accepting or rejecting the Request.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    request_reference_split_the_bill: z
-      .array(RequestInquiryReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    require_address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not an address must be provided on accept.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the RequestResponse. Can be ACCEPTED, PENDING, REJECTED, REFUND_REQUESTED, REFUNDED or REVOKED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The subtype of the RequestInquiry. Can be ONCE or RECURRING for DIRECT_DEBIT RequestInquiries and NONE for all other.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    time_expiry: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of when the RequestResponse expired or will expire.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    time_refund_requested: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of when a refund request for the RequestResponse was claimed.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    time_refunded: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of when the RequestResponse was refunded.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    time_responded: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of when the RequestResponse was responded to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the RequestInquiry. Can be DIRECT_DEBIT, DIRECT_DEBIT_B2B, IDEAL, SOFORT or INTERNAL.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp when the Request Response was last updated (will be updated when chat messages are received).',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    user_refund_requested: LabelUserSchema.exactOptional().openapi({
-      description: 'The label of the user that requested the refund.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('RequestResponse')
-
-const ScheduleInstanceAnchorObjectSchema = z
-  .object({
-    Payment: PaymentSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduleInstanceAnchorObject')
-
-const ScheduleInstanceSchema = z
-  .object({
-    error_message: z
-      .array(ErrorSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The message when the scheduled instance has run and failed due to user error.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    request_reference_split_the_bill: z
-      .array(RequestInquiryReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    result_object: ScheduleInstanceAnchorObjectSchema.exactOptional().openapi({
-      description: 'The result object of this schedule instance. (Payment, PaymentBatch)',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    scheduled_object: ScheduleAnchorObjectSchema.exactOptional().openapi({
-      description: 'The scheduled object. (Payment, PaymentBatch)',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    state: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The state of the scheduleInstance. (FINISHED_SUCCESSFULLY, RETRY, FAILED_USER_ERROR)',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    time_end: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The schedule end time (UTC).', readOnly: true, writeOnly: false }),
-    time_start: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The schedule start time (UTC).', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('ScheduleInstance')
-
-const TransferwiseQuoteSchema = z
-  .object({
-    amount_fee: AmountSchema.exactOptional().openapi({
-      description: 'The fee amount.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_source: AmountSchema.exactOptional().openapi({
-      description: 'The source amount.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    amount_target: AmountSchema.exactOptional().openapi({
-      description: 'The target amount.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the quote's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    currency_source: z
-      .string()
-      .openapi({ description: 'The source currency.', readOnly: false, writeOnly: true }),
-    currency_target: z
-      .string()
-      .openapi({ description: 'The target currency.', readOnly: false, writeOnly: true }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the quote.', readOnly: true, writeOnly: false }),
-    quote_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The quote id Transferwise needs.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    rate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The rate.', readOnly: true, writeOnly: false }),
-    time_delivery_estimate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The estimated delivery time.', readOnly: true, writeOnly: false }),
-    time_expiry: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The expiration timestamp of the quote.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the quote's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['currency_source', 'currency_target'] })
-  .openapi('TransferwiseQuote')
-
-const TransferwiseTransferSchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        "The LabelMonetaryAccount containing the public information of 'this' (party) side of the Payment.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_source: AmountSchema.exactOptional().openapi({
-      description: 'The source amount.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_target: AmountSchema.exactOptional().openapi({
-      description: 'The target amount.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount containing the public information of the other (counterparty) side of the Payment.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    monetary_account_id: z
-      .string()
-      .openapi({
-        description: 'The id of the monetary account the payment should be made from.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    pay_in_reference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Pay-In reference of the payment.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    quote: TransferwiseQuoteSchema.exactOptional().openapi({
-      description: 'The quote details used to created the payment.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    rate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The rate of the payment.', readOnly: true, writeOnly: false }),
-    recipient_id: z
-      .string()
-      .openapi({ description: 'The id of the target account.', readOnly: false, writeOnly: true }),
-    reference: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The reference of the payment.', readOnly: true, writeOnly: false }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status.', readOnly: true, writeOnly: false }),
-    status_transferwise: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status as Transferwise reports it.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    status_transferwise_issue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A status to indicatie if Transferwise has an issue with this payment and requires more information.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subStatus.', readOnly: true, writeOnly: false }),
-    time_delivery_estimate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The estimated delivery time.', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: ['monetary_account_id', 'recipient_id'] })
-  .openapi('TransferwiseTransfer')
-
-const WhitelistResultViewAnchoredObjectSchema = z
-  .object({
-    draftPayment: DraftPaymentSchema.exactOptional().openapi({
-      description: 'The DraftPayment object',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The ID of the whitelist entry.', readOnly: true, writeOnly: false }),
-    requestResponse: RequestResponseSchema.exactOptional().openapi({
-      description: 'The RequestResponse object',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('WhitelistResultViewAnchoredObject')
-
-const WhitelistSchema = z.object({}).openapi('Whitelist')
-
-const WhitelistResultSchema = z
-  .object({
-    error_message: z
-      .array(ErrorSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The message when the whitelist result has failed due to user error.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The ID of the whitelist entry.', readOnly: true, writeOnly: false }),
-    monetary_account_paying_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The account from which payments will be deducted when a transaction is matched with this whitelist.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    object: WhitelistResultViewAnchoredObjectSchema.exactOptional().openapi({
-      description: 'The details of the external object the event was created for.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    request_reference_split_the_bill: z
-      .array(RequestInquiryReferenceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The reference to the object used for split the bill. Can be RequestInquiry or RequestInquiryBatch',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the WhitelistResult.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The subStatus of the WhitelistResult.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    whitelist: WhitelistSchema.exactOptional().openapi({
-      description: 'The corresponding whitelist.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('WhitelistResult')
-
-const RequestReferenceSplitTheBillAnchorObjectSchema = z
-  .object({
-    BillingInvoice: InvoiceSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    DraftPayment: DraftPaymentSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    MasterCardAction: MasterCardActionSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    Payment: PaymentSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    RequestResponse: RequestResponseSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    ScheduleInstance: ScheduleInstanceSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    TransferwisePayment: TransferwiseTransferSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    WhitelistResult: WhitelistResultSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('RequestReferenceSplitTheBillAnchorObject')
-
-const RequestInquirySchema = z
-  .object({
-    address_billing: AddressSchema.exactOptional().openapi({
-      description:
-        'The billing address provided by the accepting user if an address was requested.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    address_shipping: AddressSchema.exactOptional().openapi({
-      description:
-        'The shipping address provided by the accepting user if an address was requested.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    allow_amount_higher: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          '[DEPRECATED] Whether or not the accepting user can choose to accept with a higher amount than requested. Defaults to false.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    allow_amount_lower: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          '[DEPRECATED] Whether or not the accepting user can choose to accept with a lower amount than requested. Defaults to false.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    allow_bunqme: z
-      .boolean()
-      .openapi({
-        description: 'Whether or not sending a bunq.me request is allowed.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    amount_inquired: AmountSchema.exactOptional().openapi({
-      description: 'The requested amount.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    amount_responded: AmountSchema.exactOptional().openapi({
-      description: 'The responded amount.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    attachment: z
-      .array(BunqIdSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The attachments attached to the payment.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    batch_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the batch if the request was part of a batch.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    bunqme_share_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The url that points to the bunq.me request.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount with the public information of the MonetaryAccount the money was requested from.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the payment request's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the inquiry.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    event_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The ID of the associated event if the request was made using 'split the bill'.",
-        readOnly: false,
-        writeOnly: true,
-      }),
-    geolocation: GeolocationSchema.exactOptional().openapi({
-      description: 'The geolocation where the payment was done.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the created RequestInquiry.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    merchant_reference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The client's custom reference that was attached to the request and the mutation.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    minimum_age: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The minimum age the user accepting the RequestInquiry must have.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the monetary account the request response applies to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    redirect_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The URL which the user is sent to after accepting or rejecting the Request.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reference_split_the_bill:
-      RequestReferenceSplitTheBillAnchorObjectSchema.exactOptional().openapi({
-        description:
-          'The reference to the object used for split the bill. Can be Payment, PaymentBatch, ScheduleInstance, RequestResponse and MasterCardAction',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    require_address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not an address must be provided on accept.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    scheduled_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the scheduled job if the request was scheduled.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status of the request.', readOnly: false, writeOnly: false }),
-    time_expiry: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of when the payment request expired.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    time_responded: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of when the payment request was responded to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the payment request's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    user_alias_created: LabelUserSchema.exactOptional().openapi({
-      description:
-        "The label that's displayed to the counterparty with the mutation. Includes user.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    user_alias_revoked: LabelUserSchema.exactOptional().openapi({
-      description:
-        "The label that's displayed to the counterparty with the mutation. Includes user.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    want_tip: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          '[DEPRECATED] Whether or not the accepting user can give an extra tip on top of the requested Amount. Defaults to false.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-  })
-  .openapi({ required: ['allow_bunqme'] })
-  .openapi('RequestInquiry')
-
-const RequestInquiryBatchSchema = z
-  .object({
-    event_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The ID of the associated event if the request batch was made using 'split the bill'.",
-        readOnly: false,
-        writeOnly: true,
-      }),
-    reference_split_the_bill:
-      RequestReferenceSplitTheBillAnchorObjectSchema.exactOptional().openapi({
-        description:
-          'The reference to the object used for split the bill. Can be Payment, PaymentBatch, ScheduleInstance, RequestResponse and MasterCardAction',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    request_inquiries: z
-      .array(RequestInquirySchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of requests that were made.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status of the request.', readOnly: false, writeOnly: true }),
-    total_amount_inquired: AmountSchema.exactOptional().openapi({
-      description: 'The total amount originally inquired for this batch.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('RequestInquiryBatch')
-
-const RewardRecipientSchema = z
-  .object({
-    amount_reward: AmountSchema.exactOptional().openapi({
-      description: 'The amount that will be/was awarded as reward for the reward.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    counterparty_alias: LabelUserSchema.exactOptional().openapi({
-      description: 'The alias of the other user eligible for the reward award.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time the reward was created.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the reward.', readOnly: true, writeOnly: false }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status of the reward.', readOnly: true, writeOnly: false }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subStatus of the reward.', readOnly: true, writeOnly: false }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the reward.', readOnly: true, writeOnly: false }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time the reward was last updated.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('RewardRecipient')
-
-const RewardSenderSchema = z
-  .object({
-    amount_reward: AmountSchema.exactOptional().openapi({
-      description: 'The amount that will be/was awarded as reward for the reward.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    counterparty_alias: LabelUserSchema.exactOptional().openapi({
-      description: 'The alias of the other user eligible for the reward award.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time the reward was created.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the reward.', readOnly: true, writeOnly: false }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status of the reward.', readOnly: true, writeOnly: false }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subStatus of the reward.', readOnly: true, writeOnly: false }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the reward.', readOnly: true, writeOnly: false }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time the reward was last updated.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('RewardSender')
-
-const SchedulePaymentEntrySchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        "The LabelMonetaryAccount containing the public information of 'this' (party) side of the Payment.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    allow_bunqto: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether or not sending a bunq.to payment is allowed.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    amount: AmountSchema.exactOptional().openapi({
-      description:
-        'The Amount transferred by the Payment. Will be negative for outgoing Payments and positive for incoming Payments (relative to the MonetaryAccount indicated by monetary_account_id).',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    attachment: z
-      .array(AttachmentMonetaryAccountPaymentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The Attachments attached to the Payment.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount containing the public information of the other (counterparty) side of the Payment.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description for the Payment. Maximum 140 characters for Payments to external IBANs, 9000 characters for Payments to only other bunq MonetaryAccounts.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    merchant_reference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional data included with the Payment specific to the merchant.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SchedulePaymentEntry')
-
-const SchedulePaymentSchema = z
-  .object({
-    payment: SchedulePaymentEntrySchema.exactOptional().openapi({
-      description: 'The payment details.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    schedule: ScheduleSchema.exactOptional().openapi({
-      description: 'The schedule details.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The schedule status, options: ACTIVE, FINISHED, CANCELLED.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SchedulePayment')
-
-const SchedulePaymentBatchSchema = z
-  .object({
-    payments: z
-      .array(SchedulePaymentEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'The payment details.', readOnly: false, writeOnly: false }),
-    schedule: ScheduleSchema.exactOptional().openapi({
-      description: 'The schedule details.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('SchedulePaymentBatch')
-
-const ShareDetailDraftPaymentSchema = z
-  .object({
-    make_draft_payments: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to make draft payments from the shared account.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    view_balance: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If set to true, the invited user will be able to view the account balance.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    view_new_events: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to view events starting from the time the share became active.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    view_old_events: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to view events from before the share was active.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShareDetailDraftPayment')
-
-const ShareDetailPaymentSchema = z
-  .object({
-    make_draft_payments: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to make draft payments from the shared account.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    make_payments: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to make payments from the shared account.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    view_balance: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If set to true, the invited user will be able to view the account balance.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    view_new_events: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to view events starting from the time the share became active.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    view_old_events: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to view events from before the share was active.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShareDetailPayment')
-
-const ShareDetailReadOnlySchema = z
-  .object({
-    view_balance: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If set to true, the invited user will be able to view the account balance.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    view_new_events: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to view events starting from the time the share became active.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    view_old_events: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, the invited user will be able to view events from before the share was active.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShareDetailReadOnly')
-
-const ShareDetailSchema = z
-  .object({
-    draft_payment: ShareDetailDraftPaymentSchema.exactOptional().openapi({
-      description:
-        "The share details for a draft payment share. In the response 'draft_payment' is replaced by 'ShareDetailDraftPayment'.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    payment: ShareDetailPaymentSchema.exactOptional().openapi({
-      description:
-        "The share details for a payment share. In the response 'payment' is replaced by 'ShareDetailPayment'.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    read_only: ShareDetailReadOnlySchema.exactOptional().openapi({
-      description:
-        "The share details for viewing a share. In the response 'read_only' is replaced by 'ShareDetailReadOnly'.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShareDetail')
-
-const ShareInviteMonetaryAccountInquirySchema = z
-  .object({
-    access_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Type of access that is in place.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: "The label of the monetary account that's being shared.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    counter_user_alias: LabelUserSchema.exactOptional().openapi({
-      description: 'The label of the user to share with.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    draft_share_invite_bank_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'DEPRECATED: USE `access_type` INSTEAD | The id of the draft share invite bank.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    end_date: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'DEPRECATED: USE `access_type` INSTEAD | The expiration date of this share.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the newly created share invite.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the monetary account the share applies to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    relationship: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The relationship: COMPANY_DIRECTOR, COMPANY_EMPLOYEE, etc',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    share_detail: ShareDetailSchema.exactOptional().openapi({
-      description:
-        'DEPRECATED: USE `access_type` INSTEAD | The share details. Only one of these objects may be passed.',
-      readOnly: false,
-      writeOnly: true,
-    }),
-    share_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'DEPRECATED: USE `access_type` INSTEAD | The share type, either STANDARD or MUTUAL.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    start_date: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'DEPRECATED: USE `access_type` INSTEAD | The start date of this share.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the share. Can be ACTIVE, REVOKED, REJECTED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    user_alias_created: LabelUserSchema.exactOptional().openapi({
-      description: 'The user who created the share.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    user_alias_revoked: LabelUserSchema.exactOptional().openapi({
-      description: 'The user who revoked the share.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShareInviteMonetaryAccountInquiry')
-
-const ShareInviteMonetaryAccountResponseSchema = z
-  .object({
-    access_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of access that is wanted, one of VIEW_BALANCE, VIEW_TRANSACTION, DRAFT_PAYMENT or FULL_TRANSIENT',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    card_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The card to link to the shared monetary account. Used only if share_detail is ShareDetailCardPayment.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    counter_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The monetary account and user who created the share.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of the ShareInviteBankResponse creation.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description of this share. It is basically the monetary account description.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    draft_share_invite_bank_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the draft share invite bank.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    end_date: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The expiration date of this share.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the ShareInviteBankResponse.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the monetary account the ACCEPTED share applies to. null otherwise.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    relation_user: RelationUserSchema.exactOptional().openapi({
-      description: 'All of the relation users towards this MA.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    share_detail: ShareDetailSchema.exactOptional().openapi({
-      description: 'The share details.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    share_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The share type, either STANDARD or MUTUAL.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    start_date: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The start date of this share.', readOnly: true, writeOnly: false }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the share. Can be ACTIVE, REVOKED, REJECTED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of the ShareInviteBankResponse last update.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    user_alias_cancelled: LabelUserSchema.exactOptional().openapi({
-      description: 'The user who cancelled the share if it has been revoked or rejected.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShareInviteMonetaryAccountResponse')
-
-const SofortMerchantTransactionSchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The alias of the monetary account to add money to.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_guaranteed: AmountSchema.exactOptional().openapi({
-      description:
-        'In case of a successful transaction, the amount of money that will be transferred.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount_requested: AmountSchema.exactOptional().openapi({
-      description: 'The requested amount of money to add.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The alias of the monetary account the money comes from.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    error_message: z
-      .array(ErrorSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The error message of the transaction.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    issuer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The BIC of the issuer.', readOnly: false, writeOnly: false }),
-    issuer_authentication_url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL to visit to ', readOnly: true, writeOnly: false }),
-    monetary_account_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the monetary account this sofort merchant transaction links to.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status of the transaction.', readOnly: true, writeOnly: false }),
-    transaction_identifier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The 'transaction ID' of the Sofort transaction.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SofortMerchantTransaction')
-
-const EventObjectSchema = z
-  .object({
-    BankSwitchServiceNetherlandsIncomingPayment:
-      BankSwitchServiceNetherlandsIncomingPaymentSchema.exactOptional().openapi({
-        description: '',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    BunqMeFundraiserResult: BunqMeFundraiserResultSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    BunqMeTab: BunqMeTabSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    BunqMeTabResultResponse: BunqMeTabResultResponseSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    Card: CardSchema.exactOptional().openapi({ description: '', readOnly: true, writeOnly: false }),
-    CardDebit: CardDebitSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    DraftPayment: DraftPaymentSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    FeatureAnnouncement: FeatureAnnouncementSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    IdealMerchantTransaction: IdealMerchantTransactionSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    Invoice: InvoiceSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    MasterCardAction: MasterCardActionSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    Payment: PaymentSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    PaymentBatch: PaymentBatchSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    RequestInquiry: RequestInquirySchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    RequestInquiryBatch: RequestInquiryBatchSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    RequestResponse: RequestResponseSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    RewardRecipient: RewardRecipientSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    RewardSender: RewardSenderSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    ScheduledInstance: ScheduleInstanceSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    ScheduledPayment: SchedulePaymentSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    ScheduledPaymentBatch: SchedulePaymentBatchSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    ShareInviteBankInquiry: ShareInviteMonetaryAccountInquirySchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    ShareInviteBankResponse: ShareInviteMonetaryAccountResponseSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    SofortMerchantTransaction: SofortMerchantTransactionSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    TransferwisePayment: TransferwiseTransferSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('EventObject')
-
-const EventListingSchema = z
+const EventListingSchema: z.ZodType<EventListingType> = z
   .object({
     action: z
       .string()
@@ -7680,7 +10030,7 @@ const EventListingSchema = z
   .openapi({ required: [] })
   .openapi('EventListing')
 
-const EventReadSchema = z
+const EventReadSchema: z.ZodType<EventReadType> = z
   .object({
     action: z
       .string()
@@ -7759,7 +10109,7 @@ const ExportAnnualOverviewSchema = z
   .openapi('ExportAnnualOverview')
 
 const ExportAnnualOverviewContentListingSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ExportAnnualOverviewContentListing')
 
 const ExportAnnualOverviewCreateSchema = z
@@ -7776,7 +10126,7 @@ const ExportAnnualOverviewCreateSchema = z
   .openapi({ required: [] })
   .openapi('ExportAnnualOverviewCreate')
 
-const ExportAnnualOverviewDeleteSchema = z.object({}).openapi('ExportAnnualOverviewDelete')
+const ExportAnnualOverviewDeleteSchema = z.looseObject({}).openapi('ExportAnnualOverviewDelete')
 
 const ExportAnnualOverviewListingSchema = z
   .object({
@@ -7864,9 +10214,9 @@ const ExportAnnualOverviewReadSchema = z
   .openapi({ required: [] })
   .openapi('ExportAnnualOverviewRead')
 
-const ExportRibSchema = z.object({}).openapi('ExportRib')
+const ExportRibSchema = z.looseObject({}).openapi('ExportRib')
 
-const ExportRibContentListingSchema = z.object({}).openapi('ExportRibContentListing')
+const ExportRibContentListingSchema = z.looseObject({}).openapi('ExportRibContentListing')
 
 const ExportRibCreateSchema = z
   .object({
@@ -7882,7 +10232,7 @@ const ExportRibCreateSchema = z
   .openapi({ required: [] })
   .openapi('ExportRibCreate')
 
-const ExportRibDeleteSchema = z.object({}).openapi('ExportRibDelete')
+const ExportRibDeleteSchema = z.looseObject({}).openapi('ExportRibDelete')
 
 const ExportRibListingSchema = z
   .object({
@@ -7990,7 +10340,7 @@ const ExportStatementSchema = z
   .openapi('ExportStatement')
 
 const ExportStatementCardContentListingSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ExportStatementCardContentListing')
 
 const ExportStatementCardCsvSchema = z
@@ -8032,7 +10382,7 @@ const ExportStatementCardCsvCreateSchema = z
   .openapi({ required: [] })
   .openapi('ExportStatementCardCsvCreate')
 
-const ExportStatementCardCsvDeleteSchema = z.object({}).openapi('ExportStatementCardCsvDelete')
+const ExportStatementCardCsvDeleteSchema = z.looseObject({}).openapi('ExportStatementCardCsvDelete')
 
 const ExportStatementCardCsvListingSchema = z
   .object({
@@ -8263,7 +10613,7 @@ const ExportStatementCardPdfCreateSchema = z
   .openapi({ required: [] })
   .openapi('ExportStatementCardPdfCreate')
 
-const ExportStatementCardPdfDeleteSchema = z.object({}).openapi('ExportStatementCardPdfDelete')
+const ExportStatementCardPdfDeleteSchema = z.looseObject({}).openapi('ExportStatementCardPdfDelete')
 
 const ExportStatementCardPdfListingSchema = z
   .object({
@@ -8447,7 +10797,9 @@ const ExportStatementCardReadSchema = z
   .openapi({ required: [] })
   .openapi('ExportStatementCardRead')
 
-const ExportStatementContentListingSchema = z.object({}).openapi('ExportStatementContentListing')
+const ExportStatementContentListingSchema = z
+  .looseObject({})
+  .openapi('ExportStatementContentListing')
 
 const ExportStatementCreateSchema = z
   .object({
@@ -8460,7 +10812,7 @@ const ExportStatementCreateSchema = z
   .openapi({ required: [] })
   .openapi('ExportStatementCreate')
 
-const ExportStatementDeleteSchema = z.object({}).openapi('ExportStatementDelete')
+const ExportStatementDeleteSchema = z.looseObject({}).openapi('ExportStatementDelete')
 
 const ExportStatementListingSchema = z
   .object({
@@ -8537,10 +10889,10 @@ const ExportStatementListingSchema = z
   .openapi({ required: [] })
   .openapi('ExportStatementListing')
 
-const ExportStatementPaymentSchema = z.object({}).openapi('ExportStatementPayment')
+const ExportStatementPaymentSchema = z.looseObject({}).openapi('ExportStatementPayment')
 
 const ExportStatementPaymentContentListingSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ExportStatementPaymentContentListing')
 
 const ExportStatementPaymentCreateSchema = z
@@ -8876,7 +11228,7 @@ const IdealMerchantTransactionReadSchema = z
   .openapi({ required: [] })
   .openapi('IdealMerchantTransactionRead')
 
-const InsightEventListingSchema = z
+const InsightEventListingSchema: z.ZodType<InsightEventListingType> = z
   .object({
     action: z
       .string()
@@ -9299,7 +11651,9 @@ const InvoiceByUserReadSchema = z
   .openapi({ required: [] })
   .openapi('InvoiceByUserRead')
 
-const InvoiceExportPdfContentListingSchema = z.object({}).openapi('InvoiceExportPdfContentListing')
+const InvoiceExportPdfContentListingSchema = z
+  .looseObject({})
+  .openapi('InvoiceExportPdfContentListing')
 
 const InvoiceListingSchema = z
   .object({
@@ -9523,21 +11877,7 @@ const InvoiceReadSchema = z
   .openapi({ required: [] })
   .openapi('InvoiceRead')
 
-const IssuerSchema = z
-  .object({
-    bic: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The BIC code.', readOnly: false, writeOnly: false }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the bank.', readOnly: false, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('Issuer')
-
-const MasterCardActionListingSchema = z
+const MasterCardActionListingSchema: z.ZodType<MasterCardActionListingType> = z
   .object({
     alias: LabelMonetaryAccountSchema.exactOptional().openapi({
       description: 'The monetary account label of the account that this action is created for.',
@@ -9818,7 +12158,7 @@ const MasterCardActionListingSchema = z
   .openapi({ required: [] })
   .openapi('MasterCardActionListing')
 
-const MasterCardActionReadSchema = z
+const MasterCardActionReadSchema: z.ZodType<MasterCardActionReadType> = z
   .object({
     alias: LabelMonetaryAccountSchema.exactOptional().openapi({
       description: 'The monetary account label of the account that this action is created for.',
@@ -10171,148 +12511,7 @@ const MasterCardIdentityCheckChallengeRequestUserUpdateSchema = z
   .openapi({ required: [] })
   .openapi('MasterCardIdentityCheckChallengeRequestUserUpdate')
 
-const MasterCardPaymentListingSchema = z.object({}).openapi('MasterCardPaymentListing')
-
-const MonetaryAccountSettingSchema = z
-  .object({
-    color: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The color chosen for the MonetaryAccount.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    default_avatar_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the avatar. Can be either AVATAR_DEFAULT, AVATAR_CUSTOM or AVATAR_UNDETERMINED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    icon: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The icon chosen for the MonetaryAccount.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    restriction_chat: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The chat restriction. Possible values are ALLOW_INCOMING or BLOCK_INCOMING',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sdd_expiration_action: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The preference for this monetary account on whether to automatically accept or reject expiring SDDs.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MonetaryAccountSetting')
-
-const MonetaryAccountBankSchema = z
-  .object({
-    avatar_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The UUID of the Avatar of the MonetaryAccountBank.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    country_iban: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The country of the monetary account IBAN.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'The currency of the MonetaryAccountBank as an ISO 4217 formatted currency code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    daily_limit: AmountSchema.exactOptional().openapi({
-      description:
-        "The daily spending limit Amount of the MonetaryAccountBank. Defaults to 1000 EUR. Currency must match the MonetaryAccountBank's currency. Limited to 10000 EUR.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The description of the MonetaryAccountBank. Defaults to 'bunq account'.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The legal name of the user / company using this monetary account.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for voluntarily cancelling (closing) the MonetaryAccountBank, can only be OTHER. Should only be specified if updating the status to CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reason_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountBank. Can be any user provided message. Should only be specified if updating the status to CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
-      description: 'The settings of the MonetaryAccountBank.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the MonetaryAccountBank. Ignored in POST requests (always set to ACTIVE) can be CANCELLED or PENDING_REOPEN in PUT requests to cancel (close) or reopen the MonetaryAccountBank. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sub-status of the MonetaryAccountBank providing extra information regarding the status. Should be ignored for POST requests. In case of PUT requests with status CANCELLED it can only be REDEMPTION_VOLUNTARY, while with status PENDING_REOPEN it can only be NONE. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['currency'] })
-  .openapi('MonetaryAccountBank')
+const MasterCardPaymentListingSchema = z.looseObject({}).openapi('MasterCardPaymentListing')
 
 const MonetaryAccountBankCreateSchema = z
   .object({
@@ -10325,82 +12524,7 @@ const MonetaryAccountBankCreateSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountBankCreate')
 
-const MonetaryAccountProfileDrainSchema = z
-  .object({
-    balance_preferred: AmountSchema.exactOptional().openapi({
-      description: 'The goal balance.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    balance_threshold_high: AmountSchema.exactOptional().openapi({
-      description: 'The high threshold balance.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    savings_account_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The savings monetary account.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status of the profile.', readOnly: false, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('MonetaryAccountProfileDrain')
-
-const MonetaryAccountProfileFillSchema = z
-  .object({
-    balance_preferred: AmountSchema.exactOptional().openapi({
-      description: 'The goal balance.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    balance_threshold_low: AmountSchema.exactOptional().openapi({
-      description: 'The low threshold balance.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    issuer: IssuerSchema.exactOptional().openapi({
-      description: 'The bank the fill is supposed to happen from, with BIC and bank name.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    method_fill: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The method used to fill the monetary account. Currently only iDEAL is supported, and it is the default one.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status of the profile.', readOnly: false, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('MonetaryAccountProfileFill')
-
-const MonetaryAccountProfileSchema = z
-  .object({
-    profile_drain: MonetaryAccountProfileDrainSchema.exactOptional().openapi({
-      description: 'The profile settings for moving excesses to a savings account',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    profile_fill: MonetaryAccountProfileFillSchema.exactOptional().openapi({
-      description: 'The profile settings for triggering the fill of a monetary account.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('MonetaryAccountProfile')
-
-const MonetaryAccountBankListingSchema = z
+const MonetaryAccountBankListingSchema: z.ZodType<MonetaryAccountBankListingType> = z
   .object({
     alias: z
       .array(PointerSchema)
@@ -10550,7 +12674,7 @@ const MonetaryAccountBankListingSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountBankListing')
 
-const MonetaryAccountBankReadSchema = z
+const MonetaryAccountBankReadSchema: z.ZodType<MonetaryAccountBankReadType> = z
   .object({
     alias: z
       .array(PointerSchema)
@@ -10711,165 +12835,7 @@ const MonetaryAccountBankUpdateSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountBankUpdate')
 
-const MonetaryAccountExternalSchema = z
-  .object({
-    alias: z
-      .array(PointerSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The Aliases for the MonetaryAccountExternal.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    all_auto_save_id: z
-      .array(BunqIdSchema)
-      .exactOptional()
-      .openapi({ description: 'The ids of the AutoSave.', readOnly: true, writeOnly: false }),
-    avatar: AvatarSchema.exactOptional().openapi({
-      description: 'The Avatar of the MonetaryAccountExternal.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    avatar_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The UUID of the Avatar of the MonetaryAccountExternal.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    balance: AmountSchema.exactOptional().openapi({
-      description: 'The current available balance Amount of the MonetaryAccountExternal.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the MonetaryAccountExternal's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The currency of the MonetaryAccountExternal as an ISO 4217 formatted currency code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    daily_limit: AmountSchema.exactOptional().openapi({
-      description:
-        "The daily spending limit Amount of the MonetaryAccountExternal. Defaults to 1000 EUR. Currency must match the MonetaryAccountExternal's currency. Limited to 10000 EUR.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The description of the MonetaryAccountExternal. Defaults to 'bunq account'.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The legal name of the user / company using this monetary account.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the MonetaryAccountExternal.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    monetary_account_profile: MonetaryAccountProfileSchema.exactOptional().openapi({
-      description: 'The profile of the account.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    overdraft_limit: AmountSchema.exactOptional().openapi({
-      description: "The maximum Amount the MonetaryAccountExternal can be 'in the red'.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    public_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The MonetaryAccountExternal's public UUID.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for voluntarily cancelling (closing) the MonetaryAccountExternal, can only be OTHER.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reason_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountExternal. Can be any user provided message.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
-      description: 'The settings of the MonetaryAccountExternal.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the MonetaryAccountExternal. Can be: ACTIVE, BLOCKED, CANCELLED or PENDING_REOPEN',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sub-status of the MonetaryAccountExternal providing extra information regarding the status. Will be NONE for ACTIVE or PENDING_REOPEN, COMPLETELY or ONLY_ACCEPTING_INCOMING for BLOCKED and REDEMPTION_INVOLUNTARY, REDEMPTION_VOLUNTARY or PERMANENT for CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the MonetaryAccountExternal's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    user_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the User who owns the MonetaryAccountExternal.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MonetaryAccountExternal')
-
-const MonetaryAccountExternalListingSchema = z
+const MonetaryAccountExternalListingSchema: z.ZodType<MonetaryAccountExternalListingType> = z
   .object({
     alias: z
       .array(PointerSchema)
@@ -11019,7 +12985,7 @@ const MonetaryAccountExternalListingSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountExternalListing')
 
-const MonetaryAccountExternalReadSchema = z
+const MonetaryAccountExternalReadSchema: z.ZodType<MonetaryAccountExternalReadType> = z
   .object({
     alias: z
       .array(PointerSchema)
@@ -11169,271 +13135,6 @@ const MonetaryAccountExternalReadSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountExternalRead')
 
-const MonetaryAccountInvestmentSchema = z
-  .object({
-    alias: z
-      .array(PointerSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The Aliases for the MonetaryAccountInvestment.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    all_auto_save_id: z
-      .array(BunqIdSchema)
-      .exactOptional()
-      .openapi({ description: 'The ids of the AutoSave.', readOnly: true, writeOnly: false }),
-    avatar: AvatarSchema.exactOptional().openapi({
-      description: 'The Avatar of the MonetaryAccountInvestment.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    avatar_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The UUID of the Avatar of the MonetaryAccountInvestment.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    balance: AmountSchema.exactOptional().openapi({
-      description: 'The current available balance Amount of the MonetaryAccountInvestment.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    birdee_investment_portfolio: BirdeeInvestmentPortfolioSchema.exactOptional().openapi({
-      description: 'The Birdee investment portfolio.',
-      readOnly: false,
-      writeOnly: true,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the MonetaryAccountInvestment's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The currency of the MonetaryAccountInvestment as an ISO 4217 formatted currency code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    daily_limit: AmountSchema.exactOptional().openapi({
-      description:
-        "The daily spending limit Amount of the MonetaryAccountInvestment. Defaults to 1000 EUR. Currency must match the MonetaryAccountInvestment's currency. Limited to 10000 EUR.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The description of the MonetaryAccountInvestment. Defaults to 'bunq account'.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The legal name of the user / company using this monetary account.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the MonetaryAccountInvestment.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    monetary_account_profile: MonetaryAccountProfileSchema.exactOptional().openapi({
-      description: 'The profile of the account.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    provider: z
-      .string()
-      .openapi({
-        description: 'The provider of the investment service.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    public_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The MonetaryAccountInvestment's public UUID.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for voluntarily cancelling (closing) the MonetaryAccountInvestment, can only be OTHER.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reason_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountInvestment. Can be any user provided message.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
-      description: 'The settings of the MonetaryAccountInvestment.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the MonetaryAccountInvestment. Can be: ACTIVE, BLOCKED, CANCELLED or PENDING_REOPEN',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sub-status of the MonetaryAccountInvestment providing extra information regarding the status. Will be NONE for ACTIVE or PENDING_REOPEN, COMPLETELY or ONLY_ACCEPTING_INCOMING for BLOCKED and REDEMPTION_INVOLUNTARY, REDEMPTION_VOLUNTARY or PERMANENT for CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the MonetaryAccountInvestment's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    user_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the User who owns the MonetaryAccountInvestment.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['provider'] })
-  .openapi('MonetaryAccountInvestment')
-
-const MonetaryAccountJointSchema = z
-  .object({
-    alias: z
-      .array(PointerSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The Aliases to add to MonetaryAccountJoint. Must all be confirmed first. Can mostly be ignored.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    all_co_owner: z
-      .array(CoOwnerSchema)
-      .openapi({
-        description: 'The users the account will be joint with.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    avatar_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The UUID of the Avatar of the MonetaryAccountJoint.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'The currency of the MonetaryAccountJoint as an ISO 4217 formatted currency code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    daily_limit: AmountSchema.exactOptional().openapi({
-      description:
-        "The daily spending limit Amount of the MonetaryAccountJoint. Defaults to 1000 EUR. Currency must match the MonetaryAccountJoint's currency. Limited to 10000 EUR.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The description of the MonetaryAccountJoint. Defaults to 'bunq account'.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    overdraft_limit: AmountSchema.exactOptional().openapi({
-      description:
-        "The maximum Amount the MonetaryAccountJoint can be 'in the red'. Must be 0 EUR or omitted.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for voluntarily cancelling (closing) the MonetaryAccountJoint, can only be OTHER. Should only be specified if updating the status to CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reason_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountJoint. Can be any user provided message. Should only be specified if updating the status to CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
-      description: 'The settings of the MonetaryAccountJoint.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the MonetaryAccountJoint. Ignored in POST requests (always set to ACTIVE) can be CANCELLED or PENDING_REOPEN in PUT requests to cancel (close) or reopen the MonetaryAccountJoint. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sub-status of the MonetaryAccountJoint providing extra information regarding the status. Should be ignored for POST requests. In case of PUT requests with status CANCELLED it can only be REDEMPTION_VOLUNTARY, while with status PENDING_REOPEN it can only be NONE. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['currency', 'all_co_owner'] })
-  .openapi('MonetaryAccountJoint')
-
 const MonetaryAccountJointCreateSchema = z
   .object({
     Id: BunqIdSchema.exactOptional().openapi({
@@ -11445,7 +13146,7 @@ const MonetaryAccountJointCreateSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountJointCreate')
 
-const MonetaryAccountJointListingSchema = z
+const MonetaryAccountJointListingSchema: z.ZodType<MonetaryAccountJointListingType> = z
   .object({
     alias: z
       .array(PointerSchema)
@@ -11595,7 +13296,7 @@ const MonetaryAccountJointListingSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountJointListing')
 
-const MonetaryAccountJointReadSchema = z
+const MonetaryAccountJointReadSchema: z.ZodType<MonetaryAccountJointReadType> = z
   .object({
     alias: z
       .array(PointerSchema)
@@ -11756,268 +13457,7 @@ const MonetaryAccountJointUpdateSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountJointUpdate')
 
-const MonetaryAccountLightSchema = z
-  .object({
-    alias: z
-      .array(PointerSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The Aliases for the MonetaryAccountLight.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    avatar: AvatarSchema.exactOptional().openapi({
-      description: 'The Avatar of the MonetaryAccountLight.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    avatar_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The UUID of the Avatar of the MonetaryAccountLight.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    balance: AmountSchema.exactOptional().openapi({
-      description: 'The current available balance Amount of the MonetaryAccountLight.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    balance_maximum: AmountSchema.exactOptional().openapi({
-      description: 'The maximum balance Amount of the MonetaryAccountLight.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    budget_month_maximum: AmountSchema.exactOptional().openapi({
-      description: 'The total amount of the monthly budget.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    budget_month_used: AmountSchema.exactOptional().openapi({
-      description: 'The amount of the monthly budget used.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    budget_withdrawal_year_maximum: AmountSchema.exactOptional().openapi({
-      description: 'The total amount of the yearly withdrawal budget.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    budget_withdrawal_year_used: AmountSchema.exactOptional().openapi({
-      description: 'The amount of the yearly withdrawal budget used.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    budget_year_maximum: AmountSchema.exactOptional().openapi({
-      description: 'The total amount of the yearly budget.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    budget_year_used: AmountSchema.exactOptional().openapi({
-      description: 'The amount of the yearly budget used.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the MonetaryAccountLight's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The currency of the MonetaryAccountLight as an ISO 4217 formatted currency code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    daily_limit: AmountSchema.exactOptional().openapi({
-      description:
-        "The daily spending limit Amount of the MonetaryAccountLight. Defaults to 1000 EUR. Currency must match the MonetaryAccountLight's currency. Limited to 10000 EUR.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The description of the MonetaryAccountLight. Defaults to 'bunq account'.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the MonetaryAccountLight.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    public_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The MonetaryAccountLight's public UUID.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for voluntarily cancelling (closing) the MonetaryAccountBank, can only be OTHER.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reason_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountBank. Can be any user provided message.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
-      description: 'The settings of the MonetaryAccountLight.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the MonetaryAccountLight. Can be: ACTIVE, BLOCKED, CANCELLED or PENDING_REOPEN',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sub-status of the MonetaryAccountLight providing extra information regarding the status. Will be NONE for ACTIVE or PENDING_REOPEN, COMPLETELY or ONLY_ACCEPTING_INCOMING for BLOCKED and REDEMPTION_INVOLUNTARY, REDEMPTION_VOLUNTARY or PERMANENT for CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the MonetaryAccountLight's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    user_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the User who owns the MonetaryAccountLight.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MonetaryAccountLight')
-
-const MonetaryAccountSavingsSchema = z
-  .object({
-    all_co_owner: z
-      .array(CoOwnerSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The users the account will be joint with.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    avatar_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The UUID of the Avatar of the MonetaryAccountSavings.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'The currency of the MonetaryAccountSavings as an ISO 4217 formatted currency code.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    daily_limit: AmountSchema.exactOptional().openapi({
-      description:
-        "The daily spending limit Amount of the MonetaryAccountSavings. Defaults to 1000 EUR. Currency must match the MonetaryAccountSavings's currency. Limited to 10000 EUR.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The description of the MonetaryAccountSavings. Defaults to 'bunq account'.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for voluntarily cancelling (closing) the MonetaryAccountSavings, can only be OTHER. Should only be specified if updating the status to CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    reason_description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The optional free-form reason for voluntarily cancelling (closing) the MonetaryAccountSavings. Can be any user provided message. Should only be specified if updating the status to CANCELLED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    savings_goal: AmountSchema.exactOptional().openapi({
-      description: 'The Savings Goal set for this MonetaryAccountSavings.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    setting: MonetaryAccountSettingSchema.exactOptional().openapi({
-      description: 'The settings of the MonetaryAccountSavings.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the MonetaryAccountSavings. Ignored in POST requests (always set to ACTIVE) can be CANCELLED or PENDING_REOPEN in PUT requests to cancel (close) or reopen the MonetaryAccountSavings. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sub-status of the MonetaryAccountSavings providing extra information regarding the status. Should be ignored for POST requests. In case of PUT requests with status CANCELLED it can only be REDEMPTION_VOLUNTARY, while with status PENDING_REOPEN it can only be NONE. When updating the status and/or sub_status no other fields can be updated in the same request (and vice versa).',
-        readOnly: false,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: ['currency'] })
-  .openapi('MonetaryAccountSavings')
-
-const MonetaryAccountListingSchema = z
+const MonetaryAccountListingSchema: z.ZodType<MonetaryAccountListingType> = z
   .object({
     MonetaryAccountBank: MonetaryAccountBankSchema.exactOptional().openapi({
       description: '',
@@ -12053,7 +13493,7 @@ const MonetaryAccountListingSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountListing')
 
-const MonetaryAccountReadSchema = z
+const MonetaryAccountReadSchema: z.ZodType<MonetaryAccountReadType> = z
   .object({
     MonetaryAccountBank: MonetaryAccountBankSchema.exactOptional().openapi({
       description: '',
@@ -12100,7 +13540,7 @@ const MonetaryAccountSavingsCreateSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountSavingsCreate')
 
-const MonetaryAccountSavingsListingSchema = z
+const MonetaryAccountSavingsListingSchema: z.ZodType<MonetaryAccountSavingsListingType> = z
   .object({
     alias: z
       .array(PointerSchema)
@@ -12265,7 +13705,7 @@ const MonetaryAccountSavingsListingSchema = z
   .openapi({ required: [] })
   .openapi('MonetaryAccountSavingsListing')
 
-const MonetaryAccountSavingsReadSchema = z
+const MonetaryAccountSavingsReadSchema: z.ZodType<MonetaryAccountSavingsReadType> = z
   .object({
     alias: z
       .array(PointerSchema)
@@ -12474,7 +13914,7 @@ const NoteAttachmentBankSwitchServiceNetherlandsIncomingPaymentCreateSchema = z
   .openapi('NoteAttachmentBankSwitchServiceNetherlandsIncomingPaymentCreate')
 
 const NoteAttachmentBankSwitchServiceNetherlandsIncomingPaymentDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentBankSwitchServiceNetherlandsIncomingPaymentDelete')
 
 const NoteAttachmentBankSwitchServiceNetherlandsIncomingPaymentListingSchema = z
@@ -12615,7 +14055,7 @@ const NoteAttachmentBunqMeFundraiserResultCreateSchema = z
   .openapi('NoteAttachmentBunqMeFundraiserResultCreate')
 
 const NoteAttachmentBunqMeFundraiserResultDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentBunqMeFundraiserResultDelete')
 
 const NoteAttachmentBunqMeFundraiserResultListingSchema = z
@@ -12756,7 +14196,7 @@ const NoteAttachmentDraftPaymentCreateSchema = z
   .openapi('NoteAttachmentDraftPaymentCreate')
 
 const NoteAttachmentDraftPaymentDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentDraftPaymentDelete')
 
 const NoteAttachmentDraftPaymentListingSchema = z
@@ -12897,7 +14337,7 @@ const NoteAttachmentIdealMerchantTransactionCreateSchema = z
   .openapi('NoteAttachmentIdealMerchantTransactionCreate')
 
 const NoteAttachmentIdealMerchantTransactionDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentIdealMerchantTransactionDelete')
 
 const NoteAttachmentIdealMerchantTransactionListingSchema = z
@@ -13038,7 +14478,7 @@ const NoteAttachmentMasterCardActionCreateSchema = z
   .openapi('NoteAttachmentMasterCardActionCreate')
 
 const NoteAttachmentMasterCardActionDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentMasterCardActionDelete')
 
 const NoteAttachmentMasterCardActionListingSchema = z
@@ -13200,7 +14640,7 @@ const NoteAttachmentPaymentBatchCreateSchema = z
   .openapi('NoteAttachmentPaymentBatchCreate')
 
 const NoteAttachmentPaymentBatchDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentPaymentBatchDelete')
 
 const NoteAttachmentPaymentBatchListingSchema = z
@@ -13319,7 +14759,7 @@ const NoteAttachmentPaymentCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteAttachmentPaymentCreate')
 
-const NoteAttachmentPaymentDeleteSchema = z.object({}).openapi('NoteAttachmentPaymentDelete')
+const NoteAttachmentPaymentDeleteSchema = z.looseObject({}).openapi('NoteAttachmentPaymentDelete')
 
 const NoteAttachmentPaymentListingSchema = z
   .object({
@@ -13480,7 +14920,7 @@ const NoteAttachmentRequestInquiryBatchCreateSchema = z
   .openapi('NoteAttachmentRequestInquiryBatchCreate')
 
 const NoteAttachmentRequestInquiryBatchDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentRequestInquiryBatchDelete')
 
 const NoteAttachmentRequestInquiryBatchListingSchema = z
@@ -13600,7 +15040,7 @@ const NoteAttachmentRequestInquiryCreateSchema = z
   .openapi('NoteAttachmentRequestInquiryCreate')
 
 const NoteAttachmentRequestInquiryDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentRequestInquiryDelete')
 
 const NoteAttachmentRequestInquiryListingSchema = z
@@ -13741,7 +15181,7 @@ const NoteAttachmentRequestResponseCreateSchema = z
   .openapi('NoteAttachmentRequestResponseCreate')
 
 const NoteAttachmentRequestResponseDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentRequestResponseDelete')
 
 const NoteAttachmentRequestResponseListingSchema = z
@@ -13882,7 +15322,7 @@ const NoteAttachmentScheduleInstanceCreateSchema = z
   .openapi('NoteAttachmentScheduleInstanceCreate')
 
 const NoteAttachmentScheduleInstanceDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentScheduleInstanceDelete')
 
 const NoteAttachmentScheduleInstanceListingSchema = z
@@ -14044,7 +15484,7 @@ const NoteAttachmentSchedulePaymentBatchCreateSchema = z
   .openapi('NoteAttachmentSchedulePaymentBatchCreate')
 
 const NoteAttachmentSchedulePaymentBatchDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentSchedulePaymentBatchDelete')
 
 const NoteAttachmentSchedulePaymentBatchListingSchema = z
@@ -14164,7 +15604,7 @@ const NoteAttachmentSchedulePaymentCreateSchema = z
   .openapi('NoteAttachmentSchedulePaymentCreate')
 
 const NoteAttachmentSchedulePaymentDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentSchedulePaymentDelete')
 
 const NoteAttachmentSchedulePaymentListingSchema = z
@@ -14305,7 +15745,7 @@ const NoteAttachmentSofortMerchantTransactionCreateSchema = z
   .openapi('NoteAttachmentSofortMerchantTransactionCreate')
 
 const NoteAttachmentSofortMerchantTransactionDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentSofortMerchantTransactionDelete')
 
 const NoteAttachmentSofortMerchantTransactionListingSchema = z
@@ -14446,7 +15886,7 @@ const NoteAttachmentWhitelistResultCreateSchema = z
   .openapi('NoteAttachmentWhitelistResultCreate')
 
 const NoteAttachmentWhitelistResultDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteAttachmentWhitelistResultDelete')
 
 const NoteAttachmentWhitelistResultListingSchema = z
@@ -14576,7 +16016,7 @@ const NoteTextBankSwitchServiceNetherlandsIncomingPaymentCreateSchema = z
   .openapi('NoteTextBankSwitchServiceNetherlandsIncomingPaymentCreate')
 
 const NoteTextBankSwitchServiceNetherlandsIncomingPaymentDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteTextBankSwitchServiceNetherlandsIncomingPaymentDelete')
 
 const NoteTextBankSwitchServiceNetherlandsIncomingPaymentListingSchema = z
@@ -14682,7 +16122,7 @@ const NoteTextBunqMeFundraiserResultCreateSchema = z
   .openapi('NoteTextBunqMeFundraiserResultCreate')
 
 const NoteTextBunqMeFundraiserResultDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteTextBunqMeFundraiserResultDelete')
 
 const NoteTextBunqMeFundraiserResultListingSchema = z
@@ -14787,7 +16227,7 @@ const NoteTextDraftPaymentCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextDraftPaymentCreate')
 
-const NoteTextDraftPaymentDeleteSchema = z.object({}).openapi('NoteTextDraftPaymentDelete')
+const NoteTextDraftPaymentDeleteSchema = z.looseObject({}).openapi('NoteTextDraftPaymentDelete')
 
 const NoteTextDraftPaymentListingSchema = z
   .object({
@@ -14892,7 +16332,7 @@ const NoteTextIdealMerchantTransactionCreateSchema = z
   .openapi('NoteTextIdealMerchantTransactionCreate')
 
 const NoteTextIdealMerchantTransactionDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteTextIdealMerchantTransactionDelete')
 
 const NoteTextIdealMerchantTransactionListingSchema = z
@@ -14997,7 +16437,9 @@ const NoteTextMasterCardActionCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextMasterCardActionCreate')
 
-const NoteTextMasterCardActionDeleteSchema = z.object({}).openapi('NoteTextMasterCardActionDelete')
+const NoteTextMasterCardActionDeleteSchema = z
+  .looseObject({})
+  .openapi('NoteTextMasterCardActionDelete')
 
 const NoteTextMasterCardActionListingSchema = z
   .object({
@@ -15111,7 +16553,7 @@ const NoteTextPaymentBatchCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextPaymentBatchCreate')
 
-const NoteTextPaymentBatchDeleteSchema = z.object({}).openapi('NoteTextPaymentBatchDelete')
+const NoteTextPaymentBatchDeleteSchema = z.looseObject({}).openapi('NoteTextPaymentBatchDelete')
 
 const NoteTextPaymentBatchListingSchema = z
   .object({
@@ -15205,7 +16647,7 @@ const NoteTextPaymentCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextPaymentCreate')
 
-const NoteTextPaymentDeleteSchema = z.object({}).openapi('NoteTextPaymentDelete')
+const NoteTextPaymentDeleteSchema = z.looseObject({}).openapi('NoteTextPaymentDelete')
 
 const NoteTextPaymentListingSchema = z
   .object({
@@ -15320,7 +16762,7 @@ const NoteTextRequestInquiryBatchCreateSchema = z
   .openapi('NoteTextRequestInquiryBatchCreate')
 
 const NoteTextRequestInquiryBatchDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteTextRequestInquiryBatchDelete')
 
 const NoteTextRequestInquiryBatchListingSchema = z
@@ -15415,7 +16857,7 @@ const NoteTextRequestInquiryCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextRequestInquiryCreate')
 
-const NoteTextRequestInquiryDeleteSchema = z.object({}).openapi('NoteTextRequestInquiryDelete')
+const NoteTextRequestInquiryDeleteSchema = z.looseObject({}).openapi('NoteTextRequestInquiryDelete')
 
 const NoteTextRequestInquiryListingSchema = z
   .object({
@@ -15519,7 +16961,9 @@ const NoteTextRequestResponseCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextRequestResponseCreate')
 
-const NoteTextRequestResponseDeleteSchema = z.object({}).openapi('NoteTextRequestResponseDelete')
+const NoteTextRequestResponseDeleteSchema = z
+  .looseObject({})
+  .openapi('NoteTextRequestResponseDelete')
 
 const NoteTextRequestResponseListingSchema = z
   .object({
@@ -15623,7 +17067,9 @@ const NoteTextScheduleInstanceCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextScheduleInstanceCreate')
 
-const NoteTextScheduleInstanceDeleteSchema = z.object({}).openapi('NoteTextScheduleInstanceDelete')
+const NoteTextScheduleInstanceDeleteSchema = z
+  .looseObject({})
+  .openapi('NoteTextScheduleInstanceDelete')
 
 const NoteTextScheduleInstanceListingSchema = z
   .object({
@@ -15738,7 +17184,7 @@ const NoteTextSchedulePaymentBatchCreateSchema = z
   .openapi('NoteTextSchedulePaymentBatchCreate')
 
 const NoteTextSchedulePaymentBatchDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteTextSchedulePaymentBatchDelete')
 
 const NoteTextSchedulePaymentBatchListingSchema = z
@@ -15833,7 +17279,9 @@ const NoteTextSchedulePaymentCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextSchedulePaymentCreate')
 
-const NoteTextSchedulePaymentDeleteSchema = z.object({}).openapi('NoteTextSchedulePaymentDelete')
+const NoteTextSchedulePaymentDeleteSchema = z
+  .looseObject({})
+  .openapi('NoteTextSchedulePaymentDelete')
 
 const NoteTextSchedulePaymentListingSchema = z
   .object({
@@ -15938,7 +17386,7 @@ const NoteTextSofortMerchantTransactionCreateSchema = z
   .openapi('NoteTextSofortMerchantTransactionCreate')
 
 const NoteTextSofortMerchantTransactionDeleteSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NoteTextSofortMerchantTransactionDelete')
 
 const NoteTextSofortMerchantTransactionListingSchema = z
@@ -16043,7 +17491,9 @@ const NoteTextWhitelistResultCreateSchema = z
   .openapi({ required: [] })
   .openapi('NoteTextWhitelistResultCreate')
 
-const NoteTextWhitelistResultDeleteSchema = z.object({}).openapi('NoteTextWhitelistResultDelete')
+const NoteTextWhitelistResultDeleteSchema = z
+  .looseObject({})
+  .openapi('NoteTextWhitelistResultDelete')
 
 const NoteTextWhitelistResultListingSchema = z
   .object({
@@ -16319,7 +17769,7 @@ const OauthCallbackUrlCreateSchema = z
   .openapi({ required: [] })
   .openapi('OauthCallbackUrlCreate')
 
-const OauthCallbackUrlDeleteSchema = z.object({}).openapi('OauthCallbackUrlDelete')
+const OauthCallbackUrlDeleteSchema = z.looseObject({}).openapi('OauthCallbackUrlDelete')
 
 const OauthCallbackUrlListingSchema = z
   .object({
@@ -16642,7 +18092,7 @@ const PaymentAutoAllocateDefinitionListingSchema = z
   .openapi({ required: [] })
   .openapi('PaymentAutoAllocateDefinitionListing')
 
-const PaymentAutoAllocateDeleteSchema = z.object({}).openapi('PaymentAutoAllocateDelete')
+const PaymentAutoAllocateDeleteSchema = z.looseObject({}).openapi('PaymentAutoAllocateDelete')
 
 const PaymentAutoAllocateInstanceListingSchema = z
   .object({
@@ -17635,71 +19085,11 @@ const PermittedIpUpdateSchema = z
   .openapi({ required: [] })
   .openapi('PermittedIpUpdate')
 
-const PlacePhotoLookupContentListingSchema = z.object({}).openapi('PlacePhotoLookupContentListing')
+const PlacePhotoLookupContentListingSchema = z
+  .looseObject({})
+  .openapi('PlacePhotoLookupContentListing')
 
-const RegistryMembershipSchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The LabelMonetaryAccount of the user who belongs to this RegistryMembership.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    auto_add_card_transaction: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The setting for for adding automatically card transactions to the registry.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    balance: AmountSchema.exactOptional().openapi({
-      description: 'The balance of this RegistryMembership.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    invitor: LabelUserSchema.exactOptional().openapi({
-      description: 'The label of the user that sent the invite.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    registry_id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The registry id.', readOnly: true, writeOnly: false }),
-    registry_title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The registry title.', readOnly: true, writeOnly: false }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the RegistryMembership.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    status_settlement: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The status of the settlement of the Registry. Can be PENDING or SETTLED.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    total_amount_spent: AmountSchema.exactOptional().openapi({
-      description: 'The total amount spent of this RegistryMembership.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    uuid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The UUID of the membership.', readOnly: false, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('RegistryMembership')
-
-const RegistrySettlementSchema = z.object({}).openapi('RegistrySettlement')
+const RegistrySettlementSchema = z.looseObject({}).openapi('RegistrySettlement')
 
 const RegistrySettlementCreateSchema = z
   .object({
@@ -17712,38 +19102,7 @@ const RegistrySettlementCreateSchema = z
   .openapi({ required: [] })
   .openapi('RegistrySettlementCreate')
 
-const RegistrySettlementItemSchema = z
-  .object({
-    amount: AmountSchema.exactOptional().openapi({
-      description: 'The amount of the RegistrySettlementItem.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    membership_paying: RegistryMembershipSchema.exactOptional().openapi({
-      description: 'The membership of the user that has to pay.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    membership_receiving: RegistryMembershipSchema.exactOptional().openapi({
-      description: 'The membership of the user that will receive money.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    paying_user_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The LabelMonetaryAccount of the user that has to pay the request.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    receiving_user_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description: 'The LabelMonetaryAccount of the user that will receive the amount.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('RegistrySettlementItem')
-
-const RegistrySettlementListingSchema = z
+const RegistrySettlementListingSchema: z.ZodType<RegistrySettlementListingType> = z
   .object({
     created: z
       .string()
@@ -17812,7 +19171,7 @@ const RegistrySettlementListingSchema = z
   .openapi({ required: [] })
   .openapi('RegistrySettlementListing')
 
-const RegistrySettlementReadSchema = z
+const RegistrySettlementReadSchema: z.ZodType<RegistrySettlementReadType> = z
   .object({
     created: z
       .string()
@@ -17892,7 +19251,7 @@ const RequestInquiryBatchCreateSchema = z
   .openapi({ required: [] })
   .openapi('RequestInquiryBatchCreate')
 
-const RequestInquiryBatchListingSchema = z
+const RequestInquiryBatchListingSchema: z.ZodType<RequestInquiryBatchListingType> = z
   .object({
     reference_split_the_bill:
       RequestReferenceSplitTheBillAnchorObjectSchema.exactOptional().openapi({
@@ -17918,7 +19277,7 @@ const RequestInquiryBatchListingSchema = z
   .openapi({ required: [] })
   .openapi('RequestInquiryBatchListing')
 
-const RequestInquiryBatchReadSchema = z
+const RequestInquiryBatchReadSchema: z.ZodType<RequestInquiryBatchReadType> = z
   .object({
     reference_split_the_bill:
       RequestReferenceSplitTheBillAnchorObjectSchema.exactOptional().openapi({
@@ -17969,7 +19328,7 @@ const RequestInquiryCreateSchema = z
   .openapi({ required: [] })
   .openapi('RequestInquiryCreate')
 
-const RequestInquiryListingSchema = z
+const RequestInquiryListingSchema: z.ZodType<RequestInquiryListingType> = z
   .object({
     address_billing: AddressSchema.exactOptional().openapi({
       description:
@@ -18152,7 +19511,7 @@ const RequestInquiryListingSchema = z
   .openapi({ required: [] })
   .openapi('RequestInquiryListing')
 
-const RequestInquiryReadSchema = z
+const RequestInquiryReadSchema: z.ZodType<RequestInquiryReadType> = z
   .object({
     address_billing: AddressSchema.exactOptional().openapi({
       description:
@@ -18335,7 +19694,7 @@ const RequestInquiryReadSchema = z
   .openapi({ required: [] })
   .openapi('RequestInquiryRead')
 
-const RequestInquiryUpdateSchema = z
+const RequestInquiryUpdateSchema: z.ZodType<RequestInquiryUpdateType> = z
   .object({
     address_billing: AddressSchema.exactOptional().openapi({
       description:
@@ -19247,7 +20606,7 @@ const RewardSenderReadSchema = z
   .openapi({ required: [] })
   .openapi('RewardSenderRead')
 
-const SandboxUserCompanySchema = z.object({}).openapi('SandboxUserCompany')
+const SandboxUserCompanySchema = z.looseObject({}).openapi('SandboxUserCompany')
 
 const SandboxUserCompanyCreateSchema = z
   .object({
@@ -19260,7 +20619,7 @@ const SandboxUserCompanyCreateSchema = z
   .openapi({ required: [] })
   .openapi('SandboxUserCompanyCreate')
 
-const SandboxUserPersonSchema = z.object({}).openapi('SandboxUserPerson')
+const SandboxUserPersonSchema = z.looseObject({}).openapi('SandboxUserPerson')
 
 const SandboxUserPersonCreateSchema = z
   .object({
@@ -19273,7 +20632,7 @@ const SandboxUserPersonCreateSchema = z
   .openapi({ required: [] })
   .openapi('SandboxUserPersonCreate')
 
-const ScheduleInstanceListingSchema = z
+const ScheduleInstanceListingSchema: z.ZodType<ScheduleInstanceListingType> = z
   .object({
     error_message: z
       .array(ErrorSchema)
@@ -19324,7 +20683,7 @@ const ScheduleInstanceListingSchema = z
   .openapi({ required: [] })
   .openapi('ScheduleInstanceListing')
 
-const ScheduleInstanceReadSchema = z
+const ScheduleInstanceReadSchema: z.ZodType<ScheduleInstanceReadType> = z
   .object({
     error_message: z
       .array(ErrorSchema)
@@ -19386,7 +20745,7 @@ const ScheduleInstanceUpdateSchema = z
   .openapi({ required: [] })
   .openapi('ScheduleInstanceUpdate')
 
-const ScheduleListingSchema = z
+const ScheduleListingSchema: z.ZodType<ScheduleListingType> = z
   .object({
     object: ScheduleAnchorObjectSchema.exactOptional().openapi({
       description: 'The scheduled object. (Payment, PaymentBatch)',
@@ -19442,9 +20801,9 @@ const SchedulePaymentBatchCreateSchema = z
   .openapi({ required: [] })
   .openapi('SchedulePaymentBatchCreate')
 
-const SchedulePaymentBatchDeleteSchema = z.object({}).openapi('SchedulePaymentBatchDelete')
+const SchedulePaymentBatchDeleteSchema = z.looseObject({}).openapi('SchedulePaymentBatchDelete')
 
-const SchedulePaymentBatchReadSchema = z
+const SchedulePaymentBatchReadSchema: z.ZodType<SchedulePaymentBatchReadType> = z
   .object({
     payments: z
       .array(SchedulePaymentEntrySchema)
@@ -19481,9 +20840,9 @@ const SchedulePaymentCreateSchema = z
   .openapi({ required: [] })
   .openapi('SchedulePaymentCreate')
 
-const SchedulePaymentDeleteSchema = z.object({}).openapi('SchedulePaymentDelete')
+const SchedulePaymentDeleteSchema = z.looseObject({}).openapi('SchedulePaymentDelete')
 
-const SchedulePaymentListingSchema = z
+const SchedulePaymentListingSchema: z.ZodType<SchedulePaymentListingType> = z
   .object({
     payment: SchedulePaymentEntrySchema.exactOptional().openapi({
       description: 'The payment details.',
@@ -19507,7 +20866,7 @@ const SchedulePaymentListingSchema = z
   .openapi({ required: [] })
   .openapi('SchedulePaymentListing')
 
-const SchedulePaymentReadSchema = z
+const SchedulePaymentReadSchema: z.ZodType<SchedulePaymentReadType> = z
   .object({
     payment: SchedulePaymentEntrySchema.exactOptional().openapi({
       description: 'The payment details.',
@@ -19542,7 +20901,7 @@ const SchedulePaymentUpdateSchema = z
   .openapi({ required: [] })
   .openapi('SchedulePaymentUpdate')
 
-const ScheduleReadSchema = z
+const ScheduleReadSchema: z.ZodType<ScheduleReadType> = z
   .object({
     object: ScheduleAnchorObjectSchema.exactOptional().openapi({
       description: 'The scheduled object. (Payment, PaymentBatch)',
@@ -19587,9 +20946,9 @@ const ScheduleReadSchema = z
   .openapi({ required: [] })
   .openapi('ScheduleRead')
 
-const ScheduleUserListingSchema = z.object({}).openapi('ScheduleUserListing')
+const ScheduleUserListingSchema = z.looseObject({}).openapi('ScheduleUserListing')
 
-const ServerErrorSchema = z.object({}).openapi('ServerError')
+const ServerErrorSchema = z.looseObject({}).openapi('ServerError')
 
 const ServerErrorCreateSchema = z
   .object({
@@ -19602,7 +20961,7 @@ const ServerErrorCreateSchema = z
   .openapi({ required: [] })
   .openapi('ServerErrorCreate')
 
-const SessionDeleteSchema = z.object({}).openapi('SessionDelete')
+const SessionDeleteSchema = z.looseObject({}).openapi('SessionDelete')
 
 const SessionServerSchema = z
   .object({
@@ -19618,460 +20977,7 @@ const SessionServerSchema = z
   .openapi({ required: ['secret'] })
   .openapi('SessionServer')
 
-const SessionServerTokenSchema = z
-  .object({
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the Token.', readOnly: true, writeOnly: false }),
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Session token is the token the client has to provide in the "X-Bunq-Client-Authentication" header for each API call that requires a Session (only the creation of a Installation and DeviceServer don\'t require a Session).',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SessionServerToken')
-
-const UserPaymentServiceProviderSchema = z
-  .object({
-    alias: z
-      .array(PointerSchema)
-      .exactOptional()
-      .openapi({ description: 'The aliases of the user.', readOnly: true, writeOnly: false }),
-    avatar: AvatarSchema.exactOptional().openapi({
-      description: "The user's avatar.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    certificate_distinguished_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The distinguished name from the certificate used to identify this user.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the user object's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The display name for the provider.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the user.', readOnly: true, writeOnly: false }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The provider's language. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, separated by an underscore.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    public_nick_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The public nick name for the provider.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    public_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The providers's public UUID.", readOnly: true, writeOnly: false }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The provider's region. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, separated by an underscore.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    session_timeout: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The setting for the session timeout of the user in seconds.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The user status. The user status. Can be: ACTIVE, BLOCKED or DENIED.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The user sub-status. Can be: NONE',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the user object's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserPaymentServiceProvider')
-
-const UserPersonSchema = z
-  .object({
-    address_main: AddressSchema.exactOptional().openapi({
-      description: "The person's main address.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    address_postal: AddressSchema.exactOptional().openapi({
-      description: "The person's postal address.",
-      readOnly: false,
-      writeOnly: false,
-    }),
-    alias: z
-      .array(PointerSchema)
-      .exactOptional()
-      .openapi({ description: 'The aliases of the user.', readOnly: true, writeOnly: false }),
-    avatar: AvatarSchema.exactOptional().openapi({
-      description: "The user's avatar.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    avatar_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The public UUID of the user's avatar.",
-        readOnly: false,
-        writeOnly: true,
-      }),
-    country_of_birth: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The person's country of birth. Formatted as a SO 3166-1 alpha-2 country code.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the person object's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    daily_limit_without_confirmation_login: AmountSchema.exactOptional().openapi({
-      description: 'The amount the user can pay in the session without asking for credentials.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    date_of_birth: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The person's date of birth. Accepts ISO8601 date formats.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    display_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The display name for the person.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    document_back_attachment_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reference to the uploaded picture/scan of the back side of the identification document.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    document_country_of_issuance: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The country which issued the identification document the person registered with.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    document_front_attachment_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reference to the uploaded picture/scan of the front side of the identification document.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    document_number: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The identification document number the person registered with.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    document_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of identification document the person registered with.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    first_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The person's first name.", readOnly: false, writeOnly: false }),
-    gender: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The person's gender. Can be MALE, FEMALE or UNKNOWN.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the modified person object.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The person's preferred language. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, seperated by an underscore.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    last_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The person's last name.", readOnly: false, writeOnly: false }),
-    legal_guardian_alias: PointerSchema.exactOptional().openapi({
-      description: 'The legal guardian of the user. Required for minors.',
-      readOnly: false,
-      writeOnly: true,
-    }),
-    legal_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The person's legal name.", readOnly: true, writeOnly: false }),
-    middle_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The person's middle name.", readOnly: false, writeOnly: false }),
-    nationality: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The person's nationality. Formatted as a SO 3166-1 alpha-2 country code.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    notification_filters: z
-      .array(NotificationFilterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The types of notifications that will result in a push notification or URL callback for this UserPerson.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-    place_of_birth: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The person's place of birth.", readOnly: true, writeOnly: false }),
-    public_nick_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The public nick name for the person.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    public_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The person's public UUID.", readOnly: true, writeOnly: false }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The person's preferred region. Formatted as a ISO 639-1 language code plus a ISO 3166-1 alpha-2 country code, seperated by an underscore.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    relations: z
-      .array(RelationUserSchema)
-      .exactOptional()
-      .openapi({ description: 'The relations for this user.', readOnly: true, writeOnly: false }),
-    session_timeout: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The setting for the session timeout of the user in seconds.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    signup_track_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of signup track the user is following.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user status. The user status. Can be: ACTIVE, BLOCKED, SIGNUP, RECOVERY, DENIED or ABORTED.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    sub_status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user sub-status. Can be: NONE, FACE_RESET, APPROVAL, APPROVAL_DIRECTOR, APPROVAL_PARENT, APPROVAL_SUPPORT, COUNTER_IBAN, IDEAL or SUBMIT.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    subscription_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The subscription type the user should start on.',
-        readOnly: false,
-        writeOnly: true,
-      }),
-    tax_resident: z
-      .array(TaxResidentSchema)
-      .exactOptional()
-      .openapi({
-        description: "The user's tax residence numbers for different countries.",
-        readOnly: false,
-        writeOnly: false,
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the person object's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    version_terms_of_service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The version of the terms of service accepted by the user.',
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserPerson')
-
-const UserApiKeyAnchoredUserSchema = z
-  .object({
-    UserCompany: UserCompanySchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    UserPaymentServiceProvider: UserPaymentServiceProviderSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    UserPerson: UserPersonSchema.exactOptional().openapi({
-      description: '',
-      readOnly: true,
-      writeOnly: false,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserApiKeyAnchoredUser')
-
-const UserApiKeySchema = z
-  .object({
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the user object's creation.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-    granted_by_user: UserApiKeyAnchoredUserSchema.exactOptional().openapi({
-      description: 'The user who granted access.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the user.', readOnly: true, writeOnly: false }),
-    requested_by_user: UserApiKeyAnchoredUserSchema.exactOptional().openapi({
-      description: 'The user who requested access.',
-      readOnly: true,
-      writeOnly: false,
-    }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The timestamp of the user object's last update.",
-        readOnly: true,
-        writeOnly: false,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserApiKey')
-
-const SessionServerCreateSchema = z
+const SessionServerCreateSchema: z.ZodType<SessionServerCreateType> = z
   .object({
     Id: BunqIdSchema.exactOptional().openapi({
       description: 'The Id object of the created Session.',
@@ -21041,7 +21947,9 @@ const TransferwiseAccountQuoteCreateSchema = z
   .openapi({ required: [] })
   .openapi('TransferwiseAccountQuoteCreate')
 
-const TransferwiseAccountQuoteDeleteSchema = z.object({}).openapi('TransferwiseAccountQuoteDelete')
+const TransferwiseAccountQuoteDeleteSchema = z
+  .looseObject({})
+  .openapi('TransferwiseAccountQuoteDelete')
 
 const TransferwiseAccountQuoteListingSchema = z
   .object({
@@ -21662,7 +22570,7 @@ const TransferwiseUserListingSchema = z
   .openapi({ required: [] })
   .openapi('TransferwiseUserListing')
 
-const TranslinkTransactionSchema = z
+const TranslinkTransactionSchema: z.ZodType<TranslinkTransactionType> = z
   .object({
     description: z
       .string()
@@ -21703,63 +22611,7 @@ const TranslinkTransactionCreateSchema = z
   .openapi({ required: [] })
   .openapi('TranslinkTransactionCreate')
 
-const TranslinkTransactionEntrySchema = z
-  .object({
-    alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        "The LabelMonetaryAccount containing the public information of 'this' (party) side of the payment.",
-      readOnly: true,
-      writeOnly: false,
-    }),
-    amount: AmountSchema.exactOptional().openapi({
-      description: 'The amount of the payment.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    attachment: z
-      .array(AttachmentMonetaryAccountPaymentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The Attachments attached to the payment.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    counterparty_alias: LabelMonetaryAccountSchema.exactOptional().openapi({
-      description:
-        'The LabelMonetaryAccount containing the public information of the other (counterparty) side of the payment.',
-      readOnly: false,
-      writeOnly: false,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description for the payment. Maximum 140 characters for payments to external IBANs, 9000 characters for payments to only other bunq MonetaryAccounts.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    id: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The id of the payment entry.', readOnly: true, writeOnly: false }),
-    merchant_reference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional data to be included with the Payment specific to the merchant.',
-        readOnly: false,
-        writeOnly: false,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the payment entry.', readOnly: true, writeOnly: false }),
-  })
-  .openapi({ required: [] })
-  .openapi('TranslinkTransactionEntry')
-
-const TranslinkTransactionListingSchema = z
+const TranslinkTransactionListingSchema: z.ZodType<TranslinkTransactionListingType> = z
   .object({
     alias: LabelMonetaryAccountSchema.exactOptional().openapi({
       description:
@@ -21825,7 +22677,7 @@ const TranslinkTransactionListingSchema = z
   .openapi({ required: [] })
   .openapi('TranslinkTransactionListing')
 
-const TranslinkTransactionReadSchema = z
+const TranslinkTransactionReadSchema: z.ZodType<TranslinkTransactionReadType> = z
   .object({
     alias: LabelMonetaryAccountSchema.exactOptional().openapi({
       description:
@@ -22289,7 +23141,7 @@ const UserLegalNameListingSchema = z
   .openapi({ required: [] })
   .openapi('UserLegalNameListing')
 
-const UserListingSchema = z
+const UserListingSchema: z.ZodType<UserListingType> = z
   .object({
     UserApiKey: UserApiKeySchema.exactOptional().openapi({
       description: '',
@@ -22634,7 +23486,7 @@ const UserPersonUpdateSchema = z
   .openapi({ required: [] })
   .openapi('UserPersonUpdate')
 
-const UserReadSchema = z
+const UserReadSchema: z.ZodType<UserReadType> = z
   .object({
     UserApiKey: UserApiKeySchema.exactOptional().openapi({
       description: '',
@@ -22910,7 +23762,7 @@ const WhitelistSddOneOffCreateSchema = z
   .openapi({ required: [] })
   .openapi('WhitelistSddOneOffCreate')
 
-const WhitelistSddOneOffDeleteSchema = z.object({}).openapi('WhitelistSddOneOffDelete')
+const WhitelistSddOneOffDeleteSchema = z.looseObject({}).openapi('WhitelistSddOneOffDelete')
 
 const WhitelistSddOneOffListingSchema = z
   .object({
@@ -23157,7 +24009,7 @@ const WhitelistSddRecurringCreateSchema = z
   .openapi({ required: [] })
   .openapi('WhitelistSddRecurringCreate')
 
-const WhitelistSddRecurringDeleteSchema = z.object({}).openapi('WhitelistSddRecurringDelete')
+const WhitelistSddRecurringDeleteSchema = z.looseObject({}).openapi('WhitelistSddRecurringDelete')
 
 const WhitelistSddRecurringListingSchema = z
   .object({

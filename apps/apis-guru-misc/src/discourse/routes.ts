@@ -856,7 +856,7 @@ export const getAdminUsersIdJsonRoute = createRoute({
               created_at: z.string(),
               created_at_age: z.number().nullable(),
               days_visited: z.int(),
-              external_ids: z.object({}),
+              external_ids: z.looseObject({}),
               flag_level: z.int(),
               flags_given_count: z.int(),
               flags_received_count: z.int(),
@@ -2485,7 +2485,7 @@ export const getGroupsIdJsonRoute = createRoute({
                   imap_server: z.string().nullable(),
                   imap_ssl: z.string().nullable(),
                   imap_updated_at: z.string().nullable().exactOptional(),
-                  imap_updated_by: z.object({}).nullable().exactOptional(),
+                  imap_updated_by: z.looseObject({}).nullable().exactOptional(),
                   incoming_email: z.string().nullable(),
                   is_group_owner_display: z.boolean(),
                   is_group_user: z.boolean(),
@@ -2510,7 +2510,7 @@ export const getGroupsIdJsonRoute = createRoute({
                   smtp_server: z.string().nullable(),
                   smtp_ssl: z.string().nullable(),
                   smtp_updated_at: z.string().nullable().exactOptional(),
-                  smtp_updated_by: z.object({}).nullable().exactOptional(),
+                  smtp_updated_by: z.looseObject({}).nullable().exactOptional(),
                   title: z.string().nullable(),
                   tracking_category_ids: z.array(z.any()),
                   tracking_tags: z.array(z.any()).exactOptional(),
@@ -3298,7 +3298,7 @@ export const postPostActionsJsonRoute = createRoute({
               incoming_link_count: z.int().exactOptional(),
               moderator: z.boolean().exactOptional(),
               name: z.string().exactOptional(),
-              notice: z.object({}).exactOptional(),
+              notice: z.looseObject({}).exactOptional(),
               post_number: z.int().exactOptional(),
               post_type: z.int().exactOptional(),
               primary_group_name: z.string().nullable().exactOptional(),
@@ -4322,10 +4322,10 @@ export const getSiteJsonRoute = createRoute({
                     ],
                   }),
               ),
-              censored_regexp: z.array(z.object({})),
+              censored_regexp: z.array(z.looseObject({})),
               custom_emoji_translation: z.strictObject({}),
               default_archetype: z.string(),
-              default_dark_color_scheme: z.object({}).nullable(),
+              default_dark_color_scheme: z.looseObject({}).nullable(),
               displayed_about_plugin_stat_groups: z.array(z.any()).exactOptional(),
               filters: z.array(z.any()),
               groups: z.array(
@@ -4341,9 +4341,9 @@ export const getSiteJsonRoute = createRoute({
                     required: ['id', 'name', 'flair_url', 'flair_bg_color', 'flair_color'],
                   }),
               ),
-              hashtag_configurations: z.object({}).exactOptional(),
+              hashtag_configurations: z.looseObject({}).exactOptional(),
               hashtag_icons: z.array(z.any()).exactOptional(),
-              markdown_additional_options: z.object({}).exactOptional(),
+              markdown_additional_options: z.looseObject({}).exactOptional(),
               notification_types: z
                 .strictObject({
                   assigned: z.int().exactOptional(),
@@ -5746,7 +5746,7 @@ export const postTagGroupsJsonRoute = createRoute({
                   name: z.string(),
                   one_per_topic: z.boolean(),
                   parent_tag_name: z.array(z.any()),
-                  permissions: z.object({}),
+                  permissions: z.looseObject({}),
                   tag_names: z.array(z.any()),
                 })
                 .openapi({
@@ -7543,7 +7543,7 @@ export const putUUsernameJsonRoute = createRoute({
           schema: z
             .strictObject({
               email: z.string().exactOptional(),
-              external_ids: z.object({}).exactOptional(),
+              external_ids: z.looseObject({}).exactOptional(),
               name: z.string().exactOptional(),
               password: z.string().exactOptional(),
             })
@@ -7558,7 +7558,7 @@ export const putUUsernameJsonRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .strictObject({ success: z.string(), user: z.object({}) })
+            .strictObject({ success: z.string(), user: z.looseObject({}) })
             .openapi({ required: ['success', 'user'] }),
         },
       },
@@ -7873,7 +7873,7 @@ export const postUploadsBatchPresignMultipartPartsJsonRoute = createRoute({
           schema: z
             .strictObject({
               presigned_urls: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'The presigned URLs for each part number, which has\nthe part numbers as keys.',
@@ -8539,7 +8539,7 @@ export const postUsersJsonRoute = createRoute({
                 }),
               approved: z.boolean().exactOptional(),
               email: z.string(),
-              external_ids: z.object({}).exactOptional(),
+              external_ids: z.looseObject({}).exactOptional(),
               name: z.string(),
               password: z.string(),
               'user_fields[1]': z.boolean().exactOptional(),

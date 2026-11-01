@@ -18,43 +18,1610 @@ type CompoundClauseType = {
   operator: 'and' | 'or' | 'not'
 }
 
-const TimeTrackingConfigurationSchema = z
+const AvatarUrlsBeanSchema = z
   .strictObject({
-    defaultUnit: z
-      .enum(['minute', 'hour', 'day', 'week'])
-      .openapi({ description: 'The default unit of time applied to logged time.' }),
-    timeFormat: z
-      .enum(['pretty', 'days', 'hours'])
-      .openapi({ description: "The format that will appear on an issue's *Time Spent* field." }),
-    workingDaysPerWeek: z
-      .float64()
-      .openapi({ description: 'The number of days in a working week.' }),
-    workingHoursPerDay: z
-      .float64()
-      .openapi({ description: 'The number of hours in a working day.' }),
+    '16x16': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the item's 16x16 pixel avatar." }),
+    '24x24': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the item's 24x24 pixel avatar." }),
+    '32x32': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the item's 32x32 pixel avatar." }),
+    '48x48': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the item's 48x48 pixel avatar." }),
+  })
+  .openapi({ required: [] })
+  .openapi('AvatarUrlsBean')
+
+const UpdatedProjectCategorySchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the project category.', readOnly: true }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the project category.', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the project category.', readOnly: true }),
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the project category.', readOnly: true }),
+  })
+  .openapi({ description: 'A project category.', required: [] })
+  .openapi('UpdatedProjectCategory')
+
+const ProjectDetailsSchema = z
+  .strictObject({
+    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
+      description: "The URLs of the project's avatars.",
+      readOnly: true,
+    }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the project.' }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key of the project.', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the project.', readOnly: true }),
+    projectCategory: UpdatedProjectCategorySchema.exactOptional().openapi({
+      description: 'The category the project belongs to.',
+      readOnly: true,
+    }),
+    projectTypeKey: z
+      .enum(['software', 'service_desk', 'business'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The [project type](https://confluence.atlassian.com/x/GwiiLQ#Jiraapplicationsoverview-Productfeaturesandprojecttypes) of the project.',
+        readOnly: true,
+      }),
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the project details.', readOnly: true }),
+    simplified: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the project is simplified.', readOnly: true }),
+  })
+  .openapi({ description: 'Details about a project.', required: [] })
+  .openapi('ProjectDetails')
+
+const ScopeSchema = z
+  .looseObject({
+    project: ProjectDetailsSchema.exactOptional().openapi({
+      description: 'The project the item has scope in.',
+      readOnly: true,
+    }),
+    type: z
+      .enum(['PROJECT', 'TEMPLATE'])
+      .exactOptional()
+      .openapi({ description: 'The type of scope.', readOnly: true }),
   })
   .openapi({
-    description: 'Details of the time tracking configuration.',
-    required: ['defaultUnit', 'timeFormat', 'workingDaysPerWeek', 'workingHoursPerDay'],
+    description:
+      'The projects the item is associated with. Indicated for items associated with [next-gen projects](https://confluence.atlassian.com/x/loMyO).',
+    required: [],
   })
-  .openapi('TimeTrackingConfiguration')
+  .openapi('Scope')
 
-type ConfigurationType = {
-  attachmentsEnabled?: boolean
-  issueLinkingEnabled?: boolean
-  subTasksEnabled?: boolean
-  timeTrackingConfiguration?: z.infer<typeof TimeTrackingConfigurationSchema>
-  timeTrackingEnabled?: boolean
-  unassignedIssuesAllowed?: boolean
-  votingEnabled?: boolean
-  watchingEnabled?: boolean
+const IssueTypeDetailsSchema = z
+  .strictObject({
+    avatarId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: "The ID of the issue type's avatar.",
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the issue type.', readOnly: true }),
+    entityId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Unique ID for next-gen projects.', readOnly: true }),
+    hierarchyLevel: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Hierarchy level of the issue type.', readOnly: true }),
+    iconUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The URL of the issue type's avatar.", readOnly: true }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the issue type.', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the issue type.', readOnly: true }),
+    scope: ScopeSchema.exactOptional().openapi({
+      description: 'Details of the next-gen projects the issue type is available in.',
+      readOnly: true,
+    }),
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of these issue type details.', readOnly: true }),
+    subtask: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether this issue type is used to create subtasks.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Details about an issue type.', required: [] })
+  .openapi('IssueTypeDetails')
+
+const ListWrapperCallbackApplicationRoleSchema = z
+  .strictObject({})
+  .openapi('ListWrapperCallbackApplicationRole')
+
+const GroupNameSchema = z
+  .strictObject({
+    groupId: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the group, which uniquely identifies the group across all Atlassian products. For example, *952d12c3-5b5b-4d04-bb32-44d383afc4b2*.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of group.' }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL for these group details.', readOnly: true }),
+  })
+  .openapi({ description: 'Details about a group.', required: [] })
+  .openapi('GroupName')
+
+const ApplicationRoleSchema = z
+  .strictObject({
+    defaultGroups: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "The groups that are granted default access for this application role. As a group's name can change, use of `defaultGroupsDetails` is recommended to identify a groups.",
+      }),
+    defaultGroupsDetails: z
+      .array(GroupNameSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The groups that are granted default access for this application role.',
+      }),
+    defined: z.boolean().exactOptional().openapi({ description: 'Deprecated.' }),
+    groupDetails: z
+      .array(GroupNameSchema)
+      .exactOptional()
+      .openapi({ description: 'The groups associated with the application role.' }),
+    groups: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "The groups associated with the application role. As a group's name can change, use of `groupDetails` is recommended to identify a groups.",
+      }),
+    hasUnlimitedSeats: z.boolean().exactOptional(),
+    key: z.string().exactOptional().openapi({ description: 'The key of the application role.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name of the application role.' }),
+    numberOfSeats: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The maximum count of users on your license.' }),
+    platform: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the application role belongs to Jira platform (`jira-core`).',
+      }),
+    remainingSeats: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The count of users remaining on your license.' }),
+    selectedByDefault: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines whether this application role should be selected by default on user creation.',
+      }),
+    userCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of users counting against your license.' }),
+    userCountDescription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [type of users](https://confluence.atlassian.com/x/lRW3Ng) being counted against your license.',
+      }),
+  })
+  .openapi({ description: 'Details of an application role.', required: [] })
+  .openapi('ApplicationRole')
+
+const SimpleListWrapperApplicationRoleSchema = z
+  .strictObject({
+    callback: ListWrapperCallbackApplicationRoleSchema.exactOptional(),
+    items: z.array(ApplicationRoleSchema).exactOptional(),
+    'max-results': z
+      .int32()
+      .exactOptional()
+      .openapi({ xml: { attribute: true, name: 'max-results' } }),
+    pagingCallback: ListWrapperCallbackApplicationRoleSchema.exactOptional(),
+    size: z
+      .int32()
+      .exactOptional()
+      .openapi({ xml: { attribute: true } }),
+  })
+  .openapi({ xml: { name: 'list' }, required: [] })
+  .openapi('SimpleListWrapperApplicationRole')
+
+const ListWrapperCallbackGroupNameSchema = z
+  .strictObject({})
+  .openapi('ListWrapperCallbackGroupName')
+
+const SimpleListWrapperGroupNameSchema = z
+  .strictObject({
+    callback: ListWrapperCallbackGroupNameSchema.exactOptional(),
+    items: z.array(GroupNameSchema).exactOptional(),
+    'max-results': z
+      .int32()
+      .exactOptional()
+      .openapi({ xml: { attribute: true, name: 'max-results' } }),
+    pagingCallback: ListWrapperCallbackGroupNameSchema.exactOptional(),
+    size: z
+      .int32()
+      .exactOptional()
+      .openapi({ xml: { attribute: true } }),
+  })
+  .openapi({ xml: { name: 'list' }, required: [] })
+  .openapi('SimpleListWrapperGroupName')
+
+const UserSchema = z
+  .strictObject({
+    accountId: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*. Required in requests.',
+      }),
+    accountType: z
+      .enum(['atlassian', 'app', 'customer', 'unknown'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The user account type. Can take the following values:\n\n *  `atlassian` regular Atlassian user account\n *  `app` system account used for Connect applications and OAuth to represent external systems\n *  `customer` Jira Service Desk account representing an external service desk',
+        readOnly: true,
+      }),
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the user is active.', readOnly: true }),
+    applicationRoles: SimpleListWrapperApplicationRoleSchema.exactOptional().openapi({
+      description: 'The application roles the user is assigned to.',
+      readOnly: true,
+    }),
+    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
+      description: 'The avatars of the user.',
+      readOnly: true,
+    }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The display name of the user. Depending on the user’s privacy setting, this may return an alternative value.',
+        readOnly: true,
+      }),
+    emailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address of the user. Depending on the user’s privacy setting, this may be returned as null.',
+        readOnly: true,
+      }),
+    expand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Expand options that include additional user details in the response.',
+        readOnly: true,
+        xml: { attribute: true },
+      }),
+    groups: SimpleListWrapperGroupNameSchema.exactOptional().openapi({
+      description: 'The groups that the user belongs to.',
+      readOnly: true,
+    }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The locale of the user. Depending on the user’s privacy setting, this may be returned as null.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
+      }),
+    self: z.url().exactOptional().openapi({ description: 'The URL of the user.', readOnly: true }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time zone specified in the user's profile. Depending on the user’s privacy setting, this may be returned as null.",
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      "A user with details as permitted by the user's Atlassian Account privacy settings. However, be aware of these exceptions:\n\n *  User record deleted from Atlassian: This occurs as the result of a right to be forgotten request. In this case, `displayName` provides an indication and other parameters have default values or are blank (for example, email is blank).\n *  User record corrupted: This occurs as a results of events such as a server import and can only happen to deleted users. In this case, `accountId` returns *unknown* and all other parameters have fallback values.\n *  User record unavailable: This usually occurs due to an internal service outage. In this case, all parameters have fallback values.",
+    xml: { name: 'user' },
+    required: [],
+  })
+  .openapi('User')
+
+const WorkflowSchemeSchema = z
+  .strictObject({
+    defaultWorkflow: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the default workflow for the workflow scheme. The default workflow has *All Unassigned Issue Types* assigned to it in Jira. If `defaultWorkflow` is not specified when creating a workflow scheme, it is set to *Jira Workflow (jira)*.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the workflow scheme.' }),
+    draft: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the workflow scheme is a draft or not.', readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the workflow scheme.',
+        readOnly: true,
+      }),
+    issueTypeMappings: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The issue type to workflow mappings, where each mapping is an issue type ID and workflow name pair. Note that an issue type can only be mapped to one workflow in a workflow scheme.',
+      }),
+    issueTypes: z
+      .record(z.string(), IssueTypeDetailsSchema)
+      .exactOptional()
+      .openapi({ description: 'The issue types available in Jira.', readOnly: true }),
+    lastModified: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date-time that the draft workflow scheme was last modified. A modification is a change to the issue type-project mappings only. This property does not apply to non-draft workflows.',
+        readOnly: true,
+      }),
+    lastModifiedUser: UserSchema.exactOptional().openapi({
+      description:
+        'The user that last modified the draft workflow scheme. A modification is a change to the issue type-project mappings only. This property does not apply to non-draft workflows.',
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the workflow scheme. The name must be unique. The maximum length is 255 characters. Required when creating a workflow scheme.',
+      }),
+    originalDefaultWorkflow: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For draft workflow schemes, this property is the name of the default workflow for the original workflow scheme. The default workflow has *All Unassigned Issue Types* assigned to it in Jira.',
+        readOnly: true,
+      }),
+    originalIssueTypeMappings: z
+      .record(z.string(), z.string().openapi({ readOnly: true }))
+      .exactOptional()
+      .openapi({
+        description:
+          'For draft workflow schemes, this property is the issue type to workflow mappings for the original workflow scheme, where each mapping is an issue type ID and workflow name pair. Note that an issue type can only be mapped to one workflow in a workflow scheme.',
+        readOnly: true,
+      }),
+    self: z.url().exactOptional().openapi({ readOnly: true }),
+    updateDraftIfNeeded: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to create or update a draft workflow scheme when updating an active workflow scheme. An active workflow scheme is a workflow scheme that is used by at least one project. The following examples show how this property works:\n\n *  Update an active workflow scheme with `updateDraftIfNeeded` set to `true`: If a draft workflow scheme exists, it is updated. Otherwise, a draft workflow scheme is created.\n *  Update an active workflow scheme with `updateDraftIfNeeded` set to `false`: An error is returned, as active workflow schemes cannot be updated.\n *  Update an inactive workflow scheme with `updateDraftIfNeeded` set to `true`: The workflow scheme is updated, as inactive workflow schemes do not require drafts to update.\n\nDefaults to `false`.',
+      }),
+  })
+  .openapi({ description: 'Details about a workflow scheme.', required: [] })
+  .openapi('WorkflowScheme')
+
+type WorkflowSchemeAssociationsType = {
+  projectIds: string[]
+  workflowScheme: z.infer<typeof WorkflowSchemeSchema>
+}
+
+const WorkflowSchemeAssociationsSchema: z.ZodType<WorkflowSchemeAssociationsType> = z
+  .strictObject({
+    projectIds: z
+      .array(z.string())
+      .openapi({ description: 'The list of projects that use the workflow scheme.' }),
+    workflowScheme: WorkflowSchemeSchema.openapi({ description: 'The workflow scheme.' }),
+  })
+  .openapi({
+    description: 'A workflow scheme along with a list of projects that use it.',
+    required: ['projectIds', 'workflowScheme'],
+  })
+  .openapi('WorkflowSchemeAssociations')
+
+type ContainerOfWorkflowSchemeAssociationsType = {
+  values: z.infer<typeof WorkflowSchemeAssociationsSchema>[]
 }
 
 type CreateWorkflowConditionType = {
   conditions?: CreateWorkflowConditionType[]
-  configuration?: { [key: string]: { [key: string]: unknown } }
+  configuration?: { [key: string]: unknown }
   operator?: 'AND' | 'OR'
   type?: string
+}
+
+const ProjectComponentSchema = z
+  .strictObject({
+    assignee: UserSchema.exactOptional().openapi({
+      description:
+        'The details of the user associated with `assigneeType`, if any. See `realAssignee` for details of the user assigned to issues created with this component.',
+      readOnly: true,
+    }),
+    assigneeType: z
+      .enum(['PROJECT_DEFAULT', 'COMPONENT_LEAD', 'PROJECT_LEAD', 'UNASSIGNED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The nominal user type used to determine the assignee for issues created with this component. See `realAssigneeType` for details on how the type of the user, and hence the user, assigned to issues is determined. Can take the following values:\n\n *  `PROJECT_LEAD` the assignee to any issues created with this component is nominally the lead for the project the component is in.\n *  `COMPONENT_LEAD` the assignee to any issues created with this component is nominally the lead for the component.\n *  `UNASSIGNED` an assignee is not set for issues created with this component.\n *  `PROJECT_DEFAULT` the assignee to any issues created with this component is nominally the default assignee for the project that the component is in.\n\nDefault value: `PROJECT_DEFAULT`.  \nOptional when creating or updating a component.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description for the component. Optional when creating or updating a component.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the component.', readOnly: true }),
+    isAssigneeTypeValid: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether a user is associated with `assigneeType`. For example, if the `assigneeType` is set to `COMPONENT_LEAD` but the component lead is not set, then `false` is returned.',
+        readOnly: true,
+      }),
+    lead: UserSchema.exactOptional().openapi({
+      description: "The user details for the component's lead user.",
+      readOnly: true,
+    }),
+    leadAccountId: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          "The accountId of the component's lead user. The accountId uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.",
+        writeOnly: true,
+      }),
+    leadUserName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique name for the component in the project. Required when creating a component. Optional when updating a component. The maximum length is 255 characters.',
+      }),
+    project: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The key of the project the component is assigned to. Required when creating a component. Can't be updated.",
+      }),
+    projectId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the project the component is assigned to.',
+        readOnly: true,
+      }),
+    realAssignee: UserSchema.exactOptional().openapi({
+      description:
+        'The user assigned to issues created with this component, when `assigneeType` does not identify a valid assignee.',
+      readOnly: true,
+    }),
+    realAssigneeType: z
+      .enum(['PROJECT_DEFAULT', 'COMPONENT_LEAD', 'PROJECT_LEAD', 'UNASSIGNED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the assignee that is assigned to issues created with this component, when an assignee cannot be set from the `assigneeType`. For example, `assigneeType` is set to `COMPONENT_LEAD` but no component lead is set. This property is set to one of the following values:\n\n *  `PROJECT_LEAD` when `assigneeType` is `PROJECT_LEAD` and the project lead has permission to be assigned issues in the project that the component is in.\n *  `COMPONENT_LEAD` when `assignee`Type is `COMPONENT_LEAD` and the component lead has permission to be assigned issues in the project that the component is in.\n *  `UNASSIGNED` when `assigneeType` is `UNASSIGNED` and Jira is configured to allow unassigned issues.\n *  `PROJECT_DEFAULT` when none of the preceding cases are true.',
+        readOnly: true,
+      }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL of the component.', readOnly: true }),
+  })
+  .openapi({
+    description: 'Details about a project component.',
+    xml: { name: 'component' },
+    required: [],
+  })
+  .openapi('ProjectComponent')
+
+const ProjectInsightSchema = z
+  .strictObject({
+    lastIssueUpdateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The last issue update time.', readOnly: true }),
+    totalIssueCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total issue count.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Additional details about a project.', required: [] })
+  .openapi('ProjectInsight')
+
+const SimplifiedHierarchyLevelSchema = z
+  .strictObject({
+    aboveLevelId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the level above this one in the hierarchy. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
+      }),
+    belowLevelId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the level below this one in the hierarchy. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
+      }),
+    externalUuid: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The external UUID of the hierarchy level. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
+      }),
+    hierarchyLevelNumber: z.int32().exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the hierarchy level. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
+      }),
+    issueTypeIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The issue types available in this hierarchy level.' }),
+    level: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The level of this item in the hierarchy.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of this hierarchy level.' }),
+    projectConfigurationId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the project configuration. This property is deprecated, see [Change oticen: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SimplifiedHierarchyLevel')
+
+const HierarchySchema = z
+  .strictObject({
+    baseLevelId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the base level. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
+      }),
+    levels: z
+      .array(SimplifiedHierarchyLevelSchema)
+      .exactOptional()
+      .openapi({ description: 'Details about the hierarchy level.', readOnly: true }),
+  })
+  .openapi({
+    description: 'The project issue type hierarchy.',
+    xml: { name: 'hierarchy' },
+    required: [],
+  })
+  .openapi('Hierarchy')
+
+const ProjectLandingPageInfoSchema = z
+  .strictObject({
+    attributes: z.record(z.string(), z.string()).exactOptional(),
+    boardId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    boardName: z.string().exactOptional(),
+    projectKey: z.string().exactOptional(),
+    projectType: z.string().exactOptional(),
+    queueCategory: z.string().exactOptional(),
+    queueId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    queueName: z.string().exactOptional(),
+    simpleBoard: z.boolean().exactOptional(),
+    simplified: z.boolean().exactOptional(),
+    url: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProjectLandingPageInfo')
+
+const ProjectPermissionsSchema = z
+  .strictObject({
+    canEdit: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the logged user can edit the project.', readOnly: true }),
+  })
+  .openapi({ description: 'Permissions which a user has on a project.', required: [] })
+  .openapi('ProjectPermissions')
+
+const ProjectCategorySchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the project category.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the project category.', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the project category. Required on create, optional on update.',
+      }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL of the project category.', readOnly: true }),
+  })
+  .openapi({ description: 'A project category.', required: [] })
+  .openapi('ProjectCategory')
+
+const VersionIssuesStatusSchema = z
+  .looseObject({
+    done: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Count of issues with status *done*.',
+        readOnly: true,
+      }),
+    inProgress: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Count of issues with status *in progress*.',
+        readOnly: true,
+      }),
+    toDo: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Count of issues with status *to do*.',
+        readOnly: true,
+      }),
+    unmapped: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Count of issues with a status other than *to do*, *in progress*, and *done*.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Counts of the number of issues in various statuses.', required: [] })
+  .openapi('VersionIssuesStatus')
+
+const SimpleLinkSchema = z
+  .strictObject({
+    href: z.string().exactOptional(),
+    iconClass: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    label: z.string().exactOptional(),
+    styleClass: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    weight: z.int32().exactOptional(),
+  })
+  .openapi({
+    description: 'Details about the operations available in this version.',
+    xml: { name: 'link' },
+    required: [],
+  })
+  .openapi('SimpleLink')
+
+const VersionSchema = z
+  .strictObject({
+    archived: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the version is archived. Optional when creating or updating a version.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description of the version. Optional when creating or updating a version.',
+      }),
+    expand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Use [expand](em>#expansion) to include additional information about version in the response. This parameter accepts a comma-separated list. Expand options include:\n\n *  `operations` Returns the list of operations available for this version.\n *  `issuesstatus` Returns the count of issues in this version for each of the status categories *to do*, *in progress*, *done*, and *unmapped*. The *unmapped* property contains a count of issues with a status other than *to do*, *in progress*, and *done*.\n\nOptional for create and update.',
+        xml: { attribute: true },
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the version.', readOnly: true }),
+    issuesStatusForFixVersion: VersionIssuesStatusSchema.exactOptional().openapi({
+      description:
+        'If the expand option `issuesstatus` is used, returns the count of issues in this version for each of the status categories *to do*, *in progress*, *done*, and *unmapped*. The *unmapped* property contains a count of issues with a status other than *to do*, *in progress*, and *done*.',
+      readOnly: true,
+    }),
+    moveUnfixedIssuesTo: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL of the self link to the version to which all unfixed issues are moved when a version is released. Not applicable when creating a version. Optional when updating a version.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique name of the version. Required when creating a version. Optional when updating a version. The maximum length is 255 characters.',
+      }),
+    operations: z
+      .array(SimpleLinkSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'If the expand option `operations` is used, returns the list of operations available for this version.',
+        readOnly: true,
+      }),
+    overdue: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates that the version is overdue.', readOnly: true }),
+    project: z.string().exactOptional().openapi({ description: 'Deprecated. Use `projectId`.' }),
+    projectId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the project to which this version is attached. Required when creating a version. Not applicable when updating a version.',
+      }),
+    releaseDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The release date of the version. Expressed in ISO 8601 format (yyyy-mm-dd). Optional when creating or updating a version.',
+      }),
+    released: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the version is released. If the version is released a request to release again is ignored. Not applicable when creating a version. Optional when updating a version.',
+      }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL of the version.', readOnly: true }),
+    startDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The start date of the version. Expressed in ISO 8601 format (yyyy-mm-dd). Optional when creating or updating a version.',
+      }),
+    userReleaseDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The date on which work on this version is expected to finish, expressed in the instance's *Day/Month/Year Format* date format.",
+        readOnly: true,
+      }),
+    userStartDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The date on which work on this version is expected to start, expressed in the instance's *Day/Month/Year Format* date format.",
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Details about a project version.',
+    xml: { name: 'version' },
+    required: [],
+  })
+  .openapi('Version')
+
+type ProjectType = {
+  archived?: boolean
+  archivedBy?: z.infer<typeof UserSchema>
+  archivedDate?: string
+  assigneeType?: 'PROJECT_LEAD' | 'UNASSIGNED'
+  avatarUrls?: z.infer<typeof AvatarUrlsBeanSchema>
+  components?: z.infer<typeof ProjectComponentSchema>[]
+  deleted?: boolean
+  deletedBy?: z.infer<typeof UserSchema>
+  deletedDate?: string
+  description?: string
+  email?: string
+  expand?: string
+  favourite?: boolean
+  id?: string
+  insight?: z.infer<typeof ProjectInsightSchema>
+  isPrivate?: boolean
+  issueTypeHierarchy?: z.infer<typeof HierarchySchema>
+  issueTypes?: z.infer<typeof IssueTypeDetailsSchema>[]
+  key?: string
+  landingPageInfo?: z.infer<typeof ProjectLandingPageInfoSchema>
+  lead?: z.infer<typeof UserSchema>
+  name?: string
+  permissions?: z.infer<typeof ProjectPermissionsSchema>
+  projectCategory?: z.infer<typeof ProjectCategorySchema>
+  projectTypeKey?: 'software' | 'service_desk' | 'business'
+  properties?: { [key: string]: unknown }
+  retentionTillDate?: string
+  roles?: { [key: string]: string }
+  self?: string
+  simplified?: boolean
+  style?: 'classic' | 'next-gen'
+  url?: string
+  uuid?: string
+  versions?: z.infer<typeof VersionSchema>[]
+}
+
+const ProjectSchema: z.ZodType<ProjectType> = z
+  .strictObject({
+    archived: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the project is archived.', readOnly: true }),
+    archivedBy: UserSchema.exactOptional().openapi({
+      description: 'The user who archived the project.',
+      readOnly: true,
+    }),
+    archivedDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date when the project was archived.', readOnly: true }),
+    assigneeType: z
+      .enum(['PROJECT_LEAD', 'UNASSIGNED'])
+      .exactOptional()
+      .openapi({
+        description: 'The default assignee when creating issues for this project.',
+        readOnly: true,
+      }),
+    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
+      description: "The URLs of the project's avatars.",
+      readOnly: true,
+    }),
+    components: z
+      .array(ProjectComponentSchema)
+      .exactOptional()
+      .openapi({ description: 'List of the components contained in the project.', readOnly: true }),
+    deleted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the project is marked as deleted.', readOnly: true }),
+    deletedBy: UserSchema.exactOptional().openapi({
+      description: 'The user who marked the project as deleted.',
+      readOnly: true,
+    }),
+    deletedDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date when the project was marked as deleted.', readOnly: true }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A brief description of the project.', readOnly: true }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An email address associated with the project.' }),
+    expand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Expand options that include additional project details in the response.',
+        readOnly: true,
+        xml: { attribute: true },
+      }),
+    favourite: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the project is selected as a favorite.' }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the project.' }),
+    insight: ProjectInsightSchema.exactOptional().openapi({
+      description: 'Insights about the project.',
+      readOnly: true,
+    }),
+    isPrivate: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the project is private.', readOnly: true }),
+    issueTypeHierarchy: HierarchySchema.exactOptional().openapi({
+      description: 'The issue type hierarchy for the project.',
+      readOnly: true,
+    }),
+    issueTypes: z
+      .array(IssueTypeDetailsSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of the issue types available in the project.',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key of the project.', readOnly: true }),
+    landingPageInfo: ProjectLandingPageInfoSchema.exactOptional().openapi({
+      description: 'The project landing page info.',
+      readOnly: true,
+    }),
+    lead: UserSchema.exactOptional().openapi({
+      description: 'The username of the project lead.',
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the project.', readOnly: true }),
+    permissions: ProjectPermissionsSchema.exactOptional().openapi({
+      description: 'User permissions on the project',
+      readOnly: true,
+    }),
+    projectCategory: ProjectCategorySchema.exactOptional().openapi({
+      description: 'The category the project belongs to.',
+      readOnly: true,
+    }),
+    projectTypeKey: z
+      .enum(['software', 'service_desk', 'business'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The [project type](https://confluence.atlassian.com/x/GwiiLQ#Jiraapplicationsoverview-Productfeaturesandprojecttypes) of the project.',
+        readOnly: true,
+      }),
+    properties: z
+      .record(z.string(), z.any().openapi({ readOnly: true }))
+      .exactOptional()
+      .openapi({ description: 'Map of project properties', readOnly: true }),
+    retentionTillDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date when the project is deleted permanently.',
+        readOnly: true,
+      }),
+    roles: z
+      .record(z.string(), z.url().openapi({ readOnly: true }))
+      .exactOptional()
+      .openapi({
+        description:
+          'The name and self URL for each role defined in the project. For more information, see [Create project role](#api-rest-api-3-role-post).',
+        readOnly: true,
+      }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL of the project details.', readOnly: true }),
+    simplified: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the project is simplified.', readOnly: true }),
+    style: z
+      .enum(['classic', 'next-gen'])
+      .exactOptional()
+      .openapi({ description: 'The type of the project.', readOnly: true }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to information about this project, such as project documentation.',
+        readOnly: true,
+      }),
+    uuid: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Unique ID for next-gen projects.', readOnly: true }),
+    versions: z
+      .array(VersionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The versions defined in the project. For more information, see [Create version](#api-rest-api-3-version-post).',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Details about a project.', xml: { name: 'project' }, required: [] })
+  .openapi('Project')
+
+const ProjectRoleGroupSchema = z
+  .strictObject({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name of the group.' }),
+    groupId: z.string().exactOptional().openapi({ description: 'The ID of the group.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The name of the group. As a group's name can change, use of `groupId` is recommended to identify the group.",
+      }),
+  })
+  .openapi({ description: 'Details of the group associated with the role.', required: [] })
+  .openapi('ProjectRoleGroup')
+
+const ProjectRoleUserSchema = z
+  .strictObject({
+    accountId: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*. Returns *unknown* if the record is deleted and corrupted, for example, as the result of a server import.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Details of the user associated with the role.', required: [] })
+  .openapi('ProjectRoleUser')
+
+const RoleActorSchema = z
+  .strictObject({
+    actorGroup: ProjectRoleGroupSchema.exactOptional().openapi({ readOnly: true }),
+    actorUser: ProjectRoleUserSchema.exactOptional().openapi({ readOnly: true }),
+    avatarUrl: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The avatar of the role actor.', readOnly: true }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The display name of the role actor. For users, depending on the user’s privacy setting, this may return an alternative value for the user's name.",
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the role actor.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
+        readOnly: true,
+      }),
+    type: z
+      .enum(['atlassian-group-role-actor', 'atlassian-user-role-actor'])
+      .exactOptional()
+      .openapi({ description: 'The type of role actor.', readOnly: true }),
+  })
+  .openapi({
+    description: 'Details about a user assigned to a project role.',
+    xml: { name: 'projectRoleActor' },
+    required: [],
+  })
+  .openapi('RoleActor')
+
+const ProjectRoleSchema = z
+  .strictObject({
+    actors: z
+      .array(RoleActorSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of users who act in this role.', readOnly: true }),
+    admin: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether this role is the admin role for the project.',
+        readOnly: true,
+      }),
+    currentUserRole: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the calling user is part of this role.' }),
+    default: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether this role is the default role for the project',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the project role.', readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the project role.',
+        readOnly: true,
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the project role.' }),
+    roleConfigurable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the roles are configurable for this project.',
+        readOnly: true,
+      }),
+    scope: ScopeSchema.exactOptional().openapi({
+      description:
+        'The scope of the role. Indicated for roles associated with [next-gen projects](https://confluence.atlassian.com/x/loMyO).',
+      readOnly: true,
+    }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL the project role details.', readOnly: true }),
+    translatedName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The translated name of the project role.' }),
+  })
+  .openapi({ description: 'Details about the roles in a project.', required: [] })
+  .openapi('ProjectRole')
+
+const UserBeanAvatarUrlsSchema = z
+  .strictObject({
+    '16x16': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the user's 16x16 pixel avatar." }),
+    '24x24': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the user's 24x24 pixel avatar." }),
+    '32x32': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the user's 32x32 pixel avatar." }),
+    '48x48': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the user's 48x48 pixel avatar." }),
+  })
+  .openapi({ required: [] })
+  .openapi('UserBeanAvatarUrls')
+
+const UserBeanSchema = z
+  .strictObject({
+    accountId: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.',
+      }),
+    active: z.boolean().exactOptional().openapi({ description: 'Whether the user is active.' }),
+    avatarUrls: UserBeanAvatarUrlsSchema.exactOptional().openapi({
+      description: 'The avatars of the user.',
+    }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The display name of the user. Depending on the user’s privacy setting, this may return an alternative value.',
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is deprecated in favor of `accountId` because of privacy changes. See the [migration guide](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.  \nThe key of the user.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is deprecated in favor of `accountId` because of privacy changes. See the [migration guide](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.  \nThe username of the user.',
+      }),
+    self: z.url().exactOptional().openapi({ description: 'The URL of the user.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UserBean')
+
+type SharePermissionType = {
+  group?: z.infer<typeof GroupNameSchema>
+  id?: bigint
+  project?: z.infer<typeof ProjectSchema>
+  role?: z.infer<typeof ProjectRoleSchema>
+  type:
+    | 'user'
+    | 'group'
+    | 'project'
+    | 'projectRole'
+    | 'global'
+    | 'loggedin'
+    | 'authenticated'
+    | 'project-unknown'
+  user?: z.infer<typeof UserBeanSchema>
+}
+
+const SharePermissionSchema: z.ZodType<SharePermissionType> = z
+  .strictObject({
+    group: GroupNameSchema.exactOptional().openapi({
+      description:
+        "The group that the filter is shared with. For a request, specify the `groupId` or `name` property for the group. As a group's name can change, use of `groupId` is recommended.",
+    }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The unique identifier of the share permission.',
+        readOnly: true,
+      }),
+    project: ProjectSchema.exactOptional().openapi({
+      description:
+        'The project that the filter is shared with. This is similar to the project object returned by [Get project](#api-rest-api-3-project-projectIdOrKey-get) but it contains a subset of the properties, which are: `self`, `id`, `key`, `assigneeType`, `name`, `roles`, `avatarUrls`, `projectType`, `simplified`.  \nFor a request, specify the `id` for the project.',
+    }),
+    role: ProjectRoleSchema.exactOptional().openapi({
+      description:
+        'The project role that the filter is shared with.  \nFor a request, specify the `id` for the role. You must also specify the `project` object and `id` for the project that the role is in.',
+    }),
+    type: z
+      .enum([
+        'user',
+        'group',
+        'project',
+        'projectRole',
+        'global',
+        'loggedin',
+        'authenticated',
+        'project-unknown',
+      ])
+      .openapi({
+        description:
+          'The type of share permission:\n\n *  `user` Shared with a user.\n *  `group` Shared with a group. If set in a request, then specify `sharePermission.group` as well.\n *  `project` Shared with a project. If set in a request, then specify `sharePermission.project` as well.\n *  `projectRole` Share with a project role in a project. This value is not returned in responses. It is used in requests, where it needs to be specify with `projectId` and `projectRoleId`.\n *  `global` Shared globally. If set in a request, no other `sharePermission` properties need to be specified.\n *  `loggedin` Shared with all logged-in users. Note: This value is set in a request by specifying `authenticated` as the `type`.\n *  `project-unknown` Shared with a project that the user does not have access to. Cannot be set in a request.',
+      }),
+    user: UserBeanSchema.exactOptional().openapi({
+      description:
+        'The user account ID that the filter is shared with. For a request, specify the `accountId` property for the user.',
+    }),
+  })
+  .openapi({ description: 'Details of a share permission for the filter.', required: ['type'] })
+  .openapi('SharePermission')
+
+type DashboardType = {
+  automaticRefreshMs?: number
+  description?: string
+  editPermissions?: z.infer<typeof SharePermissionSchema>[]
+  id?: string
+  isFavourite?: boolean
+  isWritable?: boolean
+  name?: string
+  owner?: z.infer<typeof UserBeanSchema>
+  popularity?: bigint
+  rank?: number
+  self?: string
+  sharePermissions?: z.infer<typeof SharePermissionSchema>[]
+  systemDashboard?: boolean
+  view?: string
+}
+
+type DashboardDetailsType = {
+  description?: string
+  editPermissions: z.infer<typeof SharePermissionSchema>[]
+  name: string
+  sharePermissions: z.infer<typeof SharePermissionSchema>[]
 }
 
 const JqlQueryFieldEntityPropertySchema = z
@@ -198,27 +1765,174 @@ type FieldWasClauseType = {
   predicates: z.infer<typeof JqlQueryClauseTimePredicateSchema>[]
 }
 
-const AvatarUrlsBeanSchema = z
+type UserListType = {
+  'end-index'?: number
+  items?: z.infer<typeof UserSchema>[]
+  'max-results'?: number
+  size?: number
+  'start-index'?: number
+}
+
+const UserListSchema: z.ZodType<UserListType> = z
   .strictObject({
-    '16x16': z
-      .url()
+    'end-index': z
+      .int32()
       .exactOptional()
-      .openapi({ description: "The URL of the item's 16x16 pixel avatar." }),
-    '24x24': z
-      .url()
+      .openapi({
+        description: 'The index of the last item returned on the page.',
+        readOnly: true,
+        xml: { attribute: true, name: 'end-index' },
+      }),
+    items: z
+      .array(UserSchema)
       .exactOptional()
-      .openapi({ description: "The URL of the item's 24x24 pixel avatar." }),
-    '32x32': z
-      .url()
+      .openapi({ description: 'The list of items.', readOnly: true }),
+    'max-results': z
+      .int32()
       .exactOptional()
-      .openapi({ description: "The URL of the item's 32x32 pixel avatar." }),
-    '48x48': z
-      .url()
+      .openapi({
+        description: 'The maximum number of results that could be on the page.',
+        readOnly: true,
+        xml: { attribute: true, name: 'max-results' },
+      }),
+    size: z
+      .int32()
       .exactOptional()
-      .openapi({ description: "The URL of the item's 48x48 pixel avatar." }),
+      .openapi({
+        description: 'The number of items on the page.',
+        readOnly: true,
+        xml: { attribute: true },
+      }),
+    'start-index': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The index of the first item returned on the page.',
+        readOnly: true,
+        xml: { attribute: true, name: 'start-index' },
+      }),
   })
-  .openapi({ required: [] })
-  .openapi('AvatarUrlsBean')
+  .openapi({
+    description:
+      'A paginated list of users sharing the filter. This includes users that are members of the groups or can browse the projects that the filter is shared with.',
+    required: [],
+  })
+  .openapi('UserList')
+
+const FilterSubscriptionSchema = z
+  .strictObject({
+    group: GroupNameSchema.exactOptional().openapi({
+      description: 'The group subscribing to filter.',
+      readOnly: true,
+    }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the filter subscription.',
+        readOnly: true,
+      }),
+    user: UserSchema.exactOptional().openapi({
+      description: 'The user subscribing to filter.',
+      readOnly: true,
+    }),
+  })
+  .openapi({ description: 'Details of a user or group subscribing to a filter.', required: [] })
+  .openapi('FilterSubscription')
+
+type FilterSubscriptionsListType = {
+  'end-index'?: number
+  items?: z.infer<typeof FilterSubscriptionSchema>[]
+  'max-results'?: number
+  size?: number
+  'start-index'?: number
+}
+
+const FilterSubscriptionsListSchema: z.ZodType<FilterSubscriptionsListType> = z
+  .strictObject({
+    'end-index': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The index of the last item returned on the page.',
+        readOnly: true,
+        xml: { attribute: true, name: 'end-index' },
+      }),
+    items: z
+      .array(FilterSubscriptionSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of items.', readOnly: true }),
+    'max-results': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The maximum number of results that could be on the page.',
+        readOnly: true,
+        xml: { attribute: true, name: 'max-results' },
+      }),
+    size: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of items on the page.',
+        readOnly: true,
+        xml: { attribute: true },
+      }),
+    'start-index': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The index of the first item returned on the page.',
+        readOnly: true,
+        xml: { attribute: true, name: 'start-index' },
+      }),
+  })
+  .openapi({ description: 'A paginated list of subscriptions to a filter.', required: [] })
+  .openapi('FilterSubscriptionsList')
+
+type FilterType = {
+  description?: string
+  editPermissions?: z.infer<typeof SharePermissionSchema>[]
+  favourite?: boolean
+  favouritedCount?: bigint
+  id?: string
+  jql?: string
+  name: string
+  owner?: z.infer<typeof UserSchema>
+  searchUrl?: string
+  self?: string
+  sharePermissions?: z.infer<typeof SharePermissionSchema>[]
+  sharedUsers?: z.infer<typeof UserListSchema>
+  subscriptions?: z.infer<typeof FilterSubscriptionsListSchema>
+  viewUrl?: string
+}
+
+type FilterDetailsType = {
+  description?: string
+  editPermissions?: z.infer<typeof SharePermissionSchema>[]
+  expand?: string
+  favourite?: boolean
+  favouritedCount?: bigint
+  id?: string
+  jql?: string
+  name: string
+  owner?: z.infer<typeof UserSchema>
+  searchUrl?: string
+  self?: string
+  sharePermissions?: z.infer<typeof SharePermissionSchema>[]
+  subscriptions?: z.infer<typeof FilterSubscriptionSchema>[]
+  viewUrl?: string
+}
 
 const JsonTypeBeanSchema = z
   .strictObject({
@@ -320,85 +2034,6 @@ const FieldMetadataSchema = z
     xml: { name: 'availableField' },
   })
   .openapi('FieldMetadata')
-
-const UpdatedProjectCategorySchema = z
-  .strictObject({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the project category.', readOnly: true }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the project category.', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the project category.', readOnly: true }),
-    self: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the project category.', readOnly: true }),
-  })
-  .openapi({ description: 'A project category.', required: [] })
-  .openapi('UpdatedProjectCategory')
-
-const ProjectDetailsSchema = z
-  .strictObject({
-    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
-      description: "The URLs of the project's avatars.",
-      readOnly: true,
-    }),
-    id: z.string().exactOptional().openapi({ description: 'The ID of the project.' }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key of the project.', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the project.', readOnly: true }),
-    projectCategory: UpdatedProjectCategorySchema.exactOptional().openapi({
-      description: 'The category the project belongs to.',
-      readOnly: true,
-    }),
-    projectTypeKey: z
-      .enum(['software', 'service_desk', 'business'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The [project type](https://confluence.atlassian.com/x/GwiiLQ#Jiraapplicationsoverview-Productfeaturesandprojecttypes) of the project.',
-        readOnly: true,
-      }),
-    self: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the project details.', readOnly: true }),
-    simplified: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the project is simplified.', readOnly: true }),
-  })
-  .openapi({ description: 'Details about a project.', required: [] })
-  .openapi('ProjectDetails')
-
-const ScopeSchema = z
-  .looseObject({
-    project: ProjectDetailsSchema.exactOptional().openapi({
-      description: 'The project the item has scope in.',
-      readOnly: true,
-    }),
-    type: z
-      .enum(['PROJECT', 'TEMPLATE'])
-      .exactOptional()
-      .openapi({ description: 'The type of scope.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'The projects the item is associated with. Indicated for items associated with [next-gen projects](https://confluence.atlassian.com/x/loMyO).',
-    required: [],
-  })
-  .openapi('Scope')
 
 const IssueTypeIssueCreateMetadataSchema = z
   .strictObject({
@@ -528,6 +2163,354 @@ type IssueCreateMetadataType = {
   projects?: z.infer<typeof ProjectIssueCreateMetadataSchema>[]
 }
 
+const HistoryMetadataParticipantSchema = z
+  .looseObject({
+    avatarUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL to an avatar for the user or system associated with a history record.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The display name of the user or system associated with a history record.',
+      }),
+    displayNameKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The key of the display name of the user or system associated with a history record.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the user or system associated with a history record.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the user or system associated with a history record.' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the user or system associated with a history record.' }),
+  })
+  .openapi({
+    description: 'Details of user or system associated with a issue history metadata item.',
+    required: [],
+  })
+  .openapi('HistoryMetadataParticipant')
+
+const HistoryMetadataSchema = z
+  .looseObject({
+    activityDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The activity described in the history record.' }),
+    activityDescriptionKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key of the activity described in the history record.' }),
+    actor: HistoryMetadataParticipantSchema.exactOptional().openapi({
+      description: 'Details of the user whose action created the history record.',
+    }),
+    cause: HistoryMetadataParticipantSchema.exactOptional().openapi({
+      description: 'Details of the cause that triggered the creation the history record.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the history record.' }),
+    descriptionKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description key of the history record.' }),
+    emailDescription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the email address associated the history record.',
+      }),
+    emailDescriptionKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description key of the email address associated the history record.',
+      }),
+    extraData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Additional arbitrary information about the history record.' }),
+    generator: HistoryMetadataParticipantSchema.exactOptional().openapi({
+      description: 'Details of the system that generated the history record.',
+    }),
+    type: z.string().exactOptional().openapi({ description: 'The type of the history record.' }),
+  })
+  .openapi({ description: 'Details of issue history metadata.', required: [] })
+  .openapi('HistoryMetadata')
+
+const EntityPropertySchema = z
+  .strictObject({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key of the property. Required on create and update.' }),
+    value: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'The value of the property. Required on create and update.' }),
+  })
+  .openapi({
+    description:
+      'An entity property, for more information see [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/).',
+    required: [],
+  })
+  .openapi('EntityProperty')
+
+const StatusCategorySchema = z
+  .looseObject({
+    colorName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the color used to represent the status category.',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the status category.',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key of the status category.', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the status category.', readOnly: true }),
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the status category.', readOnly: true }),
+  })
+  .openapi({ description: 'A status category.', required: [] })
+  .openapi('StatusCategory')
+
+const StatusDetailsSchema = z
+  .looseObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the status.', readOnly: true }),
+    iconUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL of the icon used to represent the status.',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the status.', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the status.', readOnly: true }),
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the status.', readOnly: true }),
+    statusCategory: StatusCategorySchema.exactOptional().openapi({
+      description: 'The category assigned to the status.',
+      readOnly: true,
+    }),
+  })
+  .openapi({ description: 'A status.', required: [] })
+  .openapi('StatusDetails')
+
+const IssueTransitionSchema = z
+  .looseObject({
+    expand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Expand options that include additional transition details in the response.',
+        readOnly: true,
+      }),
+    fields: z
+      .record(z.string(), FieldMetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Details of the fields associated with the issue transition screen. Use this information to populate `fields` and `update` in a transition request.',
+        readOnly: true,
+      }),
+    hasScreen: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether there is a screen associated with the issue transition.',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the issue transition. Required when specifying a transition to undertake.',
+      }),
+    isAvailable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the transition is available to be performed.',
+        readOnly: true,
+      }),
+    isConditional: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the issue has to meet criteria before the issue transition is applied.',
+        readOnly: true,
+      }),
+    isGlobal: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the issue transition is global, that is, the transition is applied to issues regardless of their status.',
+        readOnly: true,
+      }),
+    isInitial: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether this is the initial issue transition for the workflow.',
+        readOnly: true,
+      }),
+    looped: z.boolean().exactOptional(),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the issue transition.', readOnly: true }),
+    to: StatusDetailsSchema.exactOptional().openapi({
+      description: 'Details of the issue status after the transition.',
+      readOnly: true,
+    }),
+  })
+  .openapi({ description: 'Details of an issue transition.', required: [] })
+  .openapi('IssueTransition')
+
+const FieldUpdateOperationSchema = z
+  .strictObject({
+    add: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'The value to add to the field.', example: 'triaged' }),
+    copy: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description: 'The field value to copy from another issue.',
+        example: { issuelinks: { sourceIssues: [{ key: 'FP-5' }] } },
+      }),
+    edit: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description: 'The value to edit in the field.',
+        example: { originalEstimate: '1w 1d', remainingEstimate: '4d' },
+      }),
+    remove: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'The value to removed from the field.', example: 'blocker' }),
+    set: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'The value to set in the field.', example: 'A new summary' }),
+  })
+  .openapi({ description: 'Details of an operation to perform on a field.', required: [] })
+  .openapi('FieldUpdateOperation')
+
+const IssueUpdateDetailsSchema = z
+  .looseObject({
+    fields: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of issue screen fields to update, specifying the sub-field to update and its value for each field. This field provides a straightforward option when setting a sub-field. When multiple sub-fields or other operations are required, use `update`. Fields included in here cannot be included in `update`.',
+      }),
+    historyMetadata: HistoryMetadataSchema.exactOptional().openapi({
+      description: 'Additional issue history details.',
+    }),
+    properties: z
+      .array(EntityPropertySchema)
+      .exactOptional()
+      .openapi({ description: 'Details of issue properties to be add or update.' }),
+    transition: IssueTransitionSchema.exactOptional().openapi({
+      description:
+        'Details of a transition. Required when performing a transition, optional when creating or editing an issue.',
+    }),
+    update: z
+      .record(z.string(), z.array(FieldUpdateOperationSchema))
+      .exactOptional()
+      .openapi({
+        description:
+          'A Map containing the field field name and a list of operations to perform on the issue screen field. Note that fields included in here cannot be included in `fields`.',
+      }),
+  })
+  .openapi({ description: 'Details of an issue update request.', required: [] })
+  .openapi('IssueUpdateDetails')
+
+type IssuesUpdateBeanType = { issueUpdates?: z.infer<typeof IssueUpdateDetailsSchema>[] }
+
+const JqlQueryOrderByClauseElementSchema = z
+  .strictObject({
+    direction: z
+      .enum(['asc', 'desc'])
+      .exactOptional()
+      .openapi({ description: 'The direction in which to order the results.' }),
+    field: JqlQueryFieldSchema,
+  })
+  .openapi({ description: 'An element of the order-by JQL clause.', required: ['field'] })
+  .openapi('JqlQueryOrderByClauseElement')
+
+const JqlQueryOrderByClauseSchema = z
+  .strictObject({
+    fields: z
+      .array(JqlQueryOrderByClauseElementSchema)
+      .openapi({
+        description: 'The list of order-by clause fields and their ordering directives.',
+      }),
+  })
+  .openapi({ description: 'Details of the order-by JQL clause.', required: ['fields'] })
+  .openapi('JqlQueryOrderByClause')
+
+type JqlQueryType = {
+  orderBy?: z.infer<typeof JqlQueryOrderByClauseSchema>
+  where?: z.infer<typeof JqlQueryClauseSchema>
+}
+
 const CompoundClauseSchema: z.ZodType<CompoundClauseType> = z
   .lazy(() =>
     z
@@ -601,23 +2584,6 @@ type JqlQueryClauseType =
   | z.infer<typeof FieldWasClauseSchema>
   | z.infer<typeof FieldChangedClauseSchema>
 
-const SimpleLinkSchema = z
-  .strictObject({
-    href: z.string().exactOptional(),
-    iconClass: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    label: z.string().exactOptional(),
-    styleClass: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    weight: z.int32().exactOptional(),
-  })
-  .openapi({
-    description: 'Details about the operations available in this version.',
-    xml: { name: 'link' },
-    required: [],
-  })
-  .openapi('SimpleLink')
-
 type LinkGroupType = {
   groups?: LinkGroupType[]
   header?: z.infer<typeof SimpleLinkSchema>
@@ -634,96 +2600,607 @@ type NotificationEventType = {
   templateEvent?: NotificationEventType
 }
 
-const IssueTypeScreenSchemeSchema = z
+const NotificationEventSchema: z.ZodType<NotificationEventType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The description of the event.' }),
+        id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'The ID of the event. The event can be a [Jira system event](https://confluence.atlassian.com/x/8YdKLg#Creatinganotificationscheme-eventsEvents) or a [custom event](https://confluence.atlassian.com/x/AIlKLg).',
+          }),
+        name: z.string().exactOptional().openapi({ description: 'The name of the event.' }),
+        templateEvent: NotificationEventSchema.exactOptional().openapi({
+          description:
+            'The template of the event. Only custom events configured by Jira administrators have template.',
+        }),
+      })
+      .openapi({ description: 'Details about a notification event.', required: [] }),
+  )
+  .openapi('NotificationEvent')
+
+const FieldDetailsSchema = z
+  .strictObject({
+    clauseNames: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'The names that can be used to reference the field in an advanced search. For more information, see [Advanced searching - fields reference](https://confluence.atlassian.com/x/gwORLQ).',
+      }),
+    custom: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the field is a custom field.' }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the field.' }),
+    key: z.string().exactOptional().openapi({ description: 'The key of the field.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the field.' }),
+    navigable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the field can be used as a column on the issue navigator.',
+      }),
+    orderable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the content of the field can be used to order lists.' }),
+    schema: JsonTypeBeanSchema.exactOptional().openapi({
+      description: 'The data schema for the field.',
+    }),
+    scope: ScopeSchema.exactOptional().openapi({ description: 'The scope of the field.' }),
+    searchable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the content of the field can be searched.' }),
+  })
+  .openapi({ description: 'Details about a field.', xml: { name: 'field' }, required: [] })
+  .openapi('FieldDetails')
+
+const UserDetailsSchema = z
+  .strictObject({
+    accountId: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.',
+      }),
+    accountType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The type of account represented by this user. This will be one of 'atlassian' (normal users), 'app' (application user) or 'customer' (Jira Service Desk customer user)",
+        readOnly: true,
+      }),
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the user is active.', readOnly: true }),
+    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
+      description: 'The avatars of the user.',
+      readOnly: true,
+    }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The display name of the user. Depending on the user’s privacy settings, this may return an alternative value.',
+        readOnly: true,
+      }),
+    emailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address of the user. Depending on the user’s privacy settings, this may be returned as null.',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
+        readOnly: true,
+      }),
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the user.', readOnly: true }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time zone specified in the user's profile. Depending on the user’s privacy settings, this may be returned as null.",
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      "User details permitted by the user's Atlassian Account privacy settings. However, be aware of these exceptions:\n\n *  User record deleted from Atlassian: This occurs as the result of a right to be forgotten request. In this case, `displayName` provides an indication and other parameters have default values or are blank (for example, email is blank).\n *  User record corrupted: This occurs as a results of events such as a server import and can only happen to deleted users. In this case, `accountId` returns *unknown* and all other parameters have fallback values.\n *  User record unavailable: This usually occurs due to an internal service outage. In this case, all parameters have fallback values.",
+    required: [],
+  })
+  .openapi('UserDetails')
+
+const EventNotificationSchema = z
+  .strictObject({
+    emailAddress: z.string().exactOptional().openapi({ description: 'The email address.' }),
+    expand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Expand options that include additional event notification details in the response.',
+      }),
+    field: FieldDetailsSchema.exactOptional().openapi({
+      description: 'The custom user or group field.',
+    }),
+    group: GroupNameSchema.exactOptional().openapi({ description: 'The specified group.' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the notification.' }),
+    notificationType: z
+      .enum([
+        'CurrentAssignee',
+        'Reporter',
+        'CurrentUser',
+        'ProjectLead',
+        'ComponentLead',
+        'User',
+        'Group',
+        'ProjectRole',
+        'EmailAddress',
+        'AllWatchers',
+        'UserCustomField',
+        'GroupCustomField',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Identifies the recipients of the notification.' }),
+    parameter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "As a group's name can change, use of `recipient` is recommended. The identifier associated with the `notificationType` value that defines the receiver of the notification, where the receiver isn't implied by `notificationType` value. So, when `notificationType` is:\n\n *  `User` The `parameter` is the user account ID.\n *  `Group` The `parameter` is the group name.\n *  `ProjectRole` The `parameter` is the project role ID.\n *  `UserCustomField` The `parameter` is the ID of the custom field.\n *  `GroupCustomField` The `parameter` is the ID of the custom field.",
+      }),
+    projectRole: ProjectRoleSchema.exactOptional().openapi({
+      description: 'The specified project role.',
+    }),
+    recipient: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The identifier associated with the `notificationType` value that defines the receiver of the notification, where the receiver isn't implied by the `notificationType` value. So, when `notificationType` is:\n\n *  `User`, `recipient` is the user account ID.\n *  `Group`, `recipient` is the group ID.\n *  `ProjectRole`, `recipient` is the project role ID.\n *  `UserCustomField`, `recipient` is the ID of the custom field.\n *  `GroupCustomField`, `recipient` is the ID of the custom field.",
+      }),
+    user: UserDetailsSchema.exactOptional().openapi({ description: 'The specified user.' }),
+  })
+  .openapi({ description: 'Details about a notification associated with an event.', required: [] })
+  .openapi('EventNotification')
+
+const NotificationSchemeEventSchema = z
+  .strictObject({
+    event: NotificationEventSchema.exactOptional(),
+    notifications: z.array(EventNotificationSchema).exactOptional(),
+  })
+  .openapi({ description: 'Details about a notification scheme event.', required: [] })
+  .openapi('NotificationSchemeEvent')
+
+type NotificationSchemeType = {
+  description?: string
+  expand?: string
+  id?: bigint
+  name?: string
+  notificationSchemeEvents?: z.infer<typeof NotificationSchemeEventSchema>[]
+  projects?: bigint[]
+  scope?: z.infer<typeof ScopeSchema>
+  self?: string
+}
+
+const ComponentWithIssueCountSchema = z
+  .strictObject({
+    assignee: UserSchema.exactOptional().openapi({
+      description:
+        'The details of the user associated with `assigneeType`, if any. See `realAssignee` for details of the user assigned to issues created with this component.',
+    }),
+    assigneeType: z
+      .enum(['PROJECT_DEFAULT', 'COMPONENT_LEAD', 'PROJECT_LEAD', 'UNASSIGNED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The nominal user type used to determine the assignee for issues created with this component. See `realAssigneeType` for details on how the type of the user, and hence the user, assigned to issues is determined. Takes the following values:\n\n *  `PROJECT_LEAD` the assignee to any issues created with this component is nominally the lead for the project the component is in.\n *  `COMPONENT_LEAD` the assignee to any issues created with this component is nominally the lead for the component.\n *  `UNASSIGNED` an assignee is not set for issues created with this component.\n *  `PROJECT_DEFAULT` the assignee to any issues created with this component is nominally the default assignee for the project that the component is in.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description for the component.', readOnly: true }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the component.', readOnly: true }),
+    isAssigneeTypeValid: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether a user is associated with `assigneeType`. For example, if the `assigneeType` is set to `COMPONENT_LEAD` but the component lead is not set, then `false` is returned.',
+        readOnly: true,
+      }),
+    issueCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Count of issues for the component.',
+        readOnly: true,
+      }),
+    lead: UserSchema.exactOptional().openapi({
+      description: "The user details for the component's lead user.",
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name for the component.', readOnly: true }),
+    project: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The key of the project to which the component is assigned.',
+        readOnly: true,
+      }),
+    projectId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Not used.', readOnly: true }),
+    realAssignee: UserSchema.exactOptional().openapi({
+      description:
+        'The user assigned to issues created with this component, when `assigneeType` does not identify a valid assignee.',
+    }),
+    realAssigneeType: z
+      .enum(['PROJECT_DEFAULT', 'COMPONENT_LEAD', 'PROJECT_LEAD', 'UNASSIGNED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the assignee that is assigned to issues created with this component, when an assignee cannot be set from the `assigneeType`. For example, `assigneeType` is set to `COMPONENT_LEAD` but no component lead is set. This property is set to one of the following values:\n\n *  `PROJECT_LEAD` when `assigneeType` is `PROJECT_LEAD` and the project lead has permission to be assigned issues in the project that the component is in.\n *  `COMPONENT_LEAD` when `assignee`Type is `COMPONENT_LEAD` and the component lead has permission to be assigned issues in the project that the component is in.\n *  `UNASSIGNED` when `assigneeType` is `UNASSIGNED` and Jira is configured to allow unassigned issues.\n *  `PROJECT_DEFAULT` when none of the preceding cases are true.',
+        readOnly: true,
+      }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'The URL for this count of the issues contained in the component.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Details about a component with a count of the issues it contains.',
+    required: [],
+  })
+  .openapi('ComponentWithIssueCount')
+
+type PageBeanComponentWithIssueCountType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof ComponentWithIssueCountSchema>[]
+}
+
+const DashboardSchema: z.ZodType<DashboardType> = z
+  .strictObject({
+    automaticRefreshMs: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The automatic refresh interval for the dashboard in milliseconds.',
+        readOnly: true,
+      }),
+    description: z.string().exactOptional(),
+    editPermissions: z
+      .array(SharePermissionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The details of any edit share permissions for the dashboard.',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the dashboard.', readOnly: true }),
+    isFavourite: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the dashboard is selected as a favorite by the user.',
+        readOnly: true,
+      }),
+    isWritable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the current user has permission to edit the dashboard.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the dashboard.', readOnly: true }),
+    owner: UserBeanSchema.exactOptional().openapi({
+      description: 'The owner of the dashboard.',
+      readOnly: true,
+    }),
+    popularity: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of users who have this dashboard as a favorite.',
+        readOnly: true,
+      }),
+    rank: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The rank of this dashboard.', readOnly: true }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL of these dashboard details.', readOnly: true }),
+    sharePermissions: z
+      .array(SharePermissionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The details of any view share permissions for the dashboard.',
+        readOnly: true,
+      }),
+    systemDashboard: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the current dashboard is system dashboard.',
+        readOnly: true,
+      }),
+    view: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the dashboard.', readOnly: true }),
+  })
+  .openapi({ description: 'Details of a dashboard.', required: [] })
+  .openapi('Dashboard')
+
+type PageBeanDashboardType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof DashboardSchema>[]
+}
+
+const FilterDetailsSchema: z.ZodType<FilterDetailsType> = z
   .strictObject({
     description: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The description of the issue type screen scheme.' }),
-    id: z.string().openapi({ description: 'The ID of the issue type screen scheme.' }),
-    name: z.string().openapi({ description: 'The name of the issue type screen scheme.' }),
-  })
-  .openapi({ description: 'Details of an issue type screen scheme.', required: ['id', 'name'] })
-  .openapi('IssueTypeScreenScheme')
-
-const PageBeanIssueTypeScreenSchemeSchema = z
-  .strictObject({
-    isLast: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this is the last page.', readOnly: true }),
-    maxResults: z
-      .int32()
+      .openapi({ description: 'The description of the filter.' }),
+    editPermissions: z
+      .array(SharePermissionSchema)
       .exactOptional()
       .openapi({
-        description: 'The maximum number of items that could be returned.',
+        description:
+          'The groups and projects that can edit the filter. This can be specified when updating a filter, but not when creating a filter.',
+      }),
+    expand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Expand options that include additional filter details in the response.',
+        readOnly: true,
+        xml: { attribute: true },
+      }),
+    favourite: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the filter is selected as a favorite by any users, not including the filter owner.',
         readOnly: true,
       }),
-    nextPage: z
+    favouritedCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The count of how many users have selected this filter as a favorite, including the filter owner.',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the filter.', readOnly: true }),
+    jql: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The JQL query for the filter. For example, *project = SSP AND issuetype = Bug*.',
+        readOnly: true,
+      }),
+    name: z.string().openapi({ description: 'The name of the filter.' }),
+    owner: UserSchema.exactOptional().openapi({
+      description:
+        'The user who owns the filter. Defaults to the creator of the filter, however, Jira administrators can change the owner of a shared filter in the admin settings.',
+      readOnly: true,
+    }),
+    searchUrl: z
       .url()
       .exactOptional()
       .openapi({
-        description: 'If there is another page of results, the URL of the next page.',
+        description:
+          "A URL to view the filter results in Jira, using the [Search for issues using JQL](#api-rest-api-3-filter-search-get) operation with the filter's JQL string to return the filter results. For example, *https://your-domain.atlassian.net/rest/api/3/search?jql=project+%3D+SSP+AND+issuetype+%3D+Bug*.",
         readOnly: true,
       }),
-    self: z.url().exactOptional().openapi({ description: 'The URL of the page.', readOnly: true }),
-    startAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL of the filter.', readOnly: true }),
+    sharePermissions: z
+      .array(SharePermissionSchema)
       .exactOptional()
       .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The index of the first item returned.',
-        readOnly: true,
+        description:
+          'The groups and projects that the filter is shared with. This can be specified when updating a filter, but not when creating a filter.',
       }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
+    subscriptions: z
+      .array(FilterSubscriptionSchema)
+      .exactOptional()
+      .openapi({ description: 'The users that are subscribed to the filter.', readOnly: true }),
+    viewUrl: z
+      .url()
       .exactOptional()
       .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of items returned.',
+        description:
+          'A URL to view the filter results in Jira, using the ID of the filter. For example, *https://your-domain.atlassian.net/issues/?filter=10100*.',
         readOnly: true,
       }),
-    values: z
-      .array(IssueTypeScreenSchemeSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of items.', readOnly: true }),
   })
-  .openapi({ description: 'A page of items.', required: [] })
-  .openapi('PageBeanIssueTypeScreenScheme')
+  .openapi({ description: 'Details of a filter.', required: ['name'] })
+  .openapi('FilterDetails')
 
-const ScreenTypesSchema = z
+type PageBeanFilterDetailsType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof FilterDetailsSchema>[]
+}
+
+const GlobalScopeBeanSchema = z
   .strictObject({
-    create: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
+    attributes: z
+      .array(z.enum(['notSelectable', 'defaultValue']))
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the create screen.' }),
-    default: z
+      .openapi({
+        description:
+          "Defines the behavior of the option in the global context.If notSelectable is set, the option cannot be set as the field's value. This is useful for archiving an option that has previously been selected but shouldn't be used anymore.If defaultValue is set, the option is selected by default.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GlobalScopeBean')
+
+const ProjectScopeBeanSchema = z
+  .strictObject({
+    attributes: z
+      .array(z.enum(['notSelectable', 'defaultValue']))
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "Defines the behavior of the option in the project.If notSelectable is set, the option cannot be set as the field's value. This is useful for archiving an option that has previously been selected but shouldn't be used anymore.If defaultValue is set, the option is selected by default.",
+      }),
+    id: z
       .preprocess(
         (val) =>
           typeof val === 'number' && Number.isSafeInteger(val)
@@ -737,9 +3214,87 @@ const ScreenTypesSchema = z
       .openapi({
         type: 'integer',
         format: 'int64',
-        description: 'The ID of the default screen. Required when creating a screen scheme.',
+        description: "The ID of the project that the option's behavior applies to.",
       }),
-    edit: z
+  })
+  .openapi({ required: [] })
+  .openapi('ProjectScopeBean')
+
+const IssueFieldOptionScopeBeanSchema = z
+  .strictObject({
+    global: GlobalScopeBeanSchema.exactOptional().openapi({
+      description:
+        'Defines the behavior of the option within the global context. If this property is set, even if set to an empty object, then the option is available in all projects.',
+    }),
+    projects: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED' }),
+    projects2: z
+      .array(ProjectScopeBeanSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the projects in which the option is available and the behavior of the option within each project. Specify one object per project. The behavior of the option in a project context overrides the behavior in the global context.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('IssueFieldOptionScopeBean')
+
+const IssueFieldOptionConfigurationSchema = z
+  .strictObject({
+    attributes: z
+      .array(z.enum(['notSelectable', 'defaultValue']))
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED' }),
+    scope: IssueFieldOptionScopeBeanSchema.exactOptional().openapi({
+      description:
+        'Defines the projects that the option is available in. If the scope is not defined, then the option is available in all projects.',
+    }),
+  })
+  .openapi({ description: 'Details of the projects the option is available in.', required: [] })
+  .openapi('IssueFieldOptionConfiguration')
+
+const IssueFieldOptionSchema = z
+  .strictObject({
+    config: IssueFieldOptionConfigurationSchema.exactOptional(),
+    id: z
       .preprocess(
         (val) =>
           typeof val === 'number' && Number.isSafeInteger(val)
@@ -749,35 +3304,174 @@ const ScreenTypesSchema = z
               : val,
         z.int64(),
       )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          "The unique identifier for the option. This is only unique within the select field's set of options.",
+      }),
+    properties: z
+      .record(z.string(), z.any())
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the edit screen.' }),
-    view: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the view screen.' }),
+      .openapi({
+        description:
+          'The properties of the object, as arbitrary key-value pairs. These properties can be searched using JQL, if the extractions (see [Issue Field Option Property Index](https://developer.atlassian.com/cloud/jira/platform/modules/issue-field-option-property-index/)) are defined in the descriptor for the issue field module.',
+      }),
+    value: z.string().openapi({ description: "The option's name, which is displayed in Jira." }),
   })
   .openapi({
-    description: 'The IDs of the screens for the screen types of the screen scheme.',
-    required: ['defaultScreen'],
-    writeOnly: true,
+    description: 'Details of the options for a select list issue field.',
+    required: ['id', 'value'],
   })
-  .openapi('ScreenTypes')
+  .openapi('IssueFieldOption')
 
-type ScreenSchemeType = {
-  description?: string
-  id?: bigint
-  issueTypeScreenSchemes?: z.infer<typeof PageBeanIssueTypeScreenSchemeSchema>
-  name?: string
-  screens?: z.infer<typeof ScreenTypesSchema>
+type PageBeanIssueFieldOptionType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof IssueFieldOptionSchema>[]
 }
+
+const NotificationSchemeSchema: z.ZodType<NotificationSchemeType> = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the notification scheme.' }),
+    expand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Expand options that include additional notification scheme details in the response.',
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the notification scheme.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the notification scheme.' }),
+    notificationSchemeEvents: z
+      .array(NotificationSchemeEventSchema)
+      .exactOptional()
+      .openapi({ description: 'The notification events and associated recipients.' }),
+    projects: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The list of project IDs associated with the notification scheme.' }),
+    scope: ScopeSchema.exactOptional().openapi({
+      description: 'The scope of the notification scheme.',
+    }),
+    self: z.string().exactOptional(),
+  })
+  .openapi({ description: 'Details about a notification scheme.', required: [] })
+  .openapi('NotificationScheme')
+
+type PageBeanNotificationSchemeType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof NotificationSchemeSchema>[]
+}
+
+type PageBeanProjectType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof ProjectSchema>[]
+}
+
+type PageBeanUserType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof UserSchema>[]
+}
+
+const PublishedWorkflowIdSchema = z
+  .strictObject({
+    entityId: z.string().exactOptional().openapi({ description: 'The entity ID of the workflow.' }),
+    name: z.string().openapi({ description: 'The name of the workflow.' }),
+  })
+  .openapi({ description: 'Properties that identify a published workflow.', required: ['name'] })
+  .openapi('PublishedWorkflowId')
+
+const WorkflowOperationsSchema = z
+  .strictObject({
+    canDelete: z.boolean().openapi({ description: 'Whether the workflow can be deleted.' }),
+    canEdit: z.boolean().openapi({ description: 'Whether the workflow can be updated.' }),
+  })
+  .openapi({ description: 'Operations allowed on a workflow', required: ['canDelete', 'canEdit'] })
+  .openapi('WorkflowOperations')
+
+const WorkflowSchemeIdNameSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'The ID of the workflow scheme.' }),
+    name: z.string().openapi({ description: 'The name of the workflow scheme.' }),
+  })
+  .openapi({ description: 'The ID and the name of the workflow scheme.', required: ['id', 'name'] })
+  .openapi('WorkflowSchemeIdName')
+
+const WorkflowStatusSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'The ID of the issue status.' }),
+    name: z.string().openapi({ description: 'The name of the status in the workflow.' }),
+    properties: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description:
+              'Additional properties that modify the behavior of issues in this status. Supports the properties <code>jira.issue.editable</code> and <code>issueEditable</code> (deprecated) that indicate whether issues are editable.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional properties that modify the behavior of issues in this status. Supports the properties `jira.issue.editable` and `issueEditable` (deprecated) that indicate whether issues are editable.',
+      }),
+  })
+  .openapi({ description: 'Details of a workflow status.', required: ['id', 'name'] })
+  .openapi('WorkflowStatus')
 
 const WorkflowConditionSchema: z.ZodType<WorkflowConditionType> = z
   .lazy(() =>
@@ -796,6 +3490,436 @@ const WorkflowConditionSchema: z.ZodType<WorkflowConditionType> = z
   )
   .openapi('WorkflowCondition')
 
+const WorkflowTransitionRuleSchema = z
+  .strictObject({
+    configuration: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'EXPERIMENTAL. The configuration of the transition rule.' }),
+    type: z.string().openapi({ description: 'The type of the transition rule.' }),
+  })
+  .openapi({ description: 'A workflow transition rule.', required: ['type'] })
+  .openapi('WorkflowTransitionRule')
+
+const WorkflowRulesSchema = z
+  .strictObject({
+    conditionsTree: WorkflowConditionSchema.exactOptional(),
+    postFunctions: z
+      .array(WorkflowTransitionRuleSchema)
+      .exactOptional()
+      .openapi({ description: 'The workflow post functions.' }),
+    validators: z
+      .array(WorkflowTransitionRuleSchema)
+      .exactOptional()
+      .openapi({ description: 'The workflow validators.' }),
+  })
+  .openapi({ description: 'A collection of transition rules.', required: [] })
+  .openapi('WorkflowRules')
+
+const TransitionScreenDetailsSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'The ID of the screen.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the screen.' }),
+  })
+  .openapi({ description: 'The details of a transition screen.', required: ['id'] })
+  .openapi('TransitionScreenDetails')
+
+const TransitionSchema = z
+  .strictObject({
+    description: z.string().openapi({ description: 'The description of the transition.' }),
+    from: z
+      .array(z.string().openapi({ description: 'The statuses the transition can start from.' }))
+      .openapi({ description: 'The statuses the transition can start from.' }),
+    id: z.string().openapi({ description: 'The ID of the transition.' }),
+    name: z.string().openapi({ description: 'The name of the transition.' }),
+    properties: z
+      .record(z.string(), z.any().openapi({ description: 'The properties of the transition.' }))
+      .exactOptional()
+      .openapi({ description: 'The properties of the transition.' }),
+    rules: WorkflowRulesSchema.exactOptional(),
+    screen: TransitionScreenDetailsSchema.exactOptional(),
+    to: z.string().openapi({ description: 'The status the transition goes to.' }),
+    type: z
+      .enum(['global', 'initial', 'directed'])
+      .openapi({ description: 'The type of the transition.' }),
+  })
+  .openapi({
+    description: 'Details of a workflow transition.',
+    required: ['description', 'from', 'id', 'name', 'to', 'type'],
+  })
+  .openapi('Transition')
+
+const WorkflowSchema = z
+  .strictObject({
+    created: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The creation date of the workflow.' }),
+    description: z.string().openapi({ description: 'The description of the workflow.' }),
+    hasDraftWorkflow: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the workflow has a draft version.' }),
+    id: PublishedWorkflowIdSchema,
+    isDefault: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this is the default workflow.' }),
+    operations: WorkflowOperationsSchema.exactOptional(),
+    projects: z
+      .array(ProjectDetailsSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The projects the workflow is assigned to, through workflow schemes.',
+      }),
+    schemes: z
+      .array(WorkflowSchemeIdNameSchema)
+      .exactOptional()
+      .openapi({ description: 'The workflow schemes the workflow is assigned to.' }),
+    statuses: z
+      .array(WorkflowStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'The statuses of the workflow.' }),
+    transitions: z
+      .array(TransitionSchema)
+      .exactOptional()
+      .openapi({ description: 'The transitions of the workflow.' }),
+    updated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The last edited date of the workflow.' }),
+  })
+  .openapi({ description: 'Details about a workflow.', required: ['description', 'id'] })
+  .openapi('Workflow')
+
+type PageBeanWorkflowType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof WorkflowSchema>[]
+}
+
+type PageBeanWorkflowSchemeType = {
+  isLast?: boolean
+  maxResults?: number
+  nextPage?: string
+  self?: string
+  startAt?: bigint
+  total?: bigint
+  values?: z.infer<typeof WorkflowSchemeSchema>[]
+}
+
+type PageOfDashboardsType = {
+  dashboards?: z.infer<typeof DashboardSchema>[]
+  maxResults?: number
+  next?: string
+  prev?: string
+  startAt?: number
+  total?: number
+}
+
+const JqlQuerySchema: z.ZodType<JqlQueryType> = z
+  .strictObject({
+    orderBy: JqlQueryOrderByClauseSchema.exactOptional(),
+    where: JqlQueryClauseSchema.exactOptional(),
+  })
+  .openapi({ description: 'A parsed JQL query.', required: [] })
+  .openapi('JqlQuery')
+
+type ParsedJqlQueryType = {
+  errors?: string[]
+  query: string
+  structure?: z.infer<typeof JqlQuerySchema>
+}
+
+const ParsedJqlQuerySchema: z.ZodType<ParsedJqlQueryType> = z
+  .strictObject({
+    errors: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'The list of syntax or validation errors.' }),
+    query: z.string().openapi({ description: 'The JQL query that was parsed and validated.' }),
+    structure: JqlQuerySchema.exactOptional().openapi({
+      description: 'The syntax tree of the query. Empty if the query was invalid.',
+    }),
+  })
+  .openapi({ description: 'Details of a parsed JQL query.', required: ['query'] })
+  .openapi('ParsedJqlQuery')
+
+type ParsedJqlQueriesType = { queries: z.infer<typeof ParsedJqlQuerySchema>[] }
+
+const ChangeDetailsSchema = z
+  .strictObject({
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the field changed.', readOnly: true }),
+    fieldId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the field changed.', readOnly: true }),
+    fieldtype: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the field changed.', readOnly: true }),
+    from: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The details of the original value.', readOnly: true }),
+    fromString: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The details of the original value as a string.', readOnly: true }),
+    to: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The details of the new value.', readOnly: true }),
+  })
+  .openapi({ description: 'A change item.', required: [] })
+  .openapi('ChangeDetails')
+
+const ChangelogSchema = z
+  .strictObject({
+    author: UserDetailsSchema.exactOptional().openapi({
+      description: 'The user who made the change.',
+      readOnly: true,
+    }),
+    created: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date on which the change took place.', readOnly: true }),
+    historyMetadata: HistoryMetadataSchema.exactOptional().openapi({
+      description: 'The history metadata associated with the changed.',
+      readOnly: true,
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the changelog.', readOnly: true }),
+    items: z
+      .array(ChangeDetailsSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of items changed.', readOnly: true }),
+  })
+  .openapi({ description: 'A changelog.', required: [] })
+  .openapi('Changelog')
+
+const PageOfChangelogsSchema = z
+  .strictObject({
+    histories: z
+      .array(ChangelogSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of changelogs.', readOnly: true }),
+    maxResults: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The maximum number of results that could be on the page.',
+        readOnly: true,
+      }),
+    startAt: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The index of the first item returned on the page.',
+        readOnly: true,
+      }),
+    total: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of results on the page.', readOnly: true }),
+  })
+  .openapi({ description: 'A page of changelogs.', required: [] })
+  .openapi('PageOfChangelogs')
+
+const IssueUpdateMetadataSchema = z
+  .object({
+    fields: z.record(z.string(), FieldMetadataSchema).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ description: 'A list of editable field details.', required: [] })
+  .openapi('IssueUpdateMetadata')
+
+const IncludedFieldsSchema = z
+  .strictObject({
+    actuallyIncluded: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    excluded: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    included: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IncludedFields')
+
+const LinkGroupSchema: z.ZodType<LinkGroupType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        groups: z.array(LinkGroupSchema).exactOptional(),
+        header: SimpleLinkSchema.exactOptional(),
+        id: z.string().exactOptional(),
+        links: z.array(SimpleLinkSchema).exactOptional(),
+        styleClass: z.string().exactOptional(),
+        weight: z.int32().exactOptional(),
+      })
+      .openapi({
+        description: 'Details a link group, which defines issue operations.',
+        required: [],
+      }),
+  )
+  .openapi('LinkGroup')
+
+const OperationsSchema = z
+  .looseObject({
+    linkGroups: z
+      .array(LinkGroupSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Details of the link groups defining issue operations.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Details of the operations that can be performed on the issue.',
+    required: [],
+  })
+  .openapi('Operations')
+
+const IssueBeanSchema = z
+  .strictObject({
+    changelog: PageOfChangelogsSchema.exactOptional().openapi({
+      description: 'Details of changelogs associated with the issue.',
+      readOnly: true,
+    }),
+    editmeta: IssueUpdateMetadataSchema.exactOptional().openapi({
+      description: 'The metadata for the fields on the issue that can be amended.',
+      readOnly: true,
+    }),
+    expand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Expand options that include additional issue details in the response.',
+        readOnly: true,
+        xml: { attribute: true },
+      }),
+    fields: z.record(z.string(), z.any()).exactOptional(),
+    fieldsToInclude: IncludedFieldsSchema.exactOptional(),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the issue.', readOnly: true }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key of the issue.', readOnly: true }),
+    names: z
+      .record(z.string(), z.string().openapi({ readOnly: true }))
+      .exactOptional()
+      .openapi({
+        description: 'The ID and name of each field present on the issue.',
+        readOnly: true,
+      }),
+    operations: OperationsSchema.exactOptional().openapi({
+      description: 'The operations that can be performed on the issue.',
+      readOnly: true,
+    }),
+    properties: z
+      .record(z.string(), z.any().openapi({ readOnly: true }))
+      .exactOptional()
+      .openapi({
+        description: 'Details of the issue properties identified in the request.',
+        readOnly: true,
+      }),
+    renderedFields: z
+      .record(z.string(), z.any().openapi({ readOnly: true }))
+      .exactOptional()
+      .openapi({
+        description: 'The rendered value of each field present on the issue.',
+        readOnly: true,
+      }),
+    schema: z
+      .record(z.string(), JsonTypeBeanSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The schema describing each field present on the issue.',
+        readOnly: true,
+      }),
+    self: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL of the issue details.', readOnly: true }),
+    transitions: z
+      .array(IssueTransitionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The transitions that can be performed on the issue.',
+        readOnly: true,
+      }),
+    versionedRepresentations: z
+      .record(
+        z.string(),
+        z.record(z.string(), z.any().openapi({ readOnly: true })).openapi({ readOnly: true }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The versions of each field on the issue.', readOnly: true }),
+  })
+  .openapi({ description: 'Details about an issue.', xml: { name: 'issue' }, required: [] })
+  .openapi('IssueBean')
+
+type SearchResultsType = {
+  expand?: string
+  issues?: z.infer<typeof IssueBeanSchema>[]
+  maxResults?: number
+  names?: { [key: string]: string }
+  schema?: { [key: string]: z.infer<typeof JsonTypeBeanSchema> }
+  startAt?: number
+  total?: number
+  warningMessages?: string[]
+}
+
+type VotesType = {
+  hasVoted?: boolean
+  self?: string
+  voters?: z.infer<typeof UserSchema>[]
+  votes?: bigint
+}
+
 type WorkflowCompoundConditionType = {
   conditions: z.infer<typeof WorkflowConditionSchema>[]
   nodeType: string
@@ -811,7 +3935,7 @@ type WorkflowSimpleConditionType = {
 const WorkflowSimpleConditionSchema: z.ZodType<WorkflowSimpleConditionType> = z
   .object({
     configuration: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'EXPERIMENTAL. The configuration of the transition rule.' }),
     nodeType: z.string(),
@@ -1097,110 +4221,6 @@ const ApplicationPropertySchema = z
   .openapi({ description: 'Details of an application property.', required: [] })
   .openapi('ApplicationProperty')
 
-const GroupNameSchema = z
-  .strictObject({
-    groupId: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the group, which uniquely identifies the group across all Atlassian products. For example, *952d12c3-5b5b-4d04-bb32-44d383afc4b2*.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of group.' }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL for these group details.', readOnly: true }),
-  })
-  .openapi({ description: 'Details about a group.', required: [] })
-  .openapi('GroupName')
-
-const ApplicationRoleSchema = z
-  .strictObject({
-    defaultGroups: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          "The groups that are granted default access for this application role. As a group's name can change, use of `defaultGroupsDetails` is recommended to identify a groups.",
-      }),
-    defaultGroupsDetails: z
-      .array(GroupNameSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The groups that are granted default access for this application role.',
-      }),
-    defined: z.boolean().exactOptional().openapi({ description: 'Deprecated.' }),
-    groupDetails: z
-      .array(GroupNameSchema)
-      .exactOptional()
-      .openapi({ description: 'The groups associated with the application role.' }),
-    groups: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          "The groups associated with the application role. As a group's name can change, use of `groupDetails` is recommended to identify a groups.",
-      }),
-    hasUnlimitedSeats: z.boolean().exactOptional(),
-    key: z.string().exactOptional().openapi({ description: 'The key of the application role.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name of the application role.' }),
-    numberOfSeats: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The maximum count of users on your license.' }),
-    platform: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if the application role belongs to Jira platform (`jira-core`).',
-      }),
-    remainingSeats: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The count of users remaining on your license.' }),
-    selectedByDefault: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines whether this application role should be selected by default on user creation.',
-      }),
-    userCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of users counting against your license.' }),
-    userCountDescription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [type of users](https://confluence.atlassian.com/x/lRW3Ng) being counted against your license.',
-      }),
-  })
-  .openapi({ description: 'Details of an application role.', required: [] })
-  .openapi('ApplicationRole')
-
 const FieldConfigurationToIssueTypeMappingSchema = z
   .strictObject({
     fieldConfigurationId: z
@@ -1266,84 +4286,6 @@ const AssociatedItemBeanSchema = z
   })
   .openapi({ description: 'Details of an item associated with the changed record.', required: [] })
   .openapi('AssociatedItemBean')
-
-const UserDetailsSchema = z
-  .strictObject({
-    accountId: z
-      .string()
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description:
-          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.',
-      }),
-    accountType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The type of account represented by this user. This will be one of 'atlassian' (normal users), 'app' (application user) or 'customer' (Jira Service Desk customer user)",
-        readOnly: true,
-      }),
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the user is active.', readOnly: true }),
-    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
-      description: 'The avatars of the user.',
-      readOnly: true,
-    }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The display name of the user. Depending on the user’s privacy settings, this may return an alternative value.',
-        readOnly: true,
-      }),
-    emailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The email address of the user. Depending on the user’s privacy settings, this may be returned as null.',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
-        readOnly: true,
-      }),
-    self: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the user.', readOnly: true }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time zone specified in the user's profile. Depending on the user’s privacy settings, this may be returned as null.",
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      "User details permitted by the user's Atlassian Account privacy settings. However, be aware of these exceptions:\n\n *  User record deleted from Atlassian: This occurs as the result of a right to be forgotten request. In this case, `displayName` provides an indication and other parameters have default values or are blank (for example, email is blank).\n *  User record corrupted: This occurs as a results of events such as a server import and can only happen to deleted users. In this case, `accountId` returns *unknown* and all other parameters have fallback values.\n *  User record unavailable: This usually occurs due to an internal service outage. In this case, all parameters have fallback values.",
-    required: [],
-  })
-  .openapi('UserDetails')
 
 const AttachmentSchema = z
   .looseObject({
@@ -1553,146 +4495,6 @@ const AttachmentArchiveMetadataReadableSchema = z
     required: [],
   })
   .openapi('AttachmentArchiveMetadataReadable')
-
-const ListWrapperCallbackApplicationRoleSchema = z
-  .strictObject({})
-  .openapi('ListWrapperCallbackApplicationRole')
-
-const SimpleListWrapperApplicationRoleSchema = z
-  .strictObject({
-    callback: ListWrapperCallbackApplicationRoleSchema.exactOptional(),
-    items: z.array(ApplicationRoleSchema).exactOptional(),
-    'max-results': z
-      .int32()
-      .exactOptional()
-      .openapi({ xml: { attribute: true, name: 'max-results' } }),
-    pagingCallback: ListWrapperCallbackApplicationRoleSchema.exactOptional(),
-    size: z
-      .int32()
-      .exactOptional()
-      .openapi({ xml: { attribute: true } }),
-  })
-  .openapi({ xml: { name: 'list' }, required: [] })
-  .openapi('SimpleListWrapperApplicationRole')
-
-const ListWrapperCallbackGroupNameSchema = z
-  .strictObject({})
-  .openapi('ListWrapperCallbackGroupName')
-
-const SimpleListWrapperGroupNameSchema = z
-  .strictObject({
-    callback: ListWrapperCallbackGroupNameSchema.exactOptional(),
-    items: z.array(GroupNameSchema).exactOptional(),
-    'max-results': z
-      .int32()
-      .exactOptional()
-      .openapi({ xml: { attribute: true, name: 'max-results' } }),
-    pagingCallback: ListWrapperCallbackGroupNameSchema.exactOptional(),
-    size: z
-      .int32()
-      .exactOptional()
-      .openapi({ xml: { attribute: true } }),
-  })
-  .openapi({ xml: { name: 'list' }, required: [] })
-  .openapi('SimpleListWrapperGroupName')
-
-const UserSchema = z
-  .strictObject({
-    accountId: z
-      .string()
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description:
-          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*. Required in requests.',
-      }),
-    accountType: z
-      .enum(['atlassian', 'app', 'customer', 'unknown'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The user account type. Can take the following values:\n\n *  `atlassian` regular Atlassian user account\n *  `app` system account used for Connect applications and OAuth to represent external systems\n *  `customer` Jira Service Desk account representing an external service desk',
-        readOnly: true,
-      }),
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the user is active.', readOnly: true }),
-    applicationRoles: SimpleListWrapperApplicationRoleSchema.exactOptional().openapi({
-      description: 'The application roles the user is assigned to.',
-      readOnly: true,
-    }),
-    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
-      description: 'The avatars of the user.',
-      readOnly: true,
-    }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The display name of the user. Depending on the user’s privacy setting, this may return an alternative value.',
-        readOnly: true,
-      }),
-    emailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The email address of the user. Depending on the user’s privacy setting, this may be returned as null.',
-        readOnly: true,
-      }),
-    expand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Expand options that include additional user details in the response.',
-        readOnly: true,
-        xml: { attribute: true },
-      }),
-    groups: SimpleListWrapperGroupNameSchema.exactOptional().openapi({
-      description: 'The groups that the user belongs to.',
-      readOnly: true,
-    }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
-      }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The locale of the user. Depending on the user’s privacy setting, this may be returned as null.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
-      }),
-    self: z.url().exactOptional().openapi({ description: 'The URL of the user.', readOnly: true }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time zone specified in the user's profile. Depending on the user’s privacy setting, this may be returned as null.",
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      "A user with details as permitted by the user's Atlassian Account privacy settings. However, be aware of these exceptions:\n\n *  User record deleted from Atlassian: This occurs as the result of a right to be forgotten request. In this case, `displayName` provides an indication and other parameters have default values or are blank (for example, email is blank).\n *  User record corrupted: This occurs as a results of events such as a server import and can only happen to deleted users. In this case, `accountId` returns *unknown* and all other parameters have fallback values.\n *  User record unavailable: This usually occurs due to an internal service outage. In this case, all parameters have fallback values.",
-    xml: { name: 'user' },
-    required: [],
-  })
-  .openapi('User')
 
 const AttachmentMetadataSchema = z
   .strictObject({
@@ -2405,36 +5207,6 @@ const BulkPermissionsRequestBeanSchema = z
   })
   .openapi('BulkPermissionsRequestBean')
 
-const ChangeDetailsSchema = z
-  .strictObject({
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the field changed.', readOnly: true }),
-    fieldId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the field changed.', readOnly: true }),
-    fieldtype: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the field changed.', readOnly: true }),
-    from: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The details of the original value.', readOnly: true }),
-    fromString: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The details of the original value as a string.', readOnly: true }),
-    to: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The details of the new value.', readOnly: true }),
-  })
-  .openapi({ description: 'A change item.', required: [] })
-  .openapi('ChangeDetails')
-
 const ChangeFilterOwnerSchema = z
   .strictObject({
     accountId: z.string().openapi({ description: 'The account ID of the new owner.' }),
@@ -2445,24 +5217,6 @@ const ChangeFilterOwnerSchema = z
     writeOnly: true,
   })
   .openapi('ChangeFilterOwner')
-
-const EntityPropertySchema = z
-  .strictObject({
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key of the property. Required on create and update.' }),
-    value: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'The value of the property. Required on create and update.' }),
-  })
-  .openapi({
-    description:
-      'An entity property, for more information see [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/).',
-    required: [],
-  })
-  .openapi('EntityProperty')
 
 const ChangedWorklogSchema = z
   .strictObject({
@@ -2563,121 +5317,6 @@ const ChangedWorklogsSchema = z
   })
   .openapi({ description: 'List of changed worklogs.', required: [] })
   .openapi('ChangedWorklogs')
-
-const HistoryMetadataParticipantSchema = z
-  .looseObject({
-    avatarUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL to an avatar for the user or system associated with a history record.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The display name of the user or system associated with a history record.',
-      }),
-    displayNameKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The key of the display name of the user or system associated with a history record.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the user or system associated with a history record.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the user or system associated with a history record.' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the user or system associated with a history record.' }),
-  })
-  .openapi({
-    description: 'Details of user or system associated with a issue history metadata item.',
-    required: [],
-  })
-  .openapi('HistoryMetadataParticipant')
-
-const HistoryMetadataSchema = z
-  .looseObject({
-    activityDescription: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The activity described in the history record.' }),
-    activityDescriptionKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key of the activity described in the history record.' }),
-    actor: HistoryMetadataParticipantSchema.exactOptional().openapi({
-      description: 'Details of the user whose action created the history record.',
-    }),
-    cause: HistoryMetadataParticipantSchema.exactOptional().openapi({
-      description: 'Details of the cause that triggered the creation the history record.',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the history record.' }),
-    descriptionKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description key of the history record.' }),
-    emailDescription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the email address associated the history record.',
-      }),
-    emailDescriptionKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description key of the email address associated the history record.',
-      }),
-    extraData: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Additional arbitrary information about the history record.' }),
-    generator: HistoryMetadataParticipantSchema.exactOptional().openapi({
-      description: 'Details of the system that generated the history record.',
-    }),
-    type: z.string().exactOptional().openapi({ description: 'The type of the history record.' }),
-  })
-  .openapi({ description: 'Details of issue history metadata.', required: [] })
-  .openapi('HistoryMetadata')
-
-const ChangelogSchema = z
-  .strictObject({
-    author: UserDetailsSchema.exactOptional().openapi({
-      description: 'The user who made the change.',
-      readOnly: true,
-    }),
-    created: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date on which the change took place.', readOnly: true }),
-    historyMetadata: HistoryMetadataSchema.exactOptional().openapi({
-      description: 'The history metadata associated with the changed.',
-      readOnly: true,
-    }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the changelog.', readOnly: true }),
-    items: z
-      .array(ChangeDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of items changed.', readOnly: true }),
-  })
-  .openapi({ description: 'A changelog.', required: [] })
-  .openapi('Changelog')
 
 const ColumnItemSchema = z
   .strictObject({
@@ -2819,169 +5458,84 @@ const ComponentIssuesCountSchema = z
   })
   .openapi('ComponentIssuesCount')
 
-const ComponentWithIssueCountSchema = z
+const TimeTrackingConfigurationSchema = z
   .strictObject({
-    assignee: UserSchema.exactOptional().openapi({
-      description:
-        'The details of the user associated with `assigneeType`, if any. See `realAssignee` for details of the user assigned to issues created with this component.',
-    }),
-    assigneeType: z
-      .enum(['PROJECT_DEFAULT', 'COMPONENT_LEAD', 'PROJECT_LEAD', 'UNASSIGNED'])
+    defaultUnit: z
+      .enum(['minute', 'hour', 'day', 'week'])
+      .openapi({ description: 'The default unit of time applied to logged time.' }),
+    timeFormat: z
+      .enum(['pretty', 'days', 'hours'])
+      .openapi({ description: "The format that will appear on an issue's *Time Spent* field." }),
+    workingDaysPerWeek: z
+      .float64()
+      .openapi({ description: 'The number of days in a working week.' }),
+    workingHoursPerDay: z
+      .float64()
+      .openapi({ description: 'The number of hours in a working day.' }),
+  })
+  .openapi({
+    description: 'Details of the time tracking configuration.',
+    required: ['defaultUnit', 'timeFormat', 'workingDaysPerWeek', 'workingHoursPerDay'],
+  })
+  .openapi('TimeTrackingConfiguration')
+
+const ConfigurationSchema = z
+  .strictObject({
+    attachmentsEnabled: z
+      .boolean()
       .exactOptional()
       .openapi({
-        description:
-          'The nominal user type used to determine the assignee for issues created with this component. See `realAssigneeType` for details on how the type of the user, and hence the user, assigned to issues is determined. Takes the following values:\n\n *  `PROJECT_LEAD` the assignee to any issues created with this component is nominally the lead for the project the component is in.\n *  `COMPONENT_LEAD` the assignee to any issues created with this component is nominally the lead for the component.\n *  `UNASSIGNED` an assignee is not set for issues created with this component.\n *  `PROJECT_DEFAULT` the assignee to any issues created with this component is nominally the default assignee for the project that the component is in.',
+        description: 'Whether the ability to add attachments to issues is enabled.',
         readOnly: true,
       }),
-    description: z
-      .string()
+    issueLinkingEnabled: z
+      .boolean()
       .exactOptional()
-      .openapi({ description: 'The description for the component.', readOnly: true }),
-    id: z
-      .string()
+      .openapi({ description: 'Whether the ability to link issues is enabled.', readOnly: true }),
+    subTasksEnabled: z
+      .boolean()
       .exactOptional()
-      .openapi({ description: 'The unique identifier for the component.', readOnly: true }),
-    isAssigneeTypeValid: z
+      .openapi({
+        description: 'Whether the ability to create subtasks for issues is enabled.',
+        readOnly: true,
+      }),
+    timeTrackingConfiguration: TimeTrackingConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of time tracking.',
+      readOnly: true,
+    }),
+    timeTrackingEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the ability to track time is enabled. This property is deprecated.',
+        readOnly: true,
+      }),
+    unassignedIssuesAllowed: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Whether a user is associated with `assigneeType`. For example, if the `assigneeType` is set to `COMPONENT_LEAD` but the component lead is not set, then `false` is returned.',
+          'Whether the ability to create unassigned issues is enabled. See [Configuring Jira application options](https://confluence.atlassian.com/x/uYXKM) for details.',
         readOnly: true,
       }),
-    issueCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Count of issues for the component.',
-        readOnly: true,
-      }),
-    lead: UserSchema.exactOptional().openapi({
-      description: "The user details for the component's lead user.",
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name for the component.', readOnly: true }),
-    project: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The key of the project to which the component is assigned.',
-        readOnly: true,
-      }),
-    projectId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Not used.', readOnly: true }),
-    realAssignee: UserSchema.exactOptional().openapi({
-      description:
-        'The user assigned to issues created with this component, when `assigneeType` does not identify a valid assignee.',
-    }),
-    realAssigneeType: z
-      .enum(['PROJECT_DEFAULT', 'COMPONENT_LEAD', 'PROJECT_LEAD', 'UNASSIGNED'])
+    votingEnabled: z
+      .boolean()
       .exactOptional()
       .openapi({
         description:
-          'The type of the assignee that is assigned to issues created with this component, when an assignee cannot be set from the `assigneeType`. For example, `assigneeType` is set to `COMPONENT_LEAD` but no component lead is set. This property is set to one of the following values:\n\n *  `PROJECT_LEAD` when `assigneeType` is `PROJECT_LEAD` and the project lead has permission to be assigned issues in the project that the component is in.\n *  `COMPONENT_LEAD` when `assignee`Type is `COMPONENT_LEAD` and the component lead has permission to be assigned issues in the project that the component is in.\n *  `UNASSIGNED` when `assigneeType` is `UNASSIGNED` and Jira is configured to allow unassigned issues.\n *  `PROJECT_DEFAULT` when none of the preceding cases are true.',
+          'Whether the ability for users to vote on issues is enabled. See [Configuring Jira application options](https://confluence.atlassian.com/x/uYXKM) for details.',
         readOnly: true,
       }),
-    self: z
-      .url()
+    watchingEnabled: z
+      .boolean()
       .exactOptional()
       .openapi({
-        description: 'The URL for this count of the issues contained in the component.',
+        description:
+          'Whether the ability for users to watch issues is enabled. See [Configuring Jira application options](https://confluence.atlassian.com/x/uYXKM) for details.',
         readOnly: true,
       }),
   })
-  .openapi({
-    description: 'Details about a component with a count of the issues it contains.',
-    required: [],
-  })
-  .openapi('ComponentWithIssueCount')
-
-const ConfigurationSchema: z.ZodType<ConfigurationType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        attachmentsEnabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether the ability to add attachments to issues is enabled.',
-            readOnly: true,
-          }),
-        issueLinkingEnabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether the ability to link issues is enabled.',
-            readOnly: true,
-          }),
-        subTasksEnabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether the ability to create subtasks for issues is enabled.',
-            readOnly: true,
-          }),
-        timeTrackingConfiguration: TimeTrackingConfigurationSchema.exactOptional().openapi({
-          description: 'The configuration of time tracking.',
-          readOnly: true,
-        }),
-        timeTrackingEnabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the ability to track time is enabled. This property is deprecated.',
-            readOnly: true,
-          }),
-        unassignedIssuesAllowed: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the ability to create unassigned issues is enabled. See [Configuring Jira application options](https://confluence.atlassian.com/x/uYXKM) for details.',
-            readOnly: true,
-          }),
-        votingEnabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the ability for users to vote on issues is enabled. See [Configuring Jira application options](https://confluence.atlassian.com/x/uYXKM) for details.',
-            readOnly: true,
-          }),
-        watchingEnabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the ability for users to watch issues is enabled. See [Configuring Jira application options](https://confluence.atlassian.com/x/uYXKM) for details.',
-            readOnly: true,
-          }),
-      })
-      .openapi({ description: 'Details about the configuration of Jira.', required: [] }),
-  )
+  .openapi({ description: 'Details about the configuration of Jira.', required: [] })
   .openapi('Configuration')
 
 const ConnectCustomFieldValueSchema = z
@@ -3049,7 +5603,7 @@ const ConnectCustomFieldValuesSchema = z
   .openapi('ConnectCustomFieldValues')
 
 const ConnectModuleSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A [Connect module](https://developer.atlassian.com/cloud/jira/platform/about-jira-modules/) in the same format as in the\n[app descriptor](https://developer.atlassian.com/cloud/jira/platform/app-descriptor/).',
@@ -3276,188 +5830,22 @@ const ContainerForWebhookIDsSchema = z
   .openapi({ description: 'Container for a list of webhook IDs.', required: ['webhookIds'] })
   .openapi('ContainerForWebhookIDs')
 
-const IssueTypeDetailsSchema = z
-  .strictObject({
-    avatarId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: "The ID of the issue type's avatar.",
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the issue type.', readOnly: true }),
-    entityId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Unique ID for next-gen projects.', readOnly: true }),
-    hierarchyLevel: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Hierarchy level of the issue type.', readOnly: true }),
-    iconUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The URL of the issue type's avatar.", readOnly: true }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the issue type.', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the issue type.', readOnly: true }),
-    scope: ScopeSchema.exactOptional().openapi({
-      description: 'Details of the next-gen projects the issue type is available in.',
-      readOnly: true,
-    }),
-    self: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of these issue type details.', readOnly: true }),
-    subtask: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether this issue type is used to create subtasks.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Details about an issue type.', required: [] })
-  .openapi('IssueTypeDetails')
-
-const WorkflowSchemeSchema = z
-  .strictObject({
-    defaultWorkflow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the default workflow for the workflow scheme. The default workflow has *All Unassigned Issue Types* assigned to it in Jira. If `defaultWorkflow` is not specified when creating a workflow scheme, it is set to *Jira Workflow (jira)*.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the workflow scheme.' }),
-    draft: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the workflow scheme is a draft or not.', readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the workflow scheme.',
-        readOnly: true,
-      }),
-    issueTypeMappings: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The issue type to workflow mappings, where each mapping is an issue type ID and workflow name pair. Note that an issue type can only be mapped to one workflow in a workflow scheme.',
-      }),
-    issueTypes: z
-      .record(z.string(), IssueTypeDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'The issue types available in Jira.', readOnly: true }),
-    lastModified: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date-time that the draft workflow scheme was last modified. A modification is a change to the issue type-project mappings only. This property does not apply to non-draft workflows.',
-        readOnly: true,
-      }),
-    lastModifiedUser: UserSchema.exactOptional().openapi({
+const ContainerOfWorkflowSchemeAssociationsSchema: z.ZodType<ContainerOfWorkflowSchemeAssociationsType> =
+  z
+    .strictObject({
+      values: z
+        .array(WorkflowSchemeAssociationsSchema)
+        .openapi({
+          description:
+            'A list of workflow schemes together with projects they are associated with.',
+        }),
+    })
+    .openapi({
       description:
-        'The user that last modified the draft workflow scheme. A modification is a change to the issue type-project mappings only. This property does not apply to non-draft workflows.',
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the workflow scheme. The name must be unique. The maximum length is 255 characters. Required when creating a workflow scheme.',
-      }),
-    originalDefaultWorkflow: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'For draft workflow schemes, this property is the name of the default workflow for the original workflow scheme. The default workflow has *All Unassigned Issue Types* assigned to it in Jira.',
-        readOnly: true,
-      }),
-    originalIssueTypeMappings: z
-      .record(z.string(), z.string().openapi({ readOnly: true }))
-      .exactOptional()
-      .openapi({
-        description:
-          'For draft workflow schemes, this property is the issue type to workflow mappings for the original workflow scheme, where each mapping is an issue type ID and workflow name pair. Note that an issue type can only be mapped to one workflow in a workflow scheme.',
-        readOnly: true,
-      }),
-    self: z.url().exactOptional().openapi({ readOnly: true }),
-    updateDraftIfNeeded: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to create or update a draft workflow scheme when updating an active workflow scheme. An active workflow scheme is a workflow scheme that is used by at least one project. The following examples show how this property works:\n\n *  Update an active workflow scheme with `updateDraftIfNeeded` set to `true`: If a draft workflow scheme exists, it is updated. Otherwise, a draft workflow scheme is created.\n *  Update an active workflow scheme with `updateDraftIfNeeded` set to `false`: An error is returned, as active workflow schemes cannot be updated.\n *  Update an inactive workflow scheme with `updateDraftIfNeeded` set to `true`: The workflow scheme is updated, as inactive workflow schemes do not require drafts to update.\n\nDefaults to `false`.',
-      }),
-  })
-  .openapi({ description: 'Details about a workflow scheme.', required: [] })
-  .openapi('WorkflowScheme')
-
-const WorkflowSchemeAssociationsSchema = z
-  .strictObject({
-    projectIds: z
-      .array(z.string())
-      .openapi({ description: 'The list of projects that use the workflow scheme.' }),
-    workflowScheme: WorkflowSchemeSchema.openapi({ description: 'The workflow scheme.' }),
-  })
-  .openapi({
-    description: 'A workflow scheme along with a list of projects that use it.',
-    required: ['projectIds', 'workflowScheme'],
-  })
-  .openapi('WorkflowSchemeAssociations')
-
-const ContainerOfWorkflowSchemeAssociationsSchema = z
-  .strictObject({
-    values: z
-      .array(WorkflowSchemeAssociationsSchema)
-      .openapi({
-        description: 'A list of workflow schemes together with projects they are associated with.',
-      }),
-  })
-  .openapi({
-    description:
-      'A container for a list of workflow schemes together with the projects they are associated with.',
-    required: ['values'],
-  })
-  .openapi('ContainerOfWorkflowSchemeAssociations')
+        'A container for a list of workflow schemes together with the projects they are associated with.',
+      required: ['values'],
+    })
+    .openapi('ContainerOfWorkflowSchemeAssociations')
 
 const ContextSchema = z
   .strictObject({
@@ -4265,7 +6653,7 @@ const JsonContextVariableSchema = z
   .object({
     type: z.string().openapi({ description: 'Type of custom context variable.' }),
     value: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A JSON object containing custom content.' }),
   })
@@ -4693,7 +7081,7 @@ const CustomFieldContextDefaultValueForgeMultiStringFieldSchema = z
 
 const CustomFieldContextDefaultValueForgeObjectFieldSchema = z
   .object({
-    object: z.object({}).exactOptional().openapi({ description: 'The default JSON object.' }),
+    object: z.looseObject({}).exactOptional().openapi({ description: 'The default JSON object.' }),
     type: z.string(),
   })
   .openapi({
@@ -5089,1079 +7477,7 @@ const CustomFieldValueUpdateDetailsSchema = z
   .openapi({ description: 'Details of updates for a custom field.', writeOnly: true, required: [] })
   .openapi('CustomFieldValueUpdateDetails')
 
-const ProjectComponentSchema = z
-  .strictObject({
-    assignee: UserSchema.exactOptional().openapi({
-      description:
-        'The details of the user associated with `assigneeType`, if any. See `realAssignee` for details of the user assigned to issues created with this component.',
-      readOnly: true,
-    }),
-    assigneeType: z
-      .enum(['PROJECT_DEFAULT', 'COMPONENT_LEAD', 'PROJECT_LEAD', 'UNASSIGNED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The nominal user type used to determine the assignee for issues created with this component. See `realAssigneeType` for details on how the type of the user, and hence the user, assigned to issues is determined. Can take the following values:\n\n *  `PROJECT_LEAD` the assignee to any issues created with this component is nominally the lead for the project the component is in.\n *  `COMPONENT_LEAD` the assignee to any issues created with this component is nominally the lead for the component.\n *  `UNASSIGNED` an assignee is not set for issues created with this component.\n *  `PROJECT_DEFAULT` the assignee to any issues created with this component is nominally the default assignee for the project that the component is in.\n\nDefault value: `PROJECT_DEFAULT`.  \nOptional when creating or updating a component.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description for the component. Optional when creating or updating a component.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the component.', readOnly: true }),
-    isAssigneeTypeValid: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether a user is associated with `assigneeType`. For example, if the `assigneeType` is set to `COMPONENT_LEAD` but the component lead is not set, then `false` is returned.',
-        readOnly: true,
-      }),
-    lead: UserSchema.exactOptional().openapi({
-      description: "The user details for the component's lead user.",
-      readOnly: true,
-    }),
-    leadAccountId: z
-      .string()
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description:
-          "The accountId of the component's lead user. The accountId uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.",
-        writeOnly: true,
-      }),
-    leadUserName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique name for the component in the project. Required when creating a component. Optional when updating a component. The maximum length is 255 characters.',
-      }),
-    project: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The key of the project the component is assigned to. Required when creating a component. Can't be updated.",
-      }),
-    projectId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the project the component is assigned to.',
-        readOnly: true,
-      }),
-    realAssignee: UserSchema.exactOptional().openapi({
-      description:
-        'The user assigned to issues created with this component, when `assigneeType` does not identify a valid assignee.',
-      readOnly: true,
-    }),
-    realAssigneeType: z
-      .enum(['PROJECT_DEFAULT', 'COMPONENT_LEAD', 'PROJECT_LEAD', 'UNASSIGNED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the assignee that is assigned to issues created with this component, when an assignee cannot be set from the `assigneeType`. For example, `assigneeType` is set to `COMPONENT_LEAD` but no component lead is set. This property is set to one of the following values:\n\n *  `PROJECT_LEAD` when `assigneeType` is `PROJECT_LEAD` and the project lead has permission to be assigned issues in the project that the component is in.\n *  `COMPONENT_LEAD` when `assignee`Type is `COMPONENT_LEAD` and the component lead has permission to be assigned issues in the project that the component is in.\n *  `UNASSIGNED` when `assigneeType` is `UNASSIGNED` and Jira is configured to allow unassigned issues.\n *  `PROJECT_DEFAULT` when none of the preceding cases are true.',
-        readOnly: true,
-      }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL of the component.', readOnly: true }),
-  })
-  .openapi({
-    description: 'Details about a project component.',
-    xml: { name: 'component' },
-    required: [],
-  })
-  .openapi('ProjectComponent')
-
-const ProjectInsightSchema = z
-  .strictObject({
-    lastIssueUpdateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The last issue update time.', readOnly: true }),
-    totalIssueCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total issue count.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Additional details about a project.', required: [] })
-  .openapi('ProjectInsight')
-
-const SimplifiedHierarchyLevelSchema = z
-  .strictObject({
-    aboveLevelId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the level above this one in the hierarchy. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
-      }),
-    belowLevelId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the level below this one in the hierarchy. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
-      }),
-    externalUuid: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The external UUID of the hierarchy level. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
-      }),
-    hierarchyLevelNumber: z.int32().exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the hierarchy level. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
-      }),
-    issueTypeIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({ description: 'The issue types available in this hierarchy level.' }),
-    level: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The level of this item in the hierarchy.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of this hierarchy level.' }),
-    projectConfigurationId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the project configuration. This property is deprecated, see [Change oticen: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SimplifiedHierarchyLevel')
-
-const HierarchySchema = z
-  .strictObject({
-    baseLevelId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the base level. This property is deprecated, see [Change notice: Removing hierarchy level IDs from next-gen APIs](https://developer.atlassian.com/cloud/jira/platform/change-notice-removing-hierarchy-level-ids-from-next-gen-apis/).',
-      }),
-    levels: z
-      .array(SimplifiedHierarchyLevelSchema)
-      .exactOptional()
-      .openapi({ description: 'Details about the hierarchy level.', readOnly: true }),
-  })
-  .openapi({
-    description: 'The project issue type hierarchy.',
-    xml: { name: 'hierarchy' },
-    required: [],
-  })
-  .openapi('Hierarchy')
-
-const ProjectLandingPageInfoSchema = z
-  .strictObject({
-    attributes: z.record(z.string(), z.string()).exactOptional(),
-    boardId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    boardName: z.string().exactOptional(),
-    projectKey: z.string().exactOptional(),
-    projectType: z.string().exactOptional(),
-    queueCategory: z.string().exactOptional(),
-    queueId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    queueName: z.string().exactOptional(),
-    simpleBoard: z.boolean().exactOptional(),
-    simplified: z.boolean().exactOptional(),
-    url: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProjectLandingPageInfo')
-
-const ProjectPermissionsSchema = z
-  .strictObject({
-    canEdit: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the logged user can edit the project.', readOnly: true }),
-  })
-  .openapi({ description: 'Permissions which a user has on a project.', required: [] })
-  .openapi('ProjectPermissions')
-
-const ProjectCategorySchema = z
-  .strictObject({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the project category.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the project category.', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the project category. Required on create, optional on update.',
-      }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL of the project category.', readOnly: true }),
-  })
-  .openapi({ description: 'A project category.', required: [] })
-  .openapi('ProjectCategory')
-
-const VersionIssuesStatusSchema = z
-  .looseObject({
-    done: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Count of issues with status *done*.',
-        readOnly: true,
-      }),
-    inProgress: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Count of issues with status *in progress*.',
-        readOnly: true,
-      }),
-    toDo: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Count of issues with status *to do*.',
-        readOnly: true,
-      }),
-    unmapped: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Count of issues with a status other than *to do*, *in progress*, and *done*.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Counts of the number of issues in various statuses.', required: [] })
-  .openapi('VersionIssuesStatus')
-
-const VersionSchema = z
-  .strictObject({
-    archived: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that the version is archived. Optional when creating or updating a version.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description of the version. Optional when creating or updating a version.',
-      }),
-    expand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Use [expand](em>#expansion) to include additional information about version in the response. This parameter accepts a comma-separated list. Expand options include:\n\n *  `operations` Returns the list of operations available for this version.\n *  `issuesstatus` Returns the count of issues in this version for each of the status categories *to do*, *in progress*, *done*, and *unmapped*. The *unmapped* property contains a count of issues with a status other than *to do*, *in progress*, and *done*.\n\nOptional for create and update.',
-        xml: { attribute: true },
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the version.', readOnly: true }),
-    issuesStatusForFixVersion: VersionIssuesStatusSchema.exactOptional().openapi({
-      description:
-        'If the expand option `issuesstatus` is used, returns the count of issues in this version for each of the status categories *to do*, *in progress*, *done*, and *unmapped*. The *unmapped* property contains a count of issues with a status other than *to do*, *in progress*, and *done*.',
-      readOnly: true,
-    }),
-    moveUnfixedIssuesTo: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL of the self link to the version to which all unfixed issues are moved when a version is released. Not applicable when creating a version. Optional when updating a version.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique name of the version. Required when creating a version. Optional when updating a version. The maximum length is 255 characters.',
-      }),
-    operations: z
-      .array(SimpleLinkSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If the expand option `operations` is used, returns the list of operations available for this version.',
-        readOnly: true,
-      }),
-    overdue: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates that the version is overdue.', readOnly: true }),
-    project: z.string().exactOptional().openapi({ description: 'Deprecated. Use `projectId`.' }),
-    projectId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the project to which this version is attached. Required when creating a version. Not applicable when updating a version.',
-      }),
-    releaseDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The release date of the version. Expressed in ISO 8601 format (yyyy-mm-dd). Optional when creating or updating a version.',
-      }),
-    released: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that the version is released. If the version is released a request to release again is ignored. Not applicable when creating a version. Optional when updating a version.',
-      }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL of the version.', readOnly: true }),
-    startDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The start date of the version. Expressed in ISO 8601 format (yyyy-mm-dd). Optional when creating or updating a version.',
-      }),
-    userReleaseDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The date on which work on this version is expected to finish, expressed in the instance's *Day/Month/Year Format* date format.",
-        readOnly: true,
-      }),
-    userStartDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The date on which work on this version is expected to start, expressed in the instance's *Day/Month/Year Format* date format.",
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Details about a project version.',
-    xml: { name: 'version' },
-    required: [],
-  })
-  .openapi('Version')
-
-const ProjectSchema = z
-  .strictObject({
-    archived: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the project is archived.', readOnly: true }),
-    archivedBy: UserSchema.exactOptional().openapi({
-      description: 'The user who archived the project.',
-      readOnly: true,
-    }),
-    archivedDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date when the project was archived.', readOnly: true }),
-    assigneeType: z
-      .enum(['PROJECT_LEAD', 'UNASSIGNED'])
-      .exactOptional()
-      .openapi({
-        description: 'The default assignee when creating issues for this project.',
-        readOnly: true,
-      }),
-    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
-      description: "The URLs of the project's avatars.",
-      readOnly: true,
-    }),
-    components: z
-      .array(ProjectComponentSchema)
-      .exactOptional()
-      .openapi({ description: 'List of the components contained in the project.', readOnly: true }),
-    deleted: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the project is marked as deleted.', readOnly: true }),
-    deletedBy: UserSchema.exactOptional().openapi({
-      description: 'The user who marked the project as deleted.',
-      readOnly: true,
-    }),
-    deletedDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date when the project was marked as deleted.', readOnly: true }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A brief description of the project.', readOnly: true }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'An email address associated with the project.' }),
-    expand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Expand options that include additional project details in the response.',
-        readOnly: true,
-        xml: { attribute: true },
-      }),
-    favourite: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the project is selected as a favorite.' }),
-    id: z.string().exactOptional().openapi({ description: 'The ID of the project.' }),
-    insight: ProjectInsightSchema.exactOptional().openapi({
-      description: 'Insights about the project.',
-      readOnly: true,
-    }),
-    isPrivate: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the project is private.', readOnly: true }),
-    issueTypeHierarchy: HierarchySchema.exactOptional().openapi({
-      description: 'The issue type hierarchy for the project.',
-      readOnly: true,
-    }),
-    issueTypes: z
-      .array(IssueTypeDetailsSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of the issue types available in the project.',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key of the project.', readOnly: true }),
-    landingPageInfo: ProjectLandingPageInfoSchema.exactOptional().openapi({
-      description: 'The project landing page info.',
-      readOnly: true,
-    }),
-    lead: UserSchema.exactOptional().openapi({
-      description: 'The username of the project lead.',
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the project.', readOnly: true }),
-    permissions: ProjectPermissionsSchema.exactOptional().openapi({
-      description: 'User permissions on the project',
-      readOnly: true,
-    }),
-    projectCategory: ProjectCategorySchema.exactOptional().openapi({
-      description: 'The category the project belongs to.',
-      readOnly: true,
-    }),
-    projectTypeKey: z
-      .enum(['software', 'service_desk', 'business'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The [project type](https://confluence.atlassian.com/x/GwiiLQ#Jiraapplicationsoverview-Productfeaturesandprojecttypes) of the project.',
-        readOnly: true,
-      }),
-    properties: z
-      .record(z.string(), z.any().openapi({ readOnly: true }))
-      .exactOptional()
-      .openapi({ description: 'Map of project properties', readOnly: true }),
-    retentionTillDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date when the project is deleted permanently.',
-        readOnly: true,
-      }),
-    roles: z
-      .record(z.string(), z.url().openapi({ readOnly: true }))
-      .exactOptional()
-      .openapi({
-        description:
-          'The name and self URL for each role defined in the project. For more information, see [Create project role](#api-rest-api-3-role-post).',
-        readOnly: true,
-      }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL of the project details.', readOnly: true }),
-    simplified: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the project is simplified.', readOnly: true }),
-    style: z
-      .enum(['classic', 'next-gen'])
-      .exactOptional()
-      .openapi({ description: 'The type of the project.', readOnly: true }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A link to information about this project, such as project documentation.',
-        readOnly: true,
-      }),
-    uuid: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Unique ID for next-gen projects.', readOnly: true }),
-    versions: z
-      .array(VersionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The versions defined in the project. For more information, see [Create version](#api-rest-api-3-version-post).',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Details about a project.', xml: { name: 'project' }, required: [] })
-  .openapi('Project')
-
-const ProjectRoleGroupSchema = z
-  .strictObject({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name of the group.' }),
-    groupId: z.string().exactOptional().openapi({ description: 'The ID of the group.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The name of the group. As a group's name can change, use of `groupId` is recommended to identify the group.",
-      }),
-  })
-  .openapi({ description: 'Details of the group associated with the role.', required: [] })
-  .openapi('ProjectRoleGroup')
-
-const ProjectRoleUserSchema = z
-  .strictObject({
-    accountId: z
-      .string()
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description:
-          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*. Returns *unknown* if the record is deleted and corrupted, for example, as the result of a server import.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Details of the user associated with the role.', required: [] })
-  .openapi('ProjectRoleUser')
-
-const RoleActorSchema = z
-  .strictObject({
-    actorGroup: ProjectRoleGroupSchema.exactOptional().openapi({ readOnly: true }),
-    actorUser: ProjectRoleUserSchema.exactOptional().openapi({ readOnly: true }),
-    avatarUrl: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The avatar of the role actor.', readOnly: true }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The display name of the role actor. For users, depending on the user’s privacy setting, this may return an alternative value for the user's name.",
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the role actor.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
-        readOnly: true,
-      }),
-    type: z
-      .enum(['atlassian-group-role-actor', 'atlassian-user-role-actor'])
-      .exactOptional()
-      .openapi({ description: 'The type of role actor.', readOnly: true }),
-  })
-  .openapi({
-    description: 'Details about a user assigned to a project role.',
-    xml: { name: 'projectRoleActor' },
-    required: [],
-  })
-  .openapi('RoleActor')
-
-const ProjectRoleSchema = z
-  .strictObject({
-    actors: z
-      .array(RoleActorSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of users who act in this role.', readOnly: true }),
-    admin: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether this role is the admin role for the project.',
-        readOnly: true,
-      }),
-    currentUserRole: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the calling user is part of this role.' }),
-    default: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether this role is the default role for the project',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the project role.', readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the project role.',
-        readOnly: true,
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the project role.' }),
-    roleConfigurable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the roles are configurable for this project.',
-        readOnly: true,
-      }),
-    scope: ScopeSchema.exactOptional().openapi({
-      description:
-        'The scope of the role. Indicated for roles associated with [next-gen projects](https://confluence.atlassian.com/x/loMyO).',
-      readOnly: true,
-    }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL the project role details.', readOnly: true }),
-    translatedName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The translated name of the project role.' }),
-  })
-  .openapi({ description: 'Details about the roles in a project.', required: [] })
-  .openapi('ProjectRole')
-
-const UserBeanAvatarUrlsSchema = z
-  .strictObject({
-    '16x16': z
-      .url()
-      .exactOptional()
-      .openapi({ description: "The URL of the user's 16x16 pixel avatar." }),
-    '24x24': z
-      .url()
-      .exactOptional()
-      .openapi({ description: "The URL of the user's 24x24 pixel avatar." }),
-    '32x32': z
-      .url()
-      .exactOptional()
-      .openapi({ description: "The URL of the user's 32x32 pixel avatar." }),
-    '48x48': z
-      .url()
-      .exactOptional()
-      .openapi({ description: "The URL of the user's 48x48 pixel avatar." }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserBeanAvatarUrls')
-
-const UserBeanSchema = z
-  .strictObject({
-    accountId: z
-      .string()
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description:
-          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.',
-      }),
-    active: z.boolean().exactOptional().openapi({ description: 'Whether the user is active.' }),
-    avatarUrls: UserBeanAvatarUrlsSchema.exactOptional().openapi({
-      description: 'The avatars of the user.',
-    }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The display name of the user. Depending on the user’s privacy setting, this may return an alternative value.',
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is deprecated in favor of `accountId` because of privacy changes. See the [migration guide](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.  \nThe key of the user.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is deprecated in favor of `accountId` because of privacy changes. See the [migration guide](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.  \nThe username of the user.',
-      }),
-    self: z.url().exactOptional().openapi({ description: 'The URL of the user.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserBean')
-
-const SharePermissionSchema = z
-  .strictObject({
-    group: GroupNameSchema.exactOptional().openapi({
-      description:
-        "The group that the filter is shared with. For a request, specify the `groupId` or `name` property for the group. As a group's name can change, use of `groupId` is recommended.",
-    }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The unique identifier of the share permission.',
-        readOnly: true,
-      }),
-    project: ProjectSchema.exactOptional().openapi({
-      description:
-        'The project that the filter is shared with. This is similar to the project object returned by [Get project](#api-rest-api-3-project-projectIdOrKey-get) but it contains a subset of the properties, which are: `self`, `id`, `key`, `assigneeType`, `name`, `roles`, `avatarUrls`, `projectType`, `simplified`.  \nFor a request, specify the `id` for the project.',
-    }),
-    role: ProjectRoleSchema.exactOptional().openapi({
-      description:
-        'The project role that the filter is shared with.  \nFor a request, specify the `id` for the role. You must also specify the `project` object and `id` for the project that the role is in.',
-    }),
-    type: z
-      .enum([
-        'user',
-        'group',
-        'project',
-        'projectRole',
-        'global',
-        'loggedin',
-        'authenticated',
-        'project-unknown',
-      ])
-      .openapi({
-        description:
-          'The type of share permission:\n\n *  `user` Shared with a user.\n *  `group` Shared with a group. If set in a request, then specify `sharePermission.group` as well.\n *  `project` Shared with a project. If set in a request, then specify `sharePermission.project` as well.\n *  `projectRole` Share with a project role in a project. This value is not returned in responses. It is used in requests, where it needs to be specify with `projectId` and `projectRoleId`.\n *  `global` Shared globally. If set in a request, no other `sharePermission` properties need to be specified.\n *  `loggedin` Shared with all logged-in users. Note: This value is set in a request by specifying `authenticated` as the `type`.\n *  `project-unknown` Shared with a project that the user does not have access to. Cannot be set in a request.',
-      }),
-    user: UserBeanSchema.exactOptional().openapi({
-      description:
-        'The user account ID that the filter is shared with. For a request, specify the `accountId` property for the user.',
-    }),
-  })
-  .openapi({ description: 'Details of a share permission for the filter.', required: ['type'] })
-  .openapi('SharePermission')
-
-const DashboardSchema = z
-  .strictObject({
-    automaticRefreshMs: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The automatic refresh interval for the dashboard in milliseconds.',
-        readOnly: true,
-      }),
-    description: z.string().exactOptional(),
-    editPermissions: z
-      .array(SharePermissionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The details of any edit share permissions for the dashboard.',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the dashboard.', readOnly: true }),
-    isFavourite: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the dashboard is selected as a favorite by the user.',
-        readOnly: true,
-      }),
-    isWritable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the current user has permission to edit the dashboard.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the dashboard.', readOnly: true }),
-    owner: UserBeanSchema.exactOptional().openapi({
-      description: 'The owner of the dashboard.',
-      readOnly: true,
-    }),
-    popularity: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The number of users who have this dashboard as a favorite.',
-        readOnly: true,
-      }),
-    rank: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The rank of this dashboard.', readOnly: true }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL of these dashboard details.', readOnly: true }),
-    sharePermissions: z
-      .array(SharePermissionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The details of any view share permissions for the dashboard.',
-        readOnly: true,
-      }),
-    systemDashboard: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the current dashboard is system dashboard.',
-        readOnly: true,
-      }),
-    view: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the dashboard.', readOnly: true }),
-  })
-  .openapi({ description: 'Details of a dashboard.', required: [] })
-  .openapi('Dashboard')
-
-const DashboardDetailsSchema = z
+const DashboardDetailsSchema: z.ZodType<DashboardDetailsType> = z
   .strictObject({
     description: z
       .string()
@@ -6448,117 +7764,6 @@ const ErrorMessageSchema = z
     required: ['message'],
   })
   .openapi('ErrorMessage')
-
-const FieldDetailsSchema = z
-  .strictObject({
-    clauseNames: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'The names that can be used to reference the field in an advanced search. For more information, see [Advanced searching - fields reference](https://confluence.atlassian.com/x/gwORLQ).',
-      }),
-    custom: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the field is a custom field.' }),
-    id: z.string().exactOptional().openapi({ description: 'The ID of the field.' }),
-    key: z.string().exactOptional().openapi({ description: 'The key of the field.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the field.' }),
-    navigable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the field can be used as a column on the issue navigator.',
-      }),
-    orderable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the content of the field can be used to order lists.' }),
-    schema: JsonTypeBeanSchema.exactOptional().openapi({
-      description: 'The data schema for the field.',
-    }),
-    scope: ScopeSchema.exactOptional().openapi({ description: 'The scope of the field.' }),
-    searchable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the content of the field can be searched.' }),
-  })
-  .openapi({ description: 'Details about a field.', xml: { name: 'field' }, required: [] })
-  .openapi('FieldDetails')
-
-const EventNotificationSchema = z
-  .strictObject({
-    emailAddress: z.string().exactOptional().openapi({ description: 'The email address.' }),
-    expand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Expand options that include additional event notification details in the response.',
-      }),
-    field: FieldDetailsSchema.exactOptional().openapi({
-      description: 'The custom user or group field.',
-    }),
-    group: GroupNameSchema.exactOptional().openapi({ description: 'The specified group.' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the notification.' }),
-    notificationType: z
-      .enum([
-        'CurrentAssignee',
-        'Reporter',
-        'CurrentUser',
-        'ProjectLead',
-        'ComponentLead',
-        'User',
-        'Group',
-        'ProjectRole',
-        'EmailAddress',
-        'AllWatchers',
-        'UserCustomField',
-        'GroupCustomField',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Identifies the recipients of the notification.' }),
-    parameter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "As a group's name can change, use of `recipient` is recommended. The identifier associated with the `notificationType` value that defines the receiver of the notification, where the receiver isn't implied by `notificationType` value. So, when `notificationType` is:\n\n *  `User` The `parameter` is the user account ID.\n *  `Group` The `parameter` is the group name.\n *  `ProjectRole` The `parameter` is the project role ID.\n *  `UserCustomField` The `parameter` is the ID of the custom field.\n *  `GroupCustomField` The `parameter` is the ID of the custom field.",
-      }),
-    projectRole: ProjectRoleSchema.exactOptional().openapi({
-      description: 'The specified project role.',
-    }),
-    recipient: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The identifier associated with the `notificationType` value that defines the receiver of the notification, where the receiver isn't implied by the `notificationType` value. So, when `notificationType` is:\n\n *  `User`, `recipient` is the user account ID.\n *  `Group`, `recipient` is the group ID.\n *  `ProjectRole`, `recipient` is the project role ID.\n *  `UserCustomField`, `recipient` is the ID of the custom field.\n *  `GroupCustomField`, `recipient` is the ID of the custom field.",
-      }),
-    user: UserDetailsSchema.exactOptional().openapi({ description: 'The specified user.' }),
-  })
-  .openapi({ description: 'Details about a notification associated with an event.', required: [] })
-  .openapi('EventNotification')
 
 const FailedWebhookSchema = z
   .strictObject({
@@ -6902,38 +8107,6 @@ const FieldReferenceDataSchema = z
   })
   .openapi('FieldReferenceData')
 
-const FieldUpdateOperationSchema = z
-  .strictObject({
-    add: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'The value to add to the field.', example: 'triaged' }),
-    copy: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description: 'The field value to copy from another issue.',
-        example: { issuelinks: { sourceIssues: [{ key: 'FP-5' }] } },
-      }),
-    edit: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description: 'The value to edit in the field.',
-        example: { originalEstimate: '1w 1d', remainingEstimate: '4d' },
-      }),
-    remove: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'The value to removed from the field.', example: 'blocker' }),
-    set: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'The value to set in the field.', example: 'A new summary' }),
-  })
-  .openapi({ description: 'Details of an operation to perform on a field.', required: [] })
-  .openapi('FieldUpdateOperation')
-
 const PrioritySchema = z
   .looseObject({
     description: z
@@ -6958,81 +8131,6 @@ const PrioritySchema = z
   })
   .openapi({ description: 'An issue priority.', required: [] })
   .openapi('Priority')
-
-const StatusCategorySchema = z
-  .looseObject({
-    colorName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the color used to represent the status category.',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the status category.',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key of the status category.', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the status category.', readOnly: true }),
-    self: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the status category.', readOnly: true }),
-  })
-  .openapi({ description: 'A status category.', required: [] })
-  .openapi('StatusCategory')
-
-const StatusDetailsSchema = z
-  .looseObject({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the status.', readOnly: true }),
-    iconUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The URL of the icon used to represent the status.',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the status.', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the status.', readOnly: true }),
-    self: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the status.', readOnly: true }),
-    statusCategory: StatusCategorySchema.exactOptional().openapi({
-      description: 'The category assigned to the status.',
-      readOnly: true,
-    }),
-  })
-  .openapi({ description: 'A status.', required: [] })
-  .openapi('StatusDetails')
 
 const TimeTrackingDetailsSchema = z
   .strictObject({
@@ -7142,126 +8240,7 @@ const FieldsSchema = z
   .openapi({ description: 'Key fields from the linked issue.', required: [] })
   .openapi('Fields')
 
-const UserListSchema = z
-  .strictObject({
-    'end-index': z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of the last item returned on the page.',
-        readOnly: true,
-        xml: { attribute: true, name: 'end-index' },
-      }),
-    items: z
-      .array(UserSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of items.', readOnly: true }),
-    'max-results': z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The maximum number of results that could be on the page.',
-        readOnly: true,
-        xml: { attribute: true, name: 'max-results' },
-      }),
-    size: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The number of items on the page.',
-        readOnly: true,
-        xml: { attribute: true },
-      }),
-    'start-index': z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of the first item returned on the page.',
-        readOnly: true,
-        xml: { attribute: true, name: 'start-index' },
-      }),
-  })
-  .openapi({
-    description:
-      'A paginated list of users sharing the filter. This includes users that are members of the groups or can browse the projects that the filter is shared with.',
-    required: [],
-  })
-  .openapi('UserList')
-
-const FilterSubscriptionSchema = z
-  .strictObject({
-    group: GroupNameSchema.exactOptional().openapi({
-      description: 'The group subscribing to filter.',
-      readOnly: true,
-    }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the filter subscription.',
-        readOnly: true,
-      }),
-    user: UserSchema.exactOptional().openapi({
-      description: 'The user subscribing to filter.',
-      readOnly: true,
-    }),
-  })
-  .openapi({ description: 'Details of a user or group subscribing to a filter.', required: [] })
-  .openapi('FilterSubscription')
-
-const FilterSubscriptionsListSchema = z
-  .strictObject({
-    'end-index': z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of the last item returned on the page.',
-        readOnly: true,
-        xml: { attribute: true, name: 'end-index' },
-      }),
-    items: z
-      .array(FilterSubscriptionSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of items.', readOnly: true }),
-    'max-results': z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The maximum number of results that could be on the page.',
-        readOnly: true,
-        xml: { attribute: true, name: 'max-results' },
-      }),
-    size: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The number of items on the page.',
-        readOnly: true,
-        xml: { attribute: true },
-      }),
-    'start-index': z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of the first item returned on the page.',
-        readOnly: true,
-        xml: { attribute: true, name: 'start-index' },
-      }),
-  })
-  .openapi({ description: 'A paginated list of subscriptions to a filter.', required: [] })
-  .openapi('FilterSubscriptionsList')
-
-const FilterSchema = z
+const FilterSchema: z.ZodType<FilterType> = z
   .strictObject({
     description: z
       .string()
@@ -7346,106 +8325,6 @@ const FilterSchema = z
   })
   .openapi({ description: 'Details about a filter.', required: ['name'], xml: { name: 'filter' } })
   .openapi('Filter')
-
-const FilterDetailsSchema = z
-  .strictObject({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the filter.' }),
-    editPermissions: z
-      .array(SharePermissionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The groups and projects that can edit the filter. This can be specified when updating a filter, but not when creating a filter.',
-      }),
-    expand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Expand options that include additional filter details in the response.',
-        readOnly: true,
-        xml: { attribute: true },
-      }),
-    favourite: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the filter is selected as a favorite by any users, not including the filter owner.',
-        readOnly: true,
-      }),
-    favouritedCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The count of how many users have selected this filter as a favorite, including the filter owner.',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the filter.', readOnly: true }),
-    jql: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The JQL query for the filter. For example, *project = SSP AND issuetype = Bug*.',
-        readOnly: true,
-      }),
-    name: z.string().openapi({ description: 'The name of the filter.' }),
-    owner: UserSchema.exactOptional().openapi({
-      description:
-        'The user who owns the filter. Defaults to the creator of the filter, however, Jira administrators can change the owner of a shared filter in the admin settings.',
-      readOnly: true,
-    }),
-    searchUrl: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          "A URL to view the filter results in Jira, using the [Search for issues using JQL](#api-rest-api-3-filter-search-get) operation with the filter's JQL string to return the filter results. For example, *https://your-domain.atlassian.net/rest/api/3/search?jql=project+%3D+SSP+AND+issuetype+%3D+Bug*.",
-        readOnly: true,
-      }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL of the filter.', readOnly: true }),
-    sharePermissions: z
-      .array(SharePermissionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The groups and projects that the filter is shared with. This can be specified when updating a filter, but not when creating a filter.',
-      }),
-    subscriptions: z
-      .array(FilterSubscriptionSchema)
-      .exactOptional()
-      .openapi({ description: 'The users that are subscribed to the filter.', readOnly: true }),
-    viewUrl: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'A URL to view the filter results in Jira, using the ID of the filter. For example, *https://your-domain.atlassian.net/issues/?filter=10100*.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Details of a filter.', required: ['name'] })
-  .openapi('FilterDetails')
 
 const GroupLabelSchema = z
   .strictObject({
@@ -7603,27 +8482,6 @@ const FunctionReferenceDataSchema = z
     required: [],
   })
   .openapi('FunctionReferenceData')
-
-const GlobalScopeBeanSchema = z
-  .strictObject({
-    attributes: z
-      .array(z.enum(['notSelectable', 'defaultValue']))
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          "Defines the behavior of the option in the global context.If notSelectable is set, the option cannot be set as the field's value. This is useful for archiving an option that has previously been selected but shouldn't be used anymore.If defaultValue is set, the option is selected by default.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GlobalScopeBean')
 
 const PagedListUserDetailsApplicationUserSchema = z
   .strictObject({
@@ -7823,267 +8681,6 @@ const IdOrKeyBeanSchema = z
   .openapi({ required: [] })
   .openapi('IdOrKeyBean')
 
-const IncludedFieldsSchema = z
-  .strictObject({
-    actuallyIncluded: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    excluded: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    included: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IncludedFields')
-
-const PageOfChangelogsSchema = z
-  .strictObject({
-    histories: z
-      .array(ChangelogSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of changelogs.', readOnly: true }),
-    maxResults: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The maximum number of results that could be on the page.',
-        readOnly: true,
-      }),
-    startAt: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of the first item returned on the page.',
-        readOnly: true,
-      }),
-    total: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of results on the page.', readOnly: true }),
-  })
-  .openapi({ description: 'A page of changelogs.', required: [] })
-  .openapi('PageOfChangelogs')
-
-const IssueUpdateMetadataSchema = z
-  .object({
-    fields: z.record(z.string(), FieldMetadataSchema).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ description: 'A list of editable field details.', required: [] })
-  .openapi('IssueUpdateMetadata')
-
-const LinkGroupSchema: z.ZodType<LinkGroupType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        groups: z.array(LinkGroupSchema).exactOptional(),
-        header: SimpleLinkSchema.exactOptional(),
-        id: z.string().exactOptional(),
-        links: z.array(SimpleLinkSchema).exactOptional(),
-        styleClass: z.string().exactOptional(),
-        weight: z.int32().exactOptional(),
-      })
-      .openapi({
-        description: 'Details a link group, which defines issue operations.',
-        required: [],
-      }),
-  )
-  .openapi('LinkGroup')
-
-const OperationsSchema = z
-  .looseObject({
-    linkGroups: z
-      .array(LinkGroupSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Details of the link groups defining issue operations.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Details of the operations that can be performed on the issue.',
-    required: [],
-  })
-  .openapi('Operations')
-
-const IssueTransitionSchema = z
-  .looseObject({
-    expand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Expand options that include additional transition details in the response.',
-        readOnly: true,
-      }),
-    fields: z
-      .record(z.string(), FieldMetadataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Details of the fields associated with the issue transition screen. Use this information to populate `fields` and `update` in a transition request.',
-        readOnly: true,
-      }),
-    hasScreen: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether there is a screen associated with the issue transition.',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the issue transition. Required when specifying a transition to undertake.',
-      }),
-    isAvailable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the transition is available to be performed.',
-        readOnly: true,
-      }),
-    isConditional: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the issue has to meet criteria before the issue transition is applied.',
-        readOnly: true,
-      }),
-    isGlobal: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the issue transition is global, that is, the transition is applied to issues regardless of their status.',
-        readOnly: true,
-      }),
-    isInitial: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether this is the initial issue transition for the workflow.',
-        readOnly: true,
-      }),
-    looped: z.boolean().exactOptional(),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the issue transition.', readOnly: true }),
-    to: StatusDetailsSchema.exactOptional().openapi({
-      description: 'Details of the issue status after the transition.',
-      readOnly: true,
-    }),
-  })
-  .openapi({ description: 'Details of an issue transition.', required: [] })
-  .openapi('IssueTransition')
-
-const IssueBeanSchema = z
-  .strictObject({
-    changelog: PageOfChangelogsSchema.exactOptional().openapi({
-      description: 'Details of changelogs associated with the issue.',
-      readOnly: true,
-    }),
-    editmeta: IssueUpdateMetadataSchema.exactOptional().openapi({
-      description: 'The metadata for the fields on the issue that can be amended.',
-      readOnly: true,
-    }),
-    expand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Expand options that include additional issue details in the response.',
-        readOnly: true,
-        xml: { attribute: true },
-      }),
-    fields: z.record(z.string(), z.any()).exactOptional(),
-    fieldsToInclude: IncludedFieldsSchema.exactOptional(),
-    id: z.string().exactOptional().openapi({ description: 'The ID of the issue.', readOnly: true }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key of the issue.', readOnly: true }),
-    names: z
-      .record(z.string(), z.string().openapi({ readOnly: true }))
-      .exactOptional()
-      .openapi({
-        description: 'The ID and name of each field present on the issue.',
-        readOnly: true,
-      }),
-    operations: OperationsSchema.exactOptional().openapi({
-      description: 'The operations that can be performed on the issue.',
-      readOnly: true,
-    }),
-    properties: z
-      .record(z.string(), z.any().openapi({ readOnly: true }))
-      .exactOptional()
-      .openapi({
-        description: 'Details of the issue properties identified in the request.',
-        readOnly: true,
-      }),
-    renderedFields: z
-      .record(z.string(), z.any().openapi({ readOnly: true }))
-      .exactOptional()
-      .openapi({
-        description: 'The rendered value of each field present on the issue.',
-        readOnly: true,
-      }),
-    schema: z
-      .record(z.string(), JsonTypeBeanSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The schema describing each field present on the issue.',
-        readOnly: true,
-      }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL of the issue details.', readOnly: true }),
-    transitions: z
-      .array(IssueTransitionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The transitions that can be performed on the issue.',
-        readOnly: true,
-      }),
-    versionedRepresentations: z
-      .record(
-        z.string(),
-        z.record(z.string(), z.any().openapi({ readOnly: true })).openapi({ readOnly: true }),
-      )
-      .exactOptional()
-      .openapi({ description: 'The versions of each field on the issue.', readOnly: true }),
-  })
-  .openapi({ description: 'Details about an issue.', xml: { name: 'issue' }, required: [] })
-  .openapi('IssueBean')
-
 const IssueChangelogIdsSchema = z
   .strictObject({
     changelogIds: z
@@ -8143,30 +8740,27 @@ const IssueCommentListRequestBeanSchema = z
   .openapi('IssueCommentListRequestBean')
 
 const IssueCreateMetadataSchema: z.ZodType<IssueCreateMetadataType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        expand: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Expand options that include additional project details in the response.',
-            readOnly: true,
-            xml: { attribute: true },
-          }),
-        projects: z
-          .array(ProjectIssueCreateMetadataSchema)
-          .exactOptional()
-          .openapi({
-            description: 'List of projects and their issue creation metadata.',
-            readOnly: true,
-          }),
-      })
+  .strictObject({
+    expand: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'The wrapper for the issue creation metadata for a list of projects.',
-        required: [],
+        description: 'Expand options that include additional project details in the response.',
+        readOnly: true,
+        xml: { attribute: true },
       }),
-  )
+    projects: z
+      .array(ProjectIssueCreateMetadataSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of projects and their issue creation metadata.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'The wrapper for the issue creation metadata for a list of projects.',
+    required: [],
+  })
   .openapi('IssueCreateMetadata')
 
 const JsonNodeSchema = z
@@ -8183,9 +8777,9 @@ const JsonNodeSchema = z
     decimalValue: z.number().exactOptional(),
     double: z.boolean().exactOptional(),
     doubleValue: z.float64().exactOptional(),
-    elements: z.object({}).exactOptional(),
-    fieldNames: z.object({}).exactOptional(),
-    fields: z.object({}).exactOptional(),
+    elements: z.looseObject({}).exactOptional(),
+    fieldNames: z.looseObject({}).exactOptional(),
+    fields: z.looseObject({}).exactOptional(),
     floatingPointNumber: z.boolean().exactOptional(),
     int: z.boolean().exactOptional(),
     intValue: z.int32().exactOptional(),
@@ -8338,148 +8932,6 @@ const IssueEventSchema = z
   })
   .openapi({ description: 'Details about an issue event.', required: [] })
   .openapi('IssueEvent')
-
-const ProjectScopeBeanSchema = z
-  .strictObject({
-    attributes: z
-      .array(z.enum(['notSelectable', 'defaultValue']))
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          "Defines the behavior of the option in the project.If notSelectable is set, the option cannot be set as the field's value. This is useful for archiving an option that has previously been selected but shouldn't be used anymore.If defaultValue is set, the option is selected by default.",
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: "The ID of the project that the option's behavior applies to.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProjectScopeBean')
-
-const IssueFieldOptionScopeBeanSchema = z
-  .strictObject({
-    global: GlobalScopeBeanSchema.exactOptional().openapi({
-      description:
-        'Defines the behavior of the option within the global context. If this property is set, even if set to an empty object, then the option is available in all projects.',
-    }),
-    projects: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED' }),
-    projects2: z
-      .array(ProjectScopeBeanSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the projects in which the option is available and the behavior of the option within each project. Specify one object per project. The behavior of the option in a project context overrides the behavior in the global context.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('IssueFieldOptionScopeBean')
-
-const IssueFieldOptionConfigurationSchema = z
-  .strictObject({
-    attributes: z
-      .array(z.enum(['notSelectable', 'defaultValue']))
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED' }),
-    scope: IssueFieldOptionScopeBeanSchema.exactOptional().openapi({
-      description:
-        'Defines the projects that the option is available in. If the scope is not defined, then the option is available in all projects.',
-    }),
-  })
-  .openapi({ description: 'Details of the projects the option is available in.', required: [] })
-  .openapi('IssueFieldOptionConfiguration')
-
-const IssueFieldOptionSchema = z
-  .strictObject({
-    config: IssueFieldOptionConfigurationSchema.exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          "The unique identifier for the option. This is only unique within the select field's set of options.",
-      }),
-    properties: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'The properties of the object, as arbitrary key-value pairs. These properties can be searched using JQL, if the extractions (see [Issue Field Option Property Index](https://developer.atlassian.com/cloud/jira/platform/modules/issue-field-option-property-index/)) are defined in the descriptor for the issue field module.',
-      }),
-    value: z.string().openapi({ description: "The option's name, which is displayed in Jira." }),
-  })
-  .openapi({
-    description: 'Details of the options for a select list issue field.',
-    required: ['id', 'value'],
-  })
-  .openapi('IssueFieldOption')
 
 const IssueFieldOptionCreateBeanSchema = z
   .looseObject({
@@ -9118,6 +9570,18 @@ const IssueTypeSchemeUpdateDetailsSchema = z
   })
   .openapi('IssueTypeSchemeUpdateDetails')
 
+const IssueTypeScreenSchemeSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the issue type screen scheme.' }),
+    id: z.string().openapi({ description: 'The ID of the issue type screen scheme.' }),
+    name: z.string().openapi({ description: 'The name of the issue type screen scheme.' }),
+  })
+  .openapi({ description: 'Details of an issue type screen scheme.', required: ['id', 'name'] })
+  .openapi('IssueTypeScreenScheme')
+
 const IssueTypeScreenSchemeMappingSchema = z
   .strictObject({
     issueTypeId: z
@@ -9389,37 +9853,6 @@ const IssueTypesWorkflowMappingSchema = z
   })
   .openapi('IssueTypesWorkflowMapping')
 
-const IssueUpdateDetailsSchema = z
-  .looseObject({
-    fields: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of issue screen fields to update, specifying the sub-field to update and its value for each field. This field provides a straightforward option when setting a sub-field. When multiple sub-fields or other operations are required, use `update`. Fields included in here cannot be included in `update`.',
-      }),
-    historyMetadata: HistoryMetadataSchema.exactOptional().openapi({
-      description: 'Additional issue history details.',
-    }),
-    properties: z
-      .array(EntityPropertySchema)
-      .exactOptional()
-      .openapi({ description: 'Details of issue properties to be add or update.' }),
-    transition: IssueTransitionSchema.exactOptional().openapi({
-      description:
-        'Details of a transition. Required when performing a transition, optional when creating or editing an issue.',
-    }),
-    update: z
-      .record(z.string(), z.array(FieldUpdateOperationSchema))
-      .exactOptional()
-      .openapi({
-        description:
-          'A Map containing the field field name and a list of operations to perform on the issue screen field. Note that fields included in here cannot be included in `fields`.',
-      }),
-  })
-  .openapi({ description: 'Details of an issue update request.', required: [] })
-  .openapi('IssueUpdateDetails')
-
 const IssuesAndJQLQueriesSchema = z
   .strictObject({
     issueIds: z
@@ -9507,7 +9940,7 @@ const IssuesMetaBeanSchema = z
   .openapi({ description: 'Meta data describing the `issues` context variable.', required: [] })
   .openapi('IssuesMetaBean')
 
-const IssuesUpdateBeanSchema = z
+const IssuesUpdateBeanSchema: z.ZodType<IssuesUpdateBeanType> = z
   .looseObject({ issueUpdates: z.array(IssueUpdateDetailsSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('IssuesUpdateBean')
@@ -10067,36 +10500,6 @@ const JqlQueriesToSanitizeSchema = z
   })
   .openapi('JqlQueriesToSanitize')
 
-const JqlQueryOrderByClauseElementSchema = z
-  .strictObject({
-    direction: z
-      .enum(['asc', 'desc'])
-      .exactOptional()
-      .openapi({ description: 'The direction in which to order the results.' }),
-    field: JqlQueryFieldSchema,
-  })
-  .openapi({ description: 'An element of the order-by JQL clause.', required: ['field'] })
-  .openapi('JqlQueryOrderByClauseElement')
-
-const JqlQueryOrderByClauseSchema = z
-  .strictObject({
-    fields: z
-      .array(JqlQueryOrderByClauseElementSchema)
-      .openapi({
-        description: 'The list of order-by clause fields and their ordering directives.',
-      }),
-  })
-  .openapi({ description: 'Details of the order-by JQL clause.', required: ['fields'] })
-  .openapi('JqlQueryOrderByClause')
-
-const JqlQuerySchema = z
-  .strictObject({
-    orderBy: JqlQueryOrderByClauseSchema.exactOptional(),
-    where: JqlQueryClauseSchema.exactOptional(),
-  })
-  .openapi({ description: 'A parsed JQL query.', required: [] })
-  .openapi('JqlQuery')
-
 const LicensedApplicationSchema = z
   .strictObject({
     id: z.string().openapi({ description: 'The ID of the application.', readOnly: true }),
@@ -10379,110 +10782,6 @@ const NotificationSchema = z
   .openapi({ description: 'Details about a notification.', required: [] })
   .openapi('Notification')
 
-const NotificationEventSchema: z.ZodType<NotificationEventType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The description of the event.' }),
-        id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description:
-              'The ID of the event. The event can be a [Jira system event](https://confluence.atlassian.com/x/8YdKLg#Creatinganotificationscheme-eventsEvents) or a [custom event](https://confluence.atlassian.com/x/AIlKLg).',
-          }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the event.' }),
-        templateEvent: NotificationEventSchema.exactOptional().openapi({
-          description:
-            'The template of the event. Only custom events configured by Jira administrators have template.',
-        }),
-      })
-      .openapi({ description: 'Details about a notification event.', required: [] }),
-  )
-  .openapi('NotificationEvent')
-
-const NotificationSchemeEventSchema = z
-  .strictObject({
-    event: NotificationEventSchema.exactOptional(),
-    notifications: z.array(EventNotificationSchema).exactOptional(),
-  })
-  .openapi({ description: 'Details about a notification scheme event.', required: [] })
-  .openapi('NotificationSchemeEvent')
-
-const NotificationSchemeSchema = z
-  .strictObject({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the notification scheme.' }),
-    expand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Expand options that include additional notification scheme details in the response.',
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the notification scheme.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the notification scheme.' }),
-    notificationSchemeEvents: z
-      .array(NotificationSchemeEventSchema)
-      .exactOptional()
-      .openapi({ description: 'The notification events and associated recipients.' }),
-    projects: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({ description: 'The list of project IDs associated with the notification scheme.' }),
-    scope: ScopeSchema.exactOptional().openapi({
-      description: 'The scope of the notification scheme.',
-    }),
-    self: z.string().exactOptional(),
-  })
-  .openapi({ description: 'Details about a notification scheme.', required: [] })
-  .openapi('NotificationScheme')
-
 const NotificationSchemeAndProjectMappingJsonBeanSchema = z
   .strictObject({
     notificationSchemeId: z.string().exactOptional(),
@@ -10702,7 +11001,7 @@ const PageBeanCommentSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanComment')
 
-const PageBeanComponentWithIssueCountSchema = z
+const PageBeanComponentWithIssueCountSchema: z.ZodType<PageBeanComponentWithIssueCountType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -11206,7 +11505,7 @@ const PageBeanCustomFieldContextProjectMappingSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanCustomFieldContextProjectMapping')
 
-const PageBeanDashboardSchema = z
+const PageBeanDashboardSchema: z.ZodType<PageBeanDashboardType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -11647,7 +11946,7 @@ const PageBeanFieldConfigurationSchemeProjectsSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanFieldConfigurationSchemeProjects')
 
-const PageBeanFilterDetailsSchema = z
+const PageBeanFilterDetailsSchema: z.ZodType<PageBeanFilterDetailsType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -11773,7 +12072,7 @@ const PageBeanGroupDetailsSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanGroupDetails')
 
-const PageBeanIssueFieldOptionSchema = z
+const PageBeanIssueFieldOptionSchema: z.ZodType<PageBeanIssueFieldOptionType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -12088,6 +12387,69 @@ const PageBeanIssueTypeSchemeProjectsSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanIssueTypeSchemeProjects')
 
+const PageBeanIssueTypeScreenSchemeSchema = z
+  .strictObject({
+    isLast: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this is the last page.', readOnly: true }),
+    maxResults: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The maximum number of items that could be returned.',
+        readOnly: true,
+      }),
+    nextPage: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'If there is another page of results, the URL of the next page.',
+        readOnly: true,
+      }),
+    self: z.url().exactOptional().openapi({ description: 'The URL of the page.', readOnly: true }),
+    startAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The index of the first item returned.',
+        readOnly: true,
+      }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The number of items returned.',
+        readOnly: true,
+      }),
+    values: z
+      .array(IssueTypeScreenSchemeSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of items.', readOnly: true }),
+  })
+  .openapi({ description: 'A page of items.', required: [] })
+  .openapi('PageBeanIssueTypeScreenScheme')
+
 const PageBeanIssueTypeScreenSchemeItemSchema = z
   .strictObject({
     isLast: z
@@ -12340,7 +12702,7 @@ const PageBeanJqlFunctionPrecomputationBeanSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanJqlFunctionPrecomputationBean')
 
-const PageBeanNotificationSchemeSchema = z
+const PageBeanNotificationSchemeSchema: z.ZodType<PageBeanNotificationSchemeType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -12529,7 +12891,7 @@ const PageBeanPrioritySchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanPriority')
 
-const PageBeanProjectSchema = z
+const PageBeanProjectSchema: z.ZodType<PageBeanProjectType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -12825,41 +13187,95 @@ const PageBeanScreenSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanScreen')
 
-const ScreenSchemeSchema: z.ZodType<ScreenSchemeType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The description of the screen scheme.' }),
-        id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The ID of the screen scheme.',
-          }),
-        issueTypeScreenSchemes: PageBeanIssueTypeScreenSchemeSchema.exactOptional().openapi({
-          description:
-            'Details of the issue type screen schemes associated with the screen scheme.',
-        }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the screen scheme.' }),
-        screens: ScreenTypesSchema.exactOptional().openapi({
-          description: 'The IDs of the screens for the screen types of the screen scheme.',
-        }),
-      })
-      .openapi({ description: 'A screen scheme.', required: [] }),
-  )
+const ScreenTypesSchema = z
+  .strictObject({
+    create: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the create screen.' }),
+    default: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the default screen. Required when creating a screen scheme.',
+      }),
+    edit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the edit screen.' }),
+    view: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the view screen.' }),
+  })
+  .openapi({
+    description: 'The IDs of the screens for the screen types of the screen scheme.',
+    required: ['defaultScreen'],
+    writeOnly: true,
+  })
+  .openapi('ScreenTypes')
+
+const ScreenSchemeSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the screen scheme.' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The ID of the screen scheme.' }),
+    issueTypeScreenSchemes: PageBeanIssueTypeScreenSchemeSchema.exactOptional().openapi({
+      description: 'Details of the issue type screen schemes associated with the screen scheme.',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the screen scheme.' }),
+    screens: ScreenTypesSchema.exactOptional().openapi({
+      description: 'The IDs of the screens for the screen types of the screen scheme.',
+    }),
+  })
+  .openapi({ description: 'A screen scheme.', required: [] })
   .openapi('ScreenScheme')
 
 const PageBeanScreenSchemeSchema = z
@@ -13213,7 +13629,7 @@ const PageBeanUiModificationDetailsSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanUiModificationDetails')
 
-const PageBeanUserSchema = z
+const PageBeanUserSchema: z.ZodType<PageBeanUserType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -13631,156 +14047,7 @@ const PageBeanWebhookSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanWebhook')
 
-const PublishedWorkflowIdSchema = z
-  .strictObject({
-    entityId: z.string().exactOptional().openapi({ description: 'The entity ID of the workflow.' }),
-    name: z.string().openapi({ description: 'The name of the workflow.' }),
-  })
-  .openapi({ description: 'Properties that identify a published workflow.', required: ['name'] })
-  .openapi('PublishedWorkflowId')
-
-const WorkflowOperationsSchema = z
-  .strictObject({
-    canDelete: z.boolean().openapi({ description: 'Whether the workflow can be deleted.' }),
-    canEdit: z.boolean().openapi({ description: 'Whether the workflow can be updated.' }),
-  })
-  .openapi({ description: 'Operations allowed on a workflow', required: ['canDelete', 'canEdit'] })
-  .openapi('WorkflowOperations')
-
-const WorkflowSchemeIdNameSchema = z
-  .strictObject({
-    id: z.string().openapi({ description: 'The ID of the workflow scheme.' }),
-    name: z.string().openapi({ description: 'The name of the workflow scheme.' }),
-  })
-  .openapi({ description: 'The ID and the name of the workflow scheme.', required: ['id', 'name'] })
-  .openapi('WorkflowSchemeIdName')
-
-const WorkflowStatusSchema = z
-  .strictObject({
-    id: z.string().openapi({ description: 'The ID of the issue status.' }),
-    name: z.string().openapi({ description: 'The name of the status in the workflow.' }),
-    properties: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description:
-              'Additional properties that modify the behavior of issues in this status. Supports the properties <code>jira.issue.editable</code> and <code>issueEditable</code> (deprecated) that indicate whether issues are editable.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional properties that modify the behavior of issues in this status. Supports the properties `jira.issue.editable` and `issueEditable` (deprecated) that indicate whether issues are editable.',
-      }),
-  })
-  .openapi({ description: 'Details of a workflow status.', required: ['id', 'name'] })
-  .openapi('WorkflowStatus')
-
-const WorkflowTransitionRuleSchema = z
-  .strictObject({
-    configuration: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'EXPERIMENTAL. The configuration of the transition rule.' }),
-    type: z.string().openapi({ description: 'The type of the transition rule.' }),
-  })
-  .openapi({ description: 'A workflow transition rule.', required: ['type'] })
-  .openapi('WorkflowTransitionRule')
-
-const WorkflowRulesSchema = z
-  .strictObject({
-    conditionsTree: WorkflowConditionSchema.exactOptional(),
-    postFunctions: z
-      .array(WorkflowTransitionRuleSchema)
-      .exactOptional()
-      .openapi({ description: 'The workflow post functions.' }),
-    validators: z
-      .array(WorkflowTransitionRuleSchema)
-      .exactOptional()
-      .openapi({ description: 'The workflow validators.' }),
-  })
-  .openapi({ description: 'A collection of transition rules.', required: [] })
-  .openapi('WorkflowRules')
-
-const TransitionScreenDetailsSchema = z
-  .strictObject({
-    id: z.string().openapi({ description: 'The ID of the screen.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the screen.' }),
-  })
-  .openapi({ description: 'The details of a transition screen.', required: ['id'] })
-  .openapi('TransitionScreenDetails')
-
-const TransitionSchema = z
-  .strictObject({
-    description: z.string().openapi({ description: 'The description of the transition.' }),
-    from: z
-      .array(z.string().openapi({ description: 'The statuses the transition can start from.' }))
-      .openapi({ description: 'The statuses the transition can start from.' }),
-    id: z.string().openapi({ description: 'The ID of the transition.' }),
-    name: z.string().openapi({ description: 'The name of the transition.' }),
-    properties: z
-      .record(z.string(), z.any().openapi({ description: 'The properties of the transition.' }))
-      .exactOptional()
-      .openapi({ description: 'The properties of the transition.' }),
-    rules: WorkflowRulesSchema.exactOptional(),
-    screen: TransitionScreenDetailsSchema.exactOptional(),
-    to: z.string().openapi({ description: 'The status the transition goes to.' }),
-    type: z
-      .enum(['global', 'initial', 'directed'])
-      .openapi({ description: 'The type of the transition.' }),
-  })
-  .openapi({
-    description: 'Details of a workflow transition.',
-    required: ['description', 'from', 'id', 'name', 'to', 'type'],
-  })
-  .openapi('Transition')
-
-const WorkflowSchema = z
-  .strictObject({
-    created: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The creation date of the workflow.' }),
-    description: z.string().openapi({ description: 'The description of the workflow.' }),
-    hasDraftWorkflow: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the workflow has a draft version.' }),
-    id: PublishedWorkflowIdSchema,
-    isDefault: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this is the default workflow.' }),
-    operations: WorkflowOperationsSchema.exactOptional(),
-    projects: z
-      .array(ProjectDetailsSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The projects the workflow is assigned to, through workflow schemes.',
-      }),
-    schemes: z
-      .array(WorkflowSchemeIdNameSchema)
-      .exactOptional()
-      .openapi({ description: 'The workflow schemes the workflow is assigned to.' }),
-    statuses: z
-      .array(WorkflowStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'The statuses of the workflow.' }),
-    transitions: z
-      .array(TransitionSchema)
-      .exactOptional()
-      .openapi({ description: 'The transitions of the workflow.' }),
-    updated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The last edited date of the workflow.' }),
-  })
-  .openapi({ description: 'Details about a workflow.', required: ['description', 'id'] })
-  .openapi('Workflow')
-
-const PageBeanWorkflowSchema = z
+const PageBeanWorkflowSchema: z.ZodType<PageBeanWorkflowType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -13843,7 +14110,7 @@ const PageBeanWorkflowSchema = z
   .openapi({ description: 'A page of items.', required: [] })
   .openapi('PageBeanWorkflow')
 
-const PageBeanWorkflowSchemeSchema = z
+const PageBeanWorkflowSchemeSchema: z.ZodType<PageBeanWorkflowSchemeType> = z
   .strictObject({
     isLast: z
       .boolean()
@@ -14047,7 +14314,7 @@ const PageOfCommentsSchema = z
   .openapi({ description: 'A page of comments.', required: [] })
   .openapi('PageOfComments')
 
-const PageOfDashboardsSchema = z
+const PageOfDashboardsSchema: z.ZodType<PageOfDashboardsType> = z
   .strictObject({
     dashboards: z
       .array(DashboardSchema)
@@ -14281,29 +14548,7 @@ const PaginatedResponseCommentSchema = z
   .openapi({ required: [] })
   .openapi('PaginatedResponseComment')
 
-const ParsedJqlQuerySchema = z
-  .strictObject({
-    errors: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'The list of syntax or validation errors.' }),
-    query: z.string().openapi({ description: 'The JQL query that was parsed and validated.' }),
-    structure: JqlQuerySchema.exactOptional().openapi({
-      description: 'The syntax tree of the query. Empty if the query was invalid.',
-    }),
-  })
-  .openapi({ description: 'Details of a parsed JQL query.', required: ['query'] })
-  .openapi('ParsedJqlQuery')
-
-const ParsedJqlQueriesSchema = z
+const ParsedJqlQueriesSchema: z.ZodType<ParsedJqlQueriesType> = z
   .strictObject({
     queries: z
       .array(ParsedJqlQuerySchema)
@@ -15392,7 +15637,7 @@ const SearchRequestBeanSchema = z
   .openapi({ required: [] })
   .openapi('SearchRequestBean')
 
-const SearchResultsSchema = z
+const SearchResultsSchema: z.ZodType<SearchResultsType> = z
   .strictObject({
     expand: z
       .string()
@@ -16707,7 +16952,7 @@ const VersionUnresolvedIssuesCountSchema = z
   })
   .openapi('VersionUnresolvedIssuesCount')
 
-const VotesSchema = z
+const VotesSchema: z.ZodType<VotesType> = z
   .strictObject({
     hasVoted: z
       .boolean()
@@ -18069,7 +18314,7 @@ export const getRestApi3AttachmentContentIdRoute = createRoute({
   responses: {
     200: {
       description: 'Returned if the request is successful when `redirect` is set to `false`.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     206: {
       description:
@@ -18212,7 +18457,7 @@ export const getRestApi3AttachmentThumbnailIdRoute = createRoute({
   responses: {
     200: {
       description: 'Returned if the request is successful when `redirect` is set to `false`.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     303: {
       description:
@@ -43377,7 +43622,7 @@ export const getRestApi3UniversalAvatarViewTypeTypeRoute = createRoute({
   responses: {
     200: {
       description: 'Returned if the request is successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: 'Returned if the authentication credentials are incorrect.',
@@ -43471,7 +43716,7 @@ export const getRestApi3UniversalAvatarViewTypeTypeAvatarIdRoute = createRoute({
   responses: {
     200: {
       description: 'Returned if the request is successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: {
       description: 'Returned if the request is not valid.',
@@ -43563,7 +43808,7 @@ export const getRestApi3UniversalAvatarViewTypeTypeOwnerEntityIdRoute = createRo
   responses: {
     200: {
       description: 'Returned if the request is successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: {
       description: 'Returned if the request is not valid.',

@@ -372,7 +372,7 @@ const AuditLogEventContextSchema = z
   .openapi('AuditLogEventContext')
 
 const AuditLogEventDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Event specific details. The schema will vary depending on the `event_type`.',
   })
@@ -450,7 +450,7 @@ const AuditLogEventSchema = z
 const BatchRequestActionSchema = z
   .object({
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -513,7 +513,7 @@ const BatchRequestSchema = z
 const BatchResponseSchema = z
   .object({
     body: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The JSON body that the invoked endpoint returned.',
@@ -527,7 +527,7 @@ const BatchResponseSchema = z
         },
       }),
     headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -628,7 +628,7 @@ const CustomFieldCompactSchema = AsanaResourceSchema.and(
         }),
       enum_value: EnumOptionSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               '*Conditional*. Only relevant for custom fields of type `enum`. This object is the chosen value of an `enum` custom field.',
@@ -963,7 +963,7 @@ const CustomFieldResponseSchema = CustomFieldBaseSchema.and(
 
 const CustomFieldSettingCompactSchema = AsanaResourceSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description:
         'Custom Fields Settings objects represent the many-to-many join of the Custom Field and Project as well as stores information that is relevant to that particular pairing.',
@@ -999,7 +999,7 @@ const CustomFieldSettingResponseSchema = CustomFieldSettingCompactSchema.and(
     .object({
       custom_field: CustomFieldResponseSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'The custom field that is applied to the `parent`.',
             readOnly: true,
@@ -1016,7 +1016,7 @@ const CustomFieldSettingResponseSchema = CustomFieldSettingCompactSchema.and(
         }),
       parent: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'The parent to which the custom field is applied. This can be a project or portfolio and indicates that the tasks or projects that the parent contains may be given custom field values for this custom field.',
@@ -1025,7 +1025,7 @@ const CustomFieldSettingResponseSchema = CustomFieldSettingCompactSchema.and(
       ).exactOptional(),
       project: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               '*Deprecated: new integrations should prefer the `parent` field.* The id of the project that this custom field settings refers to.',
@@ -1092,7 +1092,7 @@ const DateVariableRequestSchema = z
   .openapi('DateVariableRequest')
 
 const EmptyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An empty object. Some endpoints do not return an object on success. The success is conveyed through a 2-- status code and returning an empty object.',
@@ -1445,7 +1445,7 @@ const GoalCompactSchema = AsanaResourceSchema.and(
         .string()
         .exactOptional()
         .openapi({ description: 'The name of the goal.', example: 'Grow web traffic by 30%' }),
-      owner: UserCompactSchema.and(z.object({}).nullable()).exactOptional(),
+      owner: UserCompactSchema.and(z.looseObject({}).nullable()).exactOptional(),
     })
     .openapi({ 'x-docs-overrides': { 'properties.resource_type.example': 'goal' }, required: [] }),
 ).openapi('GoalCompact')
@@ -1594,7 +1594,7 @@ const GoalRelationshipCompactSchema = AsanaResourceSchema.and(
         }),
       supporting_resource: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'The supporting resource that supports the goal. This can be either a project, portfolio, or goal.',
@@ -1615,7 +1615,7 @@ const GoalRelationshipBaseSchema = GoalRelationshipCompactSchema.and(
     .object({
       supported_goal: GoalCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'The goal that the supporting resource supports.',
             readOnly: true,
@@ -1625,11 +1625,11 @@ const GoalRelationshipBaseSchema = GoalRelationshipCompactSchema.and(
     .openapi({ required: [] }),
 ).openapi('GoalRelationshipBase')
 
-const GoalRelationshipRequestSchema = GoalRelationshipBaseSchema.and(z.object({})).openapi(
+const GoalRelationshipRequestSchema = GoalRelationshipBaseSchema.and(z.looseObject({})).openapi(
   'GoalRelationshipRequest',
 )
 
-const GoalRelationshipResponseSchema = GoalRelationshipBaseSchema.and(z.object({})).openapi(
+const GoalRelationshipResponseSchema = GoalRelationshipBaseSchema.and(z.looseObject({})).openapi(
   'GoalRelationshipResponse',
 )
 
@@ -1847,15 +1847,15 @@ const GoalResponseSchema = GoalBaseSchema.and(
           example: 5,
           readOnly: true,
         }),
-      owner: UserCompactSchema.and(z.object({}).nullable()).exactOptional(),
-      team: TeamCompactSchema.and(z.object({}).nullable())
+      owner: UserCompactSchema.and(z.looseObject({}).nullable()).exactOptional(),
+      team: TeamCompactSchema.and(z.looseObject({}).nullable())
         .exactOptional()
         .openapi({
           description:
             '*Conditional*. This property is only present when the `workspace` provided is an organization.',
         }),
-      time_period: TimePeriodCompactSchema.and(z.object({}).nullable()).exactOptional(),
-      workspace: WorkspaceCompactSchema.and(z.object({})).exactOptional(),
+      time_period: TimePeriodCompactSchema.and(z.looseObject({}).nullable()).exactOptional(),
+      workspace: WorkspaceCompactSchema.and(z.looseObject({})).exactOptional(),
     })
     .openapi({ required: [] }),
 ).openapi('GoalResponse')
@@ -2187,7 +2187,7 @@ const PortfolioResponseSchema = PortfolioBaseSchema.and(
         }),
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               '*Create-only*. The workspace or organization that the portfolio belongs to.',
@@ -2464,7 +2464,7 @@ const ProjectBaseSchema = ProjectCompactSchema.and(
         }),
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               '*Create-only*. The workspace or organization this project is associated with. Once created, projects cannot be moved to a different workspace. This attribute can only be specified at creation time.',
@@ -2477,7 +2477,7 @@ const ProjectBaseSchema = ProjectCompactSchema.and(
 
 const ProjectBriefCompactSchema = AsanaResourceSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description:
         'A *Project Brief* allows you to explain the what and why of the project to your team.',
@@ -2534,7 +2534,7 @@ const ProjectBriefResponseSchema = ProjectBriefBaseSchema.and(
         }),
       project: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({ description: 'The project with which this project brief is associated.' }),
       ).exactOptional(),
       text: z
@@ -2719,7 +2719,7 @@ const ProjectResponseSchema = ProjectBaseSchema.and(
         }),
       created_from_template: ProjectTemplateCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
@@ -2789,7 +2789,7 @@ const ProjectResponseSchema = ProjectBaseSchema.and(
         }),
       project_brief: ProjectBriefCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
@@ -2797,7 +2797,7 @@ const ProjectResponseSchema = ProjectBaseSchema.and(
           }),
       ).exactOptional(),
       team: TeamCompactSchema.and(
-        z.object({}).openapi({ description: 'The team that this project is shared with.' }),
+        z.looseObject({}).openapi({ description: 'The team that this project is shared with.' }),
       ).exactOptional(),
     })
     .openapi({ required: [] }),
@@ -3227,7 +3227,7 @@ const StatusUpdateResponseSchema = StatusUpdateBaseSchema.and(
         }),
       parent: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'The parent of the status update. This can be a project, goal or portfolio, and indicates that this status was sent on that object.',
@@ -3635,7 +3635,7 @@ const StoryResponseSchema = StoryBaseSchema.and(
       }),
       target: TaskCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'The object this story is associated with. Currently may only be a task.',
             readOnly: true,
@@ -4232,7 +4232,7 @@ const TaskResponseSchema = TaskBaseSchema.and(
         .openapi({ description: 'Array of users following this task.', readOnly: true }),
       parent: TaskCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
@@ -4267,7 +4267,7 @@ const TaskResponseSchema = TaskBaseSchema.and(
         }),
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               '*Create-only*. The workspace this task is associated with. Once created, task cannot be moved to a different workspace. This attribute can only be specified at creation time.',
@@ -4417,7 +4417,9 @@ const TeamResponseSchema = TeamCompactSchema.and(
           example: '<body><em>All</em> developers should be members of this team.</body>',
         }),
       organization: WorkspaceCompactSchema.and(
-        z.object({}).openapi({ description: 'The organization/workspace the team belongs to.\n' }),
+        z
+          .looseObject({})
+          .openapi({ description: 'The organization/workspace the team belongs to.\n' }),
       ).exactOptional(),
       permalink_url: z
         .string()
@@ -4439,7 +4441,7 @@ const TimePeriodBaseSchema = TimePeriodCompactSchema.and(
   z.object({ parent: TimePeriodCompactSchema.exactOptional() }).openapi({ required: [] }),
 ).openapi('TimePeriodBase')
 
-const TimePeriodResponseSchema = TimePeriodBaseSchema.and(z.object({})).openapi(
+const TimePeriodResponseSchema = TimePeriodBaseSchema.and(z.looseObject({})).openapi(
   'TimePeriodResponse',
 )
 
@@ -4619,7 +4621,7 @@ const WebhookRequestSchema = z
               description:
                 'A set of filters to specify a whitelist for what types of events will be delivered.',
             }),
-        ).and(z.object({})),
+        ).and(z.looseObject({})),
       )
       .exactOptional()
       .openapi({
@@ -4664,7 +4666,7 @@ const WebhookResponseSchema = WebhookCompactSchema.and(
                 description:
                   'A set of filters to specify a whitelist for what types of events will be delivered.',
               }),
-          ).and(z.object({})),
+          ).and(z.looseObject({})),
         )
         .exactOptional()
         .openapi({
@@ -4713,7 +4715,7 @@ const WebhookUpdateRequestSchema = z
               description:
                 'A set of filters to specify a whitelist for what types of events will be delivered.',
             }),
-        ).and(z.object({})),
+        ).and(z.looseObject({})),
       )
       .exactOptional()
       .openapi({

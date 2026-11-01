@@ -1,46 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AddressSchema = z
-  .object({
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The third line of the address, or city' }),
-    country: z.string().exactOptional().openapi({ description: 'The country for the address' }),
-    line1: z.string().exactOptional().openapi({ description: 'The first line of the address' }),
-    line2: z.string().exactOptional().openapi({ description: 'The second line of the address' }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The postal (or zip) code for the address' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The fourth line of the address, or region' }),
-    type: z
-      .enum(['Billing', 'Delivery', 'Order', 'Inventory', 'Unknown'])
-      .exactOptional()
-      .openapi({ description: 'The type of the address' }),
-  })
-  .openapi({ title: 'Address', 'x-internal': true, required: [] })
-  .openapi('Address')
-
-const PhoneNumberSchema = z
-  .object({
-    number: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'A phone number.',
-        examples: ['+44 25691 154789', '(877) 492-8687', '01224 658 999'],
-      }),
-    type: z
-      .enum(['Primary', 'Landline', 'Mobile', 'Fax', 'Unknown'])
-      .openapi({ description: 'The type of phone number' }),
-  })
-  .openapi({ required: ['number', 'type'], title: 'Phone', 'x-internal': true })
-  .openapi('PhoneNumber')
-
 const DateTimeSchema = z
   .string()
   .openapi({
@@ -78,512 +37,6 @@ const ModifiedDatesSchema = z
   )
   .openapi({ 'x-internal': true })
   .openapi('ModifiedDates')
-
-const CompanyInfoSchema = z
-  .object({
-    accountBalances: z
-      .array(
-        z
-          .object({
-            available: z
-              .number()
-              .exactOptional()
-              .openapi({ description: "The account's current balance" }),
-            currency: z
-              .string()
-              .openapi({
-                description:
-                  'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-                examples: ['GBP', 'USD', 'EUR'],
-                title: 'Currency',
-                'x-internal': true,
-              })
-              .exactOptional()
-              .openapi({ description: 'The currency of the account' }),
-            pending: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Funds that are not yet available in the balance' }),
-            reserved: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Funds reserved as holdings' }),
-          })
-          .openapi({ title: 'Account Balance', 'x-internal': true, required: [] }),
-      )
-      .exactOptional()
-      .openapi({
-        description: "The available and current cash balances for the company's accounts",
-      }),
-    addresses: z
-      .array(AddressSchema)
-      .exactOptional()
-      .openapi({ description: 'Addresses associated with the company' }),
-    baseCurrency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-        examples: ['GBP', 'USD', 'EUR'],
-        title: 'Currency',
-        'x-internal': true,
-      }),
-    commercePlatformRef: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identifier or reference for the company in the commerce platform' }),
-    companyLegalName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The full legal name of the company', example: 'Codat Limited' }),
-    companyName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the company', example: 'Codat' }),
-    phoneNumbers: z
-      .array(PhoneNumberSchema)
-      .exactOptional()
-      .openapi({ description: 'Phone numbers associated with the company' }),
-    registrationNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The registration number of the company', examples: [10480375] }),
-    sourceUrls: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "URL addresses for the originating system. For example, potential use cases include 'deeplinking' to the originating system",
-        example: {
-          url1: 'https://connect.sandbox.com/v2/customers',
-          url2: 'https://connect.sandbox.com/v2/disputes',
-        },
-      }),
-    webLinks: z
-      .array(
-        z
-          .object({
-            type: z
-              .enum(['Website', 'Social', 'Unknown'])
-              .exactOptional()
-              .openapi({ description: 'The type of the weblink.' }),
-            url: z.url().exactOptional().openapi({ description: 'The full URL for the weblink.' }),
-          })
-          .openapi({
-            description: 'Weblink associated with the company.',
-            example: { type: 'Website', url: 'https://codat.io' },
-            title: 'Weblink',
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Weblinks associated with the company' }),
-  })
-  .openapi({ required: [] })
-  .and(CreatedDateSchema)
-  .and(ModifiedDatesSchema)
-  .openapi({
-    description:
-      'In the Codat system, company information includes standard commercial details about \na linked company, such as their address, phone number, and company registration.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=companyInfo) for this data type.\n',
-    title: 'Company Info',
-  })
-  .openapi('CompanyInfo')
-
-const CustomerSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'A unique, persistent identifier for this record',
-        examples: [
-          '13d946f0-c5d5-42bc-b092-97ece17923ab',
-          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
-          7110701885,
-          'EILBDVJVNUAGVKRQ',
-        ],
-        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
-      }),
-  })
-  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
-  .and(
-    z
-      .object({
-        addresses: z
-          .array(AddressSchema)
-          .exactOptional()
-          .openapi({ description: 'Addresses of the customer' }),
-        customerName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name of the customer', example: 'Fred Smith' }),
-        defaultCurrency: z
-          .any()
-          .openapi({
-            description:
-              'Default currency of any transactional data for the customer, \nfor example, orders or payments\n',
-          })
-          .and(
-            z
-              .string()
-              .openapi({
-                description:
-                  'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
-                examples: ['GBP', 'USD', 'EUR'],
-                title: 'Currency',
-                'x-internal': true,
-              }),
-          )
-          .exactOptional(),
-        emailAddress: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Email address of the customer',
-            example: 'fred.smith@myCompany.com',
-          }),
-        note: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Any additional information about the customer' }),
-        phone: z.lazy(() => PhoneNumberSchema).exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .and(CreatedDateSchema)
-  .and(ModifiedDatesSchema)
-  .openapi({
-    description:
-      'When a customer places an order with the connected commerce store their details are added to the Customers dataset. You can use the data from the Customers endpoints to calculate key metrics, such as customer churn.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-customers) for this data type.',
-    examples: [
-      {
-        customers: [
-          {
-            addresses: [
-              {
-                city: 'London',
-                country: 'United Kingdom',
-                line1: '301 Duck Pond',
-                line2: '28 Green Street',
-                postalCode: 'WX1X 0BE',
-                region: 'England',
-                type: 'billing',
-              },
-              {
-                city: 'Paris',
-                country: 'France',
-                line1: 'Bread Street',
-                line2: 'Bird Avenue',
-                postalCode: 'WDF 123',
-                region: 'France',
-                type: 'delivery',
-              },
-            ],
-            createdDate: '0001-01-01T00:00:00',
-            customerName: 'Daffy Duck',
-            defaultCurrency: 'GBP',
-            emailAddress: 'd.duck@warnerbros.com',
-            id: '15',
-            modifiedDate: null,
-            note: 'Regular customer',
-            phone: '(877) 492-8687',
-            sourceModifiedDate: '2020-09-15T23:52:28',
-          },
-          {
-            addresses: [
-              {
-                city: 'London',
-                country: 'United Kingdom',
-                line1: '101 Fire Rooms',
-                line2: 'Engine Street',
-                postalCode: 'WC1X 0BE',
-                region: 'England',
-                type: 'billing',
-              },
-            ],
-            createdDate: '0001-01-01T00:00:00',
-            customerName: 'Tasmanian Devil',
-            defaultCurrency: 'GBP',
-            emailAddress: 't.devil@warnerbros.com',
-            id: '18',
-            modifiedDate: null,
-            note: 'Handle with care',
-            phone: '+1-202-555-0181',
-            sourceModifiedDate: '2020-04-16T02:41:52',
-          },
-          {
-            addresses: [
-              {
-                city: 'Yorkshire',
-                country: 'United Kingdom',
-                line1: '301 Carrot Street',
-                line2: 'Orange Town',
-                postalCode: 'WF1X 0BE',
-                region: 'England',
-                type: 'billing',
-              },
-              {
-                city: 'Paris',
-                country: 'France',
-                line1: '424 Field Street',
-                line2: 'The Meadow',
-                postalCode: 'WDF 123',
-                region: 'France',
-                type: 'delivery',
-              },
-            ],
-            createdDate: '0001-01-01T00:00:00',
-            customerName: 'Bugs Bunny',
-            defaultCurrency: 'GBP',
-            emailAddress: 'b.bunny@warnerbros.com',
-            id: 'a99f5e0c-a4db-452f-8d2c-8fd15482b384',
-            modifiedDate: null,
-            note: 'Regular customer',
-            phone: '',
-            sourceModifiedDate: '2020-08-12T14:37:37',
-          },
-        ],
-      },
-    ],
-    title: 'Customer',
-  })
-  .openapi('Customer')
-
-const HRefSchema = z
-  .object({ href: z.string().exactOptional() })
-  .openapi({ title: 'Hypertext reference', 'x-internal': true, required: [] })
-  .openapi('HRef')
-
-const LinksSchema = z
-  .object({
-    current: HRefSchema,
-    next: HRefSchema.exactOptional(),
-    previous: HRefSchema.exactOptional(),
-    self: HRefSchema,
-  })
-  .openapi({
-    examples: [
-      {
-        current: { href: '/companies/{id}/data/{dataType}?page=1&pageSize=10' },
-        self: { href: '/companies/{id}/data/{dataType}' },
-      },
-    ],
-    required: ['self', 'current'],
-    'x-internal': true,
-  })
-  .openapi('Links')
-
-const PagingInfoSchema = z
-  .object({ _links: LinksSchema, pageNumber: z.int(), pageSize: z.int(), totalResults: z.int() })
-  .openapi({
-    examples: [
-      {
-        _links: {
-          current: { href: '/companies/{id}/data/{dataType}?page=1&pageSize=10' },
-          pageNumber: 1,
-          pageSize: 10,
-          self: { href: '/companies/{id}/data/{dataType}' },
-          totalResults: 1,
-        },
-      },
-    ],
-    required: ['pageNumber', 'pageSize', 'totalResults', '_links'],
-    'x-internal': true,
-  })
-  .openapi('PagingInfo')
-
-const CustomersSchema = z
-  .object({ results: z.array(CustomerSchema).exactOptional() })
-  .openapi({ required: [] })
-  .and(PagingInfoSchema)
-  .openapi({ 'x-internal': true })
-  .openapi('Customers')
-
-const RecordRefSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'The unique identitifer of the record being referenced',
-        examples: [
-          '13d946f0-c5d5-42bc-b092-97ece17923ab',
-          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
-          7110701885,
-          'EILBDVJVNUAGVKRQ',
-        ],
-      }),
-    type: z.string().openapi({ description: 'The type of record being referenced.' }),
-  })
-  .openapi({ description: '', required: ['id', 'type'], title: 'Record Ref', 'x-internal': true })
-  .openapi('RecordRef')
-
-const DisputeSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'A unique, persistent identifier for this record',
-        examples: [
-          '13d946f0-c5d5-42bc-b092-97ece17923ab',
-          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
-          7110701885,
-          'EILBDVJVNUAGVKRQ',
-        ],
-        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
-      }),
-  })
-  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
-  .and(
-    z
-      .object({
-        currency: z
-          .string()
-          .openapi({
-            description: 'Currency of the disputed transaction.',
-            examples: ['GBP', 'USD', 'EUR'],
-            title: 'Currency',
-            'x-internal': true,
-          }),
-        disputedTransactions: RecordRefSchema.and(
-          z
-            .object({
-              type: z
-                .enum(['Fee', 'Order', 'Payment', 'ServiceCharge', 'Unknown'])
-                .exactOptional()
-                .openapi({ 'x-internal': true }),
-            })
-            .openapi({ required: [] }),
-        )
-          .exactOptional()
-          .openapi({
-            title: 'Transaction Source Reference',
-            'x-internal': true,
-            description: 'Link to the source event which triggered this transaction.',
-          }),
-        dueDate: DateTimeSchema.exactOptional().openapi({
-          description: 'Date when the next action in the dispute resolution is due',
-        }),
-        reason: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Reason for the dispute', examples: ['Unhappy with product'] }),
-        status: z
-          .enum([
-            'Won',
-            'Lost',
-            'Accepted',
-            'Processing',
-            'ChargeRefunded',
-            'EvidenceRequired',
-            'InquiryEvidenceRequired',
-            'InquiryProcessing',
-            'InquiryClosed',
-            'WaitingThirdParty',
-            'Unknown',
-          ])
-          .exactOptional()
-          .openapi({
-            description: 'Current status of the dispute',
-            example: 'EvidenceRequired',
-            'x-internal': true,
-          }),
-        totalAmount: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description: 'Total transaction amount that is under dispute.',
-            examples: [194.12, -283.56, 0],
-          }),
-      })
-      .openapi({ required: ['currency'] }),
-  )
-  .and(CreatedDateSchema)
-  .and(ModifiedDatesSchema)
-  .openapi({
-    description:
-      "A customer may file a payment dispute with their bank or other card issuer when they're unsatisfied with their purchase or believe they have been charged incorrectly. For example:  \n- They didn't receive an order.  \n- The product they received was different to the commerce store's description.  \n- They've been the victim of online fraud.  \n\nYou can use data from the Disputes endpoints to calculate key metrics, such as the number of chargebacks.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-disputes) for this data type.",
-    examples: [
-      {
-        createdDate: '2021-03-22T14:39:55',
-        currency: 'GBP',
-        disputedTransactions: [{ id: 'e63ad857-7e12-4e64-9185-cdfd7c45d09d', type: 'Order' }],
-        dueDate: '2021-03-29T14:39:55',
-        id: '03e608e3-bd1c-454f-8c2b-fb0133e43b95',
-        modifiedDate: '2022-02-02T11:02:45Z',
-        reason: 'Unhappy with product',
-        sourceModifiedDate: '2021-03-22T14:39:55',
-        status: 'InquiryEvidenceRequired',
-        totalAmount: -47.66,
-      },
-    ],
-    title: 'Dispute',
-  })
-  .openapi('Dispute')
-
-const DisputesSchema = z
-  .object({ results: z.array(DisputeSchema).exactOptional() })
-  .openapi({ required: [] })
-  .and(PagingInfoSchema)
-  .openapi({ 'x-internal': true })
-  .openapi('Disputes')
-
-const LocationsSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'A unique, persistent identifier for this record',
-        examples: [
-          '13d946f0-c5d5-42bc-b092-97ece17923ab',
-          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
-          7110701885,
-          'EILBDVJVNUAGVKRQ',
-        ],
-        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
-      }),
-  })
-  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
-  .and(
-    z
-      .object({
-        address: AddressSchema.exactOptional().openapi({
-          description: 'Address associated with the location',
-        }),
-        name: z.string().exactOptional().openapi({ description: 'Name of this location' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .and(ModifiedDatesSchema)
-  .openapi({
-    description:
-      'The Locations datatype holds information on geographic locations at which stocks of products may be held, as referenced in the Products data type.\n\nLocations also holds information on geographic locations where orders were placed, as referenced in the Orders data type.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-locations) for this data type.',
-    examples: [
-      {
-        address: {
-          city: 'London',
-          country: 'United Kingdom',
-          line1: 'Warner House',
-          line2: "98 Theobald's Road",
-          postalCode: 'WC1X 8WB',
-          region: '',
-          type: 'Inventory',
-        },
-        id: '15',
-        modifiedDate: '2020-08-12T14:37:37',
-        name: 'London Warehouse',
-        sourceModifiedDate: '2020-08-12T14:37:37',
-      },
-    ],
-    title: 'Locations',
-  })
-  .openapi('Locations')
-
-const LocationsResponseSchema = z
-  .object({ results: z.array(LocationsSchema).exactOptional() })
-  .openapi({ required: [] })
-  .and(PagingInfoSchema)
-  .openapi({ 'x-internal': true })
-  .openapi('LocationsResponse')
 
 const OrderSchema = z
   .object({
@@ -1125,140 +578,75 @@ const OrderSchema = z
   })
   .openapi('Order')
 
-const OrdersSchema = z
-  .object({ results: z.array(OrderSchema).exactOptional() })
-  .openapi({ required: [] })
-  .and(PagingInfoSchema)
-  .openapi({ 'x-internal': true })
-  .openapi('Orders')
+const HRefSchema = z
+  .object({ href: z.string().exactOptional() })
+  .openapi({ title: 'Hypertext reference', 'x-internal': true, required: [] })
+  .openapi('HRef')
 
-const PaymentSchema = z
+const LinksSchema = z
   .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'A unique, persistent identifier for this record',
-        examples: [
-          '13d946f0-c5d5-42bc-b092-97ece17923ab',
-          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
-          7110701885,
-          'EILBDVJVNUAGVKRQ',
-        ],
-        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
-      }),
+    current: HRefSchema,
+    next: HRefSchema.exactOptional(),
+    previous: HRefSchema.exactOptional(),
+    self: HRefSchema,
   })
-  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
-  .and(
-    z
-      .object({
-        amount: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description: 'Payment Amount (including gratuity)',
-            examples: [194.12, -283.56, 0],
-          }),
-        currency: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Currency in which the payment was made',
-            examples: ['GBP', 'USD', 'EUR'],
-            title: 'Currency',
-            'x-internal': true,
-          }),
-        dueDate: DateTimeSchema.exactOptional().openapi({
-          description: 'Date by which payment must be made',
-        }),
-        paymentMethodRef: z
-          .object({
-            id: z
-              .string()
-              .openapi({ description: 'The unique identitifer of the location being referenced.' }),
-            name: z.string().openapi({ description: 'Name of the location being referenced.' }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'The payment method the payment is linked to in the commerce platform.',
-            example: { id: 'EILBDVJVNUAGVKRQ', name: 'AliPay' },
-            required: ['id', 'name'],
-          }),
-        paymentProvider: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Service provider of the payment, if applicable.',
-            examples: ['Amazon Pay', 'Checkout.com', 'SagePay'],
-          }),
-        status: z
-          .enum(['Pending', 'Authorized', 'Paid', 'Failed', 'Cancelled', 'Unknown'])
-          .exactOptional()
-          .openapi({ description: 'Status of the payment', 'x-internal': true }),
-      })
-      .openapi({ required: [] }),
-  )
-  .and(CreatedDateSchema)
-  .and(ModifiedDatesSchema)
   .openapi({
-    description:
-      'Payments contain details of all payments made by customers to a company, including: amounts, currency used, payment method, payment provider, and payment status.\n\nRefunds are recorded as separate, negative payments. Note that a refund can only occur in relation to a payment that has been completed (i.e. has a status of `Paid`). When a customer cancels an order _before_ a payment has been completed, the payment shows as `Cancelled`.\n\nYou can use data from the Payments endpoints to calculate key metrics, such as gross sales and monthly recurring revenue (MRR).\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-payments) for this data type.',
-    title: 'Payment',
+    examples: [
+      {
+        current: { href: '/companies/{id}/data/{dataType}?page=1&pageSize=10' },
+        self: { href: '/companies/{id}/data/{dataType}' },
+      },
+    ],
+    required: ['self', 'current'],
+    'x-internal': true,
   })
-  .openapi('Payment')
+  .openapi('Links')
 
-const PaymentMethodSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'A unique, persistent identifier for this record',
-        examples: [
-          '13d946f0-c5d5-42bc-b092-97ece17923ab',
-          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
-          7110701885,
-          'EILBDVJVNUAGVKRQ',
-        ],
-        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
-      }),
-  })
-  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
-  .and(
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the PaymentMethod', example: 'Alipay' }),
-        status: z
-          .enum(['Active', 'Archived', 'Unknown'])
-          .exactOptional()
-          .openapi({ description: 'Status of the Payment Method', example: 'Active' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .and(ModifiedDatesSchema)
+const PagingInfoSchema = z
+  .object({ _links: LinksSchema, pageNumber: z.int(), pageSize: z.int(), totalResults: z.int() })
   .openapi({
-    description:
-      'A Payment Method represents the payment method(s) used to make payments.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-paymentMethods) for this data type.',
-    title: 'Payment Method',
+    examples: [
+      {
+        _links: {
+          current: { href: '/companies/{id}/data/{dataType}?page=1&pageSize=10' },
+          pageNumber: 1,
+          pageSize: 10,
+          self: { href: '/companies/{id}/data/{dataType}' },
+          totalResults: 1,
+        },
+      },
+    ],
+    required: ['pageNumber', 'pageSize', 'totalResults', '_links'],
+    'x-internal': true,
   })
-  .openapi('PaymentMethod')
+  .openapi('PagingInfo')
 
-const PaymentMethodsSchema = z
-  .object({ results: z.array(PaymentMethodSchema).exactOptional() })
-  .openapi({ required: [] })
-  .and(PagingInfoSchema)
-  .openapi({ 'x-internal': true })
-  .openapi('PaymentMethods')
+type OrdersType = { results?: z.infer<typeof OrderSchema>[] } & z.infer<typeof PagingInfoSchema>
 
-const PaymentsSchema = z
-  .object({ results: z.array(PaymentSchema).exactOptional() })
-  .openapi({ required: [] })
-  .and(PagingInfoSchema)
-  .openapi({ 'x-internal': true })
-  .openapi('Payments')
+type ProductType = { id: string } & {
+  categorization?: string
+  description?: string
+  isGiftCard?: boolean
+  name?: string
+  variants?: ({ id: string } & {
+    barcode?: string
+    inventory?: {
+      locations?: { locationRef?: { id: string; name: string }; quantity?: number }[]
+      totalQuantity?: number | null
+    }[]
+    isTaxEnabled?: boolean
+    name?: string
+    prices?: { currency?: string | null; unitPrice?: number }[]
+    shippingRequired?: boolean
+    sku?: string
+    status?: 'Unknown' | 'Published' | 'Unpublished'
+    unitOfMeasure?: string
+    vatPercentage?: number
+  } & z.infer<typeof CreatedDateSchema> &
+    z.infer<typeof ModifiedDatesSchema>)[]
+}
 
-const ProductSchema = z
+const ProductSchema: z.ZodType<ProductType> = z
   .object({
     id: z
       .string()
@@ -1496,6 +884,645 @@ const ProductSchema = z
   })
   .openapi('Product')
 
+type ProductsType = { results?: z.infer<typeof ProductSchema>[] } & z.infer<typeof PagingInfoSchema>
+
+const AddressSchema = z
+  .object({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The third line of the address, or city' }),
+    country: z.string().exactOptional().openapi({ description: 'The country for the address' }),
+    line1: z.string().exactOptional().openapi({ description: 'The first line of the address' }),
+    line2: z.string().exactOptional().openapi({ description: 'The second line of the address' }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The postal (or zip) code for the address' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The fourth line of the address, or region' }),
+    type: z
+      .enum(['Billing', 'Delivery', 'Order', 'Inventory', 'Unknown'])
+      .exactOptional()
+      .openapi({ description: 'The type of the address' }),
+  })
+  .openapi({ title: 'Address', 'x-internal': true, required: [] })
+  .openapi('Address')
+
+const PhoneNumberSchema = z
+  .object({
+    number: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'A phone number.',
+        examples: ['+44 25691 154789', '(877) 492-8687', '01224 658 999'],
+      }),
+    type: z
+      .enum(['Primary', 'Landline', 'Mobile', 'Fax', 'Unknown'])
+      .openapi({ description: 'The type of phone number' }),
+  })
+  .openapi({ required: ['number', 'type'], title: 'Phone', 'x-internal': true })
+  .openapi('PhoneNumber')
+
+const CompanyInfoSchema = z
+  .object({
+    accountBalances: z
+      .array(
+        z
+          .object({
+            available: z
+              .number()
+              .exactOptional()
+              .openapi({ description: "The account's current balance" }),
+            currency: z
+              .string()
+              .openapi({
+                description:
+                  'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
+                examples: ['GBP', 'USD', 'EUR'],
+                title: 'Currency',
+                'x-internal': true,
+              })
+              .exactOptional()
+              .openapi({ description: 'The currency of the account' }),
+            pending: z
+              .number()
+              .exactOptional()
+              .openapi({ description: 'Funds that are not yet available in the balance' }),
+            reserved: z
+              .number()
+              .exactOptional()
+              .openapi({ description: 'Funds reserved as holdings' }),
+          })
+          .openapi({ title: 'Account Balance', 'x-internal': true, required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description: "The available and current cash balances for the company's accounts",
+      }),
+    addresses: z
+      .array(AddressSchema)
+      .exactOptional()
+      .openapi({ description: 'Addresses associated with the company' }),
+    baseCurrency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
+        examples: ['GBP', 'USD', 'EUR'],
+        title: 'Currency',
+        'x-internal': true,
+      }),
+    commercePlatformRef: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifier or reference for the company in the commerce platform' }),
+    companyLegalName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full legal name of the company', example: 'Codat Limited' }),
+    companyName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the company', example: 'Codat' }),
+    phoneNumbers: z
+      .array(PhoneNumberSchema)
+      .exactOptional()
+      .openapi({ description: 'Phone numbers associated with the company' }),
+    registrationNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The registration number of the company', examples: [10480375] }),
+    sourceUrls: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "URL addresses for the originating system. For example, potential use cases include 'deeplinking' to the originating system",
+        example: {
+          url1: 'https://connect.sandbox.com/v2/customers',
+          url2: 'https://connect.sandbox.com/v2/disputes',
+        },
+      }),
+    webLinks: z
+      .array(
+        z
+          .object({
+            type: z
+              .enum(['Website', 'Social', 'Unknown'])
+              .exactOptional()
+              .openapi({ description: 'The type of the weblink.' }),
+            url: z.url().exactOptional().openapi({ description: 'The full URL for the weblink.' }),
+          })
+          .openapi({
+            description: 'Weblink associated with the company.',
+            example: { type: 'Website', url: 'https://codat.io' },
+            title: 'Weblink',
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Weblinks associated with the company' }),
+  })
+  .openapi({ required: [] })
+  .and(CreatedDateSchema)
+  .and(ModifiedDatesSchema)
+  .openapi({
+    description:
+      'In the Codat system, company information includes standard commercial details about \na linked company, such as their address, phone number, and company registration.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=companyInfo) for this data type.\n',
+    title: 'Company Info',
+  })
+  .openapi('CompanyInfo')
+
+const CustomerSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'A unique, persistent identifier for this record',
+        examples: [
+          '13d946f0-c5d5-42bc-b092-97ece17923ab',
+          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
+          7110701885,
+          'EILBDVJVNUAGVKRQ',
+        ],
+        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
+      }),
+  })
+  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
+  .and(
+    z
+      .object({
+        addresses: z
+          .array(AddressSchema)
+          .exactOptional()
+          .openapi({ description: 'Addresses of the customer' }),
+        customerName: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Name of the customer', example: 'Fred Smith' }),
+        defaultCurrency: z
+          .any()
+          .openapi({
+            description:
+              'Default currency of any transactional data for the customer, \nfor example, orders or payments\n',
+          })
+          .and(
+            z
+              .string()
+              .openapi({
+                description:
+                  'The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.\n\n## Unknown currencies\n\nIn line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. \n\nThere are only a very small number of edge cases where this currency code is returned by the Codat system.',
+                examples: ['GBP', 'USD', 'EUR'],
+                title: 'Currency',
+                'x-internal': true,
+              }),
+          )
+          .exactOptional(),
+        emailAddress: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Email address of the customer',
+            example: 'fred.smith@myCompany.com',
+          }),
+        note: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Any additional information about the customer' }),
+        phone: z.lazy(() => PhoneNumberSchema).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .and(CreatedDateSchema)
+  .and(ModifiedDatesSchema)
+  .openapi({
+    description:
+      'When a customer places an order with the connected commerce store their details are added to the Customers dataset. You can use the data from the Customers endpoints to calculate key metrics, such as customer churn.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-customers) for this data type.',
+    examples: [
+      {
+        customers: [
+          {
+            addresses: [
+              {
+                city: 'London',
+                country: 'United Kingdom',
+                line1: '301 Duck Pond',
+                line2: '28 Green Street',
+                postalCode: 'WX1X 0BE',
+                region: 'England',
+                type: 'billing',
+              },
+              {
+                city: 'Paris',
+                country: 'France',
+                line1: 'Bread Street',
+                line2: 'Bird Avenue',
+                postalCode: 'WDF 123',
+                region: 'France',
+                type: 'delivery',
+              },
+            ],
+            createdDate: '0001-01-01T00:00:00',
+            customerName: 'Daffy Duck',
+            defaultCurrency: 'GBP',
+            emailAddress: 'd.duck@warnerbros.com',
+            id: '15',
+            modifiedDate: null,
+            note: 'Regular customer',
+            phone: '(877) 492-8687',
+            sourceModifiedDate: '2020-09-15T23:52:28',
+          },
+          {
+            addresses: [
+              {
+                city: 'London',
+                country: 'United Kingdom',
+                line1: '101 Fire Rooms',
+                line2: 'Engine Street',
+                postalCode: 'WC1X 0BE',
+                region: 'England',
+                type: 'billing',
+              },
+            ],
+            createdDate: '0001-01-01T00:00:00',
+            customerName: 'Tasmanian Devil',
+            defaultCurrency: 'GBP',
+            emailAddress: 't.devil@warnerbros.com',
+            id: '18',
+            modifiedDate: null,
+            note: 'Handle with care',
+            phone: '+1-202-555-0181',
+            sourceModifiedDate: '2020-04-16T02:41:52',
+          },
+          {
+            addresses: [
+              {
+                city: 'Yorkshire',
+                country: 'United Kingdom',
+                line1: '301 Carrot Street',
+                line2: 'Orange Town',
+                postalCode: 'WF1X 0BE',
+                region: 'England',
+                type: 'billing',
+              },
+              {
+                city: 'Paris',
+                country: 'France',
+                line1: '424 Field Street',
+                line2: 'The Meadow',
+                postalCode: 'WDF 123',
+                region: 'France',
+                type: 'delivery',
+              },
+            ],
+            createdDate: '0001-01-01T00:00:00',
+            customerName: 'Bugs Bunny',
+            defaultCurrency: 'GBP',
+            emailAddress: 'b.bunny@warnerbros.com',
+            id: 'a99f5e0c-a4db-452f-8d2c-8fd15482b384',
+            modifiedDate: null,
+            note: 'Regular customer',
+            phone: '',
+            sourceModifiedDate: '2020-08-12T14:37:37',
+          },
+        ],
+      },
+    ],
+    title: 'Customer',
+  })
+  .openapi('Customer')
+
+const CustomersSchema = z
+  .object({ results: z.array(CustomerSchema).exactOptional() })
+  .openapi({ required: [] })
+  .and(PagingInfoSchema)
+  .openapi({ 'x-internal': true })
+  .openapi('Customers')
+
+const RecordRefSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identitifer of the record being referenced',
+        examples: [
+          '13d946f0-c5d5-42bc-b092-97ece17923ab',
+          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
+          7110701885,
+          'EILBDVJVNUAGVKRQ',
+        ],
+      }),
+    type: z.string().openapi({ description: 'The type of record being referenced.' }),
+  })
+  .openapi({ description: '', required: ['id', 'type'], title: 'Record Ref', 'x-internal': true })
+  .openapi('RecordRef')
+
+const DisputeSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'A unique, persistent identifier for this record',
+        examples: [
+          '13d946f0-c5d5-42bc-b092-97ece17923ab',
+          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
+          7110701885,
+          'EILBDVJVNUAGVKRQ',
+        ],
+        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
+      }),
+  })
+  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
+  .and(
+    z
+      .object({
+        currency: z
+          .string()
+          .openapi({
+            description: 'Currency of the disputed transaction.',
+            examples: ['GBP', 'USD', 'EUR'],
+            title: 'Currency',
+            'x-internal': true,
+          }),
+        disputedTransactions: RecordRefSchema.and(
+          z
+            .object({
+              type: z
+                .enum(['Fee', 'Order', 'Payment', 'ServiceCharge', 'Unknown'])
+                .exactOptional()
+                .openapi({ 'x-internal': true }),
+            })
+            .openapi({ required: [] }),
+        )
+          .exactOptional()
+          .openapi({
+            title: 'Transaction Source Reference',
+            'x-internal': true,
+            description: 'Link to the source event which triggered this transaction.',
+          }),
+        dueDate: DateTimeSchema.exactOptional().openapi({
+          description: 'Date when the next action in the dispute resolution is due',
+        }),
+        reason: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Reason for the dispute', examples: ['Unhappy with product'] }),
+        status: z
+          .enum([
+            'Won',
+            'Lost',
+            'Accepted',
+            'Processing',
+            'ChargeRefunded',
+            'EvidenceRequired',
+            'InquiryEvidenceRequired',
+            'InquiryProcessing',
+            'InquiryClosed',
+            'WaitingThirdParty',
+            'Unknown',
+          ])
+          .exactOptional()
+          .openapi({
+            description: 'Current status of the dispute',
+            example: 'EvidenceRequired',
+            'x-internal': true,
+          }),
+        totalAmount: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description: 'Total transaction amount that is under dispute.',
+            examples: [194.12, -283.56, 0],
+          }),
+      })
+      .openapi({ required: ['currency'] }),
+  )
+  .and(CreatedDateSchema)
+  .and(ModifiedDatesSchema)
+  .openapi({
+    description:
+      "A customer may file a payment dispute with their bank or other card issuer when they're unsatisfied with their purchase or believe they have been charged incorrectly. For example:  \n- They didn't receive an order.  \n- The product they received was different to the commerce store's description.  \n- They've been the victim of online fraud.  \n\nYou can use data from the Disputes endpoints to calculate key metrics, such as the number of chargebacks.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-disputes) for this data type.",
+    examples: [
+      {
+        createdDate: '2021-03-22T14:39:55',
+        currency: 'GBP',
+        disputedTransactions: [{ id: 'e63ad857-7e12-4e64-9185-cdfd7c45d09d', type: 'Order' }],
+        dueDate: '2021-03-29T14:39:55',
+        id: '03e608e3-bd1c-454f-8c2b-fb0133e43b95',
+        modifiedDate: '2022-02-02T11:02:45Z',
+        reason: 'Unhappy with product',
+        sourceModifiedDate: '2021-03-22T14:39:55',
+        status: 'InquiryEvidenceRequired',
+        totalAmount: -47.66,
+      },
+    ],
+    title: 'Dispute',
+  })
+  .openapi('Dispute')
+
+const DisputesSchema = z
+  .object({ results: z.array(DisputeSchema).exactOptional() })
+  .openapi({ required: [] })
+  .and(PagingInfoSchema)
+  .openapi({ 'x-internal': true })
+  .openapi('Disputes')
+
+const LocationsSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'A unique, persistent identifier for this record',
+        examples: [
+          '13d946f0-c5d5-42bc-b092-97ece17923ab',
+          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
+          7110701885,
+          'EILBDVJVNUAGVKRQ',
+        ],
+        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
+      }),
+  })
+  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
+  .and(
+    z
+      .object({
+        address: AddressSchema.exactOptional().openapi({
+          description: 'Address associated with the location',
+        }),
+        name: z.string().exactOptional().openapi({ description: 'Name of this location' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .and(ModifiedDatesSchema)
+  .openapi({
+    description:
+      'The Locations datatype holds information on geographic locations at which stocks of products may be held, as referenced in the Products data type.\n\nLocations also holds information on geographic locations where orders were placed, as referenced in the Orders data type.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-locations) for this data type.',
+    examples: [
+      {
+        address: {
+          city: 'London',
+          country: 'United Kingdom',
+          line1: 'Warner House',
+          line2: "98 Theobald's Road",
+          postalCode: 'WC1X 8WB',
+          region: '',
+          type: 'Inventory',
+        },
+        id: '15',
+        modifiedDate: '2020-08-12T14:37:37',
+        name: 'London Warehouse',
+        sourceModifiedDate: '2020-08-12T14:37:37',
+      },
+    ],
+    title: 'Locations',
+  })
+  .openapi('Locations')
+
+const LocationsResponseSchema = z
+  .object({ results: z.array(LocationsSchema).exactOptional() })
+  .openapi({ required: [] })
+  .and(PagingInfoSchema)
+  .openapi({ 'x-internal': true })
+  .openapi('LocationsResponse')
+
+const OrdersSchema: z.ZodType<OrdersType> = z
+  .object({ results: z.array(OrderSchema).exactOptional() })
+  .openapi({ required: [] })
+  .and(PagingInfoSchema)
+  .openapi({ 'x-internal': true })
+  .openapi('Orders')
+
+const PaymentSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'A unique, persistent identifier for this record',
+        examples: [
+          '13d946f0-c5d5-42bc-b092-97ece17923ab',
+          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
+          7110701885,
+          'EILBDVJVNUAGVKRQ',
+        ],
+        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
+      }),
+  })
+  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
+  .and(
+    z
+      .object({
+        amount: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description: 'Payment Amount (including gratuity)',
+            examples: [194.12, -283.56, 0],
+          }),
+        currency: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Currency in which the payment was made',
+            examples: ['GBP', 'USD', 'EUR'],
+            title: 'Currency',
+            'x-internal': true,
+          }),
+        dueDate: DateTimeSchema.exactOptional().openapi({
+          description: 'Date by which payment must be made',
+        }),
+        paymentMethodRef: z
+          .object({
+            id: z
+              .string()
+              .openapi({ description: 'The unique identitifer of the location being referenced.' }),
+            name: z.string().openapi({ description: 'Name of the location being referenced.' }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'The payment method the payment is linked to in the commerce platform.',
+            example: { id: 'EILBDVJVNUAGVKRQ', name: 'AliPay' },
+            required: ['id', 'name'],
+          }),
+        paymentProvider: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Service provider of the payment, if applicable.',
+            examples: ['Amazon Pay', 'Checkout.com', 'SagePay'],
+          }),
+        status: z
+          .enum(['Pending', 'Authorized', 'Paid', 'Failed', 'Cancelled', 'Unknown'])
+          .exactOptional()
+          .openapi({ description: 'Status of the payment', 'x-internal': true }),
+      })
+      .openapi({ required: [] }),
+  )
+  .and(CreatedDateSchema)
+  .and(ModifiedDatesSchema)
+  .openapi({
+    description:
+      'Payments contain details of all payments made by customers to a company, including: amounts, currency used, payment method, payment provider, and payment status.\n\nRefunds are recorded as separate, negative payments. Note that a refund can only occur in relation to a payment that has been completed (i.e. has a status of `Paid`). When a customer cancels an order _before_ a payment has been completed, the payment shows as `Cancelled`.\n\nYou can use data from the Payments endpoints to calculate key metrics, such as gross sales and monthly recurring revenue (MRR).\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-payments) for this data type.',
+    title: 'Payment',
+  })
+  .openapi('Payment')
+
+const PaymentMethodSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'A unique, persistent identifier for this record',
+        examples: [
+          '13d946f0-c5d5-42bc-b092-97ece17923ab',
+          '9wg4lep4ush5cxs79pl8sozmsndbaukll3ind4g7buqbm1h2',
+          7110701885,
+          'EILBDVJVNUAGVKRQ',
+        ],
+        'x-codat-validation': [{ validator: 'UniqueWithinConnection' }],
+      }),
+  })
+  .openapi({ required: ['id'], 'x-stoplight': { id: '516bf0ecc4907' } })
+  .and(
+    z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of the PaymentMethod', example: 'Alipay' }),
+        status: z
+          .enum(['Active', 'Archived', 'Unknown'])
+          .exactOptional()
+          .openapi({ description: 'Status of the Payment Method', example: 'Active' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .and(ModifiedDatesSchema)
+  .openapi({
+    description:
+      'A Payment Method represents the payment method(s) used to make payments.\n\nExplore our [data coverage](https://knowledge.codat.io/supported-features/commerce?view=tab-by-data-type&dataType=commerce-paymentMethods) for this data type.',
+    title: 'Payment Method',
+  })
+  .openapi('PaymentMethod')
+
+const PaymentMethodsSchema = z
+  .object({ results: z.array(PaymentMethodSchema).exactOptional() })
+  .openapi({ required: [] })
+  .and(PagingInfoSchema)
+  .openapi({ 'x-internal': true })
+  .openapi('PaymentMethods')
+
+const PaymentsSchema = z
+  .object({ results: z.array(PaymentSchema).exactOptional() })
+  .openapi({ required: [] })
+  .and(PagingInfoSchema)
+  .openapi({ 'x-internal': true })
+  .openapi('Payments')
+
 const ProductCategorySchema = z
   .object({
     ancestorRefs: z
@@ -1570,7 +1597,7 @@ const ProductCategoriesSchema = z
   .openapi({ 'x-internal': true })
   .openapi('ProductCategories')
 
-const ProductsSchema = z
+const ProductsSchema: z.ZodType<ProductsType> = z
   .object({ results: z.array(ProductSchema).exactOptional() })
   .openapi({ required: [] })
   .and(PagingInfoSchema)

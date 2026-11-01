@@ -122,7 +122,7 @@ export const getApiV1ClipsRoute = createRoute({
       .pipe(
         z.object({
           filter: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -139,7 +139,7 @@ export const getApiV1ClipsRoute = createRoute({
               },
             }),
           page: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -466,7 +466,7 @@ export const getApiV1MediasRoute = createRoute({
       .pipe(
         z.object({
           filter: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -483,7 +483,7 @@ export const getApiV1MediasRoute = createRoute({
               },
             }),
           page: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -850,7 +850,7 @@ export const postApiV1MediasRoute = createRoute({
                                     .string()
                                     .exactOptional()
                                     .openapi({ example: '9b9a2e82-5b47-4f59-831d-4c239824b983' }),
-                                  relationships: z.object({}).exactOptional(),
+                                  relationships: z.looseObject({}).exactOptional(),
                                   type: z
                                     .string()
                                     .exactOptional()
@@ -1104,7 +1104,7 @@ export const getApiV1WebhookSubscriptionsRoute = createRoute({
       .pipe(
         z.object({
           filter: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {

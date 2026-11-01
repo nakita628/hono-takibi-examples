@@ -35,7 +35,7 @@ export const getContentJsonRoute = createRoute({
   responses: {
     200: {
       description: 'Successful SQL results',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
     400: { description: 'Bad request' },
     500: { description: 'Internal server error' },

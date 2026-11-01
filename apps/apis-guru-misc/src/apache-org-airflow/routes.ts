@@ -591,7 +591,7 @@ const DAGDetailSchema = DAGSchema.and(
         }),
       orientation: z.string().exactOptional().openapi({ readOnly: true }),
       params: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           description: 'User-specified DAG params.\n\n*New in version 2.0.1*\n',
@@ -633,7 +633,7 @@ const DAGDetailSchema = DAGSchema.and(
 const DAGRunSchema = z
   .object({
     conf: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -795,7 +795,11 @@ const DatasetSchema = z
   .object({
     consuming_dags: z.array(DagScheduleDatasetReferenceSchema).exactOptional(),
     created_at: z.string().exactOptional().openapi({ description: 'The dataset creation time' }),
-    extra: z.object({}).nullable().exactOptional().openapi({ description: 'The dataset extra' }),
+    extra: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The dataset extra' }),
     id: z.int().exactOptional().openapi({ description: 'The dataset id' }),
     producing_tasks: z.array(TaskOutletDatasetReferenceSchema).exactOptional(),
     updated_at: z.string().exactOptional().openapi({ description: 'The dataset update time' }),
@@ -817,7 +821,7 @@ const DatasetEventSchema = z
     dataset_id: z.int().exactOptional().openapi({ description: 'The dataset id' }),
     dataset_uri: z.string().exactOptional().openapi({ description: 'The URI of the dataset' }),
     extra: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The dataset event extra' }),
@@ -1242,11 +1246,11 @@ const ListTaskInstanceFormSchema = z
 const PluginCollectionItemSchema = z
   .object({
     appbuilder_menu_items: z
-      .array(z.object({}).nullable())
+      .array(z.looseObject({}).nullable())
       .exactOptional()
       .openapi({ description: 'The Flask Appbuilder menu items' }),
     appbuilder_views: z
-      .array(z.object({}).nullable())
+      .array(z.looseObject({}).nullable())
       .exactOptional()
       .openapi({ description: 'The appuilder views' }),
     executors: z
@@ -1254,11 +1258,11 @@ const PluginCollectionItemSchema = z
       .exactOptional()
       .openapi({ description: 'The plugin executors' }),
     flask_blueprints: z
-      .array(z.object({}).nullable())
+      .array(z.looseObject({}).nullable())
       .exactOptional()
       .openapi({ description: 'The flask blueprints' }),
     global_operator_extra_links: z
-      .array(z.object({}).nullable())
+      .array(z.looseObject({}).nullable())
       .exactOptional()
       .openapi({ description: 'The global operator extra links' }),
     hooks: z
@@ -1266,12 +1270,12 @@ const PluginCollectionItemSchema = z
       .exactOptional()
       .openapi({ description: 'The plugin hooks' }),
     macros: z
-      .array(z.object({}).nullable())
+      .array(z.looseObject({}).nullable())
       .exactOptional()
       .openapi({ description: 'The plugin macros' }),
     name: z.string().exactOptional().openapi({ description: 'The name of the plugin' }),
     operator_extra_links: z
-      .array(z.object({}).nullable())
+      .array(z.looseObject({}).nullable())
       .exactOptional()
       .openapi({ description: 'Operator extra links' }),
     source: z.string().nullable().exactOptional().openapi({ description: 'The plugin source' }),
@@ -1530,7 +1534,7 @@ const TaskInstanceSchema = z
     queue: z.string().nullable().exactOptional(),
     queued_when: z.string().nullable().exactOptional(),
     rendered_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'JSON object describing rendered fields.\n\n*New in version 2.3.0*\n',

@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const IEdmDirectValueAnnotationsManagerSchema = z
-  .object({})
+  .looseObject({})
   .openapi('IEdmDirectValueAnnotationsManager')
 
 const IEdmSchemaElementSchema = z
@@ -16,7 +16,7 @@ const IEdmSchemaElementSchema = z
   .openapi({ required: [] })
   .openapi('IEdmSchemaElement')
 
-const IEdmVocabularyAnnotatableSchema = z.object({}).openapi('IEdmVocabularyAnnotatable')
+const IEdmVocabularyAnnotatableSchema = z.looseObject({}).openapi('IEdmVocabularyAnnotatable')
 
 const IEdmTermSchema = z
   .object({
@@ -2883,7 +2883,7 @@ const ODataQueryContextSchema = z
   .openapi({ required: [] })
   .openapi('ODataQueryContext')
 
-const FilterQueryValidatorSchema = z.object({}).openapi('FilterQueryValidator')
+const FilterQueryValidatorSchema = z.looseObject({}).openapi('FilterQueryValidator')
 
 const FilterQueryOptionSchema = z
   .object({
@@ -2943,7 +2943,7 @@ const OrderByNodeSchema = z
   .openapi({ required: [] })
   .openapi('OrderByNode')
 
-const OrderByQueryValidatorSchema = z.object({}).openapi('OrderByQueryValidator')
+const OrderByQueryValidatorSchema = z.looseObject({}).openapi('OrderByQueryValidator')
 
 const OrderByQueryOptionSchema = z
   .object({
@@ -2971,7 +2971,7 @@ const ODataRawQueryOptionsSchema = z
   .openapi({ required: [] })
   .openapi('ODataRawQueryOptions')
 
-const SelectItemSchema = z.object({}).openapi('SelectItem')
+const SelectItemSchema = z.looseObject({}).openapi('SelectItem')
 
 const SelectExpandClauseSchema = z
   .object({
@@ -2981,7 +2981,7 @@ const SelectExpandClauseSchema = z
   .openapi({ required: [] })
   .openapi('SelectExpandClause')
 
-const SelectExpandQueryValidatorSchema = z.object({}).openapi('SelectExpandQueryValidator')
+const SelectExpandQueryValidatorSchema = z.looseObject({}).openapi('SelectExpandQueryValidator')
 
 const SelectExpandQueryOptionSchema = z
   .object({
@@ -2994,7 +2994,7 @@ const SelectExpandQueryOptionSchema = z
   .openapi({ required: [] })
   .openapi('SelectExpandQueryOption')
 
-const SkipQueryValidatorSchema = z.object({}).openapi('SkipQueryValidator')
+const SkipQueryValidatorSchema = z.looseObject({}).openapi('SkipQueryValidator')
 
 const SkipQueryOptionSchema = z
   .object({
@@ -3006,7 +3006,7 @@ const SkipQueryOptionSchema = z
   .openapi({ required: [] })
   .openapi('SkipQueryOption')
 
-const TopQueryValidatorSchema = z.object({}).openapi('TopQueryValidator')
+const TopQueryValidatorSchema = z.looseObject({}).openapi('TopQueryValidator')
 
 const TopQueryOptionSchema = z
   .object({
@@ -3018,18 +3018,18 @@ const TopQueryOptionSchema = z
   .openapi({ required: [] })
   .openapi('TopQueryOption')
 
-const ODataQueryValidatorSchema = z.object({}).openapi('ODataQueryValidator')
+const ODataQueryValidatorSchema = z.looseObject({}).openapi('ODataQueryValidator')
 
 const ODataQueryOptionsAccountDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3042,12 +3042,12 @@ const ODataQueryOptionsAnalysisCategoryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3060,12 +3060,12 @@ const ODataQueryOptionsBankAccountQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3078,12 +3078,12 @@ const ODataQueryOptionsBookTranTypeDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3096,12 +3096,12 @@ const ODataQueryOptionsCashPaymentQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3114,12 +3114,12 @@ const ODataQueryOptionsCashReceiptQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3132,12 +3132,12 @@ const ODataQueryOptionsCategoryTypeDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3150,12 +3150,12 @@ const ODataQueryOptionsCompanySettingDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3168,12 +3168,12 @@ const ODataQueryOptionsCustomerQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3186,12 +3186,12 @@ const ODataQueryOptionsOwnerTypeDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3204,12 +3204,12 @@ const ODataQueryOptionsOwnerTypeGroupDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3222,12 +3222,12 @@ const ODataQueryOptionsPaymentQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3240,12 +3240,12 @@ const ODataQueryOptionsProductDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3258,12 +3258,12 @@ const ODataQueryOptionsPurchaseQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3276,12 +3276,12 @@ const ODataQueryOptionsQuoteDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3294,12 +3294,12 @@ const ODataQueryOptionsSaleRepsDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3312,12 +3312,12 @@ const ODataQueryOptionsSalesCreditNoteQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3330,12 +3330,12 @@ const ODataQueryOptionsSalesEntryQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3348,12 +3348,12 @@ const ODataQueryOptionsSalesInvoiceQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3366,12 +3366,12 @@ const ODataQueryOptionsSalesQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3384,12 +3384,12 @@ const ODataQueryOptionsSupplierQueryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3402,12 +3402,12 @@ const ODataQueryOptionsUserDefinedFieldDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3420,12 +3420,12 @@ const ODataQueryOptionsVatAnalysisTypeDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3438,12 +3438,12 @@ const ODataQueryOptionsVatCategoryDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3456,12 +3456,12 @@ const ODataQueryOptionsVatRateDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -3474,12 +3474,12 @@ const ODataQueryOptionsVatTypeDtoSchema = z
   .object({
     Context: ODataQueryContextSchema.exactOptional(),
     Filter: FilterQueryOptionSchema.exactOptional(),
-    IfMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
-    IfNoneMatch: z.object({}).exactOptional().openapi({ readOnly: true }),
+    IfMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
+    IfNoneMatch: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     InlineCount: InlineCountQueryOptionSchema.exactOptional(),
     OrderBy: OrderByQueryOptionSchema.exactOptional(),
     RawValues: ODataRawQueryOptionsSchema.exactOptional(),
-    Request: z.object({}).exactOptional().openapi({ readOnly: true }),
+    Request: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     SelectExpand: SelectExpandQueryOptionSchema.exactOptional(),
     Skip: SkipQueryOptionSchema.exactOptional(),
     Top: TopQueryOptionSchema.exactOptional(),
@@ -5064,7 +5064,7 @@ export const postV1BankAccountsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5082,7 +5082,7 @@ export const putV1BankAccountsBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5180,7 +5180,7 @@ export const putV1BankAccountsIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5225,7 +5225,7 @@ export const deleteV1BankAccountsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5334,7 +5334,7 @@ export const postV1CashPaymentsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5352,7 +5352,7 @@ export const putV1CashPaymentsBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5459,7 +5459,7 @@ export const putV1CashPaymentsIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5504,7 +5504,7 @@ export const deleteV1CashPaymentsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5581,7 +5581,7 @@ export const postV1CashReceiptsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5599,7 +5599,7 @@ export const putV1CashReceiptsBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5708,7 +5708,7 @@ export const putV1CashReceiptsIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5753,7 +5753,7 @@ export const deleteV1CashReceiptsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5920,7 +5920,7 @@ export const postV1CustomersRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -5938,7 +5938,7 @@ export const putV1CustomersBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6022,7 +6022,7 @@ export const putV1CustomersIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6067,7 +6067,7 @@ export const deleteV1CustomersIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6294,7 +6294,7 @@ export const postV1EmailSendEmailStatementRoute = createRoute({
     body: { content: { 'application/json': { schema: EmailStatementDtoSchema } }, required: true },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6309,7 +6309,7 @@ export const postV1EmailSendQuoteRoute = createRoute({
     body: { content: { 'application/json': { schema: EmailQuoteDtoSchema } }, required: true },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6327,7 +6327,7 @@ export const postV1EmailSendSalesInvoiceRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6462,7 +6462,7 @@ export const postV1PaymentsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6480,7 +6480,7 @@ export const putV1PaymentsBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6584,7 +6584,7 @@ export const putV1PaymentsIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6629,7 +6629,7 @@ export const deleteV1PaymentsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6720,7 +6720,7 @@ export const postV1ProductsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6738,7 +6738,7 @@ export const putV1ProductsBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6829,7 +6829,7 @@ export const putV1ProductsIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6874,7 +6874,7 @@ export const deleteV1ProductsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6954,7 +6954,7 @@ export const postV1PurchasesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -6972,7 +6972,7 @@ export const putV1PurchasesBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7084,7 +7084,7 @@ export const putV1PurchasesIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7129,7 +7129,7 @@ export const deleteV1PurchasesIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7223,7 +7223,7 @@ export const postV1QuotesRoute = createRoute({
   operationId: 'Quote_Post',
   request: { body: QuoteDtoRequestBody },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7241,7 +7241,7 @@ export const putV1QuotesBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7273,7 +7273,7 @@ export const putV1QuotesCloseIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7285,7 +7285,7 @@ export const postV1QuotesCreateQuoteWithGeneratingReferenceRoute = createRoute({
   operationId: 'Quote_Post_CreateQuoteWithGeneratingReference',
   request: { body: QuoteDtoRequestBody },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7304,7 +7304,7 @@ export const postV1QuotesGenerateSaleInvoiceRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7336,7 +7336,7 @@ export const putV1QuotesReopenIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7468,7 +7468,7 @@ export const putV1QuotesIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7513,7 +7513,7 @@ export const deleteV1QuotesIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7685,7 +7685,7 @@ export const postV1SalesCreditNotesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7705,7 +7705,7 @@ export const putV1SalesCreditNotesBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7839,7 +7839,7 @@ export const putV1SalesCreditNotesIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7884,7 +7884,7 @@ export const deleteV1SalesCreditNotesIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7965,7 +7965,7 @@ export const postV1SalesEntriesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -7983,7 +7983,7 @@ export const putV1SalesEntriesBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8096,7 +8096,7 @@ export const putV1SalesEntriesIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8141,7 +8141,7 @@ export const deleteV1SalesEntriesIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8243,7 +8243,7 @@ export const postV1SalesInvoicesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8263,7 +8263,7 @@ export const putV1SalesInvoicesBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8281,7 +8281,7 @@ export const postV1SalesInvoicesCreateSaleInvoiceWithGeneratingReferenceRoute = 
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8415,7 +8415,7 @@ export const putV1SalesInvoicesIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8460,7 +8460,7 @@ export const deleteV1SalesInvoicesIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8516,7 +8516,7 @@ export const postV1SalesRepsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8534,7 +8534,7 @@ export const putV1SalesRepsBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8602,7 +8602,7 @@ export const putV1SalesRepsIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8647,7 +8647,7 @@ export const deleteV1SalesRepsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8720,7 +8720,7 @@ export const postV1SuppliersRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8738,7 +8738,7 @@ export const putV1SuppliersBatchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8859,7 +8859,7 @@ export const putV1SuppliersIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -8904,7 +8904,7 @@ export const deleteV1SuppliersIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -9197,7 +9197,7 @@ export const postV1VatCategoriesVatRatesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 

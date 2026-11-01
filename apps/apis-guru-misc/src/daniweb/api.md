@@ -10222,7 +10222,7 @@ Retrieve the currently OAuth'ed end-user, based on the access token being used, 
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Valid Response|[Endpoint-get-users--](#schemaendpoint-get-users--)|
+|200|OK|Valid Response|[Endpoint-get-users--2](#schemaendpoint-get-users--2)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -15386,12 +15386,12 @@ explicit_flow ( Scopes: basic ), implicit_flow ( Scopes: basic )
 |data|[[User](#schemauser)]|false|none|none|
 |pagination|[Api-pagination](#schemaapi-pagination)|false|none|none|
 
-<h2 id="tocS_Endpoint-get-users--">Endpoint-get-users--</h2>
+<h2 id="tocS_Endpoint-get-users--2">Endpoint-get-users--2</h2>
 <!-- backwards compatibility -->
-<a id="schemaendpoint-get-users--"></a>
-<a id="schema_Endpoint-get-users--"></a>
-<a id="tocSendpoint-get-users--"></a>
-<a id="tocsendpoint-get-users--"></a>
+<a id="schemaendpoint-get-users--2"></a>
+<a id="schema_Endpoint-get-users--2"></a>
+<a id="tocSendpoint-get-users--2"></a>
+<a id="tocsendpoint-get-users--2"></a>
 
 ```json
 {

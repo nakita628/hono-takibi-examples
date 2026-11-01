@@ -829,43 +829,31 @@ const BadRequestResponse = {
   description: 'The request is malformed.',
   content: { 'application/json': { schema: ClientErrorResponseSchema } },
   headers: z.object({
-    'Retry-After': {
-      description: 'How many seconds you have to wait before making new request.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'How many seconds you have to wait before making new request.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Limit': {
-      description: 'Request limit per minute.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-    },
-    'X-RateLimit-Remaining': {
-      description: 'The number of requests left for the time window.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The number of requests left for the time window.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Reset': {
-      description: 'The timestamp at which the current rate limit window resets.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The timestamp at which the current rate limit window resets.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'How many seconds you have to wait before making new request.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Limit': z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+    'X-RateLimit-Remaining': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of requests left for the time window.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Reset': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp at which the current rate limit window resets.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -873,43 +861,31 @@ const ForbiddenResponse = {
   description: "Authenticated user doesn't have access to the resource.",
   content: { 'application/json': { schema: ClientErrorResponseSchema } },
   headers: z.object({
-    'Retry-After': {
-      description: 'How many seconds you have to wait before making new request.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'How many seconds you have to wait before making new request.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Limit': {
-      description: 'Request limit per minute.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-    },
-    'X-RateLimit-Remaining': {
-      description: 'The number of requests left for the time window.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The number of requests left for the time window.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Reset': {
-      description: 'The timestamp at which the current rate limit window resets.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The timestamp at which the current rate limit window resets.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'How many seconds you have to wait before making new request.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Limit': z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+    'X-RateLimit-Remaining': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of requests left for the time window.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Reset': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp at which the current rate limit window resets.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -917,43 +893,31 @@ const NotFoundResponse = {
   description: 'Non-existent resource is requested.',
   content: { 'application/json': { schema: ClientErrorResponseSchema } },
   headers: z.object({
-    'Retry-After': {
-      description: 'How many seconds you have to wait before making new request.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'How many seconds you have to wait before making new request.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Limit': {
-      description: 'Request limit per minute.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-    },
-    'X-RateLimit-Remaining': {
-      description: 'The number of requests left for the time window.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The number of requests left for the time window.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Reset': {
-      description: 'The timestamp at which the current rate limit window resets.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The timestamp at which the current rate limit window resets.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'How many seconds you have to wait before making new request.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Limit': z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+    'X-RateLimit-Remaining': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of requests left for the time window.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Reset': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp at which the current rate limit window resets.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -961,43 +925,31 @@ const ServerErrorResponse = {
   description: 'Internal server error.',
   content: { 'application/json': { schema: ServerErrorResponseSchema } },
   headers: z.object({
-    'Retry-After': {
-      description: 'How many seconds you have to wait before making new request.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'How many seconds you have to wait before making new request.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Limit': {
-      description: 'Request limit per minute.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-    },
-    'X-RateLimit-Remaining': {
-      description: 'The number of requests left for the time window.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The number of requests left for the time window.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Reset': {
-      description: 'The timestamp at which the current rate limit window resets.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The timestamp at which the current rate limit window resets.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'How many seconds you have to wait before making new request.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Limit': z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+    'X-RateLimit-Remaining': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of requests left for the time window.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Reset': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp at which the current rate limit window resets.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1005,43 +957,31 @@ const UnauthorizedResponse = {
   description: 'Authorization information is missing or invalid.',
   content: { 'application/json': { schema: ClientErrorResponseSchema } },
   headers: z.object({
-    'Retry-After': {
-      description: 'How many seconds you have to wait before making new request.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'How many seconds you have to wait before making new request.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Limit': {
-      description: 'Request limit per minute.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-    },
-    'X-RateLimit-Remaining': {
-      description: 'The number of requests left for the time window.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The number of requests left for the time window.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Reset': {
-      description: 'The timestamp at which the current rate limit window resets.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The timestamp at which the current rate limit window resets.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'How many seconds you have to wait before making new request.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Limit': z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+    'X-RateLimit-Remaining': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of requests left for the time window.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Reset': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp at which the current rate limit window resets.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1049,43 +989,31 @@ const UnprocessableEntityResponse = {
   description: 'Validation errors occured.',
   content: { 'application/json': { schema: ValidationErrorResponseSchema } },
   headers: z.object({
-    'Retry-After': {
-      description: 'How many seconds you have to wait before making new request.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'How many seconds you have to wait before making new request.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Limit': {
-      description: 'Request limit per minute.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-    },
-    'X-RateLimit-Remaining': {
-      description: 'The number of requests left for the time window.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The number of requests left for the time window.',
-          param: { required: false },
-        }),
-    },
-    'X-RateLimit-Reset': {
-      description: 'The timestamp at which the current rate limit window resets.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The timestamp at which the current rate limit window resets.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'How many seconds you have to wait before making new request.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Limit': z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+    'X-RateLimit-Remaining': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of requests left for the time window.',
+        param: { required: false },
+      }),
+    'X-RateLimit-Reset': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp at which the current rate limit window resets.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -1148,43 +1076,31 @@ export const getBankAccountsRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: BankAccountListSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -1214,43 +1130,31 @@ export const postBankAccountsRoute = createRoute({
       description: 'BankAccount created successfully.',
       content: { 'application/json': { schema: BankAccountSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -1290,43 +1194,31 @@ export const getBankAccountsIdRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: BankAccountSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -1372,43 +1264,31 @@ export const putBankAccountsIdRoute = createRoute({
       description: 'Bank account updated successfully.',
       content: { 'application/json': { schema: BankAccountSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -1448,43 +1328,31 @@ export const deleteBankAccountsIdRoute = createRoute({
     204: {
       description: 'Bank account deleted successfully.',
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -1527,43 +1395,31 @@ export const getCurrenciesRoute = createRoute({
       description: 'Currencies exchange rate returned.',
       content: { 'application/json': { schema: ConversationRateSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -1630,43 +1486,31 @@ export const getDocumentBlocksRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: DocumentBlockListSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -1905,43 +1749,31 @@ export const getDocumentsRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: DocumentListSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -1970,43 +1802,31 @@ export const postDocumentsRoute = createRoute({
       description: 'Document created successfully.',
       content: { 'application/json': { schema: DocumentSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2046,43 +1866,31 @@ export const getDocumentsIdRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: DocumentSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2123,43 +1931,31 @@ export const postDocumentsIdCancelRoute = createRoute({
       description: 'Document cancellation successfully. Cancel document returned.',
       content: { 'application/json': { schema: DocumentSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2201,43 +1997,31 @@ export const postDocumentsIdCreateFromProformaRoute = createRoute({
       description: 'Document created successfully.',
       content: { 'application/json': { schema: DocumentSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2280,86 +2064,62 @@ export const getDocumentsIdDownloadRoute = createRoute({
         'application/pdf': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
       },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     202: {
       description: 'Document PDF has not generated yet. You should try to download again later.',
       content: { 'application/json': { schema: ClientErrorSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2399,43 +2159,31 @@ export const getDocumentsIdOnlineSzamlaRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: OnlineSzamlaStatusSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2475,43 +2223,31 @@ export const getDocumentsIdPaymentsRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: z.array(PaymentHistorySchema) } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2557,43 +2293,31 @@ export const putDocumentsIdPaymentsRoute = createRoute({
       description: 'Payment history updated successfully.',
       content: { 'application/json': { schema: z.array(PaymentHistorySchema) } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2634,43 +2358,31 @@ export const deleteDocumentsIdPaymentsRoute = createRoute({
       description: 'Payment history deleted successfully.',
       content: { 'application/json': { schema: z.array(PaymentHistorySchema) } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2710,43 +2422,31 @@ export const getDocumentsIdPublicUrlRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: DocumentPublicUrlSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2790,43 +2490,31 @@ export const postDocumentsIdSendRoute = createRoute({
       description: 'List of email adresses where the invoice sent.',
       content: { 'application/json': { schema: SendDocumentSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2850,43 +2538,31 @@ export const getOrganizationRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: OrganizationDataSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -2953,43 +2629,31 @@ export const getPartnersRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: PartnerListSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3018,43 +2682,31 @@ export const postPartnersRoute = createRoute({
       description: 'Partner created successfully.',
       content: { 'application/json': { schema: PartnerSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3094,43 +2746,31 @@ export const getPartnersIdRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: PartnerSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3175,43 +2815,31 @@ export const putPartnersIdRoute = createRoute({
       description: 'Partner updated successfully.',
       content: { 'application/json': { schema: PartnerSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3251,43 +2879,31 @@ export const deletePartnersIdRoute = createRoute({
     204: {
       description: 'Partner deleted successfully.',
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3355,43 +2971,31 @@ export const getProductsRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: ProductListSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3420,43 +3024,31 @@ export const postProductsRoute = createRoute({
       description: 'Product created successfully.',
       content: { 'application/json': { schema: ProductSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3496,43 +3088,31 @@ export const getProductsIdRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: ProductSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3577,43 +3157,31 @@ export const putProductsIdRoute = createRoute({
       description: 'Product updated successfully.',
       content: { 'application/json': { schema: ProductSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3653,43 +3221,31 @@ export const deleteProductsIdRoute = createRoute({
     204: {
       description: 'Product deleted successfully.',
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -3729,43 +3285,31 @@ export const getUtilsConvertLegacyIdIdRoute = createRoute({
       description: 'Success response',
       content: { 'application/json': { schema: IdSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'How many seconds you have to wait before making new request.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'How many seconds you have to wait before making new request.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'The timestamp at which the current rate limit window resets.',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'The timestamp at which the current rate limit window resets.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'How many seconds you have to wait before making new request.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'The timestamp at which the current rate limit window resets.',
+            param: { required: false },
+          }),
       }),
     },
     400: BadRequestResponse,

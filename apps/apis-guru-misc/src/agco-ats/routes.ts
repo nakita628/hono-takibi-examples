@@ -1,5 +1,221 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const BuildSystemSharedDTOParameterValueSchema = z
+  .object({
+    Direction: z
+      .enum(['Input', 'Output'])
+      .exactOptional()
+      .openapi({ description: 'The parameter direction (Input or Output)' }),
+    Name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the parameter this value is for' }),
+    Value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The parameter value in string representation' }),
+  })
+  .openapi({ description: 'A DTO for an IParameterValue', required: [] })
+  .openapi('BuildSystemSharedDTOParameterValue')
+
+const BuildSystemSharedDTOActivityRunStatusSchema = z
+  .object({
+    CurrentStep: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The activity step currently executing, indicated by numeric order',
+      }),
+    Status: z
+      .enum(['Ready', 'InProgress', 'Succeeded', 'Cancelled', 'Failed'])
+      .exactOptional()
+      .openapi({ description: 'The status of the ActivityRun' }),
+    StepProgress: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percent progress from the currently executing step.  This value shall be null if progress is not available',
+      }),
+    StepStatus: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status text from the currently executing step' }),
+  })
+  .openapi({ description: 'A DTO for an IActivityRunStatus', required: [] })
+  .openapi('BuildSystemSharedDTOActivityRunStatus')
+
+const BuildSystemSharedDTOParameterMappingSchema = z
+  .object({
+    Name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the parameter this mapping applies to' }),
+    Source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The source of the value.  The meaning of this value is determined by the source type.  When the source type is “Constant” then source is the value formatted as a string.  When the source type is “Variable” then the source is the name of the variable',
+      }),
+    SourceType: z
+      .enum(['Constant', 'Variable'])
+      .exactOptional()
+      .openapi({ description: 'The source type used for supplying the parameter' }),
+  })
+  .openapi({ description: 'A DTO for an IParameterMapping', required: [] })
+  .openapi('BuildSystemSharedDTOParameterMapping')
+
+const BuildSystemSharedDTOActivityStepSchema = z
+  .object({
+    ActivityID: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The id of the activity this activity step belongs to' }),
+    ActivityStepID: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The id of this activity step' }),
+    ImplementationID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The implementation id which is used to look up the step implementation',
+      }),
+    ParameterMappings: z
+      .array(BuildSystemSharedDTOParameterMappingSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The mapping of values from a source to be used for the step parameters',
+        readOnly: true,
+      }),
+    RunOrder: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The order of this activity step relative to other activity steps' }),
+    StepID: z.int32().exactOptional().openapi({ description: 'The id of the step' }),
+    StepName: z.string().exactOptional().openapi({ description: 'The name of the step' }),
+    UseConfig: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the configuration for the ActivityStep to use at runtime.  The build agent must provide this configuration',
+      }),
+  })
+  .openapi({ description: 'A DTO for an IActivityStep', required: [] })
+  .openapi('BuildSystemSharedDTOActivityStep')
+
+const BuildSystemSharedDTOActivityRunSchema = z
+  .object({
+    ActivityRunID: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The identifier for the ActivityRun' }),
+    EndDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Read Only. The UTC date and time when the activity completed' }),
+    JobActivityID: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Read Only. The ID of the Job Activity that defines this activity run',
+      }),
+    JobRunID: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Read Only. The ID of the JobRun under which this ActivityRun is executing',
+      }),
+    Parameters: z
+      .array(BuildSystemSharedDTOParameterValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The parameters used for this run of the activity.  Parameters cannot be added or removed, but output parameter values may be updated.',
+        readOnly: true,
+      }),
+    StartDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Read Only. The UTC date and time when the activity started' }),
+    Status: BuildSystemSharedDTOActivityRunStatusSchema,
+    Steps: z
+      .array(BuildSystemSharedDTOActivityStepSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Read Only. The steps to be executed for the activity.  These steps come from the relationship through JobActivity down to ActivityStep',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A DTO for an IActivityRun', required: ['Status'] })
+  .openapi('BuildSystemSharedDTOActivityRun')
+
+const BuildSystemSharedDTOJobRunSchema = z
+  .object({
+    ActivityRuns: z
+      .array(BuildSystemSharedDTOActivityRunSchema)
+      .exactOptional()
+      .openapi({ description: 'The activity runs belonging to this JobRun', readOnly: true }),
+    EndDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The UTC date and time when the job completed' }),
+    JobID: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The ID of the job that defines the run' }),
+    JobRunID: z.int32().exactOptional().openapi({ description: 'The ID of this JobRun' }),
+    Parameters: z
+      .array(BuildSystemSharedDTOParameterValueSchema)
+      .exactOptional()
+      .openapi({ description: 'The parameters used for this run of the job', readOnly: true }),
+    StartDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The UTC date and time when the job started' }),
+    Status: z
+      .enum(['Ready', 'InProgress', 'Succeeded', 'Cancelled', 'Failed'])
+      .exactOptional()
+      .openapi({ description: 'The status of this JobRun' }),
+  })
+  .openapi({ description: 'A DTO for an IJobRun', required: [] })
+  .openapi('BuildSystemSharedDTOJobRun')
+
+const APIPagedResponseMetadataSchema = z
+  .object({
+    Limit: z
+      .int32()
+      .openapi({
+        description: 'The number of entities this paged response is limited to.',
+        readOnly: true,
+      }),
+    Offset: z
+      .int32()
+      .openapi({
+        description: 'The number of entities prior to this page of items.',
+        readOnly: true,
+      }),
+    TotalCount: z
+      .int32()
+      .openapi({
+        description: 'The total number of entities matching the request.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Metadata for the paged response',
+    required: ['TotalCount', 'Limit', 'Offset'],
+  })
+  .openapi('APIPagedResponseMetadata')
+
+type APIPagedResponseBuildSystemSharedDTOJobRunType = {
+  Entities: z.infer<typeof BuildSystemSharedDTOJobRunSchema>[]
+  Metadata: z.infer<typeof APIPagedResponseMetadataSchema>
+}
+
 const AGCOPowerServicesModelsECUSchema = z
   .object({
     ActivationCode: z
@@ -240,33 +456,6 @@ const AuthorizationCodesSharedModelsAuthorizationCodeDefinitionSchema = z
     required: ['Name'],
   })
   .openapi('AuthorizationCodesSharedModelsAuthorizationCodeDefinition')
-
-const APIPagedResponseMetadataSchema = z
-  .object({
-    Limit: z
-      .int32()
-      .openapi({
-        description: 'The number of entities this paged response is limited to.',
-        readOnly: true,
-      }),
-    Offset: z
-      .int32()
-      .openapi({
-        description: 'The number of entities prior to this page of items.',
-        readOnly: true,
-      }),
-    TotalCount: z
-      .int32()
-      .openapi({
-        description: 'The total number of entities matching the request.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Metadata for the paged response',
-    required: ['TotalCount', 'Limit', 'Offset'],
-  })
-  .openapi('APIPagedResponseMetadata')
 
 const APIIPagedResponseAuthorizationCodesSharedModelsAuthorizationCodeDefinitionSchema = z
   .object({
@@ -1284,159 +1473,6 @@ const APIPagedResponseAPIModelsUserSchema = z
   })
   .openapi('APIPagedResponseAPIModelsUser')
 
-const BuildSystemSharedDTOParameterValueSchema = z
-  .object({
-    Direction: z
-      .enum(['Input', 'Output'])
-      .exactOptional()
-      .openapi({ description: 'The parameter direction (Input or Output)' }),
-    Name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the parameter this value is for' }),
-    Value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The parameter value in string representation' }),
-  })
-  .openapi({ description: 'A DTO for an IParameterValue', required: [] })
-  .openapi('BuildSystemSharedDTOParameterValue')
-
-const BuildSystemSharedDTOActivityRunStatusSchema = z
-  .object({
-    CurrentStep: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The activity step currently executing, indicated by numeric order',
-      }),
-    Status: z
-      .enum(['Ready', 'InProgress', 'Succeeded', 'Cancelled', 'Failed'])
-      .exactOptional()
-      .openapi({ description: 'The status of the ActivityRun' }),
-    StepProgress: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percent progress from the currently executing step.  This value shall be null if progress is not available',
-      }),
-    StepStatus: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status text from the currently executing step' }),
-  })
-  .openapi({ description: 'A DTO for an IActivityRunStatus', required: [] })
-  .openapi('BuildSystemSharedDTOActivityRunStatus')
-
-const BuildSystemSharedDTOParameterMappingSchema = z
-  .object({
-    Name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the parameter this mapping applies to' }),
-    Source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The source of the value.  The meaning of this value is determined by the source type.  When the source type is “Constant” then source is the value formatted as a string.  When the source type is “Variable” then the source is the name of the variable',
-      }),
-    SourceType: z
-      .enum(['Constant', 'Variable'])
-      .exactOptional()
-      .openapi({ description: 'The source type used for supplying the parameter' }),
-  })
-  .openapi({ description: 'A DTO for an IParameterMapping', required: [] })
-  .openapi('BuildSystemSharedDTOParameterMapping')
-
-const BuildSystemSharedDTOActivityStepSchema = z
-  .object({
-    ActivityID: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The id of the activity this activity step belongs to' }),
-    ActivityStepID: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The id of this activity step' }),
-    ImplementationID: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The implementation id which is used to look up the step implementation',
-      }),
-    ParameterMappings: z
-      .array(BuildSystemSharedDTOParameterMappingSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The mapping of values from a source to be used for the step parameters',
-        readOnly: true,
-      }),
-    RunOrder: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The order of this activity step relative to other activity steps' }),
-    StepID: z.int32().exactOptional().openapi({ description: 'The id of the step' }),
-    StepName: z.string().exactOptional().openapi({ description: 'The name of the step' }),
-    UseConfig: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the configuration for the ActivityStep to use at runtime.  The build agent must provide this configuration',
-      }),
-  })
-  .openapi({ description: 'A DTO for an IActivityStep', required: [] })
-  .openapi('BuildSystemSharedDTOActivityStep')
-
-const BuildSystemSharedDTOActivityRunSchema = z
-  .object({
-    ActivityRunID: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The identifier for the ActivityRun' }),
-    EndDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Read Only. The UTC date and time when the activity completed' }),
-    JobActivityID: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Read Only. The ID of the Job Activity that defines this activity run',
-      }),
-    JobRunID: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Read Only. The ID of the JobRun under which this ActivityRun is executing',
-      }),
-    Parameters: z
-      .array(BuildSystemSharedDTOParameterValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The parameters used for this run of the activity.  Parameters cannot be added or removed, but output parameter values may be updated.',
-        readOnly: true,
-      }),
-    StartDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Read Only. The UTC date and time when the activity started' }),
-    Status: BuildSystemSharedDTOActivityRunStatusSchema,
-    Steps: z
-      .array(BuildSystemSharedDTOActivityStepSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Read Only. The steps to be executed for the activity.  These steps come from the relationship through JobActivity down to ActivityStep',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A DTO for an IActivityRun', required: ['Status'] })
-  .openapi('BuildSystemSharedDTOActivityRun')
-
 const APIPagedResponseBuildSystemSharedDTOActivityRunSchema = z
   .object({
     Entities: z.array(BuildSystemSharedDTOActivityRunSchema).openapi({ readOnly: true }),
@@ -1551,47 +1587,17 @@ const APIPagedResponseBuildSystemSharedDTOAgentSchema = z
   })
   .openapi('APIPagedResponseBuildSystemSharedDTOAgent')
 
-const BuildSystemSharedDTOJobRunSchema = z
-  .object({
-    ActivityRuns: z
-      .array(BuildSystemSharedDTOActivityRunSchema)
-      .exactOptional()
-      .openapi({ description: 'The activity runs belonging to this JobRun', readOnly: true }),
-    EndDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The UTC date and time when the job completed' }),
-    JobID: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The ID of the job that defines the run' }),
-    JobRunID: z.int32().exactOptional().openapi({ description: 'The ID of this JobRun' }),
-    Parameters: z
-      .array(BuildSystemSharedDTOParameterValueSchema)
-      .exactOptional()
-      .openapi({ description: 'The parameters used for this run of the job', readOnly: true }),
-    StartDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The UTC date and time when the job started' }),
-    Status: z
-      .enum(['Ready', 'InProgress', 'Succeeded', 'Cancelled', 'Failed'])
-      .exactOptional()
-      .openapi({ description: 'The status of this JobRun' }),
-  })
-  .openapi({ description: 'A DTO for an IJobRun', required: [] })
-  .openapi('BuildSystemSharedDTOJobRun')
-
-const APIPagedResponseBuildSystemSharedDTOJobRunSchema = z
-  .object({
-    Entities: z.array(BuildSystemSharedDTOJobRunSchema).openapi({ readOnly: true }),
-    Metadata: APIPagedResponseMetadataSchema,
-  })
-  .openapi({
-    description: 'A response containing a page of results and metadata concerning the results',
-    required: ['Metadata', 'Entities'],
-  })
-  .openapi('APIPagedResponseBuildSystemSharedDTOJobRun')
+const APIPagedResponseBuildSystemSharedDTOJobRunSchema: z.ZodType<APIPagedResponseBuildSystemSharedDTOJobRunType> =
+  z
+    .object({
+      Entities: z.array(BuildSystemSharedDTOJobRunSchema).openapi({ readOnly: true }),
+      Metadata: APIPagedResponseMetadataSchema,
+    })
+    .openapi({
+      description: 'A response containing a page of results and metadata concerning the results',
+      required: ['Metadata', 'Entities'],
+    })
+    .openapi('APIPagedResponseBuildSystemSharedDTOJobRun')
 
 const BuildSystemSharedDTOJobActivitySchema = z
   .object({
@@ -3296,7 +3302,7 @@ const GlobalResourcesSharedModelsTranslationSetStatisticsSchema = z
   .openapi({ description: 'Statistics for a translation set', required: [] })
   .openapi('GlobalResourcesSharedModelsTranslationSetStatistics')
 
-const SystemObjectSchema = z.object({}).openapi('SystemObject')
+const SystemObjectSchema = z.looseObject({}).openapi('SystemObject')
 
 const UpdateSystemModelsAttributeValueSchema = z
   .object({

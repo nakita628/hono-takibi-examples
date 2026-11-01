@@ -133,6 +133,58 @@ type ConversationType = {
   user_b?: z.infer<typeof UserSchema>
 }
 
+const ConversationSchema: z.ZodType<ConversationType> = z
+  .lazy(() =>
+    z
+      .object({
+        first_message: z
+          .object({
+            author: UserSchema.exactOptional(),
+            timestamp: z.iso.datetime({ offset: true }).exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        id: z.number(),
+        latest_message: MessageSchema.exactOptional(),
+        user_a: UserSchema.exactOptional(),
+        user_b: UserSchema.exactOptional(),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  .openapi('Conversation')
+
+type EndpointGetConversationsIDType = { data?: z.infer<typeof ConversationSchema>[] }
+
+type EndpointGetConversationsIDStatusesType = {
+  data?: {
+    archived_status?: boolean
+    bubbled?: { latest_message?: z.infer<typeof MessageSchema> }
+    conversation?: z.infer<typeof ConversationSchema>
+    earliest_unseen_message?: z.infer<typeof MessageSchema>
+    new_message_count?: number
+  }[]
+}
+
+const ApiPaginationSchema = z
+  .object({
+    limit: z.number().exactOptional(),
+    offset: z.number().exactOptional(),
+    total_records: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiPagination')
+
+type EndpointGetConversationsStatusesType = {
+  data?: {
+    archived_status?: boolean
+    bubbled?: { latest_message?: z.infer<typeof MessageSchema> }
+    conversation?: z.infer<typeof ConversationSchema>
+    earliest_unseen_message?: z.infer<typeof MessageSchema>
+    new_message_count?: number
+  }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
 const GroupMessageSchema: z.ZodType<GroupMessageType> = z
   .lazy(() =>
     z
@@ -161,15 +213,6 @@ const GroupMessageSchema: z.ZodType<GroupMessageType> = z
   )
   .openapi('GroupMessage')
 
-type GroupType = {
-  first_message?: { timestamp?: string }
-  id: number
-  latest_message?: z.infer<typeof GroupMessageSchema>
-  member_count?: number
-  owner?: z.infer<typeof UserSchema>
-  properties?: { description?: string; name?: string; privacy?: string; slug?: string }
-}
-
 const GroupSchema: z.ZodType<GroupType> = z
   .lazy(() =>
     z
@@ -196,53 +239,14 @@ const GroupSchema: z.ZodType<GroupType> = z
   )
   .openapi('Group')
 
-type GroupMessageType = {
-  author?: z.infer<typeof UserSchema>
-  group?: z.infer<typeof GroupSchema>
-  id: number
-  last_seen?: { timestamp?: string; user?: z.infer<typeof UserSchema> }
-  moderated?: { deleted_status?: boolean }
-  text?: { parsed?: string }
-  timestamp?: string
+type EndpointGetGroupsIDStatusesType = {
+  data?: {
+    earliest_unseen_message?: z.infer<typeof GroupMessageSchema>
+    group?: z.infer<typeof GroupSchema>
+    membership_status?: boolean
+    new_message_count?: number
+  }[]
 }
-
-const ConversationSchema: z.ZodType<ConversationType> = z
-  .lazy(() =>
-    z
-      .object({
-        first_message: z
-          .object({
-            author: UserSchema.exactOptional(),
-            timestamp: z.iso.datetime({ offset: true }).exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        id: z.number(),
-        latest_message: MessageSchema.exactOptional(),
-        user_a: UserSchema.exactOptional(),
-        user_b: UserSchema.exactOptional(),
-      })
-      .openapi({ required: ['id'] }),
-  )
-  .openapi('Conversation')
-
-type MessageType = {
-  author?: z.infer<typeof UserSchema>
-  conversation?: z.infer<typeof ConversationSchema>
-  id: number
-  last_seen?: { timestamp?: string; user?: z.infer<typeof UserSchema> }
-  text?: { parsed?: string }
-  timestamp?: string
-}
-
-const ApiPaginationSchema = z
-  .object({
-    limit: z.number().exactOptional(),
-    offset: z.number().exactOptional(),
-    total_records: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ApiPagination')
 
 const AppSchema = z
   .object({
@@ -265,6 +269,210 @@ const AppSchema = z
   })
   .openapi({ required: ['id'] })
   .openapi('App')
+
+const GroupMessageDataSchema = z
+  .object({
+    app: AppSchema.exactOptional(),
+    content: z
+      .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.number(),
+    message: GroupMessageSchema.exactOptional(),
+    owner: UserSchema.exactOptional(),
+    settings: z
+      .object({ privacy: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    status: z
+      .object({ last_updated_timestamp: z.iso.datetime({ offset: true }).exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('GroupMessageData')
+
+type EndpointGetGroupsMessagesIDMetadataType = {
+  data?: z.infer<typeof GroupMessageDataSchema>[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointGetGroupsStatusesType = {
+  data?: {
+    earliest_unseen_message?: z.infer<typeof GroupMessageSchema>
+    group?: z.infer<typeof GroupSchema>
+    new_message_count?: number
+  }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+const MessageDataSchema = z
+  .object({
+    app: AppSchema.exactOptional(),
+    content: z
+      .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.number(),
+    message: MessageSchema.exactOptional(),
+    owner: UserSchema.exactOptional(),
+    settings: z
+      .object({ privacy: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    status: z
+      .object({ last_updated_timestamp: z.iso.datetime({ offset: true }).exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('MessageData')
+
+type EndpointGetMessagesIDMetadataType = {
+  data?: z.infer<typeof MessageDataSchema>[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointGetUsersIDSynergiesType = {
+  data?: {
+    additional?: { metadata_count?: number; positions_count?: number }
+    conversation?: z.infer<typeof ConversationSchema>
+    match?: {
+      algorithmic_match?: boolean
+      complementary_goals?: string[]
+      distance_away?: { miles?: number }
+      industry?: { complementary?: boolean; mutual_match?: boolean; similar?: boolean }
+      mutual_connections?: { count?: number }
+      recommendation_strength?: number
+    }
+    meet?: { payment?: { paypal?: { url?: string } }; price_usd?: number }
+    relationship?: {
+      existing_bubbled_conversation?: boolean
+      existing_conversation?: boolean
+      muted?: boolean
+      skipped?: boolean
+    }
+  }[]
+}
+
+type EndpointPatchConversationsIDStatusesType = {
+  data?: { archived_status?: boolean; conversation?: z.infer<typeof ConversationSchema> }
+  success?: boolean
+}
+
+type EndpointPostConversationsIDSchedulesType = {
+  data?: {
+    author_count?: number
+    conversation_count?: number
+    conversation_id?: number
+    date?: string
+    first_message?: z.infer<typeof MessageSchema>
+    last_message?: z.infer<typeof MessageSchema>
+    message_count?: number
+    my_message_count?: number
+    navigation?: { earliest_date?: string; next_date?: string; previous_date?: string }
+  }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointPostConversationsIDSearchesType = {
+  data?: { message?: z.infer<typeof MessageSchema>; relevance?: { score?: number } }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointPostConversationsSchedulesType = {
+  data?: {
+    author_count?: number
+    conversation_count?: number
+    conversation_id?: number
+    date?: string
+    first_message?: z.infer<typeof MessageSchema>
+    last_message?: z.infer<typeof MessageSchema>
+    message_count?: number
+    my_message_count?: number
+    navigation?: { earliest_date?: string; next_date?: string; previous_date?: string }
+  }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointPostConversationsSearchesType = {
+  data?: { message?: z.infer<typeof MessageSchema>; relevance?: { score?: number } }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointPostGroupsIDSchedulesType = {
+  data?: {
+    author_count?: number
+    date?: string
+    first_message?: z.infer<typeof GroupMessageSchema>
+    group_count?: number
+    group_id?: number
+    last_message?: z.infer<typeof GroupMessageSchema>
+    message_count?: number
+    my_message_count?: number
+    navigation?: { earliest_date?: string; next_date?: string; previous_date?: string }
+  }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointPostGroupsMessagesMetadataFiltersType = {
+  data?: {
+    matched_metadata?: { [key: string]: string[] }
+    message?: z.infer<typeof GroupMessageSchema>
+  }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointPostGroupsSchedulesType = {
+  data?: {
+    author_count?: number
+    date?: string
+    first_message?: z.infer<typeof GroupMessageSchema>
+    group_count?: number
+    group_id?: number
+    last_message?: z.infer<typeof GroupMessageSchema>
+    message_count?: number
+    my_message_count?: number
+    navigation?: { earliest_date?: string; next_date?: string; previous_date?: string }
+  }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type EndpointPostMessagesMetadataFiltersType = {
+  data?: {
+    matched_metadata?: { [key: string]: string[] }
+    message?: z.infer<typeof MessageSchema>
+  }[]
+  pagination?: z.infer<typeof ApiPaginationSchema>
+}
+
+type GroupType = {
+  first_message?: { timestamp?: string }
+  id: number
+  latest_message?: z.infer<typeof GroupMessageSchema>
+  member_count?: number
+  owner?: z.infer<typeof UserSchema>
+  properties?: { description?: string; name?: string; privacy?: string; slug?: string }
+}
+
+type GroupMessageType = {
+  author?: z.infer<typeof UserSchema>
+  group?: z.infer<typeof GroupSchema>
+  id: number
+  last_seen?: { timestamp?: string; user?: z.infer<typeof UserSchema> }
+  moderated?: { deleted_status?: boolean }
+  text?: { parsed?: string }
+  timestamp?: string
+}
+
+type MessageType = {
+  author?: z.infer<typeof UserSchema>
+  conversation?: z.infer<typeof ConversationSchema>
+  id: number
+  last_seen?: { timestamp?: string; user?: z.infer<typeof UserSchema> }
+  text?: { parsed?: string }
+  timestamp?: string
+}
 
 const BubbleSchema = z
   .object({
@@ -338,7 +546,7 @@ const EndpointGetAutocompletesSchema = z
   .openapi({ required: [] })
   .openapi('EndpointGetAutocompletes')
 
-const EndpointGetConversationsIDSchema = z
+const EndpointGetConversationsIDSchema: z.ZodType<EndpointGetConversationsIDType> = z
   .object({ data: z.array(ConversationSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('EndpointGetConversationsID')
@@ -351,29 +559,30 @@ const EndpointGetConversationsIDMessagesSchema = z
   .openapi({ required: [] })
   .openapi('EndpointGetConversationsIDMessages')
 
-const EndpointGetConversationsIDStatusesSchema = z
-  .object({
-    data: z
-      .array(
-        z
-          .object({
-            archived_status: z.boolean().exactOptional(),
-            bubbled: z
-              .object({ latest_message: MessageSchema.exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            conversation: ConversationSchema.exactOptional(),
-            earliest_unseen_message: MessageSchema.exactOptional(),
-            new_message_count: z.number().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EndpointGetConversationsIDStatuses')
+const EndpointGetConversationsIDStatusesSchema: z.ZodType<EndpointGetConversationsIDStatusesType> =
+  z
+    .object({
+      data: z
+        .array(
+          z
+            .object({
+              archived_status: z.boolean().exactOptional(),
+              bubbled: z
+                .object({ latest_message: MessageSchema.exactOptional() })
+                .exactOptional()
+                .openapi({ required: [] }),
+              conversation: ConversationSchema.exactOptional(),
+              earliest_unseen_message: MessageSchema.exactOptional(),
+              new_message_count: z.number().exactOptional(),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('EndpointGetConversationsIDStatuses')
 
-const EndpointGetConversationsStatusesSchema = z
+const EndpointGetConversationsStatusesSchema: z.ZodType<EndpointGetConversationsStatusesType> = z
   .object({
     data: z
       .array(
@@ -441,7 +650,7 @@ const EndpointGetGroupsIDMessagesSchema = z
   .openapi({ required: [] })
   .openapi('EndpointGetGroupsIDMessages')
 
-const EndpointGetGroupsIDStatusesSchema = z
+const EndpointGetGroupsIDStatusesSchema: z.ZodType<EndpointGetGroupsIDStatusesType> = z
   .object({
     data: z
       .array(
@@ -464,42 +673,21 @@ const EndpointGetGroupsMessagesIDSchema = z
   .openapi({ required: [] })
   .openapi('EndpointGetGroupsMessagesID')
 
-const GroupMessageDataSchema = z
-  .object({
-    app: AppSchema.exactOptional(),
-    content: z
-      .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.number(),
-    message: GroupMessageSchema.exactOptional(),
-    owner: UserSchema.exactOptional(),
-    settings: z
-      .object({ privacy: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    status: z
-      .object({ last_updated_timestamp: z.iso.datetime({ offset: true }).exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['id'] })
-  .openapi('GroupMessageData')
-
-const EndpointGetGroupsMessagesIDMetadataSchema = z
-  .object({
-    data: z.array(GroupMessageDataSchema).exactOptional(),
-    pagination: ApiPaginationSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EndpointGetGroupsMessagesIDMetadata')
+const EndpointGetGroupsMessagesIDMetadataSchema: z.ZodType<EndpointGetGroupsMessagesIDMetadataType> =
+  z
+    .object({
+      data: z.array(GroupMessageDataSchema).exactOptional(),
+      pagination: ApiPaginationSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('EndpointGetGroupsMessagesIDMetadata')
 
 const EndpointGetGroupsMessagesIDMetadataCollectionsSchema = z
   .object({ data: z.record(z.string(), z.array(z.string())).exactOptional() })
   .openapi({ required: [] })
   .openapi('EndpointGetGroupsMessagesIDMetadataCollections')
 
-const EndpointGetGroupsStatusesSchema = z
+const EndpointGetGroupsStatusesSchema: z.ZodType<EndpointGetGroupsStatusesType> = z
   .object({
     data: z
       .array(
@@ -544,29 +732,7 @@ const EndpointGetMessagesIDSchema = z
   .openapi({ required: [] })
   .openapi('EndpointGetMessagesID')
 
-const MessageDataSchema = z
-  .object({
-    app: AppSchema.exactOptional(),
-    content: z
-      .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.number(),
-    message: MessageSchema.exactOptional(),
-    owner: UserSchema.exactOptional(),
-    settings: z
-      .object({ privacy: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    status: z
-      .object({ last_updated_timestamp: z.iso.datetime({ offset: true }).exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['id'] })
-  .openapi('MessageData')
-
-const EndpointGetMessagesIDMetadataSchema = z
+const EndpointGetMessagesIDMetadataSchema: z.ZodType<EndpointGetMessagesIDMetadataType> = z
   .object({
     data: z.array(MessageDataSchema).exactOptional(),
     pagination: ApiPaginationSchema.exactOptional(),
@@ -750,7 +916,7 @@ const EndpointGetUsersIDPositionsSchema = z
   .openapi({ required: [] })
   .openapi('EndpointGetUsersIDPositions')
 
-const EndpointGetUsersIDSynergiesSchema = z
+const EndpointGetUsersIDSynergiesSchema: z.ZodType<EndpointGetUsersIDSynergiesType> = z
   .object({
     data: z
       .array(
@@ -864,19 +1030,20 @@ const EndpointGetWebhooksSchema = z
   .openapi({ required: [] })
   .openapi('EndpointGetWebhooks')
 
-const EndpointPatchConversationsIDStatusesSchema = z
-  .object({
-    data: z
-      .object({
-        archived_status: z.boolean().exactOptional(),
-        conversation: ConversationSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    success: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EndpointPatchConversationsIDStatuses')
+const EndpointPatchConversationsIDStatusesSchema: z.ZodType<EndpointPatchConversationsIDStatusesType> =
+  z
+    .object({
+      data: z
+        .object({
+          archived_status: z.boolean().exactOptional(),
+          conversation: ConversationSchema.exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+      success: z.boolean().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('EndpointPatchConversationsIDStatuses')
 
 const EndpointPatchGroupsIDSchema = z
   .object({ data: GroupSchema.exactOptional(), success: z.boolean().exactOptional() })
@@ -953,89 +1120,92 @@ const EndpointPostConversationsIDMessagesSchema = z
   .openapi({ required: [] })
   .openapi('EndpointPostConversationsIDMessages')
 
-const EndpointPostConversationsIDSchedulesSchema = z
-  .object({
-    data: z
-      .array(
-        z
-          .object({
-            author_count: z.number().exactOptional(),
-            conversation_count: z.number().exactOptional(),
-            conversation_id: z.number().exactOptional(),
-            date: z.iso.date().exactOptional(),
-            first_message: MessageSchema.exactOptional(),
-            last_message: MessageSchema.exactOptional(),
-            message_count: z.number().exactOptional(),
-            my_message_count: z.number().exactOptional(),
-            navigation: z
-              .object({
-                earliest_date: z.iso.date().exactOptional(),
-                next_date: z.iso.date().exactOptional(),
-                previous_date: z.iso.date().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    pagination: ApiPaginationSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EndpointPostConversationsIDSchedules')
+const EndpointPostConversationsIDSchedulesSchema: z.ZodType<EndpointPostConversationsIDSchedulesType> =
+  z
+    .object({
+      data: z
+        .array(
+          z
+            .object({
+              author_count: z.number().exactOptional(),
+              conversation_count: z.number().exactOptional(),
+              conversation_id: z.number().exactOptional(),
+              date: z.iso.date().exactOptional(),
+              first_message: MessageSchema.exactOptional(),
+              last_message: MessageSchema.exactOptional(),
+              message_count: z.number().exactOptional(),
+              my_message_count: z.number().exactOptional(),
+              navigation: z
+                .object({
+                  earliest_date: z.iso.date().exactOptional(),
+                  next_date: z.iso.date().exactOptional(),
+                  previous_date: z.iso.date().exactOptional(),
+                })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional(),
+      pagination: ApiPaginationSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('EndpointPostConversationsIDSchedules')
 
-const EndpointPostConversationsIDSearchesSchema = z
-  .object({
-    data: z
-      .array(
-        z
-          .object({
-            message: MessageSchema.exactOptional(),
-            relevance: z
-              .object({ score: z.float32().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    pagination: ApiPaginationSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EndpointPostConversationsIDSearches')
+const EndpointPostConversationsIDSearchesSchema: z.ZodType<EndpointPostConversationsIDSearchesType> =
+  z
+    .object({
+      data: z
+        .array(
+          z
+            .object({
+              message: MessageSchema.exactOptional(),
+              relevance: z
+                .object({ score: z.float32().exactOptional() })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional(),
+      pagination: ApiPaginationSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('EndpointPostConversationsIDSearches')
 
-const EndpointPostConversationsSchedulesSchema = z
-  .object({
-    data: z
-      .array(
-        z
-          .object({
-            author_count: z.number().exactOptional(),
-            conversation_count: z.number().exactOptional(),
-            conversation_id: z.number().exactOptional(),
-            date: z.iso.date().exactOptional(),
-            first_message: MessageSchema.exactOptional(),
-            last_message: MessageSchema.exactOptional(),
-            message_count: z.number().exactOptional(),
-            my_message_count: z.number().exactOptional(),
-            navigation: z
-              .object({
-                earliest_date: z.iso.date().exactOptional(),
-                next_date: z.iso.date().exactOptional(),
-                previous_date: z.iso.date().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    pagination: ApiPaginationSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EndpointPostConversationsSchedules')
+const EndpointPostConversationsSchedulesSchema: z.ZodType<EndpointPostConversationsSchedulesType> =
+  z
+    .object({
+      data: z
+        .array(
+          z
+            .object({
+              author_count: z.number().exactOptional(),
+              conversation_count: z.number().exactOptional(),
+              conversation_id: z.number().exactOptional(),
+              date: z.iso.date().exactOptional(),
+              first_message: MessageSchema.exactOptional(),
+              last_message: MessageSchema.exactOptional(),
+              message_count: z.number().exactOptional(),
+              my_message_count: z.number().exactOptional(),
+              navigation: z
+                .object({
+                  earliest_date: z.iso.date().exactOptional(),
+                  next_date: z.iso.date().exactOptional(),
+                  previous_date: z.iso.date().exactOptional(),
+                })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional(),
+      pagination: ApiPaginationSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('EndpointPostConversationsSchedules')
 
-const EndpointPostConversationsSearchesSchema = z
+const EndpointPostConversationsSearchesSchema: z.ZodType<EndpointPostConversationsSearchesType> = z
   .object({
     data: z
       .array(
@@ -1079,7 +1249,7 @@ const EndpointPostGroupsIDMessagesSchema = z
   .openapi({ required: [] })
   .openapi('EndpointPostGroupsIDMessages')
 
-const EndpointPostGroupsIDSchedulesSchema = z
+const EndpointPostGroupsIDSchedulesSchema: z.ZodType<EndpointPostGroupsIDSchedulesType> = z
   .object({
     data: z
       .array(
@@ -1118,24 +1288,25 @@ const EndpointPostGroupsMessagesIDMetadataSchema = z
   .openapi({ required: [] })
   .openapi('EndpointPostGroupsMessagesIDMetadata')
 
-const EndpointPostGroupsMessagesMetadataFiltersSchema = z
-  .object({
-    data: z
-      .array(
-        z
-          .object({
-            matched_metadata: z.record(z.string(), z.array(z.string())).exactOptional(),
-            message: GroupMessageSchema.exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    pagination: ApiPaginationSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EndpointPostGroupsMessagesMetadataFilters')
+const EndpointPostGroupsMessagesMetadataFiltersSchema: z.ZodType<EndpointPostGroupsMessagesMetadataFiltersType> =
+  z
+    .object({
+      data: z
+        .array(
+          z
+            .object({
+              matched_metadata: z.record(z.string(), z.array(z.string())).exactOptional(),
+              message: GroupMessageSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional(),
+      pagination: ApiPaginationSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('EndpointPostGroupsMessagesMetadataFilters')
 
-const EndpointPostGroupsSchedulesSchema = z
+const EndpointPostGroupsSchedulesSchema: z.ZodType<EndpointPostGroupsSchedulesType> = z
   .object({
     data: z
       .array(
@@ -1184,22 +1355,23 @@ const EndpointPostMessagesIDMetadataSchema = z
   .openapi({ required: [] })
   .openapi('EndpointPostMessagesIDMetadata')
 
-const EndpointPostMessagesMetadataFiltersSchema = z
-  .object({
-    data: z
-      .array(
-        z
-          .object({
-            matched_metadata: z.record(z.string(), z.array(z.string())).exactOptional(),
-            message: MessageSchema.exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    pagination: ApiPaginationSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EndpointPostMessagesMetadataFilters')
+const EndpointPostMessagesMetadataFiltersSchema: z.ZodType<EndpointPostMessagesMetadataFiltersType> =
+  z
+    .object({
+      data: z
+        .array(
+          z
+            .object({
+              matched_metadata: z.record(z.string(), z.array(z.string())).exactOptional(),
+              message: MessageSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional(),
+      pagination: ApiPaginationSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('EndpointPostMessagesMetadataFilters')
 
 const EndpointPostPositionsSchema = z
   .object({ data: PositionSchema.exactOptional(), success: z.boolean().exactOptional() })

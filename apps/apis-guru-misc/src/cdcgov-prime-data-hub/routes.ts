@@ -708,18 +708,14 @@ export const getSettingsOrganizationsRoute = createRoute({
       description: 'OK',
       content: { 'application/json': { schema: z.array(OrganizationSchema) } },
       headers: z.object({
-        'Last-Modified': {
-          description: 'The date and time any setting was modified in GMT.',
-          example: 'Wed, 21 Oct 2015 07:28:00 GMT',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The date and time any setting was modified in GMT.',
-              example: 'Wed, 21 Oct 2015 07:28:00 GMT',
-              param: { required: false },
-            }),
-        },
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The date and time any setting was modified in GMT.',
+            example: 'Wed, 21 Oct 2015 07:28:00 GMT',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -734,20 +730,15 @@ export const headSettingsOrganizationsRoute = createRoute({
     200: {
       description: 'OK',
       headers: z.object({
-        'Last-Modified': {
-          description:
-            'The Last-Modified response HTTP header contains the date and time any setting was modified.',
-          example: 'Wed, 21 Oct 2015 07:28:00 GMT',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The Last-Modified response HTTP header contains the date and time any setting was modified.',
-              example: 'Wed, 21 Oct 2015 07:28:00 GMT',
-              param: { required: false },
-            }),
-        },
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The Last-Modified response HTTP header contains the date and time any setting was modified.',
+            example: 'Wed, 21 Oct 2015 07:28:00 GMT',
+            param: { required: false },
+          }),
       }),
     },
   },

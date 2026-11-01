@@ -177,7 +177,7 @@ const ColumnsHeadersSchema = z
   .openapi('ColumnsHeaders')
 
 const RoutingAtomSchema = z
-  .object({ and_conditions: z.object({}).exactOptional(), target: z.string().exactOptional() })
+  .object({ and_conditions: z.looseObject({}).exactOptional(), target: z.string().exactOptional() })
   .openapi({ required: [] })
   .openapi('RoutingAtom')
 
@@ -213,7 +213,7 @@ const ConnectionModelGetSchema = ConnectionModelPostSchema.and(
   z.object({ id: z.string() }).openapi({ required: ['id'] }),
 ).openapi('ConnectionModelGet')
 
-const CustomAtomSchema = z.object({}).openapi('CustomAtom')
+const CustomAtomSchema = z.looseObject({}).openapi('CustomAtom')
 
 const ExcelAtomSchema = z
   .object({
@@ -249,20 +249,20 @@ const DashboardSettingsModelGetSchema = z
   .object({
     autolearning: z.boolean().exactOptional(),
     dashboard_timeout: z.int().exactOptional(),
-    default_date_range: z.object({}).exactOptional(),
-    default_inbox_size: z.object({}).exactOptional(),
-    default_inbox_sorting: z.object({}).exactOptional(),
-    flexible_filters: z.array(z.object({})).exactOptional(),
-    navigation_menu: z.object({}).exactOptional(),
+    default_date_range: z.looseObject({}).exactOptional(),
+    default_inbox_size: z.looseObject({}).exactOptional(),
+    default_inbox_sorting: z.looseObject({}).exactOptional(),
+    flexible_filters: z.array(z.looseObject({})).exactOptional(),
+    navigation_menu: z.looseObject({}).exactOptional(),
     process_unreadable: z.boolean().exactOptional(),
     sequence_columns_of_inbox: ColumnsHeadersSchema.exactOptional(),
     show_digital_annotations: z.boolean().exactOptional(),
-    show_filters: z.object({}).exactOptional(),
-    show_inbox_actions: z.object({}).exactOptional(),
-    studio_format_options: z.object({}).exactOptional(),
-    upload_options: z.object({}).exactOptional(),
+    show_filters: z.looseObject({}).exactOptional(),
+    show_inbox_actions: z.looseObject({}).exactOptional(),
+    studio_format_options: z.looseObject({}).exactOptional(),
+    upload_options: z.looseObject({}).exactOptional(),
     welcome_counters: z.boolean().exactOptional(),
-    welcome_counters_options: z.object({}).exactOptional(),
+    welcome_counters_options: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('DashboardSettingsModelGet')
@@ -376,7 +376,7 @@ const TimingsModelGetSchema = z
 const DocumentModelGetSchema = z
   .object({
     escalate: StateModelGetSchema.exactOptional(),
-    feedback: z.object({}).exactOptional(),
+    feedback: z.looseObject({}).exactOptional(),
     files: z.array(FileModelGetSchema).exactOptional(),
     flag_for_review: z.boolean().exactOptional(),
     id: z.string(),
@@ -387,17 +387,17 @@ const DocumentModelGetSchema = z
       .openapi({ example: 'abcdef123456789abcdef123' }),
     last_version: z.string().exactOptional(),
     lock: StateModelGetSchema.exactOptional(),
-    meta_information: z.object({}).exactOptional(),
+    meta_information: z.looseObject({}).exactOptional(),
     opened_by: z.array(StateModelGetSchema).exactOptional(),
     original_filename: z.string(),
     page_count: z.int(),
-    prediction: z.object({}).exactOptional(),
+    prediction: z.looseObject({}).exactOptional(),
     reject: StateModelGetSchema.exactOptional(),
     status_data: StatusDataModelSchema.exactOptional(),
     submitted: StateModelGetSchema.exactOptional(),
     timings: TimingsModelGetSchema.exactOptional(),
-    usage_data: z.object({}).exactOptional(),
-    versions: z.array(z.object({})).exactOptional(),
+    usage_data: z.looseObject({}).exactOptional(),
+    versions: z.array(z.looseObject({})).exactOptional(),
   })
   .openapi({ required: ['id', 'inbox', 'original_filename', 'page_count'] })
   .openapi('DocumentModelGet')
@@ -422,7 +422,7 @@ const DocumentTypeModelGetSchema = z
   .openapi({ required: [] })
   .openapi('DocumentTypeModelGet')
 
-const EnrichmentModelPostSchema = z.object({}).openapi('EnrichmentModelPost')
+const EnrichmentModelPostSchema = z.looseObject({}).openapi('EnrichmentModelPost')
 
 const EvaluationAtomSchema = z
   .object({
@@ -522,7 +522,7 @@ const LabelModelSchema = z
     is_library: z.boolean().default(false).exactOptional(),
     mandatory: z.boolean().default(true).exactOptional(),
     mandatory_if: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A value to decide if mandatory based on other field' }),
     multiple: z.boolean().default(true).exactOptional(),
@@ -550,7 +550,7 @@ const LabelModelSchema = z
       .openapi({ example: 'string' }),
     visible: z.boolean().default(true).exactOptional(),
     visible_if: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A value to decide if shown in UI' }),
   })
@@ -656,9 +656,9 @@ const IntegrationModelGetSchema = z
 const KeyValyePairSettingsModelSchema = z
   .object({
     classification_cutoff: z.int().exactOptional(),
-    rule_config: z.object({}).exactOptional(),
+    rule_config: z.looseObject({}).exactOptional(),
     splitting_cutoff: z.int().exactOptional(),
-    uer_pre_config: z.object({}).exactOptional(),
+    uer_pre_config: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('KeyValyePairSettingsModel')
@@ -668,7 +668,7 @@ const MetadataOptionsSchema = z
     columns: z.array(z.string()).exactOptional(),
     fields: FieldsInMetadataSchema.exactOptional(),
     include: z.boolean().default(false).exactOptional(),
-    rename: z.object({}).exactOptional(),
+    rename: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('MetadataOptions')
@@ -736,12 +736,12 @@ const TableExtractionSettingsModelSchema = z
 
 const PredictorSettingModelSchema = z
   .object({
-    blacklist: z.object({}).exactOptional(),
-    expected_values: z.object({}).exactOptional(),
-    fallback: z.object({}).exactOptional(),
+    blacklist: z.looseObject({}).exactOptional(),
+    expected_values: z.looseObject({}).exactOptional(),
+    fallback: z.looseObject({}).exactOptional(),
     key_value_pairs: KeyValyePairSettingsModelSchema.exactOptional(),
     table_extraction_settings: TableExtractionSettingsModelSchema.exactOptional(),
-    whitelist: z.object({}).exactOptional(),
+    whitelist: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('PredictorSettingModel')
@@ -879,11 +879,11 @@ const ResetPasswordModelPostSchema = z
 
 const ReviewSettingsModelGetSchema = z
   .object({
-    default_zoom: z.object({}).exactOptional(),
-    first_toolbar: z.object({}).exactOptional(),
-    lock_expiry: z.object({}).exactOptional(),
-    review_options: z.object({}).exactOptional(),
-    second_toolbar: z.object({}).exactOptional(),
+    default_zoom: z.looseObject({}).exactOptional(),
+    first_toolbar: z.looseObject({}).exactOptional(),
+    lock_expiry: z.looseObject({}).exactOptional(),
+    review_options: z.looseObject({}).exactOptional(),
+    second_toolbar: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ReviewSettingsModelGet')
@@ -911,7 +911,7 @@ const RoleModelPatchSchema = z
   .openapi('RoleModelPatch')
 
 const RuleConfigModelSchema = z
-  .object({ rule_config: z.object({}).exactOptional() })
+  .object({ rule_config: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('RuleConfigModel')
 
@@ -950,9 +950,9 @@ const SectionAtomSchema = z
 
 const ThresholdModelSchema = z
   .object({
-    annotations: z.object({}).exactOptional(),
-    lines: z.object({}).exactOptional(),
-    sections: z.object({}).exactOptional(),
+    annotations: z.looseObject({}).exactOptional(),
+    lines: z.looseObject({}).exactOptional(),
+    sections: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ThresholdModel')
@@ -1072,7 +1072,7 @@ const TableAnnotationPostSchema = z
   .openapi('TableAnnotationPost')
 
 const TagFieldModelGetSchema = z
-  .object({ tag_fields: z.object({}).exactOptional() })
+  .object({ tag_fields: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('TagFieldModelGet')
 
@@ -1205,14 +1205,14 @@ const VersionPostSchema = z
 
 const WorkflowModelSchema = z
   .object({
-    graph: z.object({}).exactOptional(),
-    links: z.object({}).exactOptional(),
-    nodes: z.object({}).exactOptional(),
+    graph: z.looseObject({}).exactOptional(),
+    links: z.looseObject({}).exactOptional(),
+    nodes: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('WorkflowModel')
 
-const DictionarySchema = z.object({}).openapi('Dictionary')
+const DictionarySchema = z.looseObject({}).openapi('Dictionary')
 
 const AlfredExceptionResponse = { description: 'Handle Alfred specific exceptions' }
 

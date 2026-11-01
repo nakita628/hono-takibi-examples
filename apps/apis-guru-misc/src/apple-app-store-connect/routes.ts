@@ -1,13 +1,613 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const KidsAgeBandSchema = z
-  .enum(['FIVE_AND_UNDER', 'SIX_TO_EIGHT', 'NINE_TO_ELEVEN'])
-  .openapi('KidsAgeBand')
+const PreviewTypeSchema = z
+  .enum([
+    'IPHONE_65',
+    'IPHONE_58',
+    'IPHONE_55',
+    'IPHONE_47',
+    'IPHONE_40',
+    'IPHONE_35',
+    'IPAD_PRO_3GEN_129',
+    'IPAD_PRO_3GEN_11',
+    'IPAD_PRO_129',
+    'IPAD_105',
+    'IPAD_97',
+    'DESKTOP',
+    'WATCH_SERIES_4',
+    'WATCH_SERIES_3',
+    'APPLE_TV',
+  ])
+  .openapi('PreviewType')
 
 const ResourceLinksSchema = z
   .object({ self: z.string() })
   .openapi({ required: ['self'] })
   .openapi('ResourceLinks')
+
+const PagingInformationSchema = z
+  .object({
+    paging: z.object({ limit: z.int(), total: z.int() }).openapi({ required: ['total', 'limit'] }),
+  })
+  .openapi({ required: ['paging'] })
+  .openapi('PagingInformation')
+
+const AppPreviewSetSchema = z
+  .object({
+    attributes: z
+      .object({ previewType: PreviewTypeSchema.exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appPreviews: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('appPreviews') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreVersionLocalization: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersionLocalizations') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appPreviewSets'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppPreviewSet' })
+  .openapi('AppPreviewSet')
+
+const AppMediaStateErrorSchema = z
+  .object({ code: z.string().exactOptional(), description: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AppMediaStateError')
+
+const AppMediaAssetStateSchema = z
+  .object({
+    errors: z.array(AppMediaStateErrorSchema).exactOptional(),
+    state: z.enum(['AWAITING_UPLOAD', 'UPLOAD_COMPLETE', 'COMPLETE', 'FAILED']).exactOptional(),
+    warnings: z.array(AppMediaStateErrorSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AppMediaAssetState')
+
+const ImageAssetSchema = z
+  .object({
+    height: z.int().exactOptional(),
+    templateUrl: z.string().exactOptional(),
+    width: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ImageAsset')
+
+const UploadOperationHeaderSchema = z
+  .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UploadOperationHeader')
+
+const UploadOperationSchema = z
+  .object({
+    length: z.int().exactOptional(),
+    method: z.string().exactOptional(),
+    offset: z.int().exactOptional(),
+    requestHeaders: z.array(UploadOperationHeaderSchema).exactOptional(),
+    url: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UploadOperation')
+
+const AppPreviewSchema = z
+  .object({
+    attributes: z
+      .object({
+        assetDeliveryState: AppMediaAssetStateSchema.exactOptional(),
+        fileName: z.string().exactOptional(),
+        fileSize: z.int().exactOptional(),
+        mimeType: z.string().exactOptional(),
+        previewFrameTimeCode: z.string().exactOptional(),
+        previewImage: ImageAssetSchema.exactOptional(),
+        sourceFileChecksum: z.string().exactOptional(),
+        uploadOperations: z.array(UploadOperationSchema).exactOptional(),
+        videoUrl: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appPreviewSet: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appPreviewSets') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appPreviews'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppPreview' })
+  .openapi('AppPreview')
+
+const DocumentLinksSchema = z
+  .object({ self: z.string() })
+  .openapi({ required: ['self'] })
+  .openapi('DocumentLinks')
+
+type AppPreviewSetResponseType = {
+  data: z.infer<typeof AppPreviewSetSchema>
+  included?: z.infer<typeof AppPreviewSchema>[]
+  links: z.infer<typeof DocumentLinksSchema>
+}
+
+const PagedDocumentLinksSchema = z
+  .object({ first: z.string().exactOptional(), next: z.string().exactOptional(), self: z.string() })
+  .openapi({ required: ['self'] })
+  .openapi('PagedDocumentLinks')
+
+type AppPreviewSetsResponseType = {
+  data: z.infer<typeof AppPreviewSetSchema>[]
+  included?: z.infer<typeof AppPreviewSchema>[]
+  links: z.infer<typeof PagedDocumentLinksSchema>
+  meta?: z.infer<typeof PagingInformationSchema>
+}
+
+type AppPreviewsResponseType = {
+  data: z.infer<typeof AppPreviewSchema>[]
+  links: z.infer<typeof PagedDocumentLinksSchema>
+  meta?: z.infer<typeof PagingInformationSchema>
+}
+
+const ScreenshotDisplayTypeSchema = z
+  .enum([
+    'APP_IPHONE_65',
+    'APP_IPHONE_58',
+    'APP_IPHONE_55',
+    'APP_IPHONE_47',
+    'APP_IPHONE_40',
+    'APP_IPHONE_35',
+    'APP_IPAD_PRO_3GEN_129',
+    'APP_IPAD_PRO_3GEN_11',
+    'APP_IPAD_PRO_129',
+    'APP_IPAD_105',
+    'APP_IPAD_97',
+    'APP_DESKTOP',
+    'APP_WATCH_SERIES_4',
+    'APP_WATCH_SERIES_3',
+    'APP_APPLE_TV',
+    'IMESSAGE_APP_IPHONE_65',
+    'IMESSAGE_APP_IPHONE_58',
+    'IMESSAGE_APP_IPHONE_55',
+    'IMESSAGE_APP_IPHONE_47',
+    'IMESSAGE_APP_IPHONE_40',
+    'IMESSAGE_APP_IPAD_PRO_3GEN_129',
+    'IMESSAGE_APP_IPAD_PRO_3GEN_11',
+    'IMESSAGE_APP_IPAD_PRO_129',
+    'IMESSAGE_APP_IPAD_105',
+    'IMESSAGE_APP_IPAD_97',
+  ])
+  .openapi('ScreenshotDisplayType')
+
+const AppScreenshotSetSchema = z
+  .object({
+    attributes: z
+      .object({ screenshotDisplayType: ScreenshotDisplayTypeSchema.exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appScreenshots: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('appScreenshots') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreVersionLocalization: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersionLocalizations') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appScreenshotSets'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppScreenshotSet' })
+  .openapi('AppScreenshotSet')
+
+const AppScreenshotSchema = z
+  .object({
+    attributes: z
+      .object({
+        assetDeliveryState: AppMediaAssetStateSchema.exactOptional(),
+        assetToken: z.string().exactOptional(),
+        assetType: z.string().exactOptional(),
+        fileName: z.string().exactOptional(),
+        fileSize: z.int().exactOptional(),
+        imageAsset: ImageAssetSchema.exactOptional(),
+        sourceFileChecksum: z.string().exactOptional(),
+        uploadOperations: z.array(UploadOperationSchema).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appScreenshotSet: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appScreenshotSets') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appScreenshots'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppScreenshot' })
+  .openapi('AppScreenshot')
+
+type AppScreenshotSetResponseType = {
+  data: z.infer<typeof AppScreenshotSetSchema>
+  included?: z.infer<typeof AppScreenshotSchema>[]
+  links: z.infer<typeof DocumentLinksSchema>
+}
+
+type AppScreenshotSetsResponseType = {
+  data: z.infer<typeof AppScreenshotSetSchema>[]
+  included?: z.infer<typeof AppScreenshotSchema>[]
+  links: z.infer<typeof PagedDocumentLinksSchema>
+  meta?: z.infer<typeof PagingInformationSchema>
+}
+
+type AppScreenshotsResponseType = {
+  data: z.infer<typeof AppScreenshotSchema>[]
+  links: z.infer<typeof PagedDocumentLinksSchema>
+  meta?: z.infer<typeof PagingInformationSchema>
+}
+
+const AppStoreReviewAttachmentSchema = z
+  .object({
+    attributes: z
+      .object({
+        assetDeliveryState: AppMediaAssetStateSchema.exactOptional(),
+        fileName: z.string().exactOptional(),
+        fileSize: z.int().exactOptional(),
+        sourceFileChecksum: z.string().exactOptional(),
+        uploadOperations: z.array(UploadOperationSchema).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appStoreReviewDetail: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreReviewDetails') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appStoreReviewAttachments'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreReviewAttachment' })
+  .openapi('AppStoreReviewAttachment')
+
+type AppStoreReviewAttachmentsResponseType = {
+  data: z.infer<typeof AppStoreReviewAttachmentSchema>[]
+  links: z.infer<typeof PagedDocumentLinksSchema>
+  meta?: z.infer<typeof PagingInformationSchema>
+}
+
+const AppStoreReviewDetailSchema = z
+  .object({
+    attributes: z
+      .object({
+        contactEmail: z.string().exactOptional(),
+        contactFirstName: z.string().exactOptional(),
+        contactLastName: z.string().exactOptional(),
+        contactPhone: z.string().exactOptional(),
+        demoAccountName: z.string().exactOptional(),
+        demoAccountPassword: z.string().exactOptional(),
+        demoAccountRequired: z.boolean().exactOptional(),
+        notes: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appStoreReviewAttachments: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('appStoreReviewAttachments') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreVersion: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appStoreReviewDetails'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreReviewDetail' })
+  .openapi('AppStoreReviewDetail')
+
+type AppStoreReviewDetailResponseType = {
+  data: z.infer<typeof AppStoreReviewDetailSchema>
+  included?: z.infer<typeof AppStoreReviewAttachmentSchema>[]
+  links: z.infer<typeof DocumentLinksSchema>
+}
+
+const AppStoreVersionStateSchema = z
+  .enum([
+    'DEVELOPER_REMOVED_FROM_SALE',
+    'DEVELOPER_REJECTED',
+    'IN_REVIEW',
+    'INVALID_BINARY',
+    'METADATA_REJECTED',
+    'PENDING_APPLE_RELEASE',
+    'PENDING_CONTRACT',
+    'PENDING_DEVELOPER_RELEASE',
+    'PREPARE_FOR_SUBMISSION',
+    'PREORDER_READY_FOR_SALE',
+    'PROCESSING_FOR_APP_STORE',
+    'READY_FOR_SALE',
+    'REJECTED',
+    'REMOVED_FROM_SALE',
+    'WAITING_FOR_EXPORT_COMPLIANCE',
+    'WAITING_FOR_REVIEW',
+    'REPLACED_WITH_NEW_VERSION',
+  ])
+  .openapi('AppStoreVersionState')
+
+const PlatformSchema = z.enum(['IOS', 'MAC_OS', 'TV_OS']).openapi('Platform')
+
+const AppStoreVersionSchema = z
+  .object({
+    attributes: z
+      .object({
+        appStoreState: AppStoreVersionStateSchema.exactOptional(),
+        copyright: z.string().exactOptional(),
+        createdDate: z.iso.datetime({ offset: true }).exactOptional(),
+        downloadable: z.boolean().exactOptional(),
+        earliestReleaseDate: z.iso.datetime({ offset: true }).exactOptional(),
+        platform: PlatformSchema.exactOptional(),
+        releaseType: z.enum(['MANUAL', 'AFTER_APPROVAL', 'SCHEDULED']).exactOptional(),
+        usesIdfa: z.boolean().exactOptional(),
+        versionString: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        ageRatingDeclaration: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('ageRatingDeclarations') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ deprecated: true, required: [] }),
+        app: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('apps') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreReviewDetail: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreReviewDetails') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreVersionLocalizations: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('appStoreVersionLocalizations') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreVersionPhasedRelease: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersionPhasedReleases') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreVersionSubmission: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersionSubmissions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        build: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('builds') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        idfaDeclaration: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('idfaDeclarations') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        routingAppCoverage: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('routingAppCoverages') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appStoreVersions'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreVersion' })
+  .openapi('AppStoreVersion')
+
+const KidsAgeBandSchema = z
+  .enum(['FIVE_AND_UNDER', 'SIX_TO_EIGHT', 'NINE_TO_ELEVEN'])
+  .openapi('KidsAgeBand')
 
 const AgeRatingDeclarationSchema = z
   .object({
@@ -62,78 +662,642 @@ const AgeRatingDeclarationSchema = z
   .openapi({ required: ['links', 'id', 'type'], title: 'AgeRatingDeclaration' })
   .openapi('AgeRatingDeclaration')
 
-const DocumentLinksSchema = z
-  .object({ self: z.string() })
-  .openapi({ required: ['self'] })
-  .openapi('DocumentLinks')
-
-const AgeRatingDeclarationResponseSchema = z
-  .object({ data: AgeRatingDeclarationSchema, links: DocumentLinksSchema })
-  .openapi({ required: ['data', 'links'], title: 'AgeRatingDeclarationResponse' })
-  .openapi('AgeRatingDeclarationResponse')
-
-const AgeRatingDeclarationUpdateRequestSchema = z
+const AppStoreVersionLocalizationSchema = z
   .object({
-    data: z
+    attributes: z
       .object({
-        attributes: z
+        description: z.string().exactOptional(),
+        keywords: z.string().exactOptional(),
+        locale: z.string().exactOptional(),
+        marketingUrl: z.url().exactOptional(),
+        promotionalText: z.string().exactOptional(),
+        supportUrl: z.url().exactOptional(),
+        whatsNew: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appPreviewSets: z
           .object({
-            alcoholTobaccoOrDrugUseOrReferences: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('appPreviewSets') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
               .exactOptional(),
-            contests: z.enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE']).exactOptional(),
-            gambling: z.boolean().exactOptional(),
-            gamblingAndContests: z.boolean().exactOptional().openapi({ deprecated: true }),
-            gamblingSimulated: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            horrorOrFearThemes: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            kidsAgeBand: KidsAgeBandSchema.exactOptional(),
-            matureOrSuggestiveThemes: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            medicalOrTreatmentInformation: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            profanityOrCrudeHumor: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            seventeenPlus: z.boolean().exactOptional(),
-            sexualContentGraphicAndNudity: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            sexualContentOrNudity: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            unrestrictedWebAccess: z.boolean().exactOptional(),
-            violenceCartoonOrFantasy: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            violenceRealistic: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
-            violenceRealisticProlongedGraphicOrSadistic: z
-              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
-              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
           })
           .exactOptional()
           .openapi({ required: [] }),
-        id: z.string(),
-        type: z.literal('ageRatingDeclarations'),
+        appScreenshotSets: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('appScreenshotSets') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreVersion: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
       })
-      .openapi({ required: ['id', 'type'] }),
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appStoreVersionLocalizations'),
   })
-  .openapi({ required: ['data'], title: 'AgeRatingDeclarationUpdateRequest' })
-  .openapi('AgeRatingDeclarationUpdateRequest')
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreVersionLocalization' })
+  .openapi('AppStoreVersionLocalization')
 
-const PagingInformationSchema = z
+const BuildSchema = z
   .object({
-    paging: z.object({ limit: z.int(), total: z.int() }).openapi({ required: ['total', 'limit'] }),
+    attributes: z
+      .object({
+        expirationDate: z.iso.datetime({ offset: true }).exactOptional(),
+        expired: z.boolean().exactOptional(),
+        iconAssetToken: ImageAssetSchema.exactOptional(),
+        minOsVersion: z.string().exactOptional(),
+        processingState: z.enum(['PROCESSING', 'FAILED', 'INVALID', 'VALID']).exactOptional(),
+        uploadedDate: z.iso.datetime({ offset: true }).exactOptional(),
+        usesNonExemptEncryption: z.boolean().exactOptional(),
+        version: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        app: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('apps') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appEncryptionDeclaration: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appEncryptionDeclarations') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        appStoreVersion: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        betaAppReviewSubmission: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('betaAppReviewSubmissions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        betaBuildLocalizations: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('betaBuildLocalizations') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        buildBetaDetail: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('buildBetaDetails') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        icons: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('buildIcons') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        individualTesters: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('betaTesters') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        preReleaseVersion: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('preReleaseVersions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('builds'),
   })
-  .openapi({ required: ['paging'] })
-  .openapi('PagingInformation')
+  .openapi({ required: ['links', 'id', 'type'], title: 'Build' })
+  .openapi('Build')
+
+const PhasedReleaseStateSchema = z
+  .enum(['INACTIVE', 'ACTIVE', 'PAUSED', 'COMPLETE'])
+  .openapi('PhasedReleaseState')
+
+const AppStoreVersionPhasedReleaseSchema = z
+  .object({
+    attributes: z
+      .object({
+        currentDayNumber: z.int().exactOptional(),
+        phasedReleaseState: PhasedReleaseStateSchema.exactOptional(),
+        startDate: z.iso.datetime({ offset: true }).exactOptional(),
+        totalPauseDuration: z.int().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    type: z.literal('appStoreVersionPhasedReleases'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreVersionPhasedRelease' })
+  .openapi('AppStoreVersionPhasedRelease')
+
+const RoutingAppCoverageSchema = z
+  .object({
+    attributes: z
+      .object({
+        assetDeliveryState: AppMediaAssetStateSchema.exactOptional(),
+        fileName: z.string().exactOptional(),
+        fileSize: z.int().exactOptional(),
+        sourceFileChecksum: z.string().exactOptional(),
+        uploadOperations: z.array(UploadOperationSchema).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appStoreVersion: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('routingAppCoverages'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'RoutingAppCoverage' })
+  .openapi('RoutingAppCoverage')
+
+const AppStoreVersionSubmissionSchema = z
+  .object({
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appStoreVersion: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('appStoreVersionSubmissions'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreVersionSubmission' })
+  .openapi('AppStoreVersionSubmission')
+
+const IdfaDeclarationSchema = z
+  .object({
+    attributes: z
+      .object({
+        attributesActionWithPreviousAd: z.boolean().exactOptional(),
+        attributesAppInstallationToPreviousAd: z.boolean().exactOptional(),
+        honorsLimitedAdTracking: z.boolean().exactOptional(),
+        servesAds: z.boolean().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        appStoreVersion: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('appStoreVersions') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('idfaDeclarations'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'IdfaDeclaration' })
+  .openapi('IdfaDeclaration')
+
+type AppStoreVersionResponseType = {
+  data: z.infer<typeof AppStoreVersionSchema>
+  included?: (
+    | z.infer<typeof AgeRatingDeclarationSchema>
+    | z.infer<typeof AppStoreVersionLocalizationSchema>
+    | z.infer<typeof BuildSchema>
+    | z.infer<typeof AppStoreVersionPhasedReleaseSchema>
+    | z.infer<typeof RoutingAppCoverageSchema>
+    | z.infer<typeof AppStoreReviewDetailSchema>
+    | z.infer<typeof AppStoreVersionSubmissionSchema>
+    | z.infer<typeof IdfaDeclarationSchema>
+  )[]
+  links: z.infer<typeof DocumentLinksSchema>
+}
+
+type AppStoreVersionsResponseType = {
+  data: z.infer<typeof AppStoreVersionSchema>[]
+  included?: (
+    | z.infer<typeof AgeRatingDeclarationSchema>
+    | z.infer<typeof AppStoreVersionLocalizationSchema>
+    | z.infer<typeof BuildSchema>
+    | z.infer<typeof AppStoreVersionPhasedReleaseSchema>
+    | z.infer<typeof RoutingAppCoverageSchema>
+    | z.infer<typeof AppStoreReviewDetailSchema>
+    | z.infer<typeof AppStoreVersionSubmissionSchema>
+    | z.infer<typeof IdfaDeclarationSchema>
+  )[]
+  links: z.infer<typeof PagedDocumentLinksSchema>
+  meta?: z.infer<typeof PagingInformationSchema>
+}
+
+const CapabilityTypeSchema = z
+  .enum([
+    'ICLOUD',
+    'IN_APP_PURCHASE',
+    'GAME_CENTER',
+    'PUSH_NOTIFICATIONS',
+    'WALLET',
+    'INTER_APP_AUDIO',
+    'MAPS',
+    'ASSOCIATED_DOMAINS',
+    'PERSONAL_VPN',
+    'APP_GROUPS',
+    'HEALTHKIT',
+    'HOMEKIT',
+    'WIRELESS_ACCESSORY_CONFIGURATION',
+    'APPLE_PAY',
+    'DATA_PROTECTION',
+    'SIRIKIT',
+    'NETWORK_EXTENSIONS',
+    'MULTIPATH',
+    'HOT_SPOT',
+    'NFC_TAG_READING',
+    'CLASSKIT',
+    'AUTOFILL_CREDENTIAL_PROVIDER',
+    'ACCESS_WIFI_INFORMATION',
+    'NETWORK_CUSTOM_PROTOCOL',
+    'COREMEDIA_HLS_LOW_LATENCY',
+    'SYSTEM_EXTENSION_INSTALL',
+    'USER_MANAGEMENT',
+    'APPLE_ID_AUTH',
+  ])
+  .openapi('CapabilityType')
+
+const CapabilityOptionSchema = z
+  .object({
+    description: z.string().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    enabledByDefault: z.boolean().exactOptional(),
+    key: z
+      .enum([
+        'XCODE_5',
+        'XCODE_6',
+        'COMPLETE_PROTECTION',
+        'PROTECTED_UNLESS_OPEN',
+        'PROTECTED_UNTIL_FIRST_USER_AUTH',
+        'PRIMARY_APP_CONSENT',
+      ])
+      .exactOptional(),
+    name: z.string().exactOptional(),
+    supportsWildcard: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CapabilityOption')
+
+const CapabilitySettingSchema = z
+  .object({
+    allowedInstances: z.enum(['ENTRY', 'SINGLE', 'MULTIPLE']).exactOptional(),
+    description: z.string().exactOptional(),
+    enabledByDefault: z.boolean().exactOptional(),
+    key: z
+      .enum(['ICLOUD_VERSION', 'DATA_PROTECTION_PERMISSION_LEVEL', 'APPLE_ID_AUTH_APP_CONSENT'])
+      .exactOptional(),
+    minInstances: z.int().exactOptional(),
+    name: z.string().exactOptional(),
+    options: z.array(CapabilityOptionSchema).exactOptional(),
+    visible: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CapabilitySetting')
+
+const BundleIdCapabilitySchema = z
+  .object({
+    attributes: z
+      .object({
+        capabilityType: CapabilityTypeSchema.exactOptional(),
+        settings: z.array(CapabilitySettingSchema).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    type: z.literal('bundleIdCapabilities'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'BundleIdCapability' })
+  .openapi('BundleIdCapability')
+
+type BundleIdCapabilitiesResponseType = {
+  data: z.infer<typeof BundleIdCapabilitySchema>[]
+  links: z.infer<typeof PagedDocumentLinksSchema>
+  meta?: z.infer<typeof PagingInformationSchema>
+}
+
+const BundleIdPlatformSchema = z.enum(['IOS', 'MAC_OS']).openapi('BundleIdPlatform')
+
+const BundleIdSchema = z
+  .object({
+    attributes: z
+      .object({
+        identifier: z.string().exactOptional(),
+        name: z.string().exactOptional(),
+        platform: BundleIdPlatformSchema.exactOptional(),
+        seedId: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        app: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('apps') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        bundleIdCapabilities: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('bundleIdCapabilities') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        profiles: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('profiles') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('bundleIds'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'BundleId' })
+  .openapi('BundleId')
+
+const ProfileSchema = z
+  .object({
+    attributes: z
+      .object({
+        createdDate: z.iso.datetime({ offset: true }).exactOptional(),
+        expirationDate: z.iso.datetime({ offset: true }).exactOptional(),
+        name: z.string().exactOptional(),
+        platform: BundleIdPlatformSchema.exactOptional(),
+        profileContent: z.string().exactOptional(),
+        profileState: z.enum(['ACTIVE', 'INVALID']).exactOptional(),
+        profileType: z
+          .enum([
+            'IOS_APP_DEVELOPMENT',
+            'IOS_APP_STORE',
+            'IOS_APP_ADHOC',
+            'IOS_APP_INHOUSE',
+            'MAC_APP_DEVELOPMENT',
+            'MAC_APP_STORE',
+            'MAC_APP_DIRECT',
+            'TVOS_APP_DEVELOPMENT',
+            'TVOS_APP_STORE',
+            'TVOS_APP_ADHOC',
+            'TVOS_APP_INHOUSE',
+            'MAC_CATALYST_APP_DEVELOPMENT',
+            'MAC_CATALYST_APP_STORE',
+            'MAC_CATALYST_APP_DIRECT',
+          ])
+          .exactOptional(),
+        uuid: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: z.string(),
+    links: ResourceLinksSchema,
+    relationships: z
+      .object({
+        bundleId: z
+          .object({
+            data: z
+              .object({ id: z.string(), type: z.literal('bundleIds') })
+              .exactOptional()
+              .openapi({ required: ['id', 'type'] }),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        certificates: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('certificates') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        devices: z
+          .object({
+            data: z
+              .array(
+                z
+                  .object({ id: z.string(), type: z.literal('devices') })
+                  .openapi({ required: ['id', 'type'] }),
+              )
+              .exactOptional(),
+            links: z
+              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+            meta: PagingInformationSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    type: z.literal('profiles'),
+  })
+  .openapi({ required: ['links', 'id', 'type'], title: 'Profile' })
+  .openapi('Profile')
 
 const AppSchema = z
   .object({
@@ -385,6 +1549,88 @@ const AppSchema = z
   .openapi({ required: ['links', 'id', 'type'], title: 'App' })
   .openapi('App')
 
+type BundleIdResponseType = {
+  data: z.infer<typeof BundleIdSchema>
+  included?: (
+    | z.infer<typeof ProfileSchema>
+    | z.infer<typeof BundleIdCapabilitySchema>
+    | z.infer<typeof AppSchema>
+  )[]
+  links: z.infer<typeof DocumentLinksSchema>
+}
+
+type BundleIdsResponseType = {
+  data: z.infer<typeof BundleIdSchema>[]
+  included?: (
+    | z.infer<typeof ProfileSchema>
+    | z.infer<typeof BundleIdCapabilitySchema>
+    | z.infer<typeof AppSchema>
+  )[]
+  links: z.infer<typeof PagedDocumentLinksSchema>
+  meta?: z.infer<typeof PagingInformationSchema>
+}
+
+const AgeRatingDeclarationResponseSchema = z
+  .object({ data: AgeRatingDeclarationSchema, links: DocumentLinksSchema })
+  .openapi({ required: ['data', 'links'], title: 'AgeRatingDeclarationResponse' })
+  .openapi('AgeRatingDeclarationResponse')
+
+const AgeRatingDeclarationUpdateRequestSchema = z
+  .object({
+    data: z
+      .object({
+        attributes: z
+          .object({
+            alcoholTobaccoOrDrugUseOrReferences: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            contests: z.enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE']).exactOptional(),
+            gambling: z.boolean().exactOptional(),
+            gamblingAndContests: z.boolean().exactOptional().openapi({ deprecated: true }),
+            gamblingSimulated: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            horrorOrFearThemes: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            kidsAgeBand: KidsAgeBandSchema.exactOptional(),
+            matureOrSuggestiveThemes: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            medicalOrTreatmentInformation: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            profanityOrCrudeHumor: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            seventeenPlus: z.boolean().exactOptional(),
+            sexualContentGraphicAndNudity: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            sexualContentOrNudity: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            unrestrictedWebAccess: z.boolean().exactOptional(),
+            violenceCartoonOrFantasy: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            violenceRealistic: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+            violenceRealisticProlongedGraphicOrSadistic: z
+              .enum(['NONE', 'INFREQUENT_OR_MILD', 'FREQUENT_OR_INTENSE'])
+              .exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        id: z.string(),
+        type: z.literal('ageRatingDeclarations'),
+      })
+      .openapi({ required: ['id', 'type'] }),
+  })
+  .openapi({ required: ['data'], title: 'AgeRatingDeclarationUpdateRequest' })
+  .openapi('AgeRatingDeclarationUpdateRequest')
+
 const AppBetaTestersLinkagesRequestSchema = z
   .object({
     data: z.array(
@@ -395,8 +1641,6 @@ const AppBetaTestersLinkagesRequestSchema = z
   })
   .openapi({ required: ['data'] })
   .openapi('AppBetaTestersLinkagesRequest')
-
-const PlatformSchema = z.enum(['IOS', 'MAC_OS', 'TV_OS']).openapi('Platform')
 
 const AppCategorySchema = z
   .object({
@@ -445,11 +1689,6 @@ const AppCategorySchema = z
   })
   .openapi({ required: ['links', 'id', 'type'], title: 'AppCategory' })
   .openapi('AppCategory')
-
-const PagedDocumentLinksSchema = z
-  .object({ first: z.string().exactOptional(), next: z.string().exactOptional(), self: z.string() })
-  .openapi({ required: ['self'] })
-  .openapi('PagedDocumentLinks')
 
 const AppCategoriesResponseSchema = z
   .object({
@@ -549,28 +1788,6 @@ const AppEncryptionDeclarationsResponseSchema = z
 const AppStoreAgeRatingSchema = z
   .enum(['FOUR_PLUS', 'NINE_PLUS', 'TWELVE_PLUS', 'SEVENTEEN_PLUS'])
   .openapi('AppStoreAgeRating')
-
-const AppStoreVersionStateSchema = z
-  .enum([
-    'DEVELOPER_REMOVED_FROM_SALE',
-    'DEVELOPER_REJECTED',
-    'IN_REVIEW',
-    'INVALID_BINARY',
-    'METADATA_REJECTED',
-    'PENDING_APPLE_RELEASE',
-    'PENDING_CONTRACT',
-    'PENDING_DEVELOPER_RELEASE',
-    'PREPARE_FOR_SUBMISSION',
-    'PREORDER_READY_FOR_SALE',
-    'PROCESSING_FOR_APP_STORE',
-    'READY_FOR_SALE',
-    'REJECTED',
-    'REMOVED_FROM_SALE',
-    'WAITING_FOR_EXPORT_COMPLIANCE',
-    'WAITING_FOR_REVIEW',
-    'REPLACED_WITH_NEW_VERSION',
-  ])
-  .openapi('AppStoreVersionState')
 
 const BrazilAgeRatingSchema = z
   .enum(['L', 'TEN', 'TWELVE', 'FOURTEEN', 'SIXTEEN', 'EIGHTEEN'])
@@ -937,20 +2154,6 @@ const AppInfosResponseSchema = z
   .openapi({ required: ['data', 'links'], title: 'AppInfosResponse' })
   .openapi('AppInfosResponse')
 
-const AppMediaStateErrorSchema = z
-  .object({ code: z.string().exactOptional(), description: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AppMediaStateError')
-
-const AppMediaAssetStateSchema = z
-  .object({
-    errors: z.array(AppMediaStateErrorSchema).exactOptional(),
-    state: z.enum(['AWAITING_UPLOAD', 'UPLOAD_COMPLETE', 'COMPLETE', 'FAILED']).exactOptional(),
-    warnings: z.array(AppMediaStateErrorSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AppMediaAssetState')
-
 const AppPreOrderSchema = z
   .object({
     attributes: z
@@ -1032,72 +2235,6 @@ const AppPreOrderUpdateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppPreOrderUpdateRequest' })
   .openapi('AppPreOrderUpdateRequest')
 
-const ImageAssetSchema = z
-  .object({
-    height: z.int().exactOptional(),
-    templateUrl: z.string().exactOptional(),
-    width: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ImageAsset')
-
-const UploadOperationHeaderSchema = z
-  .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('UploadOperationHeader')
-
-const UploadOperationSchema = z
-  .object({
-    length: z.int().exactOptional(),
-    method: z.string().exactOptional(),
-    offset: z.int().exactOptional(),
-    requestHeaders: z.array(UploadOperationHeaderSchema).exactOptional(),
-    url: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UploadOperation')
-
-const AppPreviewSchema = z
-  .object({
-    attributes: z
-      .object({
-        assetDeliveryState: AppMediaAssetStateSchema.exactOptional(),
-        fileName: z.string().exactOptional(),
-        fileSize: z.int().exactOptional(),
-        mimeType: z.string().exactOptional(),
-        previewFrameTimeCode: z.string().exactOptional(),
-        previewImage: ImageAssetSchema.exactOptional(),
-        sourceFileChecksum: z.string().exactOptional(),
-        uploadOperations: z.array(UploadOperationSchema).exactOptional(),
-        videoUrl: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appPreviewSet: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appPreviewSets') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appPreviews'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppPreview' })
-  .openapi('AppPreview')
-
 const AppPreviewCreateRequestSchema = z
   .object({
     data: z
@@ -1132,74 +2269,6 @@ const AppPreviewResponseSchema = z
   .object({ data: AppPreviewSchema, links: DocumentLinksSchema })
   .openapi({ required: ['data', 'links'], title: 'AppPreviewResponse' })
   .openapi('AppPreviewResponse')
-
-const PreviewTypeSchema = z
-  .enum([
-    'IPHONE_65',
-    'IPHONE_58',
-    'IPHONE_55',
-    'IPHONE_47',
-    'IPHONE_40',
-    'IPHONE_35',
-    'IPAD_PRO_3GEN_129',
-    'IPAD_PRO_3GEN_11',
-    'IPAD_PRO_129',
-    'IPAD_105',
-    'IPAD_97',
-    'DESKTOP',
-    'WATCH_SERIES_4',
-    'WATCH_SERIES_3',
-    'APPLE_TV',
-  ])
-  .openapi('PreviewType')
-
-const AppPreviewSetSchema = z
-  .object({
-    attributes: z
-      .object({ previewType: PreviewTypeSchema.exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appPreviews: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('appPreviews') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreVersionLocalization: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersionLocalizations') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appPreviewSets'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppPreviewSet' })
-  .openapi('AppPreviewSet')
 
 const AppPreviewSetAppPreviewsLinkagesRequestSchema = z
   .object({
@@ -1250,7 +2319,7 @@ const AppPreviewSetCreateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppPreviewSetCreateRequest' })
   .openapi('AppPreviewSetCreateRequest')
 
-const AppPreviewSetResponseSchema = z
+const AppPreviewSetResponseSchema: z.ZodType<AppPreviewSetResponseType> = z
   .object({
     data: AppPreviewSetSchema,
     included: z.array(AppPreviewSchema).exactOptional(),
@@ -1259,7 +2328,7 @@ const AppPreviewSetResponseSchema = z
   .openapi({ required: ['data', 'links'], title: 'AppPreviewSetResponse' })
   .openapi('AppPreviewSetResponse')
 
-const AppPreviewSetsResponseSchema = z
+const AppPreviewSetsResponseSchema: z.ZodType<AppPreviewSetsResponseType> = z
   .object({
     data: z.array(AppPreviewSetSchema),
     included: z.array(AppPreviewSchema).exactOptional(),
@@ -1289,7 +2358,7 @@ const AppPreviewUpdateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppPreviewUpdateRequest' })
   .openapi('AppPreviewUpdateRequest')
 
-const AppPreviewsResponseSchema = z
+const AppPreviewsResponseSchema: z.ZodType<AppPreviewsResponseType> = z
   .object({
     data: z.array(AppPreviewSchema),
     links: PagedDocumentLinksSchema,
@@ -1553,155 +2622,6 @@ const BetaGroupSchema = z
   .openapi({ required: ['links', 'id', 'type'], title: 'BetaGroup' })
   .openapi('BetaGroup')
 
-const AppStoreVersionSchema = z
-  .object({
-    attributes: z
-      .object({
-        appStoreState: AppStoreVersionStateSchema.exactOptional(),
-        copyright: z.string().exactOptional(),
-        createdDate: z.iso.datetime({ offset: true }).exactOptional(),
-        downloadable: z.boolean().exactOptional(),
-        earliestReleaseDate: z.iso.datetime({ offset: true }).exactOptional(),
-        platform: PlatformSchema.exactOptional(),
-        releaseType: z.enum(['MANUAL', 'AFTER_APPROVAL', 'SCHEDULED']).exactOptional(),
-        usesIdfa: z.boolean().exactOptional(),
-        versionString: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        ageRatingDeclaration: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('ageRatingDeclarations') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ deprecated: true, required: [] }),
-        app: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('apps') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreReviewDetail: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreReviewDetails') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreVersionLocalizations: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('appStoreVersionLocalizations') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreVersionPhasedRelease: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersionPhasedReleases') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreVersionSubmission: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersionSubmissions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        build: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('builds') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        idfaDeclaration: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('idfaDeclarations') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        routingAppCoverage: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('routingAppCoverages') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appStoreVersions'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreVersion' })
-  .openapi('AppStoreVersion')
-
 const PrereleaseVersionSchema = z
   .object({
     attributes: z
@@ -1787,162 +2707,6 @@ const BetaAppLocalizationSchema = z
   })
   .openapi({ required: ['links', 'id', 'type'], title: 'BetaAppLocalization' })
   .openapi('BetaAppLocalization')
-
-const BuildSchema = z
-  .object({
-    attributes: z
-      .object({
-        expirationDate: z.iso.datetime({ offset: true }).exactOptional(),
-        expired: z.boolean().exactOptional(),
-        iconAssetToken: ImageAssetSchema.exactOptional(),
-        minOsVersion: z.string().exactOptional(),
-        processingState: z.enum(['PROCESSING', 'FAILED', 'INVALID', 'VALID']).exactOptional(),
-        uploadedDate: z.iso.datetime({ offset: true }).exactOptional(),
-        usesNonExemptEncryption: z.boolean().exactOptional(),
-        version: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        app: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('apps') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appEncryptionDeclaration: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appEncryptionDeclarations') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreVersion: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        betaAppReviewSubmission: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('betaAppReviewSubmissions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        betaBuildLocalizations: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('betaBuildLocalizations') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        buildBetaDetail: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('buildBetaDetails') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        icons: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('buildIcons') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        individualTesters: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('betaTesters') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        preReleaseVersion: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('preReleaseVersions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('builds'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'Build' })
-  .openapi('Build')
 
 const BetaLicenseAgreementSchema = z
   .object({
@@ -2233,46 +2997,6 @@ const AppResponseSchema = z
   .openapi({ required: ['data', 'links'], title: 'AppResponse' })
   .openapi('AppResponse')
 
-const AppScreenshotSchema = z
-  .object({
-    attributes: z
-      .object({
-        assetDeliveryState: AppMediaAssetStateSchema.exactOptional(),
-        assetToken: z.string().exactOptional(),
-        assetType: z.string().exactOptional(),
-        fileName: z.string().exactOptional(),
-        fileSize: z.int().exactOptional(),
-        imageAsset: ImageAssetSchema.exactOptional(),
-        sourceFileChecksum: z.string().exactOptional(),
-        uploadOperations: z.array(UploadOperationSchema).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appScreenshotSet: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appScreenshotSets') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appScreenshots'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppScreenshot' })
-  .openapi('AppScreenshot')
-
 const AppScreenshotCreateRequestSchema = z
   .object({
     data: z
@@ -2302,84 +3026,6 @@ const AppScreenshotResponseSchema = z
   .object({ data: AppScreenshotSchema, links: DocumentLinksSchema })
   .openapi({ required: ['data', 'links'], title: 'AppScreenshotResponse' })
   .openapi('AppScreenshotResponse')
-
-const ScreenshotDisplayTypeSchema = z
-  .enum([
-    'APP_IPHONE_65',
-    'APP_IPHONE_58',
-    'APP_IPHONE_55',
-    'APP_IPHONE_47',
-    'APP_IPHONE_40',
-    'APP_IPHONE_35',
-    'APP_IPAD_PRO_3GEN_129',
-    'APP_IPAD_PRO_3GEN_11',
-    'APP_IPAD_PRO_129',
-    'APP_IPAD_105',
-    'APP_IPAD_97',
-    'APP_DESKTOP',
-    'APP_WATCH_SERIES_4',
-    'APP_WATCH_SERIES_3',
-    'APP_APPLE_TV',
-    'IMESSAGE_APP_IPHONE_65',
-    'IMESSAGE_APP_IPHONE_58',
-    'IMESSAGE_APP_IPHONE_55',
-    'IMESSAGE_APP_IPHONE_47',
-    'IMESSAGE_APP_IPHONE_40',
-    'IMESSAGE_APP_IPAD_PRO_3GEN_129',
-    'IMESSAGE_APP_IPAD_PRO_3GEN_11',
-    'IMESSAGE_APP_IPAD_PRO_129',
-    'IMESSAGE_APP_IPAD_105',
-    'IMESSAGE_APP_IPAD_97',
-  ])
-  .openapi('ScreenshotDisplayType')
-
-const AppScreenshotSetSchema = z
-  .object({
-    attributes: z
-      .object({ screenshotDisplayType: ScreenshotDisplayTypeSchema.exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appScreenshots: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('appScreenshots') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreVersionLocalization: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersionLocalizations') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appScreenshotSets'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppScreenshotSet' })
-  .openapi('AppScreenshotSet')
 
 const AppScreenshotSetAppScreenshotsLinkagesRequestSchema = z
   .object({
@@ -2430,7 +3076,7 @@ const AppScreenshotSetCreateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppScreenshotSetCreateRequest' })
   .openapi('AppScreenshotSetCreateRequest')
 
-const AppScreenshotSetResponseSchema = z
+const AppScreenshotSetResponseSchema: z.ZodType<AppScreenshotSetResponseType> = z
   .object({
     data: AppScreenshotSetSchema,
     included: z.array(AppScreenshotSchema).exactOptional(),
@@ -2439,7 +3085,7 @@ const AppScreenshotSetResponseSchema = z
   .openapi({ required: ['data', 'links'], title: 'AppScreenshotSetResponse' })
   .openapi('AppScreenshotSetResponse')
 
-const AppScreenshotSetsResponseSchema = z
+const AppScreenshotSetsResponseSchema: z.ZodType<AppScreenshotSetsResponseType> = z
   .object({
     data: z.array(AppScreenshotSetSchema),
     included: z.array(AppScreenshotSchema).exactOptional(),
@@ -2468,7 +3114,7 @@ const AppScreenshotUpdateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppScreenshotUpdateRequest' })
   .openapi('AppScreenshotUpdateRequest')
 
-const AppScreenshotsResponseSchema = z
+const AppScreenshotsResponseSchema: z.ZodType<AppScreenshotsResponseType> = z
   .object({
     data: z.array(AppScreenshotSchema),
     links: PagedDocumentLinksSchema,
@@ -2476,43 +3122,6 @@ const AppScreenshotsResponseSchema = z
   })
   .openapi({ required: ['data', 'links'], title: 'AppScreenshotsResponse' })
   .openapi('AppScreenshotsResponse')
-
-const AppStoreReviewAttachmentSchema = z
-  .object({
-    attributes: z
-      .object({
-        assetDeliveryState: AppMediaAssetStateSchema.exactOptional(),
-        fileName: z.string().exactOptional(),
-        fileSize: z.int().exactOptional(),
-        sourceFileChecksum: z.string().exactOptional(),
-        uploadOperations: z.array(UploadOperationSchema).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appStoreReviewDetail: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreReviewDetails') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appStoreReviewAttachments'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreReviewAttachment' })
-  .openapi('AppStoreReviewAttachment')
 
 const AppStoreReviewAttachmentCreateRequestSchema = z
   .object({
@@ -2563,7 +3172,7 @@ const AppStoreReviewAttachmentUpdateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppStoreReviewAttachmentUpdateRequest' })
   .openapi('AppStoreReviewAttachmentUpdateRequest')
 
-const AppStoreReviewAttachmentsResponseSchema = z
+const AppStoreReviewAttachmentsResponseSchema: z.ZodType<AppStoreReviewAttachmentsResponseType> = z
   .object({
     data: z.array(AppStoreReviewAttachmentSchema),
     links: PagedDocumentLinksSchema,
@@ -2571,63 +3180,6 @@ const AppStoreReviewAttachmentsResponseSchema = z
   })
   .openapi({ required: ['data', 'links'], title: 'AppStoreReviewAttachmentsResponse' })
   .openapi('AppStoreReviewAttachmentsResponse')
-
-const AppStoreReviewDetailSchema = z
-  .object({
-    attributes: z
-      .object({
-        contactEmail: z.string().exactOptional(),
-        contactFirstName: z.string().exactOptional(),
-        contactLastName: z.string().exactOptional(),
-        contactPhone: z.string().exactOptional(),
-        demoAccountName: z.string().exactOptional(),
-        demoAccountPassword: z.string().exactOptional(),
-        demoAccountRequired: z.boolean().exactOptional(),
-        notes: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appStoreReviewAttachments: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('appStoreReviewAttachments') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreVersion: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appStoreReviewDetails'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreReviewDetail' })
-  .openapi('AppStoreReviewDetail')
 
 const AppStoreReviewDetailCreateRequestSchema = z
   .object({
@@ -2664,7 +3216,7 @@ const AppStoreReviewDetailCreateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppStoreReviewDetailCreateRequest' })
   .openapi('AppStoreReviewDetailCreateRequest')
 
-const AppStoreReviewDetailResponseSchema = z
+const AppStoreReviewDetailResponseSchema: z.ZodType<AppStoreReviewDetailResponseType> = z
   .object({
     data: AppStoreReviewDetailSchema,
     included: z.array(AppStoreReviewAttachmentSchema).exactOptional(),
@@ -2758,79 +3310,6 @@ const AppStoreVersionCreateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppStoreVersionCreateRequest' })
   .openapi('AppStoreVersionCreateRequest')
 
-const AppStoreVersionLocalizationSchema = z
-  .object({
-    attributes: z
-      .object({
-        description: z.string().exactOptional(),
-        keywords: z.string().exactOptional(),
-        locale: z.string().exactOptional(),
-        marketingUrl: z.url().exactOptional(),
-        promotionalText: z.string().exactOptional(),
-        supportUrl: z.url().exactOptional(),
-        whatsNew: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appPreviewSets: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('appPreviewSets') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appScreenshotSets: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('appScreenshotSets') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        appStoreVersion: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appStoreVersionLocalizations'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreVersionLocalization' })
-  .openapi('AppStoreVersionLocalization')
-
 const AppStoreVersionLocalizationCreateRequestSchema = z
   .object({
     data: z
@@ -2906,28 +3385,6 @@ const AppStoreVersionLocalizationsResponseSchema = z
   .openapi({ required: ['data', 'links'], title: 'AppStoreVersionLocalizationsResponse' })
   .openapi('AppStoreVersionLocalizationsResponse')
 
-const PhasedReleaseStateSchema = z
-  .enum(['INACTIVE', 'ACTIVE', 'PAUSED', 'COMPLETE'])
-  .openapi('PhasedReleaseState')
-
-const AppStoreVersionPhasedReleaseSchema = z
-  .object({
-    attributes: z
-      .object({
-        currentDayNumber: z.int().exactOptional(),
-        phasedReleaseState: PhasedReleaseStateSchema.exactOptional(),
-        startDate: z.iso.datetime({ offset: true }).exactOptional(),
-        totalPauseDuration: z.int().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    type: z.literal('appStoreVersionPhasedReleases'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreVersionPhasedRelease' })
-  .openapi('AppStoreVersionPhasedRelease')
-
 const AppStoreVersionPhasedReleaseCreateRequestSchema = z
   .object({
     data: z
@@ -2975,107 +3432,7 @@ const AppStoreVersionPhasedReleaseUpdateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppStoreVersionPhasedReleaseUpdateRequest' })
   .openapi('AppStoreVersionPhasedReleaseUpdateRequest')
 
-const RoutingAppCoverageSchema = z
-  .object({
-    attributes: z
-      .object({
-        assetDeliveryState: AppMediaAssetStateSchema.exactOptional(),
-        fileName: z.string().exactOptional(),
-        fileSize: z.int().exactOptional(),
-        sourceFileChecksum: z.string().exactOptional(),
-        uploadOperations: z.array(UploadOperationSchema).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appStoreVersion: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('routingAppCoverages'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'RoutingAppCoverage' })
-  .openapi('RoutingAppCoverage')
-
-const AppStoreVersionSubmissionSchema = z
-  .object({
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appStoreVersion: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('appStoreVersionSubmissions'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'AppStoreVersionSubmission' })
-  .openapi('AppStoreVersionSubmission')
-
-const IdfaDeclarationSchema = z
-  .object({
-    attributes: z
-      .object({
-        attributesActionWithPreviousAd: z.boolean().exactOptional(),
-        attributesAppInstallationToPreviousAd: z.boolean().exactOptional(),
-        honorsLimitedAdTracking: z.boolean().exactOptional(),
-        servesAds: z.boolean().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        appStoreVersion: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('appStoreVersions') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('idfaDeclarations'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'IdfaDeclaration' })
-  .openapi('IdfaDeclaration')
-
-const AppStoreVersionResponseSchema = z
+const AppStoreVersionResponseSchema: z.ZodType<AppStoreVersionResponseType> = z
   .object({
     data: AppStoreVersionSchema,
     included: z
@@ -3161,7 +3518,7 @@ const AppStoreVersionUpdateRequestSchema = z
   .openapi({ required: ['data'], title: 'AppStoreVersionUpdateRequest' })
   .openapi('AppStoreVersionUpdateRequest')
 
-const AppStoreVersionsResponseSchema = z
+const AppStoreVersionsResponseSchema: z.ZodType<AppStoreVersionsResponseType> = z
   .object({
     data: z.array(AppStoreVersionSchema),
     included: z
@@ -4291,165 +4648,7 @@ const BuildsResponseSchema = z
   .openapi({ required: ['data', 'links'], title: 'BuildsResponse' })
   .openapi('BuildsResponse')
 
-const BundleIdPlatformSchema = z.enum(['IOS', 'MAC_OS']).openapi('BundleIdPlatform')
-
-const BundleIdSchema = z
-  .object({
-    attributes: z
-      .object({
-        identifier: z.string().exactOptional(),
-        name: z.string().exactOptional(),
-        platform: BundleIdPlatformSchema.exactOptional(),
-        seedId: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        app: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('apps') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        bundleIdCapabilities: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('bundleIdCapabilities') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        profiles: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('profiles') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('bundleIds'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'BundleId' })
-  .openapi('BundleId')
-
-const CapabilityTypeSchema = z
-  .enum([
-    'ICLOUD',
-    'IN_APP_PURCHASE',
-    'GAME_CENTER',
-    'PUSH_NOTIFICATIONS',
-    'WALLET',
-    'INTER_APP_AUDIO',
-    'MAPS',
-    'ASSOCIATED_DOMAINS',
-    'PERSONAL_VPN',
-    'APP_GROUPS',
-    'HEALTHKIT',
-    'HOMEKIT',
-    'WIRELESS_ACCESSORY_CONFIGURATION',
-    'APPLE_PAY',
-    'DATA_PROTECTION',
-    'SIRIKIT',
-    'NETWORK_EXTENSIONS',
-    'MULTIPATH',
-    'HOT_SPOT',
-    'NFC_TAG_READING',
-    'CLASSKIT',
-    'AUTOFILL_CREDENTIAL_PROVIDER',
-    'ACCESS_WIFI_INFORMATION',
-    'NETWORK_CUSTOM_PROTOCOL',
-    'COREMEDIA_HLS_LOW_LATENCY',
-    'SYSTEM_EXTENSION_INSTALL',
-    'USER_MANAGEMENT',
-    'APPLE_ID_AUTH',
-  ])
-  .openapi('CapabilityType')
-
-const CapabilityOptionSchema = z
-  .object({
-    description: z.string().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    enabledByDefault: z.boolean().exactOptional(),
-    key: z
-      .enum([
-        'XCODE_5',
-        'XCODE_6',
-        'COMPLETE_PROTECTION',
-        'PROTECTED_UNLESS_OPEN',
-        'PROTECTED_UNTIL_FIRST_USER_AUTH',
-        'PRIMARY_APP_CONSENT',
-      ])
-      .exactOptional(),
-    name: z.string().exactOptional(),
-    supportsWildcard: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CapabilityOption')
-
-const CapabilitySettingSchema = z
-  .object({
-    allowedInstances: z.enum(['ENTRY', 'SINGLE', 'MULTIPLE']).exactOptional(),
-    description: z.string().exactOptional(),
-    enabledByDefault: z.boolean().exactOptional(),
-    key: z
-      .enum(['ICLOUD_VERSION', 'DATA_PROTECTION_PERMISSION_LEVEL', 'APPLE_ID_AUTH_APP_CONSENT'])
-      .exactOptional(),
-    minInstances: z.int().exactOptional(),
-    name: z.string().exactOptional(),
-    options: z.array(CapabilityOptionSchema).exactOptional(),
-    visible: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CapabilitySetting')
-
-const BundleIdCapabilitySchema = z
-  .object({
-    attributes: z
-      .object({
-        capabilityType: CapabilityTypeSchema.exactOptional(),
-        settings: z.array(CapabilitySettingSchema).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    type: z.literal('bundleIdCapabilities'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'BundleIdCapability' })
-  .openapi('BundleIdCapability')
-
-const BundleIdCapabilitiesResponseSchema = z
+const BundleIdCapabilitiesResponseSchema: z.ZodType<BundleIdCapabilitiesResponseType> = z
   .object({
     data: z.array(BundleIdCapabilitySchema),
     links: PagedDocumentLinksSchema,
@@ -4529,98 +4728,7 @@ const BundleIdCreateRequestSchema = z
   .openapi({ required: ['data'], title: 'BundleIdCreateRequest' })
   .openapi('BundleIdCreateRequest')
 
-const ProfileSchema = z
-  .object({
-    attributes: z
-      .object({
-        createdDate: z.iso.datetime({ offset: true }).exactOptional(),
-        expirationDate: z.iso.datetime({ offset: true }).exactOptional(),
-        name: z.string().exactOptional(),
-        platform: BundleIdPlatformSchema.exactOptional(),
-        profileContent: z.string().exactOptional(),
-        profileState: z.enum(['ACTIVE', 'INVALID']).exactOptional(),
-        profileType: z
-          .enum([
-            'IOS_APP_DEVELOPMENT',
-            'IOS_APP_STORE',
-            'IOS_APP_ADHOC',
-            'IOS_APP_INHOUSE',
-            'MAC_APP_DEVELOPMENT',
-            'MAC_APP_STORE',
-            'MAC_APP_DIRECT',
-            'TVOS_APP_DEVELOPMENT',
-            'TVOS_APP_STORE',
-            'TVOS_APP_ADHOC',
-            'TVOS_APP_INHOUSE',
-            'MAC_CATALYST_APP_DEVELOPMENT',
-            'MAC_CATALYST_APP_STORE',
-            'MAC_CATALYST_APP_DIRECT',
-          ])
-          .exactOptional(),
-        uuid: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    id: z.string(),
-    links: ResourceLinksSchema,
-    relationships: z
-      .object({
-        bundleId: z
-          .object({
-            data: z
-              .object({ id: z.string(), type: z.literal('bundleIds') })
-              .exactOptional()
-              .openapi({ required: ['id', 'type'] }),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        certificates: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('certificates') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        devices: z
-          .object({
-            data: z
-              .array(
-                z
-                  .object({ id: z.string(), type: z.literal('devices') })
-                  .openapi({ required: ['id', 'type'] }),
-              )
-              .exactOptional(),
-            links: z
-              .object({ related: z.string().exactOptional(), self: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-            meta: PagingInformationSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    type: z.literal('profiles'),
-  })
-  .openapi({ required: ['links', 'id', 'type'], title: 'Profile' })
-  .openapi('Profile')
-
-const BundleIdResponseSchema = z
+const BundleIdResponseSchema: z.ZodType<BundleIdResponseType> = z
   .object({
     data: BundleIdSchema,
     included: z.array(z.xor([ProfileSchema, BundleIdCapabilitySchema, AppSchema])).exactOptional(),
@@ -4645,7 +4753,7 @@ const BundleIdUpdateRequestSchema = z
   .openapi({ required: ['data'], title: 'BundleIdUpdateRequest' })
   .openapi('BundleIdUpdateRequest')
 
-const BundleIdsResponseSchema = z
+const BundleIdsResponseSchema: z.ZodType<BundleIdsResponseType> = z
   .object({
     data: z.array(BundleIdSchema),
     included: z.array(z.xor([ProfileSchema, BundleIdCapabilitySchema, AppSchema])).exactOptional(),

@@ -1,5 +1,34 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type PushOptionPropertyType = {
+  description: string
+  displayName: string
+  options?:
+    | {
+        description?: string
+        displayName?: string
+        required?: boolean
+        type?:
+          | 'Array'
+          | 'Object'
+          | 'String'
+          | 'Number'
+          | 'Boolean'
+          | 'DateTime'
+          | 'File'
+          | 'MultiPart'
+        value?: string
+      }[]
+    | null
+  properties?: { [key: string]: PushOptionPropertyType } | null
+  required: boolean
+  type: 'Array' | 'Object' | 'String' | 'Number' | 'Boolean' | 'DateTime' | 'File' | 'MultiPart'
+  validation?: {
+    information?: { details: string; field?: string; ref?: string | null }[] | null
+    warnings?: { details: string; field?: string; ref?: string | null }[] | null
+  }
+}
+
 const DateTimeSchema = z
   .string()
   .openapi({
@@ -378,6 +407,84 @@ const CreateBankTransactionsResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreateBankTransactionsResponse')
 
+const PushOptionPropertySchema: z.ZodType<PushOptionPropertyType> = z
+  .lazy(() =>
+    z
+      .object({
+        description: z.string().min(1),
+        displayName: z.string().min(1),
+        options: z
+          .array(
+            z
+              .object({
+                description: z.string().exactOptional(),
+                displayName: z.string().exactOptional(),
+                required: z.boolean().exactOptional(),
+                type: z
+                  .enum([
+                    'Array',
+                    'Object',
+                    'String',
+                    'Number',
+                    'Boolean',
+                    'DateTime',
+                    'File',
+                    'MultiPart',
+                  ])
+                  .exactOptional()
+                  .openapi({ title: 'Option Type' }),
+                value: z
+                  .string()
+                  .min(1)
+                  .exactOptional()
+                  .openapi({ description: 'Allowed value for field.' }),
+              })
+              .openapi({ title: 'Push Option Choice', required: [] }),
+          )
+          .nullable()
+          .exactOptional(),
+        properties: z.record(z.string(), PushOptionPropertySchema).nullable().exactOptional(),
+        required: z.boolean(),
+        type: z
+          .enum(['Array', 'Object', 'String', 'Number', 'Boolean', 'DateTime', 'File', 'MultiPart'])
+          .openapi({ title: 'Option Type' }),
+        validation: z
+          .strictObject({
+            information: z
+              .array(
+                z
+                  .strictObject({
+                    details: z.string().min(1),
+                    field: z.string().exactOptional(),
+                    ref: z.url().nullable().exactOptional(),
+                  })
+                  .openapi({ required: ['details'], title: 'Push field validation' }),
+              )
+              .nullable()
+              .exactOptional(),
+            warnings: z
+              .array(
+                z
+                  .strictObject({
+                    details: z.string().min(1),
+                    field: z.string().exactOptional(),
+                    ref: z.url().nullable().exactOptional(),
+                  })
+                  .openapi({ required: ['details'], title: 'Push field validation' }),
+              )
+              .nullable()
+              .exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ title: 'Push validation info', required: [] }),
+      })
+      .openapi({
+        required: ['description', 'displayName', 'required', 'type'],
+        title: 'Push Option Property',
+      }),
+  )
+  .openapi('PushOptionProperty')
+
 const PushOptionSchema = z
   .object({
     description: z.string().exactOptional(),
@@ -412,94 +519,7 @@ const PushOptionSchema = z
       )
       .nullable()
       .exactOptional(),
-    properties: z
-      .record(
-        z.string(),
-        z
-          .object({
-            description: z.string().min(1),
-            displayName: z.string().min(1),
-            options: z
-              .array(
-                z
-                  .object({
-                    description: z.string().exactOptional(),
-                    displayName: z.string().exactOptional(),
-                    required: z.boolean().exactOptional(),
-                    type: z
-                      .enum([
-                        'Array',
-                        'Object',
-                        'String',
-                        'Number',
-                        'Boolean',
-                        'DateTime',
-                        'File',
-                        'MultiPart',
-                      ])
-                      .exactOptional()
-                      .openapi({ title: 'Option Type' }),
-                    value: z
-                      .string()
-                      .min(1)
-                      .exactOptional()
-                      .openapi({ description: 'Allowed value for field.' }),
-                  })
-                  .openapi({ title: 'Push Option Choice', required: [] }),
-              )
-              .nullable()
-              .exactOptional(),
-            properties: z.record(z.string(), PushOptionPropertySchema).nullable().exactOptional(),
-            required: z.boolean(),
-            type: z
-              .enum([
-                'Array',
-                'Object',
-                'String',
-                'Number',
-                'Boolean',
-                'DateTime',
-                'File',
-                'MultiPart',
-              ])
-              .openapi({ title: 'Option Type' }),
-            validation: z
-              .strictObject({
-                information: z
-                  .array(
-                    z
-                      .strictObject({
-                        details: z.string().min(1),
-                        field: z.string().exactOptional(),
-                        ref: z.url().nullable().exactOptional(),
-                      })
-                      .openapi({ required: ['details'], title: 'Push field validation' }),
-                  )
-                  .nullable()
-                  .exactOptional(),
-                warnings: z
-                  .array(
-                    z
-                      .strictObject({
-                        details: z.string().min(1),
-                        field: z.string().exactOptional(),
-                        ref: z.url().nullable().exactOptional(),
-                      })
-                      .openapi({ required: ['details'], title: 'Push field validation' }),
-                  )
-                  .nullable()
-                  .exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ title: 'Push validation info', required: [] }),
-          })
-          .openapi({
-            required: ['description', 'displayName', 'required', 'type'],
-            title: 'Push Option Property',
-          }),
-      )
-      .nullable()
-      .exactOptional(),
+    properties: z.record(z.string(), PushOptionPropertySchema).nullable().exactOptional(),
     required: z.boolean(),
     type: z
       .enum(['Array', 'Object', 'String', 'Number', 'Boolean', 'DateTime', 'File', 'MultiPart'])

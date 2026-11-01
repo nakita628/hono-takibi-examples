@@ -1,52 +1,188 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AnalysisArchiveSummarySchema = z
+const ImageRefSchema = z
+  .object({ type: z.enum(['tag', 'digest', 'id']), value: z.string() })
+  .openapi({ description: 'A reference to an image', required: ['type', 'value'] })
+  .openapi('ImageRef')
+
+const ImageSelectionRuleSchema = z
   .object({
-    last_updated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The timestamp of the most recent archived image' }),
-    total_data_bytes: z
-      .int()
+    id: z.string().exactOptional(),
+    image: ImageRefSchema,
+    name: z.string(),
+    registry: z.string(),
+    repository: z.string(),
+  })
+  .openapi({ required: ['name', 'registry', 'repository', 'image'] })
+  .openapi('ImageSelectionRule')
+
+const MappingRuleSchema = z
+  .object({
+    id: z.string().exactOptional(),
+    image: ImageRefSchema,
+    name: z.string(),
+    policy_id: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'The total sum of all the bytes stored to the backing storage. Accounts for anchore-applied compression, but not compression by the underlying storage system.',
+          'Optional single policy to evalute, if set will override any value in policy_ids, for backwards compatibility. Generally, policy_ids should be used even with a array of length 1.',
       }),
-    total_image_count: z
-      .int()
+    policy_ids: z
+      .array(z.string().openapi({ description: 'PolicyId to evaluate' }))
       .exactOptional()
-      .openapi({ description: 'The number of unique images (digests) in the archive' }),
-    total_tag_count: z
-      .int()
+      .openapi({ description: 'List of policyIds to evaluate in order, to completion' }),
+    registry: z.string(),
+    repository: z.string(),
+    whitelist_ids: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: ['name', 'registry', 'repository', 'image'] })
+  .openapi('MappingRule')
+
+const PolicyRuleSchema = z
+  .object({
+    action: z.enum(['GO', 'STOP', 'WARN']),
+    gate: z.string(),
+    id: z.string().exactOptional(),
+    params: z
+      .array(
+        z.object({ name: z.string(), value: z.string() }).openapi({ required: ['name', 'value'] }),
+      )
+      .exactOptional(),
+    trigger: z.string(),
+  })
+  .openapi({
+    description:
+      'A rule that defines and decision value if the match is found true for a given image.',
+    required: ['gate', 'trigger', 'action'],
+  })
+  .openapi('PolicyRule')
+
+const PolicySchema = z
+  .object({
+    comment: z.string().exactOptional(),
+    id: z.string(),
+    name: z.string().exactOptional(),
+    rules: z.array(PolicyRuleSchema).exactOptional(),
+    version: z.string(),
+  })
+  .openapi({ required: ['id', 'version'] })
+  .openapi('Policy')
+
+const WhitelistItemSchema = z
+  .object({
+    expires_on: z.iso
+      .datetime({ offset: true })
+      .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:\:\d+)?[A-Z]?$/)
+      .exactOptional(),
+    gate: z.string(),
+    id: z.string().exactOptional(),
+    trigger_id: z.string(),
+  })
+  .openapi({
+    description:
+      'Identifies a specific gate and trigger match from a policy against an image and indicates it should be ignored in final policy decisions',
+    required: ['gate', 'trigger_id'],
+  })
+  .openapi('WhitelistItem')
+
+const WhitelistSchema = z
+  .object({
+    comment: z.string().exactOptional(),
+    id: z.string(),
+    items: z.array(WhitelistItemSchema).exactOptional(),
+    name: z.string().exactOptional(),
+    version: z.string(),
+  })
+  .openapi({
+    description: 'A collection of whitelist items to match a policy evaluation against.',
+    required: ['id', 'version'],
+  })
+  .openapi('Whitelist')
+
+const PolicyBundleSchema = z
+  .object({
+    blacklisted_images: z
+      .array(ImageSelectionRuleSchema)
       .exactOptional()
       .openapi({
         description:
-          'The number of tag records (registry/repo:tag pull strings) in the archive. This may include repeated tags but will always have a unique tag->digest mapping per record.',
+          'List of mapping rules that define which images should always result in a STOP/FAIL policy result regardless of policy content or presence in whitelisted_images',
+      }),
+    comment: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the bundle, human readable' }),
+    id: z.string().openapi({ description: 'Id of the bundle' }),
+    mappings: z
+      .array(MappingRuleSchema)
+      .openapi({
+        description:
+          'Mapping rules for defining which policy and whitelist(s) to apply to an image based on a match of the image tag or id. Evaluated in order.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Human readable name for the bundle' }),
+    policies: z
+      .array(PolicySchema)
+      .openapi({
+        description:
+          'Policies which define the go/stop/warn status of an image using rule matches on image properties',
+      }),
+    version: z.string().openapi({ description: 'Version id for this bundle format' }),
+    whitelisted_images: z
+      .array(ImageSelectionRuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of mapping rules that define which images should always be passed (unless also on the blacklist), regardless of policy result.',
+      }),
+    whitelists: z
+      .array(WhitelistSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Whitelists which define which policy matches to disregard explicitly in the final policy decision',
       }),
   })
   .openapi({
     description:
-      'A summarization of the analysis archive, including size, counts, etc. This archive stores image analysis only, never the actual image content or layers.',
-    required: [],
+      'A bundle containing a set of policies, whitelists, and rules for mapping them to specific images',
+    required: ['id', 'version', 'policies', 'mappings'],
   })
-  .openapi('AnalysisArchiveSummary')
+  .openapi('PolicyBundle')
 
-const AnalysisArchiveRulesSummarySchema = z
-  .object({
-    count: z.int().exactOptional().openapi({ description: 'The number of rules for this account' }),
-    last_updated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The newest last_updated timestamp from the set of rules' }),
-  })
-  .openapi({ description: 'Summary of the transition rule set', required: [] })
-  .openapi('AnalysisArchiveRulesSummary')
-
-type ArchiveSummaryType = {
-  images?: z.infer<typeof AnalysisArchiveSummarySchema>
-  rules?: z.infer<typeof AnalysisArchiveRulesSummarySchema>
+type PolicyBundleRecordType = {
+  active?: boolean
+  created_at?: string
+  last_updated?: string
+  policyId?: string
+  policy_source?: string
+  policybundle?: z.infer<typeof PolicyBundleSchema>
+  userId?: string
 }
+
+const PolicyBundleRecordSchema: z.ZodType<PolicyBundleRecordType> = z
+  .object({
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the bundle is currently defined to be used automatically' }),
+    created_at: z.iso.datetime({ offset: true }).exactOptional(),
+    last_updated: z.iso.datetime({ offset: true }).exactOptional(),
+    policyId: z.string().exactOptional().openapi({ description: "The bundle's identifier" }),
+    policy_source: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Source location of where the policy bundle originated' }),
+    policybundle: PolicyBundleSchema.exactOptional(),
+    userId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'UserId of the user that owns the bundle' }),
+  })
+  .openapi({ description: 'A policy bundle plus some metadata', required: [] })
+  .openapi('PolicyBundleRecord')
+
+type PolicyBundleListType = z.infer<typeof PolicyBundleRecordSchema>[]
 
 const AccessCredentialSchema = z
   .object({
@@ -265,6 +401,17 @@ const AnalysisArchiveRulesSchema = z
   })
   .openapi('AnalysisArchiveRules')
 
+const AnalysisArchiveRulesSummarySchema = z
+  .object({
+    count: z.int().exactOptional().openapi({ description: 'The number of rules for this account' }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The newest last_updated timestamp from the set of rules' }),
+  })
+  .openapi({ description: 'Summary of the transition rule set', required: [] })
+  .openapi('AnalysisArchiveRulesSummary')
+
 const AnalysisArchiveSourceSchema = z
   .object({
     digest: z
@@ -282,6 +429,38 @@ const AnalysisArchiveSourceSchema = z
     required: ['digest'],
   })
   .openapi('AnalysisArchiveSource')
+
+const AnalysisArchiveSummarySchema = z
+  .object({
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The timestamp of the most recent archived image' }),
+    total_data_bytes: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total sum of all the bytes stored to the backing storage. Accounts for anchore-applied compression, but not compression by the underlying storage system.',
+      }),
+    total_image_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of unique images (digests) in the archive' }),
+    total_tag_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of tag records (registry/repo:tag pull strings) in the archive. This may include repeated tags but will always have a unique tag->digest mapping per record.',
+      }),
+  })
+  .openapi({
+    description:
+      'A summarization of the analysis archive, including size, counts, etc. This archive stores image analysis only, never the actual image content or layers.',
+    required: [],
+  })
+  .openapi('AnalysisArchiveSummary')
 
 const AnalysisArchiveTransitionHistorySchema = z
   .object({
@@ -304,7 +483,7 @@ const AnalysisArchiveTransitionHistorySchema = z
 const AnalysisUpdateEvalSchema = z
   .object({
     analysis_status: z.string().exactOptional(),
-    annotations: z.object({}).exactOptional(),
+    annotations: z.looseObject({}).exactOptional(),
     image_digest: z.string().exactOptional(),
   })
   .openapi({ description: 'Evaluation Results for an entity (current or last)', required: [] })
@@ -354,7 +533,7 @@ const AnalysisUpdateNotificationPayloadSchema = GenericNotificationPayloadSchema
   z
     .object({
       annotations: z
-        .object({})
+        .looseObject({})
         .nullable()
         .exactOptional()
         .openapi({ description: 'List of Corresponding Image Annotations' }),
@@ -394,7 +573,7 @@ const AnchoreErrorCodeSchema = z
   .openapi('AnchoreErrorCode')
 
 const ImageContentSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A metadata content record for a specific image, containing different content type entries',
@@ -441,7 +620,7 @@ const AnchoreImageSchema = z
       .openapi({
         description: 'A state value for the current status of the analysis progress of the image',
       }),
-    annotations: z.object({}).exactOptional(),
+    annotations: z.looseObject({}).exactOptional(),
     created_at: z.iso.datetime({ offset: true }).exactOptional(),
     imageDigest: z.string().exactOptional(),
     image_content: ImageContentSchema.exactOptional(),
@@ -498,7 +677,7 @@ const AnchoreImageTagSummaryListSchema = z
   .openapi('AnchoreImageTagSummaryList')
 
 const AnnotationsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Simple key/value pairs where the value may be optional' })
   .openapi('Annotations')
 
@@ -506,7 +685,7 @@ const ApiErrorResponseSchema = z
   .object({
     code: z.int32().exactOptional(),
     detail: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -518,19 +697,16 @@ const ApiErrorResponseSchema = z
   .openapi({ description: 'Generic HTTP API error response', required: [] })
   .openapi('ApiErrorResponse')
 
-const ArchiveSummarySchema: z.ZodType<ArchiveSummaryType> = z
-  .lazy(() =>
-    z
-      .object({
-        images: AnalysisArchiveSummarySchema.exactOptional(),
-        rules: AnalysisArchiveRulesSummarySchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          "A summarization of the available archives, a place to for long-term storage of audit, analysis, or other data to remove it from the system's working set but keep it available.",
-        required: [],
-      }),
-  )
+const ArchiveSummarySchema = z
+  .object({
+    images: AnalysisArchiveSummarySchema.exactOptional(),
+    rules: AnalysisArchiveRulesSummarySchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      "A summarization of the available archives, a place to for long-term storage of audit, analysis, or other data to remove it from the system's working set but keep it available.",
+    required: [],
+  })
   .openapi('ArchiveSummary')
 
 const TagEntrySchema = z
@@ -571,7 +747,7 @@ const ArchivedAnalysisSchema = z
   .object({
     analyzed_at: z.iso.datetime({ offset: true }).exactOptional(),
     annotations: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'User provided annotations as key-value pairs' }),
     archive_size_bytes: z
@@ -703,7 +879,7 @@ const MalwareScanSchema = z
       )
       .exactOptional(),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Open schema for scanner-specific metadata related to the scan result',
@@ -764,7 +940,7 @@ const ContentPackageResponseSchema = z
 
 const ContentResponseSchema = z
   .object({
-    content: z.array(z.object({})).exactOptional(),
+    content: z.array(z.looseObject({})).exactOptional(),
     content_type: z.string().exactOptional(),
     imageDigest: z.string().exactOptional(),
   })
@@ -843,7 +1019,7 @@ const EventResponseSchema = z
     event: z
       .object({
         category: z.string().exactOptional(),
-        details: z.object({}).exactOptional(),
+        details: z.looseObject({}).exactOptional(),
         level: z.string().exactOptional(),
         message: z.string().exactOptional(),
         resource: z
@@ -1054,7 +1230,7 @@ const TriggerParamSpecSchema = z
           'The name of another trigger that supercedes this on functionally if this is deprecated',
       }),
     validator: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1136,7 +1312,7 @@ const ImageAnalysisReferencesSchema = z
   .openapi('ImageAnalysisReferences')
 
 const ImageAnalysisReportSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Analysis report json to be imported' })
   .openapi('ImageAnalysisReport')
 
@@ -1269,7 +1445,7 @@ const ImageSourceSchema = z
 const ImageAnalysisRequestSchema = z
   .object({
     annotations: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Annotations to be associated with the added image in key/value form',
@@ -1319,7 +1495,7 @@ const ImageAnalysisRequestSchema = z
   })
   .openapi('ImageAnalysisRequest')
 
-const ImageContentDeleteResponseSchema = z.object({}).openapi('ImageContentDeleteResponse')
+const ImageContentDeleteResponseSchema = z.looseObject({}).openapi('ImageContentDeleteResponse')
 
 const ImageFilterSchema = z
   .object({ digest: z.string().exactOptional(), tag: z.string().exactOptional() })
@@ -1378,7 +1554,7 @@ const ImportPackageSchema = z
     language: z.string(),
     licenses: z.array(z.string()),
     locations: z.array(ImportPackageLocationSchema),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     metadataType: z.string(),
     name: z.string(),
     purl: z.string().exactOptional(),
@@ -1431,11 +1607,6 @@ const ImagePackageManifestSchema = z
   .openapi({ required: ['artifacts', 'source', 'distro'] })
   .openapi('ImagePackageManifest')
 
-const ImageRefSchema = z
-  .object({ type: z.enum(['tag', 'digest', 'id']), value: z.string() })
-  .openapi({ description: 'A reference to an image', required: ['type', 'value'] })
-  .openapi('ImageRef')
-
 const ImageReferenceSchema = z
   .object({
     analyzed_at: z
@@ -1455,17 +1626,6 @@ const ImageReferenceSchema = z
     required: [],
   })
   .openapi('ImageReference')
-
-const ImageSelectionRuleSchema = z
-  .object({
-    id: z.string().exactOptional(),
-    image: ImageRefSchema,
-    name: z.string(),
-    registry: z.string(),
-    repository: z.string(),
-  })
-  .openapi({ required: ['name', 'registry', 'repository', 'image'] })
-  .openapi('ImageSelectionRule')
 
 const PackageReferenceSchema = z
   .object({
@@ -1508,29 +1668,6 @@ const LocalAnalysisSourceSchema = z
   .openapi({ required: [] })
   .openapi('LocalAnalysisSource')
 
-const MappingRuleSchema = z
-  .object({
-    id: z.string().exactOptional(),
-    image: ImageRefSchema,
-    name: z.string(),
-    policy_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional single policy to evalute, if set will override any value in policy_ids, for backwards compatibility. Generally, policy_ids should be used even with a array of length 1.',
-      }),
-    policy_ids: z
-      .array(z.string().openapi({ description: 'PolicyId to evaluate' }))
-      .exactOptional()
-      .openapi({ description: 'List of policyIds to evaluate in order, to completion' }),
-    registry: z.string(),
-    repository: z.string(),
-    whitelist_ids: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: ['name', 'registry', 'repository', 'image'] })
-  .openapi('MappingRule')
-
 const MetadataResponseSchema = z
   .object({
     imageDigest: z.string().exactOptional(),
@@ -1540,7 +1677,7 @@ const MetadataResponseSchema = z
   .openapi({ description: 'Generic wrapper for metadata listings from images', required: [] })
   .openapi('MetadataResponse')
 
-const NativeSbomSchema = z.object({}).openapi('NativeSbom')
+const NativeSbomSchema = z.looseObject({}).openapi('NativeSbom')
 
 const NvdDataObjectSchema = z
   .object({
@@ -1730,140 +1867,7 @@ const PaginatedVulnerableImageListSchema = PaginationPropertiesSchema.and(
   })
   .openapi('PaginatedVulnerableImageList')
 
-const PolicyRuleSchema = z
-  .object({
-    action: z.enum(['GO', 'STOP', 'WARN']),
-    gate: z.string(),
-    id: z.string().exactOptional(),
-    params: z
-      .array(
-        z.object({ name: z.string(), value: z.string() }).openapi({ required: ['name', 'value'] }),
-      )
-      .exactOptional(),
-    trigger: z.string(),
-  })
-  .openapi({
-    description:
-      'A rule that defines and decision value if the match is found true for a given image.',
-    required: ['gate', 'trigger', 'action'],
-  })
-  .openapi('PolicyRule')
-
-const PolicySchema = z
-  .object({
-    comment: z.string().exactOptional(),
-    id: z.string(),
-    name: z.string().exactOptional(),
-    rules: z.array(PolicyRuleSchema).exactOptional(),
-    version: z.string(),
-  })
-  .openapi({ required: ['id', 'version'] })
-  .openapi('Policy')
-
-const WhitelistItemSchema = z
-  .object({
-    expires_on: z.iso
-      .datetime({ offset: true })
-      .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:\:\d+)?[A-Z]?$/)
-      .exactOptional(),
-    gate: z.string(),
-    id: z.string().exactOptional(),
-    trigger_id: z.string(),
-  })
-  .openapi({
-    description:
-      'Identifies a specific gate and trigger match from a policy against an image and indicates it should be ignored in final policy decisions',
-    required: ['gate', 'trigger_id'],
-  })
-  .openapi('WhitelistItem')
-
-const WhitelistSchema = z
-  .object({
-    comment: z.string().exactOptional(),
-    id: z.string(),
-    items: z.array(WhitelistItemSchema).exactOptional(),
-    name: z.string().exactOptional(),
-    version: z.string(),
-  })
-  .openapi({
-    description: 'A collection of whitelist items to match a policy evaluation against.',
-    required: ['id', 'version'],
-  })
-  .openapi('Whitelist')
-
-const PolicyBundleSchema = z
-  .object({
-    blacklisted_images: z
-      .array(ImageSelectionRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of mapping rules that define which images should always result in a STOP/FAIL policy result regardless of policy content or presence in whitelisted_images',
-      }),
-    comment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the bundle, human readable' }),
-    id: z.string().openapi({ description: 'Id of the bundle' }),
-    mappings: z
-      .array(MappingRuleSchema)
-      .openapi({
-        description:
-          'Mapping rules for defining which policy and whitelist(s) to apply to an image based on a match of the image tag or id. Evaluated in order.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'Human readable name for the bundle' }),
-    policies: z
-      .array(PolicySchema)
-      .openapi({
-        description:
-          'Policies which define the go/stop/warn status of an image using rule matches on image properties',
-      }),
-    version: z.string().openapi({ description: 'Version id for this bundle format' }),
-    whitelisted_images: z
-      .array(ImageSelectionRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of mapping rules that define which images should always be passed (unless also on the blacklist), regardless of policy result.',
-      }),
-    whitelists: z
-      .array(WhitelistSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Whitelists which define which policy matches to disregard explicitly in the final policy decision',
-      }),
-  })
-  .openapi({
-    description:
-      'A bundle containing a set of policies, whitelists, and rules for mapping them to specific images',
-    required: ['id', 'version', 'policies', 'mappings'],
-  })
-  .openapi('PolicyBundle')
-
-const PolicyBundleRecordSchema = z
-  .object({
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the bundle is currently defined to be used automatically' }),
-    created_at: z.iso.datetime({ offset: true }).exactOptional(),
-    last_updated: z.iso.datetime({ offset: true }).exactOptional(),
-    policyId: z.string().exactOptional().openapi({ description: "The bundle's identifier" }),
-    policy_source: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Source location of where the policy bundle originated' }),
-    policybundle: PolicyBundleSchema.exactOptional(),
-    userId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'UserId of the user that owns the bundle' }),
-  })
-  .openapi({ description: 'A policy bundle plus some metadata', required: [] })
-  .openapi('PolicyBundleRecord')
-
-const PolicyBundleListSchema = z
+const PolicyBundleListSchema: z.ZodType<PolicyBundleListType> = z
   .array(PolicyBundleRecordSchema)
   .openapi({ description: 'List of PolicyBundleRecord objects' })
   .openapi('PolicyBundleList')
@@ -1872,16 +1876,16 @@ const PolicyEvalNotificationPayloadSchema = GenericNotificationPayloadSchema.and
   z
     .object({
       annotations: z
-        .object({})
+        .looseObject({})
         .nullable()
         .exactOptional()
         .openapi({ description: 'List of Corresponding Image Annotations' }),
       curr_eval: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({ description: 'The Current Policy Evaluation result' }),
       last_eval: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({ description: 'The Previous Policy Evaluation result' }),
     })
@@ -1904,7 +1908,7 @@ const PolicyEvalNotificationSchema = NotificationBaseSchema.and(
 ).openapi('PolicyEvalNotification')
 
 const PolicyEvaluationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Evaluation response object' })
   .openapi('PolicyEvaluation')
 
@@ -2026,7 +2030,7 @@ const StatusResponseSchema = z
     available: z.boolean().exactOptional(),
     busy: z.boolean().exactOptional(),
     db_version: z.string().exactOptional(),
-    detail: z.object({}).exactOptional(),
+    detail: z.looseObject({}).exactOptional(),
     message: z.string().exactOptional(),
     up: z.boolean().exactOptional(),
     version: z.string().exactOptional(),
@@ -2175,7 +2179,7 @@ const TagUpdateNotificationPayloadSchema = GenericNotificationPayloadSchema.and(
   z
     .object({
       annotations: z
-        .object({})
+        .looseObject({})
         .nullable()
         .exactOptional()
         .openapi({ description: 'List of Corresponding Image Annotations' }),
@@ -2279,7 +2283,7 @@ const VulnUpdateNotificationPayloadSchema = GenericNotificationPayloadSchema.and
   z
     .object({
       annotations: z
-        .object({})
+        .looseObject({})
         .nullable()
         .exactOptional()
         .openapi({ description: 'List of Corresponding Image Annotations' }),
@@ -4539,7 +4543,7 @@ export const postImportsImagesOperationIdImageConfigRoute = createRoute({
           param: { in: 'path', name: 'operation_id', required: true, schema: { type: 'string' } },
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     200: {
@@ -4590,10 +4594,10 @@ export const postImportsImagesOperationIdManifestRoute = createRoute({
     }),
     body: {
       content: {
-        'application/vnd.docker.distribution.manifest.v1+json': { schema: z.object({}) },
-        'application/vnd.docker.distribution.manifest.v1+prettyjws': { schema: z.object({}) },
-        'application/vnd.docker.distribution.manifest.v2+json': { schema: z.object({}) },
-        'application/vnd.oci.image.manifest.v1+json': { schema: z.object({}) },
+        'application/vnd.docker.distribution.manifest.v1+json': { schema: z.looseObject({}) },
+        'application/vnd.docker.distribution.manifest.v1+prettyjws': { schema: z.looseObject({}) },
+        'application/vnd.docker.distribution.manifest.v2+json': { schema: z.looseObject({}) },
+        'application/vnd.oci.image.manifest.v1+json': { schema: z.looseObject({}) },
       },
       required: true,
     },
@@ -4699,8 +4703,8 @@ export const postImportsImagesOperationIdParentManifestRoute = createRoute({
     }),
     body: {
       content: {
-        'application/vnd.docker.distribution.manifest.list.v2+json': { schema: z.object({}) },
-        'application/vnd.oci.image.index.v1+json': { schema: z.object({}) },
+        'application/vnd.docker.distribution.manifest.list.v2+json': { schema: z.looseObject({}) },
+        'application/vnd.oci.image.index.v1+json': { schema: z.looseObject({}) },
       },
       required: true,
     },

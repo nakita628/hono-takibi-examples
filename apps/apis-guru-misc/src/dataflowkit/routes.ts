@@ -586,7 +586,17 @@ type ParserequestType = {
   request?: z.infer<typeof FetchrequestSchema>
 }
 
-const SerprequestSchema = z
+type SerprequestType = {
+  fields?: z.infer<typeof FieldSchema>[]
+  format: 'csv' | 'json' | 'jsonl' | 'excel' | 'xml'
+  name: string
+  pageNum?: number
+  proxy: string
+  type: string
+  url: string
+}
+
+const SerprequestSchema: z.ZodType<SerprequestType> = z
   .object({
     fields: z
       .array(FieldSchema)
@@ -1054,7 +1064,7 @@ export const postParseRoute = createRoute({
         'Returns data in the one of the follwing formats - JSON, JSON Lines, CSV, MS Excel, XML',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: [
             {
               Name_href: 'https://test.dataflowkit.com/persons/1',
@@ -1302,7 +1312,7 @@ export const postSerpRoute = createRoute({
         'Returns data in the one of the follwing formats - JSON, JSON Lines, CSV, MS Excel, XML',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: [
             {
               description_text:

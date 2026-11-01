@@ -246,11 +246,11 @@ const FieldErrorResponse = {
   description: 'Incorrect field specified in the request.',
   content: {
     'application/json': {
-      schema: z.object({}),
+      schema: z.looseObject({}),
       example: { errors: ['No field configured for Record with name *field_name*'] },
     },
     'application/xml': {
-      schema: z.object({}),
+      schema: z.looseObject({}),
       example:
         '<hash><errors><error>No field configured for Record with name *field_name*</error></errors></hash>',
     },
@@ -260,9 +260,9 @@ const FieldErrorResponse = {
 const KeyErrorResponse = {
   description: 'API Key (Authentication-Token) is invalid.',
   content: {
-    'application/json': { schema: z.object({}), example: { errors: 'Invalid API Key' } },
+    'application/json': { schema: z.looseObject({}), example: { errors: 'Invalid API Key' } },
     'application/xml': {
-      schema: z.object({}),
+      schema: z.looseObject({}),
       example: '<hash><errors>Invalid API Key</errors></hash>',
     },
   },
@@ -943,11 +943,11 @@ export const getRecordsRecordIdFormatRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ example: { errors: 'Record with ID *record_id* was not found' } }),
         },
         'application/xml': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: '<hash><errors>Record with ID *record_id* was not found</errors></hash>',
         },
       },
@@ -1064,11 +1064,11 @@ export const getRecordsRecordIdMoreLikeThisFormatRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ example: { errors: 'Record with ID *record_id* was not found' } }),
         },
         'application/xml': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: '<hash><errors>Record with ID *record_id* was not found</errors></hash>',
         },
       },

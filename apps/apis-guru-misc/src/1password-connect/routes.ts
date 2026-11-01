@@ -262,7 +262,7 @@ const PatchSchema = z
               'An RFC6901 JSON Pointer pointing to the Item document, an Item Attribute, and Item Field by Field ID, or an Item Field Attribute',
             example: '/fields/06gnn2b95example10q91512p5/label',
           }),
-        value: z.object({}).exactOptional(),
+        value: z.looseObject({}).exactOptional(),
       })
       .openapi({ required: ['op', 'path'] }),
   )
@@ -362,19 +362,15 @@ export const getActivityRoute = createRoute({
       description: 'OK',
       content: { 'application/json': { schema: z.array(APIRequestSchema) } },
       headers: z.object({
-        'Content-Range': {
-          description:
-            'An decription of what part of the collection has been returned as well as the total size.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'An decription of what part of the collection has been returned as well as the total size.',
-              param: { required: false },
-              example: '1-50/1134',
-            }),
-        },
+        'Content-Range': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'An decription of what part of the collection has been returned as well as the total size.',
+            param: { required: false },
+            example: '1-50/1134',
+          }),
       }),
     },
     401: {
@@ -1346,18 +1342,14 @@ export const getVaultsVaultUuidItemsItemUuidFilesFileUuidContentRoute = createRo
         },
       },
       headers: z.object({
-        'Content-Disposition': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'attachment; filename="privkey.pem"' }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '6432' }),
-        },
+        'Content-Disposition': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'attachment; filename="privkey.pem"' }),
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '6432' }),
       }),
     },
     401: {

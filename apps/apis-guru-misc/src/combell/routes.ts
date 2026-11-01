@@ -1446,38 +1446,28 @@ export const getAccountsRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(AccountSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1709,38 +1699,28 @@ export const getDnsDomainNameRecordsRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(DnsRecordSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1788,16 +1768,13 @@ export const postDnsDomainNameRecordsRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -2057,38 +2034,28 @@ export const getDomainsRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(DomainSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -2316,38 +2283,28 @@ export const getLinuxhostingsRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(LinuxHostingSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -2688,16 +2645,13 @@ export const postLinuxhostingsDomainNameScheduledtasksRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3000,16 +2954,13 @@ export const postLinuxhostingsDomainNameSitesSiteNameHostheadersRoute = createRo
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3211,16 +3162,13 @@ export const postLinuxhostingsDomainNameSshKeysRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3427,16 +3375,13 @@ export const postLinuxhostingsDomainNameSubsitesRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3556,16 +3501,13 @@ export const postMailboxesRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3861,16 +3803,13 @@ export const postMailzonesDomainNameAliasesRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -4097,16 +4036,13 @@ export const postMailzonesDomainNameCatchallRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -4222,16 +4158,13 @@ export const postMailzonesDomainNameSmtpdomainsRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -4419,38 +4352,28 @@ export const getMysqldatabasesRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(MySqlDatabaseSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -4875,16 +4798,13 @@ export const getProvisioningjobsJobIdRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: ProvisioningJobCompletionSchema } },
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -4972,38 +4892,28 @@ export const getSshRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(SshKeyDetailSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5077,38 +4987,28 @@ export const getSslcertificaterequestsRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(SslCertificateRequestSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5132,16 +5032,13 @@ export const postSslcertificaterequestsRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'The location of the created resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The location of the created resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The location of the created resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5189,17 +5086,14 @@ export const getSslcertificaterequestsIdRoute = createRoute({
     303: {
       description: 'Redirect',
       headers: z.object({
-        Location: {
-          description: 'The location referring to a resource that replaced the original resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The location referring to a resource that replaced the original resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The location referring to a resource that replaced the original resource.',
+            param: { required: false },
+          }),
       }),
     },
     410: { description: 'The resource existed in the past, but is no longer available.' },
@@ -5245,17 +5139,14 @@ export const putSslcertificaterequestsIdRoute = createRoute({
     303: {
       description: 'Redirect',
       headers: z.object({
-        Location: {
-          description: 'The location referring to a resource that replaced the original resource.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The location referring to a resource that replaced the original resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The location referring to a resource that replaced the original resource.',
+            param: { required: false },
+          }),
       }),
     },
     410: { description: 'The resource existed in the past, but is no longer available.' },
@@ -5330,38 +5221,28 @@ export const getSslcertificatesRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(SslCertificateSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5551,38 +5432,28 @@ export const getWindowshostingsRoute = createRoute({
       description: 'Success',
       content: { 'application/json': { schema: z.array(WindowsHostingSchema) } },
       headers: z.object({
-        'X-Paging-Skipped': {
-          description: 'The number of results that have been skipped.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of results that have been skipped.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-Take': {
-          description:
-            'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
-              param: { required: false },
-            }),
-        },
-        'X-Paging-TotalResults': {
-          description: 'The total number of results regardless of paging.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total number of results regardless of paging.',
-              param: { required: false },
-            }),
-        },
+        'X-Paging-Skipped': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of results that have been skipped.',
+            param: { required: false },
+          }),
+        'X-Paging-Take': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of items in the current take. The number might differ from the requested take. It represents the actual number of items returned in the response.',
+            param: { required: false },
+          }),
+        'X-Paging-TotalResults': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of results regardless of paging.',
+            param: { required: false },
+          }),
       }),
     },
   },

@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const EmptySchema = z.object({}).openapi({ title: 'Empty Schema' }).openapi('Empty')
+const EmptySchema = z.looseObject({}).openapi({ title: 'Empty Schema' }).openapi('Empty')
 
 const Key2SecurityScheme = {
   in: 'header',
@@ -17,24 +17,18 @@ export const optionsRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -49,12 +43,10 @@ export const postAccountRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -69,24 +61,18 @@ export const optionsAccountRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -108,12 +94,10 @@ export const getAccountIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -143,24 +127,18 @@ export const optionsAccountIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -175,12 +153,10 @@ export const getBlockRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -195,24 +171,18 @@ export const optionsBlockRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -234,12 +204,10 @@ export const getBlockIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -269,24 +237,18 @@ export const optionsBlockIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -308,12 +270,10 @@ export const getBlockIdTransactionRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -343,24 +303,18 @@ export const optionsBlockIdTransactionRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -387,12 +341,10 @@ export const getBlockIdTransactionIndexRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -433,24 +385,18 @@ export const optionsBlockIdTransactionIndexRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -465,12 +411,10 @@ export const getBlockchainRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -485,24 +429,18 @@ export const optionsBlockchainRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -524,12 +462,10 @@ export const getBlockchainIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -559,24 +495,18 @@ export const optionsBlockchainIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -599,24 +529,18 @@ export const optionsContractRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -638,12 +562,10 @@ export const getContractIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -666,12 +588,10 @@ export const postContractIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -701,24 +621,18 @@ export const optionsContractIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -732,24 +646,18 @@ export const optionsEchoRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -780,24 +688,18 @@ export const optionsErc20Route = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -862,24 +764,18 @@ export const optionsErc20AddressRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -919,24 +815,18 @@ export const optionsKeyRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -982,24 +872,18 @@ export const optionsKeyKeyRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1014,12 +898,10 @@ export const postTransactionRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1034,24 +916,18 @@ export const optionsTransactionRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1075,12 +951,10 @@ export const getTransactionHashRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1110,24 +984,18 @@ export const optionsTransactionHashRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1151,12 +1019,10 @@ export const getTransactionHashReceiptRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1186,24 +1052,18 @@ export const optionsTransactionHashReceiptRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1218,12 +1078,10 @@ export const getVersionRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1237,24 +1095,18 @@ export const optionsVersionRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1286,24 +1138,18 @@ export const optionsWalletRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1333,24 +1179,18 @@ export const optionsWalletAccountRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1395,24 +1235,18 @@ export const optionsWalletAccountIdRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1487,24 +1321,18 @@ export const optionsWalletAccountIdPayRoute = createRoute({
       description: '200 response',
       content: { 'application/json': { schema: EmptySchema } },
       headers: z.object({
-        'Access-Control-Allow-Headers': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Methods': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Access-Control-Allow-Headers': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Methods': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

@@ -6,12 +6,12 @@ const ApiVersionSchema = z
       .datetime({ offset: true })
       .openapi({ description: 'Timestamp when the version was added' }),
     externalDocs: z
-      .object({})
+      .looseObject({})
       .refine((val) => Object.keys(val).length >= 1)
       .exactOptional()
       .openapi({ description: 'Copy of `externalDocs` section from OpenAPI definition' }),
     info: z
-      .object({})
+      .looseObject({})
       .refine((val) => Object.keys(val).length >= 1)
       .openapi({ description: 'Copy of `info` section from OpenAPI definition' }),
     link: z

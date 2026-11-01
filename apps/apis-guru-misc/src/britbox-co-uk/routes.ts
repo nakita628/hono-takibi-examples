@@ -8,6 +8,378 @@ const ClassificationSummarySchema = z
   .openapi({ required: ['code', 'name'], 'x-emoji': '🔞' })
   .openapi('ClassificationSummary')
 
+const ClassificationSchema = ClassificationSummarySchema.and(
+  z
+    .object({
+      advisoryText: z.string().exactOptional().openapi({ description: 'Parental advisort text.' }),
+      images: z.record(z.string(), z.url()),
+      level: z
+        .int32()
+        .openapi({
+          description:
+            'The level of this classification when compared with its siblings.\nA higher level means a greater restriction.\nEach classification in a system should have a unique level.\n',
+        }),
+      system: z.string().openapi({ description: 'The parent system code of the classification.' }),
+    })
+    .openapi({ required: ['level', 'system', 'images'] }),
+).openapi('Classification')
+
+const ThemeColorSchema = z
+  .strictObject({
+    name: z.string().openapi({ description: 'The name of the theme color.' }),
+    opacity: z
+      .float32()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The opacity of the theme color from 0 to 1.\n\nWhen omitted, no opacity level is to be applied to the color, or in other words we\nassume the color has an opacity of 1\n',
+      }),
+    value: z.string().openapi({ description: 'The hex value of the theme color.' }),
+  })
+  .openapi({ required: ['name', 'value'], 'x-emoji': '🎨' })
+  .openapi('ThemeColor')
+
+const ThemeSchema = z
+  .strictObject({
+    colors: z
+      .array(ThemeColorSchema)
+      .openapi({ description: 'The list of colors defined for the theme.' }),
+    type: z.enum(['Background', 'Text', 'Custom']).openapi({ description: 'The type of theme.' }),
+  })
+  .openapi({ required: ['colors', 'type'], 'x-emoji': '🎨' })
+  .openapi('Theme')
+
+const AppConfigDisplaySchema = z
+  .strictObject({
+    themes: z
+      .array(ThemeSchema)
+      .openapi({ description: 'An array of globally configured themes.' }),
+  })
+  .openapi({ required: ['themes'] })
+  .openapi('AppConfigDisplay')
+
+const AppConfigGeneralSchema = z
+  .strictObject({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The currency code to target.' }),
+    customFields: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'A map of custom configuration fields.' }),
+    defaultTimeZone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The default time zone of the site. e.g. "Etc/GMT"' }),
+    facebookAppId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Facebook application id associated with an environment.' }),
+    gaToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A Google Analytics token to track applicaton user events.' }),
+    itemImageTypes: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A map of default item image types where the key is the item types.',
+      }),
+    mandatorySignIn: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to require sign in for customers to access content.' }),
+    maxUserRating: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The maximum value allowed for user ratings.' }),
+    stripeKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The public Stripe key to use for payment transactions.' }),
+    websiteUrl: z.url().exactOptional().openapi({ description: 'The url of the primary website.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppConfigGeneral')
+
+const LanguageSchema = z
+  .strictObject({
+    code: z
+      .string()
+      .openapi({
+        description:
+          'The ISO language code of the language e.g. "en-US".\nSee https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes\n',
+      }),
+    label: z.string().openapi({ description: 'Display label for the language.' }),
+    title: z.string().openapi({ description: 'Display title for the language.' }),
+  })
+  .openapi({ required: ['code', 'label', 'title'], 'x-emoji': '🌎' })
+  .openapi('Language')
+
+const AppConfigI18nSchema = z
+  .strictObject({
+    languages: z.array(LanguageSchema).openapi({ description: 'An array of available languages.' }),
+  })
+  .openapi({ required: ['languages'] })
+  .openapi('AppConfigI18n')
+
+const AppConfigLinearSchema = z
+  .strictObject({
+    scheduleCacheMaxAgeMinutes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The maximum minutes of schedule cache time.' }),
+    viewingWindowDaysAfter: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of available upcoming day schedules.' }),
+    viewingWindowDaysBefore: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of available day schedules in the past.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppConfigLinear')
+
+const NavEntrySchema: z.ZodType<NavEntryType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        children: z
+          .array(NavEntrySchema)
+          .exactOptional()
+          .openapi({ description: 'Child nav entries.' }),
+        content: NavContentSchema.exactOptional(),
+        customFields: z
+          .looseObject({})
+          .exactOptional()
+          .openapi({ description: 'A map of custom fields defined by a curator for a nav entry.' }),
+        depth: z
+          .int32()
+          .min(0)
+          .openapi({ description: 'The depth of the NavEntry (top level is 0)' }),
+        featured: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'True if this is a featured menu item.\n\nFeatured menu items may have a more prominent presentation than others in the navigation.\n',
+          }),
+        icon: z.string().exactOptional().openapi({ description: 'The icon for this nav entry.' }),
+        label: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The text label for this nav entry.' }),
+        path: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "The path this nav entry links to.\nMay be undefined if the nav entry is not clickable e.g. a nav heading.\nIf the value begins with `http` then it's an external url.\n",
+          }),
+      })
+      .openapi({ required: ['depth'] }),
+  )
+  .openapi('NavEntry')
+
+type NavigationType = {
+  account?: z.infer<typeof NavEntrySchema>
+  copyright?: string
+  customFields?: { [key: string]: unknown }
+  footer?: z.infer<typeof NavEntrySchema>
+  header: z.infer<typeof NavEntrySchema>[]
+  mobile?: z.infer<typeof NavEntrySchema>
+}
+
+const NavigationSchema: z.ZodType<NavigationType> = z
+  .strictObject({
+    account: NavEntrySchema.exactOptional(),
+    copyright: z.string().exactOptional().openapi({ description: 'Copyright information.' }),
+    customFields: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'A map of custom fields defined by a curator for navigation.' }),
+    footer: NavEntrySchema.exactOptional(),
+    header: z.array(NavEntrySchema).openapi({ description: 'The header navigation.' }),
+    mobile: NavEntrySchema.exactOptional(),
+  })
+  .openapi({ required: ['header'] })
+  .openapi('Navigation')
+
+const AppConfigPlaybackSchema = z
+  .strictObject({
+    chainPlayCountdown: z
+      .int32()
+      .openapi({
+        description:
+          'The number of seconds before autoplay of next video.\n\nIf set to 0 there will be no autoplay.\n',
+      }),
+    chainPlaySqueezeback: z
+      .int32()
+      .openapi({
+        description:
+          'The number of seconds before the end of playback when the current video\nshould be minimized and user options are presented within the video player.\n\nIf set to 0 there will be no squeezeback.\n',
+      }),
+    chainPlayTimeout: z
+      .int32()
+      .openapi({
+        description:
+          'The number of minutes of user inactivity before autoplay is paused.\n\nIf set to 0 there will be no autoplay timeout.\n',
+      }),
+    heartbeatFrequency: z
+      .int32()
+      .openapi({ description: 'How often a heartbeat should be renewed during playback.' }),
+    viewEventPoints: z
+      .array(z.number().min(0).max(1))
+      .openapi({
+        description:
+          'An array of percentage points in which to fire off plabyack view events.\nFor example a value of 0.5 would indicate that an event should be\nfired when the user is half way through the video.\nOften known as quartiles when four equaly spread event points.\n',
+      }),
+  })
+  .openapi({
+    required: [
+      'heartbeatFrequency',
+      'viewEventPoints',
+      'chainPlaySqueezeback',
+      'chainPlayTimeout',
+      'chainPlayCountdown',
+    ],
+  })
+  .openapi('AppConfigPlayback')
+
+const PageSummarySchema = z
+  .object({
+    id: z.string().openapi({ description: 'Unique identifier for the page.' }),
+    isStatic: z
+      .boolean()
+      .openapi({
+        description:
+          "True if this page is static and doesn't have any dynamic content to load.\n\nStatic pages don't need to go back to the page endpoint to load page content\ninstead the page summary loaded with the sitemap should be enough to determine\nthe page template type and render based on this.\n",
+      }),
+    isSystemPage: z
+      .boolean()
+      .openapi({
+        description:
+          "True if this page is a system page type.\n\n**DEPRECATED** This property doesn't have any real use in client applications\nanymore so shouldn't be used. It especially shouldn't be used to determine if\na page is static or not. Use the `isStatic` property instead.\n",
+        'x-deprecated': 'Replaced with isStatic',
+      }),
+    key: z.string().exactOptional().openapi({ description: 'Key used to lookup a known page.' }),
+    path: z.string().openapi({ description: 'Unique path for the page.' }),
+    template: z
+      .string()
+      .openapi({ description: 'Identifier for of the page template to render this page.' }),
+    title: z.string().openapi({ description: 'Title of the page.' }),
+  })
+  .openapi({
+    required: ['id', 'path', 'title', 'template', 'isStatic', 'isSystemPage'],
+    'x-emoji': '📃',
+  })
+  .openapi('PageSummary')
+
+const PlanSchema = z
+  .strictObject({
+    alias: z.string().openapi({ description: 'An alias for a plan.' }),
+    benefits: z
+      .array(z.string())
+      .openapi({ description: 'The list of benefits to display for a plan.' }),
+    billingPeriodFrequency: z
+      .int32()
+      .openapi({
+        description:
+          'Given the `billingPeriodType` this is how frequently it will run. e.g. every 2 weeks.',
+      }),
+    billingPeriodType: z
+      .enum(['day', 'week', 'month', 'year', 'none'])
+      .openapi({ description: 'The type of billing period used.' }),
+    currency: z.string().openapi({ description: 'The currency a plan is offered in.' }),
+    customFields: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'A map of custom fields defined by a curator for a plan.' }),
+    hasTrialPeriod: z
+      .boolean()
+      .openapi({ description: 'True if a plan has a trial period, false if not.' }),
+    id: z.string().openapi({ description: 'The identifier of a plan.' }),
+    isActive: z
+      .boolean()
+      .openapi({ description: 'True if a plan is active, false if its retired.' }),
+    isFeatured: z
+      .boolean()
+      .openapi({ description: 'True if a plan should be highlighted as featured, false if not.' }),
+    isPrivate: z
+      .boolean()
+      .openapi({
+        description:
+          'True if a plan should not be presented in the primary plan options, false if not.',
+      }),
+    price: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The price of a plan. If a free plan then undefined.' }),
+    revenueType: z
+      .enum(['TVOD', 'SVOD'])
+      .openapi({ description: 'The revenue type a plan targets.' }),
+    subscriptionCode: z.string().openapi({ description: 'The subscription code a plan targets.' }),
+    tagline: z.string().openapi({ description: 'The short tagline for a plan.' }),
+    termsAndConditions: z.string().openapi({ description: 'The terms and conditions for a plan.' }),
+    title: z.string().openapi({ description: 'The title of a plan.' }),
+    trialPeriodDays: z
+      .int32()
+      .openapi({
+        description:
+          'How many days a trial period runs for a plan. Only valid if `hasTrialPeriod` is true.',
+      }),
+    type: z.enum(['Free', 'Subscription']).openapi({ description: 'The type of plan.' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'title',
+      'tagline',
+      'type',
+      'isFeatured',
+      'isActive',
+      'isPrivate',
+      'revenueType',
+      'subscriptionCode',
+      'alias',
+      'benefits',
+      'billingPeriodType',
+      'billingPeriodFrequency',
+      'hasTrialPeriod',
+      'trialPeriodDays',
+      'termsAndConditions',
+      'currency',
+    ],
+    'x-emoji': '💳',
+  })
+  .openapi('Plan')
+
+const AppConfigSubscriptionSchema = z
+  .strictObject({
+    plans: z
+      .array(PlanSchema)
+      .exactOptional()
+      .openapi({ description: 'The available public plans a user can subscribe to.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppConfigSubscription')
+
+type AppConfigType = {
+  classification?: { [key: string]: z.infer<typeof ClassificationSchema> }
+  display?: z.infer<typeof AppConfigDisplaySchema>
+  general?: z.infer<typeof AppConfigGeneralSchema>
+  i18n?: z.infer<typeof AppConfigI18nSchema>
+  linear?: z.infer<typeof AppConfigLinearSchema>
+  navigation?: z.infer<typeof NavigationSchema>
+  playback?: z.infer<typeof AppConfigPlaybackSchema>
+  sitemap?: z.infer<typeof PageSummarySchema>[]
+  subscription?: z.infer<typeof AppConfigSubscriptionSchema>
+}
+
 const ExclusionRuleSchema = z
   .strictObject({
     description: z.string().exactOptional(),
@@ -98,33 +470,6 @@ const OfferSchema = OfferRightsSchema.and(
     })
     .openapi({ required: ['price', 'availability'], 'x-emoji': '💰' }),
 ).openapi('Offer')
-
-const ThemeColorSchema = z
-  .strictObject({
-    name: z.string().openapi({ description: 'The name of the theme color.' }),
-    opacity: z
-      .float32()
-      .min(0)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The opacity of the theme color from 0 to 1.\n\nWhen omitted, no opacity level is to be applied to the color, or in other words we\nassume the color has an opacity of 1\n',
-      }),
-    value: z.string().openapi({ description: 'The hex value of the theme color.' }),
-  })
-  .openapi({ required: ['name', 'value'], 'x-emoji': '🎨' })
-  .openapi('ThemeColor')
-
-const ThemeSchema = z
-  .strictObject({
-    colors: z
-      .array(ThemeColorSchema)
-      .openapi({ description: 'The list of colors defined for the theme.' }),
-    type: z.enum(['Background', 'Text', 'Custom']).openapi({ description: 'The type of theme.' }),
-  })
-  .openapi({ required: ['colors', 'type'], 'x-emoji': '🎨' })
-  .openapi('Theme')
 
 const ItemSummarySchema = z
   .object({
@@ -303,6 +648,19 @@ const ItemSummarySchema = z
   })
   .openapi('ItemSummary')
 
+const ContinueWatchingListDataExpansionSchema = z
+  .strictObject({
+    episode: ItemSummarySchema.exactOptional(),
+    season: ItemSummarySchema.exactOptional(),
+    show: ItemSummarySchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ContinueWatchingListDataExpansion')
+
+type ContinueWatchingListDataType = {
+  itemInclusions?: { [key: string]: z.infer<typeof ContinueWatchingListDataExpansionSchema> }
+}
+
 const PersonSchema = z
   .object({
     name: z.string().openapi({ description: 'The name of the person.' }),
@@ -346,16 +704,28 @@ const ItemCustomMetadataSchema = z
   .openapi({ description: 'Custom metadata associated with an item.', required: ['name', 'value'] })
   .openapi('ItemCustomMetadata')
 
-const ListDataSchema: z.ZodType<ListDataType> = z
-  .lazy(() =>
-    z
-      .strictObject({ ContinueWatching: ContinueWatchingListDataSchema.exactOptional() })
+const ContinueWatchingListDataSchema: z.ZodType<ContinueWatchingListDataType> = z
+  .strictObject({
+    itemInclusions: z
+      .record(z.string(), ContinueWatchingListDataExpansionSchema)
+      .exactOptional()
       .openapi({
         description:
-          'Extra data to accompany ItemList content. The (single) key in the object is\nthe list name and the data changes depending on the list\n',
-        required: [],
+          'Object where keys are itemIds for the items in the list and values are objects\ncontaining additional items (either episode/season/show) that were requested\nin the "include" query option.\n\nFor example if you request the ContinueWatching list with "season" items in\nthe list, you can specify `include=episode` and then the specific next episode\nwill be returned in this object.\n',
       }),
-  )
+  })
+  .openapi({ description: 'List data for ContinueWatching List', required: [] })
+  .openapi('ContinueWatchingListData')
+
+type ListDataType = { ContinueWatching?: z.infer<typeof ContinueWatchingListDataSchema> }
+
+const ListDataSchema: z.ZodType<ListDataType> = z
+  .strictObject({ ContinueWatching: ContinueWatchingListDataSchema.exactOptional() })
+  .openapi({
+    description:
+      'Extra data to accompany ItemList content. The (single) key in the object is\nthe list name and the data changes depending on the list\n',
+    required: [],
+  })
   .openapi('ListData')
 
 const PaginationAuthSchema = z
@@ -465,7 +835,35 @@ const PaginationSchema = z
   .openapi({ required: ['total', 'page'] })
   .openapi('Pagination')
 
-const ItemListSchema = z
+type ItemListType = {
+  customFields?: { [key: string]: unknown }
+  description?: string
+  id: string
+  images?: { [key: string]: string }
+  itemTypes?: (
+    | 'movie'
+    | 'show'
+    | 'season'
+    | 'episode'
+    | 'program'
+    | 'link'
+    | 'trailer'
+    | 'channel'
+    | 'customAsset'
+  )[]
+  items: z.infer<typeof ItemSummarySchema>[]
+  listData?: z.infer<typeof ListDataSchema>
+  paging: z.infer<typeof PaginationSchema>
+  parameter?: string
+  path: string
+  shortDescription?: string
+  size: number
+  tagline?: string
+  themes?: z.infer<typeof ThemeSchema>[]
+  title?: string
+}
+
+const ItemListSchema: z.ZodType<ItemListType> = z
   .strictObject({
     customFields: z
       .looseObject({})
@@ -551,31 +949,9 @@ type ItemDetailType = z.infer<typeof ItemSummarySchema> & {
   venue?: string
 }
 
-const ContinueWatchingListDataExpansionSchema = z
-  .strictObject({
-    episode: ItemSummarySchema.exactOptional(),
-    season: ItemSummarySchema.exactOptional(),
-    show: ItemSummarySchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ContinueWatchingListDataExpansion')
+type NavContentType = { imageType?: string; list?: z.infer<typeof ItemListSchema>; title?: string }
 
-const ContinueWatchingListDataSchema = z
-  .strictObject({
-    itemInclusions: z
-      .record(z.string(), ContinueWatchingListDataExpansionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Object where keys are itemIds for the items in the list and values are objects\ncontaining additional items (either episode/season/show) that were requested\nin the "include" query option.\n\nFor example if you request the ContinueWatching list with "season" items in\nthe list, you can specify `include=episode` and then the specific next episode\nwill be returned in this object.\n',
-      }),
-  })
-  .openapi({ description: 'List data for ContinueWatching List', required: [] })
-  .openapi('ContinueWatchingListData')
-
-type ListDataType = { ContinueWatching?: z.infer<typeof ContinueWatchingListDataSchema> }
-
-const NavContentSchema = z
+const NavContentSchema: z.ZodType<NavContentType> = z
   .object({
     imageType: z
       .string()
@@ -604,71 +980,206 @@ type NavEntryType = {
   path?: string
 }
 
-const ItemPurchaseSchema = z
+const ItemDetailSchema: z.ZodType<ItemDetailType> = z
+  .lazy(() =>
+    ItemSummarySchema.and(
+      z
+        .object({
+          copyright: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Copyright information about this item' }),
+          credits: z
+            .array(CreditSchema)
+            .exactOptional()
+            .openapi({ description: 'A list of credits associated with this item.' }),
+          customMetadata: z
+            .array(ItemCustomMetadataSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'An ordered list of custom name-value-pair item metadata.\n\nUsually displayed on an item detail page.\n',
+            }),
+          description: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'The description of this item.' }),
+          distributor: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'The distributor of this item.' }),
+          episodes: ItemListSchema.exactOptional(),
+          eventDate: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description: 'The optional date of an event.\nSpecific to a Program item type.\n',
+            }),
+          genrePaths: z
+            .array(z.string())
+            .exactOptional()
+            .openapi({
+              description:
+                'An array of genre paths mapping to the values within the `genres` array from ItemSummary.\n',
+            }),
+          location: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The optional location (e.g. city) of an event.\nSpecific to a Program item type.\n',
+            }),
+          season: ItemDetailSchema.exactOptional(),
+          seasons: ItemListSchema.exactOptional(),
+          show: ItemDetailSchema.exactOptional(),
+          totalUserRatings: z
+            .int32()
+            .min(0)
+            .exactOptional()
+            .openapi({ description: 'The total number of users who have rated this item.' }),
+          trailers: z
+            .array(ItemSummarySchema)
+            .exactOptional()
+            .openapi({ description: 'A list of trailers associated with this item.' }),
+          venue: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'The optional venue of an event.\nSpecific to a Program item type.\n',
+            }),
+        })
+        .openapi({ required: [] }),
+    ),
+  )
+  .openapi('ItemDetail')
+
+type NextPlaybackItemType = {
+  firstWatchedDate?: string
+  lastWatchedDate?: string
+  next?: z.infer<typeof ItemDetailSchema>
+  sourceItemId: string
+  suggestionType?: 'StartWatching' | 'ContinueWatching' | 'RestartWatching' | 'Sequential' | 'None'
+}
+
+type PageEntryType = {
+  customFields?: { [key: string]: unknown }
+  id: string
+  images?: { [key: string]: string }
+  item?: z.infer<typeof ItemSummarySchema>
+  list?: z.infer<typeof ItemListSchema>
+  people?: z.infer<typeof PersonSchema>[]
+  template: string
+  text?: string
+  title: string
+  type:
+    | 'ItemEntry'
+    | 'ItemDetailEntry'
+    | 'ListEntry'
+    | 'ListDetailEntry'
+    | 'UserEntry'
+    | 'TextEntry'
+    | 'ImageEntry'
+    | 'CustomEntry'
+    | 'PeopleEntry'
+}
+
+const PageEntrySchema: z.ZodType<PageEntryType> = z
   .strictObject({
-    id: z.string().openapi({ description: 'The identifier of the purchased item.' }),
-    ownership: z
-      .enum(['Subscription', 'Free', 'Rent', 'Own', 'None'])
-      .openapi({ description: 'The ownership of the purchased item.' }),
-    resolution: z
-      .enum(['SD', 'HD-720', 'HD-1080', 'HD-4K', 'External', 'Unknown'])
-      .openapi({ description: 'The resolution of the purchased item.' }),
-    title: z.string().openapi({ description: 'The title of the purchased item.' }),
+    customFields: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'A map of custom fields defined by a curator for a page entry.' }),
+    id: z.string().openapi({ description: 'The unique identifier for a page entry.' }),
+    images: z
+      .record(z.string(), z.url())
+      .exactOptional()
+      .openapi({
+        description:
+          'The images for the page entry if any.\n\nFor example the images of an `ImageEntry`.\n',
+      }),
+    item: ItemSummarySchema.exactOptional(),
+    list: ItemListSchema.exactOptional(),
+    people: z
+      .array(PersonSchema)
+      .exactOptional()
+      .openapi({
+        description: "If 'type' is 'PeopleEntry' then this is the array of people to present.",
+      }),
+    template: z
+      .string()
+      .openapi({ description: 'Template type used to present the content of the PageEntry.' }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "If 'type' is 'TextEntry' then this is the text to be represented.",
+      }),
+    title: z.string().openapi({ description: 'The name of the Page Entry.' }),
     type: z
       .enum([
-        'movie',
-        'show',
-        'season',
-        'episode',
-        'program',
-        'link',
-        'trailer',
-        'channel',
-        'customAsset',
+        'ItemEntry',
+        'ItemDetailEntry',
+        'ListEntry',
+        'ListDetailEntry',
+        'UserEntry',
+        'TextEntry',
+        'ImageEntry',
+        'CustomEntry',
+        'PeopleEntry',
       ])
       .openapi({
-        description: 'The type of item purchased.',
+        description:
+          'The type of PageEntry. Used to help identify what type of content will be presented.',
         'x-enumEmoji': {
-          channel: '📺',
-          episode: '📺',
-          link: '🔗',
-          movie: '🎬',
-          program: '🎟',
-          season: '📺',
-          show: '📺',
-          trailer: '🖥',
+          CustomEntry: '⚙️',
+          ImageEntry: '🌅',
+          ItemDetailEntry: '📘',
+          ItemEntry: '📘',
+          ListDetailEntry: '📚',
+          ListEntry: '📚',
+          PeopleEntry: '👱',
+          TextEntry: '📝',
+          UserEntry: '👤',
         },
       }),
   })
-  .openapi({ required: ['id', 'ownership', 'resolution', 'title', 'type'], 'x-emoji': '💰' })
-  .openapi('ItemPurchase')
-
-const PlanPurchaseSchema = z
-  .strictObject({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identifier of the purchased plan.' }),
-    price: z.float32().exactOptional().openapi({ description: 'The price of the purchased plan.' }),
-    subscriptionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identifier of the subscription membership to the plan.' }),
-    title: z.string().openapi({ description: 'The title of the purchased plan.' }),
-    type: z.enum(['Free', 'Subscription']).openapi({ description: 'The type of plan purchased.' }),
+  .openapi({
+    description:
+      'Represents an entry of a Page.\nDefines what specific piece of content should be presented e.g. an Item or ItemList.\nAlso defines what visual template should be used to render that content.\n',
+    required: ['id', 'type', 'title', 'template'],
+    'x-emoji': '📑',
   })
-  .openapi({ required: ['title', 'type'], 'x-emoji': '💰' })
-  .openapi('PlanPurchase')
+  .openapi('PageEntry')
 
-type PurchaseType = {
-  authorizationDate?: string
-  creationDate: string
-  currency: string
-  id: string
-  item?: z.infer<typeof ItemPurchaseSchema>
-  paymentMethodId?: string
-  plan?: z.infer<typeof PlanPurchaseSchema>
+const PageMetadataSchema = z
+  .strictObject({
+    description: z.string().exactOptional(),
+    keywords: z.array(z.string()).exactOptional(),
+    segments: z.array(z.string()).exactOptional(),
+  })
+  .openapi({
+    description: 'Metadata associated with a page. Primarily intended for SEO usage.',
+    required: [],
+  })
+  .openapi('PageMetadata')
+
+type PageType = z.infer<typeof PageSummarySchema> & {
+  customFields?: { [key: string]: unknown }
+  entries: z.infer<typeof PageEntrySchema>[]
+  item?: z.infer<typeof ItemDetailSchema>
+  list?: z.infer<typeof ItemListSchema>
+  metadata?: z.infer<typeof PageMetadataSchema>
+  themes?: z.infer<typeof ThemeSchema>[]
+}
+
+type SearchResultsType = {
+  items?: z.infer<typeof ItemListSchema>
+  movies?: z.infer<typeof ItemListSchema>
+  other?: z.infer<typeof ItemListSchema>
+  people?: z.infer<typeof PersonSchema>[]
+  term: string
   total: number
+  tv?: z.infer<typeof ItemListSchema>
 }
 
 const AccessTokenSchema = z
@@ -1142,331 +1653,7 @@ const AddPaymentMethodRequestSchema = z
   .openapi({ required: ['token', 'type'] })
   .openapi('AddPaymentMethodRequest')
 
-const ClassificationSchema = ClassificationSummarySchema.and(
-  z
-    .object({
-      advisoryText: z.string().exactOptional().openapi({ description: 'Parental advisort text.' }),
-      images: z.record(z.string(), z.url()),
-      level: z
-        .int32()
-        .openapi({
-          description:
-            'The level of this classification when compared with its siblings.\nA higher level means a greater restriction.\nEach classification in a system should have a unique level.\n',
-        }),
-      system: z.string().openapi({ description: 'The parent system code of the classification.' }),
-    })
-    .openapi({ required: ['level', 'system', 'images'] }),
-).openapi('Classification')
-
-const AppConfigDisplaySchema = z
-  .strictObject({
-    themes: z
-      .array(ThemeSchema)
-      .openapi({ description: 'An array of globally configured themes.' }),
-  })
-  .openapi({ required: ['themes'] })
-  .openapi('AppConfigDisplay')
-
-const AppConfigGeneralSchema = z
-  .strictObject({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The currency code to target.' }),
-    customFields: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'A map of custom configuration fields.' }),
-    defaultTimeZone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The default time zone of the site. e.g. "Etc/GMT"' }),
-    facebookAppId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Facebook application id associated with an environment.' }),
-    gaToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A Google Analytics token to track applicaton user events.' }),
-    itemImageTypes: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A map of default item image types where the key is the item types.',
-      }),
-    mandatorySignIn: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to require sign in for customers to access content.' }),
-    maxUserRating: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The maximum value allowed for user ratings.' }),
-    stripeKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The public Stripe key to use for payment transactions.' }),
-    websiteUrl: z.url().exactOptional().openapi({ description: 'The url of the primary website.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AppConfigGeneral')
-
-const LanguageSchema = z
-  .strictObject({
-    code: z
-      .string()
-      .openapi({
-        description:
-          'The ISO language code of the language e.g. "en-US".\nSee https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes\n',
-      }),
-    label: z.string().openapi({ description: 'Display label for the language.' }),
-    title: z.string().openapi({ description: 'Display title for the language.' }),
-  })
-  .openapi({ required: ['code', 'label', 'title'], 'x-emoji': '🌎' })
-  .openapi('Language')
-
-const AppConfigI18nSchema = z
-  .strictObject({
-    languages: z.array(LanguageSchema).openapi({ description: 'An array of available languages.' }),
-  })
-  .openapi({ required: ['languages'] })
-  .openapi('AppConfigI18n')
-
-const AppConfigLinearSchema = z
-  .strictObject({
-    scheduleCacheMaxAgeMinutes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The maximum minutes of schedule cache time.' }),
-    viewingWindowDaysAfter: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of available upcoming day schedules.' }),
-    viewingWindowDaysBefore: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of available day schedules in the past.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AppConfigLinear')
-
-const NavEntrySchema: z.ZodType<NavEntryType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        children: z
-          .array(NavEntrySchema)
-          .exactOptional()
-          .openapi({ description: 'Child nav entries.' }),
-        content: NavContentSchema.exactOptional(),
-        customFields: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({ description: 'A map of custom fields defined by a curator for a nav entry.' }),
-        depth: z
-          .int32()
-          .min(0)
-          .openapi({ description: 'The depth of the NavEntry (top level is 0)' }),
-        featured: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'True if this is a featured menu item.\n\nFeatured menu items may have a more prominent presentation than others in the navigation.\n',
-          }),
-        icon: z.string().exactOptional().openapi({ description: 'The icon for this nav entry.' }),
-        label: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The text label for this nav entry.' }),
-        path: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The path this nav entry links to.\nMay be undefined if the nav entry is not clickable e.g. a nav heading.\nIf the value begins with `http` then it's an external url.\n",
-          }),
-      })
-      .openapi({ required: ['depth'] }),
-  )
-  .openapi('NavEntry')
-
-const NavigationSchema = z
-  .strictObject({
-    account: NavEntrySchema.exactOptional(),
-    copyright: z.string().exactOptional().openapi({ description: 'Copyright information.' }),
-    customFields: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'A map of custom fields defined by a curator for navigation.' }),
-    footer: NavEntrySchema.exactOptional(),
-    header: z.array(NavEntrySchema).openapi({ description: 'The header navigation.' }),
-    mobile: NavEntrySchema.exactOptional(),
-  })
-  .openapi({ required: ['header'] })
-  .openapi('Navigation')
-
-const AppConfigPlaybackSchema = z
-  .strictObject({
-    chainPlayCountdown: z
-      .int32()
-      .openapi({
-        description:
-          'The number of seconds before autoplay of next video.\n\nIf set to 0 there will be no autoplay.\n',
-      }),
-    chainPlaySqueezeback: z
-      .int32()
-      .openapi({
-        description:
-          'The number of seconds before the end of playback when the current video\nshould be minimized and user options are presented within the video player.\n\nIf set to 0 there will be no squeezeback.\n',
-      }),
-    chainPlayTimeout: z
-      .int32()
-      .openapi({
-        description:
-          'The number of minutes of user inactivity before autoplay is paused.\n\nIf set to 0 there will be no autoplay timeout.\n',
-      }),
-    heartbeatFrequency: z
-      .int32()
-      .openapi({ description: 'How often a heartbeat should be renewed during playback.' }),
-    viewEventPoints: z
-      .array(z.number().min(0).max(1))
-      .openapi({
-        description:
-          'An array of percentage points in which to fire off plabyack view events.\nFor example a value of 0.5 would indicate that an event should be\nfired when the user is half way through the video.\nOften known as quartiles when four equaly spread event points.\n',
-      }),
-  })
-  .openapi({
-    required: [
-      'heartbeatFrequency',
-      'viewEventPoints',
-      'chainPlaySqueezeback',
-      'chainPlayTimeout',
-      'chainPlayCountdown',
-    ],
-  })
-  .openapi('AppConfigPlayback')
-
-const PageSummarySchema = z
-  .object({
-    id: z.string().openapi({ description: 'Unique identifier for the page.' }),
-    isStatic: z
-      .boolean()
-      .openapi({
-        description:
-          "True if this page is static and doesn't have any dynamic content to load.\n\nStatic pages don't need to go back to the page endpoint to load page content\ninstead the page summary loaded with the sitemap should be enough to determine\nthe page template type and render based on this.\n",
-      }),
-    isSystemPage: z
-      .boolean()
-      .openapi({
-        description:
-          "True if this page is a system page type.\n\n**DEPRECATED** This property doesn't have any real use in client applications\nanymore so shouldn't be used. It especially shouldn't be used to determine if\na page is static or not. Use the `isStatic` property instead.\n",
-        'x-deprecated': 'Replaced with isStatic',
-      }),
-    key: z.string().exactOptional().openapi({ description: 'Key used to lookup a known page.' }),
-    path: z.string().openapi({ description: 'Unique path for the page.' }),
-    template: z
-      .string()
-      .openapi({ description: 'Identifier for of the page template to render this page.' }),
-    title: z.string().openapi({ description: 'Title of the page.' }),
-  })
-  .openapi({
-    required: ['id', 'path', 'title', 'template', 'isStatic', 'isSystemPage'],
-    'x-emoji': '📃',
-  })
-  .openapi('PageSummary')
-
-const PlanSchema = z
-  .strictObject({
-    alias: z.string().openapi({ description: 'An alias for a plan.' }),
-    benefits: z
-      .array(z.string())
-      .openapi({ description: 'The list of benefits to display for a plan.' }),
-    billingPeriodFrequency: z
-      .int32()
-      .openapi({
-        description:
-          'Given the `billingPeriodType` this is how frequently it will run. e.g. every 2 weeks.',
-      }),
-    billingPeriodType: z
-      .enum(['day', 'week', 'month', 'year', 'none'])
-      .openapi({ description: 'The type of billing period used.' }),
-    currency: z.string().openapi({ description: 'The currency a plan is offered in.' }),
-    customFields: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'A map of custom fields defined by a curator for a plan.' }),
-    hasTrialPeriod: z
-      .boolean()
-      .openapi({ description: 'True if a plan has a trial period, false if not.' }),
-    id: z.string().openapi({ description: 'The identifier of a plan.' }),
-    isActive: z
-      .boolean()
-      .openapi({ description: 'True if a plan is active, false if its retired.' }),
-    isFeatured: z
-      .boolean()
-      .openapi({ description: 'True if a plan should be highlighted as featured, false if not.' }),
-    isPrivate: z
-      .boolean()
-      .openapi({
-        description:
-          'True if a plan should not be presented in the primary plan options, false if not.',
-      }),
-    price: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The price of a plan. If a free plan then undefined.' }),
-    revenueType: z
-      .enum(['TVOD', 'SVOD'])
-      .openapi({ description: 'The revenue type a plan targets.' }),
-    subscriptionCode: z.string().openapi({ description: 'The subscription code a plan targets.' }),
-    tagline: z.string().openapi({ description: 'The short tagline for a plan.' }),
-    termsAndConditions: z.string().openapi({ description: 'The terms and conditions for a plan.' }),
-    title: z.string().openapi({ description: 'The title of a plan.' }),
-    trialPeriodDays: z
-      .int32()
-      .openapi({
-        description:
-          'How many days a trial period runs for a plan. Only valid if `hasTrialPeriod` is true.',
-      }),
-    type: z.enum(['Free', 'Subscription']).openapi({ description: 'The type of plan.' }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'title',
-      'tagline',
-      'type',
-      'isFeatured',
-      'isActive',
-      'isPrivate',
-      'revenueType',
-      'subscriptionCode',
-      'alias',
-      'benefits',
-      'billingPeriodType',
-      'billingPeriodFrequency',
-      'hasTrialPeriod',
-      'trialPeriodDays',
-      'termsAndConditions',
-      'currency',
-    ],
-    'x-emoji': '💳',
-  })
-  .openapi('Plan')
-
-const AppConfigSubscriptionSchema = z
-  .strictObject({
-    plans: z
-      .array(PlanSchema)
-      .exactOptional()
-      .openapi({ description: 'The available public plans a user can subscribe to.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AppConfigSubscription')
-
-const AppConfigSchema = z
+const AppConfigSchema: z.ZodType<AppConfigType> = z
   .strictObject({
     classification: z
       .record(z.string(), ClassificationSchema)
@@ -1557,7 +1744,7 @@ const BtPlansSchema = z
   .openapi({ required: ['plans'] })
   .openapi('BtPlans')
 
-const BtValidateTokenResponseSchema = z.object({}).openapi('BtValidateTokenResponse')
+const BtValidateTokenResponseSchema = z.looseObject({}).openapi('BtValidateTokenResponse')
 
 const ChangePasswordRequestSchema = z
   .strictObject({
@@ -1859,79 +2046,6 @@ const ItemClipFilesListSchema = z
   })
   .openapi('ItemClipFilesList')
 
-const ItemDetailSchema: z.ZodType<ItemDetailType> = z
-  .lazy(() =>
-    ItemSummarySchema.and(
-      z
-        .object({
-          copyright: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Copyright information about this item' }),
-          credits: z
-            .array(CreditSchema)
-            .exactOptional()
-            .openapi({ description: 'A list of credits associated with this item.' }),
-          customMetadata: z
-            .array(ItemCustomMetadataSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'An ordered list of custom name-value-pair item metadata.\n\nUsually displayed on an item detail page.\n',
-            }),
-          description: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The description of this item.' }),
-          distributor: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The distributor of this item.' }),
-          episodes: ItemListSchema.exactOptional(),
-          eventDate: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description: 'The optional date of an event.\nSpecific to a Program item type.\n',
-            }),
-          genrePaths: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'An array of genre paths mapping to the values within the `genres` array from ItemSummary.\n',
-            }),
-          location: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The optional location (e.g. city) of an event.\nSpecific to a Program item type.\n',
-            }),
-          season: ItemDetailSchema.exactOptional(),
-          seasons: ItemListSchema.exactOptional(),
-          show: ItemDetailSchema.exactOptional(),
-          totalUserRatings: z
-            .int32()
-            .min(0)
-            .exactOptional()
-            .openapi({ description: 'The total number of users who have rated this item.' }),
-          trailers: z
-            .array(ItemSummarySchema)
-            .exactOptional()
-            .openapi({ description: 'A list of trailers associated with this item.' }),
-          venue: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The optional venue of an event.\nSpecific to a Program item type.\n',
-            }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('ItemDetail')
-
 const ItemDownloadableSchema = z
   .object({
     downloadable: z.boolean().openapi({ description: 'is the item downloadable?' }),
@@ -1961,6 +2075,45 @@ const ItemDownloadableRequestSchema = z
   })
   .openapi({ example: { ids: '1234,2345,3456' }, required: ['ids'] })
   .openapi('ItemDownloadableRequest')
+
+const ItemPurchaseSchema = z
+  .strictObject({
+    id: z.string().openapi({ description: 'The identifier of the purchased item.' }),
+    ownership: z
+      .enum(['Subscription', 'Free', 'Rent', 'Own', 'None'])
+      .openapi({ description: 'The ownership of the purchased item.' }),
+    resolution: z
+      .enum(['SD', 'HD-720', 'HD-1080', 'HD-4K', 'External', 'Unknown'])
+      .openapi({ description: 'The resolution of the purchased item.' }),
+    title: z.string().openapi({ description: 'The title of the purchased item.' }),
+    type: z
+      .enum([
+        'movie',
+        'show',
+        'season',
+        'episode',
+        'program',
+        'link',
+        'trailer',
+        'channel',
+        'customAsset',
+      ])
+      .openapi({
+        description: 'The type of item purchased.',
+        'x-enumEmoji': {
+          channel: '📺',
+          episode: '📺',
+          link: '🔗',
+          movie: '🎬',
+          program: '🎟',
+          season: '📺',
+          show: '📺',
+          trailer: '🖥',
+        },
+      }),
+  })
+  .openapi({ required: ['id', 'ownership', 'resolution', 'title', 'type'], 'x-emoji': '💰' })
+  .openapi('ItemPurchase')
 
 const ItemScheduleSchema = z
   .looseObject({
@@ -2030,11 +2183,11 @@ const ItvAssignMsisdnRequestSchema = z
 
 const ItvBillingHistoryRecordSchema = z
   .strictObject({
-    card: z.object({}).openapi({ description: 'The card info.' }),
-    charge: z.object({}).openapi({ description: 'The amount charged.' }),
-    invoice: z.object({}).openapi({ description: 'The object with invoice details.' }),
+    card: z.looseObject({}).openapi({ description: 'The card info.' }),
+    charge: z.looseObject({}).openapi({ description: 'The amount charged.' }),
+    invoice: z.looseObject({}).openapi({ description: 'The object with invoice details.' }),
     subscription: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'The object with subscription payment details.' }),
   })
   .openapi({ required: ['card', 'subscription', 'invoice', 'charge'], 'x-emoji': '💳' })
@@ -2104,7 +2257,7 @@ const ItvCurrentSubscriptionSchema = z
     created: z.int32().openapi({ description: 'The creation timestamp.' }),
     currentPeriodEnd: z.int32().openapi({ description: 'The end of period timestamp.' }),
     currentPeriodStart: z.int32().openapi({ description: 'The start of period timestamp.' }),
-    plan: z.object({}).openapi({ description: 'The plan used during subsribing.' }),
+    plan: z.looseObject({}).openapi({ description: 'The plan used during subsribing.' }),
     status: z.string().openapi({ description: 'The status of subscription.' }),
   })
   .openapi({
@@ -2133,7 +2286,7 @@ const ItvEntitlementSchema = z
       .exactOptional()
       .openapi({ description: 'Start of subscription.' }),
     expiry: z.iso.datetime({ offset: true }).openapi({ description: 'Expiry of subscription.' }),
-    plan: z.object({}).openapi({ description: 'Purchased plan data.' }),
+    plan: z.looseObject({}).openapi({ description: 'Purchased plan data.' }),
     source: z.string().openapi({ description: 'Source platform of purchase.' }),
     subscriptionId: z.string().openapi({ description: 'Id of subscription.' }),
   })
@@ -2603,7 +2756,7 @@ const MediaFileSchema = z
   })
   .openapi('MediaFile')
 
-const NextPlaybackItemSchema = z
+const NextPlaybackItemSchema: z.ZodType<NextPlaybackItemType> = z
   .strictObject({
     firstWatchedDate: z.iso
       .datetime({ offset: true })
@@ -2634,87 +2787,7 @@ const NextPlaybackItemSchema = z
   .openapi({ required: ['sourceItemId'] })
   .openapi('NextPlaybackItem')
 
-const PageEntrySchema = z
-  .strictObject({
-    customFields: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ description: 'A map of custom fields defined by a curator for a page entry.' }),
-    id: z.string().openapi({ description: 'The unique identifier for a page entry.' }),
-    images: z
-      .record(z.string(), z.url())
-      .exactOptional()
-      .openapi({
-        description:
-          'The images for the page entry if any.\n\nFor example the images of an `ImageEntry`.\n',
-      }),
-    item: ItemSummarySchema.exactOptional(),
-    list: ItemListSchema.exactOptional(),
-    people: z
-      .array(PersonSchema)
-      .exactOptional()
-      .openapi({
-        description: "If 'type' is 'PeopleEntry' then this is the array of people to present.",
-      }),
-    template: z
-      .string()
-      .openapi({ description: 'Template type used to present the content of the PageEntry.' }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "If 'type' is 'TextEntry' then this is the text to be represented.",
-      }),
-    title: z.string().openapi({ description: 'The name of the Page Entry.' }),
-    type: z
-      .enum([
-        'ItemEntry',
-        'ItemDetailEntry',
-        'ListEntry',
-        'ListDetailEntry',
-        'UserEntry',
-        'TextEntry',
-        'ImageEntry',
-        'CustomEntry',
-        'PeopleEntry',
-      ])
-      .openapi({
-        description:
-          'The type of PageEntry. Used to help identify what type of content will be presented.',
-        'x-enumEmoji': {
-          CustomEntry: '⚙️',
-          ImageEntry: '🌅',
-          ItemDetailEntry: '📘',
-          ItemEntry: '📘',
-          ListDetailEntry: '📚',
-          ListEntry: '📚',
-          PeopleEntry: '👱',
-          TextEntry: '📝',
-          UserEntry: '👤',
-        },
-      }),
-  })
-  .openapi({
-    description:
-      'Represents an entry of a Page.\nDefines what specific piece of content should be presented e.g. an Item or ItemList.\nAlso defines what visual template should be used to render that content.\n',
-    required: ['id', 'type', 'title', 'template'],
-    'x-emoji': '📑',
-  })
-  .openapi('PageEntry')
-
-const PageMetadataSchema = z
-  .strictObject({
-    description: z.string().exactOptional(),
-    keywords: z.array(z.string()).exactOptional(),
-    segments: z.array(z.string()).exactOptional(),
-  })
-  .openapi({
-    description: 'Metadata associated with a page. Primarily intended for SEO usage.',
-    required: [],
-  })
-  .openapi('PageMetadata')
-
-const PageSchema = PageSummarySchema.and(
+const PageSchema: z.ZodType<PageType> = PageSummarySchema.and(
   z
     .object({
       customFields: z
@@ -2791,6 +2864,23 @@ const PaymentMethodSchema = z
   })
   .openapi({ required: ['id', 'description', 'type'], 'x-emoji': '💳' })
   .openapi('PaymentMethod')
+
+const PlanPurchaseSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identifier of the purchased plan.' }),
+    price: z.float32().exactOptional().openapi({ description: 'The price of the purchased plan.' }),
+    subscriptionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identifier of the subscription membership to the plan.' }),
+    title: z.string().openapi({ description: 'The title of the purchased plan.' }),
+    type: z.enum(['Free', 'Subscription']).openapi({ description: 'The type of plan purchased.' }),
+  })
+  .openapi({ required: ['title', 'type'], 'x-emoji': '💰' })
+  .openapi('PlanPurchase')
 
 const ProfileCreationRequestSchema = z
   .strictObject({
@@ -2924,33 +3014,26 @@ const ProfileUpdateRequestSchema = z
   .openapi({ required: [] })
   .openapi('ProfileUpdateRequest')
 
-const PurchaseSchema: z.ZodType<PurchaseType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        authorizationDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date the purchase was authorized.' }),
-        creationDate: z.iso
-          .datetime({ offset: true })
-          .openapi({ description: 'The date the purchase was created.' }),
-        currency: z
-          .string()
-          .openapi({ description: 'The currency code used to make the purchase.' }),
-        id: z.string().openapi({ description: 'The identifier of the purchase.' }),
-        item: ItemPurchaseSchema.exactOptional(),
-        paymentMethodId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The identifier of the payment method used to make the purchase.',
-          }),
-        plan: PlanPurchaseSchema.exactOptional(),
-        total: z.float32().openapi({ description: 'The total cost of the purchase.' }),
-      })
-      .openapi({ required: ['creationDate', 'currency', 'id', 'total'], 'x-emoji': '💰' }),
-  )
+const PurchaseSchema = z
+  .strictObject({
+    authorizationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date the purchase was authorized.' }),
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The date the purchase was created.' }),
+    currency: z.string().openapi({ description: 'The currency code used to make the purchase.' }),
+    id: z.string().openapi({ description: 'The identifier of the purchase.' }),
+    item: ItemPurchaseSchema.exactOptional(),
+    paymentMethodId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identifier of the payment method used to make the purchase.' }),
+    plan: PlanPurchaseSchema.exactOptional(),
+    total: z.float32().openapi({ description: 'The total cost of the purchase.' }),
+  })
+  .openapi({ required: ['creationDate', 'currency', 'id', 'total'], 'x-emoji': '💰' })
   .openapi('Purchase')
 
 const PurchaseRequestSchema = z
@@ -3148,7 +3231,7 @@ const SamsungPreviewSchema = z
   .openapi({ required: ['sections'] })
   .openapi('SamsungPreview')
 
-const SearchResultsSchema = z
+const SearchResultsSchema: z.ZodType<SearchResultsType> = z
   .strictObject({
     items: ItemListSchema.exactOptional(),
     movies: ItemListSchema.exactOptional(),
@@ -3217,7 +3300,7 @@ const SingleSignOnRequestSchema = z
 const SubscriptionDetailsSchema = z
   .strictObject({
     itvData_purchased: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'The ITV purchased subscription data.' }),
   })
   .openapi({ required: ['itvData_purchased'], 'x-emoji': '🔑' })
@@ -8181,7 +8264,10 @@ export const getItvItemsummaryExternalIdRoute = createRoute({
     }),
   },
   responses: {
-    302: { description: 'Item found.', content: { 'application/json': { schema: z.object({}) } } },
+    302: {
+      description: 'Item found.',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     400: {
       description: 'Bad request.',
       content: { 'application/json': { schema: ServiceErrorSchema } },
@@ -8538,7 +8624,7 @@ export const getItvProfileRoute = createRoute({
   responses: {
     200: {
       description: 'The ITV profile object.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: {
       description: 'Bad request.',
@@ -9081,7 +9167,7 @@ export const postItvResubscribePlatformRoute = createRoute({
   responses: {
     200: {
       description: 'Success. The response body is the updated plan information.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: { description: 'Invalid Rocket token.' },
     404: { description: 'Customer not found or no active subscription.' },

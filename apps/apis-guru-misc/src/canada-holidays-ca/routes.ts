@@ -222,6 +222,7 @@ const HolidaySchema: z.ZodType<HolidayType> = z
                   id: 'AB',
                   nameEn: 'Alberta',
                   nameFr: 'Alberta',
+                  optional: 1,
                   sourceEn: 'General holidays in Alberta',
                   sourceLink: 'https://www.alberta.ca/alberta-general-holidays.aspx#jumplinks-1',
                 },
@@ -229,6 +230,7 @@ const HolidaySchema: z.ZodType<HolidayType> = z
                   id: 'BC',
                   nameEn: 'British Columbia',
                   nameFr: 'Colombie-Britannique',
+                  optional: 1,
                   sourceEn: 'Statutory Holidays in British Columbia',
                   sourceLink:
                     'https://www2.gov.bc.ca/gov/content/employment-business/employment-standards-advice/employment-standards/statutory-holidays#body',
@@ -237,6 +239,7 @@ const HolidaySchema: z.ZodType<HolidayType> = z
                   id: 'MB',
                   nameEn: 'Manitoba',
                   nameFr: 'Manitoba',
+                  optional: 1,
                   sourceEn: 'General holidays in Manitoba',
                   sourceLink:
                     'https://www.gov.mb.ca/labour/standards/doc,gen-holidays-after-april-30-07,factsheet.html#q12',
@@ -1147,13 +1150,10 @@ export const getApiV1SpecRoute = createRoute({
     200: {
       description: 'OK',
       headers: z.object({
-        'content-type': {
-          description: 'text/yaml; charset=UTF-8',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'text/yaml; charset=UTF-8', param: { required: false } }),
-        },
+        'content-type': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'text/yaml; charset=UTF-8', param: { required: false } }),
       }),
     },
   },

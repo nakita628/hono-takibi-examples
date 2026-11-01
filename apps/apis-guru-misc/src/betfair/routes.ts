@@ -1,260 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const RequestMessageSchema = z
-  .object({
-    id: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Client generated unique id to link request with response (like json rpc)',
-      }),
-    op: z.string().exactOptional().openapi({ description: 'The operation type' }),
-  })
-  .openapi({ discriminator: { propertyName: 'op' }, required: [] })
-  .openapi('RequestMessage')
-
-const AuthenticationMessageSchema = RequestMessageSchema.and(
-  z
-    .object({ appKey: z.string().exactOptional(), session: z.string().exactOptional() })
-    .openapi({ required: [] }),
-).openapi('AuthenticationMessage')
-
-const HeartbeatMessageSchema = RequestMessageSchema.and(z.object({})).openapi('HeartbeatMessage')
-
-const MarketDataFilterSchema = z
-  .object({
-    fields: z
-      .array(
-        z.enum([
-          'EX_BEST_OFFERS_DISP',
-          'EX_BEST_OFFERS',
-          'EX_ALL_OFFERS',
-          'EX_TRADED',
-          'EX_TRADED_VOL',
-          'EX_LTP',
-          'EX_MARKET_DEF',
-          'SP_TRADED',
-          'SP_PROJECTED',
-        ]),
-      )
-      .exactOptional(),
-    ladderLevels: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MarketDataFilter')
-
-const MarketFilterSchema = z
-  .object({
-    bettingTypes: z
-      .array(
-        z.enum([
-          'ODDS',
-          'LINE',
-          'RANGE',
-          'ASIAN_HANDICAP_DOUBLE_LINE',
-          'ASIAN_HANDICAP_SINGLE_LINE',
-        ]),
-      )
-      .exactOptional(),
-    bspMarket: z.boolean().exactOptional(),
-    countryCodes: z.array(z.string()).exactOptional(),
-    eventIds: z.array(z.string()).exactOptional(),
-    eventTypeIds: z.array(z.string()).exactOptional(),
-    marketIds: z.array(z.string()).exactOptional(),
-    marketTypes: z.array(z.string()).exactOptional(),
-    raceTypes: z.array(z.string()).exactOptional(),
-    turnInPlayEnabled: z.boolean().exactOptional(),
-    venues: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MarketFilter')
-
-const MarketSubscriptionMessageSchema = RequestMessageSchema.and(
-  z
-    .object({
-      clk: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription',
-        }),
-      conflateMs: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description:
-            'Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)',
-        }),
-      heartbeatMs: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description:
-            'Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 5000)',
-        }),
-      initialClk: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription',
-        }),
-      marketDataFilter: MarketDataFilterSchema.exactOptional(),
-      marketFilter: MarketFilterSchema.exactOptional(),
-      segmentationEnabled: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block',
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('MarketSubscriptionMessage')
-
-const OrderFilterSchema = z
-  .object({
-    accountIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Internal use only & should not be set on your filter (your subscription is already locked to your account). If set subscription will fail.',
-      }),
-    customerStrategyRefs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Restricts to specified customerStrategyRefs; this will filter orders and StrategyMatchChanges accordingly (Note: overall postition is not filtered)',
-      }),
-    includeOverallPosition: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Returns overall / net position (See: OrderRunnerChange.mb / OrderRunnerChange.ml). Default=true',
-      }),
-    partitionMatchedByStrategyRef: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Returns strategy positions (See: OrderRunnerChange.smc=Map<customerStrategyRef, StrategyMatchChange>) - these are sent in delta format as per overall position. Default=false',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderFilter')
-
-const OrderSubscriptionMessageSchema = RequestMessageSchema.and(
-  z
-    .object({
-      clk: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription',
-        }),
-      conflateMs: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description:
-            'Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)',
-        }),
-      heartbeatMs: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description:
-            'Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 5000)',
-        }),
-      initialClk: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription',
-        }),
-      orderFilter: OrderFilterSchema.exactOptional(),
-      segmentationEnabled: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block',
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('OrderSubscriptionMessage')
-
-const AllRequestTypesExampleSchema = z
-  .object({
-    authentication: AuthenticationMessageSchema.exactOptional(),
-    heartbeat: HeartbeatMessageSchema.exactOptional(),
-    marketSubscription: MarketSubscriptionMessageSchema.exactOptional(),
-    opTypes: z
-      .enum(['heartbeat', 'authentication', 'marketSubscription', 'orderSubscription'])
-      .exactOptional(),
-    orderSubscriptionMessage: OrderSubscriptionMessageSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AllRequestTypesExample')
-
 const ResponseMessageSchema = z
   .object({
     id: z
@@ -940,7 +685,19 @@ const OrderMarketChangeSchema = z
   .openapi({ required: [] })
   .openapi('OrderMarketChange')
 
-const OrderChangeMessageSchema = ResponseMessageSchema.and(
+type OrderChangeMessageType = z.infer<typeof ResponseMessageSchema> & {
+  clk?: string
+  conflateMs?: bigint
+  ct?: 'SUB_IMAGE' | 'RESUB_DELTA' | 'HEARTBEAT'
+  heartbeatMs?: bigint
+  initialClk?: string
+  oc?: z.infer<typeof OrderMarketChangeSchema>[]
+  pt?: bigint
+  segmentType?: 'SEG_START' | 'SEG' | 'SEG_END'
+  status?: number
+}
+
+const OrderChangeMessageSchema: z.ZodType<OrderChangeMessageType> = ResponseMessageSchema.and(
   z
     .object({
       clk: z
@@ -1085,7 +842,272 @@ const StatusMessageSchema = ResponseMessageSchema.and(
     .openapi({ required: [] }),
 ).openapi('StatusMessage')
 
-const AllResponseTypesExampleSchema = z
+type AllResponseTypesExampleType = {
+  connection?: z.infer<typeof ConnectionMessageSchema>
+  marketChangeMessage?: z.infer<typeof MarketChangeMessageSchema>
+  opTypes?: 'connection' | 'status' | 'mcm' | 'ocm'
+  orderChangeMessage?: z.infer<typeof OrderChangeMessageSchema>
+  status?: z.infer<typeof StatusMessageSchema>
+}
+
+const RequestMessageSchema = z
+  .object({
+    id: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Client generated unique id to link request with response (like json rpc)',
+      }),
+    op: z.string().exactOptional().openapi({ description: 'The operation type' }),
+  })
+  .openapi({ discriminator: { propertyName: 'op' }, required: [] })
+  .openapi('RequestMessage')
+
+const AuthenticationMessageSchema = RequestMessageSchema.and(
+  z
+    .object({ appKey: z.string().exactOptional(), session: z.string().exactOptional() })
+    .openapi({ required: [] }),
+).openapi('AuthenticationMessage')
+
+const HeartbeatMessageSchema = RequestMessageSchema.and(z.looseObject({})).openapi(
+  'HeartbeatMessage',
+)
+
+const MarketDataFilterSchema = z
+  .object({
+    fields: z
+      .array(
+        z.enum([
+          'EX_BEST_OFFERS_DISP',
+          'EX_BEST_OFFERS',
+          'EX_ALL_OFFERS',
+          'EX_TRADED',
+          'EX_TRADED_VOL',
+          'EX_LTP',
+          'EX_MARKET_DEF',
+          'SP_TRADED',
+          'SP_PROJECTED',
+        ]),
+      )
+      .exactOptional(),
+    ladderLevels: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MarketDataFilter')
+
+const MarketFilterSchema = z
+  .object({
+    bettingTypes: z
+      .array(
+        z.enum([
+          'ODDS',
+          'LINE',
+          'RANGE',
+          'ASIAN_HANDICAP_DOUBLE_LINE',
+          'ASIAN_HANDICAP_SINGLE_LINE',
+        ]),
+      )
+      .exactOptional(),
+    bspMarket: z.boolean().exactOptional(),
+    countryCodes: z.array(z.string()).exactOptional(),
+    eventIds: z.array(z.string()).exactOptional(),
+    eventTypeIds: z.array(z.string()).exactOptional(),
+    marketIds: z.array(z.string()).exactOptional(),
+    marketTypes: z.array(z.string()).exactOptional(),
+    raceTypes: z.array(z.string()).exactOptional(),
+    turnInPlayEnabled: z.boolean().exactOptional(),
+    venues: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MarketFilter')
+
+const MarketSubscriptionMessageSchema = RequestMessageSchema.and(
+  z
+    .object({
+      clk: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription',
+        }),
+      conflateMs: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)',
+        }),
+      heartbeatMs: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 5000)',
+        }),
+      initialClk: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription',
+        }),
+      marketDataFilter: MarketDataFilterSchema.exactOptional(),
+      marketFilter: MarketFilterSchema.exactOptional(),
+      segmentationEnabled: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('MarketSubscriptionMessage')
+
+const OrderFilterSchema = z
+  .object({
+    accountIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Internal use only & should not be set on your filter (your subscription is already locked to your account). If set subscription will fail.',
+      }),
+    customerStrategyRefs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Restricts to specified customerStrategyRefs; this will filter orders and StrategyMatchChanges accordingly (Note: overall postition is not filtered)',
+      }),
+    includeOverallPosition: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returns overall / net position (See: OrderRunnerChange.mb / OrderRunnerChange.ml). Default=true',
+      }),
+    partitionMatchedByStrategyRef: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returns strategy positions (See: OrderRunnerChange.smc=Map<customerStrategyRef, StrategyMatchChange>) - these are sent in delta format as per overall position. Default=false',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderFilter')
+
+const OrderSubscriptionMessageSchema = RequestMessageSchema.and(
+  z
+    .object({
+      clk: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription',
+        }),
+      conflateMs: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)',
+        }),
+      heartbeatMs: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .exactOptional()
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 5000)',
+        }),
+      initialClk: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription',
+        }),
+      orderFilter: OrderFilterSchema.exactOptional(),
+      segmentationEnabled: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('OrderSubscriptionMessage')
+
+const AllRequestTypesExampleSchema = z
+  .object({
+    authentication: AuthenticationMessageSchema.exactOptional(),
+    heartbeat: HeartbeatMessageSchema.exactOptional(),
+    marketSubscription: MarketSubscriptionMessageSchema.exactOptional(),
+    opTypes: z
+      .enum(['heartbeat', 'authentication', 'marketSubscription', 'orderSubscription'])
+      .exactOptional(),
+    orderSubscriptionMessage: OrderSubscriptionMessageSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AllRequestTypesExample')
+
+const AllResponseTypesExampleSchema: z.ZodType<AllResponseTypesExampleType> = z
   .object({
     connection: ConnectionMessageSchema.exactOptional(),
     marketChangeMessage: MarketChangeMessageSchema.exactOptional(),

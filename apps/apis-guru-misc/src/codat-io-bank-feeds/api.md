@@ -1310,6 +1310,144 @@ When syncing data that contains `DateTime` fields from Codat, make sure you supp
 |properties|object \| null|false|none|none|
 |required|boolean|true|none|none|
 |type|string|true|none|none|
+|validation|object \| null|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Array|
+|type|Object|
+|type|String|
+|type|Number|
+|type|Boolean|
+|type|DateTime|
+|type|File|
+|type|MultiPart|
+
+<h2 id="tocS_pushOptionProperty">pushOptionProperty</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoptionproperty"></a>
+<a id="schema_pushOptionProperty"></a>
+<a id="tocSpushoptionproperty"></a>
+<a id="tocspushoptionproperty"></a>
+
+```json
+{
+  "description": "string",
+  "displayName": "string",
+  "options": [
+    {
+      "description": "string",
+      "displayName": "string",
+      "required": true,
+      "type": "Array",
+      "value": "string"
+    }
+  ],
+  "properties": {
+    "property1": {
+      "description": "string",
+      "displayName": "string",
+      "options": [
+        {
+          "description": "string",
+          "displayName": "string",
+          "required": true,
+          "type": "Array",
+          "value": "string"
+        }
+      ],
+      "properties": {
+        "property1": {},
+        "property2": {}
+      },
+      "required": true,
+      "type": "Array",
+      "validation": {
+        "information": [
+          {
+            "details": "string",
+            "field": "string",
+            "ref": "http://example.com"
+          }
+        ],
+        "warnings": [
+          {
+            "details": "string",
+            "field": "string",
+            "ref": "http://example.com"
+          }
+        ]
+      }
+    },
+    "property2": {
+      "description": "string",
+      "displayName": "string",
+      "options": [
+        {
+          "description": "string",
+          "displayName": "string",
+          "required": true,
+          "type": "Array",
+          "value": "string"
+        }
+      ],
+      "properties": {
+        "property1": {},
+        "property2": {}
+      },
+      "required": true,
+      "type": "Array",
+      "validation": {
+        "information": [
+          {
+            "details": "string",
+            "field": "string",
+            "ref": "http://example.com"
+          }
+        ],
+        "warnings": [
+          {
+            "details": "string",
+            "field": "string",
+            "ref": "http://example.com"
+          }
+        ]
+      }
+    }
+  },
+  "required": true,
+  "type": "Array",
+  "validation": {
+    "information": [
+      {
+        "details": "string",
+        "field": "string",
+        "ref": "http://example.com"
+      }
+    ],
+    "warnings": [
+      {
+        "details": "string",
+        "field": "string",
+        "ref": "http://example.com"
+      }
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|true|none|none|
+|displayName|string|true|none|none|
+|options|[object]|false|none|none|
+|properties|object \| null|false|none|none|
+|required|boolean|true|none|none|
+|type|string|true|none|none|
 |validation|object|false|none|none|
 
 #### Enumerated Values

@@ -7,7 +7,7 @@ export const postCallPhoneNumberAuthRoute = createRoute({
   request: {
     body: {
       content: {
-        'application/json': { schema: z.object({}), examples: { jsonObject: { value: {} } } },
+        'application/json': { schema: z.looseObject({}), examples: { jsonObject: { value: {} } } },
       },
     },
   },
@@ -64,7 +64,7 @@ export const postCompletePhoneNumberAuthRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             jsonObject: { value: { phone_number: '+1234567890', verification_code: '1234' } },
           },
@@ -83,7 +83,7 @@ export const postCreateChannelRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             openNoTopic: {
               value: {
@@ -121,7 +121,7 @@ export const postFollowRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { user_id: 1234 } } },
         },
       },
@@ -159,7 +159,7 @@ export const postGetClubRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { club_id: 1234 } } },
         },
       },
@@ -176,7 +176,7 @@ export const postGetClubsForTopicRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { topic_id: 140 } } },
         },
       },
@@ -189,7 +189,9 @@ export const postGetCreateChannelTargetsRoute = createRoute({
   method: 'post',
   path: '/get_create_channel_targets',
   summary: 'is fetched when you tap Create Room',
-  request: { body: { content: { 'application/json': { schema: z.object({}), example: {} } } } },
+  request: {
+    body: { content: { 'application/json': { schema: z.looseObject({}), example: {} } } },
+  },
   responses: { 400: { description: 'waitlisted', content: {} } },
 })
 
@@ -265,7 +267,7 @@ export const postGetFollowingRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { user_id: 1234 } } },
         },
       },
@@ -332,7 +334,10 @@ export const postGetOnlineFriendsRoute = createRoute({
   request: {
     body: {
       content: {
-        'application/json': { schema: z.object({}), examples: { emptyRequest: { value: {} } } },
+        'application/json': {
+          schema: z.looseObject({}),
+          examples: { emptyRequest: { value: {} } },
+        },
       },
     },
   },
@@ -347,7 +352,7 @@ export const postGetProfileRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { user_id: 4075733 } } },
         },
       },
@@ -378,7 +383,7 @@ export const postGetSuggestedClubInvitesRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             jsonObject: {
               value: {
@@ -467,7 +472,7 @@ export const postGetSuggestedFollowsFriendsOnlyRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             noContacts: { value: { club_id: null, contacts: [], upload_contacts: true } },
           },
@@ -483,7 +488,9 @@ export const postGetSuggestedFollowsSimilarRoute = createRoute({
   path: '/get_suggested_follows_similar',
   summary: "find similar users. (The Sparkles button on Clubhouse's profile page)",
   request: {
-    body: { content: { 'application/json': { schema: z.object({}), example: { user_id: 4 } } } },
+    body: {
+      content: { 'application/json': { schema: z.looseObject({}), example: { user_id: 4 } } },
+    },
   },
   responses: {
     200: { description: 'Returns a list of users. Bios truncated to 80 chars.', content: {} },
@@ -500,7 +507,7 @@ export const postGetSuggestedInvitesRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             hasContact: {
               value: {
@@ -525,7 +532,7 @@ export const postGetSuggestedSpeakersRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { startingPrivateRoom: { value: { channel: null } } },
         },
       },
@@ -542,7 +549,7 @@ export const postGetTopicRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { topic_id: 140 } } },
         },
       },
@@ -642,7 +649,7 @@ export const postInviteFromWaitlistRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { user_id: 1234 } } },
         },
       },
@@ -664,7 +671,7 @@ export const postInviteToAppRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             jsonObject: {
               value: { message: null, name: 'John Smith', phone_number: '+11234567890' },
@@ -687,7 +694,7 @@ export const postJoinChannelRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             joinFromAppHomeScreen: {
               value: {
@@ -716,7 +723,7 @@ export const postLeaveChannelRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { channel: 'abcdefgh' } } },
         },
       },
@@ -733,7 +740,7 @@ export const postMeRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             clubhouseApp: {
               value: {
@@ -762,7 +769,7 @@ export const postRecordActionTrailsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             appOpened: {
               value: {
@@ -787,7 +794,7 @@ export const postRefreshTokenRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { refresh: '<refresh_token>' } } },
         },
       },
@@ -806,7 +813,7 @@ export const postResendPhoneNumberAuthRoute = createRoute({
   request: {
     body: {
       content: {
-        'application/json': { schema: z.object({}), examples: { jsonObject: { value: {} } } },
+        'application/json': { schema: z.looseObject({}), examples: { jsonObject: { value: {} } } },
       },
     },
   },
@@ -821,7 +828,7 @@ export const postSearchClubsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             normalSearch: {
               value: {
@@ -847,7 +854,7 @@ export const postSearchUsersRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             normalSearch: {
               value: {
@@ -873,7 +880,7 @@ export const postStartPhoneNumberAuthRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { phone_number: '+11234567890' } } },
         },
       },
@@ -890,7 +897,7 @@ export const postUpdateNotificationsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             onboardingSetting: {
               value: {
@@ -918,7 +925,7 @@ export const postUpdateUsernameRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { jsonObject: { value: { username: 'hipsterhouse' } } },
         },
       },

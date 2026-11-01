@@ -219,7 +219,7 @@ const ListingSchema = z
     modelName: z.string().openapi({ title: 'Modelname' }),
     msrp: z.number().openapi({ title: 'Msrp' }),
     vin: z.string().openapi({ title: 'Vin' }),
-    vinDecode: z.object({}).default({}).exactOptional().openapi({ title: 'Vindecode' }),
+    vinDecode: z.looseObject({}).default({}).exactOptional().openapi({ title: 'Vindecode' }),
     year: z.number().openapi({ title: 'Year' }),
   })
   .openapi({

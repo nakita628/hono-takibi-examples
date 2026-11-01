@@ -6731,7 +6731,7 @@ Reports can be rendered as follows (ordering is implicit rather than explicit):
 |dimensions|[object]|false|none|none|
 |errors|[object]|false|none|none|
 |measures|[object]|false|none|none|
-|reportData|[object]|false|none|none|
+|reportData|[[reportComponent](#schemareportcomponent)]|false|none|none|
 |reportInfo|object|false|none|none|
 
 <h2 id="tocS_Status">Status</h2>
@@ -6818,3 +6818,55 @@ Reports can be rendered as follows (ordering is implicit rather than explicit):
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |summaries|[[DataIntegritySummary](#schemadataintegritysummary)]|false|none|none|
+
+<h2 id="tocS_reportComponent">reportComponent</h2>
+<!-- backwards compatibility -->
+<a id="schemareportcomponent"></a>
+<a id="schema_reportComponent"></a>
+<a id="tocSreportcomponent"></a>
+<a id="tocsreportcomponent"></a>
+
+```json
+{
+  "components": [
+    {
+      "components": [
+        {}
+      ],
+      "dimension": 0,
+      "dimensionDisplayName": "string",
+      "item": 0,
+      "itemDisplayName": "string",
+      "measures": [
+        {
+          "index": 0,
+          "measureDisplayName": "string",
+          "value": 0
+        }
+      ]
+    }
+  ],
+  "dimension": 0,
+  "dimensionDisplayName": "string",
+  "item": 0,
+  "itemDisplayName": "string",
+  "measures": [
+    {
+      "index": 0,
+      "measureDisplayName": "string",
+      "value": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|components|[[reportComponent](#schemareportcomponent)]|false|none|none|
+|dimension|integer|false|none|none|
+|dimensionDisplayName|string|false|none|none|
+|item|integer|false|none|none|
+|itemDisplayName|string|false|none|none|
+|measures|[object]|false|none|none|

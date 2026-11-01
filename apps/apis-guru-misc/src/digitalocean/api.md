@@ -65496,7 +65496,7 @@ action was successful with no returned body data.
 |---|---|---|---|---|
 |lb_id|path|string|true|A unique identifier for a load balancer.|
 |body|body|object|true|none|
-|» droplet_ids|body|[integer]|false|An array containing the IDs of the Droplets assigned to the load balancer.|
+|» droplet_ids|body|[integer]|true|An array containing the IDs of the Droplets assigned to the load balancer.|
 
 > Example responses
 
@@ -65674,7 +65674,7 @@ action was successful with no returned body data.
 |---|---|---|---|---|
 |lb_id|path|string|true|A unique identifier for a load balancer.|
 |body|body|object|true|none|
-|» droplet_ids|body|[integer]|false|An array containing the IDs of the Droplets assigned to the load balancer.|
+|» droplet_ids|body|[integer]|true|An array containing the IDs of the Droplets assigned to the load balancer.|
 
 > Example responses
 

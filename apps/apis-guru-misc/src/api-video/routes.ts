@@ -3381,7 +3381,10 @@ export const deletePlayersPlayerIdLogoRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'No Content', content: { 'application/json': { schema: z.object({}) } } },
+    204: {
+      description: 'No Content',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     404: {
       description: 'Not Found',
       content: {

@@ -13,15 +13,824 @@ type CouponConditionType = {
   value?: string
 }
 
+const PaginationSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    next: z.string().exactOptional(),
+    previous: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Pagination')
+
+const CouponConditionSchema: z.ZodType<CouponConditionType> = z
+  .lazy(() =>
+    z
+      .object({
+        additional_fields: z.looseObject({}).exactOptional(),
+        custom_fields: z.looseObject({}).exactOptional(),
+        entity: z.string().exactOptional(),
+        id: z.string().exactOptional(),
+        key: z.string().exactOptional(),
+        logic_operator: z.string().exactOptional(),
+        match_items: z.string().exactOptional(),
+        operator: z.string().exactOptional(),
+        'sub-conditions': z.array(CouponConditionSchema).exactOptional(),
+        value: z.string().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('CouponCondition')
+
+const CatalogPriceRuleActionSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    apply_to: z.string().exactOptional(),
+    conditions: z.array(CouponConditionSchema).exactOptional(),
+    currency_code: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    include_tax: z.boolean().exactOptional(),
+    quantity: z.number().exactOptional(),
+    scope: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    value: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CatalogPriceRuleAction')
+
 const A2CDateTimeSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     format: z.string().exactOptional(),
     value: z.string().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('A2CDateTime')
+
+const CatalogPriceRuleSchema = z
+  .object({
+    actions: z.array(CatalogPriceRuleActionSchema).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    avail: z.boolean().exactOptional(),
+    conditions: z.array(CouponConditionSchema).exactOptional(),
+    created_time: A2CDateTimeSchema.exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    date_end: A2CDateTimeSchema.exactOptional(),
+    date_start: A2CDateTimeSchema.exactOptional(),
+    description: z.string().exactOptional(),
+    gid: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    short_description: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    usage_count: z.number().exactOptional(),
+    uses_per_order_limit: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CatalogPriceRule')
+
+type ResponseCartCatalogPriceRulesListResultType = {
+  additional_fields?: { [key: string]: unknown }
+  catalog_price_rules?: z.infer<typeof CatalogPriceRuleSchema>[]
+  catalog_price_rules_count?: number
+  custom_fields?: { [key: string]: unknown }
+}
+
+const ResponseCartCatalogPriceRulesListResultSchema: z.ZodType<ResponseCartCatalogPriceRulesListResultType> =
+  z
+    .object({
+      additional_fields: z.looseObject({}).exactOptional(),
+      catalog_price_rules: z.array(CatalogPriceRuleSchema).exactOptional(),
+      catalog_price_rules_count: z.int().exactOptional(),
+      custom_fields: z.looseObject({}).exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('ResponseCartCatalogPriceRulesListResult')
+
+type ModelResponseCartCatalogPriceRulesListType = {
+  additional_fields?: { [key: string]: unknown }
+  custom_fields?: { [key: string]: unknown }
+  pagination?: z.infer<typeof PaginationSchema>
+  result?: z.infer<typeof ResponseCartCatalogPriceRulesListResultSchema>
+  return_code?: number
+  return_message?: string
+}
+
+const CouponActionSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    amount: z.number().exactOptional(),
+    apply_to: z.string().exactOptional(),
+    conditions: z.array(CouponConditionSchema).exactOptional(),
+    currency_code: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    discount_quantity_step: z.int().exactOptional(),
+    discounted_quantity: z.number().exactOptional(),
+    include_tax: z.boolean().exactOptional(),
+    logic_operator: z.string().exactOptional(),
+    scope: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CouponAction')
+
+const CouponCodeSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    code: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+    used_times: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CouponCode')
+
+const CouponHistorySchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    amount: z.number().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    order_id: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CouponHistory')
+
+const CouponSchema = z
+  .object({
+    actions: z.array(CouponActionSchema).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    avail: z.boolean().exactOptional(),
+    code: z.string().exactOptional(),
+    codes: z.array(CouponCodeSchema).exactOptional(),
+    conditions: z.array(CouponConditionSchema).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    date_end: A2CDateTimeSchema.exactOptional(),
+    date_start: A2CDateTimeSchema.exactOptional(),
+    description: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    logic_operator: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    priority: z.int().exactOptional(),
+    usage_history: z.array(CouponHistorySchema).exactOptional(),
+    usage_limit: z.int().exactOptional(),
+    usage_limit_per_customer: z.int().exactOptional(),
+    used_times: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Coupon')
+
+type ResponseCartCouponListResultType = {
+  additional_fields?: { [key: string]: unknown }
+  coupon?: z.infer<typeof CouponSchema>[]
+  coupon_count?: number
+  custom_fields?: { [key: string]: unknown }
+}
+
+const ResponseCartCouponListResultSchema: z.ZodType<ResponseCartCouponListResultType> = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    coupon: z.array(CouponSchema).exactOptional(),
+    coupon_count: z.int().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseCartCouponListResult')
+
+type ModelResponseCartCouponListType = {
+  additional_fields?: { [key: string]: unknown }
+  custom_fields?: { [key: string]: unknown }
+  pagination?: z.infer<typeof PaginationSchema>
+  result?: z.infer<typeof ResponseCartCouponListResultSchema>
+  return_code?: number
+  return_message?: string
+}
+
+const CurrencySchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    avail: z.boolean().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    default: z.boolean().exactOptional(),
+    id: z.string().exactOptional(),
+    iso3: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    rate: z.number().exactOptional(),
+    symbol_left: z.string().exactOptional(),
+    symbol_right: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Currency')
+
+const BaseCustomerSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    email: z.string().exactOptional(),
+    first_name: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    last_name: z.string().exactOptional(),
+    phone: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BaseCustomer')
+
+const OrderItemOptionSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    name: z.string().exactOptional(),
+    option_id: z.string().exactOptional(),
+    price: z.number().exactOptional(),
+    product_option_value_id: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    value: z.string().exactOptional(),
+    weight: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderItemOption')
+
+const OrderItemSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    barcode: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    discount_amount: z.number().exactOptional(),
+    model: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    options: z.array(OrderItemOptionSchema).exactOptional(),
+    order_product_id: z.string().exactOptional(),
+    parent_order_product_id: z.string().exactOptional(),
+    price: z.number().exactOptional(),
+    price_inc_tax: z.number().exactOptional(),
+    product_id: z.string().exactOptional(),
+    quantity: z.number().exactOptional(),
+    tax_percent: z.number().exactOptional(),
+    tax_value: z.number().exactOptional(),
+    tax_value_after_discount: z.number().exactOptional(),
+    total_price: z.number().exactOptional(),
+    variant_id: z.string().exactOptional(),
+    weight: z.number().exactOptional(),
+    weight_unit: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderItem')
+
+const OrderTotalsSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    discount: z.number().exactOptional(),
+    shipping: z.number().exactOptional(),
+    subtotal: z.number().exactOptional(),
+    tax: z.number().exactOptional(),
+    total: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderTotals')
+
+const OrderAbandonedSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    basket_id: z.string().exactOptional(),
+    basket_url: z.string().exactOptional(),
+    created_at: A2CDateTimeSchema.exactOptional(),
+    currency: CurrencySchema.exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    customer: BaseCustomerSchema.exactOptional(),
+    id: z.string().exactOptional(),
+    modified_at: A2CDateTimeSchema.exactOptional(),
+    order_products: z.array(OrderItemSchema).exactOptional(),
+    totals: OrderTotalsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderAbandoned')
+
+const ResponseOrderAbandonedListResultSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    order: z.array(OrderAbandonedSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseOrderAbandonedListResult')
+
+type ModelResponseOrderAbandonedListType = {
+  additional_fields?: { [key: string]: unknown }
+  custom_fields?: { [key: string]: unknown }
+  pagination?: z.infer<typeof PaginationSchema>
+  result?: z.infer<typeof ResponseOrderAbandonedListResultSchema>
+  return_code?: number
+  return_message?: string
+}
+
+const CountrySchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    code2: z.string().exactOptional(),
+    code3: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Country')
+
+const StateSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    code: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('State')
+
+const CustomerAddressSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    address1: z.string().exactOptional(),
+    address2: z.string().exactOptional(),
+    city: z.string().exactOptional(),
+    company: z.string().exactOptional(),
+    country: CountrySchema.exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    default: z.boolean().exactOptional(),
+    fax: z.string().exactOptional(),
+    first_name: z.string().exactOptional(),
+    gender: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    last_name: z.string().exactOptional(),
+    phone: z.string().exactOptional(),
+    postcode: z.string().exactOptional(),
+    region: z.string().exactOptional(),
+    state: StateSchema.exactOptional(),
+    type: z.string().exactOptional(),
+    website: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerAddress')
+
+const OrderTotalsNewDiscountSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    code: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    type: z.string().exactOptional(),
+    value: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderTotalsNewDiscount')
+
+const OrderPaymentMethodSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderPaymentMethod')
+
+const OrderStatusRefundItemSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    order_product_id: z.string().exactOptional(),
+    product_id: z.string().exactOptional(),
+    qty: z.number().exactOptional(),
+    refund: z.number().exactOptional(),
+    variant_id: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderStatusRefundItem')
+
+const OrderRefundSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    comment: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    fee: z.number().exactOptional(),
+    id: z.string().exactOptional(),
+    items: z.array(OrderStatusRefundItemSchema).exactOptional(),
+    modified_time: A2CDateTimeSchema.exactOptional(),
+    shipping: z.number().exactOptional(),
+    tax: z.number().exactOptional(),
+    total: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderRefund')
+
+const OrderShippingMethodSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderShippingMethod')
+
+const OrderStatusHistoryItemSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    comment: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+    modified_time: A2CDateTimeSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    notify: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderStatusHistoryItem')
+
+const OrderStatusRefundSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    comment: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    fee: z.number().exactOptional(),
+    refunded_items: z.array(OrderStatusRefundItemSchema).exactOptional(),
+    shipping: z.number().exactOptional(),
+    tax: z.number().exactOptional(),
+    time: A2CDateTimeSchema.exactOptional(),
+    total_refunded: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderStatusRefund')
+
+const OrderStatusSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    history: z.array(OrderStatusHistoryItemSchema).exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    refund_info: OrderStatusRefundSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderStatus')
+
+const OrderTotalSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    shipping_ex_tax: z.number().exactOptional(),
+    subtotal_ex_tax: z.number().exactOptional(),
+    total: z.number().exactOptional(),
+    total_discount: z.number().exactOptional(),
+    total_paid: z.number().exactOptional(),
+    total_tax: z.number().exactOptional(),
+    wrapping_ex_tax: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderTotal')
+
+const OrderSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    basket_id: z.string().exactOptional(),
+    billing_address: CustomerAddressSchema.exactOptional(),
+    bundles: z.array(OrderItemSchema).exactOptional(),
+    channel_id: z.string().exactOptional(),
+    comment: z.string().exactOptional(),
+    create_at: A2CDateTimeSchema.exactOptional(),
+    currency: CurrencySchema.exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    customer: BaseCustomerSchema.exactOptional(),
+    discounts: z.array(OrderTotalsNewDiscountSchema).exactOptional(),
+    finished_time: A2CDateTimeSchema.exactOptional(),
+    gift_message: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    modified_at: A2CDateTimeSchema.exactOptional(),
+    order_details_url: z.string().exactOptional(),
+    order_id: z.string().exactOptional(),
+    order_products: z.array(OrderItemSchema).exactOptional(),
+    payment_method: OrderPaymentMethodSchema.exactOptional(),
+    refunds: z.array(OrderRefundSchema).exactOptional(),
+    shipping_address: CustomerAddressSchema.exactOptional(),
+    shipping_method: OrderShippingMethodSchema.exactOptional(),
+    shipping_methods: z.array(OrderShippingMethodSchema).exactOptional(),
+    status: OrderStatusSchema.exactOptional(),
+    store_id: z.string().exactOptional(),
+    total: OrderTotalSchema.exactOptional(),
+    totals: OrderTotalsSchema.exactOptional(),
+    warehouses_ids: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Order')
+
+const ResponseOrderListResultSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    order: z.array(OrderSchema).exactOptional(),
+    orders_count: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseOrderListResult')
+
+type ModelResponseOrderListType = {
+  additional_fields?: { [key: string]: unknown }
+  custom_fields?: { [key: string]: unknown }
+  pagination?: z.infer<typeof PaginationSchema>
+  result?: z.infer<typeof ResponseOrderListResultSchema>
+  return_code?: number
+  return_message?: string
+}
+
+const ProductAdvancedPriceSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    avail: z.boolean().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    expire_time: A2CDateTimeSchema.exactOptional(),
+    group_id: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    quantity_from: z.number().exactOptional(),
+    start_time: A2CDateTimeSchema.exactOptional(),
+    value: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductAdvancedPrice')
+
+const ProductGroupItemSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    child_item_id: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    default_qty_in_pack: z.string().exactOptional(),
+    is_qty_in_pack_fixed: z.boolean().exactOptional(),
+    product_id: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductGroupItem')
+
+const ProductGroupPriceSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    expire_time: z.string().exactOptional(),
+    group_id: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    price: z.number().exactOptional(),
+    quantity: z.number().exactOptional(),
+    start_time: z.string().exactOptional(),
+    store_id: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductGroupPrice')
+
+const ImageSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    alt: z.string().exactOptional(),
+    avail: z.boolean().exactOptional(),
+    create_at: A2CDateTimeSchema.exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    file_name: z.string().exactOptional(),
+    http_path: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    'mime-type': z.string().exactOptional(),
+    modified_at: A2CDateTimeSchema.exactOptional(),
+    size: z.int().exactOptional(),
+    sort_order: z.int().exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Image')
+
+const ProductInventorySchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    in_stock: z.boolean().exactOptional(),
+    priority: z.int().exactOptional(),
+    quantity: z.number().exactOptional(),
+    warehouse_id: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductInventory')
+
+const ProductOptionItemSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    price: z.string().exactOptional(),
+    product_option_item_id: z.string().exactOptional(),
+    quantity: z.int().exactOptional(),
+    sku: z.string().exactOptional(),
+    sort_order: z.int().exactOptional(),
+    type_price: z.string().exactOptional(),
+    weight: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductOptionItem')
+
+const ProductOptionSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    available: z.boolean().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    description: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    option_items: z.array(ProductOptionItemSchema).exactOptional(),
+    product_option_id: z.string().exactOptional(),
+    required: z.boolean().exactOptional(),
+    sort_order: z.int().exactOptional(),
+    type: z.string().exactOptional(),
+    used_in_combination: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductOption')
+
+const SpecialPriceSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    avail: z.boolean().exactOptional(),
+    created_at: A2CDateTimeSchema.exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    expired_at: A2CDateTimeSchema.exactOptional(),
+    modified_at: A2CDateTimeSchema.exactOptional(),
+    value: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SpecialPrice')
+
+const ProductTierPriceSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    price: z.number().exactOptional(),
+    qty: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductTierPrice')
+
+const ProductSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    advanced_price: z.array(ProductAdvancedPriceSchema).exactOptional(),
+    avail_sale: z.boolean().exactOptional(),
+    avail_view: z.boolean().exactOptional(),
+    backorders: z.string().exactOptional(),
+    categories_ids: z.array(z.string()).exactOptional(),
+    cost_price: z.number().exactOptional(),
+    create_at: A2CDateTimeSchema.exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    description: z.string().exactOptional(),
+    dimensions_unit: z.string().exactOptional(),
+    group_items: z.array(ProductGroupItemSchema).exactOptional(),
+    group_price: z.array(ProductGroupPriceSchema).exactOptional(),
+    height: z.number().exactOptional(),
+    id: z.string().exactOptional(),
+    images: z.array(ImageSchema).exactOptional(),
+    inventory: z.array(ProductInventorySchema).exactOptional(),
+    is_downloadable: z.boolean().exactOptional(),
+    is_stock_managed: z.boolean().exactOptional(),
+    is_virtual: z.boolean().exactOptional(),
+    length: z.number().exactOptional(),
+    manage_stock: z.string().exactOptional(),
+    meta_description: z.string().exactOptional(),
+    meta_keywords: z.string().exactOptional(),
+    meta_title: z.string().exactOptional(),
+    modified_at: A2CDateTimeSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    price: z.number().exactOptional(),
+    product_options: z.array(ProductOptionSchema).exactOptional(),
+    quantity: z.number().exactOptional(),
+    related_products_ids: z.array(z.string()).exactOptional(),
+    seo_url: z.string().exactOptional(),
+    short_description: z.string().exactOptional(),
+    sort_order: z.int().exactOptional(),
+    special_price: SpecialPriceSchema.exactOptional(),
+    stores_ids: z.array(z.string()).exactOptional(),
+    tax_class_id: z.string().exactOptional(),
+    tier_price: z.array(ProductTierPriceSchema).exactOptional(),
+    type: z.string().exactOptional(),
+    u_brand: z.string().exactOptional(),
+    u_brand_id: z.string().exactOptional(),
+    u_model: z.string().exactOptional(),
+    u_mpn: z.string().exactOptional(),
+    u_sku: z.string().exactOptional(),
+    u_upc: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+    weight: z.number().exactOptional(),
+    weight_unit: z.string().exactOptional(),
+    width: z.number().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Product')
+
+const ResponseProductListResultSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    product: z.array(ProductSchema).exactOptional(),
+    products_count: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ResponseProductListResult')
+
+type ModelResponseProductListType = {
+  additional_fields?: { [key: string]: unknown }
+  custom_fields?: { [key: string]: unknown }
+  pagination?: z.infer<typeof PaginationSchema>
+  result?: z.infer<typeof ResponseProductListResultSchema>
+  return_code?: number
+  return_message?: string
+}
+
+const TaxClassZipCodesRangeSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    from: z.string().exactOptional(),
+    to: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TaxClassZipCodesRange')
+
+const TaxClassZipCodesSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    fields: z.array(TaxClassZipCodesRangeSchema).exactOptional(),
+    is_range: z.boolean().exactOptional(),
+    range: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TaxClassZipCodes')
+
+const TaxClassStatesSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    code: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    tax: z.number().exactOptional(),
+    tax_type: z.int().exactOptional(),
+    zip_codes: z.array(TaxClassZipCodesSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TaxClassStates')
+
+const TaxClassCountriesSchema = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    code: z.string().exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    states: z.array(TaxClassStatesSchema).exactOptional(),
+    tax: z.number().exactOptional(),
+    tax_type: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TaxClassCountries')
+
+type TaxClassRateType = {
+  additional_fields?: { [key: string]: unknown }
+  address?: string[]
+  cities?: string[]
+  countries?: z.infer<typeof TaxClassCountriesSchema>[]
+  custom_fields?: { [key: string]: unknown }
+  id?: string
+  name?: string
+  tax?: number
+  tax_based_on?: string
+  tax_type?: number
+  zip_codes?: z.infer<typeof TaxClassZipCodesSchema>[]
+}
+
+const TaxClassRateSchema: z.ZodType<TaxClassRateType> = z
+  .object({
+    additional_fields: z.looseObject({}).exactOptional(),
+    address: z.array(z.string()).exactOptional(),
+    cities: z.array(z.string()).exactOptional(),
+    countries: z.array(TaxClassCountriesSchema).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    tax: z.number().exactOptional(),
+    tax_based_on: z.string().exactOptional(),
+    tax_type: z.int().exactOptional(),
+    zip_codes: z.array(TaxClassZipCodesSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TaxClassRate')
+
+type TaxClassType = {
+  additional_fields?: { [key: string]: unknown }
+  avail?: boolean
+  custom_fields?: { [key: string]: unknown }
+  id?: string
+  name?: string
+  tax?: number
+  tax_rates?: z.infer<typeof TaxClassRateSchema>[]
+  tax_type?: number
+}
 
 const AccountCartAddSchema = z
   .object({
@@ -392,23 +1201,10 @@ const AccountCartAddSchema = z
   })
   .openapi('AccountCartAdd')
 
-const BaseCustomerSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    email: z.string().exactOptional(),
-    first_name: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    last_name: z.string().exactOptional(),
-    phone: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BaseCustomer')
-
 const BasketItemOptionSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     used_in_combination: z.boolean().exactOptional(),
@@ -420,8 +1216,8 @@ const BasketItemOptionSchema = z
 
 const BasketItemSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     options: z.array(BasketItemOptionSchema).exactOptional(),
@@ -438,30 +1234,14 @@ const BasketItemSchema = z
   .openapi({ required: [] })
   .openapi('BasketItem')
 
-const CurrencySchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    avail: z.boolean().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    default: z.boolean().exactOptional(),
-    id: z.string().exactOptional(),
-    iso3: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    rate: z.number().exactOptional(),
-    symbol_left: z.string().exactOptional(),
-    symbol_right: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Currency')
-
 const BasketSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     basket_products: z.array(BasketItemSchema).exactOptional(),
     basket_url: z.string().exactOptional(),
     created_at: A2CDateTimeSchema.exactOptional(),
     currency: CurrencySchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     customer: BaseCustomerSchema.exactOptional(),
     id: z.string().exactOptional(),
     modified_at: A2CDateTimeSchema.exactOptional(),
@@ -471,10 +1251,10 @@ const BasketSchema = z
 
 const BasketLiveShippingServiceSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     callback: z.string().exactOptional(),
     callback_err_cnt: z.int().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     enabled_on_store: z.boolean().exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
@@ -482,31 +1262,12 @@ const BasketLiveShippingServiceSchema = z
   .openapi({ required: [] })
   .openapi('BasketLiveShippingService')
 
-const ImageSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    alt: z.string().exactOptional(),
-    avail: z.boolean().exactOptional(),
-    create_at: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    file_name: z.string().exactOptional(),
-    http_path: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    'mime-type': z.string().exactOptional(),
-    modified_at: A2CDateTimeSchema.exactOptional(),
-    size: z.int().exactOptional(),
-    sort_order: z.int().exactOptional(),
-    type: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Image')
-
 const BrandSchema = z
   .object({
     active: z.boolean().exactOptional(),
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     created_time: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     full_description: z.string().exactOptional(),
     id: z.string().exactOptional(),
     images: z.array(ImageSchema).exactOptional(),
@@ -522,20 +1283,11 @@ const BrandSchema = z
   .openapi({ required: [] })
   .openapi('Brand')
 
-const OrderShippingMethodSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderShippingMethod')
-
 const CarrierSchema = z
   .object({
     active: z.boolean().exactOptional(),
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     shipping_methods: z.array(OrderShippingMethodSchema).exactOptional(),
@@ -545,11 +1297,11 @@ const CarrierSchema = z
 
 const CartShippingZoneSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     code: z.string().exactOptional(),
     country: z.string().exactOptional(),
     country_iso2_codes: z.array(z.string()).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
   })
@@ -558,8 +1310,8 @@ const CartShippingZoneSchema = z
 
 const CartChannelSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     is_enabled: z.boolean().exactOptional(),
     name: z.string().exactOptional(),
@@ -570,8 +1322,8 @@ const CartChannelSchema = z
 
 const LanguageSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     iso_code: z.string().exactOptional(),
     name: z.string().exactOptional(),
@@ -581,10 +1333,10 @@ const LanguageSchema = z
 
 const InfoSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     city: z.string().exactOptional(),
     country: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     email: z.string().exactOptional(),
     owner: z.string().exactOptional(),
     phone: z.string().exactOptional(),
@@ -600,12 +1352,12 @@ const InfoSchema = z
 const CartStoreInfoSchema = z
   .object({
     active: z.boolean().exactOptional(),
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     carrier_info: z.array(CarrierSchema).exactOptional(),
     channels: z.array(CartChannelSchema).exactOptional(),
     country: z.string().exactOptional(),
     currency: CurrencySchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     default_warehouse_id: z.string().exactOptional(),
     dimension_unit: z.string().exactOptional(),
     language: z.string().exactOptional(),
@@ -623,59 +1375,13 @@ const CartStoreInfoSchema = z
   .openapi({ required: [] })
   .openapi('CartStoreInfo')
 
-const CountrySchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    code2: z.string().exactOptional(),
-    code3: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Country')
-
-const StateSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('State')
-
-const CustomerAddressSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    address1: z.string().exactOptional(),
-    address2: z.string().exactOptional(),
-    city: z.string().exactOptional(),
-    company: z.string().exactOptional(),
-    country: CountrySchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    default: z.boolean().exactOptional(),
-    fax: z.string().exactOptional(),
-    first_name: z.string().exactOptional(),
-    gender: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    last_name: z.string().exactOptional(),
-    phone: z.string().exactOptional(),
-    postcode: z.string().exactOptional(),
-    region: z.string().exactOptional(),
-    state: StateSchema.exactOptional(),
-    type: z.string().exactOptional(),
-    website: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerAddress')
-
 const CartWarehouseSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     address: CustomerAddressSchema.exactOptional(),
     avail: z.boolean().exactOptional(),
     carriers_ids: z.array(z.string()).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     description: z.string().exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
@@ -686,8 +1392,8 @@ const CartWarehouseSchema = z
 
 const CartSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     db_prefix: z.string().exactOptional(),
     name: z.string().exactOptional(),
     shipping_zones: z.array(CartShippingZoneSchema).exactOptional(),
@@ -702,7 +1408,7 @@ const CartSchema = z
 const CartConfigUpdateSchema = z
   .object({
     custom_fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'This parameter sets the list of params to the shopping cart.' }),
     db_tables_prefix: z
@@ -774,8 +1480,8 @@ const CartCouponAddSchema = z
 
 const CartMetaDataSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     key: z.string().exactOptional(),
     namespace: z.string().exactOptional(),
@@ -784,69 +1490,12 @@ const CartMetaDataSchema = z
   .openapi({ required: [] })
   .openapi('CartMetaData')
 
-const CouponConditionSchema: z.ZodType<CouponConditionType> = z
-  .lazy(() =>
-    z
-      .object({
-        additional_fields: z.object({}).exactOptional(),
-        custom_fields: z.object({}).exactOptional(),
-        entity: z.string().exactOptional(),
-        id: z.string().exactOptional(),
-        key: z.string().exactOptional(),
-        logic_operator: z.string().exactOptional(),
-        match_items: z.string().exactOptional(),
-        operator: z.string().exactOptional(),
-        'sub-conditions': z.array(CouponConditionSchema).exactOptional(),
-        value: z.string().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('CouponCondition')
-
-const CatalogPriceRuleActionSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    apply_to: z.string().exactOptional(),
-    conditions: z.array(CouponConditionSchema).exactOptional(),
-    currency_code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    include_tax: z.boolean().exactOptional(),
-    quantity: z.number().exactOptional(),
-    scope: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    value: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CatalogPriceRuleAction')
-
-const CatalogPriceRuleSchema = z
-  .object({
-    actions: z.array(CatalogPriceRuleActionSchema).exactOptional(),
-    additional_fields: z.object({}).exactOptional(),
-    avail: z.boolean().exactOptional(),
-    conditions: z.array(CouponConditionSchema).exactOptional(),
-    created_time: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    date_end: A2CDateTimeSchema.exactOptional(),
-    date_start: A2CDateTimeSchema.exactOptional(),
-    description: z.string().exactOptional(),
-    gid: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    short_description: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    usage_count: z.number().exactOptional(),
-    uses_per_order_limit: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CatalogPriceRule')
-
 const CategorySchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     avail: z.boolean().exactOptional(),
     created_at: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     description: z.string().exactOptional(),
     id: z.string().exactOptional(),
     images: z.array(ImageSchema).exactOptional(),
@@ -865,53 +1514,26 @@ const CategorySchema = z
   .openapi({ required: [] })
   .openapi('Category')
 
-const ProductAdvancedPriceSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    avail: z.boolean().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    expire_time: A2CDateTimeSchema.exactOptional(),
-    group_id: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    quantity_from: z.number().exactOptional(),
-    start_time: A2CDateTimeSchema.exactOptional(),
-    value: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductAdvancedPrice')
-
 const ProductChildItemCombinationSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     option_id: z.string().exactOptional(),
     option_value_id: z.string().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ProductChildItemCombination')
 
-const ProductInventorySchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    in_stock: z.boolean().exactOptional(),
-    priority: z.int().exactOptional(),
-    quantity: z.number().exactOptional(),
-    warehouse_id: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductInventory')
-
 const ChildSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     advanced_price: z.array(ProductAdvancedPriceSchema).exactOptional(),
     allow_backorders: z.boolean().exactOptional(),
     avail_for_sale: z.boolean().exactOptional(),
     combination: z.array(ProductChildItemCombinationSchema).exactOptional(),
     cost_price: z.number().exactOptional(),
     created_time: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     default_price: z.number().exactOptional(),
     default_qty_in_pack: z.number().exactOptional(),
     dimensions_unit: z.string().exactOptional(),
@@ -950,73 +1572,10 @@ const ChildSchema = z
   .openapi({ required: [] })
   .openapi('Child')
 
-const CouponActionSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    amount: z.number().exactOptional(),
-    apply_to: z.string().exactOptional(),
-    conditions: z.array(CouponConditionSchema).exactOptional(),
-    currency_code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    discount_quantity_step: z.int().exactOptional(),
-    discounted_quantity: z.number().exactOptional(),
-    include_tax: z.boolean().exactOptional(),
-    logic_operator: z.string().exactOptional(),
-    scope: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CouponAction')
-
-const CouponCodeSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    id: z.string().exactOptional(),
-    used_times: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CouponCode')
-
-const CouponHistorySchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    amount: z.number().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    order_id: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CouponHistory')
-
-const CouponSchema = z
-  .object({
-    actions: z.array(CouponActionSchema).exactOptional(),
-    additional_fields: z.object({}).exactOptional(),
-    avail: z.boolean().exactOptional(),
-    code: z.string().exactOptional(),
-    codes: z.array(CouponCodeSchema).exactOptional(),
-    conditions: z.array(CouponConditionSchema).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    date_end: A2CDateTimeSchema.exactOptional(),
-    date_start: A2CDateTimeSchema.exactOptional(),
-    description: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    logic_operator: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    priority: z.int().exactOptional(),
-    usage_history: z.array(CouponHistorySchema).exactOptional(),
-    usage_limit: z.int().exactOptional(),
-    usage_limit_per_customer: z.int().exactOptional(),
-    used_times: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Coupon')
-
 const CustomerGroupSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
   })
@@ -1025,12 +1584,12 @@ const CustomerGroupSchema = z
 
 const CustomerSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     address_book: z.array(CustomerAddressSchema).exactOptional(),
     birth_day: A2CDateTimeSchema.exactOptional(),
     company: z.string().exactOptional(),
     created_time: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     email: z.string().exactOptional(),
     fax: z.string().exactOptional(),
     first_name: z.string().exactOptional(),
@@ -1173,8 +1732,8 @@ const CustomerAddSchema = z
 
 const CustomerAttributeValueSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     value: z.string().exactOptional(),
   })
@@ -1183,10 +1742,10 @@ const CustomerAttributeValueSchema = z
 
 const CustomerAttributeSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     attribute_id: z.string().exactOptional(),
     code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     name: z.string().exactOptional(),
     type: z.string().exactOptional(),
     values: z.array(CustomerAttributeValueSchema).exactOptional(),
@@ -1196,13 +1755,13 @@ const CustomerAttributeSchema = z
 
 const GiftCardSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     amount: z.number().exactOptional(),
     avail_to: z.string().exactOptional(),
     code: z.string().exactOptional(),
     created_at: z.string().exactOptional(),
     currency_code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     free_product_ids: z.string().exactOptional(),
     id: z.string().exactOptional(),
     initial_amount: z.number().exactOptional(),
@@ -1219,21 +1778,11 @@ const GiftCardSchema = z
   .openapi({ required: [] })
   .openapi('GiftCard')
 
-const PaginationSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    next: z.string().exactOptional(),
-    previous: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Pagination')
-
 const StoreAttributeSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     default_values: z.array(z.string()).exactOptional(),
     id: z.string().exactOptional(),
     lang_id: z.string().exactOptional(),
@@ -1251,18 +1800,18 @@ const StoreAttributeSchema = z
 
 const ResponseAttributeListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     attribute: z.array(StoreAttributeSchema).exactOptional(),
     attributes_count: z.int().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ResponseAttributeListResult')
 
 const ModelResponseAttributeListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseAttributeListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1271,42 +1820,23 @@ const ModelResponseAttributeListSchema = z
   .openapi({ required: [] })
   .openapi('ModelResponseAttributeList')
 
-const ResponseCartCatalogPriceRulesListResultSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    catalog_price_rules: z.array(CatalogPriceRuleSchema).exactOptional(),
-    catalog_price_rules_count: z.int().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ResponseCartCatalogPriceRulesListResult')
+const ModelResponseCartCatalogPriceRulesListSchema: z.ZodType<ModelResponseCartCatalogPriceRulesListType> =
+  z
+    .object({
+      additional_fields: z.looseObject({}).exactOptional(),
+      custom_fields: z.looseObject({}).exactOptional(),
+      pagination: PaginationSchema.exactOptional(),
+      result: ResponseCartCatalogPriceRulesListResultSchema.exactOptional(),
+      return_code: z.int().exactOptional(),
+      return_message: z.string().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('ModelResponseCartCatalogPriceRulesList')
 
-const ModelResponseCartCatalogPriceRulesListSchema = z
+const ModelResponseCartCouponListSchema: z.ZodType<ModelResponseCartCouponListType> = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    pagination: PaginationSchema.exactOptional(),
-    result: ResponseCartCatalogPriceRulesListResultSchema.exactOptional(),
-    return_code: z.int().exactOptional(),
-    return_message: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ModelResponseCartCatalogPriceRulesList')
-
-const ResponseCartCouponListResultSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    coupon: z.array(CouponSchema).exactOptional(),
-    coupon_count: z.int().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ResponseCartCouponListResult')
-
-const ModelResponseCartCouponListSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseCartCouponListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1317,8 +1847,8 @@ const ModelResponseCartCouponListSchema = z
 
 const ResponseCartGiftcardListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     gift_card: z.array(GiftCardSchema).exactOptional(),
   })
   .openapi({ required: [] })
@@ -1326,8 +1856,8 @@ const ResponseCartGiftcardListResultSchema = z
 
 const ModelResponseCartGiftCardListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseCartGiftcardListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1338,8 +1868,8 @@ const ModelResponseCartGiftCardListSchema = z
 
 const ResponseCartMetaDataListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     items: z.array(CartMetaDataSchema).exactOptional(),
     total_count: z.int().exactOptional(),
   })
@@ -1348,8 +1878,8 @@ const ResponseCartMetaDataListResultSchema = z
 
 const ModelResponseCartMetaDataListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseCartMetaDataListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1360,9 +1890,9 @@ const ModelResponseCartMetaDataListSchema = z
 
 const ScriptSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     created_time: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     description: z.string().exactOptional(),
     event: z.string().exactOptional(),
     html: z.string().exactOptional(),
@@ -1378,8 +1908,8 @@ const ScriptSchema = z
 
 const ResponseCartScriptListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     scripts: z.array(ScriptSchema).exactOptional(),
     total_count: z.int().exactOptional(),
   })
@@ -1388,8 +1918,8 @@ const ResponseCartScriptListResultSchema = z
 
 const ModelResponseCartScriptListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseCartScriptListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1400,18 +1930,18 @@ const ModelResponseCartScriptListSchema = z
 
 const ResponseCategoryListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     categories_count: z.int().exactOptional(),
     category: z.array(CategorySchema).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ResponseCategoryListResult')
 
 const ModelResponseCategoryListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseCategoryListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1422,8 +1952,8 @@ const ModelResponseCategoryListSchema = z
 
 const ResponseCustomerAttributeListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     items: z.array(CustomerAttributeSchema).exactOptional(),
     total_count: z.int().exactOptional(),
   })
@@ -1432,8 +1962,8 @@ const ResponseCustomerAttributeListResultSchema = z
 
 const ModelResponseCustomerAttributeListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseCustomerAttributeListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1444,8 +1974,8 @@ const ModelResponseCustomerAttributeListSchema = z
 
 const ResponseCustomerGroupListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     group: z.array(CustomerGroupSchema).exactOptional(),
     group_count: z.int().exactOptional(),
   })
@@ -1454,8 +1984,8 @@ const ResponseCustomerGroupListResultSchema = z
 
 const ModelResponseCustomerGroupListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseCustomerGroupListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1466,8 +1996,8 @@ const ModelResponseCustomerGroupListSchema = z
 
 const ResponseCustomerListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     customer: z.array(CustomerSchema).exactOptional(),
     customers_count: z.int().exactOptional(),
   })
@@ -1476,8 +2006,8 @@ const ResponseCustomerListResultSchema = z
 
 const ModelResponseCustomerListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseCustomerListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1486,90 +2016,10 @@ const ModelResponseCustomerListSchema = z
   .openapi({ required: [] })
   .openapi('ModelResponseCustomerList')
 
-const OrderItemOptionSchema = z
+const ModelResponseOrderAbandonedListSchema: z.ZodType<ModelResponseOrderAbandonedListType> = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    name: z.string().exactOptional(),
-    option_id: z.string().exactOptional(),
-    price: z.number().exactOptional(),
-    product_option_value_id: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    value: z.string().exactOptional(),
-    weight: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderItemOption')
-
-const OrderItemSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    barcode: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    discount_amount: z.number().exactOptional(),
-    model: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    options: z.array(OrderItemOptionSchema).exactOptional(),
-    order_product_id: z.string().exactOptional(),
-    parent_order_product_id: z.string().exactOptional(),
-    price: z.number().exactOptional(),
-    price_inc_tax: z.number().exactOptional(),
-    product_id: z.string().exactOptional(),
-    quantity: z.number().exactOptional(),
-    tax_percent: z.number().exactOptional(),
-    tax_value: z.number().exactOptional(),
-    tax_value_after_discount: z.number().exactOptional(),
-    total_price: z.number().exactOptional(),
-    variant_id: z.string().exactOptional(),
-    weight: z.number().exactOptional(),
-    weight_unit: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderItem')
-
-const OrderTotalsSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    discount: z.number().exactOptional(),
-    shipping: z.number().exactOptional(),
-    subtotal: z.number().exactOptional(),
-    tax: z.number().exactOptional(),
-    total: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderTotals')
-
-const OrderAbandonedSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    basket_id: z.string().exactOptional(),
-    basket_url: z.string().exactOptional(),
-    created_at: A2CDateTimeSchema.exactOptional(),
-    currency: CurrencySchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    customer: BaseCustomerSchema.exactOptional(),
-    id: z.string().exactOptional(),
-    modified_at: A2CDateTimeSchema.exactOptional(),
-    order_products: z.array(OrderItemSchema).exactOptional(),
-    totals: OrderTotalsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderAbandoned')
-
-const ResponseOrderAbandonedListResultSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    order: z.array(OrderAbandonedSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ResponseOrderAbandonedListResult')
-
-const ModelResponseOrderAbandonedListSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseOrderAbandonedListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1578,158 +2028,10 @@ const ModelResponseOrderAbandonedListSchema = z
   .openapi({ required: [] })
   .openapi('ModelResponseOrderAbandonedList')
 
-const OrderTotalsNewDiscountSchema = z
+const ModelResponseOrderListSchema: z.ZodType<ModelResponseOrderListType> = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    type: z.string().exactOptional(),
-    value: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderTotalsNewDiscount')
-
-const OrderPaymentMethodSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderPaymentMethod')
-
-const OrderStatusRefundItemSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    order_product_id: z.string().exactOptional(),
-    product_id: z.string().exactOptional(),
-    qty: z.number().exactOptional(),
-    refund: z.number().exactOptional(),
-    variant_id: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderStatusRefundItem')
-
-const OrderRefundSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    comment: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    fee: z.number().exactOptional(),
-    id: z.string().exactOptional(),
-    items: z.array(OrderStatusRefundItemSchema).exactOptional(),
-    modified_time: A2CDateTimeSchema.exactOptional(),
-    shipping: z.number().exactOptional(),
-    tax: z.number().exactOptional(),
-    total: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderRefund')
-
-const OrderStatusHistoryItemSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    comment: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    id: z.string().exactOptional(),
-    modified_time: A2CDateTimeSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    notify: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderStatusHistoryItem')
-
-const OrderStatusRefundSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    comment: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    fee: z.number().exactOptional(),
-    refunded_items: z.array(OrderStatusRefundItemSchema).exactOptional(),
-    shipping: z.number().exactOptional(),
-    tax: z.number().exactOptional(),
-    time: A2CDateTimeSchema.exactOptional(),
-    total_refunded: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderStatusRefund')
-
-const OrderStatusSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    history: z.array(OrderStatusHistoryItemSchema).exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    refund_info: OrderStatusRefundSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderStatus')
-
-const OrderTotalSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    shipping_ex_tax: z.number().exactOptional(),
-    subtotal_ex_tax: z.number().exactOptional(),
-    total: z.number().exactOptional(),
-    total_discount: z.number().exactOptional(),
-    total_paid: z.number().exactOptional(),
-    total_tax: z.number().exactOptional(),
-    wrapping_ex_tax: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderTotal')
-
-const OrderSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    basket_id: z.string().exactOptional(),
-    billing_address: CustomerAddressSchema.exactOptional(),
-    bundles: z.array(OrderItemSchema).exactOptional(),
-    channel_id: z.string().exactOptional(),
-    comment: z.string().exactOptional(),
-    create_at: A2CDateTimeSchema.exactOptional(),
-    currency: CurrencySchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    customer: BaseCustomerSchema.exactOptional(),
-    discounts: z.array(OrderTotalsNewDiscountSchema).exactOptional(),
-    finished_time: A2CDateTimeSchema.exactOptional(),
-    gift_message: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    modified_at: A2CDateTimeSchema.exactOptional(),
-    order_details_url: z.string().exactOptional(),
-    order_id: z.string().exactOptional(),
-    order_products: z.array(OrderItemSchema).exactOptional(),
-    payment_method: OrderPaymentMethodSchema.exactOptional(),
-    refunds: z.array(OrderRefundSchema).exactOptional(),
-    shipping_address: CustomerAddressSchema.exactOptional(),
-    shipping_method: OrderShippingMethodSchema.exactOptional(),
-    shipping_methods: z.array(OrderShippingMethodSchema).exactOptional(),
-    status: OrderStatusSchema.exactOptional(),
-    store_id: z.string().exactOptional(),
-    total: OrderTotalSchema.exactOptional(),
-    totals: OrderTotalsSchema.exactOptional(),
-    warehouses_ids: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Order')
-
-const ResponseOrderListResultSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    order: z.array(OrderSchema).exactOptional(),
-    orders_count: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ResponseOrderListResult')
-
-const ModelResponseOrderListSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseOrderListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1740,10 +2042,10 @@ const ModelResponseOrderListSchema = z
 
 const OrderPreestimateShippingSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     carrier_code: z.string().exactOptional(),
     carrier_name: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     delivery_time: z.string().exactOptional(),
     description: z.string().exactOptional(),
     method_code: z.string().exactOptional(),
@@ -1756,8 +2058,8 @@ const OrderPreestimateShippingSchema = z
 
 const ResponseOrderPreestimateShippingListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     preestimate_shippings: z.array(OrderPreestimateShippingSchema).exactOptional(),
     preestimate_shippings_count: z.int().exactOptional(),
   })
@@ -1766,8 +2068,8 @@ const ResponseOrderPreestimateShippingListResultSchema = z
 
 const ModelResponseOrderPreestimateShippingListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseOrderPreestimateShippingListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1778,8 +2080,8 @@ const ModelResponseOrderPreestimateShippingListSchema = z
 
 const ShipmentItemSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     model: z.string().exactOptional(),
     name: z.string().exactOptional(),
     order_product_id: z.string().exactOptional(),
@@ -1793,9 +2095,9 @@ const ShipmentItemSchema = z
 
 const ShipmentTrackingNumberSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     carrier_id: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     tracking_number: z.string().exactOptional(),
   })
   .openapi({ required: [] })
@@ -1803,9 +2105,9 @@ const ShipmentTrackingNumberSchema = z
 
 const ShipmentSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     created_at: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     is_shipped: z.boolean().exactOptional(),
     items: z.array(ShipmentItemSchema).exactOptional(),
@@ -1820,8 +2122,8 @@ const ShipmentSchema = z
 
 const ResponseOrderShipmentListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     shipment: z.array(ShipmentSchema).exactOptional(),
     shipment_count: z.int().exactOptional(),
   })
@@ -1830,8 +2132,8 @@ const ResponseOrderShipmentListResultSchema = z
 
 const ModelResponseOrderShipmentListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseOrderShipmentListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1842,7 +2144,7 @@ const ModelResponseOrderShipmentListSchema = z
 
 const OrderTransactionSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     amount: z.number().exactOptional(),
     avs_message: z.string().exactOptional(),
     avs_postal_resp_code: z.string().exactOptional(),
@@ -1852,7 +2154,7 @@ const OrderTransactionSchema = z
     card_last_four: z.string().exactOptional(),
     created_time: A2CDateTimeSchema.exactOptional(),
     currency: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     cvv_code: z.string().exactOptional(),
     cvv_message: z.string().exactOptional(),
     description: z.string().exactOptional(),
@@ -1873,8 +2175,8 @@ const OrderTransactionSchema = z
 
 const ResponseOrderTransactionListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     transactions: z.array(OrderTransactionSchema).exactOptional(),
     transactions_count: z.int().exactOptional(),
   })
@@ -1883,8 +2185,8 @@ const ResponseOrderTransactionListResultSchema = z
 
 const ModelResponseOrderTransactionListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseOrderTransactionListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1895,11 +2197,11 @@ const ModelResponseOrderTransactionListSchema = z
 
 const ProductAttributeSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     attribute_group_id: z.string().exactOptional(),
     attribute_id: z.string().exactOptional(),
     code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     lang_id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     position: z.int().exactOptional(),
@@ -1916,17 +2218,17 @@ const ProductAttributeSchema = z
 
 const ResponseProductAttributeListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     attribute: z.array(ProductAttributeSchema).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ResponseProductAttributeListResult')
 
 const ModelResponseProductAttributeListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseProductAttributeListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1937,9 +2239,9 @@ const ModelResponseProductAttributeListSchema = z
 
 const ResponseProductChildItemListResultSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     children: z.array(ChildSchema).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     total_count: z.int().exactOptional(),
   })
   .openapi({ required: [] })
@@ -1947,8 +2249,8 @@ const ResponseProductChildItemListResultSchema = z
 
 const ModelResponseProductChildItemListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseProductChildItemListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -1957,160 +2259,10 @@ const ModelResponseProductChildItemListSchema = z
   .openapi({ required: [] })
   .openapi('ModelResponseProductChildItemList')
 
-const ProductGroupItemSchema = z
+const ModelResponseProductListSchema: z.ZodType<ModelResponseProductListType> = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    child_item_id: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    default_qty_in_pack: z.string().exactOptional(),
-    is_qty_in_pack_fixed: z.boolean().exactOptional(),
-    product_id: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductGroupItem')
-
-const ProductGroupPriceSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    expire_time: z.string().exactOptional(),
-    group_id: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    price: z.number().exactOptional(),
-    quantity: z.number().exactOptional(),
-    start_time: z.string().exactOptional(),
-    store_id: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductGroupPrice')
-
-const ProductOptionItemSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    price: z.string().exactOptional(),
-    product_option_item_id: z.string().exactOptional(),
-    quantity: z.int().exactOptional(),
-    sku: z.string().exactOptional(),
-    sort_order: z.int().exactOptional(),
-    type_price: z.string().exactOptional(),
-    weight: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductOptionItem')
-
-const ProductOptionSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    available: z.boolean().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    description: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    option_items: z.array(ProductOptionItemSchema).exactOptional(),
-    product_option_id: z.string().exactOptional(),
-    required: z.boolean().exactOptional(),
-    sort_order: z.int().exactOptional(),
-    type: z.string().exactOptional(),
-    used_in_combination: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductOption')
-
-const SpecialPriceSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    avail: z.boolean().exactOptional(),
-    created_at: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    expired_at: A2CDateTimeSchema.exactOptional(),
-    modified_at: A2CDateTimeSchema.exactOptional(),
-    value: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SpecialPrice')
-
-const ProductTierPriceSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    price: z.number().exactOptional(),
-    qty: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductTierPrice')
-
-const ProductSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    advanced_price: z.array(ProductAdvancedPriceSchema).exactOptional(),
-    avail_sale: z.boolean().exactOptional(),
-    avail_view: z.boolean().exactOptional(),
-    backorders: z.string().exactOptional(),
-    categories_ids: z.array(z.string()).exactOptional(),
-    cost_price: z.number().exactOptional(),
-    create_at: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    description: z.string().exactOptional(),
-    dimensions_unit: z.string().exactOptional(),
-    group_items: z.array(ProductGroupItemSchema).exactOptional(),
-    group_price: z.array(ProductGroupPriceSchema).exactOptional(),
-    height: z.number().exactOptional(),
-    id: z.string().exactOptional(),
-    images: z.array(ImageSchema).exactOptional(),
-    inventory: z.array(ProductInventorySchema).exactOptional(),
-    is_downloadable: z.boolean().exactOptional(),
-    is_stock_managed: z.boolean().exactOptional(),
-    is_virtual: z.boolean().exactOptional(),
-    length: z.number().exactOptional(),
-    manage_stock: z.string().exactOptional(),
-    meta_description: z.string().exactOptional(),
-    meta_keywords: z.string().exactOptional(),
-    meta_title: z.string().exactOptional(),
-    modified_at: A2CDateTimeSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    price: z.number().exactOptional(),
-    product_options: z.array(ProductOptionSchema).exactOptional(),
-    quantity: z.number().exactOptional(),
-    related_products_ids: z.array(z.string()).exactOptional(),
-    seo_url: z.string().exactOptional(),
-    short_description: z.string().exactOptional(),
-    sort_order: z.int().exactOptional(),
-    special_price: SpecialPriceSchema.exactOptional(),
-    stores_ids: z.array(z.string()).exactOptional(),
-    tax_class_id: z.string().exactOptional(),
-    tier_price: z.array(ProductTierPriceSchema).exactOptional(),
-    type: z.string().exactOptional(),
-    u_brand: z.string().exactOptional(),
-    u_brand_id: z.string().exactOptional(),
-    u_model: z.string().exactOptional(),
-    u_mpn: z.string().exactOptional(),
-    u_sku: z.string().exactOptional(),
-    u_upc: z.string().exactOptional(),
-    url: z.string().exactOptional(),
-    weight: z.number().exactOptional(),
-    weight_unit: z.string().exactOptional(),
-    width: z.number().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Product')
-
-const ResponseProductListResultSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    product: z.array(ProductSchema).exactOptional(),
-    products_count: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ResponseProductListResult')
-
-const ModelResponseProductListSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     pagination: PaginationSchema.exactOptional(),
     result: ResponseProductListResultSchema.exactOptional(),
     return_code: z.int().exactOptional(),
@@ -2789,8 +2941,8 @@ const OrderShipmentUpdateSchema = z
 const PluginSchema = z
   .object({
     active: z.boolean().exactOptional(),
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     name: z.string().exactOptional(),
   })
   .openapi({ required: [] })
@@ -2798,9 +2950,9 @@ const PluginSchema = z
 
 const PluginListSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     all_plugins: z.int().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     plugins: z.array(PluginSchema).exactOptional(),
   })
   .openapi({ required: [] })
@@ -3528,8 +3680,8 @@ const ProductVariantPriceUpdateSchema = z
 
 const ProductReviewRatingSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     value: z.int().exactOptional(),
@@ -3539,9 +3691,9 @@ const ProductReviewRatingSchema = z
 
 const ProductReviewSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     created_time: A2CDateTimeSchema.exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     customer_id: z.string().exactOptional(),
     email: z.string().exactOptional(),
     id: z.string().exactOptional(),
@@ -3558,10 +3710,10 @@ const ProductReviewSchema = z
 
 const StoreAttributeGroupSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     assigned_attribute_ids: z.array(z.string()).exactOptional(),
     attribute_set_id: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     position: z.int().exactOptional(),
@@ -3571,9 +3723,9 @@ const StoreAttributeGroupSchema = z
 
 const SubscriberSchema = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     created_time: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     customer_id: z.string().exactOptional(),
     email: z.string().exactOptional(),
     first_name: z.string().exactOptional(),
@@ -3585,77 +3737,11 @@ const SubscriberSchema = z
   .openapi({ required: [] })
   .openapi('Subscriber')
 
-const TaxClassZipCodesRangeSchema = z
+const TaxClassSchema: z.ZodType<TaxClassType> = z
   .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    from: z.string().exactOptional(),
-    to: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TaxClassZipCodesRange')
-
-const TaxClassZipCodesSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    fields: z.array(TaxClassZipCodesRangeSchema).exactOptional(),
-    is_range: z.boolean().exactOptional(),
-    range: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TaxClassZipCodes')
-
-const TaxClassStatesSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    tax: z.number().exactOptional(),
-    tax_type: z.int().exactOptional(),
-    zip_codes: z.array(TaxClassZipCodesSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TaxClassStates')
-
-const TaxClassCountriesSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    code: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    states: z.array(TaxClassStatesSchema).exactOptional(),
-    tax: z.number().exactOptional(),
-    tax_type: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TaxClassCountries')
-
-const TaxClassRateSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
-    address: z.array(z.string()).exactOptional(),
-    cities: z.array(z.string()).exactOptional(),
-    countries: z.array(TaxClassCountriesSchema).exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    tax: z.number().exactOptional(),
-    tax_based_on: z.string().exactOptional(),
-    tax_type: z.int().exactOptional(),
-    zip_codes: z.array(TaxClassZipCodesSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TaxClassRate')
-
-const TaxClassSchema = z
-  .object({
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     avail: z.boolean().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     tax: z.number().exactOptional(),
@@ -3669,10 +3755,10 @@ const WebhookSchema = z
   .object({
     action: z.string().exactOptional(),
     active: z.boolean().exactOptional(),
-    additional_fields: z.object({}).exactOptional(),
+    additional_fields: z.looseObject({}).exactOptional(),
     callback: z.string().exactOptional(),
     created_at: z.string().exactOptional(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     entity: z.string().exactOptional(),
     fields: z.string().exactOptional(),
     id: z.int().exactOptional(),
@@ -7299,7 +7385,7 @@ export const putCartConfigUpdateJsonRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
               return_code: z.int().exactOptional(),
               return_message: z.string().exactOptional(),
             })
@@ -10897,7 +10983,7 @@ export const postCategoryAssignJsonRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
               return_code: z.int().exactOptional(),
               return_message: z.string().exactOptional(),
             })
@@ -11752,7 +11838,7 @@ export const postCategoryUnassignJsonRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
               return_code: z.int().exactOptional(),
               return_message: z.string().exactOptional(),
             })
@@ -12401,7 +12487,7 @@ export const postCustomerGroupAddJsonRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
               return_code: z.int().exactOptional(),
               return_message: z.string().exactOptional(),
             })
@@ -17088,7 +17174,7 @@ export const getProductFieldsJsonRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
               return_code: z.int().exactOptional(),
               return_message: z.string().exactOptional(),
             })

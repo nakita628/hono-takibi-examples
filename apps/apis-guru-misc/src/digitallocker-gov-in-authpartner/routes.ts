@@ -1431,7 +1431,7 @@ const VerifyAccountResponseSchema = z
 
 const XMLFormatSchemaSchema = z
   .object({
-    CertificateData: z.array(z.object({})),
+    CertificateData: z.array(z.looseObject({})),
     Signature: z
       .object({
         KeyInfo: z.object({ X509Data: z.any().exactOptional() }).openapi({ required: [] }),
@@ -3194,7 +3194,7 @@ export const getOauth22FilesIssuedRoute = createRoute({
                       doctype: z.string().min(1),
                       issuer: z.string().min(1),
                       issuerid: z.string().min(1),
-                      mime: z.array(z.object({})).exactOptional(),
+                      mime: z.array(z.looseObject({})).exactOptional(),
                       name: z.string().min(1),
                       parent: z.string(),
                       size: z.string(),

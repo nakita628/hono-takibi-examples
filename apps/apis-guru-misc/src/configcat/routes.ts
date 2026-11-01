@@ -11,6 +11,249 @@ type JsonNodeType = {
   root?: JsonNodeType
 }
 
+const SettingTypeSchema = z.enum(['boolean', 'string', 'int', 'double']).openapi('SettingType')
+
+type SettingModelHaljsonType = {
+  _embedded?: {
+    tags?: {
+      _embedded?: {
+        product?: {
+          _embedded?: {
+            organization?: {
+              _links?: { members?: string; products?: string }
+              name?: string | null
+              organizationId?: string
+            }
+          }
+          _links?: {
+            configs?: string
+            environments?: string
+            members?: string
+            'permission-groups'?: string
+            segments?: string
+            self?: string
+            tags?: string
+          }
+          description?: string | null
+          name?: string | null
+          order?: number
+          productId?: string
+          reasonRequired?: boolean
+        }
+      }
+      _links?: { self?: string }
+      color?: string | null
+      name?: string | null
+      tagId?: bigint
+    }[]
+  }
+  _links?: { self?: string }
+  configId?: string
+  configName?: string | null
+  hint?: string | null
+  key?: string | null
+  name?: string | null
+  order?: number
+  settingId?: number
+  settingType?: z.infer<typeof SettingTypeSchema>
+}
+
+const IntegrationLinkTypeSchema = z
+  .enum(['trello', 'jira', 'monday'])
+  .openapi('IntegrationLinkType')
+
+const RolloutPercentageItemModelSchema = z
+  .strictObject({
+    percentage: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The percentage value for the rule.',
+      }),
+    value: z
+      .any()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value to serve when the user falls in the percentage rule. It must respect the setting type.',
+      }),
+  })
+  .openapi({ required: ['percentage'] })
+  .openapi('RolloutPercentageItemModel')
+
+const RolloutRuleComparatorSchema = z
+  .enum([
+    'isOneOf',
+    'isNotOneOf',
+    'contains',
+    'doesNotContain',
+    'semVerIsOneOf',
+    'semVerIsNotOneOf',
+    'semVerLess',
+    'semVerLessOrEquals',
+    'semVerGreater',
+    'semVerGreaterOrEquals',
+    'numberEquals',
+    'numberDoesNotEqual',
+    'numberLess',
+    'numberLessOrEquals',
+    'numberGreater',
+    'numberGreaterOrEquals',
+    'sensitiveIsOneOf',
+    'sensitiveIsNotOneOf',
+  ])
+  .openapi('RolloutRuleComparator')
+
+const SegmentComparatorSchema = z.enum(['isIn', 'isNotIn']).openapi('SegmentComparator')
+
+const RolloutRuleModelSchema = z
+  .strictObject({
+    comparator: RolloutRuleComparatorSchema.exactOptional(),
+    comparisonAttribute: z
+      .string()
+      .min(0)
+      .max(1000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The user attribute to compare.' }),
+    comparisonValue: z
+      .string()
+      .min(0)
+      .max(65535)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The value to compare against.' }),
+    segmentComparator: SegmentComparatorSchema.exactOptional(),
+    segmentId: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The segment to compare against.' }),
+    value: z
+      .any()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value to serve when the comparison matches. It must respect the setting type.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RolloutRuleModel')
+
+type SettingValueModelHaljsonType = {
+  _embedded?: {
+    config?: {
+      _embedded?: {
+        product?: {
+          _embedded?: {
+            organization?: {
+              _links?: { members?: string; products?: string }
+              name?: string | null
+              organizationId?: string
+            }
+          }
+          _links?: {
+            configs?: string
+            environments?: string
+            members?: string
+            'permission-groups'?: string
+            segments?: string
+            self?: string
+            tags?: string
+          }
+          description?: string | null
+          name?: string | null
+          order?: number
+          productId?: string
+          reasonRequired?: boolean
+        }
+      }
+      _links?: { self?: string; settings?: string }
+      configId?: string
+      description?: string | null
+      name?: string | null
+      order?: number
+    }
+    environment?: {
+      _embedded?: {
+        product?: {
+          _embedded?: {
+            organization?: {
+              _links?: { members?: string; products?: string }
+              name?: string | null
+              organizationId?: string
+            }
+          }
+          _links?: {
+            configs?: string
+            environments?: string
+            members?: string
+            'permission-groups'?: string
+            segments?: string
+            self?: string
+            tags?: string
+          }
+          description?: string | null
+          name?: string | null
+          order?: number
+          productId?: string
+          reasonRequired?: boolean
+        }
+      }
+      _links?: { self?: string }
+      color?: string | null
+      description?: string | null
+      environmentId?: string
+      name?: string | null
+      order?: number
+      reasonRequired?: boolean
+    }
+    integrationLinks?: {
+      description?: string | null
+      integrationLinkType?: z.infer<typeof IntegrationLinkTypeSchema>
+      key?: string | null
+      url?: string | null
+    }[]
+    setting?: {
+      createdAt?: string | null
+      creatorEmail?: string | null
+      creatorFullName?: string | null
+      hint?: string | null
+      isWatching?: boolean
+      key?: string | null
+      name?: string | null
+      order?: number
+      settingId?: number
+      settingType?: z.infer<typeof SettingTypeSchema>
+    }
+    settingTags?: {
+      color?: string | null
+      name?: string | null
+      settingTagId?: bigint
+      tagId?: bigint
+    }[]
+  }
+  _links?: { self?: string }
+  lastUpdaterUserEmail?: string | null
+  lastUpdaterUserFullName?: string | null
+  readOnly?: boolean
+  rolloutPercentageItems?: z.infer<typeof RolloutPercentageItemModelSchema>[] | null
+  rolloutRules?: z.infer<typeof RolloutRuleModelSchema>[] | null
+  updatedAt?: string | null
+  value?: unknown | null
+}
+
 const AccessTypeSchema = z.enum(['readOnly', 'full', 'custom']).openapi('AccessType')
 
 const AddOrUpdateIntegrationLinkModelSchema = z
@@ -369,10 +612,6 @@ const ConfigModelHaljsonSchema = z
   .openapi({ required: [] })
   .openapi('ConfigModelHaljson')
 
-const IntegrationLinkTypeSchema = z
-  .enum(['trello', 'jira', 'monday'])
-  .openapi('IntegrationLinkType')
-
 const IntegrationLinkModelSchema = z
   .strictObject({
     description: z.string().nullable().exactOptional(),
@@ -382,97 +621,6 @@ const IntegrationLinkModelSchema = z
   })
   .openapi({ required: [] })
   .openapi('IntegrationLinkModel')
-
-const RolloutPercentageItemModelSchema = z
-  .strictObject({
-    percentage: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The percentage value for the rule.',
-      }),
-    value: z
-      .any()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value to serve when the user falls in the percentage rule. It must respect the setting type.',
-      }),
-  })
-  .openapi({ required: ['percentage'] })
-  .openapi('RolloutPercentageItemModel')
-
-const RolloutRuleComparatorSchema = z
-  .enum([
-    'isOneOf',
-    'isNotOneOf',
-    'contains',
-    'doesNotContain',
-    'semVerIsOneOf',
-    'semVerIsNotOneOf',
-    'semVerLess',
-    'semVerLessOrEquals',
-    'semVerGreater',
-    'semVerGreaterOrEquals',
-    'numberEquals',
-    'numberDoesNotEqual',
-    'numberLess',
-    'numberLessOrEquals',
-    'numberGreater',
-    'numberGreaterOrEquals',
-    'sensitiveIsOneOf',
-    'sensitiveIsNotOneOf',
-  ])
-  .openapi('RolloutRuleComparator')
-
-const SegmentComparatorSchema = z.enum(['isIn', 'isNotIn']).openapi('SegmentComparator')
-
-const RolloutRuleModelSchema = z
-  .strictObject({
-    comparator: RolloutRuleComparatorSchema.exactOptional(),
-    comparisonAttribute: z
-      .string()
-      .min(0)
-      .max(1000)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The user attribute to compare.' }),
-    comparisonValue: z
-      .string()
-      .min(0)
-      .max(65535)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The value to compare against.' }),
-    segmentComparator: SegmentComparatorSchema.exactOptional(),
-    segmentId: z
-      .uuid()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The segment to compare against.' }),
-    value: z
-      .any()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value to serve when the comparison matches. It must respect the setting type.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('RolloutRuleModel')
-
-const SettingTypeSchema = z.enum(['boolean', 'string', 'int', 'double']).openapi('SettingType')
 
 const SettingDataModelSchema = z
   .strictObject({
@@ -1381,7 +1529,7 @@ const SettingModelSchema = z
   .openapi({ required: [] })
   .openapi('SettingModel')
 
-const SettingModelHaljsonSchema = z
+const SettingModelHaljsonSchema: z.ZodType<SettingModelHaljsonType> = z
   .object({
     _embedded: z
       .object({
@@ -1506,7 +1654,7 @@ const SettingValueModelSchema = z
   .openapi({ required: [] })
   .openapi('SettingValueModel')
 
-const SettingValueModelHaljsonSchema = z
+const SettingValueModelHaljsonSchema: z.ZodType<SettingValueModelHaljsonType> = z
   .object({
     _embedded: z
       .object({

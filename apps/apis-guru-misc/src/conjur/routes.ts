@@ -1253,7 +1253,7 @@ export const getHealthRoute = createRoute({
   responses: {
     200: {
       description: 'The tests were successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     502: { description: 'The tests failed' },
   },
@@ -1276,7 +1276,7 @@ export const postHostFactoriesHostsRoute = createRoute({
           schema: z
             .object({
               annotations: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Annotations to apply to the new host',
@@ -1490,11 +1490,11 @@ export const getInfoRoute = createRoute({
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
-              configuration: z.object({}).exactOptional(),
+              configuration: z.looseObject({}).exactOptional(),
               container: z.string().exactOptional(),
               release: z.string().exactOptional(),
               role: z.string().exactOptional(),
-              services: z.object({}).exactOptional(),
+              services: z.looseObject({}).exactOptional(),
               version: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -1585,7 +1585,7 @@ export const putPoliciesAccountPolicyIdentifierRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              created_roles: z.object({}).exactOptional(),
+              created_roles: z.looseObject({}).exactOptional(),
               version: z.number().exactOptional(),
             })
             .openapi({
@@ -1694,7 +1694,7 @@ export const postPoliciesAccountPolicyIdentifierRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              created_roles: z.object({}).exactOptional(),
+              created_roles: z.looseObject({}).exactOptional(),
               version: z.number().exactOptional(),
             })
             .openapi({
@@ -1803,7 +1803,7 @@ export const patchPoliciesAccountPolicyIdentifierRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              created_roles: z.object({}).exactOptional(),
+              created_roles: z.looseObject({}).exactOptional(),
               version: z.number().exactOptional(),
             })
             .openapi({
@@ -1919,7 +1919,7 @@ export const getRemoteHealthRemoteRoute = createRoute({
   responses: {
     200: {
       description: 'The tests were successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     502: { description: 'The tests failed' },
   },
@@ -2997,7 +2997,7 @@ export const getRolesAccountKindIdentifierRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 created_at: '2020-12-31:12:34:56.789+00:00',
@@ -3219,7 +3219,7 @@ export const getSecretsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               example: {
                 'myorg:variable:secret1': 'secret1Value',
@@ -3234,7 +3234,7 @@ export const getSecretsRoute = createRoute({
     404: ResourcesNotFoundResponse,
     406: {
       description: 'Issue encoding secret into JSON format',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     422: UnprocessableEntityResponse,
   },

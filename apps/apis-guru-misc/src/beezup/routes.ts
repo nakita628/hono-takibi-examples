@@ -1,267 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AnalyticsProductColumnFilterOperatorNameSchema = z
-  .string()
-  .openapi({
-    description: 'Indicate the operator you want to apply on the columnId',
-    'x-lov': 'AnalyticsProductColumnFilterOperatorName',
-  })
-  .openapi('AnalyticsProductColumnFilterOperatorName')
-
-const AnalyticsProductColumnFilterSchema = z
-  .object({
-    operatorName: AnalyticsProductColumnFilterOperatorNameSchema,
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Must be null if the operator is "IsNull" or "IsNotNull".\nCan contains multiple value in case of "InList" operator. Otherwise a single value is expected.\n',
-        example: ['My value'],
-      }),
-  })
-  .openapi({
-    example: {
-      '672644c7-5bd0-4e25-88c1-1f732bda5e4c': {
-        operatorName: 'NumericalGreaterThan',
-        values: ['100'],
-      },
-    },
-    required: ['operatorName'],
-  })
-  .openapi('AnalyticsProductColumnFilter')
-
-const AdditionalAnalyticsProductColumnFiltersSchema = z
-  .record(z.string(), AnalyticsProductColumnFilterSchema)
-  .openapi({
-    description:
-      "Describes a filter on a product's column.\nThe key is the column identifier of your catalog or a custom column.\n",
-  })
-  .openapi('AdditionalAnalyticsProductColumnFilters')
-
-type AnalyticsProductColumnFiltersType = {
-  additionalAnalyticsProductColumnFilters?: z.infer<
-    typeof AdditionalAnalyticsProductColumnFiltersSchema
-  >
-  sku?: string
-  title?: string
-}
-
-const BeezUPCommonProductColumnFilterOperatorNameSchema = z
-  .string()
-  .openapi({
-    description: 'Indicate the operator you want to make on the columnId',
-    'x-lov': 'ProductColumnFilterOperatorName',
-  })
-  .openapi('BeezUPCommonProductColumnFilterOperatorName')
-
-const BeezUPCommonAdditionalProductFiltersValueSchema = z
-  .object({
-    operatorName: BeezUPCommonProductColumnFilterOperatorNameSchema.exactOptional(),
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Must be null if the operator is "IsNull" or "IsNotNull".\nCan contains multiple value in case of "InList" operator. Otherwise a single value is expected.\n',
-        example: ['My value'],
-      }),
-  })
-  .openapi({
-    example: {
-      '672644c7-5bd0-4e25-88c1-1f732bda5e4c': { operatorName: 'GreaterTo', values: ['100'] },
-    },
-    required: [],
-  })
-  .openapi('BeezUPCommonAdditionalProductFiltersValue')
-
-const BeezUPCommonAdditionalProductFiltersSchema = z
-  .record(z.string(), BeezUPCommonAdditionalProductFiltersValueSchema)
-  .openapi({
-    description:
-      "Describe a filter on a product's column.\nThe key is the column identifier of your catalog or a custom column.\n",
-  })
-  .openapi('BeezUPCommonAdditionalProductFilters')
-
-const BeezUPCommonApiSettingsStatusSchema = z
-  .enum(['warning', 'success', 'failed'])
-  .openapi({ example: 'success' })
-  .openapi('BeezUPCommonApiSettingsStatus')
-
-const BeezUPCommonBeezUPColumnNameSchema = z
-  .string()
-  .openapi({ description: 'The BeezUP column name', example: 'CategoryFirstLevel' })
-  .openapi('BeezUPCommonBeezUPColumnName')
-
-const BeezUPCommonCatalogCategoryFilterSchema = z
-  .object({
-    categoryPath: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Indicates on which catalog category path you want to make the filter',
-        example: ['Maison', 'Chambre'],
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BeezUPCommonCatalogCategoryFilter')
-
-const BeezUPCommonCatalogCategoryIdSchema = z
-  .guid()
-  .openapi({
-    description: 'The catalog category identifier',
-    example: '81a058a6-0451-4b79-84ef-94c58d0ed4ac',
-  })
-  .openapi('BeezUPCommonCatalogCategoryId')
-
-const BeezUPCommonCatalogCategoryPathSchema = z
-  .array(z.string())
-  .openapi({
-    description: 'The catalog category path',
-    example: ['Vêtements', 'Femmes', 'Chaussures'],
-  })
-  .openapi('BeezUPCommonCatalogCategoryPath')
-
-const BeezUPCommonCatalogColumnIdSchema = z
-  .guid()
-  .openapi({
-    description: 'The catalog column identifier (catalog or custom column)',
-    example: 'bea7c21e-948b-4ac3-9ffd-4396e62c4163',
-  })
-  .openapi('BeezUPCommonCatalogColumnId')
-
-const BeezUPCommonCatalogColumnUserNameSchema = z
-  .string()
-  .openapi({
-    description: 'The catalog column named by the user (catalog or custom column)',
-    example: 'My title',
-  })
-  .openapi('BeezUPCommonCatalogColumnUserName')
-
-const BeezUPCommonChannelIdSchema = z
-  .guid()
-  .openapi({
-    description: 'The channel identifier',
-    example: '2dc136a7-0d3d-4cc9-a825-a28a42c53e28',
-  })
-  .openapi('BeezUPCommonChannelId')
-
-const BeezUPCommonHttpUrlSchema = z
-  .string()
-  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
-  .openapi({
-    description:
-      'The URL <a href="https://en.wikipedia.org/wiki/URL">https://en.wikipedia.org/wiki/URL</a>',
-    example: 'http://www.mydomain.com',
-  })
-  .openapi('BeezUPCommonHttpUrl')
-
-const BeezUPCommonChannelNameSchema = z
-  .string()
-  .openapi({ description: 'The channel name', example: 'Amazon FRA' })
-  .openapi('BeezUPCommonChannelName')
-
-const BeezUPCommonChannelBasicInfoSchema = z
-  .object({
-    channelId: BeezUPCommonChannelIdSchema,
-    channelImageUrl: BeezUPCommonHttpUrlSchema,
-    channelName: BeezUPCommonChannelNameSchema,
-  })
-  .openapi({
-    description: 'The basic info related to a channel',
-    required: ['channelId', 'channelName', 'channelImageUrl'],
-  })
-  .openapi('BeezUPCommonChannelBasicInfo')
-
-const BeezUPCommonChannelCatalogIdSchema = z
-  .guid()
-  .openapi({
-    description: 'The channel catalog identifier',
-    example: '6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
-  })
-  .openapi('BeezUPCommonChannelCatalogId')
-
-const BeezUPCommonChannelCategoryFilterSchema = z
-  .object({
-    categoryPath: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Indicates on which channel category path you want to make the filter',
-        example: ['Home', 'Bedroom'],
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BeezUPCommonChannelCategoryFilter')
-
-const BeezUPCommonChannelCategoryIdSchema = z
-  .guid()
-  .openapi({ example: '24f508da-a069-4467-b9d3-15baebe9bac7' })
-  .openapi('BeezUPCommonChannelCategoryId')
-
-const BeezUPCommonChannelCategoryPathSchema = z
-  .array(z.string())
-  .openapi({ description: 'The channel category path', example: ['Clothing', 'Women', 'Shoes'] })
-  .openapi('BeezUPCommonChannelCategoryPath')
-
-const BeezUPCommonChannelColumnIdSchema = z
-  .guid()
-  .openapi({
-    description: 'The channel column identifier',
-    example: '8a76f06a-fefc-4c0d-bcfe-b210f1482977',
-  })
-  .openapi('BeezUPCommonChannelColumnId')
-
-const BeezUPCommonChannelColumnNameSchema = z
-  .string()
-  .openapi({ description: 'The channel column name', example: 'NAME' })
-  .openapi('BeezUPCommonChannelColumnName')
-
-const BeezUPCommonColumnDataTypeSchema = z
-  .enum([
-    'String',
-    'Url',
-    'Text',
-    'Decimal',
-    'DateTime',
-    'Int',
-    'SpecialInt',
-    'InStock',
-    'Unknown',
-    'ImageUrl',
-  ])
-  .default('String')
-  .openapi({
-    description: 'Data type of the column, will be used for parsing and for consolidation proces',
-    example: 'String',
-  })
-  .openapi('BeezUPCommonColumnDataType')
-
-const BeezUPCommonColumnImportanceSchema = z
-  .enum(['Required', 'Recommended', 'Optional'])
-  .default('Optional')
-  .openapi({ description: 'Importance of the column', example: 'Required' })
-  .openapi('BeezUPCommonColumnImportance')
-
-const BeezUPCommonCountryIsoCodeAlpha3Schema = z
-  .string()
-  .openapi({
-    description:
-      'The country iso code alpha 3 <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3">(ISO 3166-1_alpha-3)</a>',
-    example: 'FRA',
-    'x-lov': 'Country',
-  })
-  .openapi('BeezUPCommonCountryIsoCodeAlpha3')
-
-const BeezUPCommonCurrencyCodeSchema = z
-  .string()
-  .openapi({
-    description:
-      'The currency code <a href="https://en.wikipedia.org/wiki/ISO_4217">(ISO 4217)</a>\n',
-    example: 'EUR',
-  })
-  .openapi('BeezUPCommonCurrencyCode')
-
 const BeezUPCommonDocUrlSchema = z
   .url()
   .openapi({
@@ -270,63 +8,13 @@ const BeezUPCommonDocUrlSchema = z
   })
   .openapi('BeezUPCommonDocUrl')
 
-const BeezUPCommonEmailSchema = z
-  .email()
-  .regex(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
-  .openapi({ description: 'The email', example: 'paulsimon@mysupercompany.com' })
-  .openapi('BeezUPCommonEmail')
-
-const BeezUPCommonUserErrorMessageSchema = z
-  .object({
-    arguments: z
-      .array(
-        z
-          .object({
-            name: z
-              .string()
-              .openapi({
-                description: 'The key of the parameter',
-                example: 'currentCatalogImportationId',
-              }),
-            value: z
-              .object({})
-              .openapi({ description: 'The value of the parameter. Depending to the type.' }),
-          })
-          .openapi({ required: ['name', 'value'] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'a dictionary string/object' }),
-    code: z
-      .string()
-      .openapi({
-        description:
-          "the error code. The error code can be a pattern containing the argument's name",
-        example: 'CatalogImportationAlreadyInProgress(ExecutionId currentCatalogImportationId)',
-      }),
-    cultureName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If the error is translated, the culture name will be indicated',
-        example: 'en',
-        'x-lov': 'Go2CultureName',
-      }),
-    docUrl: BeezUPCommonDocUrlSchema.exactOptional(),
-    message: z
-      .string()
-      .openapi({
-        description: 'The error message',
-        example:
-          'There is already an importation in progress: b24d0dd8-a561-478a-9b26-34f573f03527\n',
-      }),
+const BeezUPCommonHrefSchema = z
+  .string()
+  .openapi({
+    description: 'Indicate the relative uri for this link',
+    example: '/v2/marketplaces/orders/{marketplaceTechnicalCode}/{accountId}/{beezUPOrderId}',
   })
-  .openapi({ required: ['code', 'message'] })
-  .openapi('BeezUPCommonUserErrorMessage')
-
-const BeezUPCommonErrorResponseMessageSchema = z
-  .object({ errors: z.array(BeezUPCommonUserErrorMessageSchema) })
-  .openapi({ required: ['errors'] })
-  .openapi('BeezUPCommonErrorResponseMessage')
+  .openapi('BeezUPCommonHref')
 
 const BeezUPCommonExceptionDetailSchema = z
   .object({
@@ -354,20 +42,6 @@ const BeezUPCommonErrorSummarySchema = z
   })
   .openapi({ required: [] })
   .openapi('BeezUPCommonErrorSummary')
-
-const BeezUPCommonHrefSchema = z
-  .string()
-  .openapi({
-    description: 'Indicate the relative uri for this link',
-    example: '/v2/marketplaces/orders/{marketplaceTechnicalCode}/{accountId}/{beezUPOrderId}',
-  })
-  .openapi('BeezUPCommonHref')
-
-const BeezUPCommonHttpMethodSchema = z
-  .enum(['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'HEAD'])
-  .default('GET')
-  .openapi({ description: 'Indicate the http method to use on this link', example: 'GET' })
-  .openapi('BeezUPCommonHttpMethod')
 
 const BeezUPCommonInfoSummarySchema = z
   .object({
@@ -413,6 +87,26 @@ const BeezUPCommonInfoSummariesSchema = z
   .openapi({ required: [] })
   .openapi('BeezUPCommonInfoSummaries')
 
+const BeezUPCommonHttpMethodSchema = z
+  .enum(['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'HEAD'])
+  .default('GET')
+  .openapi({ description: 'Indicate the http method to use on this link', example: 'GET' })
+  .openapi('BeezUPCommonHttpMethod')
+
+const BeezUPCommonOperationIdSchema = z
+  .string()
+  .openapi({ description: 'The operationId to call.', example: 'GetOrder' })
+  .openapi('BeezUPCommonOperationId')
+
+const BeezUPCommonParameterInSchema = z
+  .enum(['path', 'header', 'query', 'body'])
+  .openapi({
+    description:
+      '* path: if the parameter must be pass in the path uri\n* header: if the parameter must be passed in http header\n* query: if the parameter must be passed in querystring\n* body: if the paramter must be passed in the body\n',
+    example: 'path',
+  })
+  .openapi('BeezUPCommonParameterIn')
+
 const BeezUPCommonLOVLink3Schema = z
   .object({
     href: z
@@ -428,20 +122,6 @@ const BeezUPCommonLOVLink3Schema = z
     required: ['href'],
   })
   .openapi('BeezUPCommonLOVLink3')
-
-const BeezUPCommonOperationIdSchema = z
-  .string()
-  .openapi({ description: 'The operationId to call.', example: 'GetOrder' })
-  .openapi('BeezUPCommonOperationId')
-
-const BeezUPCommonParameterInSchema = z
-  .enum(['path', 'header', 'query', 'body'])
-  .openapi({
-    description:
-      '* path: if the parameter must be pass in the path uri\n* header: if the parameter must be passed in http header\n* query: if the parameter must be passed in querystring\n* body: if the paramter must be passed in the body\n',
-    example: 'path',
-  })
-  .openapi('BeezUPCommonParameterIn')
 
 const BeezUPCommonParameterTypeSchema = z
   .enum(['string', 'integer', 'number', 'boolean', 'object', 'array', 'date', 'date-time'])
@@ -479,7 +159,7 @@ const BeezUPCommonLinkParameterProperty3Schema = z
       .openapi({ description: 'schema of the parameter', example: 'orderListRequest' }),
     type: BeezUPCommonParameterTypeSchema,
     value: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The value of the parameter. It can be an integer a string or an object.',
@@ -527,7 +207,7 @@ const BeezUPCommonLinkParameter3Schema = z
       .openapi({ description: 'schema of the parameter', example: 'orderListRequest' }),
     type: BeezUPCommonParameterTypeSchema.exactOptional(),
     value: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The value of the parameter. It can be an integer a string or an object.',
@@ -575,62 +255,6 @@ const BeezUPCommonLink3Schema = z
   .openapi({ required: ['href'] })
   .openapi('BeezUPCommonLink3')
 
-const BeezUPCommonListOfValueItemSchema = z
-  .object({
-    codeIdentifier: z.string().openapi({ example: 'FRA' }),
-    intIdentifier: z.int32().openapi({ example: '1' }),
-    position: z.int32().exactOptional().openapi({ example: '1' }),
-    translationText: z.string().exactOptional().openapi({ example: 'France' }),
-  })
-  .openapi({
-    description: 'This object is used by LOV apis',
-    required: ['codeIdentifier', 'intIdentifier'],
-  })
-  .openapi('BeezUPCommonListOfValueItem')
-
-const BeezUPCommonMarketplaceAccountIdSchema = z
-  .int32()
-  .openapi({
-    description:
-      'The marketplace account identifier in BeezUP. This account identifier is based on your api settings.',
-    example: '1234',
-  })
-  .openapi('BeezUPCommonMarketplaceAccountId')
-
-const BeezUPCommonMarketplaceBusinessCodeSchema = z
-  .string()
-  .openapi({
-    description:
-      'In an marketplace technical code like CDiscount you can have several marketplaces like GO SPORT, etc. We identify them by a business code.',
-    example: 'GOSPORT',
-    'x-lov': 'MarketplaceBusinessCode',
-  })
-  .openapi('BeezUPCommonMarketplaceBusinessCode')
-
-const BeezUPCommonMarketplaceTechnicalCodeSchema = z
-  .string()
-  .openapi({
-    description: 'The technical code of the marketplace.',
-    example: 'Amazon',
-    'x-lov': 'OMMarketplaceTechnicalCode',
-  })
-  .openapi('BeezUPCommonMarketplaceTechnicalCode')
-
-const BeezUPCommonPageNumberSchema = z
-  .int32()
-  .min(1)
-  .default(1)
-  .openapi({ description: 'Indicates the page number', example: '1' })
-  .openapi('BeezUPCommonPageNumber')
-
-const BeezUPCommonPageSizeSchema = z
-  .int32()
-  .min(25)
-  .max(100)
-  .default(100)
-  .openapi({ description: 'Indicate the item count per page', example: '100' })
-  .openapi('BeezUPCommonPageSize')
-
 const BeezUPCommonPaginationResultLinksSchema = z
   .object({
     first: BeezUPCommonLink3Schema,
@@ -644,171 +268,18 @@ const BeezUPCommonPaginationResultLinksSchema = z
   })
   .openapi('BeezUPCommonPaginationResultLinks')
 
-const BeezUPCommonPaginationResultSchema = z
-  .object({
-    entryCount: z
-      .int()
-      .min(0)
-      .openapi({ description: 'The entry count currently returned', example: '25' }),
-    links: BeezUPCommonPaginationResultLinksSchema,
-    pageCount: z.int().min(0).openapi({ description: 'The page count', example: '38' }),
-    totalEntryCount: z
-      .int()
-      .min(0)
-      .openapi({ description: 'The total entry count', example: '943' }),
-  })
-  .openapi({
-    example: {
-      entryCount: '25',
-      links: {
-        first: {
-          href: '/v2/user/marketplaces/orders/list/full',
-          method: 'POST',
-          parameters: [
-            {
-              in: 'body',
-              name: 'request',
-              schema: 'orderListRequest',
-              type: 'object',
-              value: {
-                beginPeriodUtcDate: '2014-08-25T07:32:31.584Z',
-                endPeriodUtcDate: '2014-09-24T07:32:31.584Z',
-                pageNumber: '1',
-                pageSize: '25',
-              },
-            },
-          ],
-        },
-        last: {
-          href: '/v2/user/marketplaces/orders/list/full',
-          method: 'POST',
-          parameters: [
-            {
-              in: 'body',
-              name: 'request',
-              schema: 'orderListRequest',
-              type: 'object',
-              value: {
-                beginPeriodUtcDate: '2014-08-25T07:32:31.584Z',
-                endPeriodUtcDate: '2014-09-24T07:32:31.584Z',
-                pageNumber: '38',
-                pageSize: '25',
-              },
-            },
-          ],
-        },
-        next: {
-          href: '/v2/user/marketplaces/orders/list/full',
-          method: 'POST',
-          parameters: [
-            {
-              in: 'body',
-              name: 'request',
-              schema: 'orderListRequest',
-              type: 'object',
-              value: {
-                beginPeriodUtcDate: '2014-08-25T07:32:31.584Z',
-                endPeriodUtcDate: '2014-09-24T07:32:31.584Z',
-                pageNumber: '2',
-                pageSize: '25',
-              },
-            },
-          ],
-        },
-      },
-      pageCount: '38',
-      totalEntryCount: '943',
-    },
-    required: ['entryCount', 'pageCount', 'totalEntryCount', 'links'],
-  })
-  .openapi('BeezUPCommonPaginationResult')
+type BeezUPCommonPaginationResultType = {
+  entryCount: number
+  links: z.infer<typeof BeezUPCommonPaginationResultLinksSchema>
+  pageCount: number
+  totalEntryCount: number
+}
 
-const BeezUPCommonProductBasicInfoSchema = z
-  .object({
-    productExists: z
-      .boolean()
-      .openapi({
-        description: 'Indicates if the product still exists in your catalog',
-        example: 'true',
-      }),
-    productId: z
-      .guid()
-      .openapi({
-        description: 'The product identifier',
-        example: '00000000-0000-0000-0000-000000000000',
-      }),
-    productImageUrl: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: 'The product image Url',
-        example:
-          'http://i2.cdscdn.com/pdt2/3/9/0/1/550x550/hai6901018043390/rw/haier-b20fwrss-refrigerateur-americain.jpg',
-      }),
-    productSku: z.string().openapi({ description: 'The product SKU', example: 'SKU1234' }),
-    productTitle: z
-      .string()
-      .openapi({ description: 'The product tile', example: 'My supert product' }),
-  })
-  .openapi({
-    description: 'The basic information related to a product',
-    required: ['productId', 'productSku', 'productTitle', 'productExists'],
-  })
-  .openapi('BeezUPCommonProductBasicInfo')
-
-const BeezUPCommonProductIdSchema = z
-  .guid()
-  .openapi({
-    description: 'The product identifier',
-    example: '578419df-1bbf-41a6-96fa-862e42182b67',
-  })
-  .openapi('BeezUPCommonProductId')
-
-const BeezUPCommonStoreIdSchema = z
-  .guid()
-  .openapi({ description: 'The store identifier', example: '64f43358-63a1-47f7-97ec-0301fc39956b' })
-  .openapi('BeezUPCommonStoreId')
-
-const BeezUPCommonUserIdSchema = z
-  .guid()
-  .openapi({ description: 'The user identifier', example: '8a7fbdec-9e71-472e-9974-27d5c1d57cf8' })
-  .openapi('BeezUPCommonUserId')
-
-const HttpMethodSchema = z
-  .enum(['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'HEAD'])
-  .default('GET')
-  .openapi({
-    description: 'Indicate the http method to use on this link',
-    example: 'GET',
-    'x-exclude': true,
-  })
-  .openapi('HttpMethod')
-
-const LOVLink3Schema = z
-  .object({
-    href: z
-      .url()
-      .openapi({
-        description: 'Indicate the uri to the list of value',
-        example: '/merchant/lov/v1/Go2CultureName',
-      }),
-    method: HttpMethodSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Describe the way you have to follow to get access to the LOV',
-    required: ['href'],
-    'x-exclude': true,
-  })
-  .openapi('LOVLink3')
-
-const AccountIdSchema = z
-  .int32()
-  .openapi({
-    description:
-      'The marketplace account identifier in BeezUP. This account identifier is based on your api settings.',
-    example: '1234',
-  })
-  .openapi('AccountId')
+const BeezUPCommonEmailSchema = z
+  .email()
+  .regex(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
+  .openapi({ description: 'The email', example: 'paulsimon@mysupercompany.com' })
+  .openapi('BeezUPCommonEmail')
 
 const AccountingEmailsSchema = z
   .array(BeezUPCommonEmailSchema)
@@ -832,6 +303,16 @@ const CompanySchema = z
   .string()
   .openapi({ description: 'Your company name', example: 'My super company' })
   .openapi('Company')
+
+const BeezUPCommonCountryIsoCodeAlpha3Schema = z
+  .string()
+  .openapi({
+    description:
+      'The country iso code alpha 3 <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3">(ISO 3166-1_alpha-3)</a>',
+    example: 'FRA',
+    'x-lov': 'Country',
+  })
+  .openapi('BeezUPCommonCountryIsoCodeAlpha3')
 
 const PostalCodeSchema = z
   .string()
@@ -994,20 +475,22 @@ const AccountStatusSchema = z
   })
   .openapi('AccountStatus')
 
-const AccountInfoSchema = z
-  .object({
-    commercialOwnerEmail: BeezUPCommonEmailSchema.exactOptional(),
-    companyInfo: CompanyInfoSchema.exactOptional(),
-    email: BeezUPCommonEmailSchema,
-    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
-    links: AccountInfoLinksSchema,
-    personalInfo: PersonalInfoSchema.exactOptional(),
-    profilePictureUrl: ProfilePictureUrlSchema.exactOptional(),
-    status: AccountStatusSchema,
-    userId: BeezUPCommonUserIdSchema,
-  })
-  .openapi({ required: ['userId', 'email', 'status', 'links'] })
-  .openapi('AccountInfo')
+const BeezUPCommonUserIdSchema = z
+  .guid()
+  .openapi({ description: 'The user identifier', example: '8a7fbdec-9e71-472e-9974-27d5c1d57cf8' })
+  .openapi('BeezUPCommonUserId')
+
+type AccountInfoType = {
+  commercialOwnerEmail?: z.infer<typeof BeezUPCommonEmailSchema>
+  companyInfo?: z.infer<typeof CompanyInfoSchema>
+  email: z.infer<typeof BeezUPCommonEmailSchema>
+  info?: z.infer<typeof BeezUPCommonInfoSummariesSchema>
+  links: z.infer<typeof AccountInfoLinksSchema>
+  personalInfo?: z.infer<typeof PersonalInfoSchema>
+  profilePictureUrl?: z.infer<typeof ProfilePictureUrlSchema>
+  status: z.infer<typeof AccountStatusSchema>
+  userId: z.infer<typeof BeezUPCommonUserIdSchema>
+}
 
 const LinksGetPublicationsLinkSchema = BeezUPCommonLink3Schema.and(
   z
@@ -1156,177 +639,10 @@ const PublicationReportingSchema = z
   })
   .openapi('PublicationReporting')
 
-const AccountPublicationsSchema = z
-  .object({
-    links: AccountPublicationsLinksSchema,
-    publications: z.array(PublicationReportingSchema).openapi({
-      description: 'The recent publications for the requested account',
-      example: [
-        {
-          feeds: [
-            {
-              endUtcDate: '2016-02-13T12:02:00Z',
-              errorMessage: '',
-              exportedProducts: '10142',
-              failedItems: '1',
-              feedType: 'Offers',
-              htmlReportGenerationErrorMessage: '',
-              htmlReportUrl: 'http://www.myreporthtml.com',
-              processingStatus: 'Done',
-              publishedItems: '10041',
-              publishedItemsWithWarning: '123',
-              startUtcDate: '2016-02-13T12:01:11Z',
-              transmittedItems: '10042',
-            },
-            {
-              endUtcDate: '2016-02-13T12:02:00Z',
-              errorMessage: '',
-              exportedProducts: '10142',
-              failedItems: '1',
-              feedType: 'Inventory',
-              htmlReportGenerationErrorMessage: '',
-              htmlReportUrl: 'http://www.myreporthtml.com',
-              processingStatus: 'Done',
-              publishedItems: '10041',
-              publishedItemsWithWarning: '123',
-              startUtcDate: '2016-02-13T12:01:11Z',
-              transmittedItems: '10042',
-            },
-            {
-              errorMessage: '',
-              exportedProducts: '10142',
-              failedItems: '1',
-              feedType: 'Pricing',
-              htmlReportGenerationErrorMessage: '',
-              htmlReportUrl: 'http://www.myreporthtml.com',
-              processingStatus: 'InProgress',
-              publishedItems: '10041',
-              publishedItemsWithWarning: '123',
-              startUtcDate: '2016-02-13T12:01:11Z',
-              transmittedItems: '10042',
-            },
-          ],
-          publicationType: 'PublishOffers',
-        },
-        {
-          feeds: [
-            {
-              endUtcDate: '2016-02-13T12:02:00Z',
-              errorMessage: '',
-              exportedProducts: '10142',
-              failedItems: '1',
-              feedType: 'Product',
-              htmlReportGenerationErrorMessage: '',
-              htmlReportUrl: 'http://www.myreporthtml.com',
-              processingStatus: 'Done',
-              publishedItems: '10041',
-              publishedItemsWithWarning: '123',
-              startUtcDate: '2016-02-13T12:01:11Z',
-              transmittedItems: '10042',
-            },
-            {
-              endUtcDate: '2016-02-13T12:02:00Z',
-              errorMessage: '',
-              exportedProducts: '10142',
-              failedItems: '1',
-              feedType: 'Inventory',
-              htmlReportGenerationErrorMessage: '',
-              htmlReportUrl: 'http://www.myreporthtml.com',
-              processingStatus: 'Done',
-              publishedItems: '10041',
-              publishedItemsWithWarning: '123',
-              startUtcDate: '2016-02-13T12:01:11Z',
-              transmittedItems: '10042',
-            },
-            {
-              errorMessage: '',
-              exportedProducts: '10142',
-              failedItems: '1',
-              feedType: 'Pricing',
-              htmlReportGenerationErrorMessage: '',
-              htmlReportUrl: 'http://www.myreporthtml.com',
-              processingStatus: 'InProgress',
-              publishedItems: '10041',
-              publishedItemsWithWarning: '123',
-              startUtcDate: '2016-02-13T12:01:11Z',
-              transmittedItems: '10042',
-            },
-          ],
-          publicationType: 'PublishProducts',
-        },
-      ],
-    }),
-  })
-  .openapi({
-    description: 'The publication history for an account',
-    required: ['links', 'publications'],
-  })
-  .openapi('AccountPublications')
-
-const AccountSynchronizationSchema = z
-  .object({
-    accountId: AccountIdSchema,
-    completedHarvestSynchroUtcDate: z.iso.datetime({ offset: true }).exactOptional(),
-    marketplaceBusinessCode: BeezUPCommonMarketplaceBusinessCodeSchema,
-    marketplaceTechnicalCode: BeezUPCommonMarketplaceTechnicalCodeSchema,
-  })
-  .openapi({ required: ['accountId', 'marketplaceTechnicalCode', 'marketplaceBusinessCode'] })
-  .openapi('AccountSynchronization')
-
-const AccountSynchronizationListSchema = z
-  .object({ accountSynchronizations: z.array(AccountSynchronizationSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AccountSynchronizationList')
-
-const ActivateSubscriptionRequestSchema = z
-  .object({
-    recoverBeginPeriodOrderLastModificationUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, the date must be in the past the subscription will recover existing orders using the begin period order last modification date. If not set then you will receive new/updated orders in real-time.',
-      }),
-    recoverEndPeriodOrderLastModificationUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'If end period set, first the date must be in the past, the subscription will recover existing orders using the begin and the end period order last modification date. \nIf end period is not set and the begin period is set, then you will recover existing orders from the past using the begin period last modification date and after than you will continue to receive new/updated orders in real-time.\nIf begin/end period are not set then you will receive new/updated orders in real-time.\nREMARK: The begin period is required if the end period is fulfilled.\nREMARK: If the end period is order last modification date is indicated then once we have push all orders to your target url the subscription will be desactivated.',
-      }),
-  })
-  .openapi({ 'x-format': 'Message', required: [] })
-  .openapi('ActivateSubscriptionRequest')
-
-const AddChannelCatalogRequestSchema = z
-  .object({ channelId: BeezUPCommonChannelIdSchema, storeId: BeezUPCommonStoreIdSchema })
-  .openapi({ required: ['channelId', 'storeId'] })
-  .openapi('AddChannelCatalogRequest')
-
-const AlertEnabledSchema = z
-  .boolean()
-  .openapi({ description: 'Is the alert enable ?', example: 'true' })
-  .openapi('AlertEnabled')
-
-const AlertIdSchema = z
-  .int32()
-  .openapi({ description: 'Alert identifier', example: '8' })
-  .openapi('AlertId')
-
-const AlertNameSchema = z
-  .string()
-  .openapi({ description: 'The alert name', example: 'NoImportSinceXDays' })
-  .openapi('AlertName')
-
-const AlertPropertyIdSchema = z
-  .int32()
-  .openapi({ description: 'The property identifier of the alert', example: '2' })
-  .openapi('AlertPropertyId')
-
-const AlertPropertyValueSchema = z
-  .string()
-  .openapi({ description: 'The property value', example: '2' })
-  .openapi('AlertPropertyValue')
+type AccountPublicationsType = {
+  links: z.infer<typeof AccountPublicationsLinksSchema>
+  publications: z.infer<typeof PublicationReportingSchema>[]
+}
 
 const LinksAnalyticsIndexLinkSchema = BeezUPCommonLink3Schema.and(
   z.any().openapi({ example: { href: '/v2/user/analytics', method: 'GET' } }),
@@ -1647,471 +963,36 @@ const AnalyticsStoreIndexLinksSchema = z
   })
   .openapi('AnalyticsStoreIndexLinks')
 
-const AnalyticsStoreIndexSchema = z
+type AnalyticsStoreIndexType = { links: z.infer<typeof AnalyticsStoreIndexLinksSchema> }
+
+const AnalyticsStoreIndexSchema: z.ZodType<AnalyticsStoreIndexType> = z
   .object({ links: AnalyticsStoreIndexLinksSchema })
   .openapi({ required: ['links'] })
   .openapi('AnalyticsStoreIndex')
 
-const AnalyticsIndexSchema = z
-  .object({
-    links: AnalyticsIndexLinksSchema,
-    lovLinks: AnalyticsIndexLovLinksSchema.exactOptional(),
-    stores: z.array(AnalyticsStoreIndexSchema),
-  })
-  .openapi({ description: 'The Analytics API operation index.', required: ['links', 'stores'] })
-  .openapi('AnalyticsIndex')
+type AnalyticsIndexType = {
+  links: z.infer<typeof AnalyticsIndexLinksSchema>
+  lovLinks?: z.infer<typeof AnalyticsIndexLovLinksSchema>
+  stores: z.infer<typeof AnalyticsStoreIndexSchema>[]
+}
 
-const AnalyticsProductColumnFiltersSchema: z.ZodType<AnalyticsProductColumnFiltersType> = z
-  .lazy(() =>
-    z
-      .object({
-        additionalAnalyticsProductColumnFilters:
-          AdditionalAnalyticsProductColumnFiltersSchema.exactOptional(),
-        sku: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The product sku filter', example: 'M1234' }),
-        title: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The product title filter', example: 'Refrigérateur' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('AnalyticsProductColumnFilters')
-
-const ApiCredentialSchema = z
-  .object({
-    primaryToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The primary token to be used in the next call in the user scope API',
-        example: '3b22980d8d1143c6ba7adf4e55b9a153',
-      }),
-    productName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The product name related to this credential', example: 'UserAPI' }),
-    secondaryToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The secondary token. Could be usefull if you want to share your access with someone else.',
-        example: '162ae17fd52044c38cce3388ea5b0c91',
-      }),
-  })
-  .openapi({ description: 'Your api credential', required: [] })
-  .openapi('ApiCredential')
-
-const ApiCredentialsSchema = z
-  .object({
-    credentials: z
-      .array(ApiCredentialSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Your API credential list',
-        example: [
-          {
-            primaryToken: '3b22980d8d1143c6ba7adf4e55b9a153',
-            productName: 'UserApi',
-            secondaryToken: '162ae17fd52044c38cce3388ea5b0c91',
-          },
-        ],
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApiCredentials')
-
-const CompareOptionsSchema = z
-  .enum([
-    'None',
-    'IgnoreCase',
-    'IgnoreNonSpace',
-    'IgnoreSymbols',
-    'OrdinalIgnoreCase',
-    'StringSort',
-    'Ordinal',
-  ])
-  .default('None')
+const AccountIdSchema = z
+  .int32()
   .openapi({
-    description: 'Indicate how the product sku are compared for the duplication check.',
-    example: 'IgnoreCase',
+    description:
+      'The marketplace account identifier in BeezUP. This account identifier is based on your api settings.',
+    example: '1234',
   })
-  .openapi('CompareOptions')
+  .openapi('AccountId')
 
-const DuplicateProductValueStrategySchema = z
-  .enum([
-    'None',
-    'SkipAllDuplicateProducts',
-    'KeepFirstDuplicateProductOnly',
-    'FailImportationIfAnyDuplicateProduct',
-  ])
-  .default('None')
-  .openapi({
-    description: 'Indicate the duplicate product sku strategy.',
-    example: 'KeepFirstDuplicateProductOnly',
-  })
-  .openapi('DuplicateProductValueStrategy')
-
-const DuplicateProductValueConfigurationSchema = z
-  .object({ compareOptions: CompareOptionsSchema, strategy: DuplicateProductValueStrategySchema })
-  .openapi({
-    description: 'Describe how you want to manage the duplication of the product value',
-    required: ['strategy', 'compareOptions'],
-  })
-  .openapi('DuplicateProductValueConfiguration')
-
-const CompressionFormatStrategySchema = z
-  .enum(['None', 'Zip', 'TarGz', 'Gzip', 'Bzip2', 'Rar'])
-  .openapi({ description: 'Indicate the compression type', example: 'None' })
-  .openapi('CompressionFormatStrategy')
-
-const CredentialSchema = z
-  .object({
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The password', example: 'MyPassword' }),
-    userName: z.string().openapi({ description: 'The user name', example: 'MyLogin' }),
-  })
-  .openapi({ description: 'Provides the credentials', required: ['userName'] })
-  .openapi('Credential')
-
-const DownloadCatalogStrategySchema = z
-  .enum(['SimpleUri', 'FtpLatest', 'Sftp', 'SftpLatest', 'Ftps', 'FtpsLatest', 'Local'])
-  .openapi({
-    description: 'Indicate the download strategy (simple uri, ftps, ftplatest file, etc...)',
-    example: 'SimpleUri',
-  })
-  .openapi('DownloadCatalogStrategy')
-
-const InputFileFetchConfigurationSchema = z
-  .object({
-    compressedRelativePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Indicate the relative path in the compressed file',
-        example: 'folder/file.xxx',
-      }),
-    compressionFormatStrategy: CompressionFormatStrategySchema.exactOptional(),
-    credential: CredentialSchema.exactOptional(),
-    downloadCatalogStrategy: DownloadCatalogStrategySchema,
-    downloadTimeout: z
-      .int32()
-      .default(30)
-      .exactOptional()
-      .openapi({ description: 'Indicate the download time out in second', example: '360' }),
-    uri: z
-      .string()
-      .openapi({
-        description: 'Indicate the Uri of the file. (http, https, ftp, ftps, sftp are allowed)',
-        example: 'http://www.mywebsite.com/mycatalog.csv',
-      }),
-  })
-  .openapi({
-    description: 'Describe the way to download the file',
-    required: ['uri', 'downloadCatalogStrategy'],
-  })
-  .openapi('InputFileFetchConfiguration')
-
-const CsvSeparatorSchema = z
+const BeezUPCommonMarketplaceTechnicalCodeSchema = z
   .string()
-  .default(';')
   .openapi({
-    description: 'Indicate the separator of the values in the CSV file. Generally ";"',
-    example: ';',
+    description: 'The technical code of the marketplace.',
+    example: 'Amazon',
+    'x-lov': 'OMMarketplaceTechnicalCode',
   })
-  .openapi('CsvSeparator')
-
-const InputFileReadCsvConfigurationSchema = z
-  .object({
-    csvSeparator: CsvSeparatorSchema,
-    csvTextQualifier: z
-      .string()
-      .default('"')
-      .exactOptional()
-      .openapi({
-        description: 'Indicate the text qualifier of the CSV file. Generally the value is "',
-        example: '"',
-      }),
-    hasHeaderRecord: z
-      .boolean()
-      .default(true)
-      .openapi({
-        description: 'Indicate if the csv file contains the column name at the first row',
-        example: 'true',
-      }),
-    ignoreHeaderRecord: z
-      .boolean()
-      .default(false)
-      .openapi({
-        description: 'Indicate if the importation should not use the csv column name from the file',
-        example: 'true',
-      }),
-  })
-  .openapi({
-    description: 'The CSV file description',
-    required: ['hasHeaderRecord', 'ignoreHeaderRecord', 'csvSeparator'],
-  })
-  .openapi('InputFileReadCsvConfiguration')
-
-const FileFormatStrategySchema = z
-  .enum(['Unknown', 'Csv', 'Xml', 'Json'])
-  .openapi({ description: 'CSV or XML', example: 'Csv' })
-  .openapi('FileFormatStrategy')
-
-const InputFileReadXmlConfigurationSchema = z
-  .object({
-    flattenXmlChildElements: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicate if the children xml nodes should be flatten with there parent to take in account the sub node values.',
-        example: 'true',
-      }),
-    useXmlAttributes: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicate if the importation should take in account the attribute in the xml nodes.',
-        example: 'true',
-      }),
-  })
-  .openapi({
-    description: 'The XML file description',
-    required: ['useXmlAttributes', 'flattenXmlChildElements'],
-  })
-  .openapi('InputFileReadXmlConfiguration')
-
-const InputFileReadConfigurationSchema = z
-  .object({
-    csvFileReadProperties: InputFileReadCsvConfigurationSchema.exactOptional(),
-    cultureName: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({
-        description:
-          'The culture name of the file.  (i.e. fr-FR). If null then Invariant culture will be used.',
-        example: 'fr-FR',
-      }),
-    encodingTypeName: z
-      .string()
-      .default('UTF-8')
-      .exactOptional()
-      .openapi({ description: 'The encoding type. UTF-8 by default.', example: 'UTF-8' }),
-    format: FileFormatStrategySchema,
-    xmlFileReadProperties: InputFileReadXmlConfigurationSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describe how to read the file. If FileFormatStrategy is CSV, csvFileReadProperties is required. Otherwise the xmlFileReadProperties is required.\n',
-    required: ['format'],
-  })
-  .openapi('InputFileReadConfiguration')
-
-const InputFileConfigurationSchema = z
-  .object({
-    fetch: InputFileFetchConfigurationSchema,
-    fileNumber: z
-      .int32()
-      .min(1)
-      .openapi({ description: 'The file number starting by 1', example: '1' }),
-    read: InputFileReadConfigurationSchema,
-  })
-  .openapi({
-    description: 'Describe how to get and read a file',
-    required: ['fileNumber', 'fetch', 'read'],
-  })
-  .openapi('InputFileConfiguration')
-
-const InputConfigurationSchema = z
-  .object({
-    files: z
-      .array(InputFileConfigurationSchema)
-      .min(1)
-      .openapi({ description: 'The list of files to get and read' }),
-    transformFileUrl: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: 'Can be null. Use to transform multiple files with an XSLT file.',
-        example: 'http://beezupblob.com/Mytransformation.xslt',
-      }),
-  })
-  .openapi({ description: 'Describe the input configuration', required: ['files'] })
-  .openapi('InputConfiguration')
-
-const SchedulingTypeSchema = z
-  .enum(['Schedule', 'Interval'])
-  .default('Interval')
-  .openapi({
-    description:
-      'Indicate the scheduling type. Schedule or Interval. We recommand you to use interval for a better reporting.',
-    example: 'Schedule',
-  })
-  .openapi('SchedulingType')
-
-const AutoImportConfigurationSchema = z
-  .object({
-    duplicateProductConfiguration: DuplicateProductValueConfigurationSchema,
-    input: InputConfigurationSchema,
-    inputConfiguredByUserId: BeezUPCommonUserIdSchema,
-    pauseStatusChangedByUserId: BeezUPCommonUserIdSchema.exactOptional(),
-    pauseStatusChangedUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Indicate when the pause status has changed in UTC date.',
-        example: '2017-04-01T13:21:42Z',
-      }),
-    paused: z
-      .boolean()
-      .default(false)
-      .openapi({
-        description: 'Indicate if the auto import is in pause or not.',
-        example: 'false',
-      }),
-    scheduledByUserId: BeezUPCommonUserIdSchema.exactOptional(),
-    schedulingLocalTimeZoneName: z
-      .string()
-      .default('Romance Standard Time')
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicate the time zone name of the scheduling. If the scheduling type is "Schedule"',
-        example: 'Romance Standard Time',
-      }),
-    schedulingType: SchedulingTypeSchema,
-    schedulingValue: z
-      .array(z.string())
-      .min(1)
-      .openapi({
-        description:
-          'Indicate the scheduling value. If the scheduling type is Interval then the value will be a duration otherwise the values will be the time.',
-        example: ['21:00:00', '23:00:00', '08:30:00'],
-      }),
-  })
-  .openapi({
-    required: [
-      'input',
-      'inputConfiguredByUserId',
-      'schedulingType',
-      'schedulingValue',
-      'paused',
-      'duplicateProductConfiguration',
-    ],
-  })
-  .openapi('AutoImportConfiguration')
-
-const LinksImportationActivateAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/activate',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationActivateAutoImportLink')
-
-const LinksAutoPauseAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/pause',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksAutoPauseAutoImportLink')
-
-const LinksAutoResumeAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/resume',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksAutoResumeAutoImportLink')
-
-const LinksAutoScheduleAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/scheduling/schedules',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'scheduleAutoImportRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksAutoScheduleAutoImportLink')
-
-const LinksAutoConfigureAutoImportIntervalLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/scheduling/interval',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'configureAutoImportIntervalRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksAutoConfigureAutoImportIntervalLink')
-
-const LinksAutoGetAutoImportConfigurationLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksAutoGetAutoImportConfigurationLink')
-
-const LinksAutoStartAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/start',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksAutoStartAutoImportLink')
-
-const AutoImportConfigurationLinksSchema = z
-  .object({
-    activate: LinksImportationActivateAutoImportLinkSchema.exactOptional(),
-    pause: LinksAutoPauseAutoImportLinkSchema.exactOptional(),
-    resume: LinksAutoResumeAutoImportLinkSchema.exactOptional(),
-    schedule: LinksAutoScheduleAutoImportLinkSchema.exactOptional(),
-    scheduleInterval: LinksAutoConfigureAutoImportIntervalLinkSchema.exactOptional(),
-    self: LinksAutoGetAutoImportConfigurationLinkSchema,
-    start: LinksAutoStartAutoImportLinkSchema.exactOptional(),
-  })
-  .openapi({ required: ['self'] })
-  .openapi('AutoImportConfigurationLinks')
+  .openapi('BeezUPCommonMarketplaceTechnicalCode')
 
 const AutomaticTransitionSchema = z
   .object({
@@ -2158,26 +1039,44 @@ const AutomaticTransitionInfoLinksSchema = z
   .openapi({ required: ['configure'] })
   .openapi('AutomaticTransitionInfoLinks')
 
-const AutomaticTransitionInfoSchema = AutomaticTransitionSchema.and(
-  z
-    .object({
-      beezUPOrderStatus: BeezUPOrderStatusSchema,
-      businessOperationType: BusinessOperationTypeSchema,
-      links: AutomaticTransitionInfoLinksSchema.exactOptional(),
-      marketplaceBusinessCode: BeezUPCommonMarketplaceBusinessCodeSchema,
-    })
-    .openapi({
-      required: [
-        'marketplaceTechnicalCode',
-        'marketplaceBusinessCode',
-        'accountId',
-        'beezUPOrderStatus',
-        'businessOperationType',
-        'orderStatusTransitionId',
-        'enabled',
-      ],
-    }),
-).openapi('AutomaticTransitionInfo')
+const BeezUPCommonMarketplaceBusinessCodeSchema = z
+  .string()
+  .openapi({
+    description:
+      'In an marketplace technical code like CDiscount you can have several marketplaces like GO SPORT, etc. We identify them by a business code.',
+    example: 'GOSPORT',
+    'x-lov': 'MarketplaceBusinessCode',
+  })
+  .openapi('BeezUPCommonMarketplaceBusinessCode')
+
+type AutomaticTransitionInfoType = z.infer<typeof AutomaticTransitionSchema> & {
+  beezUPOrderStatus: z.infer<typeof BeezUPOrderStatusSchema>
+  businessOperationType: z.infer<typeof BusinessOperationTypeSchema>
+  links?: z.infer<typeof AutomaticTransitionInfoLinksSchema>
+  marketplaceBusinessCode: z.infer<typeof BeezUPCommonMarketplaceBusinessCodeSchema>
+}
+
+const AutomaticTransitionInfoSchema: z.ZodType<AutomaticTransitionInfoType> =
+  AutomaticTransitionSchema.and(
+    z
+      .object({
+        beezUPOrderStatus: BeezUPOrderStatusSchema,
+        businessOperationType: BusinessOperationTypeSchema,
+        links: AutomaticTransitionInfoLinksSchema.exactOptional(),
+        marketplaceBusinessCode: BeezUPCommonMarketplaceBusinessCodeSchema,
+      })
+      .openapi({
+        required: [
+          'marketplaceTechnicalCode',
+          'marketplaceBusinessCode',
+          'accountId',
+          'beezUPOrderStatus',
+          'businessOperationType',
+          'orderStatusTransitionId',
+          'enabled',
+        ],
+      }),
+  ).openapi('AutomaticTransitionInfo')
 
 const LinksGetAutomaticTransitionsLinkSchema = BeezUPCommonLink3Schema.and(
   z
@@ -2193,139 +1092,10 @@ const AutomaticTransitionInfoListLinksSchema = z
   .openapi({ required: ['self', 'configure'] })
   .openapi('AutomaticTransitionInfoListLinks')
 
-const AutomaticTransitionInfoListSchema = z
-  .object({
-    automaticTransitionInfos: z.array(AutomaticTransitionInfoSchema).exactOptional(),
-    links: AutomaticTransitionInfoListLinksSchema,
-  })
-  .openapi({ required: ['links'] })
-  .openapi('AutomaticTransitionInfoList')
-
-const BeezUPOrderIdSchema = z
-  .uuid()
-  .openapi({
-    description: 'The BeezUP Order identifier',
-    example: '00000000000000000000000000000000000000000000000',
-  })
-  .openapi('BeezUPOrderId')
-
-const OrderIdentifierSchema = z
-  .object({
-    accountId: AccountIdSchema,
-    beezUPOrderId: BeezUPOrderIdSchema,
-    marketplaceTechnicalCode: BeezUPCommonMarketplaceTechnicalCodeSchema,
-  })
-  .openapi({ required: ['marketplaceTechnicalCode', 'accountId', 'beezUPOrderId'] })
-  .openapi('OrderIdentifier')
-
-const OrderOperationResponseSchema = z
-  .object({
-    errors: z
-      .array(BeezUPCommonUserErrorMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'The error list' }),
-    order: OrderIdentifierSchema,
-    status: z
-      .int()
-      .openapi({
-        description: 'Indicates the http status corresponding to the individual operation',
-        example: '204',
-      }),
-    success: z
-      .boolean()
-      .openapi({ description: 'Indicates if the operation succeed or not', example: 'true' }),
-  })
-  .openapi({
-    description: 'The response given by the batch operation for an order',
-    required: ['order', 'success', 'status'],
-  })
-  .openapi('OrderOperationResponse')
-
-const BatchOrderOperationResponseSchema = z
-  .object({ operations: z.array(OrderOperationResponseSchema) })
-  .openapi({ description: 'The response given by the batch operation', required: ['operations'] })
-  .openapi('BatchOrderOperationResponse')
-
-const CanBeTruncatedSchema = z
-  .boolean()
-  .default(false)
-  .openapi({
-    description:
-      'If the size of the value is greater than the limit we can truncate the value instead of failing...',
-    example: 'false',
-  })
-  .openapi('CanBeTruncated')
-
-const DisplayGroupNameSchema = z
-  .string()
-  .openapi({
-    description: 'Indicate the display group name where the column must be putted',
-    example: 'Category',
-  })
-  .openapi('DisplayGroupName')
-
-const BeezUPColumnConfigurationSchema = z
-  .object({
-    beezUPColumnName: BeezUPCommonBeezUPColumnNameSchema,
-    canBeTruncated: CanBeTruncatedSchema.exactOptional(),
-    columnDataType: BeezUPCommonColumnDataTypeSchema.exactOptional(),
-    columnImportance: BeezUPCommonColumnImportanceSchema,
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Describe the BeezUP column',
-        example: 'Use for big text, like description',
-      }),
-    displayGroupName: DisplayGroupNameSchema,
-    unique: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          '/!\\ ONLY AVAILABLE ON CATALOG COLUMN NOT ON CUSTOM COLUMNS!!\r\nIf true, an error happen at the second occurence of the same value for this column\r\nThis information will be used during the importation process and later for mapping proposal',
-        example: 'false',
-      }),
-  })
-  .openapi({
-    description: 'Describe a BeezUP column',
-    required: ['beezUPColumnName', 'columnImportance', 'displayGroupName'],
-  })
-  .openapi('BeezUPColumnConfiguration')
-
-const BeezUPMarketplaceAccountIdSchema = z
-  .int32()
-  .openapi({
-    description:
-      'The marketplace account identifier in BeezUP. This account identifier is based on your api settings.',
-    example: '1234',
-  })
-  .openapi('BeezUPMarketplaceAccountId')
-
-const BeezUPMarketplaceBusinessCodeSchema = z
-  .string()
-  .openapi({
-    description:
-      'In an marketplace technical code like CDiscount you can have several marketplaces like GO SPORT, etc. We identify them by a business code.',
-    example: 'GOSPORT',
-    'x-lov': 'MarketplaceBusinessCode',
-  })
-  .openapi('BeezUPMarketplaceBusinessCode')
-
-const BeezUPMarketplaceTechnicalCodeSchema = z
-  .string()
-  .openapi({
-    description: 'The technical code of the marketplace.',
-    example: 'Amazon',
-    'x-lov': 'MarketplaceTechnicalCode',
-  })
-  .openapi('BeezUPMarketplaceTechnicalCode')
-
-const BeezUPOrderUUIDSchema = z
-  .string()
-  .openapi({ description: 'beezUPOrderUUID' })
-  .openapi('BeezUPOrderUUID')
+type AutomaticTransitionInfoListType = {
+  automaticTransitionInfos?: z.infer<typeof AutomaticTransitionInfoSchema>[]
+  links: z.infer<typeof AutomaticTransitionInfoListLinksSchema>
+}
 
 const BillingPeriodSchema = z
   .object({
@@ -2342,15 +1112,6 @@ const BillingPeriodSchema = z
   .openapi({ required: ['billingPeriodInMonth', 'discountPercentage'] })
   .openapi('BillingPeriod')
 
-const BillingPeriodInMonthSchema = z
-  .int32()
-  .min(1)
-  .openapi({
-    description: 'Can be null. The billing period in month based on /billingPeriods',
-    example: '12',
-  })
-  .openapi('BillingPeriodInMonth')
-
 const LinksGetBillingPeriodsLinkSchema = BeezUPCommonLink3Schema.and(
   z.any().openapi({ example: { href: '/v2/user/customer/billingPeriods', method: 'GET' } }),
 ).openapi('LinksGetBillingPeriodsLink')
@@ -2360,42 +1121,30 @@ const BillingPeriodListLinksSchema = z
   .openapi({ required: [] })
   .openapi('BillingPeriodListLinks')
 
-const BillingPeriodListSchema = z
-  .object({
-    billingPeriods: z
-      .array(BillingPeriodSchema)
-      .openapi({
-        description: 'The billing period list',
-        example: [{ billingPeriodInMonth: '12', discountPercentage: '20' }],
-      }),
-    links: BillingPeriodListLinksSchema,
-  })
-  .openapi({ required: ['links', 'billingPeriods'] })
-  .openapi('BillingPeriodList')
-
-const BonusTypeSchema = z
-  .enum(['OnlinePaymentMethodBonus', 'PreviousInvoiceProrataBonus', 'PreviousContractBonus'])
-  .openapi('BonusType')
-
-const BonusInfoSchema = z
-  .object({ amount: z.float64().openapi({ example: '12.34' }), bonusType: BonusTypeSchema })
-  .openapi({ required: ['bonusType', 'amount'] })
-  .openapi('BonusInfo')
-
-const CardNumberSchema = z
-  .string()
-  .openapi({ description: 'Card number', example: '1234567890091234' })
-  .openapi('CardNumber')
-
-const CardVerificationCodeSchema = z
-  .string()
-  .openapi({ description: 'Card Verification Code', example: '123' })
-  .openapi('CardVerificationCode')
+type BillingPeriodListType = {
+  billingPeriods: z.infer<typeof BillingPeriodSchema>[]
+  links: z.infer<typeof BillingPeriodListLinksSchema>
+}
 
 const CatalogColumnNameSchema = z
   .string()
   .openapi({ description: 'The catalog column name', example: 'SKU' })
   .openapi('CatalogColumnName')
+
+const BeezUPCommonBeezUPColumnNameSchema = z
+  .string()
+  .openapi({ description: 'The BeezUP column name', example: 'CategoryFirstLevel' })
+  .openapi('BeezUPCommonBeezUPColumnName')
+
+const CanBeTruncatedSchema = z
+  .boolean()
+  .default(false)
+  .openapi({
+    description:
+      'If the size of the value is greater than the limit we can truncate the value instead of failing...',
+    example: 'false',
+  })
+  .openapi('CanBeTruncated')
 
 const ColumnCultureNameSchema = z
   .string()
@@ -2406,6 +1155,26 @@ const ColumnCultureNameSchema = z
   })
   .openapi('ColumnCultureName')
 
+const BeezUPCommonColumnDataTypeSchema = z
+  .enum([
+    'String',
+    'Url',
+    'Text',
+    'Decimal',
+    'DateTime',
+    'Int',
+    'SpecialInt',
+    'InStock',
+    'Unknown',
+    'ImageUrl',
+  ])
+  .default('String')
+  .openapi({
+    description: 'Data type of the column, will be used for parsing and for consolidation proces',
+    example: 'String',
+  })
+  .openapi('BeezUPCommonColumnDataType')
+
 const ColumnFormatSchema = z
   .string()
   .openapi({
@@ -2414,6 +1183,20 @@ const ColumnFormatSchema = z
     example: 'MM/dd/yyyy',
   })
   .openapi('ColumnFormat')
+
+const BeezUPCommonColumnImportanceSchema = z
+  .enum(['Required', 'Recommended', 'Optional'])
+  .default('Optional')
+  .openapi({ description: 'Importance of the column', example: 'Required' })
+  .openapi('BeezUPCommonColumnImportance')
+
+const DisplayGroupNameSchema = z
+  .string()
+  .openapi({
+    description: 'Indicate the display group name where the column must be putted',
+    example: 'Category',
+  })
+  .openapi('DisplayGroupName')
 
 const ColumnConfigurationSchema = z
   .object({
@@ -2431,6 +1214,45 @@ const ColumnConfigurationSchema = z
     required: ['columnImportance', 'columnDataType'],
   })
   .openapi('ColumnConfiguration')
+
+const CompareOptionsSchema = z
+  .enum([
+    'None',
+    'IgnoreCase',
+    'IgnoreNonSpace',
+    'IgnoreSymbols',
+    'OrdinalIgnoreCase',
+    'StringSort',
+    'Ordinal',
+  ])
+  .default('None')
+  .openapi({
+    description: 'Indicate how the product sku are compared for the duplication check.',
+    example: 'IgnoreCase',
+  })
+  .openapi('CompareOptions')
+
+const DuplicateProductValueStrategySchema = z
+  .enum([
+    'None',
+    'SkipAllDuplicateProducts',
+    'KeepFirstDuplicateProductOnly',
+    'FailImportationIfAnyDuplicateProduct',
+  ])
+  .default('None')
+  .openapi({
+    description: 'Indicate the duplicate product sku strategy.',
+    example: 'KeepFirstDuplicateProductOnly',
+  })
+  .openapi('DuplicateProductValueStrategy')
+
+const DuplicateProductValueConfigurationSchema = z
+  .object({ compareOptions: CompareOptionsSchema, strategy: DuplicateProductValueStrategySchema })
+  .openapi({
+    description: 'Describe how you want to manage the duplication of the product value',
+    required: ['strategy', 'compareOptions'],
+  })
+  .openapi('DuplicateProductValueConfiguration')
 
 const ColumnIdSchema = z
   .guid()
@@ -2469,7 +1291,17 @@ const UserColumNameSchema = z
   .openapi({ description: 'Column named by the user', example: 'My SKU' })
   .openapi('UserColumName')
 
-const CatalogColumnSchema = z
+type CatalogColumnType = {
+  catalogColumnName: z.infer<typeof CatalogColumnNameSchema>
+  configuration: z.infer<typeof ColumnConfigurationSchema>
+  duplicateProductValueConfiguration?: z.infer<typeof DuplicateProductValueConfigurationSchema>
+  id: z.infer<typeof ColumnIdSchema>
+  ignored?: boolean
+  links: z.infer<typeof CatalogColumnLinksSchema>
+  userColumName: z.infer<typeof UserColumNameSchema>
+}
+
+const CatalogColumnSchema: z.ZodType<CatalogColumnType> = z
   .object({
     catalogColumnName: CatalogColumnNameSchema,
     configuration: ColumnConfigurationSchema,
@@ -2511,10 +1343,7 @@ const CatalogColumnSchema = z
   })
   .openapi('CatalogColumn')
 
-const CatalogColumnListSchema = z
-  .object({ catalogColumns: z.array(CatalogColumnSchema) })
-  .openapi({ required: ['catalogColumns'] })
-  .openapi('CatalogColumnList')
+type CatalogColumnListType = { catalogColumns: z.infer<typeof CatalogColumnSchema>[] }
 
 const LinksCatalogGetBeezUPColumnsLinkSchema = BeezUPCommonLink3Schema.and(
   z.any().openapi({ example: { href: '/v2/user/catalogs/beezupColumns', method: 'GET' } }),
@@ -2552,6 +1381,17 @@ const CatalogIndexLOVLinksSchema = z
     ],
   })
   .openapi('CatalogIndexLOVLinks')
+
+const LinksAutoGetAutoImportConfigurationLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksAutoGetAutoImportConfigurationLink')
 
 const LinksCatalogGetCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.and(
   z
@@ -2705,12 +1545,21 @@ const CatalogStoreStatusSchema = z
   })
   .openapi('CatalogStoreStatus')
 
-const CatalogStoreIndexSchema = z
+type CatalogStoreIndexType = {
+  links: z.infer<typeof CatalogStoreIndexLinksSchema>
+  status: z.infer<typeof CatalogStoreStatusSchema>
+}
+
+const CatalogStoreIndexSchema: z.ZodType<CatalogStoreIndexType> = z
   .object({ links: CatalogStoreIndexLinksSchema, status: CatalogStoreStatusSchema })
   .openapi({ required: ['links', 'status'] })
   .openapi('CatalogStoreIndex')
 
-const CatalogStoreIndexListSchema = z
+type CatalogStoreIndexListType = {
+  links?: { [key: string]: z.infer<typeof CatalogStoreIndexSchema> }
+}
+
+const CatalogStoreIndexListSchema: z.ZodType<CatalogStoreIndexListType> = z
   .object({
     links: z
       .record(z.string(), CatalogStoreIndexSchema)
@@ -2720,261 +1569,46 @@ const CatalogStoreIndexListSchema = z
   .openapi({ required: [] })
   .openapi('CatalogStoreIndexList')
 
-const CatalogIndexSchema = z
-  .object({
-    links: CatalogIndexLinksSchema,
-    lovLinks: CatalogIndexLOVLinksSchema,
-    storeLinks: CatalogStoreIndexListSchema.exactOptional(),
-  })
-  .openapi({ required: ['links', 'lovLinks'] })
-  .openapi('CatalogIndex')
+type CatalogIndexType = {
+  links: z.infer<typeof CatalogIndexLinksSchema>
+  lovLinks: z.infer<typeof CatalogIndexLOVLinksSchema>
+  storeLinks?: z.infer<typeof CatalogStoreIndexListSchema>
+}
 
-const CategorySchema = z
-  .object({
-    categoryId: BeezUPCommonCatalogCategoryIdSchema.exactOptional(),
-    categoryPath: BeezUPCommonCatalogCategoryPathSchema,
-    selfProductCount: z
-      .int32()
-      .openapi({ description: 'The product count related to this category', example: '101' }),
-    totalProductCount: z
-      .int32()
-      .openapi({
-        description: 'The total product count related to this category and his sub categories',
-        example: '101',
-      }),
-  })
+const BeezUPCommonChannelIdSchema = z
+  .guid()
   .openapi({
-    description: 'The catalog category',
-    required: ['categoryPath', 'totalProductCount', 'selfProductCount'],
+    description: 'The channel identifier',
+    example: '2dc136a7-0d3d-4cc9-a825-a28a42c53e28',
   })
-  .openapi('Category')
+  .openapi('BeezUPCommonChannelId')
 
-const CategoryListSchema = z
-  .object({ categories: z.array(CategorySchema).openapi({ description: 'The category list' }) })
-  .openapi({ description: 'The object which contains the category list', required: ['categories'] })
-  .openapi('CategoryList')
-
-const CategoryMappingStatusSchema = z
-  .enum(['warning', 'success', 'failed'])
-  .openapi({ example: 'success' })
-  .openapi('CategoryMappingStatus')
-
-const CategoryMappingStateSchema = z
-  .object({
-    status: CategoryMappingStatusSchema.exactOptional(),
-    uncategorizedProductCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Indicates the uncategorized product count', example: '101' }),
-    withoutCategoryCostProductCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates the count of products without cost defined',
-        example: '42',
-      }),
-  })
-  .openapi({ description: 'The category mapping state of the channel catalog', required: [] })
-  .openapi('CategoryMappingState')
-
-const EncryptedBlocklyExpressionSchema = z
+const BeezUPCommonHttpUrlSchema = z
   .string()
-  .openapi({
-    description: 'The encrypted XML Blockly representation of the expression',
-    example: 'apokpoa,opz,sixsoisiosnoisn',
-  })
-  .openapi('EncryptedBlocklyExpression')
-
-const EncryptedExpressionSchema = z
-  .string()
-  .openapi({
-    description: 'The encrypted excel expression of the column',
-    example: 'uziushdczaniodnndonisodndsiondsoidsndoin',
-  })
-  .openapi('EncryptedExpression')
-
-const ChangeCustomColumnExpressionRequestSchema = z
-  .object({
-    encryptedBlocklyExpression: EncryptedBlocklyExpressionSchema,
-    encryptedExpression: EncryptedExpressionSchema,
-  })
-  .openapi({
-    description: 'The request message to change the custom column expression',
-    required: ['encryptedExpression', 'encryptedBlocklyExpression'],
-  })
-  .openapi('ChangeCustomColumnExpressionRequest')
-
-const ChangeCustomColumnRequestSchema = z
-  .object({
-    encryptedBlocklyExpression: EncryptedBlocklyExpressionSchema,
-    encryptedExpression: EncryptedExpressionSchema,
-    userColumName: UserColumNameSchema,
-  })
-  .openapi({
-    description: 'The message request to change a custom column expression an user name',
-    required: ['encryptedExpression', 'encryptedBlocklyExpression', 'userColumName'],
-  })
-  .openapi('ChangeCustomColumnRequest')
-
-const ChangeEmailRequestSchema = z
-  .object({ newEmail: BeezUPCommonEmailSchema })
-  .openapi({ required: ['newEmail'] })
-  .openapi('ChangeEmailRequest')
-
-const ChangeOrderRequestSchema = z
-  .record(z.string(), z.string())
+  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
   .openapi({
     description:
-      'All properties with the prefix order_ are translated in the list of values /user/lov#OrderMetaInfoPosted',
-    example: {
-      order_Shipping_CarrierName: 'La poste',
-      order_Shipping_EstimatedDeliveryDate: '2014-09-24T09:58:00Z',
-      order_Shipping_FulfillmentDate: '2014-09-23T09:58:00Z',
-      order_Shipping_ShipperTrackingNumber: '1H01845163783',
-      order_Shipping_ShippingUrl: 'https://trackingpackage.com?number=1H01845163783',
-    },
+      'The URL <a href="https://en.wikipedia.org/wiki/URL">https://en.wikipedia.org/wiki/URL</a>',
+    example: 'http://www.mydomain.com',
   })
-  .openapi('ChangeOrderRequest')
+  .openapi('BeezUPCommonHttpUrl')
 
-const EtagSchema = z
+const BeezUPCommonChannelNameSchema = z
   .string()
-  .openapi({
-    description:
-      'ETag value to identify the order.\\\nThis information is required for the operation GetOrder and ChangeOrder.\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-    example: '"ca071a4580129f932a03971968ffef69"',
-  })
-  .openapi('Etag')
+  .openapi({ description: 'The channel name', example: 'Amazon FRA' })
+  .openapi('BeezUPCommonChannelName')
 
-const OrderIdentifierWithETagSchema = OrderIdentifierSchema.and(
-  z
-    .object({ etag: EtagSchema })
-    .openapi({ required: ['marketplaceTechnicalCode', 'accountId', 'beezUPOrderId', 'etag'] }),
-).openapi('OrderIdentifierWithETag')
-
-const ChangeOrderListRequestItemSchema = z
+const BeezUPCommonChannelBasicInfoSchema = z
   .object({
-    changeOrderRequest: ChangeOrderRequestSchema.exactOptional(),
-    order: OrderIdentifierWithETagSchema,
+    channelId: BeezUPCommonChannelIdSchema,
+    channelImageUrl: BeezUPCommonHttpUrlSchema,
+    channelName: BeezUPCommonChannelNameSchema,
   })
   .openapi({
-    description: 'Contains the order identifier and the change order request',
-    required: ['order'],
+    description: 'The basic info related to a channel',
+    required: ['channelId', 'channelName', 'channelImageUrl'],
   })
-  .openapi('ChangeOrderListRequestItem')
-
-const ChangeOrderListRequestSchema = z
-  .object({
-    changeOrders: z
-      .array(ChangeOrderListRequestItemSchema)
-      .openapi({ description: 'The change order operations' }),
-  })
-  .openapi({
-    description: 'Contains all change order operations you want to make.  (max 100 items per call)',
-    required: ['changeOrders'],
-  })
-  .openapi('ChangeOrderListRequest')
-
-const ChangeOrderListRequestItemV2Schema = z
-  .object({
-    changeOrderRequest: ChangeOrderRequestSchema.exactOptional(),
-    order: OrderIdentifierSchema,
-  })
-  .openapi({
-    description: 'Contains the order identifier and the change order request',
-    required: ['order'],
-  })
-  .openapi('ChangeOrderListRequestItemV2')
-
-const ChangeOrderListRequestV2Schema = z
-  .object({
-    changeOrders: z
-      .array(ChangeOrderListRequestItemV2Schema)
-      .openapi({ description: 'The change order operations' }),
-  })
-  .openapi({
-    description: 'Contains all change order operations you want to make.  (max 100 items per call)',
-    required: ['changeOrders'],
-  })
-  .openapi('ChangeOrderListRequestV2')
-
-const ExecutionUUIDSchema = z
-  .uuid()
-  .openapi({
-    description: 'The execution identifier',
-    example: '8D4176FA78D5A7Fffa91e9edc694ec5858be9a1b109507c',
-  })
-  .openapi('ExecutionUUID')
-
-const SourceTypeSchema = z
-  .enum(['Api', 'Go'])
-  .openapi({ description: 'Indicates the origin of the operation', example: 'Api' })
-  .openapi('SourceType')
-
-const ChangeOrderReportingSchema = z
-  .object({
-    changeOrderType: BusinessOperationTypeSchema.exactOptional(),
-    creationUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The creation UTC date of the execution',
-        example: '2017-04-01T13:10:03Z',
-      }),
-    details: z.record(z.string(), z.object({})).exactOptional(),
-    errorMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The error message during the execution',
-        example: 'This is an error message',
-      }),
-    executionUUID: ExecutionUUIDSchema.exactOptional(),
-    ipAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The IP address who request this operation', example: '127.0.0.1' }),
-    lastUpdateUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The last update UTC date of the execution',
-        example: '2017-04-01T13:10:05Z',
-      }),
-    processingStatus: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The processing status of the execution', example: 'Done' }),
-    sourceType: SourceTypeSchema.exactOptional(),
-    sourceUserId: BeezUPCommonUserIdSchema.exactOptional(),
-    sourceUserName: z.string().exactOptional().openapi({ example: 'Guillaume Tell' }),
-    testMode: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'This operation was a test', example: 'false' }),
-  })
-  .openapi({ description: 'The reporting related to a change order operation', required: [] })
-  .openapi('ChangeOrderReporting')
-
-const ChangePasswordRequestSchema = z
-  .object({
-    newPassword: z
-      .string()
-      .openapi({
-        description:
-          'Your new password. Which must respect the same constraints as the user registeration',
-      }),
-    oldPassword: z.string().openapi({ description: 'Your current password' }),
-  })
-  .openapi({ required: ['oldPassword', 'newPassword'] })
-  .openapi('ChangePasswordRequest')
-
-const ChangeUserColumnNameRequestSchema = z
-  .object({ userColumName: UserColumNameSchema })
-  .openapi({
-    description: 'The message request for the change user column name',
-    required: ['userColumName'],
-  })
-  .openapi('ChangeUserColumnNameRequest')
+  .openapi('BeezUPCommonChannelBasicInfo')
 
 const ChannelCatalogCategoryMappingSettingsSchema = z
   .object({
@@ -2989,6 +1623,14 @@ const ChannelCatalogCategoryMappingSettingsSchema = z
   })
   .openapi({ required: [] })
   .openapi('ChannelCatalogCategoryMappingSettings')
+
+const BeezUPCommonChannelCatalogIdSchema = z
+  .guid()
+  .openapi({
+    description: 'The channel catalog identifier',
+    example: '6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
+  })
+  .openapi('BeezUPCommonChannelCatalogId')
 
 const ChannelCategorySettingsSchema = z
   .object({
@@ -3037,6 +1679,27 @@ const ChannelCostSettingsSchema = z
   })
   .openapi('ChannelCostSettings')
 
+const BeezUPCommonCatalogColumnIdSchema = z
+  .guid()
+  .openapi({
+    description: 'The catalog column identifier (catalog or custom column)',
+    example: 'bea7c21e-948b-4ac3-9ffd-4396e62c4163',
+  })
+  .openapi('BeezUPCommonCatalogColumnId')
+
+const BeezUPCommonChannelCategoryPathSchema = z
+  .array(z.string())
+  .openapi({ description: 'The channel category path', example: ['Clothing', 'Women', 'Shoes'] })
+  .openapi('BeezUPCommonChannelCategoryPath')
+
+const BeezUPCommonChannelColumnIdSchema = z
+  .guid()
+  .openapi({
+    description: 'The channel column identifier',
+    example: '8a76f06a-fefc-4c0d-bcfe-b210f1482977',
+  })
+  .openapi('BeezUPCommonChannelColumnId')
+
 const ChannelCatalogColumnMappingSchema = z
   .object({
     catalogColumnId: BeezUPCommonCatalogColumnIdSchema.exactOptional(),
@@ -3049,6 +1712,19 @@ const ChannelCatalogColumnMappingSchema = z
     required: ['channelColumnId'],
   })
   .openapi('ChannelCatalogColumnMapping')
+
+const BeezUPCommonCatalogColumnUserNameSchema = z
+  .string()
+  .openapi({
+    description: 'The catalog column named by the user (catalog or custom column)',
+    example: 'My title',
+  })
+  .openapi('BeezUPCommonCatalogColumnUserName')
+
+const BeezUPCommonChannelColumnNameSchema = z
+  .string()
+  .openapi({ description: 'The channel column name', example: 'NAME' })
+  .openapi('BeezUPCommonChannelColumnName')
 
 const ChannelCatalogColumnMappingWithNameSchema = ChannelCatalogColumnMappingSchema.and(
   z
@@ -3378,6 +2054,34 @@ const ChannelCatalogLinksSchema = z
   })
   .openapi('ChannelCatalogLinks')
 
+const BeezUPCommonApiSettingsStatusSchema = z
+  .enum(['warning', 'success', 'failed'])
+  .openapi({ example: 'success' })
+  .openapi('BeezUPCommonApiSettingsStatus')
+
+const CategoryMappingStatusSchema = z
+  .enum(['warning', 'success', 'failed'])
+  .openapi({ example: 'success' })
+  .openapi('CategoryMappingStatus')
+
+const CategoryMappingStateSchema = z
+  .object({
+    status: CategoryMappingStatusSchema.exactOptional(),
+    uncategorizedProductCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Indicates the uncategorized product count', example: '101' }),
+    withoutCategoryCostProductCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates the count of products without cost defined',
+        example: '42',
+      }),
+  })
+  .openapi({ description: 'The category mapping state of the channel catalog', required: [] })
+  .openapi('CategoryMappingState')
+
 const ColumnMappingStatusSchema = z
   .enum(['warning', 'success', 'failed'])
   .openapi({ example: 'success' })
@@ -3396,56 +2100,36 @@ const ChannelCatalogStateSchema = z
   })
   .openapi('ChannelCatalogState')
 
-const ChannelCatalogSchema = BeezUPCommonChannelBasicInfoSchema.and(
-  z
-    .object({
-      categoryMappingSettings: ChannelCatalogCategoryMappingSettingsSchema.exactOptional(),
-      channelCatalogId: BeezUPCommonChannelCatalogIdSchema,
-      channelCategorySettings: ChannelCategorySettingsSchema,
-      channelCostSettings: ChannelCostSettingsSchema,
-      columnMappings: ChannelCatalogColumnMappingListWithNameSchema.exactOptional(),
-      costSettings: CostSettingsSchema.exactOptional(),
-      enabled: z
-        .boolean()
-        .openapi({ description: 'Indicates if the channel catalog is enable', example: 'true' }),
-      exclusionFilters: ExclusionFiltersSchema.exactOptional(),
-      exportUrl: BeezUPCommonHttpUrlSchema.exactOptional(),
-      generalSettings: GeneralSettingsSchema,
-      isMarketplace: z
-        .boolean()
-        .openapi({
-          description: 'Indicates if this channel catalog is related to a marketplace',
-          example: 'true',
-        }),
-      links: ChannelCatalogLinksSchema,
-      state: ChannelCatalogStateSchema,
-      storeId: BeezUPCommonStoreIdSchema,
-      types: z
-        .array(z.string())
-        .openapi({
-          description: 'The channel type list related to the channel',
-          example: ['Marketplace'],
-        }),
-    })
-    .openapi({
-      description: 'The channel catalog',
-      required: [
-        'channelCatalogId',
-        'channelId',
-        'channelName',
-        'channelImageUrl',
-        'types',
-        'storeId',
-        'enabled',
-        'state',
-        'links',
-        'generalSettings',
-        'channelCostSettings',
-        'channelCategorySettings',
-        'isMarketplace',
-      ],
-    }),
-).openapi('ChannelCatalog')
+const BeezUPCommonStoreIdSchema = z
+  .guid()
+  .openapi({ description: 'The store identifier', example: '64f43358-63a1-47f7-97ec-0301fc39956b' })
+  .openapi('BeezUPCommonStoreId')
+
+type ChannelCatalogType = z.infer<typeof BeezUPCommonChannelBasicInfoSchema> & {
+  categoryMappingSettings?: z.infer<typeof ChannelCatalogCategoryMappingSettingsSchema>
+  channelCatalogId: z.infer<typeof BeezUPCommonChannelCatalogIdSchema>
+  channelCategorySettings: z.infer<typeof ChannelCategorySettingsSchema>
+  channelCostSettings: z.infer<typeof ChannelCostSettingsSchema>
+  columnMappings?: z.infer<typeof ChannelCatalogColumnMappingListWithNameSchema>
+  costSettings?: z.infer<typeof CostSettingsSchema>
+  enabled: boolean
+  exclusionFilters?: z.infer<typeof ExclusionFiltersSchema>
+  exportUrl?: z.infer<typeof BeezUPCommonHttpUrlSchema>
+  generalSettings: z.infer<typeof GeneralSettingsSchema>
+  isMarketplace: boolean
+  links: z.infer<typeof ChannelCatalogLinksSchema>
+  state: z.infer<typeof ChannelCatalogStateSchema>
+  storeId: z.infer<typeof BeezUPCommonStoreIdSchema>
+  types: string[]
+}
+
+const BeezUPCommonCatalogCategoryPathSchema = z
+  .array(z.string())
+  .openapi({
+    description: 'The catalog category path',
+    example: ['Vêtements', 'Femmes', 'Chaussures'],
+  })
+  .openapi('BeezUPCommonCatalogCategoryPath')
 
 const ChannelCatalogCategoryCostValueSchema = z
   .number()
@@ -3455,26 +2139,6 @@ const ChannelCatalogCategoryCostValueSchema = z
     example: '10.21',
   })
   .openapi('ChannelCatalogCategoryCostValue')
-
-const ChannelCatalogCategoryConfigurationSchema = z
-  .object({
-    autoMapNewSubCategories: z
-      .boolean()
-      .openapi({
-        description:
-          'Great feature! In case of mapping to parent catalog category, you can ask to automatically map new sub catalog category in the next importation to this channel category path.',
-        example: 'true',
-      }),
-    catalogCategoryPath: BeezUPCommonCatalogCategoryPathSchema,
-    channelCategoryPath: BeezUPCommonChannelCategoryPathSchema.exactOptional(),
-    costValue: ChannelCatalogCategoryCostValueSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represent a mapping between a catalog category path and a channel category path.\nThe cost on this mapping can be applied.\n',
-    required: ['autoMapNewSubCategories', 'catalogCategoryPath'],
-  })
-  .openapi('ChannelCatalogCategoryConfiguration')
 
 const LinksConfigureChannelCatalogCategoryLinkSchema = BeezUPCommonLink3Schema.and(
   z
@@ -3492,18 +2156,26 @@ const ChannelCatalogCategoryMappingInfoLinksSchema = z
   .openapi({ required: [] })
   .openapi('ChannelCatalogCategoryMappingInfoLinks')
 
-const ChannelCatalogCategoryConfigurationInfoSchema = z
-  .object({
-    catalogCategoryPath: BeezUPCommonCatalogCategoryPathSchema,
-    channelCategoryPath: BeezUPCommonChannelCategoryPathSchema.exactOptional(),
-    costValue: ChannelCatalogCategoryCostValueSchema.exactOptional(),
-    links: ChannelCatalogCategoryMappingInfoLinksSchema,
-  })
-  .openapi({
-    description: 'For all catalog categories the current mapping applied',
-    required: ['catalogCategoryPath', 'links'],
-  })
-  .openapi('ChannelCatalogCategoryConfigurationInfo')
+type ChannelCatalogCategoryConfigurationInfoType = {
+  catalogCategoryPath: z.infer<typeof BeezUPCommonCatalogCategoryPathSchema>
+  channelCategoryPath?: z.infer<typeof BeezUPCommonChannelCategoryPathSchema>
+  costValue?: z.infer<typeof ChannelCatalogCategoryCostValueSchema>
+  links: z.infer<typeof ChannelCatalogCategoryMappingInfoLinksSchema>
+}
+
+const ChannelCatalogCategoryConfigurationInfoSchema: z.ZodType<ChannelCatalogCategoryConfigurationInfoType> =
+  z
+    .object({
+      catalogCategoryPath: BeezUPCommonCatalogCategoryPathSchema,
+      channelCategoryPath: BeezUPCommonChannelCategoryPathSchema.exactOptional(),
+      costValue: ChannelCatalogCategoryCostValueSchema.exactOptional(),
+      links: ChannelCatalogCategoryMappingInfoLinksSchema,
+    })
+    .openapi({
+      description: 'For all catalog categories the current mapping applied',
+      required: ['catalogCategoryPath', 'links'],
+    })
+    .openapi('ChannelCatalogCategoryConfigurationInfo')
 
 const CostStatusSchema = z
   .enum(['required', 'optional', 'notConfigurable'])
@@ -3524,22 +2196,14 @@ const MappingStatusSchema = z
   .openapi({ example: 'required' })
   .openapi('MappingStatus')
 
-const ChannelCatalogCategoryConfigurationListSchema = z
-  .object({
-    channelCatalogCategoryConfigurations: z.array(ChannelCatalogCategoryConfigurationInfoSchema),
-    costStatus: CostStatusSchema,
-    links: ChannelCatalogCategoryMappingsLinksSchema,
-    mappingStatus: MappingStatusSchema,
-  })
-  .openapi({
-    required: ['links', 'channelCatalogCategoryConfigurations', 'mappingStatus', 'costStatus'],
-  })
-  .openapi('ChannelCatalogCategoryConfigurationList')
-
-const ChannelCatalogColumnMappingListSchema = z
-  .array(ChannelCatalogColumnMappingSchema)
-  .openapi({ description: 'The column mapping list between a channel and a catalog' })
-  .openapi('ChannelCatalogColumnMappingList')
+type ChannelCatalogCategoryConfigurationListType = {
+  channelCatalogCategoryConfigurations: z.infer<
+    typeof ChannelCatalogCategoryConfigurationInfoSchema
+  >[]
+  costStatus: z.infer<typeof CostStatusSchema>
+  links: z.infer<typeof ChannelCatalogCategoryMappingsLinksSchema>
+  mappingStatus: z.infer<typeof MappingStatusSchema>
+}
 
 const ChannelCatalogExportCacheInfoSchema = z
   .object({
@@ -3598,13 +2262,10 @@ const ChannelCatalogExportCacheInfoResponseLinksSchema = z
   .openapi({ required: ['self'] })
   .openapi('ChannelCatalogExportCacheInfoResponseLinks')
 
-const ChannelCatalogExportCacheInfoResponseSchema = z
-  .object({
-    cacheInfo: ChannelCatalogExportCacheInfoSchema,
-    links: ChannelCatalogExportCacheInfoResponseLinksSchema,
-  })
-  .openapi({ required: ['cacheInfo', 'links'] })
-  .openapi('ChannelCatalogExportCacheInfoResponse')
+type ChannelCatalogExportCacheInfoResponseType = {
+  cacheInfo: z.infer<typeof ChannelCatalogExportCacheInfoSchema>
+  links: z.infer<typeof ChannelCatalogExportCacheInfoResponseLinksSchema>
+}
 
 const ChannelCatalogExportationReportingSchema = z
   .object({
@@ -3668,14 +2329,141 @@ const ChannelCatalogExportationHistoryLinksSchema = z
   .openapi({ required: [] })
   .openapi('ChannelCatalogExportationHistoryLinks')
 
-const ChannelCatalogExportationHistorySchema = z
+const BeezUPCommonPaginationResultSchema: z.ZodType<BeezUPCommonPaginationResultType> = z
   .object({
-    exportations: z.array(ChannelCatalogExportationReportingSchema),
-    links: ChannelCatalogExportationHistoryLinksSchema,
-    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
+    entryCount: z
+      .int()
+      .min(0)
+      .openapi({ description: 'The entry count currently returned', example: '25' }),
+    links: BeezUPCommonPaginationResultLinksSchema,
+    pageCount: z.int().min(0).openapi({ description: 'The page count', example: '38' }),
+    totalEntryCount: z
+      .int()
+      .min(0)
+      .openapi({ description: 'The total entry count', example: '943' }),
   })
-  .openapi({ required: ['links', 'exportations'] })
-  .openapi('ChannelCatalogExportationHistory')
+  .openapi({
+    example: {
+      entryCount: '25',
+      links: {
+        first: {
+          href: '/v2/user/marketplaces/orders/list/full',
+          method: 'POST',
+          parameters: [
+            {
+              in: 'body',
+              name: 'request',
+              schema: 'orderListRequest',
+              type: 'object',
+              value: {
+                beginPeriodUtcDate: '2014-08-25T07:32:31.584Z',
+                endPeriodUtcDate: '2014-09-24T07:32:31.584Z',
+                pageNumber: '1',
+                pageSize: '25',
+              },
+            },
+          ],
+        },
+        last: {
+          href: '/v2/user/marketplaces/orders/list/full',
+          method: 'POST',
+          parameters: [
+            {
+              in: 'body',
+              name: 'request',
+              schema: 'orderListRequest',
+              type: 'object',
+              value: {
+                beginPeriodUtcDate: '2014-08-25T07:32:31.584Z',
+                endPeriodUtcDate: '2014-09-24T07:32:31.584Z',
+                pageNumber: '38',
+                pageSize: '25',
+              },
+            },
+          ],
+        },
+        next: {
+          href: '/v2/user/marketplaces/orders/list/full',
+          method: 'POST',
+          parameters: [
+            {
+              in: 'body',
+              name: 'request',
+              schema: 'orderListRequest',
+              type: 'object',
+              value: {
+                beginPeriodUtcDate: '2014-08-25T07:32:31.584Z',
+                endPeriodUtcDate: '2014-09-24T07:32:31.584Z',
+                pageNumber: '2',
+                pageSize: '25',
+              },
+            },
+          ],
+        },
+      },
+      pageCount: '38',
+      totalEntryCount: '943',
+    },
+    required: ['entryCount', 'pageCount', 'totalEntryCount', 'links'],
+  })
+  .openapi('BeezUPCommonPaginationResult')
+
+type ChannelCatalogExportationHistoryType = {
+  exportations: z.infer<typeof ChannelCatalogExportationReportingSchema>[]
+  links: z.infer<typeof ChannelCatalogExportationHistoryLinksSchema>
+  paginationResult?: z.infer<typeof BeezUPCommonPaginationResultSchema>
+}
+
+const ChannelCatalogSchema: z.ZodType<ChannelCatalogType> = BeezUPCommonChannelBasicInfoSchema.and(
+  z
+    .object({
+      categoryMappingSettings: ChannelCatalogCategoryMappingSettingsSchema.exactOptional(),
+      channelCatalogId: BeezUPCommonChannelCatalogIdSchema,
+      channelCategorySettings: ChannelCategorySettingsSchema,
+      channelCostSettings: ChannelCostSettingsSchema,
+      columnMappings: ChannelCatalogColumnMappingListWithNameSchema.exactOptional(),
+      costSettings: CostSettingsSchema.exactOptional(),
+      enabled: z
+        .boolean()
+        .openapi({ description: 'Indicates if the channel catalog is enable', example: 'true' }),
+      exclusionFilters: ExclusionFiltersSchema.exactOptional(),
+      exportUrl: BeezUPCommonHttpUrlSchema.exactOptional(),
+      generalSettings: GeneralSettingsSchema,
+      isMarketplace: z
+        .boolean()
+        .openapi({
+          description: 'Indicates if this channel catalog is related to a marketplace',
+          example: 'true',
+        }),
+      links: ChannelCatalogLinksSchema,
+      state: ChannelCatalogStateSchema,
+      storeId: BeezUPCommonStoreIdSchema,
+      types: z
+        .array(z.string())
+        .openapi({
+          description: 'The channel type list related to the channel',
+          example: ['Marketplace'],
+        }),
+    })
+    .openapi({
+      description: 'The channel catalog',
+      required: [
+        'channelCatalogId',
+        'channelId',
+        'channelName',
+        'channelImageUrl',
+        'types',
+        'storeId',
+        'enabled',
+        'state',
+        'links',
+        'generalSettings',
+        'channelCostSettings',
+        'channelCategorySettings',
+        'isMarketplace',
+      ],
+    }),
+).openapi('ChannelCatalog')
 
 const LinksAddChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
   z.any().openapi({ example: { href: '/v2/user/channelCatalogs', method: 'POST' } }),
@@ -3715,19 +2503,44 @@ const ChannelCatalogListLovLinksSchema = z
   .openapi({ required: [] })
   .openapi('ChannelCatalogListLovLinks')
 
-const ChannelCatalogListSchema = z
+type ChannelCatalogListType = {
+  channelCatalogs?: { [key: string]: z.infer<typeof ChannelCatalogSchema> }
+  links?: z.infer<typeof ChannelCatalogListLinksSchema>
+  lovLinks?: z.infer<typeof ChannelCatalogListLovLinksSchema>
+}
+
+const ExternalLinksGetExternalConfigurationPageLinkSchema = BeezUPCommonLink3Schema.openapi(
+  'ExternalLinksGetExternalConfigurationPageLink',
+)
+
+const LinksGetChannelCatalogMarketplacePropertiesLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/properties',
+      },
+    }),
+).openapi('LinksGetChannelCatalogMarketplacePropertiesLink')
+
+const LinksGetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/settings',
+      },
+    }),
+).openapi('LinksGetChannelCatalogMarketplaceSettingsLink')
+
+const ChannelCatalogMarketplacePropertiesLinksSchema = z
   .object({
-    channelCatalogs: z
-      .record(z.string(), ChannelCatalogSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The channel catalog list. The key is the channel catalog identifier',
-      }),
-    links: ChannelCatalogListLinksSchema.exactOptional(),
-    lovLinks: ChannelCatalogListLovLinksSchema.exactOptional(),
+    externalConfigurationPage: ExternalLinksGetExternalConfigurationPageLinkSchema.exactOptional(),
+    self: LinksGetChannelCatalogMarketplacePropertiesLinkSchema,
+    settings: LinksGetChannelCatalogMarketplaceSettingsLinkSchema.exactOptional(),
   })
-  .openapi({ description: 'This is the index of the channel catalog API', required: [] })
-  .openapi('ChannelCatalogList')
+  .openapi({ required: ['self'] })
+  .openapi('ChannelCatalogMarketplacePropertiesLinks')
 
 const ChannelCatalogMarketplacePropertyDiscriminatorTypeSchema = z
   .enum([
@@ -3854,133 +2667,6 @@ const ChannelCatalogMarketplacePropertySchema = z
   })
   .openapi('ChannelCatalogMarketplaceProperty')
 
-const ChannelCatalogMarketplaceBooleanPropertySchema = ChannelCatalogMarketplacePropertySchema.and(
-  z
-    .object({
-      default: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'Indicate the default values of the property', example: 'false' }),
-    })
-    .openapi({ required: [] }),
-).openapi('ChannelCatalogMarketplaceBooleanProperty')
-
-const ChannelCatalogMarketplaceSettingDiscriminatorTypeSchema = z
-  .enum([
-    'channelCatalogMarketplaceStringSetting',
-    'channelCatalogMarketplaceIntegerSetting',
-    'channelCatalogMarketplaceBooleanSetting',
-    'channelCatalogMarketplaceNumberSetting',
-  ])
-  .openapi({ example: 'string' })
-  .openapi('ChannelCatalogMarketplaceSettingDiscriminatorType')
-
-const ChannelCatalogMarketplaceSettingSchema = z
-  .object({
-    discriminatorType: ChannelCatalogMarketplaceSettingDiscriminatorTypeSchema,
-    name: ChannelCatalogMarketplacePropertyNameSchema,
-  })
-  .openapi({
-    description: 'Model for fetching a channel catalog marketplace setting',
-    discriminator: { propertyName: 'discriminatorType' },
-    required: ['name', 'discriminatorType'],
-  })
-  .openapi('ChannelCatalogMarketplaceSetting')
-
-const ChannelCatalogMarketplaceBooleanSettingSchema = ChannelCatalogMarketplaceSettingSchema.and(
-  z
-    .object({
-      value: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'Channel catalog marketplace property values', example: 'false' }),
-    })
-    .openapi({ required: [] }),
-).openapi('ChannelCatalogMarketplaceBooleanSetting')
-
-const ChannelCatalogMarketplaceIntegerPropertySchema = ChannelCatalogMarketplacePropertySchema.and(
-  z
-    .object({
-      default: z
-        .array(z.int())
-        .exactOptional()
-        .openapi({ description: 'Indicate the default values of the property', example: ['201'] }),
-    })
-    .openapi({ required: [] }),
-).openapi('ChannelCatalogMarketplaceIntegerProperty')
-
-const ChannelCatalogMarketplaceIntegerSettingSchema = ChannelCatalogMarketplaceSettingSchema.and(
-  z
-    .object({
-      values: z
-        .array(z.int())
-        .exactOptional()
-        .openapi({ description: 'Channel catalog marketplace property values', example: ['201'] }),
-    })
-    .openapi({ required: [] }),
-).openapi('ChannelCatalogMarketplaceIntegerSetting')
-
-const ChannelCatalogMarketplaceNumberPropertySchema = ChannelCatalogMarketplacePropertySchema.and(
-  z
-    .object({
-      default: z
-        .array(z.number())
-        .exactOptional()
-        .openapi({
-          description: 'Indicate the default values of the property',
-          example: ['201.69'],
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('ChannelCatalogMarketplaceNumberProperty')
-
-const ChannelCatalogMarketplaceNumberSettingSchema = ChannelCatalogMarketplaceSettingSchema.and(
-  z
-    .object({
-      values: z
-        .array(z.number())
-        .exactOptional()
-        .openapi({
-          description: 'Channel catalog marketplace property values',
-          example: ['201.69'],
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('ChannelCatalogMarketplaceNumberSetting')
-
-const ExternalLinksGetExternalConfigurationPageLinkSchema = BeezUPCommonLink3Schema.openapi(
-  'ExternalLinksGetExternalConfigurationPageLink',
-)
-
-const LinksGetChannelCatalogMarketplacePropertiesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/properties',
-      },
-    }),
-).openapi('LinksGetChannelCatalogMarketplacePropertiesLink')
-
-const LinksGetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/settings',
-      },
-    }),
-).openapi('LinksGetChannelCatalogMarketplaceSettingsLink')
-
-const ChannelCatalogMarketplacePropertiesLinksSchema = z
-  .object({
-    externalConfigurationPage: ExternalLinksGetExternalConfigurationPageLinkSchema.exactOptional(),
-    self: LinksGetChannelCatalogMarketplacePropertiesLinkSchema,
-    settings: LinksGetChannelCatalogMarketplaceSettingsLinkSchema.exactOptional(),
-  })
-  .openapi({ required: ['self'] })
-  .openapi('ChannelCatalogMarketplacePropertiesLinks')
-
 const ChannelCatalogMarketplacePropertyGroupSchema = z
   .object({
     name: z
@@ -4019,157 +2705,11 @@ const ChannelCatalogMarketplacePropertyGroupSchema = z
   .openapi({ required: ['name', 'position', 'properties'] })
   .openapi('ChannelCatalogMarketplacePropertyGroup')
 
-const ChannelCatalogMarketplacePropertiesSchema = z
-  .object({
-    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
-    links: ChannelCatalogMarketplacePropertiesLinksSchema,
-    propertyGroups: z.array(ChannelCatalogMarketplacePropertyGroupSchema).openapi({
-      description: 'The groups settings with constraints',
-      example: [
-        {
-          name: 'AccountInformations',
-          position: '1',
-          properties: [
-            {
-              name: 'EbayToken',
-              position: '1',
-              readOnly: 'true',
-              values: [
-                'AgAAAA**AQAAAA**aAAAAA**2VFhVg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6AElISgCJaLpwWdj6x9nY+seQ**OEsBAA**AAMAAA**jzsVAMwj1dPBsyCEp0Fuj/toSBrfZF2JpKKDrrXIirMzgvgbsyxnA2h1wl7WjFD+TfdCmaBq3CAFLOog/433G5gsse1DLTT6uXFajdiHnPVfnL7QtKIpQEIwL8ZO5Tx1dGl0XQLsU7knPwbGHn5X6Z3JzXrCGvvpw2+MIzDNhasYlqPfOEr8Lct5dcsIIdhXl/qgrzALe5++v76/XjaXvP6eic3uCWBEXBiXC1uisjEtOqaNIPkFaiICBaXsQUzVZdM68bQatBg5bwf6hxvqOyNJRw4pttGStovcXXjL+aszw7ejbxLv1lJ6qeTMj5oRwTPl0AzBAejcY+DTBrLEmgdzrvWHLvMOa1ijGOGzVodBoDGimiqadCPQpAVZr0e7HvQIVbOlbmKpuCUFJ4RPCv0NxpkCm1/nxZWeS9H8gd/SfLf9Chgd115dcKzgxFBoSh7myJcw+MRM7szPQ2Pwv980dTRyHvbI8XR4OieYvXmU4H7Nl51N8B3qkjYFkdcp6J06eqs4dO68lDNdWZfXHkjwI3dY6umDUp4y82IdQl8IykPty3/DZfUAfqafgiAwMHZvXjewp5HhPjDi2zgf+5EcDlvf6rNMzjsghjdWUQi4WldDk+LXgkos6jswIQaNPdpW1D4KyPYWtGYknx0Xzzuc6WmBoVwGFalgMvCWWI9Gs2w6PG5GqB9zm1Fnr3svtPbNYPQ6q3VQpkKL2SWQXy383O1cp6ZMLI9GwZe0FnrqCxb/wc4XJUVw2RoR3qiX',
-              ],
-            },
-            {
-              name: 'PayPalEmailAddress',
-              pattern:
-                '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])',
-              position: '2',
-              required: true,
-              'x-pattern':
-                '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])',
-            },
-          ],
-        },
-        {
-          displayGroupCode: 'AnnounceTitle',
-          displayGroupPosition: '2',
-          properties: [
-            { name: 'Postalcode', position: '1', required: true },
-            {
-              lovLink: { href: '/v2/user/lov/Country_eBay' },
-              lovRequired: 'true',
-              name: 'Country',
-              position: '2',
-              required: true,
-            },
-            {
-              lovLink: { href: '/v2/user/lov/ReturnsWithinDuration_eBay' },
-              lovRequired: 'true',
-              name: 'ReturnsWithinOption',
-              position: '3',
-              required: true,
-            },
-            {
-              lovLink: { href: '/v2/user/lov/FRA_ShippingService_eBay' },
-              lovRequired: 'true',
-              name: 'ShippingService',
-              position: '4',
-              required: true,
-            },
-            {
-              lovLink: { href: '/v2/user/lov/Currency_eBay' },
-              lovRequired: 'true',
-              name: 'Currency',
-              position: '5',
-              required: true,
-            },
-            {
-              lovLink: { href: '/v2/user/lov/PaymentMethods_eBay' },
-              lovRequired: 'true',
-              maxItems: 2,
-              minItems: 1,
-              name: 'PaymentMethods',
-              position: '6',
-              required: true,
-            },
-          ],
-        },
-        {
-          displayGroupCode: 'SalesConditions',
-          displayGroupPosition: '3',
-          properties: [
-            {
-              lovLink: { href: '/v2/user/lov/ReturnsAcceptedOption_eBay' },
-              lovRequired: 'true',
-              name: 'ReturnsAcceptedOption',
-              position: '1',
-              required: true,
-            },
-            {
-              lovLink: { href: '/v2/user/lov/ShippingCostPaidByOption_eBay' },
-              lovRequired: 'true',
-              name: 'ShippingCostPaidByOption',
-              position: '2',
-              required: true,
-            },
-            {
-              lovLink: { href: '/v2/user/lov/RefundOption_eBay' },
-              lovRequired: 'true',
-              name: 'RefundOption',
-              position: '3',
-              required: true,
-            },
-            {
-              lovLink: { href: '/v2/user/lov/ReturnsWithinDuration_eBay' },
-              lovRequired: 'true',
-              name: 'ReturnsWithinOption',
-              position: '4',
-              required: true,
-            },
-            { maxLength: 5000, name: 'ReturnDescription', position: '5', required: false },
-          ],
-        },
-        {
-          displayGroupCode: 'HTML',
-          displayGroupPosition: '4',
-          properties: [{ maxLength: 50000, name: 'Template_HTML', position: '1', required: false }],
-        },
-        {
-          displayGroupCode: 'OrdersRetrievalOptions',
-          displayGroupPosition: '5',
-          properties: [
-            {
-              description: 'If true allows to retireve one marketplace country only',
-              name: 'RetrieveOnlyOneCountry',
-              position: '1',
-              required: false,
-              type: 'boolean',
-            },
-          ],
-        },
-      ],
-    }),
-  })
-  .openapi({ required: ['links', 'propertyGroups'] })
-  .openapi('ChannelCatalogMarketplaceProperties')
-
-const ChannelCatalogMarketplaceSettingArraySchema = z
-  .array(ChannelCatalogMarketplaceSettingSchema)
-  .openapi({
-    example: [
-      { name: 'Country', values: ['FR'] },
-      { name: 'Currency', values: ['EUR'] },
-      { name: 'ListingDuration', values: ['GTC'] },
-      { name: 'PaymentMethods', values: ['CCAccepted'] },
-      { name: 'PayPalEmailAddress', values: ['pascal@ixeoline.com'] },
-      { name: 'PostalCode', values: ['69630'] },
-      { name: 'RefundOption', values: ['MoneyBackOrExchange'] },
-      { name: 'ReturnsAcceptedOption', values: ['ReturnsAccepted'] },
-      { name: 'ReturnsWithinOption', values: ['Days_10'] },
-      { name: 'ShippingCostPaidByOption', values: ['Buyer'] },
-      { name: 'ShippingService', values: ['FR_ColiposteColissimo'] },
-    ],
-  })
-  .openapi('ChannelCatalogMarketplaceSettingArray')
+type ChannelCatalogMarketplacePropertiesType = {
+  info?: z.infer<typeof BeezUPCommonInfoSummariesSchema>
+  links: z.infer<typeof ChannelCatalogMarketplacePropertiesLinksSchema>
+  propertyGroups: z.infer<typeof ChannelCatalogMarketplacePropertyGroupSchema>[]
+}
 
 const LinksSetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.and(
   z
@@ -4197,69 +2737,65 @@ const ChannelCatalogMarketplaceSettingsLinksSchema = z
   .openapi({ required: ['self', 'save'] })
   .openapi('ChannelCatalogMarketplaceSettingsLinks')
 
-const ChannelCatalogMarketplaceSettingsSchema = z
+const ChannelCatalogMarketplaceSettingDiscriminatorTypeSchema = z
+  .enum([
+    'channelCatalogMarketplaceStringSetting',
+    'channelCatalogMarketplaceIntegerSetting',
+    'channelCatalogMarketplaceBooleanSetting',
+    'channelCatalogMarketplaceNumberSetting',
+  ])
+  .openapi({ example: 'string' })
+  .openapi('ChannelCatalogMarketplaceSettingDiscriminatorType')
+
+const ChannelCatalogMarketplaceSettingSchema = z
   .object({
-    links: ChannelCatalogMarketplaceSettingsLinksSchema,
-    settings: z.array(ChannelCatalogMarketplaceSettingSchema).openapi({
-      example: [
-        { name: 'Country', values: ['FR'] },
-        { name: 'Currency', values: ['EUR'] },
-        { name: 'ListingDuration', values: ['GTC'] },
-        { name: 'PaymentMethods', values: ['CCAccepted'] },
-        { name: 'PayPalEmailAddress', values: ['pascal@ixeoline.com'] },
-        { name: 'PostalCode', values: ['69630'] },
-        { name: 'RefundOption', values: ['MoneyBackOrExchange'] },
-        { name: 'ReturnsAcceptedOption', values: ['ReturnsAccepted'] },
-        { name: 'ReturnsWithinOption', values: ['Days_10'] },
-        { name: 'ShippingCostPaidByOption', values: ['Buyer'] },
-        { name: 'ShippingService', values: ['FR_ColiposteColissimo'] },
-      ],
-    }),
+    discriminatorType: ChannelCatalogMarketplaceSettingDiscriminatorTypeSchema,
+    name: ChannelCatalogMarketplacePropertyNameSchema,
   })
   .openapi({
-    description: 'The channel catalog marketplace settings',
-    required: ['links', 'settings'],
+    description: 'Model for fetching a channel catalog marketplace setting',
+    discriminator: { propertyName: 'discriminatorType' },
+    required: ['name', 'discriminatorType'],
   })
-  .openapi('ChannelCatalogMarketplaceSettings')
+  .openapi('ChannelCatalogMarketplaceSetting')
 
-const ChannelCatalogMarketplaceStringPropertySchema = ChannelCatalogMarketplacePropertySchema.and(
-  z
-    .object({
-      default: z
-        .array(z.string())
-        .exactOptional()
-        .openapi({
-          description: 'Indicate the default values of the property',
-          example: ['My default value'],
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('ChannelCatalogMarketplaceStringProperty')
+type ChannelCatalogMarketplaceSettingsType = {
+  links: z.infer<typeof ChannelCatalogMarketplaceSettingsLinksSchema>
+  settings: z.infer<typeof ChannelCatalogMarketplaceSettingSchema>[]
+}
 
-const ChannelCatalogMarketplaceStringSettingSchema = ChannelCatalogMarketplaceSettingSchema.and(
-  z
-    .object({
-      values: z
-        .array(z.string())
-        .exactOptional()
-        .openapi({
-          description: 'Channel catalog marketplace property values',
-          example: ['myemail@mydomain.com'],
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('ChannelCatalogMarketplaceStringSetting')
-
-const ChannelCatalogProductByChannelCatalogRequestSchema = z
+const BeezUPCommonProductBasicInfoSchema = z
   .object({
-    channelCatalogIds: z
-      .array(BeezUPCommonChannelCatalogIdSchema)
-      .openapi({ description: 'The list of channel catalog identifier' }),
-    productId: BeezUPCommonProductIdSchema,
-    storeId: BeezUPCommonStoreIdSchema,
+    productExists: z
+      .boolean()
+      .openapi({
+        description: 'Indicates if the product still exists in your catalog',
+        example: 'true',
+      }),
+    productId: z
+      .guid()
+      .openapi({
+        description: 'The product identifier',
+        example: '00000000-0000-0000-0000-000000000000',
+      }),
+    productImageUrl: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'The product image Url',
+        example:
+          'http://i2.cdscdn.com/pdt2/3/9/0/1/550x550/hai6901018043390/rw/haier-b20fwrss-refrigerateur-americain.jpg',
+      }),
+    productSku: z.string().openapi({ description: 'The product SKU', example: 'SKU1234' }),
+    productTitle: z
+      .string()
+      .openapi({ description: 'The product tile', example: 'My supert product' }),
   })
-  .openapi({ required: ['storeId', 'productId', 'channelCatalogIds'] })
-  .openapi('ChannelCatalogProductByChannelCatalogRequest')
+  .openapi({
+    description: 'The basic information related to a product',
+    required: ['productId', 'productSku', 'productTitle', 'productExists'],
+  })
+  .openapi('BeezUPCommonProductBasicInfo')
 
 const LinksDisableChannelCatalogProductLinkSchema = BeezUPCommonLink3Schema.and(
   z
@@ -4358,98 +2894,64 @@ const ProductOverridesWithCatalogValuesSchema = z
   })
   .openapi('ProductOverridesWithCatalogValues')
 
-const ChannelCatalogProductInfoSchema = BeezUPCommonProductBasicInfoSchema.and(
-  z
-    .object({
-      disabled: z
-        .boolean()
-        .default(false)
-        .openapi({
-          description: 'Indicates if the product has been disabled or not',
-          example: 'false',
-        }),
-      excluded: z
-        .boolean()
-        .default(false)
-        .openapi({
-          description: 'Indicates if the product has been excluded by a exclusion filter',
-          example: 'true',
-        }),
-      excludedBy: z
-        .array(ExclusionFilterNameSchema)
-        .exactOptional()
-        .openapi({ example: ['Exclude sony products'] }),
-      links: ChannelCatalogProductInfoLinksSchema,
-      overrides: ProductOverridesWithCatalogValuesSchema,
-      uncategorized: z
-        .boolean()
-        .openapi({
-          description:
-            "Indicates if the product's category has been NOT mapped to a channel category",
-          example: 'true',
-        }),
-    })
-    .openapi({
-      description: 'The channel catalog product information',
-      required: [
-        'productId',
-        'productExists',
-        'overrides',
-        'disabled',
-        'uncategorized',
-        'excluded',
-        'links',
-      ],
-    }),
-).openapi('ChannelCatalogProductInfo')
+type ChannelCatalogProductInfoType = z.infer<typeof BeezUPCommonProductBasicInfoSchema> & {
+  disabled: boolean
+  excluded: boolean
+  excludedBy?: z.infer<typeof ExclusionFilterNameSchema>[]
+  links: z.infer<typeof ChannelCatalogProductInfoLinksSchema>
+  overrides: z.infer<typeof ProductOverridesWithCatalogValuesSchema>
+  uncategorized: boolean
+}
 
-const ChannelCatalogProductByChannelCatalogResponseSchema = z
-  .object({
-    channelCatalogs: z
-      .record(z.string(), ChannelCatalogProductInfoSchema)
-      .exactOptional()
+const ChannelCatalogProductInfoSchema: z.ZodType<ChannelCatalogProductInfoType> =
+  BeezUPCommonProductBasicInfoSchema.and(
+    z
+      .object({
+        disabled: z
+          .boolean()
+          .default(false)
+          .openapi({
+            description: 'Indicates if the product has been disabled or not',
+            example: 'false',
+          }),
+        excluded: z
+          .boolean()
+          .default(false)
+          .openapi({
+            description: 'Indicates if the product has been excluded by a exclusion filter',
+            example: 'true',
+          }),
+        excludedBy: z
+          .array(ExclusionFilterNameSchema)
+          .exactOptional()
+          .openapi({ example: ['Exclude sony products'] }),
+        links: ChannelCatalogProductInfoLinksSchema,
+        overrides: ProductOverridesWithCatalogValuesSchema,
+        uncategorized: z
+          .boolean()
+          .openapi({
+            description:
+              "Indicates if the product's category has been NOT mapped to a channel category",
+            example: 'true',
+          }),
+      })
       .openapi({
-        description:
-          'The channel catalog product by channel catalog. The key is the channel catalog identifier',
+        description: 'The channel catalog product information',
+        required: [
+          'productId',
+          'productExists',
+          'overrides',
+          'disabled',
+          'uncategorized',
+          'excluded',
+          'links',
+        ],
       }),
-  })
-  .openapi({ required: [] })
-  .openapi('ChannelCatalogProductByChannelCatalogResponse')
+  ).openapi('ChannelCatalogProductInfo')
 
-const ChannelCatalogProductFiltersSchema = z
-  .object({
-    additionalProductFilters: BeezUPCommonAdditionalProductFiltersSchema.exactOptional(),
-    catalogEans: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The catalog product EAN filter (multiple values)' }),
-    catalogMpns: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The catalog product MPN filter (multiple values)' }),
-    catalogSkus: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The catalog product SKU filter (multiple values)' }),
-    channelEans: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The channel product EAN filter (multiple values)' }),
-    channelMpns: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The channel product MPN filter (multiple values)' }),
-    channelSkus: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The channel product SKU filter (multiple values)' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The product title filter', example: 'Refrigérateur' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ChannelCatalogProductFilters')
+type ChannelCatalogProductByChannelCatalogResponseType = {
+  channelCatalogs?: { [key: string]: z.infer<typeof ChannelCatalogProductInfoSchema> }
+}
 
 const LinksExportChannelCatalogProductInfoListLinkSchema = BeezUPCommonLink3Schema.and(
   z
@@ -4471,72 +2973,32 @@ const ChannelCatalogProductInfoListLinksSchema = z
   .openapi({ required: ['self'] })
   .openapi('ChannelCatalogProductInfoListLinks')
 
-const ChannelCatalogProductInfoListSchema = z
-  .object({
-    links: ChannelCatalogProductInfoListLinksSchema,
-    paginationResult: BeezUPCommonPaginationResultSchema,
-    productInfos: z.array(ChannelCatalogProductInfoSchema),
-  })
-  .openapi({
-    description: 'The channel catalog product info list',
-    required: ['paginationResult', 'links', 'productInfos'],
-  })
-  .openapi('ChannelCatalogProductInfoList')
+type ChannelCatalogProductInfoListType = {
+  links: z.infer<typeof ChannelCatalogProductInfoListLinksSchema>
+  paginationResult: z.infer<typeof BeezUPCommonPaginationResultSchema>
+  productInfos: z.infer<typeof ChannelCatalogProductInfoSchema>[]
+}
 
-const ChannelCatalogProductsCountersSchema = z
-  .object({
-    disabledProductCountExcludingUncategorized: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Disabled product count EXCLUDING uncategorized products on existing products.',
-        example: '150',
-      }),
-    disabledProductCountIncludingUncategorized: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Disabled product count INCLUDING uncategorized products on existing products.',
-        example: '169',
-      }),
-    excludedProductCountExcludingUncategorizedAndDisabled: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Excluded product count EXCLUDING uncategorized products AND disabled products on existing products.',
-        example: '50',
-      }),
-    excludedProductCountIncludingUncategorizedAndDisabled: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Excluded product count INCLUDING uncategorized products AND disabled products on existing products.',
-        example: '66',
-      }),
-    existingProductCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Imported product count currently in your catalog.',
-        example: '1000',
-      }),
-    uncategorizedProductCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Product count WITHOUT category mapped on existing products.',
-        example: '250',
-      }),
-  })
-  .openapi({
-    description: 'The channel catalog products counters. For each counter you will have a count.',
-    required: [],
-  })
-  .openapi('ChannelCatalogProductsCounters')
+const LinksGetChannelInfoLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: { href: '/v2/user/channels/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0', method: 'GET' },
+    }),
+).openapi('LinksGetChannelInfoLink')
+
+const ChannelHeaderLinksSchema = z
+  .object({ self: LinksGetChannelInfoLinkSchema.exactOptional() })
+  .openapi({ description: 'The links related to an available channel', required: [] })
+  .openapi('ChannelHeaderLinks')
+
+type ChannelHeaderType = {
+  channelId: z.infer<typeof BeezUPCommonChannelIdSchema>
+  channelLogoUrl: z.infer<typeof BeezUPCommonHttpUrlSchema>
+  channelName: z.infer<typeof BeezUPCommonChannelNameSchema>
+  links: z.infer<typeof ChannelHeaderLinksSchema>
+  types: string[]
+}
 
 const ChannelCategoryChannelCodeSchema = z
   .string()
@@ -4603,6 +3065,11 @@ const ChannelCategoryDefaultCostSchema = z
   .openapi({ description: 'The default cost on this channel category', example: '10.42' })
   .openapi('ChannelCategoryDefaultCost')
 
+const BeezUPCommonChannelCategoryIdSchema = z
+  .guid()
+  .openapi({ example: '24f508da-a069-4467-b9d3-15baebe9bac7' })
+  .openapi('BeezUPCommonChannelCategoryId')
+
 const ChannelCategoryLevelSchema = z
   .int32()
   .min(1)
@@ -4625,30 +3092,6 @@ const ChannelCategorySchema = z
   })
   .openapi('ChannelCategory')
 
-const ChannelColumnSchema = z
-  .object({
-    channelColumnDescription: ChannelColumnDescriptionSchema.exactOptional(),
-    channelColumnId: BeezUPCommonChannelColumnIdSchema,
-    channelColumnName: BeezUPCommonChannelColumnNameSchema,
-    configuration: ChannelColumnConfigurationSchema,
-    position: z
-      .int()
-      .openapi({ description: 'The position of the column starting from 1', example: '1' }),
-    restrictedValues: ChannelColumnRestrictedValuesSchema.exactOptional(),
-    showInMapping: ChannelColumnShowInMappingSchema,
-  })
-  .openapi({
-    description: 'The channel column',
-    required: [
-      'channelColumnId',
-      'channelColumnName',
-      'showInMapping',
-      'position',
-      'configuration',
-    ],
-  })
-  .openapi('ChannelColumn')
-
 const ChannelFirstLevelCategorySchema = z
   .object({
     channelCategoryChannelCode: ChannelCategoryChannelCodeSchema.exactOptional(),
@@ -4667,194 +3110,30 @@ const ChannelFirstLevelCategorySchema = z
   })
   .openapi('ChannelFirstLevelCategory')
 
-const LinksGetChannelInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/channels/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0', method: 'GET' },
-    }),
-).openapi('LinksGetChannelInfoLink')
+type ChannelRootCategoryType = {
+  firstLevelCategories: z.infer<typeof ChannelFirstLevelCategorySchema>[]
+}
 
-const ChannelHeaderLinksSchema = z
-  .object({ self: LinksGetChannelInfoLinkSchema.exactOptional() })
-  .openapi({ description: 'The links related to an available channel', required: [] })
-  .openapi('ChannelHeaderLinks')
+type ConfigureCatalogColumnCatalogRequestType = {
+  catalogColumn: z.infer<typeof CatalogColumnSchema>
+}
 
-const ChannelHeaderSchema = z
-  .object({
-    channelId: BeezUPCommonChannelIdSchema,
-    channelLogoUrl: BeezUPCommonHttpUrlSchema,
-    channelName: BeezUPCommonChannelNameSchema,
-    links: ChannelHeaderLinksSchema,
-    types: z
-      .array(z.string())
-      .openapi({ description: 'The type list related to a channel', example: ['Marketplace'] }),
-  })
+const ContractIdSchema = z
+  .guid()
   .openapi({
-    description: 'The available channel',
-    required: ['channelId', 'channelName', 'channelLogoUrl', 'links', 'types'],
+    description: 'Your contract identifier',
+    example: '7098487a-86f6-4322-b8a5-b67f7363b3e7',
   })
-  .openapi('ChannelHeader')
+  .openapi('ContractId')
 
-const ChannelInfoSchema = z
-  .object({
-    beezUPOffer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicate the BeezUP offer', example: 'First month free' }),
-    channelDescription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Indicae a description to the channel',
-        example:
-          'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia dolorum, animi voluptatibus maiores, assumenda maxime illum, labore quae quas ducimus laudantium provident veritatis doloremque dignissimos eum. Error magni illum autem.',
-      }),
-    channelId: BeezUPCommonChannelIdSchema,
-    channelLogoUrl: BeezUPCommonHttpUrlSchema.exactOptional(),
-    channelName: BeezUPCommonChannelNameSchema,
-    details: z
-      .object({
-        businessModel: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The business model of the channel', example: 'CPC' }),
-        category: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The channel category', example: 'NULL' }),
-        channelType: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The channel type', example: 'Comparator' }),
-        costs: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "The cost's description of the channel",
-            example: 'CPC variation from 0.10€ to 0.20€',
-          }),
-        homeUrl: z
-          .url()
-          .exactOptional()
-          .openapi({
-            description: 'The home url of the channel',
-            example: 'http://www.achetezfacile.com',
-          }),
-        subscriptionLink: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The subscription link to the channel',
-            example: 'By Email at : stephanie.gregis@m6.fr\n',
-          }),
-        trackingType: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The tracking type', example: 'Redirect' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    keyNumbers: z
-      .object({
-        categories: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The estimated category count of the channel', example: 'NC' }),
-        products: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The estimated product count of the channel', example: '1M' }),
-        stores: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The estimated store count of the channel', example: '3000' }),
-        viewsPerMonth: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The estimated view count per month of the channel',
-            example: '3M',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    salesContact: z
-      .object({
-        email: z
-          .email()
-          .exactOptional()
-          .openapi({
-            description: 'Indicate the sales contact email',
-            example: 'stephanie.gregis@m6.fr',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Indicate the BeezUP offer', example: 'Stéphanie Gregis' }),
-        phoneNumber: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The sales contact phone number',
-            example: '0033 6 08 87 85 45',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    technicalContact: z
-      .object({
-        email: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The technical contact email', example: 'pierre.guedon@m6.fr' }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The technical contact name', example: 'Pierre Guédon' }),
-        phoneNumber: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The technical contact phone number', example: 'NC' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['channelId', 'channelName'] })
-  .openapi('ChannelInfo')
-
-const ChannelRootCategorySchema = z
-  .object({ firstLevelCategories: z.array(ChannelFirstLevelCategorySchema) })
+const BeezUPCommonCurrencyCodeSchema = z
+  .string()
   .openapi({
-    description: 'Get channel first level category list',
-    required: ['firstLevelCategories'],
+    description:
+      'The currency code <a href="https://en.wikipedia.org/wiki/ISO_4217">(ISO 4217)</a>\n',
+    example: 'EUR',
   })
-  .openapi('ChannelRootCategory')
-
-const ClearMerchantOrderInfoListRequestSchema = z
-  .object({
-    orders: z
-      .array(OrderIdentifierSchema)
-      .min(1)
-      .max(100)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .openapi({
-        example: [
-          { accountId: '1234', beezUPOrderId: '0', marketplaceTechnicalCode: 'Amazon' },
-          { accountId: '5678', beezUPOrderId: '0', marketplaceTechnicalCode: 'Amazon' },
-          { accountId: '9876', beezUPOrderId: '0', marketplaceTechnicalCode: 'Ebay' },
-        ],
-      }),
-  })
-  .openapi({ required: ['orders'] })
-  .openapi('ClearMerchantOrderInfoListRequest')
+  .openapi('BeezUPCommonCurrencyCode')
 
 const ClickIncludedAndAdditionalClickPriceSchema = z
   .object({
@@ -4867,6 +3146,31 @@ const ClickIncludedAndAdditionalClickPriceSchema = z
   .openapi({ required: [] })
   .openapi('ClickIncludedAndAdditionalClickPrice')
 
+const FixedAndVariableClickModelInfoSchema = z
+  .object({
+    clickIncludedAndAdditionalClickPrices: z.array(ClickIncludedAndAdditionalClickPriceSchema),
+  })
+  .openapi({
+    description: 'Internal usage: Old offer type. Describe the fix and variable model information',
+    required: ['clickIncludedAndAdditionalClickPrices'],
+  })
+  .openapi('FixedAndVariableClickModelInfo')
+
+const OfferIdSchema = z
+  .int32()
+  .min(1)
+  .openapi({
+    description: 'The offer id based on /offers. Not a free offer of course.',
+    example: '1',
+  })
+  .openapi('OfferId')
+
+const StoreCountSchema = z
+  .int32()
+  .min(1)
+  .openapi({ description: 'The store count you want to have in your contract.', example: '1' })
+  .openapi('StoreCount')
+
 const ClickIncludedAndVariablePriceSchema = z
   .object({
     clickIncluded: z.int32().exactOptional().openapi({ description: 'Click included' }),
@@ -4878,84 +3182,1405 @@ const ClickIncludedAndVariablePriceSchema = z
   .openapi({ required: [] })
   .openapi('ClickIncludedAndVariablePrice')
 
-const ProductValuesSchema = z
-  .record(z.string(), z.string())
-  .openapi({
-    description: 'The key is the column identifier',
-    example: {
-      '012929c0-e78b-462a-a96e-25c061575385':
-        'http://media.conforama.fr/Medias/500000/80000/5000/500/10/G_585511_A.jpg',
-      '46602e10-bc45-4944-a440-63d5f7ece1f8': '42',
-      '68082b11-4ffd-4bec-964a-465a471c7d37': 'SKU1234',
-      'b6d74510-41ce-42ec-947a-0bdf62e9beee': 'Refrigerateur',
-      'ba270fa0-8482-46be-905a-cae4ca746b92':
-        'http://www.conforama.fr/gros-electromenager/encastrable/refrigerateur-encastrable/refrigerateur-combine-161-litres-far-r5115s/p/585511',
-    },
-  })
-  .openapi('ProductValues')
-
-const ComputeExpressionRequestSchema = z
-  .object({ encryptedExpression: EncryptedExpressionSchema, productValues: ProductValuesSchema })
-  .openapi({
-    description:
-      'The request message to compute an expression based on the provided product values',
-    required: ['productValues', 'encryptedExpression'],
-  })
-  .openapi('ComputeExpressionRequest')
-
-const ConfigureAutoImportIntervalRequestSchema = z
+const VariableModelInfoSchema = z
   .object({
-    interval: z
+    clickIncludedAndVariablePrices: z
+      .array(ClickIncludedAndVariablePriceSchema)
+      .openapi({ description: 'Click included with variable pricing information' }),
+    overflowClickCount: z.int32().openapi({ description: 'The overflow click count' }),
+    overflowClickPrice: z.float64().openapi({ description: 'The overflow click price' }),
+  })
+  .openapi({
+    description: 'Internal usage: Old offer type. Describe the fix and variable model information',
+    required: ['clickIncludedAndVariablePrices', 'overflowClickCount', 'overflowClickPrice'],
+  })
+  .openapi('VariableModelInfo')
+
+const ContractInfoSchema = z
+  .object({
+    additionalClickPrice: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Additional click price' }),
+    billingPeriodInMonth: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The billing period in month' }),
+    billingPeriodPercentDiscount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The percent discount related to the billing period' }),
+    clickIncluded: z.int32().exactOptional().openapi({ description: 'The click included' }),
+    commitmentCalculatedFinishUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The calculated end date of commitment' }),
+    commitmentPeriodInMonth: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The commitment period in month' }),
+    contractId: ContractIdSchema.exactOptional(),
+    currencyCode: BeezUPCommonCurrencyCodeSchema.exactOptional(),
+    discountDurationInMonth: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The discount duration in month' }),
+    discountEndUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The end of your discount' }),
+    fixedAndVariableClickInfo: FixedAndVariableClickModelInfoSchema.exactOptional(),
+    fixedPrice: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The fixed price of your contract' }),
+    ipUserCreation: z
       .string()
-      .regex(
-        /(00:1[5-9])|(00:[2-5][0-9])|(0[1-9]:[0-5][0-9])|(1[0-9]:[0-5][0-9])|(2[0-3]:[0-5][0-9])/,
-      )
-      .openapi({
-        description: 'Indicate the interval in time span. (i.e. "04:00:00" for every 4 hours)',
-        example: '04:00:00',
-      }),
-  })
-  .openapi({
-    description: 'The message request to configure the auto import interval',
-    required: ['interval'],
-  })
-  .openapi('ConfigureAutoImportIntervalRequest')
-
-const ConfigureAutomaticTransitionRequestSchema = z
-  .object({ automaticTransitions: z.array(AutomaticTransitionSchema) })
-  .openapi({ required: ['automaticTransitions'] })
-  .openapi('ConfigureAutomaticTransitionRequest')
-
-const ConfigureCatalogColumnCatalogRequestSchema = z
-  .object({ catalogColumn: CatalogColumnSchema })
-  .openapi({
-    description: 'The request to configure a catalog column',
-    required: ['catalogColumn'],
-  })
-  .openapi('ConfigureCatalogColumnCatalogRequest')
-
-const ConfigureCategoryRequestSchema = z
-  .object({
-    channelCatalogCategories: z.array(ChannelCatalogCategoryConfigurationSchema),
-    overrideSubCategoryMappings: z
+      .exactOptional()
+      .openapi({ description: 'The IP of the user who creates the contract' }),
+    ipUserModification: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The IP of the user who modified the contract' }),
+    isCommitmentRenewalAutomatically: z
       .boolean()
+      .exactOptional()
+      .openapi({ description: 'Is commitment is automatically renewed' }),
+    isModifiableContract: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Is the contract is modifiable ?' }),
+    offerId: OfferIdSchema.exactOptional(),
+    offerName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The offer name based on /offers' }),
+    percentDiscount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The percent of the discount' }),
+    startUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The start date of your contract' }),
+    storeCount: StoreCountSchema.exactOptional(),
+    trialPeriodInMonth: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The trial period in month' }),
+    variableModelInfo: VariableModelInfoSchema.exactOptional(),
+  })
+  .openapi({ description: 'Describe the conditions of a contract', required: [] })
+  .openapi('ContractInfo')
+
+const LinksTerminateCurrentContractLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: { href: '/v2/user/customer/contracts/current/disableAutoRenewal', method: 'POST' },
+    }),
+).openapi('LinksTerminateCurrentContractLink')
+
+const LinksReactivateCurrentContractLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: { href: '/v2/user/customer/contracts/current/reenableAutoRenewal', method: 'POST' },
+    }),
+).openapi('LinksReactivateCurrentContractLink')
+
+const CurrentContractInfoLinksSchema = z
+  .object({
+    disable: LinksTerminateCurrentContractLinkSchema.exactOptional(),
+    reenable: LinksReactivateCurrentContractLinkSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CurrentContractInfoLinks')
+
+type CurrentContractInfoType = z.infer<typeof ContractInfoSchema> & {
+  links: z.infer<typeof CurrentContractInfoLinksSchema>
+}
+
+const CurrentContractInfoSchema: z.ZodType<CurrentContractInfoType> = ContractInfoSchema.and(
+  z
+    .object({ links: CurrentContractInfoLinksSchema })
+    .openapi({ description: 'Get the conditions of your current contract', required: ['links'] }),
+).openapi('CurrentContractInfo')
+
+const LinksCreateContractLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/contracts',
+        method: 'POST',
+        parameters: {
+          request: {
+            in: 'body',
+            type: 'object',
+            value: {
+              billingPeriodInMonth: '12',
+              couponDiscountCode: 'I-LOVE-BEEZUP',
+              couponOfferCode: '04efc310-bc25-4710-a83a-faf200284fe5',
+              offerId: '1',
+              storeCount: '1',
+            },
+          },
+        },
+      },
+    }),
+).openapi('LinksCreateContractLink')
+
+const LinksGetContractsLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/customer/contracts', method: 'GET' } }),
+).openapi('LinksGetContractsLink')
+
+const ContractsLinksSchema = z
+  .object({
+    create: LinksCreateContractLinkSchema.exactOptional(),
+    self: LinksGetContractsLinkSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ContractsLinks')
+
+const LinksDeleteNextContractLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/customer/contracts/next', method: 'DELETE' } }),
+).openapi('LinksDeleteNextContractLink')
+
+const NextContractInfoLinksSchema = z
+  .object({ delete: LinksDeleteNextContractLinkSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('NextContractInfoLinks')
+
+type NextContractInfoType = z.infer<typeof ContractInfoSchema> & {
+  links: z.infer<typeof NextContractInfoLinksSchema>
+}
+
+const NextContractInfoSchema: z.ZodType<NextContractInfoType> = ContractInfoSchema.and(
+  z
+    .object({ links: NextContractInfoLinksSchema })
+    .openapi({ description: 'Get the conditions of your next contract', required: ['links'] }),
+).openapi('NextContractInfo')
+
+type ContractsType = {
+  current?: z.infer<typeof CurrentContractInfoSchema>
+  links: z.infer<typeof ContractsLinksSchema>
+  next?: z.infer<typeof NextContractInfoSchema>
+}
+
+const CreateContractResponseLinksSchema = z
+  .object({
+    contracts: LinksGetContractsLinkSchema.exactOptional(),
+    self: LinksCreateContractLinkSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateContractResponseLinks')
+
+type CreateContractResponseType = {
+  info?: z.infer<typeof BeezUPCommonInfoSummariesSchema>
+  links?: z.infer<typeof CreateContractResponseLinksSchema>
+}
+
+const CardNumberSchema = z
+  .string()
+  .openapi({ description: 'Card number', example: '1234567890091234' })
+  .openapi('CardNumber')
+
+const ExpirationMonthSchema = z
+  .int32()
+  .min(1)
+  .max(12)
+  .openapi({ description: 'Expiration Month', example: '12' })
+  .openapi('ExpirationMonth')
+
+const ExpirationYearSchema = z
+  .int32()
+  .min(2017)
+  .max(9000)
+  .openapi({ description: 'Expiration Year', example: '2017' })
+  .openapi('ExpirationYear')
+
+const CreditCardInfoWithCardTypeSchema = z
+  .object({
+    cardNumber: CardNumberSchema,
+    cardType: z
+      .string()
+      .openapi({
+        description: 'Your credit card type. Example: VISA, MasterCard, etc...',
+        example: 'VISA',
+      }),
+    expirationMonth: ExpirationMonthSchema,
+    expirationYear: ExpirationYearSchema,
+  })
+  .openapi({ required: ['cardNumber', 'expirationMonth', 'expirationYear', 'cardType'] })
+  .openapi('CreditCardInfoWithCardType')
+
+const PaymentMethodSchema = z
+  .enum(['Transfer', 'Debit', 'Paypal', 'Check', 'CreditNote', 'Loss', 'OnlinePayment'])
+  .default('OnlinePayment')
+  .openapi({ description: 'Payment method' })
+  .openapi('PaymentMethod')
+
+const CreditCardInfoResponseLinksSchema = z
+  .object({
+    saveCreditCardInfo: LinksSaveCreditCardInfoLinkSchema,
+    self: LinksGetCreditCardInfoLinkSchema,
+  })
+  .openapi({
+    description: 'The different actions you can make on this offer',
+    required: ['self', 'saveCreditCardInfo'],
+  })
+  .openapi('CreditCardInfoResponseLinks')
+
+type CreditCardInfoResponseType = {
+  creditCardInfo?: z.infer<typeof CreditCardInfoWithCardTypeSchema>
+  currentPaymentMethod: z.infer<typeof PaymentMethodSchema>
+  info?: z.infer<typeof BeezUPCommonInfoSummariesSchema>
+  links: z.infer<typeof CreditCardInfoResponseLinksSchema>
+}
+
+const LinksCatalogDeleteCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
+        method: 'DELETE',
+      },
+    }),
+).openapi('LinksCatalogDeleteCustomColumnLink')
+
+const LinksCatalogGetCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksCatalogGetCustomColumnExpressionLink')
+
+const LinksCatalogChangeCustomColumnUserNameLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/rename',
+        method: 'POST',
+        parameters: {
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'changeUserColumnNameRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksCatalogChangeCustomColumnUserNameLink')
+
+const LinksCatalogSaveCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/{columnId}',
+        method: 'POST',
+        parameters: {
+          columnId: { in: 'path', required: true, type: 'string' },
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'createCustomColumnRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksCatalogSaveCustomColumnLink')
+
+const LinksCatalogChangeCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
+        method: 'PUT',
+        parameters: {
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'changeCustomColumnExpressionRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksCatalogChangeCustomColumnExpressionLink')
+
+const CustomColumnLinksSchema = z
+  .object({
+    delete: LinksCatalogDeleteCustomColumnLinkSchema,
+    expression: LinksCatalogGetCustomColumnExpressionLinkSchema,
+    rename: LinksCatalogChangeCustomColumnUserNameLinkSchema,
+    save: LinksCatalogSaveCustomColumnLinkSchema,
+    saveExpression: LinksCatalogChangeCustomColumnExpressionLinkSchema,
+  })
+  .openapi({ required: ['save', 'delete', 'rename', 'expression', 'saveExpression'] })
+  .openapi('CustomColumnLinks')
+
+type CustomColumnType = {
+  catalogColumnDependencies?: z.infer<typeof CatalogColumnNameSchema>[]
+  configuration: z.infer<typeof ColumnConfigurationSchema>
+  id: z.infer<typeof ColumnIdSchema>
+  links: z.infer<typeof CustomColumnLinksSchema>
+  userColumName: z.infer<typeof UserColumNameSchema>
+}
+
+const CustomColumnSchema: z.ZodType<CustomColumnType> = z
+  .object({
+    catalogColumnDependencies: z.array(CatalogColumnNameSchema).exactOptional(),
+    configuration: ColumnConfigurationSchema,
+    id: ColumnIdSchema,
+    links: CustomColumnLinksSchema,
+    userColumName: UserColumNameSchema,
+  })
+  .openapi({
+    description: 'The custom column configuration',
+    required: ['id', 'userColumName', 'configuration', 'links'],
+  })
+  .openapi('CustomColumn')
+
+const CustomColumnListLinksSchema = z
+  .object({
+    add: LinksCatalogSaveCustomColumnLinkSchema.exactOptional(),
+    self: LinksCatalogGetCustomColumnsLinkSchema,
+  })
+  .openapi({ required: ['self'] })
+  .openapi('CustomColumnListLinks')
+
+type CustomColumnListType = {
+  customColumns: z.infer<typeof CustomColumnSchema>[]
+  links: z.infer<typeof CustomColumnListLinksSchema>
+}
+
+const LinksGetFriendInfoLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/friends/{userId}',
+        method: 'GET',
+        parameters: { userId: { in: 'path', required: true, type: 'string' } },
+      },
+    }),
+).openapi('LinksGetFriendInfoLink')
+
+const LinksGetOfferLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/offers',
+        method: 'POST',
+        parameters: {
+          request: { in: 'body', required: true, schema: 'offerRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksGetOfferLink')
+
+const LinksGetInvoicesLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/customer/invoices', method: 'GET' } }),
+).openapi('LinksGetInvoicesLink')
+
+const LinksLogoutLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/customer/security/logout', method: 'POST' } }),
+).openapi('LinksLogoutLink')
+
+const LinksGetCustomerIndexLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/customer', method: 'GET' } }),
+).openapi('LinksGetCustomerIndexLink')
+
+const LinksGetStandardOffersLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/customer/offers', method: 'GET' } }),
+).openapi('LinksGetStandardOffersLink')
+
+const LinksGetStoresLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/customer/stores', method: 'GET' } }),
+).openapi('LinksGetStoresLink')
+
+const CustomerIndexLinksSchema = z
+  .object({
+    accountInfo: LinksGetUserAccountInfoLinkSchema,
+    billingPeriods: LinksGetBillingPeriodsLinkSchema,
+    contracts: LinksGetContractsLinkSchema.exactOptional(),
+    friendInfo: LinksGetFriendInfoLinkSchema,
+    getOffer: LinksGetOfferLinkSchema.exactOptional(),
+    invoices: LinksGetInvoicesLinkSchema.exactOptional(),
+    logout: LinksLogoutLinkSchema.exactOptional(),
+    self: LinksGetCustomerIndexLinkSchema,
+    standardOffers: LinksGetStandardOffersLinkSchema,
+    stores: LinksGetStoresLinkSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Gives you want you can do on this API',
+    required: ['self', 'accountInfo', 'billingPeriods', 'standardOffers', 'friendInfo'],
+  })
+  .openapi('CustomerIndexLinks')
+
+const CustomerIndexLovLinksSchema = z
+  .object({
+    activeOfferLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+    beezUPTimeZoneLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+    contractTerminationReasonLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+    countryLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+    customerStatusLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+    invoicePaymentStatusLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+    offerLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+    storeCountryLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+    storeSectorLov: BeezUPCommonLOVLink3Schema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerIndexLovLinks')
+
+type CustomerIndexType = {
+  links: z.infer<typeof CustomerIndexLinksSchema>
+  lovLinks: z.infer<typeof CustomerIndexLovLinksSchema>
+}
+
+const LinksImportationConfigureCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53',
+        method: 'POST',
+        parameters: {
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'configureCatalogColumnCatalogRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksImportationConfigureCatalogColumnLink')
+
+const LinksImportationIgnoreColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/ignore',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationIgnoreColumnLink')
+
+const LinksImportationMapCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/map',
+        method: 'POST',
+        parameters: {
+          request: { in: 'body', required: true, schema: 'mapBeezUPColumnRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksImportationMapCatalogColumnLink')
+
+const LinksImportationReattendColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/reattend',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationReattendColumnLink')
+
+const LinksImportationUnmapCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/map',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationUnmapCatalogColumnLink')
+
+const DetectedCatalogColumnLinksSchema = z
+  .object({
+    configure: LinksImportationConfigureCatalogColumnLinkSchema.exactOptional(),
+    ignore: LinksImportationIgnoreColumnLinkSchema.exactOptional(),
+    map: LinksImportationMapCatalogColumnLinkSchema.exactOptional(),
+    reattend: LinksImportationReattendColumnLinkSchema.exactOptional(),
+    unmap: LinksImportationUnmapCatalogColumnLinkSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DetectedCatalogColumnLinks')
+
+type DetectedCatalogColumnType = z.infer<typeof CatalogColumnSchema> & {
+  links: z.infer<typeof DetectedCatalogColumnLinksSchema>
+}
+
+const DetectedCatalogColumnSchema: z.ZodType<DetectedCatalogColumnType> = CatalogColumnSchema.and(
+  z
+    .object({ links: DetectedCatalogColumnLinksSchema })
+    .openapi({
+      description: 'The catalog column detected during the first parsing step',
+      required: ['id', 'catalogColumnName', 'links'],
+    }),
+).openapi('DetectedCatalogColumn')
+
+const LinksImportationGetDetectedCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksImportationGetDetectedCatalogColumnsLink')
+
+const DetectedCatalogColumnListLinksSchema = z
+  .object({ self: LinksImportationGetDetectedCatalogColumnsLinkSchema })
+  .openapi({ required: ['self'] })
+  .openapi('DetectedCatalogColumnListLinks')
+
+type DetectedCatalogColumnListType = {
+  detectedCatalogColumns?: z.infer<typeof DetectedCatalogColumnSchema>[]
+  links: z.infer<typeof DetectedCatalogColumnListLinksSchema>
+}
+
+const BeezUPCommonUserErrorMessageSchema = z
+  .object({
+    arguments: z
+      .array(
+        z
+          .object({
+            name: z
+              .string()
+              .openapi({
+                description: 'The key of the parameter',
+                example: 'currentCatalogImportationId',
+              }),
+            value: z
+              .looseObject({})
+              .openapi({ description: 'The value of the parameter. Depending to the type.' }),
+          })
+          .openapi({ required: ['name', 'value'] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'a dictionary string/object' }),
+    code: z
+      .string()
       .openapi({
         description:
-          'Great feature! In case of mapping to parent channel category, you can ask to override the mapping of all sub channel category to this catalog category path',
+          "the error code. The error code can be a pattern containing the argument's name",
+        example: 'CatalogImportationAlreadyInProgress(ExecutionId currentCatalogImportationId)',
+      }),
+    cultureName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If the error is translated, the culture name will be indicated',
+        example: 'en',
+        'x-lov': 'Go2CultureName',
+      }),
+    docUrl: BeezUPCommonDocUrlSchema.exactOptional(),
+    message: z
+      .string()
+      .openapi({
+        description: 'The error message',
+        example:
+          'There is already an importation in progress: b24d0dd8-a561-478a-9b26-34f573f03527\n',
+      }),
+  })
+  .openapi({ required: ['code', 'message'] })
+  .openapi('BeezUPCommonUserErrorMessage')
+
+const BeezUPCommonErrorResponseMessageSchema = z
+  .object({ errors: z.array(BeezUPCommonUserErrorMessageSchema) })
+  .openapi({ required: ['errors'] })
+  .openapi('BeezUPCommonErrorResponseMessage')
+
+const ErrorResponseMessagePaymentRequiredLinksSchema = z
+  .object({ offer: LinksGetOfferLinkSchema })
+  .openapi({ required: ['offer'] })
+  .openapi('ErrorResponseMessagePaymentRequiredLinks')
+
+type ErrorResponseMessagePaymentRequiredType = z.infer<
+  typeof BeezUPCommonErrorResponseMessageSchema
+> & { links: z.infer<typeof ErrorResponseMessagePaymentRequiredLinksSchema> }
+
+const LinksConfigureChannelCatalogExclusionFiltersLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters',
+        method: 'PUT',
+      },
+    }),
+).openapi('LinksConfigureChannelCatalogExclusionFiltersLink')
+
+const ExclusionFiltersResponseLinksSchema = z
+  .object({
+    configure: LinksConfigureChannelCatalogExclusionFiltersLinkSchema.exactOptional(),
+    self: LinksGetChannelCatalogExclusionFiltersLinkSchema,
+  })
+  .openapi({ required: ['self'] })
+  .openapi('ExclusionFiltersResponseLinks')
+
+type ExclusionFiltersResponseType = {
+  exclusionFilters?: z.infer<typeof ExclusionFiltersSchema>
+  links: z.infer<typeof ExclusionFiltersResponseLinksSchema>
+}
+
+const ErrorCodeSchema = z.string().openapi({ description: 'Error Code' }).openapi('ErrorCode')
+
+const ProductErrorCodeSchema = z
+  .object({
+    beezUPColumnName: BeezUPCommonBeezUPColumnNameSchema.exactOptional(),
+    errorCode: ErrorCodeSchema.exactOptional(),
+    errorMessage: z.string().exactOptional(),
+    userColumName: UserColumNameSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductErrorCode')
+
+const ProductErrorCodesSchema = z.array(ProductErrorCodeSchema).openapi('ProductErrorCodes')
+
+const SkuSchema = z
+  .string()
+  .max(50)
+  .openapi({
+    description:
+      'The Stock Keeping Unit (SKU), i.e. a merchant-specific identifier for a product or service, or the product to which the offer refers. http://schema.org/sku',
+  })
+  .openapi('Sku')
+
+const ProductErrorSchema = z
+  .object({
+    ean: z.string().exactOptional(),
+    errors: ProductErrorCodesSchema,
+    lineNumber: z.int(),
+    mpn: z.string().exactOptional(),
+    sku: SkuSchema.exactOptional(),
+    title: z.string().exactOptional(),
+  })
+  .openapi({ required: ['lineNumber', 'errors'] })
+  .openapi('ProductError')
+
+const ProductErrorsSchema = z
+  .array(ProductErrorSchema)
+  .openapi({ description: 'Product Errors' })
+  .openapi('ProductErrors')
+
+type GetImportationProductsReportResponseType = {
+  paginationResult: z.infer<typeof BeezUPCommonPaginationResultSchema>
+  productErrors?: z.infer<typeof ProductErrorsSchema>
+}
+
+const LinksImportationCancelLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/cancel',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationCancelLink')
+
+const LinksImportationGetImportationMonitoringLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksImportationGetImportationMonitoringLink')
+
+const ImportAlreadyInProgressResponseLinksSchema = z
+  .object({
+    cancelCurrentImportation: LinksImportationCancelLinkSchema,
+    currentImportation: LinksImportationGetImportationMonitoringLinkSchema,
+  })
+  .openapi({
+    description: 'The action links',
+    required: ['currentImportation', 'cancelCurrentImportation'],
+  })
+  .openapi('ImportAlreadyInProgressResponseLinks')
+
+type ImportAlreadyInProgressResponseType = {
+  errors: z.infer<typeof BeezUPCommonUserErrorMessageSchema>[]
+  links: z.infer<typeof ImportAlreadyInProgressResponseLinksSchema>
+}
+
+const LinksImportationMapCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/map',
+        method: 'POST',
+        parameters: {
+          request: { in: 'body', required: true, schema: 'mapBeezUPColumnRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksImportationMapCustomColumnLink')
+
+const LinksImportationGetProductSampleCustomColumnValueLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/productSamples/{productSampleIndex}/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
+        method: 'GET',
+        parameters: { productSampleIndex: { in: 'path', required: true, type: 'integer' } },
+      },
+    }),
+).openapi('LinksImportationGetProductSampleCustomColumnValueLink')
+
+const LinksImportationSaveCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/{columnId}',
+        method: 'POST',
+        parameters: {
+          columnId: { in: 'path', required: true, type: 'string' },
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'createCustomColumnRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksImportationSaveCustomColumnLink')
+
+const LinksImportationUnmapCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/map',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationUnmapCustomColumnLink')
+
+const ImportationCustomColumnLinksSchema = z
+  .object({
+    delete: LinksCatalogDeleteCustomColumnLinkSchema,
+    expression: LinksCatalogGetCustomColumnExpressionLinkSchema,
+    map: LinksImportationMapCustomColumnLinkSchema.exactOptional(),
+    productSampleValue: LinksImportationGetProductSampleCustomColumnValueLinkSchema.exactOptional(),
+    save: LinksImportationSaveCustomColumnLinkSchema,
+    unmap: LinksImportationUnmapCustomColumnLinkSchema.exactOptional(),
+  })
+  .openapi({ required: ['save', 'delete', 'expression'] })
+  .openapi('ImportationCustomColumnLinks')
+
+type ImportationCustomColumnType = {
+  configuration: z.infer<typeof ColumnConfigurationSchema>
+  id: z.infer<typeof ColumnIdSchema>
+  links: z.infer<typeof ImportationCustomColumnLinksSchema>
+  userColumName: z.infer<typeof UserColumNameSchema>
+}
+
+const ImportationCustomColumnSchema: z.ZodType<ImportationCustomColumnType> = z
+  .object({
+    configuration: ColumnConfigurationSchema,
+    id: ColumnIdSchema,
+    links: ImportationCustomColumnLinksSchema,
+    userColumName: UserColumNameSchema,
+  })
+  .openapi({
+    description: 'The custom column configuration',
+    required: ['id', 'userColumName', 'configuration', 'links'],
+  })
+  .openapi('ImportationCustomColumn')
+
+type ImportationCustomColumnListType = {
+  customColumns: z.infer<typeof ImportationCustomColumnSchema>[]
+  links: z.infer<typeof CustomColumnListLinksSchema>
+}
+
+const ExecutionIdSchema = z
+  .guid()
+  .openapi({
+    description: 'The execution identifier of the catalog importation',
+    example: 'bf3bc288-604c-4267-925e-66b1a15dca75',
+  })
+  .openapi('ExecutionId')
+
+const LinksImportationActivateAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/activate',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationActivateAutoImportLink')
+
+const LinksImportationCommitLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/commit',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationCommitLink')
+
+const LinksImportationCommitColumnsLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/commitColumns',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationCommitColumnsLink')
+
+const LinksImportationConfigureRemainingCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/configureRemainingCatalogColumns',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksImportationConfigureRemainingCatalogColumnsLink')
+
+const LinksImportationGetCustomColumnsLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksImportationGetCustomColumnsLink')
+
+const LinksImportationGetProductSampleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/productSamples/{productSampleIndex}',
+        method: 'GET',
+        parameters: { productSampleIndex: { in: 'path', required: true, type: 'integer' } },
+      },
+    }),
+).openapi('LinksImportationGetProductSampleLink')
+
+const LinksImportationTechnicalProgressionLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/technicalProgression',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksImportationTechnicalProgressionLink')
+
+const ImportationMonitoringLinksSchema = z
+  .object({
+    activateAutoImport: LinksImportationActivateAutoImportLinkSchema.exactOptional(),
+    cancel: LinksImportationCancelLinkSchema.exactOptional(),
+    catalogColumns: LinksImportationGetDetectedCatalogColumnsLinkSchema.exactOptional(),
+    commit: LinksImportationCommitLinkSchema.exactOptional(),
+    commitColumns: LinksImportationCommitColumnsLinkSchema.exactOptional(),
+    configureRemainingCatalogColumns:
+      LinksImportationConfigureRemainingCatalogColumnsLinkSchema.exactOptional(),
+    customColumns: LinksImportationGetCustomColumnsLinkSchema.exactOptional(),
+    productSamples: LinksImportationGetProductSampleLinkSchema.exactOptional(),
+    self: LinksImportationGetImportationMonitoringLinkSchema,
+    technicalProgression: LinksImportationTechnicalProgressionLinkSchema,
+  })
+  .openapi({
+    description: 'Applicable operations considering the state of the importation',
+    required: ['self', 'technicalProgression'],
+  })
+  .openapi('ImportationMonitoringLinks')
+
+type ImportationMonitoringType = {
+  beginUtcDate: string
+  errors?: z.infer<typeof BeezUPCommonUserErrorMessageSchema>[]
+  executionId: z.infer<typeof ExecutionIdSchema>
+  lastUpdateUtcDate: string
+  links?: z.infer<typeof ImportationMonitoringLinksSchema>
+  steps: { [key: string]: boolean }
+  success: boolean
+  userId?: z.infer<typeof BeezUPCommonUserIdSchema>
+}
+
+const LinksImportationGetReportLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e911432/report',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksImportationGetReportLink')
+
+const ImportationReportingLinksSchema = z
+  .object({ report: LinksImportationGetReportLinkSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ImportationReportingLinks')
+
+type ImportationReportingType = {
+  autoImported?: boolean
+  beginUtcDate: string
+  endUtcDate?: string
+  errors?: z.infer<typeof BeezUPCommonUserErrorMessageSchema>[]
+  executionId: z.infer<typeof ExecutionIdSchema>
+  inputConfigurationUrl?: string
+  lastUpdateUtcDate: string
+  links?: z.infer<typeof ImportationReportingLinksSchema>
+  stepName?: string
+  steps: { [key: string]: boolean }
+  success?: boolean
+  totalProductCount?: number
+  totalProductErrorCount?: number
+  totalProductSuccessCount?: number
+  userId?: z.infer<typeof BeezUPCommonUserIdSchema>
+}
+
+const ImportationReportingSchema: z.ZodType<ImportationReportingType> = z
+  .object({
+    autoImported: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicate if this importation is an auto import or not.',
         example: 'true',
       }),
+    beginUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Indicate the begin UTC date of this importation.',
+        example: '2017-04-01T13:01:01Z',
+      }),
+    endUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Indicate the end UTC date of this importation.',
+        example: '2017-04-01T13:10:09Z',
+      }),
+    errors: z
+      .array(BeezUPCommonUserErrorMessageSchema)
+      .exactOptional()
+      .openapi({ description: 'Indicate the error message list related to this importation.' }),
+    executionId: ExecutionIdSchema,
+    inputConfigurationUrl: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'Indicate the input url of this importation.',
+        example: 'http://blal.com/catalog.csv',
+      }),
+    lastUpdateUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Indicate the last update UTC date of the reporting.',
+        example: '2017-04-01T13:10:09Z',
+      }),
+    links: ImportationReportingLinksSchema.exactOptional(),
+    stepName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The last step name of the importation process',
+        example: 'IsSaveInDb',
+      }),
+    steps: z
+      .record(z.string(), z.boolean())
+      .openapi({
+        description: 'Indicate the steps that have been passed during the importation process',
+        example: {
+          isCatalogImportComputeDiffCompleted: 'false',
+          isCatalogImportPrepareReadCompleted: 'false',
+          isCatalogUpdateCompleted: 'false',
+          isSavedInDb: 'false',
+        },
+      }),
+    success: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicate if the importation succeed or not.', example: 'true' }),
+    totalProductCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicate the total product count detected in the catalog during the importation.',
+        example: '101',
+      }),
+    totalProductErrorCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicate the total product count in error detected in the catalog during the importation.',
+        example: '0',
+      }),
+    totalProductSuccessCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicate the total product count in success in the catalog during the importation.',
+        example: '101',
+      }),
+    userId: BeezUPCommonUserIdSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'The catalog importation reporting',
+    required: ['executionId', 'beginUtcDate', 'lastUpdateUtcDate', 'steps'],
+  })
+  .openapi('ImportationReporting')
+
+const ImportationsResponseLinksSchema = z
+  .object({
+    self: LinksImportationGetReportingsLinkSchema.exactOptional(),
+    start: LinksImportationStartManualUpdateLinkSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ImportationsResponseLinks')
+
+type ImportationsResponseType = {
+  importations?: z.infer<typeof ImportationReportingSchema>[]
+  links?: z.infer<typeof ImportationsResponseLinksSchema>
+}
+
+const ImportationsResponseSchema: z.ZodType<ImportationsResponseType> = z
+  .object({
+    importations: z.array(ImportationReportingSchema).exactOptional(),
+    links: ImportationsResponseLinksSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ImportationsResponse')
+
+type ImportationsPerStoreResponseType = {
+  [key: string]: z.infer<typeof ImportationsResponseSchema>
+}
+
+const InvoiceNumberSchema = z
+  .string()
+  .openapi({ description: 'Your invoice number', example: 'B1234' })
+  .openapi('InvoiceNumber')
+
+const InvoicePaymentStatusSchema = z
+  .enum(['Paid', 'NotPaid', 'PartiallyPaid', 'Loss'])
+  .openapi({ description: 'The payment status', example: 'Paid' })
+  .openapi('InvoicePaymentStatus')
+
+const InvoiceSchema = z
+  .object({
+    amount: z.float64().openapi({ description: 'The amount of your invoice', example: '101.42' }),
+    amountToBePaid: z
+      .float64()
+      .openapi({ description: 'The remaining amount to be paid for this invoice', example: '0.0' }),
+    contractId: ContractIdSchema,
+    currencyCode: BeezUPCommonCurrencyCodeSchema,
+    dueDate: z.iso.date().openapi({ example: '2016-05-10' }),
+    invoiceDate: z.iso.date().openapi({ description: 'The invoice date', example: '2016-05-01' }),
+    invoiceNumber: InvoiceNumberSchema,
+    invoiceUrl: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'The url of the invoice document',
+        example:
+          'https://beezupbilling.blob.core.windows.net/invoicepdf/2000/CustomerUserId_00000000-0000-0000-0000-000000000000/ContractId_00000000-0000-0000-0000-000000000000/2000-01-01_B1234.pdf',
+      }),
+    paymentStatus: InvoicePaymentStatusSchema,
+  })
+  .openapi({
+    required: [
+      'invoiceDate',
+      'contractId',
+      'invoiceNumber',
+      'amount',
+      'amountToBePaid',
+      'currencyCode',
+      'paymentStatus',
+      'dueDate',
+    ],
+  })
+  .openapi('Invoice')
+
+const InvoiceListLinksSchema = z
+  .object({ self: LinksGetInvoicesLinkSchema })
+  .openapi({ required: ['self'] })
+  .openapi('InvoiceListLinks')
+
+type InvoiceListType = {
+  invoices: z.infer<typeof InvoiceSchema>[]
+  links: z.infer<typeof InvoiceListLinksSchema>
+}
+
+const LinksMigrateLegacyTrackingChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/legacyTracking/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/migrate',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksMigrateLegacyTrackingChannelCatalogLink')
+
+const LinksGetLegacyTrackingChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/legacyTracking/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetLegacyTrackingChannelCatalogLink')
+
+const LegacyTrackingChannelCatalogLinksSchema = z
+  .object({
+    migrate: LinksMigrateLegacyTrackingChannelCatalogLinkSchema.exactOptional(),
+    self: LinksGetLegacyTrackingChannelCatalogLinkSchema,
+  })
+  .openapi({
+    description: 'Indicates the actions you can do on a channel catalog',
+    required: ['self'],
+  })
+  .openapi('LegacyTrackingChannelCatalogLinks')
+
+type LegacyTrackingChannelCatalogType = {
+  links: z.infer<typeof LegacyTrackingChannelCatalogLinksSchema>
+}
+
+const LegacyTrackingChannelCatalogSchema: z.ZodType<LegacyTrackingChannelCatalogType> = z
+  .object({ links: LegacyTrackingChannelCatalogLinksSchema })
+  .openapi({ description: 'The channel catalog', required: ['links'] })
+  .openapi('LegacyTrackingChannelCatalog')
+
+const LinksGetLegacyTrackingChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/legacyTracking/channelCatalogs', method: 'GET' } }),
+).openapi('LinksGetLegacyTrackingChannelCatalogsLink')
+
+const LegacyTrackingChannelCatalogListLinksSchema = z
+  .object({ self: LinksGetLegacyTrackingChannelCatalogsLinkSchema.exactOptional() })
+  .openapi({
+    description:
+      'Indicates how global actions you can do like how to create a channel catalog, exclusion filter operators, etc...\n',
+    required: [],
+  })
+  .openapi('LegacyTrackingChannelCatalogListLinks')
+
+type LegacyTrackingChannelCatalogListType = {
+  channelCatalogs?: { [key: string]: z.infer<typeof LegacyTrackingChannelCatalogSchema> }
+  links?: z.infer<typeof LegacyTrackingChannelCatalogListLinksSchema>
+}
+
+const PublicationStrategyKindSchema = z
+  .enum(['Delta', 'Full'])
+  .default('Delta')
+  .openapi({
+    description:
+      'Define the publication strategy kind, for that you have 2 choices \n* Delta - This is the recommanded publication strategy kind, this strategy will push to the marketplace only the difference between your catalog and the previous published feeds done by BeezUP. \n* Full - If you want to force the publication of all your catalog feeds to the marketplace. \n      !WARNING! Depending to the marketplace this operation will purge the existing offers on the marketplace that are not in the catalog or unknown from the publication feed referential.\n',
+  })
+  .openapi('PublicationStrategyKind')
+
+const LinksPublishCatalogToMarketplaceLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: { href: '/v2/user/marketplaces/channelcatalogs/publications/Cdiscount/123/publish' },
+    }),
+).openapi('LinksPublishCatalogToMarketplaceLink')
+
+const PublicationStrategySchema = z
+  .string()
+  .openapi({ description: 'The Publication Type', 'x-lov': 'MarketplacePublicationV3Strategy' })
+  .openapi('PublicationStrategy')
+
+const MarketplaceChannelCatalogPublicationOptionSchema = z
+  .object({
+    feedType: FeedTypeSchema,
+    kind: PublicationStrategyKindSchema,
+    link: LinksPublishCatalogToMarketplaceLinkSchema,
+    strategy: PublicationStrategySchema,
+    withUnpublish: z.boolean(),
+  })
+  .openapi({ required: ['kind', 'feedType', 'withUnpublish', 'strategy', 'link'] })
+  .openapi('MarketplaceChannelCatalogPublicationOption')
+
+type MarketplaceChannelCatalogLinksType = {
+  properties: z.infer<typeof LinksGetChannelCatalogMarketplacePropertiesLinkSchema>
+  publications?: z.infer<typeof LinksGetPublicationsLinkSchema>
+  publishOptions?: z.infer<typeof MarketplaceChannelCatalogPublicationOptionSchema>[]
+  settings: z.infer<typeof LinksGetChannelCatalogMarketplaceSettingsLinkSchema>
+}
+
+const MarketplaceChannelCatalogLinksSchema: z.ZodType<MarketplaceChannelCatalogLinksType> = z
+  .object({
+    properties: LinksGetChannelCatalogMarketplacePropertiesLinkSchema,
+    publications: LinksGetPublicationsLinkSchema.exactOptional(),
+    publishOptions: z.array(MarketplaceChannelCatalogPublicationOptionSchema).exactOptional(),
+    settings: LinksGetChannelCatalogMarketplaceSettingsLinkSchema,
   })
   .openapi({
     description:
-      'The request message to make a mapping between catalog category path and a channel category path',
-    required: ['overrideSubCategoryMappings', 'channelCatalogCategories'],
+      'Indicate the actions you can do on a channel catalog. If the settings are valid, you will be able to access to the publication history.',
+    required: ['properties', 'settings'],
   })
-  .openapi('ConfigureCategoryRequest')
+  .openapi('MarketplaceChannelCatalogLinks')
 
-const ConsumptionAvailabilityStatusSchema = z
-  .enum(['Available', 'Degraded', 'Unavailable'])
-  .openapi({ description: 'The subscription consumption status' })
-  .openapi('ConsumptionAvailabilityStatus')
+const MarketplaceChannelCatalogLovLinksSchema = z
+  .object({
+    cancelationReasonCodeLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
+    carrierCodeLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
+    marketplaceStorePropertyGroupLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
+    marketplaceStorePropertyLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
+    refundReasonCodeLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
+    shippingMethodLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
+  })
+  .openapi({ description: 'Indicates the List Of Values related to the marketplace', required: [] })
+  .openapi('MarketplaceChannelCatalogLovLinks')
+
+const BeezUPCommonMarketplaceAccountIdSchema = z
+  .int32()
+  .openapi({
+    description:
+      'The marketplace account identifier in BeezUP. This account identifier is based on your api settings.',
+    example: '1234',
+  })
+  .openapi('BeezUPCommonMarketplaceAccountId')
+
+type MarketplaceChannelCatalogType = {
+  apiSettingsStatus: z.infer<typeof BeezUPCommonApiSettingsStatusSchema>
+  beezUPChannelCatalogId: z.infer<typeof BeezUPCommonChannelCatalogIdSchema>
+  beezUPChannelId: z.infer<typeof BeezUPCommonChannelIdSchema>
+  beezUPMarketplaceName: unknown
+  beezUPStoreId: z.infer<typeof BeezUPCommonStoreIdSchema>
+  beezUPStoreName: string
+  enabled: boolean
+  links: z.infer<typeof MarketplaceChannelCatalogLinksSchema>
+  lovLinks: z.infer<typeof MarketplaceChannelCatalogLovLinksSchema>
+  marketplaceAccountId?: z.infer<typeof BeezUPCommonMarketplaceAccountIdSchema>
+  marketplaceBusinessCode: z.infer<typeof BeezUPCommonMarketplaceBusinessCodeSchema>
+  marketplaceIsoCountryCodeAlpha2: string
+  marketplaceMarketPlaceId: string
+  marketplaceMerchantIdentifiers?: { [key: string]: string }
+  marketplaceTechnicalCode: z.infer<typeof BeezUPCommonMarketplaceTechnicalCodeSchema>
+}
+
+const LinksGetMarketplaceChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/marketplaces/channelcatalogs' } }),
+).openapi('LinksGetMarketplaceChannelCatalogsLink')
+
+const MarketplaceChannelCatalogListLinksSchema = z
+  .object({ self: LinksGetMarketplaceChannelCatalogsLinkSchema })
+  .openapi({ required: ['self'] })
+  .openapi('MarketplaceChannelCatalogListLinks')
+
+const MarketplaceChannelCatalogSchema: z.ZodType<MarketplaceChannelCatalogType> = z
+  .object({
+    apiSettingsStatus: BeezUPCommonApiSettingsStatusSchema,
+    beezUPChannelCatalogId: BeezUPCommonChannelCatalogIdSchema,
+    beezUPChannelId: BeezUPCommonChannelIdSchema,
+    beezUPMarketplaceName: z
+      .any()
+      .openapi({ description: 'The marketplace name', example: 'ebay FRA' }),
+    beezUPStoreId: BeezUPCommonStoreIdSchema,
+    beezUPStoreName: z.string().openapi({ description: 'The store name', example: 'My Store 1' }),
+    enabled: z
+      .boolean()
+      .openapi({ description: 'The enabled status of the Channel Catalog', example: 'true' }),
+    links: MarketplaceChannelCatalogLinksSchema,
+    lovLinks: MarketplaceChannelCatalogLovLinksSchema,
+    marketplaceAccountId: BeezUPCommonMarketplaceAccountIdSchema.exactOptional(),
+    marketplaceBusinessCode: BeezUPCommonMarketplaceBusinessCodeSchema,
+    marketplaceIsoCountryCodeAlpha2: z
+      .string()
+      .openapi({
+        description:
+          'The marketplace country iso code alpha 2 (see http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Decoding_table for more details)',
+        example: 'FR',
+      }),
+    marketplaceMarketPlaceId: z
+      .string()
+      .openapi({ description: 'The marketplace identifier in the marketplace', example: '71' }),
+    marketplaceMerchantIdentifiers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The marketplace merchant identifier list',
+        example: { Ebay_PayPalEmailAddress: 'yourEbayId@paypal.com' },
+      }),
+    marketplaceTechnicalCode: BeezUPCommonMarketplaceTechnicalCodeSchema,
+  })
+  .openapi({
+    description:
+      'This object indicates you the association between a channel catalog and a marketplace. The account identifier will be automatically defined based on your marketplace merchant identfier.',
+    required: [
+      'apiSettingsStatus',
+      'enabled',
+      'marketplaceTechnicalCode',
+      'marketplaceBusinessCode',
+      'marketplaceMarketPlaceId',
+      'marketplaceIsoCountryCodeAlpha2',
+      'beezUPMarketplaceName',
+      'beezUPChannelId',
+      'beezUPChannelCatalogId',
+      'beezUPStoreId',
+      'beezUPStoreName',
+      'lovLinks',
+      'links',
+    ],
+  })
+  .openapi('MarketplaceChannelCatalog')
+
+type MarketplaceChannelCatalogListType = {
+  links: z.infer<typeof MarketplaceChannelCatalogListLinksSchema>
+  marketplaceChannelCatalogs: z.infer<typeof MarketplaceChannelCatalogSchema>[]
+}
+
+const BillingPeriodInMonthSchema = z
+  .int32()
+  .min(1)
+  .openapi({
+    description: 'Can be null. The billing period in month based on /billingPeriods',
+    example: '12',
+  })
+  .openapi('BillingPeriodInMonth')
 
 const ContractBillingPeriodInfoSchema = z
   .object({
@@ -4980,6 +4605,15 @@ const ContractBillingPeriodInfoSchema = z
     required: [],
   })
   .openapi('ContractBillingPeriodInfo')
+
+const BonusTypeSchema = z
+  .enum(['OnlinePaymentMethodBonus', 'PreviousInvoiceProrataBonus', 'PreviousContractBonus'])
+  .openapi('BonusType')
+
+const BonusInfoSchema = z
+  .object({ amount: z.float64().openapi({ example: '12.34' }), bonusType: BonusTypeSchema })
+  .openapi({ required: ['bonusType', 'amount'] })
+  .openapi('BonusInfo')
 
 const ContractBonusInfoSchema = z
   .object({ bonuses: z.array(BonusInfoSchema) })
@@ -5014,45 +4648,6 @@ const CouponOfferCodeSchema = z
     example: '04efc310-bc25-4710-a83a-faf200284fe5',
   })
   .openapi('CouponOfferCode')
-
-const PaymentMethodSchema = z
-  .enum(['Transfer', 'Debit', 'Paypal', 'Check', 'CreditNote', 'Loss', 'OnlinePayment'])
-  .default('OnlinePayment')
-  .openapi({ description: 'Payment method' })
-  .openapi('PaymentMethod')
-
-const FixedAndVariableClickModelInfoSchema = z
-  .object({
-    clickIncludedAndAdditionalClickPrices: z.array(ClickIncludedAndAdditionalClickPriceSchema),
-  })
-  .openapi({
-    description: 'Internal usage: Old offer type. Describe the fix and variable model information',
-    required: ['clickIncludedAndAdditionalClickPrices'],
-  })
-  .openapi('FixedAndVariableClickModelInfo')
-
-const OfferIdSchema = z
-  .int32()
-  .min(1)
-  .openapi({
-    description: 'The offer id based on /offers. Not a free offer of course.',
-    example: '1',
-  })
-  .openapi('OfferId')
-
-const VariableModelInfoSchema = z
-  .object({
-    clickIncludedAndVariablePrices: z
-      .array(ClickIncludedAndVariablePriceSchema)
-      .openapi({ description: 'Click included with variable pricing information' }),
-    overflowClickCount: z.int32().openapi({ description: 'The overflow click count' }),
-    overflowClickPrice: z.float64().openapi({ description: 'The overflow click price' }),
-  })
-  .openapi({
-    description: 'Internal usage: Old offer type. Describe the fix and variable model information',
-    required: ['clickIncludedAndVariablePrices', 'overflowClickCount', 'overflowClickPrice'],
-  })
-  .openapi('VariableModelInfo')
 
 const ContractCommitmentInfoSchema = z
   .object({
@@ -5215,97 +4810,6 @@ const ContractDiscountInfoSchema = z
   .openapi({ description: 'Describe the discount information related to the offer.', required: [] })
   .openapi('ContractDiscountInfo')
 
-const ContractIdSchema = z
-  .guid()
-  .openapi({
-    description: 'Your contract identifier',
-    example: '7098487a-86f6-4322-b8a5-b67f7363b3e7',
-  })
-  .openapi('ContractId')
-
-const StoreCountSchema = z
-  .int32()
-  .min(1)
-  .openapi({ description: 'The store count you want to have in your contract.', example: '1' })
-  .openapi('StoreCount')
-
-const ContractInfoSchema = z
-  .object({
-    additionalClickPrice: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Additional click price' }),
-    billingPeriodInMonth: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The billing period in month' }),
-    billingPeriodPercentDiscount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The percent discount related to the billing period' }),
-    clickIncluded: z.int32().exactOptional().openapi({ description: 'The click included' }),
-    commitmentCalculatedFinishUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The calculated end date of commitment' }),
-    commitmentPeriodInMonth: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The commitment period in month' }),
-    contractId: ContractIdSchema.exactOptional(),
-    currencyCode: BeezUPCommonCurrencyCodeSchema.exactOptional(),
-    discountDurationInMonth: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The discount duration in month' }),
-    discountEndUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The end of your discount' }),
-    fixedAndVariableClickInfo: FixedAndVariableClickModelInfoSchema.exactOptional(),
-    fixedPrice: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The fixed price of your contract' }),
-    ipUserCreation: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The IP of the user who creates the contract' }),
-    ipUserModification: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The IP of the user who modified the contract' }),
-    isCommitmentRenewalAutomatically: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Is commitment is automatically renewed' }),
-    isModifiableContract: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Is the contract is modifiable ?' }),
-    offerId: OfferIdSchema.exactOptional(),
-    offerName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The offer name based on /offers' }),
-    percentDiscount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The percent of the discount' }),
-    startUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The start date of your contract' }),
-    storeCount: StoreCountSchema.exactOptional(),
-    trialPeriodInMonth: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The trial period in month' }),
-    variableModelInfo: VariableModelInfoSchema.exactOptional(),
-  })
-  .openapi({ description: 'Describe the conditions of a contract', required: [] })
-  .openapi('ContractInfo')
-
 const ContractMoneyInfoSchema = z
   .object({
     amountExcludingTaxesAndExcludingCodePromoDiscountIncludingBillingPeriodDiscount: z
@@ -5398,3224 +4902,6 @@ const ContractTerminationReasonTypeSchema = z
   })
   .openapi('ContractTerminationReasonType')
 
-const LinksTerminateCurrentContractLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/customer/contracts/current/disableAutoRenewal', method: 'POST' },
-    }),
-).openapi('LinksTerminateCurrentContractLink')
-
-const LinksReactivateCurrentContractLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/customer/contracts/current/reenableAutoRenewal', method: 'POST' },
-    }),
-).openapi('LinksReactivateCurrentContractLink')
-
-const CurrentContractInfoLinksSchema = z
-  .object({
-    disable: LinksTerminateCurrentContractLinkSchema.exactOptional(),
-    reenable: LinksReactivateCurrentContractLinkSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CurrentContractInfoLinks')
-
-const CurrentContractInfoSchema = ContractInfoSchema.and(
-  z
-    .object({ links: CurrentContractInfoLinksSchema })
-    .openapi({ description: 'Get the conditions of your current contract', required: ['links'] }),
-).openapi('CurrentContractInfo')
-
-const LinksCreateContractLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/contracts',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            type: 'object',
-            value: {
-              billingPeriodInMonth: '12',
-              couponDiscountCode: 'I-LOVE-BEEZUP',
-              couponOfferCode: '04efc310-bc25-4710-a83a-faf200284fe5',
-              offerId: '1',
-              storeCount: '1',
-            },
-          },
-        },
-      },
-    }),
-).openapi('LinksCreateContractLink')
-
-const LinksGetContractsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/contracts', method: 'GET' } }),
-).openapi('LinksGetContractsLink')
-
-const ContractsLinksSchema = z
-  .object({
-    create: LinksCreateContractLinkSchema.exactOptional(),
-    self: LinksGetContractsLinkSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ContractsLinks')
-
-const LinksDeleteNextContractLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/contracts/next', method: 'DELETE' } }),
-).openapi('LinksDeleteNextContractLink')
-
-const NextContractInfoLinksSchema = z
-  .object({ delete: LinksDeleteNextContractLinkSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('NextContractInfoLinks')
-
-const NextContractInfoSchema = ContractInfoSchema.and(
-  z
-    .object({ links: NextContractInfoLinksSchema })
-    .openapi({ description: 'Get the conditions of your next contract', required: ['links'] }),
-).openapi('NextContractInfo')
-
-const ContractsSchema = z
-  .object({
-    current: CurrentContractInfoSchema.exactOptional(),
-    links: ContractsLinksSchema,
-    next: NextContractInfoSchema.exactOptional(),
-  })
-  .openapi({ required: ['links'] })
-  .openapi('Contracts')
-
-const CopyOptimisationRequestSchema = z
-  .object({
-    channelIdSource: BeezUPCommonChannelIdSchema,
-    channelIdTarget: BeezUPCommonChannelIdSchema,
-    keepExistingOptimisation: z
-      .boolean()
-      .openapi({ description: 'If true the existing optimisation will be kept', example: 'false' }),
-  })
-  .openapi({
-    description: 'Copy the optimisation between 2 channels',
-    required: ['channelIdSource', 'channelIdTarget', 'keepExistingOptimisation'],
-  })
-  .openapi('CopyOptimisationRequest')
-
-const CopyOptimisationResponseSchema = z
-  .object({
-    catalogProductCount: z
-      .int()
-      .openapi({ description: 'The catalog product count', example: '101' }),
-    channel: BeezUPCommonChannelBasicInfoSchema,
-    enabledProductCount: z
-      .int()
-      .openapi({ description: 'The enabled product count', example: '101' }),
-  })
-  .openapi({
-    description: 'Products optimisatisation copied',
-    required: ['channel', 'catalogProductCount', 'enabledProductCount'],
-  })
-  .openapi('CopyOptimisationResponse')
-
-const CouponDiscountCodeSchema = z
-  .string()
-  .openapi({ description: 'The coupon discount code', example: 'I-LOVE-BEEZUP' })
-  .openapi('CouponDiscountCode')
-
-const OfferRequestSchema = z
-  .object({
-    billingPeriodInMonth: BillingPeriodInMonthSchema,
-    couponDiscountCode: CouponDiscountCodeSchema.exactOptional(),
-    couponOfferCode: CouponOfferCodeSchema.exactOptional(),
-    offerId: OfferIdSchema,
-    storeCount: StoreCountSchema,
-  })
-  .openapi({ required: ['offerId', 'storeCount', 'billingPeriodInMonth'] })
-  .openapi('OfferRequest')
-
-const CreateContractSchema = OfferRequestSchema.openapi('CreateContract')
-
-const CreateContractResponseLinksSchema = z
-  .object({
-    contracts: LinksGetContractsLinkSchema.exactOptional(),
-    self: LinksCreateContractLinkSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateContractResponseLinks')
-
-const CreateContractResponseSchema = z
-  .object({
-    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
-    links: CreateContractResponseLinksSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateContractResponse')
-
-const CreateCustomColumnRequestSchema = z
-  .object({
-    displayGroupName: DisplayGroupNameSchema,
-    encryptedBlocklyExpression: EncryptedBlocklyExpressionSchema,
-    encryptedExpression: EncryptedExpressionSchema,
-    userColumnName: UserColumNameSchema,
-  })
-  .openapi({
-    description: 'The request message to create a custom column',
-    required: [
-      'userColumnName',
-      'encryptedExpression',
-      'encryptedBlocklyExpression',
-      'displayGroupName',
-    ],
-  })
-  .openapi('CreateCustomColumnRequest')
-
-const OptimisationActionNameSchema = z
-  .enum(['reenable', 'disable'])
-  .openapi({ description: 'The optimisation action', example: 'reenable' })
-  .openapi('OptimisationActionName')
-
-const CreateRuleRequestSchema = z
-  .object({
-    endUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The end validity utc date of the rule',
-        example: '2017-09-30T10:42:40.001Z',
-      }),
-    optimisationActionName: OptimisationActionNameSchema,
-    reportFilterId: z
-      .guid()
-      .openapi({
-        description: 'The report filter to use for the rule',
-        example: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
-      }),
-    ruleName: z.string().openapi({ description: 'The name of the rule', example: 'My rule' }),
-    startUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The start validity utc date of the rule',
-        example: '2016-08-29T09:12:33.001Z',
-      }),
-  })
-  .openapi({ required: ['optimisationActionName', 'ruleName', 'reportFilterId'] })
-  .openapi('CreateRuleRequest')
-
-const StoreCountryIsoCodeAlpha3Schema = z
-  .string()
-  .openapi({
-    description: 'The country iso code alpha 3 based on the list of values /user/lov/StoreCountry',
-    example: 'DEU',
-    'x-lov': 'StoreCountry',
-  })
-  .openapi('StoreCountryIsoCodeAlpha3')
-
-const StoreNameSchema = z
-  .string()
-  .openapi({ description: 'The store name. Must be unique.', example: 'My Store' })
-  .openapi('StoreName')
-
-const StoreSectorSchema = z
-  .string()
-  .openapi({
-    description: "The store's sector based on the list of values /user/lov/ParamSector",
-    example: 'ANIMALERIE',
-    'x-lov': 'ParamSector',
-  })
-  .openapi('StoreSector')
-
-const StoreSectorsSchema = z
-  .array(StoreSectorSchema)
-  .openapi({
-    description: "The store's sectors based on the list of values /user/lov/ParamSector",
-    example: ['ANIMALERIE', 'AUTOMOTO'],
-  })
-  .openapi('StoreSectors')
-
-const StoreUrlSchema = z
-  .string()
-  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
-  .openapi({ description: 'The url of your store', example: 'http://www.mystore.com' })
-  .openapi('StoreUrl')
-
-const CreateStoreRequestSchema = z
-  .object({
-    countryIsoCodeAlpha3: StoreCountryIsoCodeAlpha3Schema,
-    id: BeezUPCommonStoreIdSchema.exactOptional(),
-    name: StoreNameSchema,
-    sectors: StoreSectorsSchema,
-    url: StoreUrlSchema,
-  })
-  .openapi({
-    description:
-      'The request to create a store. The store identifier is optional, if null it will be automatically computed.',
-    required: ['name', 'url', 'countryIsoCodeAlpha3', 'sectors'],
-  })
-  .openapi('CreateStoreRequest')
-
-const SubscriptionMerchantApplicationNameSchema = z
-  .string()
-  .openapi({ description: 'The name of your application', example: 'MyApp' })
-  .openapi('SubscriptionMerchantApplicationName')
-
-const SubscriptionMerchantApplicationVersionSchema = z
-  .string()
-  .default('1.0')
-  .openapi({ description: 'The version of your application', example: '1.0' })
-  .openapi('SubscriptionMerchantApplicationVersion')
-
-const EmailSchema = z
-  .email()
-  .regex(/^(.+)@(.+)$/)
-  .openapi({
-    description: 'The email',
-    example: 'paulsimon@mysupercompany.com',
-    'x-exclude': true,
-    'x-pattern': '^(.+)@(.+)$',
-  })
-  .openapi('Email')
-
-const SubscriptionNameSchema = z
-  .string()
-  .openapi({ description: 'The subscription name you want to use', example: 'MySubscriptionName' })
-  .openapi('SubscriptionName')
-
-const HttpUrlSchema = z
-  .string()
-  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
-  .openapi({
-    description:
-      'The URL <a href="https://en.wikipedia.org/wiki/URL">https://en.wikipedia.org/wiki/URL</a>',
-    example: 'http://www.mydomain.com',
-    'x-exclude': true,
-    'x-pattern': '^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$',
-  })
-  .openapi('HttpUrl')
-
-const CreateSubscriptionRequestSchema = z
-  .object({
-    merchantApplicationName: SubscriptionMerchantApplicationNameSchema,
-    merchantApplicationVersion: SubscriptionMerchantApplicationVersionSchema,
-    merchantEmailAlert: EmailSchema.exactOptional(),
-    name: SubscriptionNameSchema,
-    targetUrl: HttpUrlSchema,
-  })
-  .openapi({
-    required: ['targetUrl', 'name', 'merchantApplicationName', 'merchantApplicationVersion'],
-    'x-format': 'Message',
-  })
-  .openapi('CreateSubscriptionRequest')
-
-const ExpirationMonthSchema = z
-  .int32()
-  .min(1)
-  .max(12)
-  .openapi({ description: 'Expiration Month', example: '12' })
-  .openapi('ExpirationMonth')
-
-const ExpirationYearSchema = z
-  .int32()
-  .min(2017)
-  .max(9000)
-  .openapi({ description: 'Expiration Year', example: '2017' })
-  .openapi('ExpirationYear')
-
-const CreditCardInfoSchema = z
-  .object({
-    cardNumber: CardNumberSchema,
-    cardVerificationCode: CardVerificationCodeSchema,
-    expirationMonth: ExpirationMonthSchema,
-    expirationYear: ExpirationYearSchema,
-  })
-  .openapi({
-    required: ['cardNumber', 'cardVerificationCode', 'expirationMonth', 'expirationYear'],
-  })
-  .openapi('CreditCardInfo')
-
-const CreditCardInfoWithCardTypeSchema = z
-  .object({
-    cardNumber: CardNumberSchema,
-    cardType: z
-      .string()
-      .openapi({
-        description: 'Your credit card type. Example: VISA, MasterCard, etc...',
-        example: 'VISA',
-      }),
-    expirationMonth: ExpirationMonthSchema,
-    expirationYear: ExpirationYearSchema,
-  })
-  .openapi({ required: ['cardNumber', 'expirationMonth', 'expirationYear', 'cardType'] })
-  .openapi('CreditCardInfoWithCardType')
-
-const CreditCardInfoResponseLinksSchema = z
-  .object({
-    saveCreditCardInfo: LinksSaveCreditCardInfoLinkSchema,
-    self: LinksGetCreditCardInfoLinkSchema,
-  })
-  .openapi({
-    description: 'The different actions you can make on this offer',
-    required: ['self', 'saveCreditCardInfo'],
-  })
-  .openapi('CreditCardInfoResponseLinks')
-
-const CreditCardInfoResponseSchema = z
-  .object({
-    creditCardInfo: CreditCardInfoWithCardTypeSchema.exactOptional(),
-    currentPaymentMethod: PaymentMethodSchema,
-    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
-    links: CreditCardInfoResponseLinksSchema,
-  })
-  .openapi({ required: ['links', 'currentPaymentMethod'] })
-  .openapi('CreditCardInfoResponse')
-
-const CultureNameSchema = z
-  .string()
-  .openapi({
-    description: 'If the error is translated, the culture name will be indicated',
-    example: 'en',
-    'x-exclude': true,
-    'x-lov': 'Go2CultureName',
-  })
-  .openapi('CultureName')
-
-const CurrencyCodeSchema = z
-  .string()
-  .regex(/^[A-Z]{3}$/)
-  .openapi({
-    description:
-      'The currency code <a href="https://en.wikipedia.org/wiki/ISO_4217">(ISO 4217)</a>\n',
-    example: 'EUR',
-    'x-exclude': true,
-    'x-pattern': '^[A-Z]{3}$',
-  })
-  .openapi('CurrencyCode')
-
-const LinksCatalogDeleteCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksCatalogDeleteCustomColumnLink')
-
-const LinksCatalogGetCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksCatalogGetCustomColumnExpressionLink')
-
-const LinksCatalogChangeCustomColumnUserNameLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/rename',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'changeUserColumnNameRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksCatalogChangeCustomColumnUserNameLink')
-
-const LinksCatalogSaveCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/{columnId}',
-        method: 'POST',
-        parameters: {
-          columnId: { in: 'path', required: true, type: 'string' },
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'createCustomColumnRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksCatalogSaveCustomColumnLink')
-
-const LinksCatalogChangeCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
-        method: 'PUT',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'changeCustomColumnExpressionRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksCatalogChangeCustomColumnExpressionLink')
-
-const CustomColumnLinksSchema = z
-  .object({
-    delete: LinksCatalogDeleteCustomColumnLinkSchema,
-    expression: LinksCatalogGetCustomColumnExpressionLinkSchema,
-    rename: LinksCatalogChangeCustomColumnUserNameLinkSchema,
-    save: LinksCatalogSaveCustomColumnLinkSchema,
-    saveExpression: LinksCatalogChangeCustomColumnExpressionLinkSchema,
-  })
-  .openapi({ required: ['save', 'delete', 'rename', 'expression', 'saveExpression'] })
-  .openapi('CustomColumnLinks')
-
-const CustomColumnSchema = z
-  .object({
-    catalogColumnDependencies: z.array(CatalogColumnNameSchema).exactOptional(),
-    configuration: ColumnConfigurationSchema,
-    id: ColumnIdSchema,
-    links: CustomColumnLinksSchema,
-    userColumName: UserColumNameSchema,
-  })
-  .openapi({
-    description: 'The custom column configuration',
-    required: ['id', 'userColumName', 'configuration', 'links'],
-  })
-  .openapi('CustomColumn')
-
-const CustomColumnListLinksSchema = z
-  .object({
-    add: LinksCatalogSaveCustomColumnLinkSchema.exactOptional(),
-    self: LinksCatalogGetCustomColumnsLinkSchema,
-  })
-  .openapi({ required: ['self'] })
-  .openapi('CustomColumnListLinks')
-
-const CustomColumnListSchema = z
-  .object({ customColumns: z.array(CustomColumnSchema), links: CustomColumnListLinksSchema })
-  .openapi({ required: ['links', 'customColumns'] })
-  .openapi('CustomColumnList')
-
-const LinksGetFriendInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/friends/{userId}',
-        method: 'GET',
-        parameters: { userId: { in: 'path', required: true, type: 'string' } },
-      },
-    }),
-).openapi('LinksGetFriendInfoLink')
-
-const LinksGetOfferLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/offers',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', required: true, schema: 'offerRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOfferLink')
-
-const LinksGetInvoicesLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/invoices', method: 'GET' } }),
-).openapi('LinksGetInvoicesLink')
-
-const LinksLogoutLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/security/logout', method: 'POST' } }),
-).openapi('LinksLogoutLink')
-
-const LinksGetCustomerIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer', method: 'GET' } }),
-).openapi('LinksGetCustomerIndexLink')
-
-const LinksGetStandardOffersLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/offers', method: 'GET' } }),
-).openapi('LinksGetStandardOffersLink')
-
-const LinksGetStoresLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/stores', method: 'GET' } }),
-).openapi('LinksGetStoresLink')
-
-const CustomerIndexLinksSchema = z
-  .object({
-    accountInfo: LinksGetUserAccountInfoLinkSchema,
-    billingPeriods: LinksGetBillingPeriodsLinkSchema,
-    contracts: LinksGetContractsLinkSchema.exactOptional(),
-    friendInfo: LinksGetFriendInfoLinkSchema,
-    getOffer: LinksGetOfferLinkSchema.exactOptional(),
-    invoices: LinksGetInvoicesLinkSchema.exactOptional(),
-    logout: LinksLogoutLinkSchema.exactOptional(),
-    self: LinksGetCustomerIndexLinkSchema,
-    standardOffers: LinksGetStandardOffersLinkSchema,
-    stores: LinksGetStoresLinkSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Gives you want you can do on this API',
-    required: ['self', 'accountInfo', 'billingPeriods', 'standardOffers', 'friendInfo'],
-  })
-  .openapi('CustomerIndexLinks')
-
-const CustomerIndexLovLinksSchema = z
-  .object({
-    activeOfferLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-    beezUPTimeZoneLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-    contractTerminationReasonLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-    countryLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-    customerStatusLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-    invoicePaymentStatusLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-    offerLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-    storeCountryLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-    storeSectorLov: BeezUPCommonLOVLink3Schema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerIndexLovLinks')
-
-const CustomerIndexSchema = z
-  .object({ links: CustomerIndexLinksSchema, lovLinks: CustomerIndexLovLinksSchema })
-  .openapi({ description: 'The index of the customer API', required: ['links', 'lovLinks'] })
-  .openapi('CustomerIndex')
-
-const DateSearchTypeSchema = z
-  .enum(['Modification', 'Purchase', 'MarketPlaceModification'])
-  .default('Modification')
-  .openapi({ description: 'Indicates on which date you want to make the filter' })
-  .openapi('DateSearchType')
-
-const LinksImportationConfigureCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'configureCatalogColumnCatalogRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksImportationConfigureCatalogColumnLink')
-
-const LinksImportationIgnoreColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/ignore',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationIgnoreColumnLink')
-
-const LinksImportationMapCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/map',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', required: true, schema: 'mapBeezUPColumnRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksImportationMapCatalogColumnLink')
-
-const LinksImportationReattendColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/reattend',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationReattendColumnLink')
-
-const LinksImportationUnmapCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/map',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationUnmapCatalogColumnLink')
-
-const DetectedCatalogColumnLinksSchema = z
-  .object({
-    configure: LinksImportationConfigureCatalogColumnLinkSchema.exactOptional(),
-    ignore: LinksImportationIgnoreColumnLinkSchema.exactOptional(),
-    map: LinksImportationMapCatalogColumnLinkSchema.exactOptional(),
-    reattend: LinksImportationReattendColumnLinkSchema.exactOptional(),
-    unmap: LinksImportationUnmapCatalogColumnLinkSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DetectedCatalogColumnLinks')
-
-const DetectedCatalogColumnSchema = CatalogColumnSchema.and(
-  z
-    .object({ links: DetectedCatalogColumnLinksSchema })
-    .openapi({
-      description: 'The catalog column detected during the first parsing step',
-      required: ['id', 'catalogColumnName', 'links'],
-    }),
-).openapi('DetectedCatalogColumn')
-
-const LinksImportationGetDetectedCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetDetectedCatalogColumnsLink')
-
-const DetectedCatalogColumnListLinksSchema = z
-  .object({ self: LinksImportationGetDetectedCatalogColumnsLinkSchema })
-  .openapi({ required: ['self'] })
-  .openapi('DetectedCatalogColumnListLinks')
-
-const DetectedCatalogColumnListSchema = z
-  .object({
-    detectedCatalogColumns: z
-      .array(DetectedCatalogColumnSchema)
-      .exactOptional()
-      .openapi({ description: 'Contains all deteted catalog columns' }),
-    links: DetectedCatalogColumnListLinksSchema,
-  })
-  .openapi({ description: 'The list of detected catalog column', required: ['links'] })
-  .openapi('DetectedCatalogColumnList')
-
-const DocUrlSchema = z
-  .url()
-  .openapi({
-    description: 'The documentation related to this operation.',
-    example: 'https://api-docs.imn.io/#operation/EnableChannelCatalog',
-    'x-exclude': true,
-  })
-  .openapi('DocUrl')
-
-const ErrorCodeSchema = z.string().openapi({ description: 'Error Code' }).openapi('ErrorCode')
-
-const UserErrorMessageArgumentsSchema = z
-  .record(z.string(), z.object({}))
-  .openapi({ description: 'a dictionary string/object', 'x-exclude': true })
-  .openapi('UserErrorMessageArguments')
-
-const UserErrorMessageSchema = z
-  .object({
-    arguments: UserErrorMessageArgumentsSchema.exactOptional(),
-    code: ErrorCodeSchema,
-    cultureName: CultureNameSchema.exactOptional(),
-    docUrl: DocUrlSchema.exactOptional(),
-    message: z
-      .string()
-      .openapi({
-        description: 'The error message',
-        example:
-          'There is already an importation in progress: b24d0dd8-a561-478a-9b26-34f573f03527\n',
-      }),
-  })
-  .openapi({ required: ['code', 'message'], 'x-exclude': true })
-  .openapi('UserErrorMessage')
-
-const ErrorResponseMessageSchema = z
-  .object({ errors: z.array(UserErrorMessageSchema) })
-  .openapi({ required: ['errors'], 'x-exclude': true })
-  .openapi('ErrorResponseMessage')
-
-const ErrorResponseMessagePaymentRequiredLinksSchema = z
-  .object({ offer: LinksGetOfferLinkSchema })
-  .openapi({ required: ['offer'] })
-  .openapi('ErrorResponseMessagePaymentRequiredLinks')
-
-const ErrorResponseMessagePaymentRequiredSchema = BeezUPCommonErrorResponseMessageSchema.and(
-  z
-    .object({ links: ErrorResponseMessagePaymentRequiredLinksSchema })
-    .openapi({ required: ['errors', 'links'] }),
-).openapi('ErrorResponseMessagePaymentRequired')
-
-const ExceptionDetailSchema = z
-  .object({
-    helpLink: z.string().exactOptional(),
-    message: z.string().exactOptional(),
-    stackTrace: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ExceptionDetail')
-
-const ErrorSummarySchema = z
-  .object({
-    errorArguments: z.record(z.string(), z.string()).exactOptional(),
-    errorCode: z.string().exactOptional(),
-    errorGuid: z.uuid().exactOptional(),
-    errorMessage: z.string().exactOptional(),
-    exceptionDetail: ExceptionDetailSchema.exactOptional(),
-    objectName: z.string().exactOptional(),
-    propertyName: z.string().exactOptional(),
-    propertyValue: z.string().exactOptional(),
-    source: z.string().exactOptional(),
-    technicalErrorMessage: z.string().exactOptional(),
-    utcDate: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ErrorSummary')
-
-const ExchangedMessagesItemSchema = z
-  .object({
-    operationName: z.string(),
-    requestUri: z.url().exactOptional(),
-    requestUtcDate: z.iso.datetime({ offset: true }).exactOptional(),
-    responseUri: z.url().exactOptional(),
-    responseUtcDate: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: ['operationName'] })
-  .openapi('ExchangedMessagesItem')
-
-const LinksConfigureChannelCatalogExclusionFiltersLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters',
-        method: 'PUT',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogExclusionFiltersLink')
-
-const ExclusionFiltersResponseLinksSchema = z
-  .object({
-    configure: LinksConfigureChannelCatalogExclusionFiltersLinkSchema.exactOptional(),
-    self: LinksGetChannelCatalogExclusionFiltersLinkSchema,
-  })
-  .openapi({ required: ['self'] })
-  .openapi('ExclusionFiltersResponseLinks')
-
-const ExclusionFiltersResponseSchema = z
-  .object({
-    exclusionFilters: ExclusionFiltersSchema.exactOptional(),
-    links: ExclusionFiltersResponseLinksSchema,
-  })
-  .openapi({ required: ['links'] })
-  .openapi('ExclusionFiltersResponse')
-
-const ExecutionIdSchema = z
-  .guid()
-  .openapi({
-    description: 'The execution identifier of the catalog importation',
-    example: 'bf3bc288-604c-4267-925e-66b1a15dca75',
-  })
-  .openapi('ExecutionId')
-
-const ExportOrderListFormatSchema = z
-  .literal('csv')
-  .default('csv')
-  .openapi({ description: 'The type of the file to export', example: 'csv' })
-  .openapi('ExportOrderListFormat')
-
-const InvoiceAvailabilityTypeSchema = z
-  .string()
-  .openapi({
-    description: 'Indicates on which invoice availability to filter',
-    example: 'All',
-    'x-lov': 'InvoiceAvailabilityType',
-  })
-  .openapi('InvoiceAvailabilityType')
-
-const MarketplaceOrderIdSchema = z
-  .string()
-  .openapi({ description: 'The order marketplace identifier', example: 'AMAZON12345' })
-  .openapi('MarketplaceOrderId')
-
-const OrderMerchantInfoSynchronizationStatusSchema = z
-  .string()
-  .openapi({
-    description: 'Indicates on which order merchant info synchronization status to filter',
-    example: 'All',
-    'x-lov': 'OrderMerchantInfoSynchronizationStatus',
-  })
-  .openapi('OrderMerchantInfoSynchronizationStatus')
-
-const OrderBuyerNameSchema = z
-  .string()
-  .openapi({ description: 'Buyer full name', example: 'Monroe' })
-  .openapi('OrderBuyerName')
-
-const OrderMerchantOrderIdSchema = z
-  .string()
-  .openapi({ description: 'The order merchant identifier', example: 'MyOrderMerchantId' })
-  .openapi('OrderMerchantOrderId')
-
-const OrderListRequestWithoutPaginationSchema = z
-  .object({
-    accountIds: z
-      .array(AccountIdSchema)
-      .exactOptional()
-      .openapi({ description: 'Account Id list', example: ['12345'] }),
-    beezUPOrderStatuses: z
-      .array(BeezUPOrderStatusSchema)
-      .exactOptional()
-      .openapi({ example: ['InProgress'] }),
-    beginPeriodUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The begin period you want to make the search. \\\nThe period MUST not be greater than 62 days.\nThe begin period MUST be lower than the end period.\n',
-        example: '2017-03-01T13:10:01Z',
-      }),
-    dateSearchType: DateSearchTypeSchema.exactOptional(),
-    endPeriodUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The end period of you search. \\\nThe period MUST not be greater than 62 days. \\\nThe end period MUST be greater than the begin period.\nThe end period MUST be lower to the current date.\n',
-        example: '2017-04-01T13:10:01Z',
-      }),
-    invoiceAvailabilityType: InvoiceAvailabilityTypeSchema.exactOptional(),
-    marketplaceBusinessCodes: z
-      .array(BeezUPCommonMarketplaceBusinessCodeSchema)
-      .exactOptional()
-      .openapi({ example: ['PRICEMINISTER'] }),
-    marketplaceOrderIds: z
-      .array(MarketplaceOrderIdSchema)
-      .exactOptional()
-      .openapi({ example: ['AmazonOrderId1234'] }),
-    marketplaceTechnicalCodes: z
-      .array(BeezUPCommonMarketplaceTechnicalCodeSchema)
-      .exactOptional()
-      .openapi({ example: ['PriceMinister'] }),
-    orderMerchantInfoSynchronizationStatus:
-      OrderMerchantInfoSynchronizationStatusSchema.exactOptional(),
-    order_Buyer_Name: OrderBuyerNameSchema.exactOptional(),
-    order_MerchantOrderIds: z
-      .array(OrderMerchantOrderIdSchema)
-      .exactOptional()
-      .openapi({ description: 'Merchant order id list', example: ['MyOrderId1234'] }),
-    storeIds: z
-      .array(BeezUPCommonStoreIdSchema)
-      .exactOptional()
-      .openapi({ description: 'Store Id list' }),
-  })
-  .openapi({ required: ['beginPeriodUtcDate', 'endPeriodUtcDate'] })
-  .openapi('OrderListRequestWithoutPagination')
-
-const ExportOrderListRequestSchema = z
-  .object({
-    format: ExportOrderListFormatSchema.exactOptional(),
-    orderListRequestWithoutPagination: OrderListRequestWithoutPaginationSchema,
-    storeId: BeezUPCommonStoreIdSchema,
-  })
-  .openapi({
-    description:
-      'The message request to export order list. The store identifier is requested to regroup the exportations.',
-    required: ['storeId', 'orderListRequestWithoutPagination'],
-  })
-  .openapi('ExportOrderListRequest')
-
-const FilterOperatorDataTypeSchema = z
-  .enum(['string', 'number'])
-  .default('string')
-  .openapi({ description: 'Data type of the operator', example: 'string' })
-  .openapi('FilterOperatorDataType')
-
-const FilterOperatorSchema = z
-  .object({
-    expectedChannelColumnDataType: FilterOperatorDataTypeSchema.exactOptional(),
-    expectedValueDataType: FilterOperatorDataTypeSchema.exactOptional(),
-    name: FilterOperatorNameSchema.exactOptional(),
-    valueRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'This operator requires a value', example: 'true' }),
-  })
-  .openapi({ description: 'The filter operator', required: [] })
-  .openapi('FilterOperator')
-
-const FooterContentHtmlSchema = z
-  .string()
-  .max(1000)
-  .openapi({ description: 'Footer Content HTML', 'x-minValueLength': '0' })
-  .openapi('FooterContentHtml')
-
-const FriendCountryIsoCodeAlpha3Schema = z
-  .string()
-  .openapi({
-    description: "Your friend's user country iso code alpha 3",
-    example: 'USA',
-    'x-lov': 'Country',
-  })
-  .openapi('FriendCountryIsoCodeAlpha3')
-
-const FriendEmailSchema = z
-  .email()
-  .regex(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
-  .openapi({ description: "Your friend's user email", example: 'humphray.bogart@yahoo.ma' })
-  .openapi('FriendEmail')
-
-const FriendProfilePictureUrlSchema = z
-  .string()
-  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
-  .openapi({
-    description: "Your friend's user profile picture url",
-    example:
-      'https://www.biography.com/.image/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTE4MDAzNDEwNDU3MjMyOTEw/humphrey-bogart-9217486-1-402.jpg',
-  })
-  .openapi('FriendProfilePictureUrl')
-
-const FunctionalitySchema = z
-  .object({
-    code: z.string().openapi({ description: 'The functionality code', example: 'MARKETMANA' }),
-    order: z
-      .int32()
-      .openapi({
-        description: 'UI purpose: Indicate the position of the functionality',
-        example: '1',
-      }),
-  })
-  .openapi({ required: ['code', 'order'] })
-  .openapi('Functionality')
-
-const FunctionalityRightInfoSchema = z
-  .object({
-    functionalityCode: z
-      .string()
-      .openapi({ description: 'The functionality code', example: 'COMPAMANA' }),
-    maxValueInterger: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The max value for this functionality code considering your rights',
-        example: '10',
-      }),
-    unlimited: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If you can use this functionality unlimitedly', example: 'true' }),
-  })
-  .openapi({
-    description: 'Describe the rights for a functionality',
-    required: ['functionalityCode'],
-  })
-  .openapi('FunctionalityRightInfo')
-
-const MarketplaceAccountIdSchema = z
-  .int()
-  .openapi({ description: 'Marketplace Account Identifier', example: '50' })
-  .openapi('MarketplaceAccountId')
-
-const InvoiceSequenceNumberSchema = z
-  .int()
-  .min(0)
-  .openapi({ description: 'Invoice Sequence Number', example: '879' })
-  .openapi('InvoiceSequenceNumber')
-
-const MarketplaceTechnicalCodeSchema = z
-  .string()
-  .openapi({ description: 'Marketplace Technical Code', example: 'CDISCOUNT' })
-  .openapi('MarketplaceTechnicalCode')
-
-const GenerateBatchOrderInvoiceRequestItemSchema = z
-  .object({
-    accountId: MarketplaceAccountIdSchema,
-    beezUPOrderUUID: BeezUPOrderUUIDSchema,
-    invoiceSequenceNumber: InvoiceSequenceNumberSchema,
-    marketplaceTechnicalCode: MarketplaceTechnicalCodeSchema,
-  })
-  .openapi({
-    required: ['marketplaceTechnicalCode', 'accountId', 'beezUPOrderUUID', 'invoiceSequenceNumber'],
-  })
-  .openapi('GenerateBatchOrderInvoiceRequestItem')
-
-const GenerateBatchOrderInvoiceErrorResponseItemDetailSchema = z
-  .object({
-    errorMessage: UserErrorMessageSchema.exactOptional(),
-    request: GenerateBatchOrderInvoiceRequestItemSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GenerateBatchOrderInvoiceErrorResponseItemDetail')
-
-const GenerateBatchOrderInvoiceErrorResponseItemDetailsSchema = z
-  .array(GenerateBatchOrderInvoiceErrorResponseItemDetailSchema)
-  .openapi('GenerateBatchOrderInvoiceErrorResponseItemDetails')
-
-const GenerateBatchOrderInvoiceErrorResponseItemSchema = z
-  .object({
-    count: z.int(),
-    errorType: z.string(),
-    errors: GenerateBatchOrderInvoiceErrorResponseItemDetailsSchema,
-  })
-  .openapi({ required: ['errorType', 'count', 'errors'] })
-  .openapi('GenerateBatchOrderInvoiceErrorResponseItem')
-
-const GenerateBatchOrderInvoiceRequestSchema = z
-  .array(GenerateBatchOrderInvoiceRequestItemSchema)
-  .openapi('GenerateBatchOrderInvoiceRequest')
-
-const InvoiceLocationSchema = z.string().openapi('InvoiceLocation')
-
-const GenerateOrderInvoiceResponseSchema = z
-  .object({
-    accountId: MarketplaceAccountIdSchema,
-    beezUPOrderUUID: BeezUPOrderUUIDSchema,
-    invoiceLocation: InvoiceLocationSchema.exactOptional(),
-    invoiceSequenceNumber: InvoiceSequenceNumberSchema.exactOptional(),
-    marketplaceTechnicalCode: MarketplaceTechnicalCodeSchema,
-  })
-  .openapi({ required: ['marketplaceTechnicalCode', 'accountId', 'beezUPOrderUUID'] })
-  .openapi('GenerateOrderInvoiceResponse')
-
-const GenerateBatchOrderInvoiceResponseSchema = z
-  .array(GenerateOrderInvoiceResponseSchema)
-  .openapi('GenerateBatchOrderInvoiceResponse')
-
-const GenerateOrderInvoiceRequestSchema = z
-  .object({ invoiceSequenceNumber: InvoiceSequenceNumberSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('GenerateOrderInvoiceRequest')
-
-const ProductSetVisibilityCriteriaLogicTypeSchema = z
-  .enum(['funnel', 'cumulative'])
-  .openapi({
-    description:
-      'Indicate how you want to combine the filters:\n* funnel: You will get the products which meet at least one of the product set criterion. The criteria are applied in the following order:\n  - categorization\n  - exclusion filters\n  - deactivations\n* cumulative: You will get the products which have all the product set criteria\n',
-  })
-  .openapi('ProductSetVisibilityCriteriaLogicType')
-
-const ProductSetVisibilityCriteriaSchema = z
-  .object({
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Search disabled products. If null the filter will not be taken in account.',
-        example: 'false',
-      }),
-    excluded: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Search excluded products by at least an exclusion filter. If null the filter will not be taken in account.',
-        example: 'false',
-      }),
-    exist: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If false, search for products absent from the current catalog. If true, search for products currently in the catalog. If null the filter will not be taken in account.',
-        example: 'true',
-      }),
-    logic: ProductSetVisibilityCriteriaLogicTypeSchema,
-    uncategorized: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Search product WITHOUT category mapped with the channel. If null the filter will not be taken in account.',
-        example: 'false',
-      }),
-  })
-  .openapi({ required: ['logic'] })
-  .openapi('ProductSetVisibilityCriteria')
-
-const GetChannelCatalogProductInfoListRequestSchema = z
-  .object({
-    catalogCategoryFilter: BeezUPCommonCatalogCategoryFilterSchema.exactOptional(),
-    channelCategoryFilter: BeezUPCommonChannelCategoryFilterSchema.exactOptional(),
-    criteria: ProductSetVisibilityCriteriaSchema,
-    overridden: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Search overridden products. If null the filter will not be taken in account.',
-        example: 'true',
-      }),
-    pageNumber: z.int32().min(1).openapi({ example: '1' }),
-    pageSize: z.int32().min(100).openapi({ example: '100' }),
-    productFilters: ChannelCatalogProductFiltersSchema.exactOptional(),
-  })
-  .openapi({ required: ['pageNumber', 'pageSize', 'criteria'] })
-  .openapi('GetChannelCatalogProductInfoListRequest')
-
-const GetImportationProductsReportRequestErrorCodeSchema = z
-  .object({
-    errorCode: ErrorCodeSchema.exactOptional(),
-    userColumnName: UserColumNameSchema.exactOptional(),
-  })
-  .openapi({ description: 'Get Importation Products Report Request Error Codes', required: [] })
-  .openapi('GetImportationProductsReportRequestErrorCode')
-
-const GetImportationProductsReportRequestErrorCodesSchema = z
-  .array(GetImportationProductsReportRequestErrorCodeSchema)
-  .openapi({ description: 'Get Importation Products Report Request Error Codes' })
-  .openapi('GetImportationProductsReportRequestErrorCodes')
-
-const GetImportationProductsReportRequestSchema = z
-  .object({
-    ean: z.string().exactOptional().openapi({ description: 'Filter by EAN (equals)' }),
-    errorCodes: GetImportationProductsReportRequestErrorCodesSchema.exactOptional(),
-    mpn: z.string().exactOptional().openapi({ description: 'Filter by MPN (equals)' }),
-    pageNumber: BeezUPCommonPageNumberSchema,
-    pageSize: BeezUPCommonPageSizeSchema,
-    sku: z.string().exactOptional().openapi({ description: 'Filter by Sku (equals)' }),
-    title: z.string().exactOptional().openapi({ description: 'Filter by Title (StartsWith)' }),
-  })
-  .openapi({
-    description: 'Get Importation Products Report Request',
-    required: ['pageNumber', 'pageSize'],
-  })
-  .openapi('GetImportationProductsReportRequest')
-
-const ProductErrorCodeSchema = z
-  .object({
-    beezUPColumnName: BeezUPCommonBeezUPColumnNameSchema.exactOptional(),
-    errorCode: ErrorCodeSchema.exactOptional(),
-    errorMessage: z.string().exactOptional(),
-    userColumName: UserColumNameSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductErrorCode')
-
-const ProductErrorCodesSchema = z.array(ProductErrorCodeSchema).openapi('ProductErrorCodes')
-
-const SkuSchema = z
-  .string()
-  .max(50)
-  .openapi({
-    description:
-      'The Stock Keeping Unit (SKU), i.e. a merchant-specific identifier for a product or service, or the product to which the offer refers. http://schema.org/sku',
-  })
-  .openapi('Sku')
-
-const ProductErrorSchema = z
-  .object({
-    ean: z.string().exactOptional(),
-    errors: ProductErrorCodesSchema,
-    lineNumber: z.int(),
-    mpn: z.string().exactOptional(),
-    sku: SkuSchema.exactOptional(),
-    title: z.string().exactOptional(),
-  })
-  .openapi({ required: ['lineNumber', 'errors'] })
-  .openapi('ProductError')
-
-const ProductErrorsSchema = z
-  .array(ProductErrorSchema)
-  .openapi({ description: 'Product Errors' })
-  .openapi('ProductErrors')
-
-const GetImportationProductsReportResponseSchema = z
-  .object({
-    paginationResult: BeezUPCommonPaginationResultSchema,
-    productErrors: ProductErrorsSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Get Importation Products Report Response',
-    required: ['paginationResult'],
-  })
-  .openapi('GetImportationProductsReportResponse')
-
-const GetImportationReportResponseDiffSchema = z
-  .object({
-    createdCount: z.int(),
-    deletedCount: z.int(),
-    unchangedCount: z.int().exactOptional(),
-    updatedCount: z.int(),
-  })
-  .openapi({ required: ['createdCount', 'updatedCount', 'deletedCount'] })
-  .openapi('GetImportationReportResponseDiff')
-
-const GetImportationReportResponseErrorSchema = z
-  .object({
-    beezUPColumnName: BeezUPCommonBeezUPColumnNameSchema.exactOptional(),
-    errorCode: ErrorCodeSchema,
-    productCount: z.int(),
-    userColumName: UserColumNameSchema,
-  })
-  .openapi({ required: ['errorCode', 'userColumName', 'productCount'] })
-  .openapi('GetImportationReportResponseError')
-
-const GetImportationReportResponseErrorsSchema = z
-  .array(GetImportationReportResponseErrorSchema)
-  .openapi('GetImportationReportResponseErrors')
-
-const GetImportationReportResponseImportationInfoSchema = z
-  .object({
-    beginUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The start date of the importation',
-        example: '2017-04-01T13:01:01Z',
-      }),
-    endUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The start date of the importation',
-        example: '2017-04-01T13:01:01Z',
-      }),
-    inputConfiguration: InputFileConfigurationSchema,
-    userId: BeezUPCommonUserIdSchema,
-  })
-  .openapi({ required: ['beginUtcDate', 'endUtcDate', 'userId', 'inputConfiguration'] })
-  .openapi('GetImportationReportResponseImportationInfo')
-
-const GetImportationReportResponseProductMetricsSchema = z
-  .object({
-    activeCount: z.int(),
-    detectedCount: z.int(),
-    duplicatedCount: z.int(),
-    failedCount: z.int(),
-  })
-  .openapi({ required: ['detectedCount', 'duplicatedCount', 'failedCount', 'activeCount'] })
-  .openapi('GetImportationReportResponseProductMetrics')
-
-const GetImportationReportResponseSchema = z
-  .object({
-    categories: GetImportationReportResponseDiffSchema.exactOptional(),
-    columns: GetImportationReportResponseDiffSchema.exactOptional(),
-    errors: GetImportationReportResponseErrorsSchema,
-    executionId: ExecutionIdSchema,
-    importationInfo: GetImportationReportResponseImportationInfoSchema,
-    productMetrics: GetImportationReportResponseProductMetricsSchema.exactOptional(),
-    products: GetImportationReportResponseDiffSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Get Importation Report Response',
-    required: ['executionId', 'importationInfo', 'errors'],
-  })
-  .openapi('GetImportationReportResponse')
-
-const InvoiceContentHtmlSchema = z
-  .string()
-  .openapi({ description: 'Invoice Content HTML' })
-  .openapi('InvoiceContentHtml')
-
-const GetOrderInvoiceDesignPreviewResponseSchema = z
-  .object({ invoiceHtmlContent: InvoiceContentHtmlSchema })
-  .openapi({ required: ['invoiceHtmlContent'] })
-  .openapi('GetOrderInvoiceDesignPreviewResponse')
-
-const InvoicePrefixSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9#_-]{1,50}$/)
-  .openapi({
-    description:
-      'Invoice Prefix. Can contain 1 to 50 characters, with alphanumeric characters in lowercase uppercase and #, _, -',
-    example: 'TOTO',
-    'x-pattern': '^[a-zA-Z0-9#_-]{1,50}$',
-  })
-  .openapi('InvoicePrefix')
-
-const ProductVATPercentSchema = z
-  .number()
-  .min(0)
-  .max(100)
-  .openapi({ description: 'Product VAT in percent', example: '4.0' })
-  .openapi('ProductVATPercent')
-
-const ShippingVATPercentSchema = z
-  .number()
-  .min(0)
-  .max(100)
-  .openapi({ description: 'Shipping cost VAT in percent', example: '8.0' })
-  .openapi('ShippingVATPercent')
-
-const OrderInvoiceGeneralSettingsSchema = z
-  .object({
-    cultureName: CultureNameSchema,
-    invoicePrefix: InvoicePrefixSchema,
-    invoiceStartingSequenceNumber: InvoiceSequenceNumberSchema,
-    productVATPercent: ProductVATPercentSchema,
-    shippingVATPercent: ShippingVATPercentSchema,
-  })
-  .openapi({
-    description: 'Order Invoice General Settings',
-    required: [
-      'cultureName',
-      'productVATPercent',
-      'shippingVATPercent',
-      'invoicePrefix',
-      'invoiceStartingSequenceNumber',
-    ],
-  })
-  .openapi('OrderInvoiceGeneralSettings')
-
-const GetOrderInvoiceGeneralSettingsResponseSchema = OrderInvoiceGeneralSettingsSchema.and(
-  z
-    .object({ lastInvoiceSequenceNumber: InvoiceSequenceNumberSchema.exactOptional() })
-    .openapi({ required: [] }),
-).openapi('GetOrderInvoiceGeneralSettingsResponse')
-
-const OrderInvoiceUriSchema = z
-  .string()
-  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.?&\%-=])*\/?$/)
-  .openapi({
-    description: 'order invoice url',
-    example: 'http://www.mydomain.com',
-    'x-exclude': true,
-    'x-pattern': '^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.?&\\%-=])*\\/?$',
-  })
-  .openapi('OrderInvoiceUri')
-
-const GetOrderInvoicePdfFromHtmlInvoiceUrlRequestSchema = z
-  .object({ orderInvoiceUri: OrderInvoiceUriSchema })
-  .openapi({ required: ['orderInvoiceUri'] })
-  .openapi('GetOrderInvoicePdfFromHtmlInvoiceUrlRequest')
-
-const GetProductsRequestSchema = z
-  .object({
-    categoryPath: BeezUPCommonCatalogCategoryPathSchema.exactOptional(),
-    columnIdList: z.array(BeezUPCommonCatalogColumnIdSchema).min(1).max(5).exactOptional(),
-    ean: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Search for product by ean', example: 'MySku123' }),
-    exists: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Search for existing products or not. If null you will received both.',
-        example: 'true',
-      }),
-    mpn: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Search for product by mpn', example: 'MySku123' }),
-    orderByCatalogColumnId: BeezUPCommonCatalogColumnIdSchema.exactOptional(),
-    pageNumber: BeezUPCommonPageNumberSchema,
-    pageSize: BeezUPCommonPageSizeSchema,
-    productIdList: z
-      .array(BeezUPCommonProductIdSchema)
-      .exactOptional()
-      .openapi({ description: 'Filter with a list of product identifier' }),
-    sku: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Search for product by sku', example: 'MySku123' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Search for products containing this title', example: 'Frigo' }),
-    withoutSubCategories: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Do not retrieve sub categories. By default, this value is set to false',
-        example: 'false',
-      }),
-  })
-  .openapi({
-    description: 'The request message to get products based on these filters',
-    required: ['pageNumber', 'pageSize'],
-  })
-  .openapi('GetProductsRequest')
-
-const GravatarProfilePictureUrlSchema = z
-  .string()
-  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
-  .openapi({
-    description: 'Indicate the url of your picture profil based on gravatar',
-    example: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mm',
-  })
-  .openapi('GravatarProfilePictureUrl')
-
-const HarvestOrderReportingSchema = z
-  .object({
-    beezUPForcedStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The marketplace order status forced by BeezUP during the order change oepration. This could happend when there is no status on the marketplace side.',
-        example: 'In_progress_3',
-      }),
-    beezUPStatus: BeezUPOrderStatusSchema.exactOptional(),
-    creationUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The creation UTC date of the execution',
-        example: '2017-04-01T13:10:03Z',
-      }),
-    errorMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The warning message during the execution',
-        example: 'This is an error message',
-      }),
-    executionUUID: ExecutionUUIDSchema.exactOptional(),
-    lastUpdateUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The last update UTC date of the execution',
-        example: '2017-04-01T13:10:05Z',
-      }),
-    marketplaceStatus: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The order marketplace status', example: 'In_progress_3' }),
-    processingStatus: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The processing status of the execution', example: 'Done' }),
-    warningMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The warning message during the execution',
-        example: 'This is a warning',
-      }),
-  })
-  .openapi({ description: 'The reporting related to a harvest order operation', required: [] })
-  .openapi('HarvestOrderReporting')
-
-const HeaderContentHtmlSchema = z
-  .string()
-  .max(1000)
-  .openapi({ description: 'Header Content HTML', 'x-minValueLength': '0' })
-  .openapi('HeaderContentHtml')
-
-const HrefSchema = z
-  .string()
-  .openapi({
-    description: 'Indicate the relative uri for this link',
-    example: '/merchant/orders/v1/{marketplaceCode}/{IMNOrderId}',
-    'x-exclude': true,
-  })
-  .openapi('Href')
-
-const LinksImportationCancelLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/cancel',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationCancelLink')
-
-const LinksImportationGetImportationMonitoringLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetImportationMonitoringLink')
-
-const ImportAlreadyInProgressResponseLinksSchema = z
-  .object({
-    cancelCurrentImportation: LinksImportationCancelLinkSchema,
-    currentImportation: LinksImportationGetImportationMonitoringLinkSchema,
-  })
-  .openapi({
-    description: 'The action links',
-    required: ['currentImportation', 'cancelCurrentImportation'],
-  })
-  .openapi('ImportAlreadyInProgressResponseLinks')
-
-const ImportAlreadyInProgressResponseSchema = z
-  .object({
-    errors: z
-      .array(BeezUPCommonUserErrorMessageSchema)
-      .openapi({ description: 'The error message list' }),
-    links: ImportAlreadyInProgressResponseLinksSchema,
-  })
-  .openapi({ required: ['errors', 'links'] })
-  .openapi('ImportAlreadyInProgressResponse')
-
-const LinksImportationMapCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/map',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', required: true, schema: 'mapBeezUPColumnRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksImportationMapCustomColumnLink')
-
-const LinksImportationGetProductSampleCustomColumnValueLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/productSamples/{productSampleIndex}/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
-        method: 'GET',
-        parameters: { productSampleIndex: { in: 'path', required: true, type: 'integer' } },
-      },
-    }),
-).openapi('LinksImportationGetProductSampleCustomColumnValueLink')
-
-const LinksImportationSaveCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/{columnId}',
-        method: 'POST',
-        parameters: {
-          columnId: { in: 'path', required: true, type: 'string' },
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'createCustomColumnRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksImportationSaveCustomColumnLink')
-
-const LinksImportationUnmapCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/map',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationUnmapCustomColumnLink')
-
-const ImportationCustomColumnLinksSchema = z
-  .object({
-    delete: LinksCatalogDeleteCustomColumnLinkSchema,
-    expression: LinksCatalogGetCustomColumnExpressionLinkSchema,
-    map: LinksImportationMapCustomColumnLinkSchema.exactOptional(),
-    productSampleValue: LinksImportationGetProductSampleCustomColumnValueLinkSchema.exactOptional(),
-    save: LinksImportationSaveCustomColumnLinkSchema,
-    unmap: LinksImportationUnmapCustomColumnLinkSchema.exactOptional(),
-  })
-  .openapi({ required: ['save', 'delete', 'expression'] })
-  .openapi('ImportationCustomColumnLinks')
-
-const ImportationCustomColumnSchema = z
-  .object({
-    configuration: ColumnConfigurationSchema,
-    id: ColumnIdSchema,
-    links: ImportationCustomColumnLinksSchema,
-    userColumName: UserColumNameSchema,
-  })
-  .openapi({
-    description: 'The custom column configuration',
-    required: ['id', 'userColumName', 'configuration', 'links'],
-  })
-  .openapi('ImportationCustomColumn')
-
-const ImportationCustomColumnListSchema = z
-  .object({
-    customColumns: z.array(ImportationCustomColumnSchema),
-    links: CustomColumnListLinksSchema,
-  })
-  .openapi({ required: ['links', 'customColumns'] })
-  .openapi('ImportationCustomColumnList')
-
-const LinksImportationGetCustomColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetCustomColumnsLink')
-
-const ImportationCustomColumnListLinksSchema = z
-  .object({
-    add: LinksImportationSaveCustomColumnLinkSchema.exactOptional(),
-    self: LinksImportationGetCustomColumnsLinkSchema,
-  })
-  .openapi({ required: ['self'] })
-  .openapi('ImportationCustomColumnListLinks')
-
-const LinksImportationCommitLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/commit',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationCommitLink')
-
-const LinksImportationCommitColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/commitColumns',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationCommitColumnsLink')
-
-const LinksImportationConfigureRemainingCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/configureRemainingCatalogColumns',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationConfigureRemainingCatalogColumnsLink')
-
-const LinksImportationGetProductSampleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/productSamples/{productSampleIndex}',
-        method: 'GET',
-        parameters: { productSampleIndex: { in: 'path', required: true, type: 'integer' } },
-      },
-    }),
-).openapi('LinksImportationGetProductSampleLink')
-
-const LinksImportationTechnicalProgressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/technicalProgression',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationTechnicalProgressionLink')
-
-const ImportationMonitoringLinksSchema = z
-  .object({
-    activateAutoImport: LinksImportationActivateAutoImportLinkSchema.exactOptional(),
-    cancel: LinksImportationCancelLinkSchema.exactOptional(),
-    catalogColumns: LinksImportationGetDetectedCatalogColumnsLinkSchema.exactOptional(),
-    commit: LinksImportationCommitLinkSchema.exactOptional(),
-    commitColumns: LinksImportationCommitColumnsLinkSchema.exactOptional(),
-    configureRemainingCatalogColumns:
-      LinksImportationConfigureRemainingCatalogColumnsLinkSchema.exactOptional(),
-    customColumns: LinksImportationGetCustomColumnsLinkSchema.exactOptional(),
-    productSamples: LinksImportationGetProductSampleLinkSchema.exactOptional(),
-    self: LinksImportationGetImportationMonitoringLinkSchema,
-    technicalProgression: LinksImportationTechnicalProgressionLinkSchema,
-  })
-  .openapi({
-    description: 'Applicable operations considering the state of the importation',
-    required: ['self', 'technicalProgression'],
-  })
-  .openapi('ImportationMonitoringLinks')
-
-const ImportationMonitoringSchema = z
-  .object({
-    beginUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The start date of the importation',
-        example: '2017-04-01T13:01:01Z',
-      }),
-    errors: z
-      .array(BeezUPCommonUserErrorMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'In case of error a description will be indicated' }),
-    executionId: ExecutionIdSchema,
-    lastUpdateUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The last update of the reporting',
-        example: '2017-04-01T13:10:09Z',
-      }),
-    links: ImportationMonitoringLinksSchema.exactOptional(),
-    steps: z
-      .record(z.string(), z.boolean())
-      .openapi({
-        description:
-          'Contains all steps of the importation process with a boolean. If true the step has been passed, false the step is not complete',
-        example: {
-          isCatalogImportComputeDiffCompleted: 'false',
-          isCatalogImportPrepareReadCompleted: 'false',
-          isCatalogUpdateCompleted: 'false',
-          isSavedInDb: 'false',
-        },
-      }),
-    success: z
-      .boolean()
-      .openapi({
-        description: 'Indicates if the importation was successfully completed or not',
-        example: 'true',
-      }),
-    userId: BeezUPCommonUserIdSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Describe the reporting of the catalog importation',
-    required: ['success', 'executionId', 'lastUpdateUtcDate', 'beginUtcDate', 'steps'],
-  })
-  .openapi('ImportationMonitoring')
-
-const LinksImportationGetReportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e911432/report',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetReportLink')
-
-const ImportationReportingLinksSchema = z
-  .object({ report: LinksImportationGetReportLinkSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ImportationReportingLinks')
-
-const ImportationReportingSchema = z
-  .object({
-    autoImported: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicate if this importation is an auto import or not.',
-        example: 'true',
-      }),
-    beginUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Indicate the begin UTC date of this importation.',
-        example: '2017-04-01T13:01:01Z',
-      }),
-    endUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Indicate the end UTC date of this importation.',
-        example: '2017-04-01T13:10:09Z',
-      }),
-    errors: z
-      .array(BeezUPCommonUserErrorMessageSchema)
-      .exactOptional()
-      .openapi({ description: 'Indicate the error message list related to this importation.' }),
-    executionId: ExecutionIdSchema,
-    inputConfigurationUrl: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: 'Indicate the input url of this importation.',
-        example: 'http://blal.com/catalog.csv',
-      }),
-    lastUpdateUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Indicate the last update UTC date of the reporting.',
-        example: '2017-04-01T13:10:09Z',
-      }),
-    links: ImportationReportingLinksSchema.exactOptional(),
-    stepName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The last step name of the importation process',
-        example: 'IsSaveInDb',
-      }),
-    steps: z
-      .record(z.string(), z.boolean())
-      .openapi({
-        description: 'Indicate the steps that have been passed during the importation process',
-        example: {
-          isCatalogImportComputeDiffCompleted: 'false',
-          isCatalogImportPrepareReadCompleted: 'false',
-          isCatalogUpdateCompleted: 'false',
-          isSavedInDb: 'false',
-        },
-      }),
-    success: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicate if the importation succeed or not.', example: 'true' }),
-    totalProductCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicate the total product count detected in the catalog during the importation.',
-        example: '101',
-      }),
-    totalProductErrorCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicate the total product count in error detected in the catalog during the importation.',
-        example: '0',
-      }),
-    totalProductSuccessCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicate the total product count in success in the catalog during the importation.',
-        example: '101',
-      }),
-    userId: BeezUPCommonUserIdSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'The catalog importation reporting',
-    required: ['executionId', 'beginUtcDate', 'lastUpdateUtcDate', 'steps'],
-  })
-  .openapi('ImportationReporting')
-
-const ImportationTechnicalProgressionSchema = z
-  .object({
-    stepsProgression: z
-      .record(z.string(), z.array(z.string()))
-      .exactOptional()
-      .openapi({ description: 'Indicate for each step of the importation the uris to look at' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ImportationTechnicalProgression')
-
-const ImportationsResponseLinksSchema = z
-  .object({
-    self: LinksImportationGetReportingsLinkSchema.exactOptional(),
-    start: LinksImportationStartManualUpdateLinkSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ImportationsResponseLinks')
-
-const ImportationsResponseSchema = z
-  .object({
-    importations: z.array(ImportationReportingSchema).exactOptional(),
-    links: ImportationsResponseLinksSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ImportationsResponse')
-
-const ImportationsPerStoreResponseSchema = z
-  .record(z.string(), ImportationsResponseSchema)
-  .openapi('ImportationsPerStoreResponse')
-
-const InfoSummarySchema = z
-  .object({
-    informationArguments: z.record(z.string(), z.string()).exactOptional(),
-    informationCode: z.string().exactOptional(),
-    informationMessage: z.string().exactOptional(),
-    objectName: z.string().exactOptional(),
-    propertyName: z.string().exactOptional(),
-    propertyValue: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('InfoSummary')
-
-const SuccessSummarySchema = z
-  .object({
-    objectName: z.string().exactOptional(),
-    propertyName: z.string().exactOptional(),
-    propertyValue: z.string().exactOptional(),
-    successArguments: z.record(z.string(), z.string()).exactOptional(),
-    successCode: z.string().exactOptional(),
-    successMessage: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SuccessSummary')
-
-const WarningSummarySchema = z
-  .object({
-    technicalErrorMessage: z.string().exactOptional(),
-    warningArguments: z.record(z.string(), z.string()).exactOptional(),
-    warningCode: z.string().exactOptional(),
-    warningMessage: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('WarningSummary')
-
-const InfoSummariesSchema = z
-  .object({
-    errors: z.array(ErrorSummarySchema).exactOptional(),
-    informations: z.array(InfoSummarySchema).exactOptional(),
-    successes: z.array(SuccessSummarySchema).exactOptional(),
-    warnings: z.array(WarningSummarySchema).exactOptional(),
-  })
-  .openapi({ 'x-exclude': true, required: [] })
-  .openapi('InfoSummaries')
-
-const InitialsProfilePictureUrlSchema = z
-  .string()
-  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
-  .openapi({
-    description: 'Indicate the url of your picture profil based on your initials',
-    example: 'https://dummyimage.com/50x50/000000/fff&text=AM',
-  })
-  .openapi('InitialsProfilePictureUrl')
-
-const InvoiceNumberSchema = z
-  .string()
-  .openapi({ description: 'Your invoice number', example: 'B1234' })
-  .openapi('InvoiceNumber')
-
-const InvoicePaymentStatusSchema = z
-  .enum(['Paid', 'NotPaid', 'PartiallyPaid', 'Loss'])
-  .openapi({ description: 'The payment status', example: 'Paid' })
-  .openapi('InvoicePaymentStatus')
-
-const InvoiceSchema = z
-  .object({
-    amount: z.float64().openapi({ description: 'The amount of your invoice', example: '101.42' }),
-    amountToBePaid: z
-      .float64()
-      .openapi({ description: 'The remaining amount to be paid for this invoice', example: '0.0' }),
-    contractId: ContractIdSchema,
-    currencyCode: BeezUPCommonCurrencyCodeSchema,
-    dueDate: z.iso.date().openapi({ example: '2016-05-10' }),
-    invoiceDate: z.iso.date().openapi({ description: 'The invoice date', example: '2016-05-01' }),
-    invoiceNumber: InvoiceNumberSchema,
-    invoiceUrl: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: 'The url of the invoice document',
-        example:
-          'https://beezupbilling.blob.core.windows.net/invoicepdf/2000/CustomerUserId_00000000-0000-0000-0000-000000000000/ContractId_00000000-0000-0000-0000-000000000000/2000-01-01_B1234.pdf',
-      }),
-    paymentStatus: InvoicePaymentStatusSchema,
-  })
-  .openapi({
-    required: [
-      'invoiceDate',
-      'contractId',
-      'invoiceNumber',
-      'amount',
-      'amountToBePaid',
-      'currencyCode',
-      'paymentStatus',
-      'dueDate',
-    ],
-  })
-  .openapi('Invoice')
-
-const InvoiceListLinksSchema = z
-  .object({ self: LinksGetInvoicesLinkSchema })
-  .openapi({ required: ['self'] })
-  .openapi('InvoiceListLinks')
-
-const InvoiceListSchema = z
-  .object({
-    invoices: z
-      .array(InvoiceSchema)
-      .openapi({
-        example: [
-          {
-            amount: '101',
-            amountToBePaid: '0',
-            contractId: '7098487a-86f6-4322-b8a5-b67f7363b3e7',
-            currencyCode: 'EUR',
-            dueDate: '2016-05-10',
-            invoiceDate: '2016-05-01',
-            invoiceNumber: 'B1234',
-            invoiceUrl:
-              'https://beezupbilling.blob.core.windows.net/invoicepdf/2000/CustomerUserId_00000000-0000-0000-0000-000000000000/ContractId_00000000-0000-0000-0000-000000000000/2000-01-01_B1234.pdf',
-            paymentStatus: 'Paid',
-          },
-        ],
-      }),
-    links: InvoiceListLinksSchema,
-  })
-  .openapi({ required: ['links', 'invoices'] })
-  .openapi('InvoiceList')
-
-const LastManualImportInputConfigurationSchema = z
-  .object({ input: InputConfigurationSchema })
-  .openapi({ description: 'Last manual import input configuration', required: ['input'] })
-  .openapi('LastManualImportInputConfiguration')
-
-const LinksMigrateLegacyTrackingChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/legacyTracking/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/migrate',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksMigrateLegacyTrackingChannelCatalogLink')
-
-const LinksGetLegacyTrackingChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/legacyTracking/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetLegacyTrackingChannelCatalogLink')
-
-const LegacyTrackingChannelCatalogLinksSchema = z
-  .object({
-    migrate: LinksMigrateLegacyTrackingChannelCatalogLinkSchema.exactOptional(),
-    self: LinksGetLegacyTrackingChannelCatalogLinkSchema,
-  })
-  .openapi({
-    description: 'Indicates the actions you can do on a channel catalog',
-    required: ['self'],
-  })
-  .openapi('LegacyTrackingChannelCatalogLinks')
-
-const LegacyTrackingChannelCatalogSchema = z
-  .object({ links: LegacyTrackingChannelCatalogLinksSchema })
-  .openapi({ description: 'The channel catalog', required: ['links'] })
-  .openapi('LegacyTrackingChannelCatalog')
-
-const LinksGetLegacyTrackingChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/legacyTracking/channelCatalogs', method: 'GET' } }),
-).openapi('LinksGetLegacyTrackingChannelCatalogsLink')
-
-const LegacyTrackingChannelCatalogListLinksSchema = z
-  .object({ self: LinksGetLegacyTrackingChannelCatalogsLinkSchema.exactOptional() })
-  .openapi({
-    description:
-      'Indicates how global actions you can do like how to create a channel catalog, exclusion filter operators, etc...\n',
-    required: [],
-  })
-  .openapi('LegacyTrackingChannelCatalogListLinks')
-
-const LegacyTrackingChannelCatalogListSchema = z
-  .object({
-    channelCatalogs: z
-      .record(z.string(), LegacyTrackingChannelCatalogSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The channel catalog list. The key is the channel catalog identifier',
-      }),
-    links: LegacyTrackingChannelCatalogListLinksSchema.exactOptional(),
-  })
-  .openapi({ description: 'This is the index of the channel catalog API', required: [] })
-  .openapi('LegacyTrackingChannelCatalogList')
-
-const OperationIdSchema = z
-  .string()
-  .openapi({ description: 'The operationId to call.', example: 'GetOrder', 'x-exclude': true })
-  .openapi('OperationId')
-
-const ParameterInSchema = z
-  .enum(['path', 'header', 'query', 'body', 'file'])
-  .openapi({
-    description:
-      '* path: if the parameter must be pass in the path uri\n* header: if the parameter must be passed in http header\n* query: if the parameter must be passed in querystring\n* body: if the parameter must be passed in the body\n* file: if the parameter must be passed in a multipart/form-data (https://swagger.io/docs/specification/2-0/file-upload/)\n',
-    example: 'path',
-    'x-exclude': true,
-  })
-  .openapi('ParameterIn')
-
-const ValidationPatternSchema = z
-  .string()
-  .openapi({ description: 'The regular expression to validate the value', example: '*.-api$' })
-  .openapi('ValidationPattern')
-
-const ParameterTypeSchema = z
-  .enum(['string', 'integer', 'number', 'boolean', 'object', 'array', 'date', 'date-time', 'file'])
-  .default('string')
-  .openapi({ description: 'The value type of the parameter', example: 'string', 'x-exclude': true })
-  .openapi('ParameterType')
-
-const LinkParameterProperty3Schema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'description of the parameter', example: 'the store identifier' }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The label corresponding to the link parameter property. This label is automatically translated based on the Accept-Language http header.',
-        example: 'The translated label',
-      }),
-    lovLink: LOVLink3Schema.exactOptional(),
-    lovRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If true, you MUST use indicate a value from the list of values otherwise it's a freetext",
-        example: 'true',
-      }),
-    pattern: ValidationPatternSchema.exactOptional(),
-    required: z.boolean().exactOptional().openapi({ example: 'true' }),
-    schema: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'schema of the parameter', example: 'orderListRequest' }),
-    type: ParameterTypeSchema,
-    value: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description: 'The value of the parameter. It can be an integer a string or an object.',
-      }),
-  })
-  .openapi({ required: ['type'], 'x-exclude': true })
-  .openapi('LinkParameterProperty3')
-
-const LinkParameter3Schema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'description of the parameter', example: 'the store identifier' }),
-    in: ParameterInSchema,
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The label corresponding to the link parameter. This label is automatically translated based on the Accept-Language http header.',
-        example: 'The translated label',
-      }),
-    lovLink: LOVLink3Schema.exactOptional(),
-    lovRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If true, you MUST indicate a value from the list of values otherwise it's a freetext",
-        example: 'true',
-      }),
-    pattern: ValidationPatternSchema.exactOptional(),
-    properties: z
-      .record(z.string(), LinkParameterProperty3Schema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If the parameter is an object with flexible properties (additionProperties/dictionary), we will describe the properties of the object.',
-      }),
-    required: z.boolean().default(false).exactOptional().openapi({ example: 'true' }),
-    schema: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'schema of the parameter', example: 'orderListRequest' }),
-    value: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description: 'The value of the parameter. It can be an integer a string or an object.',
-      }),
-  })
-  .openapi({ required: ['in'], 'x-exclude': true })
-  .openapi('LinkParameter3')
-
-const LinkParameter3TypesSchema = z
-  .record(z.string(), LinkParameter3Schema)
-  .openapi('LinkParameter3Types')
-
-const Link3Schema = z
-  .object({
-    allOptionalParamsProvided: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'indicates whether all optionals params have been provided' }),
-    allRequiredParamsProvided: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'indicates whether all required params have been provided' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the link',
-        example: 'This is a description link',
-      }),
-    docUrl: DocUrlSchema.exactOptional(),
-    href: HrefSchema,
-    info: InfoSummariesSchema.exactOptional(),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The label corresponding to the link. This label is automatically translated based on the Accept-Language http header.',
-        example: 'The translated label',
-      }),
-    method: HttpMethodSchema.exactOptional(),
-    operationId: OperationIdSchema.exactOptional(),
-    parameters: LinkParameter3TypesSchema.exactOptional(),
-    rel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicate the relation name related to the link' }),
-    urlTemplated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'indicates whether the href is templated or not' }),
-  })
-  .openapi({ required: ['href'], 'x-exclude': true })
-  .openapi('Link3')
-
-const LinkClickToOrderTypeSchema = z
-  .enum(['OnPurchaseDate', 'OnClickDate'])
-  .default('OnPurchaseDate')
-  .openapi({ example: 'OnClickDate' })
-  .openapi('LinkClickToOrderType')
-
-const LinksChangeOrderLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .object({
-      rel: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Indicate the relation name related to the link',
-          example: 'self',
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .and(
-    z
-      .any()
-      .openapi({
-        example: {
-          href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/ShipOrder',
-          method: 'POST',
-          parameters: {
-            'If-Match': {
-              in: 'header',
-              required: true,
-              type: 'string',
-              value: '"ca071a4580129f932a03971968ffef69"',
-            },
-            request: {
-              in: 'body',
-              properties: {
-                order_Shipping_CarrierName: {
-                  lovLink: { href: '/v2/user/PriceMinisterCarrierName' },
-                  lovRequired: 'true',
-                  required: true,
-                  type: 'string',
-                },
-                order_Shipping_FulfillmentDate: { required: true, type: 'date-time' },
-                order_Shipping_Method: {
-                  lovLink: { href: '/v2/user/ShippingMethod_PriceMinister' },
-                  lovRequired: 'false',
-                  required: true,
-                  type: 'string',
-                },
-                order_Shipping_ShipperTrackingNumber: { required: true, type: 'string' },
-              },
-              schema: 'changeOrderRequest',
-              type: 'object',
-            },
-            testMode: { in: 'query', required: false, type: 'boolean', value: 'false' },
-            userName: { in: 'query', required: true, type: 'string' },
-          },
-          rel: 'ShipOrder',
-          templated: 'true',
-        },
-      }),
-  )
-  .openapi('LinksChangeOrderLink')
-
-const LinksChangeOrderV3LinkSchema = Link3Schema.and(
-  z
-    .object({
-      rel: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Indicate the relation name related to the link',
-          example: 'self',
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .and(
-    z
-      .any()
-      .openapi({
-        example: {
-          href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/ShipOrder',
-          method: 'POST',
-          parameters: {
-            'If-Match': {
-              in: 'header',
-              required: true,
-              type: 'string',
-              value: '"ca071a4580129f932a03971968ffef69"',
-            },
-            request: {
-              in: 'body',
-              properties: {
-                order_Shipping_CarrierName: {
-                  lovLink: { href: '/v2/user/PriceMinisterCarrierName' },
-                  lovRequired: 'true',
-                  required: true,
-                  type: 'string',
-                },
-                order_Shipping_FulfillmentDate: { required: true, type: 'date-time' },
-                order_Shipping_Method: {
-                  lovLink: { href: '/v2/user/ShippingMethod_PriceMinister' },
-                  lovRequired: 'false',
-                  required: true,
-                  type: 'string',
-                },
-                order_Shipping_ShipperTrackingNumber: { required: true, type: 'string' },
-              },
-              schema: 'changeOrderRequest',
-              type: 'object',
-            },
-            testMode: { in: 'query', required: false, type: 'boolean', value: 'false' },
-            userName: { in: 'query', required: true, type: 'string' },
-          },
-          rel: 'ShipOrder',
-          templated: 'true',
-        },
-      }),
-  )
-  .openapi('LinksChangeOrderV3Link')
-
-const LinksClearMerchantOrderInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/clearMerchantOrderInfo',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksClearMerchantOrderInfoLink')
-
-const LinksClearMerchantOrderInfoListLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/marketplaces/orders/clearMerchantOrderInfos', method: 'POST' },
-    }),
-).openapi('LinksClearMerchantOrderInfoListLink')
-
-const LinksClearMerchantOrderInfoListV3LinkSchema = Link3Schema.and(
-  z.any().openapi({ example: { href: '/orders/v3/clearMerchantOrderInfos', method: 'POST' } }),
-).openapi('LinksClearMerchantOrderInfoListV3Link')
-
-const LinksClearMerchantOrderInfoV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/clearMerchantOrderInfo',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksClearMerchantOrderInfoV3Link')
-
-const LinksConfigureChannelCatalogExclusionFiltersCopyLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/copy',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogExclusionFiltersCopyLink')
-
-const LinksConfigureChannelCatalogProductValueOverrideCopyLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides/copy',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogProductValueOverrideCopyLink')
-
-const LinksCreateRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            schema: 'createRuleRequest',
-            type: 'object',
-            value: {
-              endUtcDate: '2017-09-30T10:42:40.001Z',
-              optimisationActionName: 'reenable',
-              reportFilterId: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
-              ruleName: 'My rule',
-              startUtcDate: '2016-08-29T09:12:33.001Z',
-            },
-          },
-        },
-      },
-    }),
-).openapi('LinksCreateRuleLink')
-
-const LinksDeleteReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters/fb19c53c-2f63-4262-9d94-2d7faa500acd',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteReportFilterLink')
-
-const LinksDeleteRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteRuleLink')
-
-const LinksDisableRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/disable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksDisableRuleLink')
-
-const LinksEnableRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/enable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksEnableRuleLink')
-
-const LinksExportOrdersLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/exportations',
-        method: 'POST',
-        properties: {
-          request: { in: 'body', required: true, schema: 'exportOrderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksExportOrdersLink')
-
-const LinksGetChannelCatalogExclusionFiltersCopyLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/copy',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogExclusionFiltersCopyLink')
-
-const LinksGetChannelCatalogProductValueOverrideCopyLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides/copy',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogProductValueOverrideCopyLink')
-
-const LinksGetChannelsIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/public/channels', method: 'GET' } }),
-).openapi('LinksGetChannelsIndexLink')
-
-const LinksGetChannelsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/public/channels/FRA', method: 'GET' } }),
-).openapi('LinksGetChannelsLink')
-
-const LinksGetMarketplaceAccountsSynchronizationLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders/status', method: 'GET' } }),
-).openapi('LinksGetMarketplaceAccountsSynchronizationLink')
-
-const LinksGetMarketplaceAccountsSynchronizationV3LinkSchema = Link3Schema.and(
-  z.any().openapi({ example: { href: '/orders/v3/status', method: 'GET' } }),
-).openapi('LinksGetMarketplaceAccountsSynchronizationV3Link')
-
-const LinksGetMarketplaceChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/marketplaces/channelcatalogs' } }),
-).openapi('LinksGetMarketplaceChannelCatalogsLink')
-
-const LinksGetOrderExportationsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({ example: { href: '/v2/user/marketplaces/orders/exportations', method: 'GET' } }),
-).openapi('LinksGetOrderExportationsLink')
-
-const LinksGetOrderHistoryLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/history',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetOrderHistoryLink')
-
-const LinksGetOrderHistoryV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/history',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetOrderHistoryV3Link')
-
-const LinksGetOrderIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders', method: 'GET' } }),
-).openapi('LinksGetOrderIndexLink')
-
-const LinksGetOrderLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetOrderLink')
-
-const LinksGetOrderListFullLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/list/full',
-        method: 'POST',
-        properties: {
-          'Accept-Encoding': { in: 'header', required: true, schema: 'string', type: '​array' },
-          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOrderListFullLink')
-
-const LinksGetOrderListFullV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/list/full',
-        method: 'POST',
-        properties: {
-          'Accept-Encoding': { in: 'header', required: true, type: 'string' },
-          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOrderListFullV3Link')
-
-const LinksGetOrderListLightLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/list/light',
-        method: 'POST',
-        properties: {
-          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOrderListLightLink')
-
-const LinksGetOrderListLightV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/list/light',
-        method: 'POST',
-        properties: {
-          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOrderListLightV3Link')
-
-const LinksGetOrderV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetOrderV3Link')
-
-const LinksGetPublicListOfValuesLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/public/lov/ChannelType', method: 'GET' } }),
-).openapi('LinksGetPublicListOfValuesLink')
-
-const LinksGetPublicLovIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/public/lov', method: 'GET' } }),
-).openapi('LinksGetPublicLovIndexLink')
-
-const LinksGetReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/reports/filters/fb19c53c-2f63-4262-9d94-2d7faa500acd',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetReportFilterLink')
-
-const LinksGetRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetRuleLink')
-
-const LinksGetRulesExecutionsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/executions',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetRulesExecutionsLink')
-
-const LinksGetUserListOfValuesLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/lov/Go2CultureName', method: 'GET' } }),
-).openapi('LinksGetUserListOfValuesLink')
-
-const LinksGetUserLovIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/lov', method: 'GET' } }),
-).openapi('LinksGetUserLovIndexLink')
-
-const LinksHarvestAllLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders/harvest', method: 'POST' } }),
-).openapi('LinksHarvestAllLink')
-
-const LinksHarvestAllV3LinkSchema = Link3Schema.and(
-  z.any().openapi({ example: { href: '/orders/v3/harvest', method: 'POST' } }),
-).openapi('LinksHarvestAllV3Link')
-
-const LinksHarvestOrderLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/harvest',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksHarvestOrderLink')
-
-const LinksHarvestOrderV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001#/00000000000000000000000000000000000000000000000/harvest',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksHarvestOrderV3Link')
-
-const LinksImportationDeleteCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksImportationDeleteCustomColumnLink')
-
-const LinksImportationGetCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetCustomColumnExpressionLink')
-
-const LinksMoveDownRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/movedown',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksMoveDownRuleLink')
-
-const LinksMoveUpRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/moveup',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksMoveUpRuleLink')
-
-const LinksPublishCatalogToMarketplaceLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/marketplaces/channelcatalogs/publications/Cdiscount/123/publish' },
-    }),
-).openapi('LinksPublishCatalogToMarketplaceLink')
-
-const LinksRunRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/run',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksRunRuleLink')
-
-const LinksRunRulesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/run',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksRunRulesLink')
-
-const LinksSaveReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters/{reportFilterId}',
-        method: 'PUT',
-        parameters: [{ in: 'path', name: 'reportFilterId', type: 'string' }],
-        templated: 'true',
-      },
-    }),
-).openapi('LinksSaveReportFilterLink')
-
-const LinksSetMerchantOrderInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/setMerchantOrderInfo',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', schema: 'setMerchantOrderInfoRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksSetMerchantOrderInfoLink')
-
-const LinksSetMerchantOrderInfoListLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/setMerchantOrderInfos',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'setMerchantOrderInfoRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksSetMerchantOrderInfoListLink')
-
-const LinksSetMerchantOrderInfoListV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/setMerchantOrderInfos',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'setMerchantOrderInfoRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksSetMerchantOrderInfoListV3Link')
-
-const LinksSetMerchantOrderInfoV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/setMerchantOrderInfo',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', schema: 'setMerchantOrderInfoRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksSetMerchantOrderInfoV3Link')
-
-const LinksUpdateRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
-        method: 'PATCH',
-        parameters: {
-          request: {
-            in: 'body',
-            schema: 'updateRuleRequest',
-            type: 'object',
-            value: {
-              'endUtcDate"': '2016-08-29T09:12:33.001Z',
-              ruleName: 'My Rule Renamed',
-              startUtcDate: '2016-08-29T09:12:33.001Z',
-            },
-          },
-        },
-      },
-    }),
-).openapi('LinksUpdateRuleLink')
-
-const LinksCreateStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/stores', method: 'POST' } }),
-).openapi('LinksCreateStoreLink')
-
-const LinksDeleteStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteStoreLink')
-
-const LinksDeleteStoreShareLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares/277596c1-a5a9-4cce-9f34-b5906451a98f',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteStoreShareLink')
-
-const LinksGetStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetStoreLink')
-
-const LinksGetStoreSharesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetStoreSharesLink')
-
-const LinksSaveStoreAlertsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/alerts',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksSaveStoreAlertsLink')
-
-const LinksShareStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares',
-        method: 'POST',
-        parameters: { email: { in: 'body', required: true, type: 'string' } },
-      },
-    }),
-).openapi('LinksShareStoreLink')
-
-const LinksUpdateStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
-        method: 'PATCH',
-      },
-    }),
-).openapi('LinksUpdateStoreLink')
-
-const ListOfValueItemSchema = z
-  .object({
-    codeIdentifier: z.string().openapi({ example: 'FRA' }),
-    intIdentifier: z.int32().openapi({ example: '1' }),
-    position: z.int32().exactOptional().openapi({ example: '1' }),
-    translationText: z.string().exactOptional().openapi({ example: 'France' }),
-  })
-  .openapi({
-    description: 'This object is used by LOV apis',
-    required: ['codeIdentifier', 'intIdentifier'],
-  })
-  .openapi('ListOfValueItem')
-
-const LoginRequestSchema = z
-  .object({
-    login: BeezUPCommonEmailSchema,
-    password: z.string().openapi({ description: 'Your password', example: 'I@mW0nder$Full' }),
-  })
-  .openapi({ required: ['login', 'password'] })
-  .openapi('LoginRequest')
-
-const MapBeezUPColumnRequestSchema = z
-  .object({ beezUPColumnName: BeezUPCommonBeezUPColumnNameSchema })
-  .openapi({ required: ['beezUPColumnName'] })
-  .openapi('MapBeezUPColumnRequest')
-
-const MarginTypeSchema = z
-  .enum(['Tracker', 'Global'])
-  .default('Tracker')
-  .openapi({ example: 'Global' })
-  .openapi('MarginType')
-
-const PublicationStrategyKindSchema = z
-  .enum(['Delta', 'Full'])
-  .default('Delta')
-  .openapi({
-    description:
-      'Define the publication strategy kind, for that you have 2 choices \n* Delta - This is the recommanded publication strategy kind, this strategy will push to the marketplace only the difference between your catalog and the previous published feeds done by BeezUP. \n* Full - If you want to force the publication of all your catalog feeds to the marketplace. \n      !WARNING! Depending to the marketplace this operation will purge the existing offers on the marketplace that are not in the catalog or unknown from the publication feed referential.\n',
-  })
-  .openapi('PublicationStrategyKind')
-
-const PublicationStrategySchema = z
-  .string()
-  .openapi({ description: 'The Publication Type', 'x-lov': 'MarketplacePublicationV3Strategy' })
-  .openapi('PublicationStrategy')
-
-const MarketplaceChannelCatalogPublicationOptionSchema = z
-  .object({
-    feedType: FeedTypeSchema,
-    kind: PublicationStrategyKindSchema,
-    link: LinksPublishCatalogToMarketplaceLinkSchema,
-    strategy: PublicationStrategySchema,
-    withUnpublish: z.boolean(),
-  })
-  .openapi({ required: ['kind', 'feedType', 'withUnpublish', 'strategy', 'link'] })
-  .openapi('MarketplaceChannelCatalogPublicationOption')
-
-const MarketplaceChannelCatalogLinksSchema = z
-  .object({
-    properties: LinksGetChannelCatalogMarketplacePropertiesLinkSchema,
-    publications: LinksGetPublicationsLinkSchema.exactOptional(),
-    publishOptions: z.array(MarketplaceChannelCatalogPublicationOptionSchema).exactOptional(),
-    settings: LinksGetChannelCatalogMarketplaceSettingsLinkSchema,
-  })
-  .openapi({
-    description:
-      'Indicate the actions you can do on a channel catalog. If the settings are valid, you will be able to access to the publication history.',
-    required: ['properties', 'settings'],
-  })
-  .openapi('MarketplaceChannelCatalogLinks')
-
-const MarketplaceChannelCatalogLovLinksSchema = z
-  .object({
-    cancelationReasonCodeLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
-    carrierCodeLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
-    marketplaceStorePropertyGroupLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
-    marketplaceStorePropertyLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
-    refundReasonCodeLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
-    shippingMethodLOV: BeezUPCommonLOVLink3Schema.exactOptional(),
-  })
-  .openapi({ description: 'Indicates the List Of Values related to the marketplace', required: [] })
-  .openapi('MarketplaceChannelCatalogLovLinks')
-
-const MarketplaceChannelCatalogSchema = z
-  .object({
-    apiSettingsStatus: BeezUPCommonApiSettingsStatusSchema,
-    beezUPChannelCatalogId: BeezUPCommonChannelCatalogIdSchema,
-    beezUPChannelId: BeezUPCommonChannelIdSchema,
-    beezUPMarketplaceName: z
-      .any()
-      .openapi({ description: 'The marketplace name', example: 'ebay FRA' }),
-    beezUPStoreId: BeezUPCommonStoreIdSchema,
-    beezUPStoreName: z.string().openapi({ description: 'The store name', example: 'My Store 1' }),
-    enabled: z
-      .boolean()
-      .openapi({ description: 'The enabled status of the Channel Catalog', example: 'true' }),
-    links: MarketplaceChannelCatalogLinksSchema,
-    lovLinks: MarketplaceChannelCatalogLovLinksSchema,
-    marketplaceAccountId: BeezUPCommonMarketplaceAccountIdSchema.exactOptional(),
-    marketplaceBusinessCode: BeezUPCommonMarketplaceBusinessCodeSchema,
-    marketplaceIsoCountryCodeAlpha2: z
-      .string()
-      .openapi({
-        description:
-          'The marketplace country iso code alpha 2 (see http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Decoding_table for more details)',
-        example: 'FR',
-      }),
-    marketplaceMarketPlaceId: z
-      .string()
-      .openapi({ description: 'The marketplace identifier in the marketplace', example: '71' }),
-    marketplaceMerchantIdentifiers: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'The marketplace merchant identifier list',
-        example: { Ebay_PayPalEmailAddress: 'yourEbayId@paypal.com' },
-      }),
-    marketplaceTechnicalCode: BeezUPCommonMarketplaceTechnicalCodeSchema,
-  })
-  .openapi({
-    description:
-      'This object indicates you the association between a channel catalog and a marketplace. The account identifier will be automatically defined based on your marketplace merchant identfier.',
-    required: [
-      'apiSettingsStatus',
-      'enabled',
-      'marketplaceTechnicalCode',
-      'marketplaceBusinessCode',
-      'marketplaceMarketPlaceId',
-      'marketplaceIsoCountryCodeAlpha2',
-      'beezUPMarketplaceName',
-      'beezUPChannelId',
-      'beezUPChannelCatalogId',
-      'beezUPStoreId',
-      'beezUPStoreName',
-      'lovLinks',
-      'links',
-    ],
-  })
-  .openapi('MarketplaceChannelCatalog')
-
-const MarketplaceChannelCatalogListLinksSchema = z
-  .object({ self: LinksGetMarketplaceChannelCatalogsLinkSchema })
-  .openapi({ required: ['self'] })
-  .openapi('MarketplaceChannelCatalogListLinks')
-
-const MarketplaceChannelCatalogListSchema = z
-  .object({
-    links: MarketplaceChannelCatalogListLinksSchema,
-    marketplaceChannelCatalogs: z
-      .array(MarketplaceChannelCatalogSchema)
-      .openapi({ description: 'The list of marketplace channel catalog' }),
-  })
-  .openapi({
-    description: 'The marketplace channel catalog list',
-    required: ['links', 'marketplaceChannelCatalogs'],
-  })
-  .openapi('MarketplaceChannelCatalogList')
-
-const MarketplaceOrderStatusSchema = z
-  .string()
-  .openapi({ description: 'The marketplace order state', example: 'In_progress_3' })
-  .openapi('MarketplaceOrderStatus')
-
-const MessageIdSchema = z
-  .string()
-  .openapi({
-    description: "The message identifier. It's a guid.",
-    example: 'b0d3faea-f881-439f-ba92-02b1168511ea',
-    'x-exclude': true,
-  })
-  .openapi('MessageId')
-
-const OMReadyMarketplaceBusinessCodeResponseSchema = z
-  .array(ListOfValueItemSchema)
-  .openapi('OMReadyMarketplaceBusinessCodeResponse')
-
 const PreviousFixPeriodInvoiceProrataInfoSchema = z
   .object({
     amountAfterTax: z
@@ -8701,298 +4987,54 @@ const OfferLinksSchema = z
   .openapi({ description: 'The different actions you can make on this offer', required: [] })
   .openapi('OfferLinks')
 
-const OfferSchema = z
-  .object({
-    content: OfferContentSchema.exactOptional(),
-    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
-    links: OfferLinksSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Offer')
+type OfferType = {
+  content?: z.infer<typeof OfferContentSchema>
+  info?: z.infer<typeof BeezUPCommonInfoSummariesSchema>
+  links?: z.infer<typeof OfferLinksSchema>
+}
 
-const OfferFunctionalitySchema = z
-  .object({
-    functionalityCode: z
-      .string()
-      .openapi({ description: 'The functionality code', example: 'MARKETMANA' }),
-    maxValueInteger: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The max value in integer for this feature in this offer',
-        example: '4',
-      }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A description text of this feature',
-        example: 'Marketplace management',
-      }),
-    unlimited: z
-      .boolean()
-      .openapi({ description: 'Is this feature is unlimited for this offer?', example: 'false' }),
-  })
-  .openapi({ required: ['functionalityCode', 'unlimited'] })
-  .openapi('OfferFunctionality')
-
-const PerformanceIndicatorFormulaParameterTypeSchema = z
-  .enum([
-    'Cost',
-    'TotalSales',
-    'Margin',
-    'TotalSalesMinusCost',
-    'MarginMinusCost',
-    'OrderCount',
-    'ClickCount',
-    'SoldProductCount',
-    'One',
-  ])
+const BeezUPOrderIdSchema = z
+  .uuid()
   .openapi({
-    description: 'Indicate on which indicator or value you want to make your formula',
-    example: 'Cost',
+    description: 'The BeezUP Order identifier',
+    example: '00000000000000000000000000000000000000000000000',
   })
-  .openapi('PerformanceIndicatorFormulaParameterType')
+  .openapi('BeezUPOrderId')
 
-const PerformanceIndicatorFormulaOperatorNameSchema = z
-  .enum(['Multiply', 'Divide'])
-  .openapi({ example: 'Multiply' })
-  .openapi('PerformanceIndicatorFormulaOperatorName')
-
-const PerformanceIndicatorFormulaSchema = z
-  .object({
-    firstParameter: PerformanceIndicatorFormulaParameterTypeSchema.exactOptional(),
-    operatorName: PerformanceIndicatorFormulaOperatorNameSchema.exactOptional(),
-    secondParameter: PerformanceIndicatorFormulaParameterTypeSchema.exactOptional(),
-    thirdParameter: z
-      .int()
-      .default(100)
-      .exactOptional()
-      .openapi({
-        description: 'Indicate the value of the third parameter of your formula',
-        example: '100',
-      }),
-  })
-  .openapi({
-    description: 'The KPI formula',
-    example: {
-      firstParameter: 'Cost',
-      operatorName: 'Multiply',
-      secondParamter: 'ROI',
-      thirdParameter: '100',
-    },
-    required: [],
-  })
-  .openapi('PerformanceIndicatorFormula')
-
-const ReportAdvancedFiltersSchema = z
-  .object({
-    globalMarginPercent: z
-      .int()
-      .min(0)
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description: "If the margin type is 'Global', indicate the percentage of sale price.",
-        example: '10',
-      }),
-    linkClickToOrderMaxDay: z
-      .int()
-      .min(0)
-      .max(180)
-      .default(30)
-      .exactOptional()
-      .openapi({
-        description:
-          'If the linkOrderType is OnClickDate, indicate the max day to search the click from the order',
-        example: '5',
-      }),
-    linkClickToOrderType: LinkClickToOrderTypeSchema,
-    marginType: MarginTypeSchema,
-    onlyDirectSales: z
-      .boolean()
-      .default(false)
-      .openapi({
-        description:
-          'If true, you will get only direct sales. Otherwise the indirect sales will be included.',
-        example: 'true',
-      }),
-    onlyPaymentValidatedOrders: z
-      .boolean()
-      .default(false)
-      .openapi({
-        description:
-          'If true, you will get the only the orders with payment validated. Otherwise, you will get all orders validated or not.',
-        example: 'true',
-      }),
-    performanceIndicatorFormula: PerformanceIndicatorFormulaSchema,
-  })
-  .openapi({
-    required: [
-      'marginType',
-      'linkClickToOrderType',
-      'onlyPaymentValidatedOrders',
-      'onlyDirectSales',
-      'performanceIndicatorFormula',
-    ],
-  })
-  .openapi('ReportAdvancedFilters')
-
-const PerformanceIndicatorFilterOperatorNameSchema = z
+const EtagSchema = z
   .string()
   .openapi({
-    description: 'Indicates the operator you want to apply on this indicator',
-    example: 'Equals',
-    'x-lov': 'PerformanceIndicatorFilterOperatorName',
+    description:
+      'ETag value to identify the order.\\\nThis information is required for the operation GetOrder and ChangeOrder.\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
+    example: '"ca071a4580129f932a03971968ffef69"',
   })
-  .openapi('PerformanceIndicatorFilterOperatorName')
+  .openapi('Etag')
 
-const PerformanceIndicatorTypeSchema = z
-  .enum([
-    'ClickCount',
-    'Cost',
-    'OrderCount',
-    'ProductCount',
-    'SoldProductCount',
-    'DisabledProductCount',
-    'EnabledProductCount',
-    'TotalSales',
-    'Margin',
-    'ROI',
-    'PerformanceIndicator',
-  ])
-  .openapi({
-    description: 'Indicate on which indicator or value you want to make your formula',
-    example: 'Cost',
-  })
-  .openapi('PerformanceIndicatorType')
-
-const PerformanceIndicatorFilterSchema = z
-  .object({
-    operatorName: PerformanceIndicatorFilterOperatorNameSchema,
-    performanceIndicator: PerformanceIndicatorTypeSchema,
-    value: z
-      .number()
-      .openapi({
-        description: 'Indicates the filter value to apply on this indicator',
-        example: '10.42',
-      }),
-  })
-  .openapi({ required: ['performanceIndicator', 'operatorName', 'value'] })
-  .openapi('PerformanceIndicatorFilter')
-
-const ReportFilterPeriodTypeSchema = z
-  .enum([
-    'Custom',
-    'Yesterday',
-    'Last7Days',
-    'LastWeek',
-    'ThisMonth',
-    'Last30Days',
-    'LastMonth',
-    'Last60Days',
-    'Last90Days',
-    'Last3Months',
-  ])
-  .openapi({ description: 'Indicates the period type we want use for the report filter' })
-  .openapi('ReportFilterPeriodType')
-
-const ReportFilterCommonParametersSchema = z
-  .object({
-    advancedFilters: ReportAdvancedFiltersSchema,
-    beginPeriodUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          "The begin date period you want to get the report. It's required only in case of custom period type !",
-        example: '2006-11-20T00:00:00Z',
-      }),
-    categoryFilter: BeezUPCommonCatalogCategoryFilterSchema.exactOptional(),
-    channelId: BeezUPCommonChannelIdSchema.exactOptional(),
-    endPeriodUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          "The end date period you want to get the report. It's required only in case of custom period type !",
-        example: '2006-12-20T00:00:00Z',
-      }),
-    performanceIndicatorFilters: z
-      .array(PerformanceIndicatorFilterSchema)
-      .exactOptional()
-      .openapi({ example: [{ indicator: 'Cost', operatorName: 'Equals', value: '10' }] }),
-    periodType: ReportFilterPeriodTypeSchema,
-  })
-  .openapi({
-    description: 'Contains common filter parameters',
-    required: ['periodType', 'advancedFilters'],
-  })
-  .openapi('ReportFilterCommonParameters')
-
-const OrderByDirectionSchema = z
-  .enum(['Ascending', 'Descending'])
-  .openapi({ description: 'Indicate which direction to order results by', example: 'Ascending' })
-  .openapi('OrderByDirection')
-
-const OrderedReportFilterCommonParametersSchema = ReportFilterCommonParametersSchema.and(
+const LinksGetOrderLinkSchema = BeezUPCommonLink3Schema.and(
   z
-    .object({
-      orderBy: PerformanceIndicatorTypeSchema.exactOptional(),
-      orderByDirection: OrderByDirectionSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({ description: 'Contains common filter parameters with Order By functionnality' })
-  .openapi('OrderedReportFilterCommonParameters')
-
-const ProductColumnsToDisplaySchema = z
-  .array(BeezUPCommonCatalogColumnIdSchema)
-  .min(0)
-  .max(1)
-  .openapi({ example: ['4b460e31-3d1f-4117-922d-b159a64ec1d2'] })
-  .openapi('ProductColumnsToDisplay')
-
-const ProductStateFilterSchema = z
-  .enum(['All', 'Enabled', 'Disabled'])
-  .default('All')
-  .openapi({ description: 'You can filter on the product state.', example: 'All' })
-  .openapi('ProductStateFilter')
-
-const ReportTypeSchema = z
-  .enum(['ByChannel', 'ByCategory', 'ByProduct', 'ByDay'])
-  .openapi({ description: 'The report type', example: 'ByProduct' })
-  .openapi('ReportType')
-
-const OptimiseAllRequestSchema = OrderedReportFilterCommonParametersSchema.and(
-  z
-    .object({
-      analyticsProductColumnFilters: AnalyticsProductColumnFiltersSchema.exactOptional(),
-      productColumnsToDisplay: ProductColumnsToDisplaySchema.exactOptional(),
-      productState: ProductStateFilterSchema.exactOptional(),
-      reportType: ReportTypeSchema,
-    })
+    .any()
     .openapi({
-      required: ['beginPeriodUtcDate', 'endPeriodUtcDate', 'advancedFilters', 'reportType'],
+      example: {
+        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000',
+        method: 'GET',
+      },
     }),
-).openapi('OptimiseAllRequest')
-
-const PaginationRequestParametersSchema = z
-  .object({
-    pageNumber: BeezUPCommonPageNumberSchema.exactOptional(),
-    pageSize: BeezUPCommonPageSizeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PaginationRequestParameters')
-
-const OptimiseRequestSchema = OptimiseAllRequestSchema.and(
-  PaginationRequestParametersSchema,
-).openapi('OptimiseRequest')
+).openapi('LinksGetOrderLink')
 
 const OrderHeaderLinksSchema = z
   .object({ self: LinksGetOrderLinkSchema })
   .openapi({ required: ['self'] })
   .openapi('OrderHeaderLinks')
+
+const OrderBuyerNameSchema = z
+  .string()
+  .openapi({ description: 'Buyer full name', example: 'Monroe' })
+  .openapi('OrderBuyerName')
+
+const MarketplaceOrderIdSchema = z
+  .string()
+  .openapi({ description: 'The order marketplace identifier', example: 'AMAZON12345' })
+  .openapi('MarketplaceOrderId')
 
 const OrderMerchantECommerceSoftwareNameSchema = z
   .string()
@@ -9004,6 +5046,16 @@ const OrderMerchantECommerceSoftwareVersionSchema = z
   .openapi({ description: 'The e-commece software version of the merchant', example: '123.0.1' })
   .openapi('OrderMerchantECommerceSoftwareVersion')
 
+const OrderMerchantOrderIdSchema = z
+  .string()
+  .openapi({ description: 'The order merchant identifier', example: 'MyOrderMerchantId' })
+  .openapi('OrderMerchantOrderId')
+
+const MarketplaceOrderStatusSchema = z
+  .string()
+  .openapi({ description: 'The marketplace order state', example: 'In_progress_3' })
+  .openapi('MarketplaceOrderStatus')
+
 const ProcessingSchema = z
   .boolean()
   .openapi({
@@ -9013,7 +5065,34 @@ const ProcessingSchema = z
   })
   .openapi('Processing')
 
-const OrderHeaderSchema = z
+type OrderHeaderType = {
+  accountId: z.infer<typeof AccountIdSchema>
+  beezUPOrderId: z.infer<typeof BeezUPOrderIdSchema>
+  beezUPOrderUrl?: z.infer<typeof BeezUPCommonHttpUrlSchema>
+  etag: z.infer<typeof EtagSchema>
+  links: z.infer<typeof OrderHeaderLinksSchema>
+  marketplaceBusinessCode: z.infer<typeof BeezUPCommonMarketplaceBusinessCodeSchema>
+  marketplaceTechnicalCode: z.infer<typeof BeezUPCommonMarketplaceTechnicalCodeSchema>
+  order_Buyer_Name?: z.infer<typeof OrderBuyerNameSchema>
+  order_CurrencyCode?: z.infer<typeof BeezUPCommonCurrencyCodeSchema>
+  order_Invoice_Number?: string
+  order_Invoice_Uri?: string
+  order_LastModificationUtcDate: string
+  order_MarketplaceLastModificationUtcDate: string
+  order_MarketplaceOrderId: z.infer<typeof MarketplaceOrderIdSchema>
+  order_MerchantECommerceSoftwareName?: z.infer<typeof OrderMerchantECommerceSoftwareNameSchema>
+  order_MerchantECommerceSoftwareVersion?: z.infer<
+    typeof OrderMerchantECommerceSoftwareVersionSchema
+  >
+  order_MerchantOrderId?: z.infer<typeof OrderMerchantOrderIdSchema>
+  order_PurchaseUtcDate: string
+  order_Status_BeezUPOrderStatus: z.infer<typeof BeezUPOrderStatusSchema>
+  order_Status_MarketplaceOrderStatus?: z.infer<typeof MarketplaceOrderStatusSchema>
+  order_TotalPrice?: number
+  processing: z.infer<typeof ProcessingSchema>
+}
+
+const OrderHeaderSchema: z.ZodType<OrderHeaderType> = z
   .object({
     accountId: AccountIdSchema,
     beezUPOrderId: BeezUPOrderIdSchema,
@@ -9080,6 +5159,53 @@ const OrderHeaderSchema = z
     ],
   })
   .openapi('OrderHeader')
+
+const LinksClearMerchantOrderInfoLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/clearMerchantOrderInfo',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksClearMerchantOrderInfoLink')
+
+const LinksHarvestOrderLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/harvest',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksHarvestOrderLink')
+
+const LinksGetOrderHistoryLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/history',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetOrderHistoryLink')
+
+const LinksSetMerchantOrderInfoLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/setMerchantOrderInfo',
+        method: 'POST',
+        parameters: {
+          request: { in: 'body', schema: 'setMerchantOrderInfoRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksSetMerchantOrderInfoLink')
 
 const OrderLinksSchema = OrderHeaderLinksSchema.and(
   z
@@ -9218,6 +5344,64 @@ const OrderItemSchema = z
   })
   .openapi('OrderItem')
 
+const LinksChangeOrderLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .object({
+      rel: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Indicate the relation name related to the link',
+          example: 'self',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .and(
+    z
+      .any()
+      .openapi({
+        example: {
+          href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/ShipOrder',
+          method: 'POST',
+          parameters: {
+            'If-Match': {
+              in: 'header',
+              required: true,
+              type: 'string',
+              value: '"ca071a4580129f932a03971968ffef69"',
+            },
+            request: {
+              in: 'body',
+              properties: {
+                order_Shipping_CarrierName: {
+                  lovLink: { href: '/v2/user/PriceMinisterCarrierName' },
+                  lovRequired: 'true',
+                  required: true,
+                  type: 'string',
+                },
+                order_Shipping_FulfillmentDate: { required: true, type: 'date-time' },
+                order_Shipping_Method: {
+                  lovLink: { href: '/v2/user/ShippingMethod_PriceMinister' },
+                  lovRequired: 'false',
+                  required: true,
+                  type: 'string',
+                },
+                order_Shipping_ShipperTrackingNumber: { required: true, type: 'string' },
+              },
+              schema: 'changeOrderRequest',
+              type: 'object',
+            },
+            testMode: { in: 'query', required: false, type: 'boolean', value: 'false' },
+            userName: { in: 'query', required: true, type: 'string' },
+          },
+          rel: 'ShipOrder',
+          templated: 'true',
+        },
+      }),
+  )
+  .openapi('LinksChangeOrderLink')
+
 const OrderTransitionLinksSchema = z
   .array(LinksChangeOrderLinkSchema)
   .openapi({
@@ -9286,7 +5470,321 @@ const OrderTransitionLinksSchema = z
   })
   .openapi('OrderTransitionLinks')
 
-const OrderSchema = OrderHeaderSchema.and(
+type OrderType = z.infer<typeof OrderHeaderSchema> & {
+  links: z.infer<typeof OrderLinksSchema>
+  orderItems: z.infer<typeof OrderItemSchema>[]
+  order_Buyer_AddressCity?: string
+  order_Buyer_AddressCountryIsoCodeAlpha2?: string
+  order_Buyer_AddressCountryName?: string
+  order_Buyer_AddressLine1?: string
+  order_Buyer_AddressLine2?: string
+  order_Buyer_AddressLine3?: string
+  order_Buyer_AddressPostalCode?: string
+  order_Buyer_AddressStateOrRegion?: string
+  order_Buyer_Civility?: string
+  order_Buyer_CompanyName?: string
+  order_Buyer_Email?: string
+  order_Buyer_FirstName?: string
+  order_Buyer_Identifier?: string
+  order_Buyer_LastName?: string
+  order_Buyer_MobilePhone?: string
+  order_Buyer_Phone?: string
+  order_Comment?: string
+  order_FulfilledBy?: string
+  order_IsBusiness?: boolean
+  order_IsPrime?: boolean
+  order_MarketPlaceChannel?: string
+  order_OrderItemsSourceUri?: string
+  order_OrderSourceUri?: string
+  order_PayingUtcDate?: string
+  order_PaymentMethod?: string
+  order_Shipping_AddressCity?: string
+  order_Shipping_AddressCountryIsoCodeAlpha2?: string
+  order_Shipping_AddressCountryName?: string
+  order_Shipping_AddressLine1?: string
+  order_Shipping_AddressLine2?: string
+  order_Shipping_AddressLine3?: string
+  order_Shipping_AddressName?: string
+  order_Shipping_AddressPostalCode?: string
+  order_Shipping_AddressStateOrRegion?: string
+  order_Shipping_Civility?: string
+  order_Shipping_CompanyName?: string
+  order_Shipping_EarliestShipUtcDate?: string
+  order_Shipping_Email?: string
+  order_Shipping_FirstName?: string
+  order_Shipping_LastName?: string
+  order_Shipping_LatestShipUtcDate?: string
+  order_Shipping_Method?: string
+  order_Shipping_MobilePhone?: string
+  order_Shipping_Phone?: string
+  order_Shipping_Price?: number
+  order_Shipping_ShippingTax?: number
+  order_TotalCommission?: number
+  order_TotalTax?: number
+  transitionLinks: z.infer<typeof OrderTransitionLinksSchema>
+}
+
+const OrderExportationReportingProcessingStatusSchema = z
+  .enum(['None', 'InProgress', 'Done', 'Failed', 'AlreadyInProgress', 'Aborted', 'Suspended'])
+  .openapi({ example: 'Done' })
+  .openapi('OrderExportationReportingProcessingStatus')
+
+const SourceTypeSchema = z
+  .enum(['Api', 'Go'])
+  .openapi({ description: 'Indicates the origin of the operation', example: 'Api' })
+  .openapi('SourceType')
+
+const OrderExportationReportingSchema = z
+  .object({
+    abortionUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2017-04-01T13:10:12Z' }),
+    beginUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2017-04-01T13:10:12Z' }),
+    blobNameUri: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'http://beezuporder2.blob.com/yourReport.csv' }),
+    endUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2017-04-01T15:10:12Z' }),
+    enqueuedUtcDate: z.iso.datetime({ offset: true }).openapi({ example: '2017-04-01T13:09:12Z' }),
+    errorMessage: z.string().exactOptional().openapi({ example: 'You have an error here' }),
+    executionUUID: z.uuid().openapi({ example: '00000000000000000000000000000000000000000000000' }),
+    expirationUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2017-04-01T13:39:12Z' }),
+    failureUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2017-04-01T13:39:12Z' }),
+    ipAddress: z.string().openapi({ example: '127.0.0.1' }),
+    jsonCriteria: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Raw representation of the JSON',
+        example:
+          '{"StartDate:"2016-09-30T22:00:00Z","EndDate:"2016-10-30T23:00:00Z","OrderListingFilterDateSearchType:0,"MarketPlaceOrderIds:null,"BeezUPOrderStatusNames:null,"ResultByPage:20,"MerchantOrderIds:null,"PageIndex:0,"MarketPlaceTechnicalCodes:["PriceMinister","Amazon","CDiscount","Mirakl"],"MarketPlaceBusinessCodes:["PRICEMINISTER"],"AccountIds:[1234,987],"StoreIds:["00000000-0000-0000-0000-00000000007c"],"BuyerFullName:null}',
+      }),
+    lastUpdateUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2017-04-01T15:10:12Z' }),
+    orderCount: z.int32().exactOptional().openapi({ example: '1024' }),
+    processingStatus: OrderExportationReportingProcessingStatusSchema,
+    remainingOrderCount: z.int32().exactOptional().openapi({ example: '0' }),
+    resumedUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2017-04-01T13:39:12Z' }),
+    sourceType: SourceTypeSchema,
+    sourceUserId: BeezUPCommonUserIdSchema.exactOptional(),
+    sourceUserName: z.string().openapi({ example: 'Marilyn monroe' }),
+    suspendedUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2017-04-01T13:39:12Z' }),
+    timeoutDuration: z.string().exactOptional().openapi({ example: '00:30:00' }),
+    warningMessage: z.string().exactOptional().openapi({ example: 'You have a warning here' }),
+  })
+  .openapi({
+    description: 'Represent the reporting of the Order report exportations',
+    required: [
+      'enqueuedUtcDate',
+      'executionUUID',
+      'ipAddress',
+      'processingStatus',
+      'sourceType',
+      'sourceUserName',
+    ],
+  })
+  .openapi('OrderExportationReporting')
+
+const LinksGetOrderExportationsLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({ example: { href: '/v2/user/marketplaces/orders/exportations', method: 'GET' } }),
+).openapi('LinksGetOrderExportationsLink')
+
+const OrderExportationsLinksSchema = z
+  .object({ self: LinksGetOrderExportationsLinkSchema })
+  .openapi({ required: ['self'] })
+  .openapi('OrderExportationsLinks')
+
+type OrderExportationsType = {
+  exportations: z.infer<typeof OrderExportationReportingSchema>[]
+  links: z.infer<typeof OrderExportationsLinksSchema>
+  paginationResult?: z.infer<typeof BeezUPCommonPaginationResultSchema>
+}
+
+type OrderHeaderWithLinksType = z.infer<typeof OrderHeaderSchema> & {
+  links: z.infer<typeof OrderHeaderLinksSchema>
+}
+
+const LinksClearMerchantOrderInfoListLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: { href: '/v2/user/marketplaces/orders/clearMerchantOrderInfos', method: 'POST' },
+    }),
+).openapi('LinksClearMerchantOrderInfoListLink')
+
+const LinksExportOrdersLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/orders/exportations',
+        method: 'POST',
+        properties: {
+          request: { in: 'body', required: true, schema: 'exportOrderListRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksExportOrdersLink')
+
+const LinksHarvestAllLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders/harvest', method: 'POST' } }),
+).openapi('LinksHarvestAllLink')
+
+const LinksGetOrderListLightLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/orders/list/light',
+        method: 'POST',
+        properties: {
+          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksGetOrderListLightLink')
+
+const LinksGetOrderListFullLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/orders/list/full',
+        method: 'POST',
+        properties: {
+          'Accept-Encoding': { in: 'header', required: true, schema: 'string', type: '​array' },
+          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksGetOrderListFullLink')
+
+const LinksGetOrderIndexLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders', method: 'GET' } }),
+).openapi('LinksGetOrderIndexLink')
+
+const LinksSetMerchantOrderInfoListLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/marketplaces/orders/setMerchantOrderInfos',
+        method: 'POST',
+        parameters: {
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'setMerchantOrderInfoRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksSetMerchantOrderInfoListLink')
+
+const LinksGetMarketplaceAccountsSynchronizationLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders/status', method: 'GET' } }),
+).openapi('LinksGetMarketplaceAccountsSynchronizationLink')
+
+const OrderIndexLinksSchema = z
+  .object({
+    autoTransitions: LinksGetAutomaticTransitionsLinkSchema,
+    clearMerchantInfos: LinksClearMerchantOrderInfoListLinkSchema,
+    export: LinksExportOrdersLinkSchema,
+    exportations: LinksGetOrderExportationsLinkSchema.exactOptional(),
+    harvest: LinksHarvestAllLinkSchema,
+    lightOrders: LinksGetOrderListLightLinkSchema,
+    orders: LinksGetOrderListFullLinkSchema,
+    self: LinksGetOrderIndexLinkSchema,
+    setMerchantInfos: LinksSetMerchantOrderInfoListLinkSchema,
+    status: LinksGetMarketplaceAccountsSynchronizationLinkSchema,
+  })
+  .openapi({
+    description: 'Gives you all entry point operations you can do on this API',
+    required: [
+      'self',
+      'status',
+      'harvest',
+      'setMerchantInfos',
+      'clearMerchantInfos',
+      'export',
+      'autoTransitions',
+      'orders',
+      'lightOrders',
+    ],
+  })
+  .openapi('OrderIndexLinks')
+
+const OrderIndexLovLinksSchema = z
+  .object({
+    orderChangeBusinessOperationType: BeezUPCommonLOVLink3Schema,
+    orderProperty: BeezUPCommonLOVLink3Schema,
+    orderPropertyPosted: BeezUPCommonLOVLink3Schema,
+    orderState: BeezUPCommonLOVLink3Schema,
+  })
+  .openapi({
+    description:
+      'Gives you all the LOV to get the translations realated to operation name, codes, property names and statuses.',
+    required: [
+      'orderChangeBusinessOperationType',
+      'orderState',
+      'orderProperty',
+      'orderPropertyPosted',
+    ],
+  })
+  .openapi('OrderIndexLovLinks')
+
+type OrderIndexType = {
+  links: z.infer<typeof OrderIndexLinksSchema>
+  lovLinks: z.infer<typeof OrderIndexLovLinksSchema>
+}
+
+const OrderListLinksSchema = z
+  .object({
+    clearMerchantInfos: LinksClearMerchantOrderInfoListLinkSchema,
+    export: LinksExportOrdersLinkSchema,
+    harvest: LinksHarvestAllLinkSchema,
+    setMerchantInfos: LinksSetMerchantOrderInfoListLinkSchema,
+    status: LinksGetMarketplaceAccountsSynchronizationLinkSchema,
+  })
+  .openapi({
+    description: 'The list of actions you can do from the order list response',
+    required: ['harvest', 'setMerchantInfos', 'clearMerchantInfos', 'export', 'status'],
+  })
+  .openapi('OrderListLinks')
+
+const OrderListFullLinksSchema = OrderListLinksSchema.and(
+  z
+    .object({ self: LinksGetOrderListFullLinkSchema })
+    .openapi({
+      required: ['self', 'harvest', 'setMerchantInfos', 'clearMerchantInfos', 'export', 'status'],
+    }),
+).openapi('OrderListFullLinks')
+
+const OrderSchema: z.ZodType<OrderType> = OrderHeaderSchema.and(
   z
     .object({
       links: OrderLinksSchema,
@@ -9584,242 +6082,298 @@ const OrderSchema = OrderHeaderSchema.and(
     }),
 ).openapi('Order')
 
-const OrderChangeTypeSchema = z
-  .string()
-  .openapi({
-    description: 'The business operation type that can be done on an order',
-    'x-lov': 'OrderChangeBusinessOperationType',
-  })
-  .openapi('OrderChangeType')
+type OrderListFullType = {
+  links: z.infer<typeof OrderListFullLinksSchema>
+  orders: z.infer<typeof OrderSchema>[]
+  paginationResult?: z.infer<typeof BeezUPCommonPaginationResultSchema>
+}
 
-const OrderExportationReportingProcessingStatusSchema = z
-  .enum(['None', 'InProgress', 'Done', 'Failed', 'AlreadyInProgress', 'Aborted', 'Suspended'])
-  .openapi({ example: 'Done' })
-  .openapi('OrderExportationReportingProcessingStatus')
+type OrderWithLinksType = z.infer<typeof OrderSchema> & {
+  links: z.infer<typeof OrderLinksSchema>
+  transitionLinks: z.infer<typeof OrderTransitionLinksSchema>
+}
 
-const OrderExportationReportingSchema = z
-  .object({
-    abortionUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2017-04-01T13:10:12Z' }),
-    beginUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2017-04-01T13:10:12Z' }),
-    blobNameUri: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'http://beezuporder2.blob.com/yourReport.csv' }),
-    endUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2017-04-01T15:10:12Z' }),
-    enqueuedUtcDate: z.iso.datetime({ offset: true }).openapi({ example: '2017-04-01T13:09:12Z' }),
-    errorMessage: z.string().exactOptional().openapi({ example: 'You have an error here' }),
-    executionUUID: z.uuid().openapi({ example: '00000000000000000000000000000000000000000000000' }),
-    expirationUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2017-04-01T13:39:12Z' }),
-    failureUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2017-04-01T13:39:12Z' }),
-    ipAddress: z.string().openapi({ example: '127.0.0.1' }),
-    jsonCriteria: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Raw representation of the JSON',
-        example:
-          '{"StartDate:"2016-09-30T22:00:00Z","EndDate:"2016-10-30T23:00:00Z","OrderListingFilterDateSearchType:0,"MarketPlaceOrderIds:null,"BeezUPOrderStatusNames:null,"ResultByPage:20,"MerchantOrderIds:null,"PageIndex:0,"MarketPlaceTechnicalCodes:["PriceMinister","Amazon","CDiscount","Mirakl"],"MarketPlaceBusinessCodes:["PRICEMINISTER"],"AccountIds:[1234,987],"StoreIds:["00000000-0000-0000-0000-00000000007c"],"BuyerFullName:null}',
-      }),
-    lastUpdateUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2017-04-01T15:10:12Z' }),
-    orderCount: z.int32().exactOptional().openapi({ example: '1024' }),
-    processingStatus: OrderExportationReportingProcessingStatusSchema,
-    remainingOrderCount: z.int32().exactOptional().openapi({ example: '0' }),
-    resumedUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2017-04-01T13:39:12Z' }),
-    sourceType: SourceTypeSchema,
-    sourceUserId: BeezUPCommonUserIdSchema.exactOptional(),
-    sourceUserName: z.string().openapi({ example: 'Marilyn monroe' }),
-    suspendedUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2017-04-01T13:39:12Z' }),
-    timeoutDuration: z.string().exactOptional().openapi({ example: '00:30:00' }),
-    warningMessage: z.string().exactOptional().openapi({ example: 'You have a warning here' }),
-  })
-  .openapi({
-    description: 'Represent the reporting of the Order report exportations',
-    required: [
-      'enqueuedUtcDate',
-      'executionUUID',
-      'ipAddress',
-      'processingStatus',
-      'sourceType',
-      'sourceUserName',
-    ],
-  })
-  .openapi('OrderExportationReporting')
-
-const OrderExportationsLinksSchema = z
-  .object({ self: LinksGetOrderExportationsLinkSchema })
-  .openapi({ required: ['self'] })
-  .openapi('OrderExportationsLinks')
-
-const OrderExportationsSchema = z
-  .object({
-    exportations: z.array(OrderExportationReportingSchema),
-    links: OrderExportationsLinksSchema,
-    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'The list of Order report exportations.\\\nThe paginationResult properties can be null if the list is empty.\n',
-    required: ['links', 'exportations'],
-  })
-  .openapi('OrderExportations')
-
-const OrderHarvestErrorValueSchema = z
-  .object({ errorMessage: z.string(), technicalCodePropertyName: z.string() })
-  .openapi({ required: ['technicalCodePropertyName', 'errorMessage'] })
-  .openapi('OrderHarvestErrorValue')
-
-const OrderHarvestErrorsSchema = z
-  .record(z.string(), OrderHarvestErrorValueSchema)
-  .openapi({ description: 'The key is the OrderMetaInfo.' })
-  .openapi('OrderHarvestErrors')
-
-const OrderHeaderWithLinksSchema = OrderHeaderSchema.and(
-  z.object({ links: OrderHeaderLinksSchema }).openapi({ required: ['links'] }),
-).openapi('OrderHeaderWithLinks')
-
-const OrderHistorySchema = z
-  .object({
-    changeOrderReportings: z
-      .array(ChangeOrderReportingSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of change order operation' }),
-    harvestOrderReportings: z.array(HarvestOrderReportingSchema).exactOptional(),
-    lastModificationUtcDate: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ description: 'Describe the history related to an order', required: [] })
-  .openapi('OrderHistory')
-
-const OrderIndexLinksSchema = z
-  .object({
-    autoTransitions: LinksGetAutomaticTransitionsLinkSchema,
-    clearMerchantInfos: LinksClearMerchantOrderInfoListLinkSchema,
-    export: LinksExportOrdersLinkSchema,
-    exportations: LinksGetOrderExportationsLinkSchema.exactOptional(),
-    harvest: LinksHarvestAllLinkSchema,
-    lightOrders: LinksGetOrderListLightLinkSchema,
-    orders: LinksGetOrderListFullLinkSchema,
-    self: LinksGetOrderIndexLinkSchema,
-    setMerchantInfos: LinksSetMerchantOrderInfoListLinkSchema,
-    status: LinksGetMarketplaceAccountsSynchronizationLinkSchema,
-  })
-  .openapi({
-    description: 'Gives you all entry point operations you can do on this API',
-    required: [
-      'self',
-      'status',
-      'harvest',
-      'setMerchantInfos',
-      'clearMerchantInfos',
-      'export',
-      'autoTransitions',
-      'orders',
-      'lightOrders',
-    ],
-  })
-  .openapi('OrderIndexLinks')
-
-const OrderIndexLovLinksSchema = z
-  .object({
-    orderChangeBusinessOperationType: BeezUPCommonLOVLink3Schema,
-    orderProperty: BeezUPCommonLOVLink3Schema,
-    orderPropertyPosted: BeezUPCommonLOVLink3Schema,
-    orderState: BeezUPCommonLOVLink3Schema,
-  })
-  .openapi({
-    description:
-      'Gives you all the LOV to get the translations realated to operation name, codes, property names and statuses.',
-    required: [
-      'orderChangeBusinessOperationType',
-      'orderState',
-      'orderProperty',
-      'orderPropertyPosted',
-    ],
-  })
-  .openapi('OrderIndexLovLinks')
-
-const OrderIndexSchema = z
-  .object({ links: OrderIndexLinksSchema, lovLinks: OrderIndexLovLinksSchema })
-  .openapi({ required: ['links', 'lovLinks'] })
-  .openapi('OrderIndex')
-
-const OrderInvoiceDesignSettingsSchema = z
-  .object({
-    footerContentHtml: FooterContentHtmlSchema.exactOptional(),
-    headerContentHtml: HeaderContentHtmlSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderInvoiceDesignSettings')
-
-const OrderListDateSearchTypeSchema = z
-  .enum(['Modification', 'Purchase', 'MarketPlaceModification'])
-  .default('Modification')
-  .openapi({ description: 'Indicates on which date you want to make the filter' })
-  .openapi('OrderListDateSearchType')
-
-const OrderListLinksSchema = z
-  .object({
-    clearMerchantInfos: LinksClearMerchantOrderInfoListLinkSchema,
-    export: LinksExportOrdersLinkSchema,
-    harvest: LinksHarvestAllLinkSchema,
-    setMerchantInfos: LinksSetMerchantOrderInfoListLinkSchema,
-    status: LinksGetMarketplaceAccountsSynchronizationLinkSchema,
-  })
-  .openapi({
-    description: 'The list of actions you can do from the order list response',
-    required: ['harvest', 'setMerchantInfos', 'clearMerchantInfos', 'export', 'status'],
-  })
-  .openapi('OrderListLinks')
-
-const OrderListFullLinksSchema = OrderListLinksSchema.and(
-  z
-    .object({ self: LinksGetOrderListFullLinkSchema })
-    .openapi({
-      required: ['self', 'harvest', 'setMerchantInfos', 'clearMerchantInfos', 'export', 'status'],
-    }),
-).openapi('OrderListFullLinks')
-
-const OrderListFullSchema = z
-  .object({
-    links: OrderListFullLinksSchema,
-    orders: z.array(OrderSchema),
-    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'The order list with all information we have from the orders and its items.\\\nThe paginationResult properties can be null if the list is empty.\n',
-    required: ['orders', 'links'],
-  })
-  .openapi('OrderListFull')
-
-const OrderWithLinksSchema = OrderSchema.and(
+const OrderWithLinksSchema: z.ZodType<OrderWithLinksType> = OrderSchema.and(
   z
     .object({ links: OrderLinksSchema, transitionLinks: OrderTransitionLinksSchema })
     .openapi({ required: ['links', 'transitionLinks'] }),
 ).openapi('OrderWithLinks')
+
+const DocUrlSchema = z
+  .url()
+  .openapi({
+    description: 'The documentation related to this operation.',
+    example: 'https://api-docs.imn.io/#operation/EnableChannelCatalog',
+    'x-exclude': true,
+  })
+  .openapi('DocUrl')
+
+const HrefSchema = z
+  .string()
+  .openapi({
+    description: 'Indicate the relative uri for this link',
+    example: '/merchant/orders/v1/{marketplaceCode}/{IMNOrderId}',
+    'x-exclude': true,
+  })
+  .openapi('Href')
+
+const ExceptionDetailSchema = z
+  .object({
+    helpLink: z.string().exactOptional(),
+    message: z.string().exactOptional(),
+    stackTrace: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ExceptionDetail')
+
+const ErrorSummarySchema = z
+  .object({
+    errorArguments: z.record(z.string(), z.string()).exactOptional(),
+    errorCode: z.string().exactOptional(),
+    errorGuid: z.uuid().exactOptional(),
+    errorMessage: z.string().exactOptional(),
+    exceptionDetail: ExceptionDetailSchema.exactOptional(),
+    objectName: z.string().exactOptional(),
+    propertyName: z.string().exactOptional(),
+    propertyValue: z.string().exactOptional(),
+    source: z.string().exactOptional(),
+    technicalErrorMessage: z.string().exactOptional(),
+    utcDate: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ErrorSummary')
+
+const InfoSummarySchema = z
+  .object({
+    informationArguments: z.record(z.string(), z.string()).exactOptional(),
+    informationCode: z.string().exactOptional(),
+    informationMessage: z.string().exactOptional(),
+    objectName: z.string().exactOptional(),
+    propertyName: z.string().exactOptional(),
+    propertyValue: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('InfoSummary')
+
+const SuccessSummarySchema = z
+  .object({
+    objectName: z.string().exactOptional(),
+    propertyName: z.string().exactOptional(),
+    propertyValue: z.string().exactOptional(),
+    successArguments: z.record(z.string(), z.string()).exactOptional(),
+    successCode: z.string().exactOptional(),
+    successMessage: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SuccessSummary')
+
+const WarningSummarySchema = z
+  .object({
+    technicalErrorMessage: z.string().exactOptional(),
+    warningArguments: z.record(z.string(), z.string()).exactOptional(),
+    warningCode: z.string().exactOptional(),
+    warningMessage: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('WarningSummary')
+
+const InfoSummariesSchema = z
+  .object({
+    errors: z.array(ErrorSummarySchema).exactOptional(),
+    informations: z.array(InfoSummarySchema).exactOptional(),
+    successes: z.array(SuccessSummarySchema).exactOptional(),
+    warnings: z.array(WarningSummarySchema).exactOptional(),
+  })
+  .openapi({ 'x-exclude': true, required: [] })
+  .openapi('InfoSummaries')
+
+const HttpMethodSchema = z
+  .enum(['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'HEAD'])
+  .default('GET')
+  .openapi({
+    description: 'Indicate the http method to use on this link',
+    example: 'GET',
+    'x-exclude': true,
+  })
+  .openapi('HttpMethod')
+
+const OperationIdSchema = z
+  .string()
+  .openapi({ description: 'The operationId to call.', example: 'GetOrder', 'x-exclude': true })
+  .openapi('OperationId')
+
+const ParameterInSchema = z
+  .enum(['path', 'header', 'query', 'body', 'file'])
+  .openapi({
+    description:
+      '* path: if the parameter must be pass in the path uri\n* header: if the parameter must be passed in http header\n* query: if the parameter must be passed in querystring\n* body: if the parameter must be passed in the body\n* file: if the parameter must be passed in a multipart/form-data (https://swagger.io/docs/specification/2-0/file-upload/)\n',
+    example: 'path',
+    'x-exclude': true,
+  })
+  .openapi('ParameterIn')
+
+const LOVLink3Schema = z
+  .object({
+    href: z
+      .url()
+      .openapi({
+        description: 'Indicate the uri to the list of value',
+        example: '/merchant/lov/v1/Go2CultureName',
+      }),
+    method: HttpMethodSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Describe the way you have to follow to get access to the LOV',
+    required: ['href'],
+    'x-exclude': true,
+  })
+  .openapi('LOVLink3')
+
+const ValidationPatternSchema = z
+  .string()
+  .openapi({ description: 'The regular expression to validate the value', example: '*.-api$' })
+  .openapi('ValidationPattern')
+
+const ParameterTypeSchema = z
+  .enum(['string', 'integer', 'number', 'boolean', 'object', 'array', 'date', 'date-time', 'file'])
+  .default('string')
+  .openapi({ description: 'The value type of the parameter', example: 'string', 'x-exclude': true })
+  .openapi('ParameterType')
+
+const LinkParameterProperty3Schema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'description of the parameter', example: 'the store identifier' }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The label corresponding to the link parameter property. This label is automatically translated based on the Accept-Language http header.',
+        example: 'The translated label',
+      }),
+    lovLink: LOVLink3Schema.exactOptional(),
+    lovRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If true, you MUST use indicate a value from the list of values otherwise it's a freetext",
+        example: 'true',
+      }),
+    pattern: ValidationPatternSchema.exactOptional(),
+    required: z.boolean().exactOptional().openapi({ example: 'true' }),
+    schema: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'schema of the parameter', example: 'orderListRequest' }),
+    type: ParameterTypeSchema,
+    value: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description: 'The value of the parameter. It can be an integer a string or an object.',
+      }),
+  })
+  .openapi({ required: ['type'], 'x-exclude': true })
+  .openapi('LinkParameterProperty3')
+
+const LinkParameter3Schema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'description of the parameter', example: 'the store identifier' }),
+    in: ParameterInSchema,
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The label corresponding to the link parameter. This label is automatically translated based on the Accept-Language http header.',
+        example: 'The translated label',
+      }),
+    lovLink: LOVLink3Schema.exactOptional(),
+    lovRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If true, you MUST indicate a value from the list of values otherwise it's a freetext",
+        example: 'true',
+      }),
+    pattern: ValidationPatternSchema.exactOptional(),
+    properties: z
+      .record(z.string(), LinkParameterProperty3Schema)
+      .exactOptional()
+      .openapi({
+        description:
+          'If the parameter is an object with flexible properties (additionProperties/dictionary), we will describe the properties of the object.',
+      }),
+    required: z.boolean().default(false).exactOptional().openapi({ example: 'true' }),
+    schema: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'schema of the parameter', example: 'orderListRequest' }),
+    value: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description: 'The value of the parameter. It can be an integer a string or an object.',
+      }),
+  })
+  .openapi({ required: ['in'], 'x-exclude': true })
+  .openapi('LinkParameter3')
+
+const LinkParameter3TypesSchema = z
+  .record(z.string(), LinkParameter3Schema)
+  .openapi('LinkParameter3Types')
+
+const Link3Schema = z
+  .object({
+    allOptionalParamsProvided: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'indicates whether all optionals params have been provided' }),
+    allRequiredParamsProvided: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'indicates whether all required params have been provided' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the link',
+        example: 'This is a description link',
+      }),
+    docUrl: DocUrlSchema.exactOptional(),
+    href: HrefSchema,
+    info: InfoSummariesSchema.exactOptional(),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The label corresponding to the link. This label is automatically translated based on the Accept-Language http header.',
+        example: 'The translated label',
+      }),
+    method: HttpMethodSchema.exactOptional(),
+    operationId: OperationIdSchema.exactOptional(),
+    parameters: LinkParameter3TypesSchema.exactOptional(),
+    rel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicate the relation name related to the link' }),
+    urlTemplated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'indicates whether the href is templated or not' }),
+  })
+  .openapi({ required: ['href'], 'x-exclude': true })
+  .openapi('Link3')
 
 const PaginationResultLinksSchema = z
   .object({
@@ -9835,7 +6389,14 @@ const PaginationResultLinksSchema = z
   })
   .openapi('PaginationResultLinks')
 
-const PaginationResultSchema = z
+type PaginationResultType = {
+  entryCount: number
+  links: z.infer<typeof PaginationResultLinksSchema>
+  pageCount: number
+  totalEntryCount: number
+}
+
+const PaginationResultSchema: z.ZodType<PaginationResultType> = z
   .object({
     entryCount: z
       .int()
@@ -9915,14 +6476,11 @@ const PaginationResultSchema = z
   })
   .openapi('PaginationResult')
 
-const OrderListFullWithLinksSchema = z
-  .object({
-    links: OrderListFullLinksSchema,
-    orders: z.array(OrderWithLinksSchema),
-    paginationResult: PaginationResultSchema,
-  })
-  .openapi({ required: ['paginationResult', 'orders', 'links'] })
-  .openapi('OrderListFullWithLinks')
+type OrderListFullWithLinksType = {
+  links: z.infer<typeof OrderListFullLinksSchema>
+  orders: z.infer<typeof OrderWithLinksSchema>[]
+  paginationResult: z.infer<typeof PaginationResultSchema>
+}
 
 const OrderListLightLinksSchema = OrderListLinksSchema.and(
   z
@@ -9932,58 +6490,53 @@ const OrderListLightLinksSchema = OrderListLinksSchema.and(
     }),
 ).openapi('OrderListLightLinks')
 
-const OrderListLightSchema = z
-  .object({
-    links: OrderListLightLinksSchema,
-    orders: z.array(OrderHeaderSchema),
-    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
-  })
+type OrderListLightType = {
+  links: z.infer<typeof OrderListLightLinksSchema>
+  orders: z.infer<typeof OrderHeaderSchema>[]
+  paginationResult?: z.infer<typeof BeezUPCommonPaginationResultSchema>
+}
+
+const OrderHeaderWithLinksSchema: z.ZodType<OrderHeaderWithLinksType> = OrderHeaderSchema.and(
+  z.object({ links: OrderHeaderLinksSchema }).openapi({ required: ['links'] }),
+).openapi('OrderHeaderWithLinks')
+
+type OrderListLightWithLinksType = {
+  links: z.infer<typeof OrderListLightLinksSchema>
+  orders: z.infer<typeof OrderHeaderWithLinksSchema>[]
+  paginationResult: z.infer<typeof PaginationResultSchema>
+}
+
+const BeezUPCommonCatalogCategoryIdSchema = z
+  .guid()
   .openapi({
-    description:
-      'The order list with minimum information we have from the orders.\\\nThe paginationResult properties can be null if the list is empty.\n',
-    required: ['orders', 'links'],
+    description: 'The catalog category identifier',
+    example: '81a058a6-0451-4b79-84ef-94c58d0ed4ac',
   })
-  .openapi('OrderListLight')
+  .openapi('BeezUPCommonCatalogCategoryId')
 
-const OrderListLightWithLinksSchema = z
-  .object({
-    links: OrderListLightLinksSchema,
-    orders: z.array(OrderHeaderWithLinksSchema),
-    paginationResult: PaginationResultSchema,
+const BeezUPCommonProductIdSchema = z
+  .guid()
+  .openapi({
+    description: 'The product identifier',
+    example: '578419df-1bbf-41a6-96fa-862e42182b67',
   })
-  .openapi({ required: ['paginationResult', 'orders', 'links'] })
-  .openapi('OrderListLightWithLinks')
+  .openapi('BeezUPCommonProductId')
 
-const PageNumberSchema = z
-  .int32()
-  .min(1)
-  .default(1)
-  .openapi({ description: 'Indicates the page number', example: '1' })
-  .openapi('PageNumber')
-
-const PageSizeSchema = z
-  .int32()
-  .min(25)
-  .max(100)
-  .default(100)
-  .openapi({ description: 'Indicate the order count per page', example: '100' })
-  .openapi('PageSize')
-
-const OrderListRequestSchema = OrderListRequestWithoutPaginationSchema.and(
-  z
-    .object({ pageNumber: PageNumberSchema, pageSize: PageSizeSchema })
-    .openapi({ required: ['beginPeriodUtcDate', 'endPeriodUtcDate', 'pageSize', 'pageNumber'] }),
-).openapi('OrderListRequest')
-
-const PreviewOrderInvoiceRequestSchema = z
-  .object({ invoiceSequenceNumber: InvoiceSequenceNumberSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('PreviewOrderInvoiceRequest')
-
-const PreviewOrderInvoiceResponseSchema = z
-  .object({ invoiceHtmlContent: InvoiceContentHtmlSchema })
-  .openapi({ required: ['invoiceHtmlContent'] })
-  .openapi('PreviewOrderInvoiceResponse')
+const ProductValuesSchema = z
+  .record(z.string(), z.string())
+  .openapi({
+    description: 'The key is the column identifier',
+    example: {
+      '012929c0-e78b-462a-a96e-25c061575385':
+        'http://media.conforama.fr/Medias/500000/80000/5000/500/10/G_585511_A.jpg',
+      '46602e10-bc45-4944-a440-63d5f7ece1f8': '42',
+      '68082b11-4ffd-4bec-964a-465a471c7d37': 'SKU1234',
+      'b6d74510-41ce-42ec-947a-0bdf62e9beee': 'Refrigerateur',
+      'ba270fa0-8482-46be-905a-cae4ca746b92':
+        'http://www.conforama.fr/gros-electromenager/encastrable/refrigerateur-encastrable/refrigerateur-combine-161-litres-far-r5115s/p/585511',
+    },
+  })
+  .openapi('ProductValues')
 
 const ProductSchema = z
   .object({
@@ -10003,48 +6556,18 @@ const ProductSchema = z
   })
   .openapi('Product')
 
-const ProductListSchema = z
+type ProductListType = {
+  paginationResult: z.infer<typeof BeezUPCommonPaginationResultSchema>
+  products: z.infer<typeof ProductSchema>[]
+}
+
+const ProfilePictureInfoResponseLinksSchema = z
   .object({
-    paginationResult: BeezUPCommonPaginationResultSchema,
-    products: z.array(ProductSchema),
+    save: LinksSaveProfilePictureInfoLinkSchema,
+    self: LinksGetProfilePictureInfoLinkSchema,
   })
-  .openapi({ required: ['paginationResult', 'products'] })
-  .openapi('ProductList')
-
-const ProductOverridesSchema = z
-  .record(z.string(), z.string())
-  .openapi({
-    description: 'The key is the channel column identifier',
-    example: {
-      '0EA21509-1141-57BD-B679-371BC98B2ADA': 'http://www.blalbla.nl/images/cache/ldldld.jpg',
-      '2A77749D-0AAB-5245-89B5-6A1A4E06DACA': 'http://www.blalbla.nl/images/cache/dldldl.jpg',
-      '54B3B3CB-5CA5-5471-9DAE-5310C032059A': 'http://www.blalbla.nl/images/cache/dlmdl.jpg',
-      '57F70E81-E4F2-5034-BC65-E1D5C48EBEDA': 'Sony bravia',
-      '8a76f06a-fefc-4c0d-bcfe-b210f1482977': '3563',
-      'B7B79A0B-A8DE-54DA-964C-E2704DF3738A': 'SHBELNL56',
-    },
-  })
-  .openapi('ProductOverrides')
-
-const ProductOverridesCopyResponseSchema = z
-  .record(z.string(), z.string())
-  .openapi({
-    description: 'Product overrides compatibilites list',
-    example: {
-      '0EA21509-1141-57BD-B679-371BC98B2ADA': 'http://www.blalbla.nl/images/cache/ldldld.jpg',
-      '2A77749D-0AAB-5245-89B5-6A1A4E06DACA': 'http://www.blalbla.nl/images/cache/dldldl.jpg',
-      '54B3B3CB-5CA5-5471-9DAE-5310C032059A': 'http://www.blalbla.nl/images/cache/dlmdl.jpg',
-      '57F70E81-E4F2-5034-BC65-E1D5C48EBEDA': 'Sony bravia',
-      '8a76f06a-fefc-4c0d-bcfe-b210f1482977': '3563',
-      'B7B79A0B-A8DE-54DA-964C-E2704DF3738A': 'SHBELNL56',
-    },
-  })
-  .openapi('ProductOverridesCopyResponse')
-
-const ProductSampleSchema = z
-  .object({ productValues: ProductValuesSchema.exactOptional() })
-  .openapi({ description: 'Describe a product sample', required: [] })
-  .openapi('ProductSample')
+  .openapi({ required: ['self', 'save'] })
+  .openapi('ProfilePictureInfoResponseLinks')
 
 const ProfilePictureSelectedSchema = z
   .enum(['gravatar', 'initials', 'uploaded'])
@@ -10063,13 +6586,23 @@ const ProfilePictureInfoSchema = z
   .openapi({ required: ['profilePictureSelected'] })
   .openapi('ProfilePictureInfo')
 
-const ProfilePictureInfoResponseLinksSchema = z
-  .object({
-    save: LinksSaveProfilePictureInfoLinkSchema,
-    self: LinksGetProfilePictureInfoLinkSchema,
+const GravatarProfilePictureUrlSchema = z
+  .string()
+  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
+  .openapi({
+    description: 'Indicate the url of your picture profil based on gravatar',
+    example: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mm',
   })
-  .openapi({ required: ['self', 'save'] })
-  .openapi('ProfilePictureInfoResponseLinks')
+  .openapi('GravatarProfilePictureUrl')
+
+const InitialsProfilePictureUrlSchema = z
+  .string()
+  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
+  .openapi({
+    description: 'Indicate the url of your picture profil based on your initials',
+    example: 'https://dummyimage.com/50x50/000000/fff&text=AM',
+  })
+  .openapi('InitialsProfilePictureUrl')
 
 const ProfilePictureInfoWithDefaultSchema = ProfilePictureInfoSchema.and(
   z
@@ -10086,49 +6619,32 @@ const ProfilePictureInfoWithDefaultSchema = ProfilePictureInfoSchema.and(
     }),
 ).openapi('ProfilePictureInfoWithDefault')
 
-const ProfilePictureInfoResponseSchema = z
-  .object({
-    links: ProfilePictureInfoResponseLinksSchema,
-    profilePictureInfo: ProfilePictureInfoWithDefaultSchema,
-  })
-  .openapi({ required: ['profilePictureInfo', 'links'] })
-  .openapi('ProfilePictureInfoResponse')
+type ProfilePictureInfoResponseType = {
+  links: z.infer<typeof ProfilePictureInfoResponseLinksSchema>
+  profilePictureInfo: z.infer<typeof ProfilePictureInfoWithDefaultSchema>
+}
 
-const PublicChannelIndexSchema = z
-  .object({
-    channels: z
-      .record(z.string(), LinksGetChannelsLinkSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The key is the country iso code',
-        example: {
-          DEU: { href: '/v2/public/channels/DEU', method: 'GET' },
-          ESP: { href: "/v2/public/channels/ESP'", method: 'GET' },
-          FRA: { href: '/v2/public/channels/FRA', method: 'GET' },
-          GBR: { href: '/v2/public/channels/GBR', method: 'GET' },
-          ITA: { href: '/v2/public/channels/ITA', method: 'GET' },
-        },
-      }),
-    links: z
-      .object({
-        channelCountryLov: LinksGetPublicListOfValuesLinkSchema.exactOptional(),
-        channelTypeLov: LinksGetPublicListOfValuesLinkSchema.exactOptional(),
-        sectorLov: LinksGetPublicListOfValuesLinkSchema.exactOptional(),
-        self: LinksGetChannelsIndexLinkSchema.exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        example: {
-          channelCountryLov: { href: '/v2/public/lov/www_ChannelCountry', method: 'GET' },
-          channelTypeLov: { href: '/v2/public/lov/ChannelType', method: 'GET' },
-          sectorLov: { href: '/v2/public/lov/ParamSector', method: 'GET' },
-          self: { href: '/v2/public/channels', method: 'GET' },
-        },
-        required: [],
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('PublicChannelIndex')
+const LinksGetChannelsLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/public/channels/FRA', method: 'GET' } }),
+).openapi('LinksGetChannelsLink')
+
+const LinksGetPublicListOfValuesLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/public/lov/ChannelType', method: 'GET' } }),
+).openapi('LinksGetPublicListOfValuesLink')
+
+const LinksGetChannelsIndexLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/public/channels', method: 'GET' } }),
+).openapi('LinksGetChannelsIndexLink')
+
+type PublicChannelIndexType = {
+  channels?: { [key: string]: z.infer<typeof LinksGetChannelsLinkSchema> }
+  links?: {
+    channelCountryLov?: z.infer<typeof LinksGetPublicListOfValuesLinkSchema>
+    channelTypeLov?: z.infer<typeof LinksGetPublicListOfValuesLinkSchema>
+    sectorLov?: z.infer<typeof LinksGetPublicListOfValuesLinkSchema>
+    self?: z.infer<typeof LinksGetChannelsIndexLinkSchema>
+  }
+}
 
 const PublicChannelInfoSchema = z
   .object({
@@ -10156,36 +6672,49 @@ const PublicChannelInfoSchema = z
   .openapi({ required: ['name', 'homeUrl', 'logoUrl', 'types'] })
   .openapi('PublicChannelInfo')
 
-const PublicChannelInfoListSchema = z
+type PublicChannelInfoListType = {
+  channels?: z.infer<typeof PublicChannelInfoSchema>[]
+  links?: { self?: z.infer<typeof LinksGetChannelsLinkSchema> }
+}
+
+const BeezUPCommonListOfValueItemSchema = z
   .object({
-    channels: z.array(PublicChannelInfoSchema).exactOptional(),
-    links: z
-      .object({ self: LinksGetChannelsLinkSchema.exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
+    codeIdentifier: z.string().openapi({ example: 'FRA' }),
+    intIdentifier: z.int32().openapi({ example: '1' }),
+    position: z.int32().exactOptional().openapi({ example: '1' }),
+    translationText: z.string().exactOptional().openapi({ example: 'France' }),
   })
-  .openapi({ required: [] })
-  .openapi('PublicChannelInfoList')
+  .openapi({
+    description: 'This object is used by LOV apis',
+    required: ['codeIdentifier', 'intIdentifier'],
+  })
+  .openapi('BeezUPCommonListOfValueItem')
 
 const PublicListOfValuesResponseLinksSchema = z
   .object({ self: LinksGetPublicListOfValuesLinkSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('PublicListOfValuesResponseLinks')
 
-const PublicListOfValuesResponseSchema = z
-  .object({
-    items: z.array(BeezUPCommonListOfValueItemSchema).exactOptional(),
-    links: PublicListOfValuesResponseLinksSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PublicListOfValuesResponse')
+type PublicListOfValuesResponseType = {
+  items?: z.infer<typeof BeezUPCommonListOfValueItemSchema>[]
+  links?: z.infer<typeof PublicListOfValuesResponseLinksSchema>
+}
 
 const PublicLovLinksSchema = z
   .record(z.string(), LinksGetPublicListOfValuesLinkSchema)
   .openapi({ description: 'List of lov link. The key is the list name.' })
   .openapi('PublicLovLinks')
 
-const PublicLovIndexLinksSchema = z
+const LinksGetPublicLovIndexLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/public/lov', method: 'GET' } }),
+).openapi('LinksGetPublicLovIndexLink')
+
+type PublicLovIndexLinksType = {
+  lists?: z.infer<typeof PublicLovLinksSchema>
+  self?: z.infer<typeof LinksGetPublicLovIndexLinkSchema>
+}
+
+const PublicLovIndexLinksSchema: z.ZodType<PublicLovIndexLinksType> = z
   .object({
     lists: PublicLovLinksSchema.exactOptional(),
     self: LinksGetPublicLovIndexLinkSchema.exactOptional(),
@@ -10193,66 +6722,7 @@ const PublicLovIndexLinksSchema = z
   .openapi({ required: [] })
   .openapi('PublicLovIndexLinks')
 
-const PublicLovIndexSchema = z
-  .object({ links: PublicLovIndexLinksSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('PublicLovIndex')
-
-const PublishCatalogToMarketplaceRequestSchema = z
-  .object({
-    feedType: FeedTypeSchema,
-    publicationStrategyKind: PublicationStrategyKindSchema,
-    withUnpublish: z
-      .boolean()
-      .openapi({
-        description:
-          'In full publication strategy kind, for some marktetplace, you can ask to unpublish or not your existing feeds on the markeptlace absent from your exported catalog.',
-      }),
-  })
-  .openapi({
-    description: 'Publish the catalog to the marketplace',
-    required: ['feedType', 'publicationStrategyKind', 'withUnpublish'],
-  })
-  .openapi('PublishCatalogToMarketplaceRequest')
-
-const RandomProductListSchema = z
-  .object({ products: z.array(ProductSchema) })
-  .openapi({ required: ['products'] })
-  .openapi('RandomProductList')
-
-const RegisterRequestSchema = z
-  .object({
-    commercialOwnerUserId: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description: 'The user id of your commercial in BeezUP.',
-        example: '47ea14ab-195d-4f9a-a24e-32c329ee40f6',
-      }),
-    cultureName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Can be null. Default: en-GB. The culture name you want to use. FYI. \\\nThe email activation will use this culture.\n',
-        example: 'en-GB',
-      }),
-    email: z
-      .string()
-      .openapi({
-        description: 'Your email. We refuse disposable email.',
-        example: 'myemail@mycompany.com',
-      }),
-    password: z
-      .string()
-      .openapi({
-        description:
-          'The password you want to use for your new account. \\\nThe password length must be greater or equals to 6 and lower or equals to 128. \\\nThe password must contains at least one number and one special character\n',
-        example: 'I@mW0nder$Full',
-      }),
-  })
-  .openapi({ required: ['email', 'password'] })
-  .openapi('RegisterRequest')
+type PublicLovIndexType = { links?: z.infer<typeof PublicLovIndexLinksSchema> }
 
 const ReportByCategoryLinksSchema = z
   .object({
@@ -10262,7 +6732,24 @@ const ReportByCategoryLinksSchema = z
   .openapi({ required: [] })
   .openapi('ReportByCategoryLinks')
 
-const ReportByCategorySchema = z
+type ReportByCategoryType = {
+  allProductCount: number
+  catalogCategoryId: z.infer<typeof BeezUPCommonCatalogCategoryIdSchema>
+  catalogCategoryPath?: z.infer<typeof BeezUPCommonCatalogCategoryPathSchema>
+  catalogProductCount: number
+  clickCount: number
+  cost: number
+  enabledProductCount: number
+  links: z.infer<typeof ReportByCategoryLinksSchema>
+  margin?: number
+  orderCount: number
+  performanceIndicator: number
+  roi?: number
+  soldProductCount: number
+  totalSales: number
+}
+
+const ReportByCategorySchema: z.ZodType<ReportByCategoryType> = z
   .object({
     allProductCount: z
       .int()
@@ -10334,10 +6821,6 @@ const ReportByCategorySchema = z
   })
   .openapi('ReportByCategory')
 
-const ReportByCategoryRequestSchema = OrderedReportFilterCommonParametersSchema.and(
-  PaginationRequestParametersSchema,
-).openapi('ReportByCategoryRequest')
-
 const ReportByCommonResponseLinksSchema = z
   .object({
     disableAllProducts: LinksOptimiseAllLinkSchema.exactOptional(),
@@ -10352,15 +6835,12 @@ const ReportByCategoryResponseLinksSchema = ReportByCommonResponseLinksSchema.op
   'ReportByCategoryResponseLinks',
 )
 
-const ReportByCategoryResponseSchema = z
-  .object({
-    categories: z.array(ReportByCategorySchema).exactOptional(),
-    currencyCode: BeezUPCommonCurrencyCodeSchema.exactOptional(),
-    links: ReportByCategoryResponseLinksSchema.exactOptional(),
-    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReportByCategoryResponse')
+type ReportByCategoryResponseType = {
+  categories?: z.infer<typeof ReportByCategorySchema>[]
+  currencyCode?: z.infer<typeof BeezUPCommonCurrencyCodeSchema>
+  links?: z.infer<typeof ReportByCategoryResponseLinksSchema>
+  paginationResult?: z.infer<typeof BeezUPCommonPaginationResultSchema>
+}
 
 const ReportByChannelLinksSchema = z
   .object({
@@ -10370,7 +6850,22 @@ const ReportByChannelLinksSchema = z
   .openapi({ required: [] })
   .openapi('ReportByChannelLinks')
 
-const ReportByChannelSchema = z
+type ReportByChannelType = {
+  catalogProductCount: number
+  channel: z.infer<typeof BeezUPCommonChannelBasicInfoSchema>
+  clickCount: number
+  cost: number
+  enabledProductCount: number
+  links: z.infer<typeof ReportByChannelLinksSchema>
+  margin?: number
+  orderCount: number
+  performanceIndicator: number
+  roi?: number
+  soldProductCount: number
+  totalSales: number
+}
+
+const ReportByChannelSchema: z.ZodType<ReportByChannelType> = z
   .object({
     catalogProductCount: z
       .int()
@@ -10416,15 +6911,4895 @@ const ReportByChannelSchema = z
   })
   .openapi('ReportByChannel')
 
-const ReportByChannelRequestSchema = OrderedReportFilterCommonParametersSchema.and(
-  PaginationRequestParametersSchema,
-).openapi('ReportByChannelRequest')
-
 const ReportByChannelResponseLinksSchema = ReportByCommonResponseLinksSchema.openapi(
   'ReportByChannelResponseLinks',
 )
 
-const ReportByChannelResponseSchema = z
+type ReportByChannelResponseType = {
+  channels: z.infer<typeof ReportByChannelSchema>[]
+  currencyCode: z.infer<typeof BeezUPCommonCurrencyCodeSchema>
+  links: z.infer<typeof ReportByChannelResponseLinksSchema>
+  paginationResult: z.infer<typeof BeezUPCommonPaginationResultSchema>
+}
+
+const ReportByProductAllChannelsLinksSchema = z
+  .object({
+    disableProductForAllChannels: LinksOptimiseByProductLinkSchema,
+    enableProductForAllChannels: LinksOptimiseByProductLinkSchema,
+  })
+  .openapi({ required: ['enableProductForAllChannels', 'disableProductForAllChannels'] })
+  .openapi('ReportByProductAllChannelsLinks')
+
+const ReportByProductOneChannelLinksSchema = z
+  .object({
+    disableProductForOneChannel: LinksOptimiseByProductLinkSchema,
+    enableProductForOneChannel: LinksOptimiseByProductLinkSchema,
+    productInfo: LinksGetChannelCatalogProductInfoLinkSchema,
+  })
+  .openapi({
+    description:
+      'If the report concerned one product for one channel the channel catalog product info will give you all you need to enable or disable the product.',
+    required: ['productInfo', 'enableProductForOneChannel', 'disableProductForOneChannel'],
+  })
+  .openapi('ReportByProductOneChannelLinks')
+
+type ReportByProductLinksType = {
+  allChannelsLinks?: z.infer<typeof ReportByProductAllChannelsLinksSchema>
+  oneChannelLinks?: z.infer<typeof ReportByProductOneChannelLinksSchema>
+}
+
+const ReportByProductLinksSchema: z.ZodType<ReportByProductLinksType> = z
+  .object({
+    allChannelsLinks: ReportByProductAllChannelsLinksSchema.exactOptional(),
+    oneChannelLinks: ReportByProductOneChannelLinksSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Depending if the report concerned multiple channels or one channel.',
+    required: [],
+  })
+  .openapi('ReportByProductLinks')
+
+type ReportByProductType = {
+  channelCount: number
+  clickCount: number
+  cost: number
+  enabledOnChannelCount: number
+  links: z.infer<typeof ReportByProductLinksSchema>
+  margin?: number
+  orderCount: number
+  performanceIndicator: number
+  product: z.infer<typeof BeezUPCommonProductBasicInfoSchema>
+  roi?: number
+  soldProductCount: number
+  totalSales: number
+}
+
+const ReportByProductResponseLinksSchema = ReportByCommonResponseLinksSchema.openapi(
+  'ReportByProductResponseLinks',
+)
+
+const ReportByProductSchema: z.ZodType<ReportByProductType> = z
+  .object({
+    channelCount: z
+      .int()
+      .openapi({
+        description: 'The channel count where this product can be enabled',
+        example: '2',
+      }),
+    clickCount: z
+      .int()
+      .openapi({ description: 'The click count for this product', example: '1234' }),
+    cost: z.number().openapi({ description: 'The cost for this product', example: '101.42' }),
+    enabledOnChannelCount: z
+      .int()
+      .openapi({ description: 'The count of channel where this product is enabled', example: '1' }),
+    links: ReportByProductLinksSchema,
+    margin: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The margin for this product', example: '50.0' }),
+    orderCount: z
+      .int()
+      .openapi({ description: 'The order count for this product', example: '234' }),
+    performanceIndicator: z
+      .number()
+      .openapi({
+        description:
+          'The performance indicator based on the performance indicator formula indicated in the request for this product',
+        example: '10.12',
+      }),
+    product: BeezUPCommonProductBasicInfoSchema,
+    roi: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The Return On Investment for this product', example: '42.01' }),
+    soldProductCount: z
+      .int()
+      .openapi({ description: 'The product sold count count for this product', example: '2' }),
+    totalSales: z
+      .number()
+      .openapi({ description: 'The total sales for this product', example: '234.42' }),
+  })
+  .openapi({
+    required: [
+      'product',
+      'enabledOnChannelCount',
+      'channelCount',
+      'clickCount',
+      'cost',
+      'orderCount',
+      'performanceIndicator',
+      'totalSales',
+      'soldProductCount',
+      'links',
+    ],
+  })
+  .openapi('ReportByProduct')
+
+type ReportByProductResponseType = {
+  currencyCode: z.infer<typeof BeezUPCommonCurrencyCodeSchema>
+  links: z.infer<typeof ReportByProductResponseLinksSchema>
+  paginationResult: z.infer<typeof BeezUPCommonPaginationResultSchema>
+  products: z.infer<typeof ReportByProductSchema>[]
+}
+
+const LinksDeleteReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters/fb19c53c-2f63-4262-9d94-2d7faa500acd',
+        method: 'DELETE',
+      },
+    }),
+).openapi('LinksDeleteReportFilterLink')
+
+const LinksSaveReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters/{reportFilterId}',
+        method: 'PUT',
+        parameters: [{ in: 'path', name: 'reportFilterId', type: 'string' }],
+        templated: 'true',
+      },
+    }),
+).openapi('LinksSaveReportFilterLink')
+
+const LinksGetReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/reports/filters/fb19c53c-2f63-4262-9d94-2d7faa500acd',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetReportFilterLink')
+
+const ReportFilterLinksSchema = z
+  .object({
+    delete: LinksDeleteReportFilterLinkSchema.exactOptional(),
+    save: LinksSaveReportFilterLinkSchema.exactOptional(),
+    self: LinksGetReportFilterLinkSchema.exactOptional(),
+  })
+  .openapi({ description: 'Indicates the actions you can do on this report filter', required: [] })
+  .openapi('ReportFilterLinks')
+
+const LinkClickToOrderTypeSchema = z
+  .enum(['OnPurchaseDate', 'OnClickDate'])
+  .default('OnPurchaseDate')
+  .openapi({ example: 'OnClickDate' })
+  .openapi('LinkClickToOrderType')
+
+const MarginTypeSchema = z
+  .enum(['Tracker', 'Global'])
+  .default('Tracker')
+  .openapi({ example: 'Global' })
+  .openapi('MarginType')
+
+const PerformanceIndicatorFormulaParameterTypeSchema = z
+  .enum([
+    'Cost',
+    'TotalSales',
+    'Margin',
+    'TotalSalesMinusCost',
+    'MarginMinusCost',
+    'OrderCount',
+    'ClickCount',
+    'SoldProductCount',
+    'One',
+  ])
+  .openapi({
+    description: 'Indicate on which indicator or value you want to make your formula',
+    example: 'Cost',
+  })
+  .openapi('PerformanceIndicatorFormulaParameterType')
+
+const PerformanceIndicatorFormulaOperatorNameSchema = z
+  .enum(['Multiply', 'Divide'])
+  .openapi({ example: 'Multiply' })
+  .openapi('PerformanceIndicatorFormulaOperatorName')
+
+const PerformanceIndicatorFormulaSchema = z
+  .object({
+    firstParameter: PerformanceIndicatorFormulaParameterTypeSchema.exactOptional(),
+    operatorName: PerformanceIndicatorFormulaOperatorNameSchema.exactOptional(),
+    secondParameter: PerformanceIndicatorFormulaParameterTypeSchema.exactOptional(),
+    thirdParameter: z
+      .int()
+      .default(100)
+      .exactOptional()
+      .openapi({
+        description: 'Indicate the value of the third parameter of your formula',
+        example: '100',
+      }),
+  })
+  .openapi({
+    description: 'The KPI formula',
+    example: {
+      firstParameter: 'Cost',
+      operatorName: 'Multiply',
+      secondParamter: 'ROI',
+      thirdParameter: '100',
+    },
+    required: [],
+  })
+  .openapi('PerformanceIndicatorFormula')
+
+const ReportAdvancedFiltersSchema = z
+  .object({
+    globalMarginPercent: z
+      .int()
+      .min(0)
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description: "If the margin type is 'Global', indicate the percentage of sale price.",
+        example: '10',
+      }),
+    linkClickToOrderMaxDay: z
+      .int()
+      .min(0)
+      .max(180)
+      .default(30)
+      .exactOptional()
+      .openapi({
+        description:
+          'If the linkOrderType is OnClickDate, indicate the max day to search the click from the order',
+        example: '5',
+      }),
+    linkClickToOrderType: LinkClickToOrderTypeSchema,
+    marginType: MarginTypeSchema,
+    onlyDirectSales: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description:
+          'If true, you will get only direct sales. Otherwise the indirect sales will be included.',
+        example: 'true',
+      }),
+    onlyPaymentValidatedOrders: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description:
+          'If true, you will get the only the orders with payment validated. Otherwise, you will get all orders validated or not.',
+        example: 'true',
+      }),
+    performanceIndicatorFormula: PerformanceIndicatorFormulaSchema,
+  })
+  .openapi({
+    required: [
+      'marginType',
+      'linkClickToOrderType',
+      'onlyPaymentValidatedOrders',
+      'onlyDirectSales',
+      'performanceIndicatorFormula',
+    ],
+  })
+  .openapi('ReportAdvancedFilters')
+
+const BeezUPCommonCatalogCategoryFilterSchema = z
+  .object({
+    categoryPath: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Indicates on which catalog category path you want to make the filter',
+        example: ['Maison', 'Chambre'],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BeezUPCommonCatalogCategoryFilter')
+
+const PerformanceIndicatorFilterOperatorNameSchema = z
+  .string()
+  .openapi({
+    description: 'Indicates the operator you want to apply on this indicator',
+    example: 'Equals',
+    'x-lov': 'PerformanceIndicatorFilterOperatorName',
+  })
+  .openapi('PerformanceIndicatorFilterOperatorName')
+
+const PerformanceIndicatorTypeSchema = z
+  .enum([
+    'ClickCount',
+    'Cost',
+    'OrderCount',
+    'ProductCount',
+    'SoldProductCount',
+    'DisabledProductCount',
+    'EnabledProductCount',
+    'TotalSales',
+    'Margin',
+    'ROI',
+    'PerformanceIndicator',
+  ])
+  .openapi({
+    description: 'Indicate on which indicator or value you want to make your formula',
+    example: 'Cost',
+  })
+  .openapi('PerformanceIndicatorType')
+
+const PerformanceIndicatorFilterSchema = z
+  .object({
+    operatorName: PerformanceIndicatorFilterOperatorNameSchema,
+    performanceIndicator: PerformanceIndicatorTypeSchema,
+    value: z
+      .number()
+      .openapi({
+        description: 'Indicates the filter value to apply on this indicator',
+        example: '10.42',
+      }),
+  })
+  .openapi({ required: ['performanceIndicator', 'operatorName', 'value'] })
+  .openapi('PerformanceIndicatorFilter')
+
+const ReportFilterPeriodTypeSchema = z
+  .enum([
+    'Custom',
+    'Yesterday',
+    'Last7Days',
+    'LastWeek',
+    'ThisMonth',
+    'Last30Days',
+    'LastMonth',
+    'Last60Days',
+    'Last90Days',
+    'Last3Months',
+  ])
+  .openapi({ description: 'Indicates the period type we want use for the report filter' })
+  .openapi('ReportFilterPeriodType')
+
+const ReportFilterCommonParametersSchema = z
+  .object({
+    advancedFilters: ReportAdvancedFiltersSchema,
+    beginPeriodUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "The begin date period you want to get the report. It's required only in case of custom period type !",
+        example: '2006-11-20T00:00:00Z',
+      }),
+    categoryFilter: BeezUPCommonCatalogCategoryFilterSchema.exactOptional(),
+    channelId: BeezUPCommonChannelIdSchema.exactOptional(),
+    endPeriodUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "The end date period you want to get the report. It's required only in case of custom period type !",
+        example: '2006-12-20T00:00:00Z',
+      }),
+    performanceIndicatorFilters: z
+      .array(PerformanceIndicatorFilterSchema)
+      .exactOptional()
+      .openapi({ example: [{ indicator: 'Cost', operatorName: 'Equals', value: '10' }] }),
+    periodType: ReportFilterPeriodTypeSchema,
+  })
+  .openapi({
+    description: 'Contains common filter parameters',
+    required: ['periodType', 'advancedFilters'],
+  })
+  .openapi('ReportFilterCommonParameters')
+
+const AnalyticsProductColumnFilterOperatorNameSchema = z
+  .string()
+  .openapi({
+    description: 'Indicate the operator you want to apply on the columnId',
+    'x-lov': 'AnalyticsProductColumnFilterOperatorName',
+  })
+  .openapi('AnalyticsProductColumnFilterOperatorName')
+
+const AnalyticsProductColumnFilterSchema = z
+  .object({
+    operatorName: AnalyticsProductColumnFilterOperatorNameSchema,
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Must be null if the operator is "IsNull" or "IsNotNull".\nCan contains multiple value in case of "InList" operator. Otherwise a single value is expected.\n',
+        example: ['My value'],
+      }),
+  })
+  .openapi({
+    example: {
+      '672644c7-5bd0-4e25-88c1-1f732bda5e4c': {
+        operatorName: 'NumericalGreaterThan',
+        values: ['100'],
+      },
+    },
+    required: ['operatorName'],
+  })
+  .openapi('AnalyticsProductColumnFilter')
+
+const AdditionalAnalyticsProductColumnFiltersSchema = z
+  .record(z.string(), AnalyticsProductColumnFilterSchema)
+  .openapi({
+    description:
+      "Describes a filter on a product's column.\nThe key is the column identifier of your catalog or a custom column.\n",
+  })
+  .openapi('AdditionalAnalyticsProductColumnFilters')
+
+const AnalyticsProductColumnFiltersSchema = z
+  .object({
+    additionalAnalyticsProductColumnFilters:
+      AdditionalAnalyticsProductColumnFiltersSchema.exactOptional(),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The product sku filter', example: 'M1234' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The product title filter', example: 'Refrigérateur' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AnalyticsProductColumnFilters')
+
+const ProductColumnsToDisplaySchema = z
+  .array(BeezUPCommonCatalogColumnIdSchema)
+  .min(0)
+  .max(1)
+  .openapi({ example: ['4b460e31-3d1f-4117-922d-b159a64ec1d2'] })
+  .openapi('ProductColumnsToDisplay')
+
+const ProductStateFilterSchema = z
+  .enum(['All', 'Enabled', 'Disabled'])
+  .default('All')
+  .openapi({ description: 'You can filter on the product state.', example: 'All' })
+  .openapi('ProductStateFilter')
+
+const ReportTypeSchema = z
+  .enum(['ByChannel', 'ByCategory', 'ByProduct', 'ByDay'])
+  .openapi({ description: 'The report type', example: 'ByProduct' })
+  .openapi('ReportType')
+
+const ReportFilterParametersSchema = ReportFilterCommonParametersSchema.and(
+  z
+    .object({
+      analyticsProductColumnFilters: AnalyticsProductColumnFiltersSchema.exactOptional(),
+      productColumnsToDisplay: ProductColumnsToDisplaySchema.exactOptional(),
+      productState: ProductStateFilterSchema.exactOptional(),
+      reportType: ReportTypeSchema,
+    })
+    .openapi({
+      required: ['beginPeriodUtcDate', 'endPeriodUtcDate', 'advancedFilters', 'reportType'],
+    }),
+).openapi('ReportFilterParameters')
+
+type ReportFilterType = {
+  links?: z.infer<typeof ReportFilterLinksSchema>
+  parameters: z.infer<typeof ReportFilterParametersSchema>
+  reportFilterId: string
+  reportFilterName: string
+}
+
+const ReportFilterHeaderLinksSchema = z
+  .object({ self: LinksGetReportFilterLinkSchema })
+  .openapi({ required: ['self'] })
+  .openapi('ReportFilterHeaderLinks')
+
+type ReportFilterHeaderType = {
+  links: z.infer<typeof ReportFilterHeaderLinksSchema>
+  reportFilterId: string
+  reportFilterName: string
+  reportType: z.infer<typeof ReportTypeSchema>
+}
+
+const ReportFiltersLinksSchema = z
+  .object({ save: LinksSaveReportFilterLinkSchema, self: LinksGetReportFiltersLinkSchema })
+  .openapi({ required: ['self', 'save'] })
+  .openapi('ReportFiltersLinks')
+
+const ReportFilterHeaderSchema: z.ZodType<ReportFilterHeaderType> = z
+  .object({
+    links: ReportFilterHeaderLinksSchema,
+    reportFilterId: z
+      .guid()
+      .openapi({
+        description: 'Report filter identifier',
+        example: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
+      }),
+    reportFilterName: z
+      .string()
+      .openapi({ description: 'Report filter name', example: 'My report filter' }),
+    reportType: ReportTypeSchema,
+  })
+  .openapi({ required: ['reportFilterName', 'reportFilterId', 'reportType', 'links'] })
+  .openapi('ReportFilterHeader')
+
+type ReportFilterListType = {
+  links: z.infer<typeof ReportFiltersLinksSchema>
+  reportFilters: z.infer<typeof ReportFilterHeaderSchema>[]
+}
+
+const OptimisationActionNameSchema = z
+  .enum(['reenable', 'disable'])
+  .openapi({ description: 'The optimisation action', example: 'reenable' })
+  .openapi('OptimisationActionName')
+
+const RuleLastExecutionStatusSchema = z
+  .enum(['InProgress', 'Succeeded', 'Failed', 'Unknown'])
+  .openapi({ description: 'The status of the last execution', example: 'Succeeded' })
+  .openapi('RuleLastExecutionStatus')
+
+const LinksDeleteRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
+        method: 'DELETE',
+      },
+    }),
+).openapi('LinksDeleteRuleLink')
+
+const LinksDisableRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/disable',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksDisableRuleLink')
+
+const LinksEnableRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/enable',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksEnableRuleLink')
+
+const LinksMoveDownRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/movedown',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksMoveDownRuleLink')
+
+const LinksMoveUpRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/moveup',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksMoveUpRuleLink')
+
+const LinksRunRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/run',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksRunRuleLink')
+
+const LinksGetRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetRuleLink')
+
+const LinksUpdateRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
+        method: 'PATCH',
+        parameters: {
+          request: {
+            in: 'body',
+            schema: 'updateRuleRequest',
+            type: 'object',
+            value: {
+              'endUtcDate"': '2016-08-29T09:12:33.001Z',
+              ruleName: 'My Rule Renamed',
+              startUtcDate: '2016-08-29T09:12:33.001Z',
+            },
+          },
+        },
+      },
+    }),
+).openapi('LinksUpdateRuleLink')
+
+const RuleLinksSchema = z
+  .object({
+    delete: LinksDeleteRuleLinkSchema.exactOptional(),
+    disable: LinksDisableRuleLinkSchema.exactOptional(),
+    enable: LinksEnableRuleLinkSchema.exactOptional(),
+    movedown: LinksMoveDownRuleLinkSchema.exactOptional(),
+    moveup: LinksMoveUpRuleLinkSchema.exactOptional(),
+    reportFilter: LinksGetReportFilterLinkSchema.exactOptional(),
+    run: LinksRunRuleLinkSchema.exactOptional(),
+    self: LinksGetRuleLinkSchema,
+    update: LinksUpdateRuleLinkSchema.exactOptional(),
+  })
+  .openapi({ description: 'Links to retrieve/action on other entities', required: ['self'] })
+  .openapi('RuleLinks')
+
+type RuleType = {
+  actionName: z.infer<typeof OptimisationActionNameSchema>
+  enabled: boolean
+  lastExecutionStatus?: z.infer<typeof RuleLastExecutionStatusSchema>
+  lastExecutionUtcDate?: string
+  links: z.infer<typeof RuleLinksSchema>
+  position: number
+  reportFilterId: string
+  ruleId: string
+  ruleName: string
+  validityEndUtcDate?: string
+  validityStartUtcDate?: string
+}
+
+const RuleExecutionReportingErrorTypeSchema = z
+  .enum(['ChannelNotPresent', 'StoreIsInSystemBlockState'])
+  .openapi({
+    description: 'The error type for this execution if any',
+    example: 'ChannelNotPresent',
+  })
+  .openapi('RuleExecutionReportingErrorType')
+
+const RuleExecutionReportingExecutionSourceSchema = z
+  .enum(['Scheduler', 'User'])
+  .openapi({ description: 'The requestor type for the execution of the rule', example: 'User' })
+  .openapi('RuleExecutionReportingExecutionSource')
+
+const RuleExecutionReportingLinksSchema = z
+  .object({ rule: LinksGetRuleLinkSchema.exactOptional() })
+  .openapi({ description: 'Links to retrieve/action on this rule execution', required: [] })
+  .openapi('RuleExecutionReportingLinks')
+
+const RuleExecutionReportingStatusSchema = z
+  .enum(['InProgress', 'Succeeded', 'AlreadyInProgress', 'Aborted', 'Failed', 'Unknown'])
+  .openapi({ description: 'The status of the execution of the rule', example: 'Succeeded' })
+  .openapi('RuleExecutionReportingStatus')
+
+type RuleExecutionReportingType = {
+  activeAffectedProductCount?: number
+  affectedChannelCount?: number
+  affectedProductCount?: number
+  completedUtcDate?: string
+  errorType?: z.infer<typeof RuleExecutionReportingErrorTypeSchema>
+  executionSource: z.infer<typeof RuleExecutionReportingExecutionSourceSchema>
+  links?: z.infer<typeof RuleExecutionReportingLinksSchema>
+  optimisationActionName?: z.infer<typeof OptimisationActionNameSchema>
+  reportUrl?: string
+  ruleId: string
+  ruleName: string
+  startedUtcDate?: string
+  status: z.infer<typeof RuleExecutionReportingStatusSchema>
+  userId?: string
+}
+
+const RuleExecutionReportingSchema: z.ZodType<RuleExecutionReportingType> = z
+  .object({
+    activeAffectedProductCount: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The count of affected active products', example: '1' }),
+    affectedChannelCount: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The count of affected Channels across all products', example: '1' }),
+    affectedProductCount: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The count of affected products, active or not', example: '1' }),
+    completedUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The completed utc date of the execution of the rule',
+        example: '2016-08-29T09:12:33.001Z',
+      }),
+    errorType: RuleExecutionReportingErrorTypeSchema.exactOptional(),
+    executionSource: RuleExecutionReportingExecutionSourceSchema,
+    links: RuleExecutionReportingLinksSchema.exactOptional(),
+    optimisationActionName: OptimisationActionNameSchema.exactOptional(),
+    reportUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The url for the excel report for this execution',
+        example: 'http://www.google.com',
+      }),
+    ruleId: z
+      .guid()
+      .openapi({
+        description: 'The rule identifier',
+        example: 'fd9a23a1-569b-40af-af91-f7275a57bf89',
+      }),
+    ruleName: z.string().openapi({ description: 'The name of the rule', example: 'toto' }),
+    startedUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The start utc date of the execution of the rule',
+        example: '2016-08-29T09:12:33.001Z',
+      }),
+    status: RuleExecutionReportingStatusSchema,
+    userId: z
+      .guid()
+      .exactOptional()
+      .openapi({
+        description: 'The userId that executed the rule if any',
+        example: 'e8289350-69f8-45a6-b0ca-b641c83e0422',
+      }),
+  })
+  .openapi({ required: ['ruleId', 'ruleName', 'status', 'executionSource'] })
+  .openapi('RuleExecutionReporting')
+
+type RuleExecutionReportingsType = {
+  executions?: z.infer<typeof RuleExecutionReportingSchema>[]
+  paginationResult?: z.infer<typeof BeezUPCommonPaginationResultSchema>
+}
+
+const LinksCreateRuleLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules',
+        method: 'POST',
+        parameters: {
+          request: {
+            in: 'body',
+            schema: 'createRuleRequest',
+            type: 'object',
+            value: {
+              endUtcDate: '2017-09-30T10:42:40.001Z',
+              optimisationActionName: 'reenable',
+              reportFilterId: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
+              ruleName: 'My rule',
+              startUtcDate: '2016-08-29T09:12:33.001Z',
+            },
+          },
+        },
+      },
+    }),
+).openapi('LinksCreateRuleLink')
+
+const LinksGetRulesExecutionsLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/executions',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetRulesExecutionsLink')
+
+const LinksRunRulesLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/run',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksRunRulesLink')
+
+const RuleListLinksSchema = z
+  .object({
+    create: LinksCreateRuleLinkSchema,
+    history: LinksGetRulesExecutionsLinkSchema,
+    run: LinksRunRulesLinkSchema,
+    self: LinksGetRulesLinkSchema,
+  })
+  .openapi({
+    description: 'Links to know if the user can create a rule or run all rules',
+    required: ['self', 'create', 'history', 'run'],
+  })
+  .openapi('RuleListLinks')
+
+const RuleSchema: z.ZodType<RuleType> = z
+  .object({
+    actionName: OptimisationActionNameSchema,
+    enabled: z.boolean().openapi({ description: 'Is the rule enabled', example: 'true' }),
+    lastExecutionStatus: RuleLastExecutionStatusSchema.exactOptional(),
+    lastExecutionUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The utc date of the last execution',
+        example: '2016-08-29T09:12:33.001Z',
+      }),
+    links: RuleLinksSchema,
+    position: z.int().openapi({ description: 'Rule execution position', example: '1' }),
+    reportFilterId: z
+      .guid()
+      .openapi({
+        description: 'Report filter identifier linked to the rule',
+        example: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
+      }),
+    ruleId: z
+      .guid()
+      .openapi({
+        description: 'The identifier of the rule',
+        example: 'c38006b4-29d0-4b8a-978b-701a0b12d5a8',
+      }),
+    ruleName: z.string().openapi({ description: 'The name of the rule', example: 'My Rule' }),
+    validityEndUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Rule validity end utc date', example: '3016-08-29T09:12:33.001Z' }),
+    validityStartUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Rule validity start utc date',
+        example: '2016-08-29T09:12:33.001Z',
+      }),
+  })
+  .openapi({
+    required: [
+      'ruleId',
+      'ruleName',
+      'actionName',
+      'reportFilterId',
+      'position',
+      'enabled',
+      'links',
+    ],
+  })
+  .openapi('Rule')
+
+type RuleListType = {
+  links: z.infer<typeof RuleListLinksSchema>
+  rules: z.infer<typeof RuleSchema>[]
+}
+
+const OfferFunctionalitySchema = z
+  .object({
+    functionalityCode: z
+      .string()
+      .openapi({ description: 'The functionality code', example: 'MARKETMANA' }),
+    maxValueInteger: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The max value in integer for this feature in this offer',
+        example: '4',
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A description text of this feature',
+        example: 'Marketplace management',
+      }),
+    unlimited: z
+      .boolean()
+      .openapi({ description: 'Is this feature is unlimited for this offer?', example: 'false' }),
+  })
+  .openapi({ required: ['functionalityCode', 'unlimited'] })
+  .openapi('OfferFunctionality')
+
+const StandardOfferLinksSchema = z
+  .object({ getOffer: LinksGetOfferLinkSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('StandardOfferLinks')
+
+type StandardOfferType = {
+  additionalClickPrice?: number
+  currencyCode?: z.infer<typeof BeezUPCommonCurrencyCodeSchema>
+  fixedPrice?: number
+  functionalities?: z.infer<typeof OfferFunctionalitySchema>[]
+  includedClick?: number
+  isMostPopular?: boolean
+  isOldOffer?: boolean
+  links: z.infer<typeof StandardOfferLinksSchema>
+  name: string
+  offerId: number
+  position?: number
+}
+
+const FunctionalitySchema = z
+  .object({
+    code: z.string().openapi({ description: 'The functionality code', example: 'MARKETMANA' }),
+    order: z
+      .int32()
+      .openapi({
+        description: 'UI purpose: Indicate the position of the functionality',
+        example: '1',
+      }),
+  })
+  .openapi({ required: ['code', 'order'] })
+  .openapi('Functionality')
+
+const StandardOffersLinksSchema = z
+  .object({ self: LinksGetStandardOffersLinkSchema })
+  .openapi({ required: ['self'] })
+  .openapi('StandardOffersLinks')
+
+const StandardOfferSchema: z.ZodType<StandardOfferType> = z
+  .object({
+    additionalClickPrice: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The additional click price', example: '0.1234' }),
+    currencyCode: BeezUPCommonCurrencyCodeSchema.exactOptional(),
+    fixedPrice: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The fixed price of the offer', example: '101.42' }),
+    functionalities: z
+      .array(OfferFunctionalitySchema)
+      .exactOptional()
+      .openapi({
+        example: [
+          {
+            functionalityCode: 'MARKETMANA',
+            maxValueInteger: '4',
+            text: 'Marketplace management',
+            unlimited: 'false',
+          },
+        ],
+      }),
+    includedClick: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The included click', example: '1200' }),
+    isMostPopular: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'UI purpose. Is the offer is the most popular', example: 'true' }),
+    isOldOffer: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Is an old offer', example: 'false' }),
+    links: StandardOfferLinksSchema,
+    name: z.string().openapi({ description: 'The offer name', example: 'Wonder offer' }),
+    offerId: z.int32().openapi({ description: 'The offer Id', example: '1234' }),
+    position: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'UI purpose. The position of the offer', example: '1' }),
+  })
+  .openapi({ required: ['offerId', 'name', 'links'] })
+  .openapi('StandardOffer')
+
+type StandardOffersType = {
+  functionalities: z.infer<typeof FunctionalitySchema>[]
+  links: z.infer<typeof StandardOffersLinksSchema>
+  offers: z.infer<typeof StandardOfferSchema>[]
+}
+
+const StoreCountryIsoCodeAlpha3Schema = z
+  .string()
+  .openapi({
+    description: 'The country iso code alpha 3 based on the list of values /user/lov/StoreCountry',
+    example: 'DEU',
+    'x-lov': 'StoreCountry',
+  })
+  .openapi('StoreCountryIsoCodeAlpha3')
+
+const LinksDeleteStoreLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
+        method: 'DELETE',
+      },
+    }),
+).openapi('LinksDeleteStoreLink')
+
+const LinksGetStoreLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetStoreLink')
+
+const LinksShareStoreLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares',
+        method: 'POST',
+        parameters: { email: { in: 'body', required: true, type: 'string' } },
+      },
+    }),
+).openapi('LinksShareStoreLink')
+
+const LinksGetStoreSharesLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetStoreSharesLink')
+
+const LinksUpdateStoreLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
+        method: 'PATCH',
+      },
+    }),
+).openapi('LinksUpdateStoreLink')
+
+const StoreLinksSchema = z
+  .object({
+    deleteStore: LinksDeleteStoreLinkSchema.exactOptional(),
+    self: LinksGetStoreLinkSchema.exactOptional(),
+    share: LinksShareStoreLinkSchema.exactOptional(),
+    shares: LinksGetStoreSharesLinkSchema.exactOptional(),
+    updateStore: LinksUpdateStoreLinkSchema.exactOptional(),
+  })
+  .openapi({ description: 'The action links for this store', required: [] })
+  .openapi('StoreLinks')
+
+const StoreNameSchema = z
+  .string()
+  .openapi({ description: 'The store name. Must be unique.', example: 'My Store' })
+  .openapi('StoreName')
+
+const StoreSectorSchema = z
+  .string()
+  .openapi({
+    description: "The store's sector based on the list of values /user/lov/ParamSector",
+    example: 'ANIMALERIE',
+    'x-lov': 'ParamSector',
+  })
+  .openapi('StoreSector')
+
+const StoreSectorsSchema = z
+  .array(StoreSectorSchema)
+  .openapi({
+    description: "The store's sectors based on the list of values /user/lov/ParamSector",
+    example: ['ANIMALERIE', 'AUTOMOTO'],
+  })
+  .openapi('StoreSectors')
+
+const StoreStatusSchema = z
+  .enum(['Active', 'SystemBlocked', 'UserBlocked'])
+  .openapi({
+    description:
+      'The store status\n* Active:  When the store is active\n* SystemBlocked:  When the store is blocked by the system\n* UserBlocked: When the store is blocked on GO not on the system\n',
+    example: 'Active',
+  })
+  .openapi('StoreStatus')
+
+const StoreUrlSchema = z
+  .string()
+  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
+  .openapi({ description: 'The url of your store', example: 'http://www.mystore.com' })
+  .openapi('StoreUrl')
+
+const StoreUserRoleSchema = z
+  .enum(['Owner', 'User'])
+  .openapi({
+    description:
+      'Indicates the role can have a user on a store.\n* Owner: Indicates that you are the owner of this store\n* User: Indicates that you are a simple user on this store\n',
+    example: 'User',
+  })
+  .openapi('StoreUserRole')
+
+type StoreType = {
+  countryIsoCodeAlpha3: z.infer<typeof StoreCountryIsoCodeAlpha3Schema>
+  creationUtcDate: string
+  currencyCode: z.infer<typeof BeezUPCommonCurrencyCodeSchema>
+  goVersion: number
+  isTest: boolean
+  links: z.infer<typeof StoreLinksSchema>
+  name: z.infer<typeof StoreNameSchema>
+  offerId: z.infer<typeof OfferIdSchema>
+  offerName: string
+  ownerUserId: string
+  sectors: z.infer<typeof StoreSectorsSchema>
+  shareCount: number
+  status: z.infer<typeof StoreStatusSchema>
+  storeId: z.infer<typeof BeezUPCommonStoreIdSchema>
+  url: z.infer<typeof StoreUrlSchema>
+  userRole: z.infer<typeof StoreUserRoleSchema>
+}
+
+const AlertIdSchema = z
+  .int32()
+  .openapi({ description: 'Alert identifier', example: '8' })
+  .openapi('AlertId')
+
+const AlertNameSchema = z
+  .string()
+  .openapi({ description: 'The alert name', example: 'NoImportSinceXDays' })
+  .openapi('AlertName')
+
+const AlertEnabledSchema = z
+  .boolean()
+  .openapi({ description: 'Is the alert enable ?', example: 'true' })
+  .openapi('AlertEnabled')
+
+const LinksSaveStoreAlertsLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/alerts',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksSaveStoreAlertsLink')
+
+const StoreAlertLinksSchema = z
+  .object({ save: LinksSaveStoreAlertsLinkSchema.exactOptional() })
+  .openapi({ description: 'The different actions you can make on this alert', required: [] })
+  .openapi('StoreAlertLinks')
+
+const AlertPropertyIdSchema = z
+  .int32()
+  .openapi({ description: 'The property identifier of the alert', example: '2' })
+  .openapi('AlertPropertyId')
+
+const AlertPropertyValueSchema = z
+  .string()
+  .openapi({ description: 'The property value', example: '2' })
+  .openapi('AlertPropertyValue')
+
+const StoreAlertPropertySchema = z
+  .object({ propertyId: AlertPropertyIdSchema, propertyValue: AlertPropertyValueSchema })
+  .openapi({ required: ['propertyId', 'propertyValue'] })
+  .openapi('StoreAlertProperty')
+
+const StoreAlertPropertyInfoSchema = StoreAlertPropertySchema.and(
+  z
+    .object({
+      propertyName: z
+        .string()
+        .openapi({ description: 'The property name of the alert', example: 'NbDays' }),
+      propertyValidationExpression: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The regular expression related to the alert property',
+          example: '\\b0*([1-9]|[12][0-9]|30)\\b',
+        }),
+    })
+    .openapi({ required: ['propertyId', 'propertyName', 'propertyValue'] }),
+).openapi('StoreAlertPropertyInfo')
+
+type StoreAlertType = {
+  alertId: z.infer<typeof AlertIdSchema>
+  alertName: z.infer<typeof AlertNameSchema>
+  enabled: z.infer<typeof AlertEnabledSchema>
+  links: z.infer<typeof StoreAlertLinksSchema>
+  properties?: z.infer<typeof StoreAlertPropertyInfoSchema>[]
+}
+
+const StoreAlertSchema: z.ZodType<StoreAlertType> = z
+  .object({
+    alertId: AlertIdSchema,
+    alertName: AlertNameSchema,
+    enabled: AlertEnabledSchema,
+    links: StoreAlertLinksSchema,
+    properties: z
+      .array(StoreAlertPropertyInfoSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The current configuration properties of the alert',
+        example: [
+          {
+            propertyId: '2',
+            propertyValidationExpression: '\\b0*([1-9]|[12][0-9]|30)\\b',
+            propertyValue: '2',
+          },
+        ],
+      }),
+  })
+  .openapi({ required: ['links', 'alertId', 'alertName', 'enabled'] })
+  .openapi('StoreAlert')
+
+type StoreAlertsType = { alerts?: z.infer<typeof StoreAlertSchema>[] }
+
+const LinksCreateStoreLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/customer/stores', method: 'POST' } }),
+).openapi('LinksCreateStoreLink')
+
+const StoreListLinksSchema = z
+  .object({
+    createStore: LinksCreateStoreLinkSchema.exactOptional(),
+    self: LinksGetStoresLinkSchema.exactOptional(),
+  })
+  .openapi({ description: 'The action links you can do globally on stores', required: [] })
+  .openapi('StoreListLinks')
+
+const StoreSchema: z.ZodType<StoreType> = z
+  .object({
+    countryIsoCodeAlpha3: StoreCountryIsoCodeAlpha3Schema,
+    creationUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The creation date of the store', example: '2017-04-01T22:30:00Z' }),
+    currencyCode: BeezUPCommonCurrencyCodeSchema,
+    goVersion: z.int32().openapi({ description: 'The version of GO to use', example: '2' }),
+    isTest: z.boolean().openapi({ description: 'Is the store a test or a production store' }),
+    links: StoreLinksSchema,
+    name: StoreNameSchema,
+    offerId: OfferIdSchema,
+    offerName: z.string().openapi({ description: 'The offer Name', example: 'Premium' }),
+    ownerUserId: z
+      .guid()
+      .openapi({
+        description: 'The user id of the owner of the store',
+        example: '00000000-0000-0000-0000-000000000000',
+      }),
+    sectors: StoreSectorsSchema,
+    shareCount: z
+      .int()
+      .openapi({ description: 'The share count related to this store', example: '5' }),
+    status: StoreStatusSchema,
+    storeId: BeezUPCommonStoreIdSchema,
+    url: StoreUrlSchema,
+    userRole: StoreUserRoleSchema,
+  })
+  .openapi({
+    required: [
+      'storeId',
+      'name',
+      'url',
+      'countryIsoCodeAlpha3',
+      'currencyCode',
+      'userRole',
+      'status',
+      'ownerUserId',
+      'shareCount',
+      'creationUtcDate',
+      'sectors',
+      'goVersion',
+      'links',
+      'offerId',
+      'offerName',
+      'isTest',
+    ],
+  })
+  .openapi('Store')
+
+type StoreListType = {
+  links: z.infer<typeof StoreListLinksSchema>
+  stores: z.infer<typeof StoreSchema>[]
+}
+
+const LinksDeleteStoreShareLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares/277596c1-a5a9-4cce-9f34-b5906451a98f',
+        method: 'DELETE',
+      },
+    }),
+).openapi('LinksDeleteStoreShareLink')
+
+const StoreShareLinksSchema = z
+  .object({ deleteShare: LinksDeleteStoreShareLinkSchema.exactOptional() })
+  .openapi({ description: 'The different actions you can make on this store share', required: [] })
+  .openapi('StoreShareLinks')
+
+type StoreShareType = {
+  links: z.infer<typeof StoreShareLinksSchema>
+  userId: z.infer<typeof BeezUPCommonUserIdSchema>
+  userRole: z.infer<typeof StoreUserRoleSchema>
+}
+
+const StoreSharesLinksSchema = z
+  .object({
+    self: LinksGetStoreSharesLinkSchema.exactOptional(),
+    share: LinksShareStoreLinkSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('StoreSharesLinks')
+
+const StoreShareSchema: z.ZodType<StoreShareType> = z
+  .object({
+    links: StoreShareLinksSchema,
+    userId: BeezUPCommonUserIdSchema,
+    userRole: StoreUserRoleSchema,
+  })
+  .openapi({ required: ['userId', 'userRole', 'links'] })
+  .openapi('StoreShare')
+
+type StoreSharesType = {
+  links: z.infer<typeof StoreSharesLinksSchema>
+  shares: z.infer<typeof StoreShareSchema>[]
+}
+
+const ConsumptionAvailabilityStatusSchema = z
+  .enum(['Available', 'Degraded', 'Unavailable'])
+  .openapi({ description: 'The subscription consumption status' })
+  .openapi('ConsumptionAvailabilityStatus')
+
+const HttpUrlSchema = z
+  .string()
+  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
+  .openapi({
+    description:
+      'The URL <a href="https://en.wikipedia.org/wiki/URL">https://en.wikipedia.org/wiki/URL</a>',
+    example: 'http://www.mydomain.com',
+    'x-exclude': true,
+    'x-pattern': '^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$',
+  })
+  .openapi('HttpUrl')
+
+const SubscriptionIdSchema = z
+  .guid()
+  .openapi({ description: 'The identifier of the subscription to the orders for a merchant' })
+  .openapi('SubscriptionId')
+
+const UserErrorMessageArgumentsSchema = z
+  .record(z.string(), z.looseObject({}))
+  .openapi({ description: 'a dictionary string/object', 'x-exclude': true })
+  .openapi('UserErrorMessageArguments')
+
+const CultureNameSchema = z
+  .string()
+  .openapi({
+    description: 'If the error is translated, the culture name will be indicated',
+    example: 'en',
+    'x-exclude': true,
+    'x-lov': 'Go2CultureName',
+  })
+  .openapi('CultureName')
+
+const UserErrorMessageSchema = z
+  .object({
+    arguments: UserErrorMessageArgumentsSchema.exactOptional(),
+    code: ErrorCodeSchema,
+    cultureName: CultureNameSchema.exactOptional(),
+    docUrl: DocUrlSchema.exactOptional(),
+    message: z
+      .string()
+      .openapi({
+        description: 'The error message',
+        example:
+          'There is already an importation in progress: b24d0dd8-a561-478a-9b26-34f573f03527\n',
+      }),
+  })
+  .openapi({ required: ['code', 'message'], 'x-exclude': true })
+  .openapi('UserErrorMessage')
+
+const ErrorResponseMessageSchema = z
+  .object({ errors: z.array(UserErrorMessageSchema) })
+  .openapi({ required: ['errors'], 'x-exclude': true })
+  .openapi('ErrorResponseMessage')
+
+const SubscriptionMerchantApplicationNameSchema = z
+  .string()
+  .openapi({ description: 'The name of your application', example: 'MyApp' })
+  .openapi('SubscriptionMerchantApplicationName')
+
+const SubscriptionMerchantApplicationVersionSchema = z
+  .string()
+  .default('1.0')
+  .openapi({ description: 'The version of your application', example: '1.0' })
+  .openapi('SubscriptionMerchantApplicationVersion')
+
+const EmailSchema = z
+  .email()
+  .regex(/^(.+)@(.+)$/)
+  .openapi({
+    description: 'The email',
+    example: 'paulsimon@mysupercompany.com',
+    'x-exclude': true,
+    'x-pattern': '^(.+)@(.+)$',
+  })
+  .openapi('Email')
+
+const SubscriptionNameSchema = z
+  .string()
+  .openapi({ description: 'The subscription name you want to use', example: 'MySubscriptionName' })
+  .openapi('SubscriptionName')
+
+const SubscriptionStatusSchema = z
+  .enum(['active', 'inactive'])
+  .openapi({ description: 'The status of your subscription', example: 'active' })
+  .openapi('SubscriptionStatus')
+
+const SubscriptionSchema = z
+  .object({
+    consumerHealthStatus: ConsumptionAvailabilityStatusSchema.exactOptional(),
+    consumerLastRequestSentUri: HttpUrlSchema.exactOptional(),
+    consumerUnvailableSinceUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'This date indicates since when the subscription consumer is unavailable',
+      }),
+    id: SubscriptionIdSchema,
+    lastErrorMessage: ErrorResponseMessageSchema.exactOptional(),
+    lastOrderPushedModificationUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'This modification date correspond to the last order pushed by your subscription consumer',
+      }),
+    lastRetryUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The last date we retry to send orders' }),
+    lastSuccessfulOrderPushedUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date of the last pushed order successfully received by your subscription consumer',
+      }),
+    maxRetryCount: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum BeezUP will retry to push orders. When we the retry count will reach maximum retry count, the subscription will be deactivated.',
+      }),
+    merchantApplicationName: SubscriptionMerchantApplicationNameSchema,
+    merchantApplicationVersion: SubscriptionMerchantApplicationVersionSchema,
+    merchantEmailAlert: EmailSchema.exactOptional(),
+    name: SubscriptionNameSchema,
+    nextScheduledRetryUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The next scheduled  date we retry to send orders' }),
+    recoverBeginPeriodOrderLastModificationUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Recover existing orders using the begin period order last modification date. If not set then you will receive new/updated orders in real-time.',
+      }),
+    recoverEndPeriodOrderLastModificationUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Recover existing orders using the begin and the end period order last modification date.\nOtherwise, you will receive new/updated orders in real-time.\n',
+      }),
+    retryCount: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The retry count. When we the retry count will reach maximum retry count, the subscription will be deactivated.',
+      }),
+    status: SubscriptionStatusSchema,
+    targetUrl: HttpUrlSchema,
+  })
+  .openapi({
+    description: 'The subscription definition',
+    required: [
+      'id',
+      'targetUrl',
+      'status',
+      'name',
+      'merchantApplicationName',
+      'merchantApplicationVersion',
+    ],
+  })
+  .openapi('Subscription')
+
+const SubscriptionLinksSchema = z
+  .object({
+    activate: Link3Schema.exactOptional(),
+    deactivate: Link3Schema.exactOptional(),
+    delete: Link3Schema.exactOptional(),
+    reporting: Link3Schema.exactOptional(),
+    retry: Link3Schema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SubscriptionLinks')
+
+type SubscriptionIndexType = z.infer<typeof SubscriptionSchema> & {
+  links?: z.infer<typeof SubscriptionLinksSchema>
+}
+
+const LinksGetUserListOfValuesLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/lov/Go2CultureName', method: 'GET' } }),
+).openapi('LinksGetUserListOfValuesLink')
+
+const UserListOfValuesResponseLinksSchema = z
+  .object({ self: LinksGetUserListOfValuesLinkSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UserListOfValuesResponseLinks')
+
+type UserListOfValuesResponseType = {
+  items?: z.infer<typeof BeezUPCommonListOfValueItemSchema>[]
+  links?: z.infer<typeof UserListOfValuesResponseLinksSchema>
+}
+
+const UserLovLinksSchema = z
+  .record(z.string(), LinksGetUserListOfValuesLinkSchema)
+  .openapi({ description: 'List of lov link. The key is the list name.' })
+  .openapi('UserLovLinks')
+
+const LinksGetUserLovIndexLinkSchema = BeezUPCommonLink3Schema.and(
+  z.any().openapi({ example: { href: '/v2/user/lov', method: 'GET' } }),
+).openapi('LinksGetUserLovIndexLink')
+
+type UserLovIndexLinksType = {
+  lists?: z.infer<typeof UserLovLinksSchema>
+  self?: z.infer<typeof LinksGetUserLovIndexLinkSchema>
+}
+
+const UserLovIndexLinksSchema: z.ZodType<UserLovIndexLinksType> = z
+  .object({
+    lists: UserLovLinksSchema.exactOptional(),
+    self: LinksGetUserLovIndexLinkSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UserLovIndexLinks')
+
+type UserLovIndexType = { links?: z.infer<typeof UserLovIndexLinksSchema> }
+
+const BeezUPCommonProductColumnFilterOperatorNameSchema = z
+  .string()
+  .openapi({
+    description: 'Indicate the operator you want to make on the columnId',
+    'x-lov': 'ProductColumnFilterOperatorName',
+  })
+  .openapi('BeezUPCommonProductColumnFilterOperatorName')
+
+const BeezUPCommonAdditionalProductFiltersValueSchema = z
+  .object({
+    operatorName: BeezUPCommonProductColumnFilterOperatorNameSchema.exactOptional(),
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Must be null if the operator is "IsNull" or "IsNotNull".\nCan contains multiple value in case of "InList" operator. Otherwise a single value is expected.\n',
+        example: ['My value'],
+      }),
+  })
+  .openapi({
+    example: {
+      '672644c7-5bd0-4e25-88c1-1f732bda5e4c': { operatorName: 'GreaterTo', values: ['100'] },
+    },
+    required: [],
+  })
+  .openapi('BeezUPCommonAdditionalProductFiltersValue')
+
+const BeezUPCommonAdditionalProductFiltersSchema = z
+  .record(z.string(), BeezUPCommonAdditionalProductFiltersValueSchema)
+  .openapi({
+    description:
+      "Describe a filter on a product's column.\nThe key is the column identifier of your catalog or a custom column.\n",
+  })
+  .openapi('BeezUPCommonAdditionalProductFilters')
+
+const BeezUPCommonChannelCategoryFilterSchema = z
+  .object({
+    categoryPath: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Indicates on which channel category path you want to make the filter',
+        example: ['Home', 'Bedroom'],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BeezUPCommonChannelCategoryFilter')
+
+const BeezUPCommonPageNumberSchema = z
+  .int32()
+  .min(1)
+  .default(1)
+  .openapi({ description: 'Indicates the page number', example: '1' })
+  .openapi('BeezUPCommonPageNumber')
+
+const BeezUPCommonPageSizeSchema = z
+  .int32()
+  .min(25)
+  .max(100)
+  .default(100)
+  .openapi({ description: 'Indicate the item count per page', example: '100' })
+  .openapi('BeezUPCommonPageSize')
+
+const AccountInfoSchema: z.ZodType<AccountInfoType> = z
+  .object({
+    commercialOwnerEmail: BeezUPCommonEmailSchema.exactOptional(),
+    companyInfo: CompanyInfoSchema.exactOptional(),
+    email: BeezUPCommonEmailSchema,
+    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
+    links: AccountInfoLinksSchema,
+    personalInfo: PersonalInfoSchema.exactOptional(),
+    profilePictureUrl: ProfilePictureUrlSchema.exactOptional(),
+    status: AccountStatusSchema,
+    userId: BeezUPCommonUserIdSchema,
+  })
+  .openapi({ required: ['userId', 'email', 'status', 'links'] })
+  .openapi('AccountInfo')
+
+const AccountPublicationsSchema: z.ZodType<AccountPublicationsType> = z
+  .object({
+    links: AccountPublicationsLinksSchema,
+    publications: z.array(PublicationReportingSchema).openapi({
+      description: 'The recent publications for the requested account',
+      example: [
+        {
+          feeds: [
+            {
+              endUtcDate: '2016-02-13T12:02:00Z',
+              errorMessage: '',
+              exportedProducts: '10142',
+              failedItems: '1',
+              feedType: 'Offers',
+              htmlReportGenerationErrorMessage: '',
+              htmlReportUrl: 'http://www.myreporthtml.com',
+              processingStatus: 'Done',
+              publishedItems: '10041',
+              publishedItemsWithWarning: '123',
+              startUtcDate: '2016-02-13T12:01:11Z',
+              transmittedItems: '10042',
+            },
+            {
+              endUtcDate: '2016-02-13T12:02:00Z',
+              errorMessage: '',
+              exportedProducts: '10142',
+              failedItems: '1',
+              feedType: 'Inventory',
+              htmlReportGenerationErrorMessage: '',
+              htmlReportUrl: 'http://www.myreporthtml.com',
+              processingStatus: 'Done',
+              publishedItems: '10041',
+              publishedItemsWithWarning: '123',
+              startUtcDate: '2016-02-13T12:01:11Z',
+              transmittedItems: '10042',
+            },
+            {
+              errorMessage: '',
+              exportedProducts: '10142',
+              failedItems: '1',
+              feedType: 'Pricing',
+              htmlReportGenerationErrorMessage: '',
+              htmlReportUrl: 'http://www.myreporthtml.com',
+              processingStatus: 'InProgress',
+              publishedItems: '10041',
+              publishedItemsWithWarning: '123',
+              startUtcDate: '2016-02-13T12:01:11Z',
+              transmittedItems: '10042',
+            },
+          ],
+          publicationType: 'PublishOffers',
+        },
+        {
+          feeds: [
+            {
+              endUtcDate: '2016-02-13T12:02:00Z',
+              errorMessage: '',
+              exportedProducts: '10142',
+              failedItems: '1',
+              feedType: 'Product',
+              htmlReportGenerationErrorMessage: '',
+              htmlReportUrl: 'http://www.myreporthtml.com',
+              processingStatus: 'Done',
+              publishedItems: '10041',
+              publishedItemsWithWarning: '123',
+              startUtcDate: '2016-02-13T12:01:11Z',
+              transmittedItems: '10042',
+            },
+            {
+              endUtcDate: '2016-02-13T12:02:00Z',
+              errorMessage: '',
+              exportedProducts: '10142',
+              failedItems: '1',
+              feedType: 'Inventory',
+              htmlReportGenerationErrorMessage: '',
+              htmlReportUrl: 'http://www.myreporthtml.com',
+              processingStatus: 'Done',
+              publishedItems: '10041',
+              publishedItemsWithWarning: '123',
+              startUtcDate: '2016-02-13T12:01:11Z',
+              transmittedItems: '10042',
+            },
+            {
+              errorMessage: '',
+              exportedProducts: '10142',
+              failedItems: '1',
+              feedType: 'Pricing',
+              htmlReportGenerationErrorMessage: '',
+              htmlReportUrl: 'http://www.myreporthtml.com',
+              processingStatus: 'InProgress',
+              publishedItems: '10041',
+              publishedItemsWithWarning: '123',
+              startUtcDate: '2016-02-13T12:01:11Z',
+              transmittedItems: '10042',
+            },
+          ],
+          publicationType: 'PublishProducts',
+        },
+      ],
+    }),
+  })
+  .openapi({
+    description: 'The publication history for an account',
+    required: ['links', 'publications'],
+  })
+  .openapi('AccountPublications')
+
+const AccountSynchronizationSchema = z
+  .object({
+    accountId: AccountIdSchema,
+    completedHarvestSynchroUtcDate: z.iso.datetime({ offset: true }).exactOptional(),
+    marketplaceBusinessCode: BeezUPCommonMarketplaceBusinessCodeSchema,
+    marketplaceTechnicalCode: BeezUPCommonMarketplaceTechnicalCodeSchema,
+  })
+  .openapi({ required: ['accountId', 'marketplaceTechnicalCode', 'marketplaceBusinessCode'] })
+  .openapi('AccountSynchronization')
+
+const AccountSynchronizationListSchema = z
+  .object({ accountSynchronizations: z.array(AccountSynchronizationSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AccountSynchronizationList')
+
+const ActivateSubscriptionRequestSchema = z
+  .object({
+    recoverBeginPeriodOrderLastModificationUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, the date must be in the past the subscription will recover existing orders using the begin period order last modification date. If not set then you will receive new/updated orders in real-time.',
+      }),
+    recoverEndPeriodOrderLastModificationUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'If end period set, first the date must be in the past, the subscription will recover existing orders using the begin and the end period order last modification date. \nIf end period is not set and the begin period is set, then you will recover existing orders from the past using the begin period last modification date and after than you will continue to receive new/updated orders in real-time.\nIf begin/end period are not set then you will receive new/updated orders in real-time.\nREMARK: The begin period is required if the end period is fulfilled.\nREMARK: If the end period is order last modification date is indicated then once we have push all orders to your target url the subscription will be desactivated.',
+      }),
+  })
+  .openapi({ 'x-format': 'Message', required: [] })
+  .openapi('ActivateSubscriptionRequest')
+
+const AddChannelCatalogRequestSchema = z
+  .object({ channelId: BeezUPCommonChannelIdSchema, storeId: BeezUPCommonStoreIdSchema })
+  .openapi({ required: ['channelId', 'storeId'] })
+  .openapi('AddChannelCatalogRequest')
+
+const AnalyticsIndexSchema: z.ZodType<AnalyticsIndexType> = z
+  .object({
+    links: AnalyticsIndexLinksSchema,
+    lovLinks: AnalyticsIndexLovLinksSchema.exactOptional(),
+    stores: z.array(AnalyticsStoreIndexSchema),
+  })
+  .openapi({ description: 'The Analytics API operation index.', required: ['links', 'stores'] })
+  .openapi('AnalyticsIndex')
+
+const ApiCredentialSchema = z
+  .object({
+    primaryToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The primary token to be used in the next call in the user scope API',
+        example: '3b22980d8d1143c6ba7adf4e55b9a153',
+      }),
+    productName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The product name related to this credential', example: 'UserAPI' }),
+    secondaryToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The secondary token. Could be usefull if you want to share your access with someone else.',
+        example: '162ae17fd52044c38cce3388ea5b0c91',
+      }),
+  })
+  .openapi({ description: 'Your api credential', required: [] })
+  .openapi('ApiCredential')
+
+const ApiCredentialsSchema = z
+  .object({
+    credentials: z
+      .array(ApiCredentialSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Your API credential list',
+        example: [
+          {
+            primaryToken: '3b22980d8d1143c6ba7adf4e55b9a153',
+            productName: 'UserApi',
+            secondaryToken: '162ae17fd52044c38cce3388ea5b0c91',
+          },
+        ],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiCredentials')
+
+const CompressionFormatStrategySchema = z
+  .enum(['None', 'Zip', 'TarGz', 'Gzip', 'Bzip2', 'Rar'])
+  .openapi({ description: 'Indicate the compression type', example: 'None' })
+  .openapi('CompressionFormatStrategy')
+
+const CredentialSchema = z
+  .object({
+    password: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The password', example: 'MyPassword' }),
+    userName: z.string().openapi({ description: 'The user name', example: 'MyLogin' }),
+  })
+  .openapi({ description: 'Provides the credentials', required: ['userName'] })
+  .openapi('Credential')
+
+const DownloadCatalogStrategySchema = z
+  .enum(['SimpleUri', 'FtpLatest', 'Sftp', 'SftpLatest', 'Ftps', 'FtpsLatest', 'Local'])
+  .openapi({
+    description: 'Indicate the download strategy (simple uri, ftps, ftplatest file, etc...)',
+    example: 'SimpleUri',
+  })
+  .openapi('DownloadCatalogStrategy')
+
+const InputFileFetchConfigurationSchema = z
+  .object({
+    compressedRelativePath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicate the relative path in the compressed file',
+        example: 'folder/file.xxx',
+      }),
+    compressionFormatStrategy: CompressionFormatStrategySchema.exactOptional(),
+    credential: CredentialSchema.exactOptional(),
+    downloadCatalogStrategy: DownloadCatalogStrategySchema,
+    downloadTimeout: z
+      .int32()
+      .default(30)
+      .exactOptional()
+      .openapi({ description: 'Indicate the download time out in second', example: '360' }),
+    uri: z
+      .string()
+      .openapi({
+        description: 'Indicate the Uri of the file. (http, https, ftp, ftps, sftp are allowed)',
+        example: 'http://www.mywebsite.com/mycatalog.csv',
+      }),
+  })
+  .openapi({
+    description: 'Describe the way to download the file',
+    required: ['uri', 'downloadCatalogStrategy'],
+  })
+  .openapi('InputFileFetchConfiguration')
+
+const CsvSeparatorSchema = z
+  .string()
+  .default(';')
+  .openapi({
+    description: 'Indicate the separator of the values in the CSV file. Generally ";"',
+    example: ';',
+  })
+  .openapi('CsvSeparator')
+
+const InputFileReadCsvConfigurationSchema = z
+  .object({
+    csvSeparator: CsvSeparatorSchema,
+    csvTextQualifier: z
+      .string()
+      .default('"')
+      .exactOptional()
+      .openapi({
+        description: 'Indicate the text qualifier of the CSV file. Generally the value is "',
+        example: '"',
+      }),
+    hasHeaderRecord: z
+      .boolean()
+      .default(true)
+      .openapi({
+        description: 'Indicate if the csv file contains the column name at the first row',
+        example: 'true',
+      }),
+    ignoreHeaderRecord: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description: 'Indicate if the importation should not use the csv column name from the file',
+        example: 'true',
+      }),
+  })
+  .openapi({
+    description: 'The CSV file description',
+    required: ['hasHeaderRecord', 'ignoreHeaderRecord', 'csvSeparator'],
+  })
+  .openapi('InputFileReadCsvConfiguration')
+
+const FileFormatStrategySchema = z
+  .enum(['Unknown', 'Csv', 'Xml', 'Json'])
+  .openapi({ description: 'CSV or XML', example: 'Csv' })
+  .openapi('FileFormatStrategy')
+
+const InputFileReadXmlConfigurationSchema = z
+  .object({
+    flattenXmlChildElements: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicate if the children xml nodes should be flatten with there parent to take in account the sub node values.',
+        example: 'true',
+      }),
+    useXmlAttributes: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicate if the importation should take in account the attribute in the xml nodes.',
+        example: 'true',
+      }),
+  })
+  .openapi({
+    description: 'The XML file description',
+    required: ['useXmlAttributes', 'flattenXmlChildElements'],
+  })
+  .openapi('InputFileReadXmlConfiguration')
+
+const InputFileReadConfigurationSchema = z
+  .object({
+    csvFileReadProperties: InputFileReadCsvConfigurationSchema.exactOptional(),
+    cultureName: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        description:
+          'The culture name of the file.  (i.e. fr-FR). If null then Invariant culture will be used.',
+        example: 'fr-FR',
+      }),
+    encodingTypeName: z
+      .string()
+      .default('UTF-8')
+      .exactOptional()
+      .openapi({ description: 'The encoding type. UTF-8 by default.', example: 'UTF-8' }),
+    format: FileFormatStrategySchema,
+    xmlFileReadProperties: InputFileReadXmlConfigurationSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Describe how to read the file. If FileFormatStrategy is CSV, csvFileReadProperties is required. Otherwise the xmlFileReadProperties is required.\n',
+    required: ['format'],
+  })
+  .openapi('InputFileReadConfiguration')
+
+const InputFileConfigurationSchema = z
+  .object({
+    fetch: InputFileFetchConfigurationSchema,
+    fileNumber: z
+      .int32()
+      .min(1)
+      .openapi({ description: 'The file number starting by 1', example: '1' }),
+    read: InputFileReadConfigurationSchema,
+  })
+  .openapi({
+    description: 'Describe how to get and read a file',
+    required: ['fileNumber', 'fetch', 'read'],
+  })
+  .openapi('InputFileConfiguration')
+
+const InputConfigurationSchema = z
+  .object({
+    files: z
+      .array(InputFileConfigurationSchema)
+      .min(1)
+      .openapi({ description: 'The list of files to get and read' }),
+    transformFileUrl: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'Can be null. Use to transform multiple files with an XSLT file.',
+        example: 'http://beezupblob.com/Mytransformation.xslt',
+      }),
+  })
+  .openapi({ description: 'Describe the input configuration', required: ['files'] })
+  .openapi('InputConfiguration')
+
+const SchedulingTypeSchema = z
+  .enum(['Schedule', 'Interval'])
+  .default('Interval')
+  .openapi({
+    description:
+      'Indicate the scheduling type. Schedule or Interval. We recommand you to use interval for a better reporting.',
+    example: 'Schedule',
+  })
+  .openapi('SchedulingType')
+
+const AutoImportConfigurationSchema = z
+  .object({
+    duplicateProductConfiguration: DuplicateProductValueConfigurationSchema,
+    input: InputConfigurationSchema,
+    inputConfiguredByUserId: BeezUPCommonUserIdSchema,
+    pauseStatusChangedByUserId: BeezUPCommonUserIdSchema.exactOptional(),
+    pauseStatusChangedUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Indicate when the pause status has changed in UTC date.',
+        example: '2017-04-01T13:21:42Z',
+      }),
+    paused: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description: 'Indicate if the auto import is in pause or not.',
+        example: 'false',
+      }),
+    scheduledByUserId: BeezUPCommonUserIdSchema.exactOptional(),
+    schedulingLocalTimeZoneName: z
+      .string()
+      .default('Romance Standard Time')
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicate the time zone name of the scheduling. If the scheduling type is "Schedule"',
+        example: 'Romance Standard Time',
+      }),
+    schedulingType: SchedulingTypeSchema,
+    schedulingValue: z
+      .array(z.string())
+      .min(1)
+      .openapi({
+        description:
+          'Indicate the scheduling value. If the scheduling type is Interval then the value will be a duration otherwise the values will be the time.',
+        example: ['21:00:00', '23:00:00', '08:30:00'],
+      }),
+  })
+  .openapi({
+    required: [
+      'input',
+      'inputConfiguredByUserId',
+      'schedulingType',
+      'schedulingValue',
+      'paused',
+      'duplicateProductConfiguration',
+    ],
+  })
+  .openapi('AutoImportConfiguration')
+
+const LinksAutoPauseAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/pause',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksAutoPauseAutoImportLink')
+
+const LinksAutoResumeAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/resume',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksAutoResumeAutoImportLink')
+
+const LinksAutoScheduleAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/scheduling/schedules',
+        method: 'POST',
+        parameters: {
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'scheduleAutoImportRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksAutoScheduleAutoImportLink')
+
+const LinksAutoConfigureAutoImportIntervalLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/scheduling/interval',
+        method: 'POST',
+        parameters: {
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'configureAutoImportIntervalRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksAutoConfigureAutoImportIntervalLink')
+
+const LinksAutoStartAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/start',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksAutoStartAutoImportLink')
+
+const AutoImportConfigurationLinksSchema = z
+  .object({
+    activate: LinksImportationActivateAutoImportLinkSchema.exactOptional(),
+    pause: LinksAutoPauseAutoImportLinkSchema.exactOptional(),
+    resume: LinksAutoResumeAutoImportLinkSchema.exactOptional(),
+    schedule: LinksAutoScheduleAutoImportLinkSchema.exactOptional(),
+    scheduleInterval: LinksAutoConfigureAutoImportIntervalLinkSchema.exactOptional(),
+    self: LinksAutoGetAutoImportConfigurationLinkSchema,
+    start: LinksAutoStartAutoImportLinkSchema.exactOptional(),
+  })
+  .openapi({ required: ['self'] })
+  .openapi('AutoImportConfigurationLinks')
+
+const AutomaticTransitionInfoListSchema: z.ZodType<AutomaticTransitionInfoListType> = z
+  .object({
+    automaticTransitionInfos: z.array(AutomaticTransitionInfoSchema).exactOptional(),
+    links: AutomaticTransitionInfoListLinksSchema,
+  })
+  .openapi({ required: ['links'] })
+  .openapi('AutomaticTransitionInfoList')
+
+const OrderIdentifierSchema = z
+  .object({
+    accountId: AccountIdSchema,
+    beezUPOrderId: BeezUPOrderIdSchema,
+    marketplaceTechnicalCode: BeezUPCommonMarketplaceTechnicalCodeSchema,
+  })
+  .openapi({ required: ['marketplaceTechnicalCode', 'accountId', 'beezUPOrderId'] })
+  .openapi('OrderIdentifier')
+
+const OrderOperationResponseSchema = z
+  .object({
+    errors: z
+      .array(BeezUPCommonUserErrorMessageSchema)
+      .exactOptional()
+      .openapi({ description: 'The error list' }),
+    order: OrderIdentifierSchema,
+    status: z
+      .int()
+      .openapi({
+        description: 'Indicates the http status corresponding to the individual operation',
+        example: '204',
+      }),
+    success: z
+      .boolean()
+      .openapi({ description: 'Indicates if the operation succeed or not', example: 'true' }),
+  })
+  .openapi({
+    description: 'The response given by the batch operation for an order',
+    required: ['order', 'success', 'status'],
+  })
+  .openapi('OrderOperationResponse')
+
+const BatchOrderOperationResponseSchema = z
+  .object({ operations: z.array(OrderOperationResponseSchema) })
+  .openapi({ description: 'The response given by the batch operation', required: ['operations'] })
+  .openapi('BatchOrderOperationResponse')
+
+const BeezUPColumnConfigurationSchema = z
+  .object({
+    beezUPColumnName: BeezUPCommonBeezUPColumnNameSchema,
+    canBeTruncated: CanBeTruncatedSchema.exactOptional(),
+    columnDataType: BeezUPCommonColumnDataTypeSchema.exactOptional(),
+    columnImportance: BeezUPCommonColumnImportanceSchema,
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Describe the BeezUP column',
+        example: 'Use for big text, like description',
+      }),
+    displayGroupName: DisplayGroupNameSchema,
+    unique: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          '/!\\ ONLY AVAILABLE ON CATALOG COLUMN NOT ON CUSTOM COLUMNS!!\r\nIf true, an error happen at the second occurence of the same value for this column\r\nThis information will be used during the importation process and later for mapping proposal',
+        example: 'false',
+      }),
+  })
+  .openapi({
+    description: 'Describe a BeezUP column',
+    required: ['beezUPColumnName', 'columnImportance', 'displayGroupName'],
+  })
+  .openapi('BeezUPColumnConfiguration')
+
+const BeezUPMarketplaceAccountIdSchema = z
+  .int32()
+  .openapi({
+    description:
+      'The marketplace account identifier in BeezUP. This account identifier is based on your api settings.',
+    example: '1234',
+  })
+  .openapi('BeezUPMarketplaceAccountId')
+
+const BeezUPMarketplaceBusinessCodeSchema = z
+  .string()
+  .openapi({
+    description:
+      'In an marketplace technical code like CDiscount you can have several marketplaces like GO SPORT, etc. We identify them by a business code.',
+    example: 'GOSPORT',
+    'x-lov': 'MarketplaceBusinessCode',
+  })
+  .openapi('BeezUPMarketplaceBusinessCode')
+
+const BeezUPMarketplaceTechnicalCodeSchema = z
+  .string()
+  .openapi({
+    description: 'The technical code of the marketplace.',
+    example: 'Amazon',
+    'x-lov': 'MarketplaceTechnicalCode',
+  })
+  .openapi('BeezUPMarketplaceTechnicalCode')
+
+const BeezUPOrderUUIDSchema = z
+  .string()
+  .openapi({ description: 'beezUPOrderUUID' })
+  .openapi('BeezUPOrderUUID')
+
+const BillingPeriodListSchema: z.ZodType<BillingPeriodListType> = z
+  .object({
+    billingPeriods: z
+      .array(BillingPeriodSchema)
+      .openapi({
+        description: 'The billing period list',
+        example: [{ billingPeriodInMonth: '12', discountPercentage: '20' }],
+      }),
+    links: BillingPeriodListLinksSchema,
+  })
+  .openapi({ required: ['links', 'billingPeriods'] })
+  .openapi('BillingPeriodList')
+
+const CardVerificationCodeSchema = z
+  .string()
+  .openapi({ description: 'Card Verification Code', example: '123' })
+  .openapi('CardVerificationCode')
+
+const CatalogColumnListSchema: z.ZodType<CatalogColumnListType> = z
+  .object({ catalogColumns: z.array(CatalogColumnSchema) })
+  .openapi({ required: ['catalogColumns'] })
+  .openapi('CatalogColumnList')
+
+const CatalogIndexSchema: z.ZodType<CatalogIndexType> = z
+  .object({
+    links: CatalogIndexLinksSchema,
+    lovLinks: CatalogIndexLOVLinksSchema,
+    storeLinks: CatalogStoreIndexListSchema.exactOptional(),
+  })
+  .openapi({ required: ['links', 'lovLinks'] })
+  .openapi('CatalogIndex')
+
+const CategorySchema = z
+  .object({
+    categoryId: BeezUPCommonCatalogCategoryIdSchema.exactOptional(),
+    categoryPath: BeezUPCommonCatalogCategoryPathSchema,
+    selfProductCount: z
+      .int32()
+      .openapi({ description: 'The product count related to this category', example: '101' }),
+    totalProductCount: z
+      .int32()
+      .openapi({
+        description: 'The total product count related to this category and his sub categories',
+        example: '101',
+      }),
+  })
+  .openapi({
+    description: 'The catalog category',
+    required: ['categoryPath', 'totalProductCount', 'selfProductCount'],
+  })
+  .openapi('Category')
+
+const CategoryListSchema = z
+  .object({ categories: z.array(CategorySchema).openapi({ description: 'The category list' }) })
+  .openapi({ description: 'The object which contains the category list', required: ['categories'] })
+  .openapi('CategoryList')
+
+const EncryptedBlocklyExpressionSchema = z
+  .string()
+  .openapi({
+    description: 'The encrypted XML Blockly representation of the expression',
+    example: 'apokpoa,opz,sixsoisiosnoisn',
+  })
+  .openapi('EncryptedBlocklyExpression')
+
+const EncryptedExpressionSchema = z
+  .string()
+  .openapi({
+    description: 'The encrypted excel expression of the column',
+    example: 'uziushdczaniodnndonisodndsiondsoidsndoin',
+  })
+  .openapi('EncryptedExpression')
+
+const ChangeCustomColumnExpressionRequestSchema = z
+  .object({
+    encryptedBlocklyExpression: EncryptedBlocklyExpressionSchema,
+    encryptedExpression: EncryptedExpressionSchema,
+  })
+  .openapi({
+    description: 'The request message to change the custom column expression',
+    required: ['encryptedExpression', 'encryptedBlocklyExpression'],
+  })
+  .openapi('ChangeCustomColumnExpressionRequest')
+
+const ChangeCustomColumnRequestSchema = z
+  .object({
+    encryptedBlocklyExpression: EncryptedBlocklyExpressionSchema,
+    encryptedExpression: EncryptedExpressionSchema,
+    userColumName: UserColumNameSchema,
+  })
+  .openapi({
+    description: 'The message request to change a custom column expression an user name',
+    required: ['encryptedExpression', 'encryptedBlocklyExpression', 'userColumName'],
+  })
+  .openapi('ChangeCustomColumnRequest')
+
+const ChangeEmailRequestSchema = z
+  .object({ newEmail: BeezUPCommonEmailSchema })
+  .openapi({ required: ['newEmail'] })
+  .openapi('ChangeEmailRequest')
+
+const ChangeOrderRequestSchema = z
+  .record(z.string(), z.string())
+  .openapi({
+    description:
+      'All properties with the prefix order_ are translated in the list of values /user/lov#OrderMetaInfoPosted',
+    example: {
+      order_Shipping_CarrierName: 'La poste',
+      order_Shipping_EstimatedDeliveryDate: '2014-09-24T09:58:00Z',
+      order_Shipping_FulfillmentDate: '2014-09-23T09:58:00Z',
+      order_Shipping_ShipperTrackingNumber: '1H01845163783',
+      order_Shipping_ShippingUrl: 'https://trackingpackage.com?number=1H01845163783',
+    },
+  })
+  .openapi('ChangeOrderRequest')
+
+const OrderIdentifierWithETagSchema = OrderIdentifierSchema.and(
+  z
+    .object({ etag: EtagSchema })
+    .openapi({ required: ['marketplaceTechnicalCode', 'accountId', 'beezUPOrderId', 'etag'] }),
+).openapi('OrderIdentifierWithETag')
+
+const ChangeOrderListRequestItemSchema = z
+  .object({
+    changeOrderRequest: ChangeOrderRequestSchema.exactOptional(),
+    order: OrderIdentifierWithETagSchema,
+  })
+  .openapi({
+    description: 'Contains the order identifier and the change order request',
+    required: ['order'],
+  })
+  .openapi('ChangeOrderListRequestItem')
+
+const ChangeOrderListRequestSchema = z
+  .object({
+    changeOrders: z
+      .array(ChangeOrderListRequestItemSchema)
+      .openapi({ description: 'The change order operations' }),
+  })
+  .openapi({
+    description: 'Contains all change order operations you want to make.  (max 100 items per call)',
+    required: ['changeOrders'],
+  })
+  .openapi('ChangeOrderListRequest')
+
+const ChangeOrderListRequestItemV2Schema = z
+  .object({
+    changeOrderRequest: ChangeOrderRequestSchema.exactOptional(),
+    order: OrderIdentifierSchema,
+  })
+  .openapi({
+    description: 'Contains the order identifier and the change order request',
+    required: ['order'],
+  })
+  .openapi('ChangeOrderListRequestItemV2')
+
+const ChangeOrderListRequestV2Schema = z
+  .object({
+    changeOrders: z
+      .array(ChangeOrderListRequestItemV2Schema)
+      .openapi({ description: 'The change order operations' }),
+  })
+  .openapi({
+    description: 'Contains all change order operations you want to make.  (max 100 items per call)',
+    required: ['changeOrders'],
+  })
+  .openapi('ChangeOrderListRequestV2')
+
+const ExecutionUUIDSchema = z
+  .uuid()
+  .openapi({
+    description: 'The execution identifier',
+    example: '8D4176FA78D5A7Fffa91e9edc694ec5858be9a1b109507c',
+  })
+  .openapi('ExecutionUUID')
+
+const ChangeOrderReportingSchema = z
+  .object({
+    changeOrderType: BusinessOperationTypeSchema.exactOptional(),
+    creationUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The creation UTC date of the execution',
+        example: '2017-04-01T13:10:03Z',
+      }),
+    details: z.record(z.string(), z.looseObject({})).exactOptional(),
+    errorMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The error message during the execution',
+        example: 'This is an error message',
+      }),
+    executionUUID: ExecutionUUIDSchema.exactOptional(),
+    ipAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The IP address who request this operation', example: '127.0.0.1' }),
+    lastUpdateUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The last update UTC date of the execution',
+        example: '2017-04-01T13:10:05Z',
+      }),
+    processingStatus: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The processing status of the execution', example: 'Done' }),
+    sourceType: SourceTypeSchema.exactOptional(),
+    sourceUserId: BeezUPCommonUserIdSchema.exactOptional(),
+    sourceUserName: z.string().exactOptional().openapi({ example: 'Guillaume Tell' }),
+    testMode: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'This operation was a test', example: 'false' }),
+  })
+  .openapi({ description: 'The reporting related to a change order operation', required: [] })
+  .openapi('ChangeOrderReporting')
+
+const ChangePasswordRequestSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .openapi({
+        description:
+          'Your new password. Which must respect the same constraints as the user registeration',
+      }),
+    oldPassword: z.string().openapi({ description: 'Your current password' }),
+  })
+  .openapi({ required: ['oldPassword', 'newPassword'] })
+  .openapi('ChangePasswordRequest')
+
+const ChangeUserColumnNameRequestSchema = z
+  .object({ userColumName: UserColumNameSchema })
+  .openapi({
+    description: 'The message request for the change user column name',
+    required: ['userColumName'],
+  })
+  .openapi('ChangeUserColumnNameRequest')
+
+const ChannelCatalogCategoryConfigurationSchema = z
+  .object({
+    autoMapNewSubCategories: z
+      .boolean()
+      .openapi({
+        description:
+          'Great feature! In case of mapping to parent catalog category, you can ask to automatically map new sub catalog category in the next importation to this channel category path.',
+        example: 'true',
+      }),
+    catalogCategoryPath: BeezUPCommonCatalogCategoryPathSchema,
+    channelCategoryPath: BeezUPCommonChannelCategoryPathSchema.exactOptional(),
+    costValue: ChannelCatalogCategoryCostValueSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Represent a mapping between a catalog category path and a channel category path.\nThe cost on this mapping can be applied.\n',
+    required: ['autoMapNewSubCategories', 'catalogCategoryPath'],
+  })
+  .openapi('ChannelCatalogCategoryConfiguration')
+
+const ChannelCatalogCategoryConfigurationListSchema: z.ZodType<ChannelCatalogCategoryConfigurationListType> =
+  z
+    .object({
+      channelCatalogCategoryConfigurations: z.array(ChannelCatalogCategoryConfigurationInfoSchema),
+      costStatus: CostStatusSchema,
+      links: ChannelCatalogCategoryMappingsLinksSchema,
+      mappingStatus: MappingStatusSchema,
+    })
+    .openapi({
+      required: ['links', 'channelCatalogCategoryConfigurations', 'mappingStatus', 'costStatus'],
+    })
+    .openapi('ChannelCatalogCategoryConfigurationList')
+
+const ChannelCatalogColumnMappingListSchema = z
+  .array(ChannelCatalogColumnMappingSchema)
+  .openapi({ description: 'The column mapping list between a channel and a catalog' })
+  .openapi('ChannelCatalogColumnMappingList')
+
+const ChannelCatalogExportCacheInfoResponseSchema: z.ZodType<ChannelCatalogExportCacheInfoResponseType> =
+  z
+    .object({
+      cacheInfo: ChannelCatalogExportCacheInfoSchema,
+      links: ChannelCatalogExportCacheInfoResponseLinksSchema,
+    })
+    .openapi({ required: ['cacheInfo', 'links'] })
+    .openapi('ChannelCatalogExportCacheInfoResponse')
+
+const ChannelCatalogExportationHistorySchema: z.ZodType<ChannelCatalogExportationHistoryType> = z
+  .object({
+    exportations: z.array(ChannelCatalogExportationReportingSchema),
+    links: ChannelCatalogExportationHistoryLinksSchema,
+    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
+  })
+  .openapi({ required: ['links', 'exportations'] })
+  .openapi('ChannelCatalogExportationHistory')
+
+const ChannelCatalogListSchema: z.ZodType<ChannelCatalogListType> = z
+  .object({
+    channelCatalogs: z
+      .record(z.string(), ChannelCatalogSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The channel catalog list. The key is the channel catalog identifier',
+      }),
+    links: ChannelCatalogListLinksSchema.exactOptional(),
+    lovLinks: ChannelCatalogListLovLinksSchema.exactOptional(),
+  })
+  .openapi({ description: 'This is the index of the channel catalog API', required: [] })
+  .openapi('ChannelCatalogList')
+
+const ChannelCatalogMarketplaceBooleanPropertySchema = ChannelCatalogMarketplacePropertySchema.and(
+  z
+    .object({
+      default: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Indicate the default values of the property', example: 'false' }),
+    })
+    .openapi({ required: [] }),
+).openapi('ChannelCatalogMarketplaceBooleanProperty')
+
+const ChannelCatalogMarketplaceBooleanSettingSchema = ChannelCatalogMarketplaceSettingSchema.and(
+  z
+    .object({
+      value: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Channel catalog marketplace property values', example: 'false' }),
+    })
+    .openapi({ required: [] }),
+).openapi('ChannelCatalogMarketplaceBooleanSetting')
+
+const ChannelCatalogMarketplaceIntegerPropertySchema = ChannelCatalogMarketplacePropertySchema.and(
+  z
+    .object({
+      default: z
+        .array(z.int())
+        .exactOptional()
+        .openapi({ description: 'Indicate the default values of the property', example: ['201'] }),
+    })
+    .openapi({ required: [] }),
+).openapi('ChannelCatalogMarketplaceIntegerProperty')
+
+const ChannelCatalogMarketplaceIntegerSettingSchema = ChannelCatalogMarketplaceSettingSchema.and(
+  z
+    .object({
+      values: z
+        .array(z.int())
+        .exactOptional()
+        .openapi({ description: 'Channel catalog marketplace property values', example: ['201'] }),
+    })
+    .openapi({ required: [] }),
+).openapi('ChannelCatalogMarketplaceIntegerSetting')
+
+const ChannelCatalogMarketplaceNumberPropertySchema = ChannelCatalogMarketplacePropertySchema.and(
+  z
+    .object({
+      default: z
+        .array(z.number())
+        .exactOptional()
+        .openapi({
+          description: 'Indicate the default values of the property',
+          example: ['201.69'],
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('ChannelCatalogMarketplaceNumberProperty')
+
+const ChannelCatalogMarketplaceNumberSettingSchema = ChannelCatalogMarketplaceSettingSchema.and(
+  z
+    .object({
+      values: z
+        .array(z.number())
+        .exactOptional()
+        .openapi({
+          description: 'Channel catalog marketplace property values',
+          example: ['201.69'],
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('ChannelCatalogMarketplaceNumberSetting')
+
+const ChannelCatalogMarketplacePropertiesSchema: z.ZodType<ChannelCatalogMarketplacePropertiesType> =
+  z
+    .object({
+      info: BeezUPCommonInfoSummariesSchema.exactOptional(),
+      links: ChannelCatalogMarketplacePropertiesLinksSchema,
+      propertyGroups: z.array(ChannelCatalogMarketplacePropertyGroupSchema).openapi({
+        description: 'The groups settings with constraints',
+        example: [
+          {
+            name: 'AccountInformations',
+            position: '1',
+            properties: [
+              {
+                name: 'EbayToken',
+                position: '1',
+                readOnly: 'true',
+                values: [
+                  'AgAAAA**AQAAAA**aAAAAA**2VFhVg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6AElISgCJaLpwWdj6x9nY+seQ**OEsBAA**AAMAAA**jzsVAMwj1dPBsyCEp0Fuj/toSBrfZF2JpKKDrrXIirMzgvgbsyxnA2h1wl7WjFD+TfdCmaBq3CAFLOog/433G5gsse1DLTT6uXFajdiHnPVfnL7QtKIpQEIwL8ZO5Tx1dGl0XQLsU7knPwbGHn5X6Z3JzXrCGvvpw2+MIzDNhasYlqPfOEr8Lct5dcsIIdhXl/qgrzALe5++v76/XjaXvP6eic3uCWBEXBiXC1uisjEtOqaNIPkFaiICBaXsQUzVZdM68bQatBg5bwf6hxvqOyNJRw4pttGStovcXXjL+aszw7ejbxLv1lJ6qeTMj5oRwTPl0AzBAejcY+DTBrLEmgdzrvWHLvMOa1ijGOGzVodBoDGimiqadCPQpAVZr0e7HvQIVbOlbmKpuCUFJ4RPCv0NxpkCm1/nxZWeS9H8gd/SfLf9Chgd115dcKzgxFBoSh7myJcw+MRM7szPQ2Pwv980dTRyHvbI8XR4OieYvXmU4H7Nl51N8B3qkjYFkdcp6J06eqs4dO68lDNdWZfXHkjwI3dY6umDUp4y82IdQl8IykPty3/DZfUAfqafgiAwMHZvXjewp5HhPjDi2zgf+5EcDlvf6rNMzjsghjdWUQi4WldDk+LXgkos6jswIQaNPdpW1D4KyPYWtGYknx0Xzzuc6WmBoVwGFalgMvCWWI9Gs2w6PG5GqB9zm1Fnr3svtPbNYPQ6q3VQpkKL2SWQXy383O1cp6ZMLI9GwZe0FnrqCxb/wc4XJUVw2RoR3qiX',
+                ],
+              },
+              {
+                name: 'PayPalEmailAddress',
+                pattern:
+                  '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])',
+                position: '2',
+                required: true,
+                'x-pattern':
+                  '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])',
+              },
+            ],
+          },
+          {
+            displayGroupCode: 'AnnounceTitle',
+            displayGroupPosition: '2',
+            properties: [
+              { name: 'Postalcode', position: '1', required: true },
+              {
+                lovLink: { href: '/v2/user/lov/Country_eBay' },
+                lovRequired: 'true',
+                name: 'Country',
+                position: '2',
+                required: true,
+              },
+              {
+                lovLink: { href: '/v2/user/lov/ReturnsWithinDuration_eBay' },
+                lovRequired: 'true',
+                name: 'ReturnsWithinOption',
+                position: '3',
+                required: true,
+              },
+              {
+                lovLink: { href: '/v2/user/lov/FRA_ShippingService_eBay' },
+                lovRequired: 'true',
+                name: 'ShippingService',
+                position: '4',
+                required: true,
+              },
+              {
+                lovLink: { href: '/v2/user/lov/Currency_eBay' },
+                lovRequired: 'true',
+                name: 'Currency',
+                position: '5',
+                required: true,
+              },
+              {
+                lovLink: { href: '/v2/user/lov/PaymentMethods_eBay' },
+                lovRequired: 'true',
+                maxItems: 2,
+                minItems: 1,
+                name: 'PaymentMethods',
+                position: '6',
+                required: true,
+              },
+            ],
+          },
+          {
+            displayGroupCode: 'SalesConditions',
+            displayGroupPosition: '3',
+            properties: [
+              {
+                lovLink: { href: '/v2/user/lov/ReturnsAcceptedOption_eBay' },
+                lovRequired: 'true',
+                name: 'ReturnsAcceptedOption',
+                position: '1',
+                required: true,
+              },
+              {
+                lovLink: { href: '/v2/user/lov/ShippingCostPaidByOption_eBay' },
+                lovRequired: 'true',
+                name: 'ShippingCostPaidByOption',
+                position: '2',
+                required: true,
+              },
+              {
+                lovLink: { href: '/v2/user/lov/RefundOption_eBay' },
+                lovRequired: 'true',
+                name: 'RefundOption',
+                position: '3',
+                required: true,
+              },
+              {
+                lovLink: { href: '/v2/user/lov/ReturnsWithinDuration_eBay' },
+                lovRequired: 'true',
+                name: 'ReturnsWithinOption',
+                position: '4',
+                required: true,
+              },
+              { maxLength: 5000, name: 'ReturnDescription', position: '5', required: false },
+            ],
+          },
+          {
+            displayGroupCode: 'HTML',
+            displayGroupPosition: '4',
+            properties: [
+              { maxLength: 50000, name: 'Template_HTML', position: '1', required: false },
+            ],
+          },
+          {
+            displayGroupCode: 'OrdersRetrievalOptions',
+            displayGroupPosition: '5',
+            properties: [
+              {
+                description: 'If true allows to retireve one marketplace country only',
+                name: 'RetrieveOnlyOneCountry',
+                position: '1',
+                required: false,
+                type: 'boolean',
+              },
+            ],
+          },
+        ],
+      }),
+    })
+    .openapi({ required: ['links', 'propertyGroups'] })
+    .openapi('ChannelCatalogMarketplaceProperties')
+
+const ChannelCatalogMarketplaceSettingArraySchema = z
+  .array(ChannelCatalogMarketplaceSettingSchema)
+  .openapi({
+    example: [
+      { name: 'Country', values: ['FR'] },
+      { name: 'Currency', values: ['EUR'] },
+      { name: 'ListingDuration', values: ['GTC'] },
+      { name: 'PaymentMethods', values: ['CCAccepted'] },
+      { name: 'PayPalEmailAddress', values: ['pascal@ixeoline.com'] },
+      { name: 'PostalCode', values: ['69630'] },
+      { name: 'RefundOption', values: ['MoneyBackOrExchange'] },
+      { name: 'ReturnsAcceptedOption', values: ['ReturnsAccepted'] },
+      { name: 'ReturnsWithinOption', values: ['Days_10'] },
+      { name: 'ShippingCostPaidByOption', values: ['Buyer'] },
+      { name: 'ShippingService', values: ['FR_ColiposteColissimo'] },
+    ],
+  })
+  .openapi('ChannelCatalogMarketplaceSettingArray')
+
+const ChannelCatalogMarketplaceSettingsSchema: z.ZodType<ChannelCatalogMarketplaceSettingsType> = z
+  .object({
+    links: ChannelCatalogMarketplaceSettingsLinksSchema,
+    settings: z.array(ChannelCatalogMarketplaceSettingSchema).openapi({
+      example: [
+        { name: 'Country', values: ['FR'] },
+        { name: 'Currency', values: ['EUR'] },
+        { name: 'ListingDuration', values: ['GTC'] },
+        { name: 'PaymentMethods', values: ['CCAccepted'] },
+        { name: 'PayPalEmailAddress', values: ['pascal@ixeoline.com'] },
+        { name: 'PostalCode', values: ['69630'] },
+        { name: 'RefundOption', values: ['MoneyBackOrExchange'] },
+        { name: 'ReturnsAcceptedOption', values: ['ReturnsAccepted'] },
+        { name: 'ReturnsWithinOption', values: ['Days_10'] },
+        { name: 'ShippingCostPaidByOption', values: ['Buyer'] },
+        { name: 'ShippingService', values: ['FR_ColiposteColissimo'] },
+      ],
+    }),
+  })
+  .openapi({
+    description: 'The channel catalog marketplace settings',
+    required: ['links', 'settings'],
+  })
+  .openapi('ChannelCatalogMarketplaceSettings')
+
+const ChannelCatalogMarketplaceStringPropertySchema = ChannelCatalogMarketplacePropertySchema.and(
+  z
+    .object({
+      default: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description: 'Indicate the default values of the property',
+          example: ['My default value'],
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('ChannelCatalogMarketplaceStringProperty')
+
+const ChannelCatalogMarketplaceStringSettingSchema = ChannelCatalogMarketplaceSettingSchema.and(
+  z
+    .object({
+      values: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description: 'Channel catalog marketplace property values',
+          example: ['myemail@mydomain.com'],
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('ChannelCatalogMarketplaceStringSetting')
+
+const ChannelCatalogProductByChannelCatalogRequestSchema = z
+  .object({
+    channelCatalogIds: z
+      .array(BeezUPCommonChannelCatalogIdSchema)
+      .openapi({ description: 'The list of channel catalog identifier' }),
+    productId: BeezUPCommonProductIdSchema,
+    storeId: BeezUPCommonStoreIdSchema,
+  })
+  .openapi({ required: ['storeId', 'productId', 'channelCatalogIds'] })
+  .openapi('ChannelCatalogProductByChannelCatalogRequest')
+
+const ChannelCatalogProductByChannelCatalogResponseSchema: z.ZodType<ChannelCatalogProductByChannelCatalogResponseType> =
+  z
+    .object({
+      channelCatalogs: z
+        .record(z.string(), ChannelCatalogProductInfoSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The channel catalog product by channel catalog. The key is the channel catalog identifier',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('ChannelCatalogProductByChannelCatalogResponse')
+
+const ChannelCatalogProductFiltersSchema = z
+  .object({
+    additionalProductFilters: BeezUPCommonAdditionalProductFiltersSchema.exactOptional(),
+    catalogEans: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The catalog product EAN filter (multiple values)' }),
+    catalogMpns: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The catalog product MPN filter (multiple values)' }),
+    catalogSkus: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The catalog product SKU filter (multiple values)' }),
+    channelEans: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The channel product EAN filter (multiple values)' }),
+    channelMpns: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The channel product MPN filter (multiple values)' }),
+    channelSkus: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The channel product SKU filter (multiple values)' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The product title filter', example: 'Refrigérateur' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ChannelCatalogProductFilters')
+
+const ChannelCatalogProductInfoListSchema: z.ZodType<ChannelCatalogProductInfoListType> = z
+  .object({
+    links: ChannelCatalogProductInfoListLinksSchema,
+    paginationResult: BeezUPCommonPaginationResultSchema,
+    productInfos: z.array(ChannelCatalogProductInfoSchema),
+  })
+  .openapi({
+    description: 'The channel catalog product info list',
+    required: ['paginationResult', 'links', 'productInfos'],
+  })
+  .openapi('ChannelCatalogProductInfoList')
+
+const ChannelCatalogProductsCountersSchema = z
+  .object({
+    disabledProductCountExcludingUncategorized: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Disabled product count EXCLUDING uncategorized products on existing products.',
+        example: '150',
+      }),
+    disabledProductCountIncludingUncategorized: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Disabled product count INCLUDING uncategorized products on existing products.',
+        example: '169',
+      }),
+    excludedProductCountExcludingUncategorizedAndDisabled: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Excluded product count EXCLUDING uncategorized products AND disabled products on existing products.',
+        example: '50',
+      }),
+    excludedProductCountIncludingUncategorizedAndDisabled: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Excluded product count INCLUDING uncategorized products AND disabled products on existing products.',
+        example: '66',
+      }),
+    existingProductCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Imported product count currently in your catalog.',
+        example: '1000',
+      }),
+    uncategorizedProductCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Product count WITHOUT category mapped on existing products.',
+        example: '250',
+      }),
+  })
+  .openapi({
+    description: 'The channel catalog products counters. For each counter you will have a count.',
+    required: [],
+  })
+  .openapi('ChannelCatalogProductsCounters')
+
+const ChannelColumnSchema = z
+  .object({
+    channelColumnDescription: ChannelColumnDescriptionSchema.exactOptional(),
+    channelColumnId: BeezUPCommonChannelColumnIdSchema,
+    channelColumnName: BeezUPCommonChannelColumnNameSchema,
+    configuration: ChannelColumnConfigurationSchema,
+    position: z
+      .int()
+      .openapi({ description: 'The position of the column starting from 1', example: '1' }),
+    restrictedValues: ChannelColumnRestrictedValuesSchema.exactOptional(),
+    showInMapping: ChannelColumnShowInMappingSchema,
+  })
+  .openapi({
+    description: 'The channel column',
+    required: [
+      'channelColumnId',
+      'channelColumnName',
+      'showInMapping',
+      'position',
+      'configuration',
+    ],
+  })
+  .openapi('ChannelColumn')
+
+const ChannelHeaderSchema: z.ZodType<ChannelHeaderType> = z
+  .object({
+    channelId: BeezUPCommonChannelIdSchema,
+    channelLogoUrl: BeezUPCommonHttpUrlSchema,
+    channelName: BeezUPCommonChannelNameSchema,
+    links: ChannelHeaderLinksSchema,
+    types: z
+      .array(z.string())
+      .openapi({ description: 'The type list related to a channel', example: ['Marketplace'] }),
+  })
+  .openapi({
+    description: 'The available channel',
+    required: ['channelId', 'channelName', 'channelLogoUrl', 'links', 'types'],
+  })
+  .openapi('ChannelHeader')
+
+const ChannelInfoSchema = z
+  .object({
+    beezUPOffer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicate the BeezUP offer', example: 'First month free' }),
+    channelDescription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicae a description to the channel',
+        example:
+          'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia dolorum, animi voluptatibus maiores, assumenda maxime illum, labore quae quas ducimus laudantium provident veritatis doloremque dignissimos eum. Error magni illum autem.',
+      }),
+    channelId: BeezUPCommonChannelIdSchema,
+    channelLogoUrl: BeezUPCommonHttpUrlSchema.exactOptional(),
+    channelName: BeezUPCommonChannelNameSchema,
+    details: z
+      .object({
+        businessModel: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The business model of the channel', example: 'CPC' }),
+        category: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The channel category', example: 'NULL' }),
+        channelType: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The channel type', example: 'Comparator' }),
+        costs: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: "The cost's description of the channel",
+            example: 'CPC variation from 0.10€ to 0.20€',
+          }),
+        homeUrl: z
+          .url()
+          .exactOptional()
+          .openapi({
+            description: 'The home url of the channel',
+            example: 'http://www.achetezfacile.com',
+          }),
+        subscriptionLink: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The subscription link to the channel',
+            example: 'By Email at : stephanie.gregis@m6.fr\n',
+          }),
+        trackingType: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The tracking type', example: 'Redirect' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    keyNumbers: z
+      .object({
+        categories: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The estimated category count of the channel', example: 'NC' }),
+        products: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The estimated product count of the channel', example: '1M' }),
+        stores: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The estimated store count of the channel', example: '3000' }),
+        viewsPerMonth: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The estimated view count per month of the channel',
+            example: '3M',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    salesContact: z
+      .object({
+        email: z
+          .email()
+          .exactOptional()
+          .openapi({
+            description: 'Indicate the sales contact email',
+            example: 'stephanie.gregis@m6.fr',
+          }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Indicate the BeezUP offer', example: 'Stéphanie Gregis' }),
+        phoneNumber: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The sales contact phone number',
+            example: '0033 6 08 87 85 45',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    technicalContact: z
+      .object({
+        email: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The technical contact email', example: 'pierre.guedon@m6.fr' }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The technical contact name', example: 'Pierre Guédon' }),
+        phoneNumber: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The technical contact phone number', example: 'NC' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['channelId', 'channelName'] })
+  .openapi('ChannelInfo')
+
+const ChannelRootCategorySchema: z.ZodType<ChannelRootCategoryType> = z
+  .object({ firstLevelCategories: z.array(ChannelFirstLevelCategorySchema) })
+  .openapi({
+    description: 'Get channel first level category list',
+    required: ['firstLevelCategories'],
+  })
+  .openapi('ChannelRootCategory')
+
+const ClearMerchantOrderInfoListRequestSchema = z
+  .object({
+    orders: z
+      .array(OrderIdentifierSchema)
+      .min(1)
+      .max(100)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .openapi({
+        example: [
+          { accountId: '1234', beezUPOrderId: '0', marketplaceTechnicalCode: 'Amazon' },
+          { accountId: '5678', beezUPOrderId: '0', marketplaceTechnicalCode: 'Amazon' },
+          { accountId: '9876', beezUPOrderId: '0', marketplaceTechnicalCode: 'Ebay' },
+        ],
+      }),
+  })
+  .openapi({ required: ['orders'] })
+  .openapi('ClearMerchantOrderInfoListRequest')
+
+const ComputeExpressionRequestSchema = z
+  .object({ encryptedExpression: EncryptedExpressionSchema, productValues: ProductValuesSchema })
+  .openapi({
+    description:
+      'The request message to compute an expression based on the provided product values',
+    required: ['productValues', 'encryptedExpression'],
+  })
+  .openapi('ComputeExpressionRequest')
+
+const ConfigureAutoImportIntervalRequestSchema = z
+  .object({
+    interval: z
+      .string()
+      .regex(
+        /(00:1[5-9])|(00:[2-5][0-9])|(0[1-9]:[0-5][0-9])|(1[0-9]:[0-5][0-9])|(2[0-3]:[0-5][0-9])/,
+      )
+      .openapi({
+        description: 'Indicate the interval in time span. (i.e. "04:00:00" for every 4 hours)',
+        example: '04:00:00',
+      }),
+  })
+  .openapi({
+    description: 'The message request to configure the auto import interval',
+    required: ['interval'],
+  })
+  .openapi('ConfigureAutoImportIntervalRequest')
+
+const ConfigureAutomaticTransitionRequestSchema = z
+  .object({ automaticTransitions: z.array(AutomaticTransitionSchema) })
+  .openapi({ required: ['automaticTransitions'] })
+  .openapi('ConfigureAutomaticTransitionRequest')
+
+const ConfigureCatalogColumnCatalogRequestSchema: z.ZodType<ConfigureCatalogColumnCatalogRequestType> =
+  z
+    .object({ catalogColumn: CatalogColumnSchema })
+    .openapi({
+      description: 'The request to configure a catalog column',
+      required: ['catalogColumn'],
+    })
+    .openapi('ConfigureCatalogColumnCatalogRequest')
+
+const ConfigureCategoryRequestSchema = z
+  .object({
+    channelCatalogCategories: z.array(ChannelCatalogCategoryConfigurationSchema),
+    overrideSubCategoryMappings: z
+      .boolean()
+      .openapi({
+        description:
+          'Great feature! In case of mapping to parent channel category, you can ask to override the mapping of all sub channel category to this catalog category path',
+        example: 'true',
+      }),
+  })
+  .openapi({
+    description:
+      'The request message to make a mapping between catalog category path and a channel category path',
+    required: ['overrideSubCategoryMappings', 'channelCatalogCategories'],
+  })
+  .openapi('ConfigureCategoryRequest')
+
+const ContractsSchema: z.ZodType<ContractsType> = z
+  .object({
+    current: CurrentContractInfoSchema.exactOptional(),
+    links: ContractsLinksSchema,
+    next: NextContractInfoSchema.exactOptional(),
+  })
+  .openapi({ required: ['links'] })
+  .openapi('Contracts')
+
+const CopyOptimisationRequestSchema = z
+  .object({
+    channelIdSource: BeezUPCommonChannelIdSchema,
+    channelIdTarget: BeezUPCommonChannelIdSchema,
+    keepExistingOptimisation: z
+      .boolean()
+      .openapi({ description: 'If true the existing optimisation will be kept', example: 'false' }),
+  })
+  .openapi({
+    description: 'Copy the optimisation between 2 channels',
+    required: ['channelIdSource', 'channelIdTarget', 'keepExistingOptimisation'],
+  })
+  .openapi('CopyOptimisationRequest')
+
+const CopyOptimisationResponseSchema = z
+  .object({
+    catalogProductCount: z
+      .int()
+      .openapi({ description: 'The catalog product count', example: '101' }),
+    channel: BeezUPCommonChannelBasicInfoSchema,
+    enabledProductCount: z
+      .int()
+      .openapi({ description: 'The enabled product count', example: '101' }),
+  })
+  .openapi({
+    description: 'Products optimisatisation copied',
+    required: ['channel', 'catalogProductCount', 'enabledProductCount'],
+  })
+  .openapi('CopyOptimisationResponse')
+
+const CouponDiscountCodeSchema = z
+  .string()
+  .openapi({ description: 'The coupon discount code', example: 'I-LOVE-BEEZUP' })
+  .openapi('CouponDiscountCode')
+
+const OfferRequestSchema = z
+  .object({
+    billingPeriodInMonth: BillingPeriodInMonthSchema,
+    couponDiscountCode: CouponDiscountCodeSchema.exactOptional(),
+    couponOfferCode: CouponOfferCodeSchema.exactOptional(),
+    offerId: OfferIdSchema,
+    storeCount: StoreCountSchema,
+  })
+  .openapi({ required: ['offerId', 'storeCount', 'billingPeriodInMonth'] })
+  .openapi('OfferRequest')
+
+const CreateContractSchema = OfferRequestSchema.openapi('CreateContract')
+
+const CreateContractResponseSchema: z.ZodType<CreateContractResponseType> = z
+  .object({
+    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
+    links: CreateContractResponseLinksSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateContractResponse')
+
+const CreateCustomColumnRequestSchema = z
+  .object({
+    displayGroupName: DisplayGroupNameSchema,
+    encryptedBlocklyExpression: EncryptedBlocklyExpressionSchema,
+    encryptedExpression: EncryptedExpressionSchema,
+    userColumnName: UserColumNameSchema,
+  })
+  .openapi({
+    description: 'The request message to create a custom column',
+    required: [
+      'userColumnName',
+      'encryptedExpression',
+      'encryptedBlocklyExpression',
+      'displayGroupName',
+    ],
+  })
+  .openapi('CreateCustomColumnRequest')
+
+const CreateRuleRequestSchema = z
+  .object({
+    endUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The end validity utc date of the rule',
+        example: '2017-09-30T10:42:40.001Z',
+      }),
+    optimisationActionName: OptimisationActionNameSchema,
+    reportFilterId: z
+      .guid()
+      .openapi({
+        description: 'The report filter to use for the rule',
+        example: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
+      }),
+    ruleName: z.string().openapi({ description: 'The name of the rule', example: 'My rule' }),
+    startUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The start validity utc date of the rule',
+        example: '2016-08-29T09:12:33.001Z',
+      }),
+  })
+  .openapi({ required: ['optimisationActionName', 'ruleName', 'reportFilterId'] })
+  .openapi('CreateRuleRequest')
+
+const CreateStoreRequestSchema = z
+  .object({
+    countryIsoCodeAlpha3: StoreCountryIsoCodeAlpha3Schema,
+    id: BeezUPCommonStoreIdSchema.exactOptional(),
+    name: StoreNameSchema,
+    sectors: StoreSectorsSchema,
+    url: StoreUrlSchema,
+  })
+  .openapi({
+    description:
+      'The request to create a store. The store identifier is optional, if null it will be automatically computed.',
+    required: ['name', 'url', 'countryIsoCodeAlpha3', 'sectors'],
+  })
+  .openapi('CreateStoreRequest')
+
+const CreateSubscriptionRequestSchema = z
+  .object({
+    merchantApplicationName: SubscriptionMerchantApplicationNameSchema,
+    merchantApplicationVersion: SubscriptionMerchantApplicationVersionSchema,
+    merchantEmailAlert: EmailSchema.exactOptional(),
+    name: SubscriptionNameSchema,
+    targetUrl: HttpUrlSchema,
+  })
+  .openapi({
+    required: ['targetUrl', 'name', 'merchantApplicationName', 'merchantApplicationVersion'],
+    'x-format': 'Message',
+  })
+  .openapi('CreateSubscriptionRequest')
+
+const CreditCardInfoSchema = z
+  .object({
+    cardNumber: CardNumberSchema,
+    cardVerificationCode: CardVerificationCodeSchema,
+    expirationMonth: ExpirationMonthSchema,
+    expirationYear: ExpirationYearSchema,
+  })
+  .openapi({
+    required: ['cardNumber', 'cardVerificationCode', 'expirationMonth', 'expirationYear'],
+  })
+  .openapi('CreditCardInfo')
+
+const CreditCardInfoResponseSchema: z.ZodType<CreditCardInfoResponseType> = z
+  .object({
+    creditCardInfo: CreditCardInfoWithCardTypeSchema.exactOptional(),
+    currentPaymentMethod: PaymentMethodSchema,
+    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
+    links: CreditCardInfoResponseLinksSchema,
+  })
+  .openapi({ required: ['links', 'currentPaymentMethod'] })
+  .openapi('CreditCardInfoResponse')
+
+const CurrencyCodeSchema = z
+  .string()
+  .regex(/^[A-Z]{3}$/)
+  .openapi({
+    description:
+      'The currency code <a href="https://en.wikipedia.org/wiki/ISO_4217">(ISO 4217)</a>\n',
+    example: 'EUR',
+    'x-exclude': true,
+    'x-pattern': '^[A-Z]{3}$',
+  })
+  .openapi('CurrencyCode')
+
+const CustomColumnListSchema: z.ZodType<CustomColumnListType> = z
+  .object({ customColumns: z.array(CustomColumnSchema), links: CustomColumnListLinksSchema })
+  .openapi({ required: ['links', 'customColumns'] })
+  .openapi('CustomColumnList')
+
+const CustomerIndexSchema: z.ZodType<CustomerIndexType> = z
+  .object({ links: CustomerIndexLinksSchema, lovLinks: CustomerIndexLovLinksSchema })
+  .openapi({ description: 'The index of the customer API', required: ['links', 'lovLinks'] })
+  .openapi('CustomerIndex')
+
+const DateSearchTypeSchema = z
+  .enum(['Modification', 'Purchase', 'MarketPlaceModification'])
+  .default('Modification')
+  .openapi({ description: 'Indicates on which date you want to make the filter' })
+  .openapi('DateSearchType')
+
+const DetectedCatalogColumnListSchema: z.ZodType<DetectedCatalogColumnListType> = z
+  .object({
+    detectedCatalogColumns: z
+      .array(DetectedCatalogColumnSchema)
+      .exactOptional()
+      .openapi({ description: 'Contains all deteted catalog columns' }),
+    links: DetectedCatalogColumnListLinksSchema,
+  })
+  .openapi({ description: 'The list of detected catalog column', required: ['links'] })
+  .openapi('DetectedCatalogColumnList')
+
+const ErrorResponseMessagePaymentRequiredSchema: z.ZodType<ErrorResponseMessagePaymentRequiredType> =
+  BeezUPCommonErrorResponseMessageSchema.and(
+    z
+      .object({ links: ErrorResponseMessagePaymentRequiredLinksSchema })
+      .openapi({ required: ['errors', 'links'] }),
+  ).openapi('ErrorResponseMessagePaymentRequired')
+
+const ExchangedMessagesItemSchema = z
+  .object({
+    operationName: z.string(),
+    requestUri: z.url().exactOptional(),
+    requestUtcDate: z.iso.datetime({ offset: true }).exactOptional(),
+    responseUri: z.url().exactOptional(),
+    responseUtcDate: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: ['operationName'] })
+  .openapi('ExchangedMessagesItem')
+
+const ExclusionFiltersResponseSchema: z.ZodType<ExclusionFiltersResponseType> = z
+  .object({
+    exclusionFilters: ExclusionFiltersSchema.exactOptional(),
+    links: ExclusionFiltersResponseLinksSchema,
+  })
+  .openapi({ required: ['links'] })
+  .openapi('ExclusionFiltersResponse')
+
+const ExportOrderListFormatSchema = z
+  .literal('csv')
+  .default('csv')
+  .openapi({ description: 'The type of the file to export', example: 'csv' })
+  .openapi('ExportOrderListFormat')
+
+const InvoiceAvailabilityTypeSchema = z
+  .string()
+  .openapi({
+    description: 'Indicates on which invoice availability to filter',
+    example: 'All',
+    'x-lov': 'InvoiceAvailabilityType',
+  })
+  .openapi('InvoiceAvailabilityType')
+
+const OrderMerchantInfoSynchronizationStatusSchema = z
+  .string()
+  .openapi({
+    description: 'Indicates on which order merchant info synchronization status to filter',
+    example: 'All',
+    'x-lov': 'OrderMerchantInfoSynchronizationStatus',
+  })
+  .openapi('OrderMerchantInfoSynchronizationStatus')
+
+const OrderListRequestWithoutPaginationSchema = z
+  .object({
+    accountIds: z
+      .array(AccountIdSchema)
+      .exactOptional()
+      .openapi({ description: 'Account Id list', example: ['12345'] }),
+    beezUPOrderStatuses: z
+      .array(BeezUPOrderStatusSchema)
+      .exactOptional()
+      .openapi({ example: ['InProgress'] }),
+    beginPeriodUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The begin period you want to make the search. \\\nThe period MUST not be greater than 62 days.\nThe begin period MUST be lower than the end period.\n',
+        example: '2017-03-01T13:10:01Z',
+      }),
+    dateSearchType: DateSearchTypeSchema.exactOptional(),
+    endPeriodUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The end period of you search. \\\nThe period MUST not be greater than 62 days. \\\nThe end period MUST be greater than the begin period.\nThe end period MUST be lower to the current date.\n',
+        example: '2017-04-01T13:10:01Z',
+      }),
+    invoiceAvailabilityType: InvoiceAvailabilityTypeSchema.exactOptional(),
+    marketplaceBusinessCodes: z
+      .array(BeezUPCommonMarketplaceBusinessCodeSchema)
+      .exactOptional()
+      .openapi({ example: ['PRICEMINISTER'] }),
+    marketplaceOrderIds: z
+      .array(MarketplaceOrderIdSchema)
+      .exactOptional()
+      .openapi({ example: ['AmazonOrderId1234'] }),
+    marketplaceTechnicalCodes: z
+      .array(BeezUPCommonMarketplaceTechnicalCodeSchema)
+      .exactOptional()
+      .openapi({ example: ['PriceMinister'] }),
+    orderMerchantInfoSynchronizationStatus:
+      OrderMerchantInfoSynchronizationStatusSchema.exactOptional(),
+    order_Buyer_Name: OrderBuyerNameSchema.exactOptional(),
+    order_MerchantOrderIds: z
+      .array(OrderMerchantOrderIdSchema)
+      .exactOptional()
+      .openapi({ description: 'Merchant order id list', example: ['MyOrderId1234'] }),
+    storeIds: z
+      .array(BeezUPCommonStoreIdSchema)
+      .exactOptional()
+      .openapi({ description: 'Store Id list' }),
+  })
+  .openapi({ required: ['beginPeriodUtcDate', 'endPeriodUtcDate'] })
+  .openapi('OrderListRequestWithoutPagination')
+
+const ExportOrderListRequestSchema = z
+  .object({
+    format: ExportOrderListFormatSchema.exactOptional(),
+    orderListRequestWithoutPagination: OrderListRequestWithoutPaginationSchema,
+    storeId: BeezUPCommonStoreIdSchema,
+  })
+  .openapi({
+    description:
+      'The message request to export order list. The store identifier is requested to regroup the exportations.',
+    required: ['storeId', 'orderListRequestWithoutPagination'],
+  })
+  .openapi('ExportOrderListRequest')
+
+const FilterOperatorDataTypeSchema = z
+  .enum(['string', 'number'])
+  .default('string')
+  .openapi({ description: 'Data type of the operator', example: 'string' })
+  .openapi('FilterOperatorDataType')
+
+const FilterOperatorSchema = z
+  .object({
+    expectedChannelColumnDataType: FilterOperatorDataTypeSchema.exactOptional(),
+    expectedValueDataType: FilterOperatorDataTypeSchema.exactOptional(),
+    name: FilterOperatorNameSchema.exactOptional(),
+    valueRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'This operator requires a value', example: 'true' }),
+  })
+  .openapi({ description: 'The filter operator', required: [] })
+  .openapi('FilterOperator')
+
+const FooterContentHtmlSchema = z
+  .string()
+  .max(1000)
+  .openapi({ description: 'Footer Content HTML', 'x-minValueLength': '0' })
+  .openapi('FooterContentHtml')
+
+const FriendCountryIsoCodeAlpha3Schema = z
+  .string()
+  .openapi({
+    description: "Your friend's user country iso code alpha 3",
+    example: 'USA',
+    'x-lov': 'Country',
+  })
+  .openapi('FriendCountryIsoCodeAlpha3')
+
+const FriendEmailSchema = z
+  .email()
+  .regex(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
+  .openapi({ description: "Your friend's user email", example: 'humphray.bogart@yahoo.ma' })
+  .openapi('FriendEmail')
+
+const FriendProfilePictureUrlSchema = z
+  .string()
+  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)
+  .openapi({
+    description: "Your friend's user profile picture url",
+    example:
+      'https://www.biography.com/.image/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTE4MDAzNDEwNDU3MjMyOTEw/humphrey-bogart-9217486-1-402.jpg',
+  })
+  .openapi('FriendProfilePictureUrl')
+
+const FunctionalityRightInfoSchema = z
+  .object({
+    functionalityCode: z
+      .string()
+      .openapi({ description: 'The functionality code', example: 'COMPAMANA' }),
+    maxValueInterger: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The max value for this functionality code considering your rights',
+        example: '10',
+      }),
+    unlimited: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If you can use this functionality unlimitedly', example: 'true' }),
+  })
+  .openapi({
+    description: 'Describe the rights for a functionality',
+    required: ['functionalityCode'],
+  })
+  .openapi('FunctionalityRightInfo')
+
+const MarketplaceAccountIdSchema = z
+  .int()
+  .openapi({ description: 'Marketplace Account Identifier', example: '50' })
+  .openapi('MarketplaceAccountId')
+
+const InvoiceSequenceNumberSchema = z
+  .int()
+  .min(0)
+  .openapi({ description: 'Invoice Sequence Number', example: '879' })
+  .openapi('InvoiceSequenceNumber')
+
+const MarketplaceTechnicalCodeSchema = z
+  .string()
+  .openapi({ description: 'Marketplace Technical Code', example: 'CDISCOUNT' })
+  .openapi('MarketplaceTechnicalCode')
+
+const GenerateBatchOrderInvoiceRequestItemSchema = z
+  .object({
+    accountId: MarketplaceAccountIdSchema,
+    beezUPOrderUUID: BeezUPOrderUUIDSchema,
+    invoiceSequenceNumber: InvoiceSequenceNumberSchema,
+    marketplaceTechnicalCode: MarketplaceTechnicalCodeSchema,
+  })
+  .openapi({
+    required: ['marketplaceTechnicalCode', 'accountId', 'beezUPOrderUUID', 'invoiceSequenceNumber'],
+  })
+  .openapi('GenerateBatchOrderInvoiceRequestItem')
+
+const GenerateBatchOrderInvoiceErrorResponseItemDetailSchema = z
+  .object({
+    errorMessage: UserErrorMessageSchema.exactOptional(),
+    request: GenerateBatchOrderInvoiceRequestItemSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GenerateBatchOrderInvoiceErrorResponseItemDetail')
+
+const GenerateBatchOrderInvoiceErrorResponseItemDetailsSchema = z
+  .array(GenerateBatchOrderInvoiceErrorResponseItemDetailSchema)
+  .openapi('GenerateBatchOrderInvoiceErrorResponseItemDetails')
+
+const GenerateBatchOrderInvoiceErrorResponseItemSchema = z
+  .object({
+    count: z.int(),
+    errorType: z.string(),
+    errors: GenerateBatchOrderInvoiceErrorResponseItemDetailsSchema,
+  })
+  .openapi({ required: ['errorType', 'count', 'errors'] })
+  .openapi('GenerateBatchOrderInvoiceErrorResponseItem')
+
+const GenerateBatchOrderInvoiceRequestSchema = z
+  .array(GenerateBatchOrderInvoiceRequestItemSchema)
+  .openapi('GenerateBatchOrderInvoiceRequest')
+
+const InvoiceLocationSchema = z.string().openapi('InvoiceLocation')
+
+const GenerateOrderInvoiceResponseSchema = z
+  .object({
+    accountId: MarketplaceAccountIdSchema,
+    beezUPOrderUUID: BeezUPOrderUUIDSchema,
+    invoiceLocation: InvoiceLocationSchema.exactOptional(),
+    invoiceSequenceNumber: InvoiceSequenceNumberSchema.exactOptional(),
+    marketplaceTechnicalCode: MarketplaceTechnicalCodeSchema,
+  })
+  .openapi({ required: ['marketplaceTechnicalCode', 'accountId', 'beezUPOrderUUID'] })
+  .openapi('GenerateOrderInvoiceResponse')
+
+const GenerateBatchOrderInvoiceResponseSchema = z
+  .array(GenerateOrderInvoiceResponseSchema)
+  .openapi('GenerateBatchOrderInvoiceResponse')
+
+const GenerateOrderInvoiceRequestSchema = z
+  .object({ invoiceSequenceNumber: InvoiceSequenceNumberSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('GenerateOrderInvoiceRequest')
+
+const ProductSetVisibilityCriteriaLogicTypeSchema = z
+  .enum(['funnel', 'cumulative'])
+  .openapi({
+    description:
+      'Indicate how you want to combine the filters:\n* funnel: You will get the products which meet at least one of the product set criterion. The criteria are applied in the following order:\n  - categorization\n  - exclusion filters\n  - deactivations\n* cumulative: You will get the products which have all the product set criteria\n',
+  })
+  .openapi('ProductSetVisibilityCriteriaLogicType')
+
+const ProductSetVisibilityCriteriaSchema = z
+  .object({
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Search disabled products. If null the filter will not be taken in account.',
+        example: 'false',
+      }),
+    excluded: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Search excluded products by at least an exclusion filter. If null the filter will not be taken in account.',
+        example: 'false',
+      }),
+    exist: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If false, search for products absent from the current catalog. If true, search for products currently in the catalog. If null the filter will not be taken in account.',
+        example: 'true',
+      }),
+    logic: ProductSetVisibilityCriteriaLogicTypeSchema,
+    uncategorized: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Search product WITHOUT category mapped with the channel. If null the filter will not be taken in account.',
+        example: 'false',
+      }),
+  })
+  .openapi({ required: ['logic'] })
+  .openapi('ProductSetVisibilityCriteria')
+
+const GetChannelCatalogProductInfoListRequestSchema = z
+  .object({
+    catalogCategoryFilter: BeezUPCommonCatalogCategoryFilterSchema.exactOptional(),
+    channelCategoryFilter: BeezUPCommonChannelCategoryFilterSchema.exactOptional(),
+    criteria: ProductSetVisibilityCriteriaSchema,
+    overridden: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Search overridden products. If null the filter will not be taken in account.',
+        example: 'true',
+      }),
+    pageNumber: z.int32().min(1).openapi({ example: '1' }),
+    pageSize: z.int32().min(100).openapi({ example: '100' }),
+    productFilters: ChannelCatalogProductFiltersSchema.exactOptional(),
+  })
+  .openapi({ required: ['pageNumber', 'pageSize', 'criteria'] })
+  .openapi('GetChannelCatalogProductInfoListRequest')
+
+const GetImportationProductsReportRequestErrorCodeSchema = z
+  .object({
+    errorCode: ErrorCodeSchema.exactOptional(),
+    userColumnName: UserColumNameSchema.exactOptional(),
+  })
+  .openapi({ description: 'Get Importation Products Report Request Error Codes', required: [] })
+  .openapi('GetImportationProductsReportRequestErrorCode')
+
+const GetImportationProductsReportRequestErrorCodesSchema = z
+  .array(GetImportationProductsReportRequestErrorCodeSchema)
+  .openapi({ description: 'Get Importation Products Report Request Error Codes' })
+  .openapi('GetImportationProductsReportRequestErrorCodes')
+
+const GetImportationProductsReportRequestSchema = z
+  .object({
+    ean: z.string().exactOptional().openapi({ description: 'Filter by EAN (equals)' }),
+    errorCodes: GetImportationProductsReportRequestErrorCodesSchema.exactOptional(),
+    mpn: z.string().exactOptional().openapi({ description: 'Filter by MPN (equals)' }),
+    pageNumber: BeezUPCommonPageNumberSchema,
+    pageSize: BeezUPCommonPageSizeSchema,
+    sku: z.string().exactOptional().openapi({ description: 'Filter by Sku (equals)' }),
+    title: z.string().exactOptional().openapi({ description: 'Filter by Title (StartsWith)' }),
+  })
+  .openapi({
+    description: 'Get Importation Products Report Request',
+    required: ['pageNumber', 'pageSize'],
+  })
+  .openapi('GetImportationProductsReportRequest')
+
+const GetImportationProductsReportResponseSchema: z.ZodType<GetImportationProductsReportResponseType> =
+  z
+    .object({
+      paginationResult: BeezUPCommonPaginationResultSchema,
+      productErrors: ProductErrorsSchema.exactOptional(),
+    })
+    .openapi({
+      description: 'Get Importation Products Report Response',
+      required: ['paginationResult'],
+    })
+    .openapi('GetImportationProductsReportResponse')
+
+const GetImportationReportResponseDiffSchema = z
+  .object({
+    createdCount: z.int(),
+    deletedCount: z.int(),
+    unchangedCount: z.int().exactOptional(),
+    updatedCount: z.int(),
+  })
+  .openapi({ required: ['createdCount', 'updatedCount', 'deletedCount'] })
+  .openapi('GetImportationReportResponseDiff')
+
+const GetImportationReportResponseErrorSchema = z
+  .object({
+    beezUPColumnName: BeezUPCommonBeezUPColumnNameSchema.exactOptional(),
+    errorCode: ErrorCodeSchema,
+    productCount: z.int(),
+    userColumName: UserColumNameSchema,
+  })
+  .openapi({ required: ['errorCode', 'userColumName', 'productCount'] })
+  .openapi('GetImportationReportResponseError')
+
+const GetImportationReportResponseErrorsSchema = z
+  .array(GetImportationReportResponseErrorSchema)
+  .openapi('GetImportationReportResponseErrors')
+
+const GetImportationReportResponseImportationInfoSchema = z
+  .object({
+    beginUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The start date of the importation',
+        example: '2017-04-01T13:01:01Z',
+      }),
+    endUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The start date of the importation',
+        example: '2017-04-01T13:01:01Z',
+      }),
+    inputConfiguration: InputFileConfigurationSchema,
+    userId: BeezUPCommonUserIdSchema,
+  })
+  .openapi({ required: ['beginUtcDate', 'endUtcDate', 'userId', 'inputConfiguration'] })
+  .openapi('GetImportationReportResponseImportationInfo')
+
+const GetImportationReportResponseProductMetricsSchema = z
+  .object({
+    activeCount: z.int(),
+    detectedCount: z.int(),
+    duplicatedCount: z.int(),
+    failedCount: z.int(),
+  })
+  .openapi({ required: ['detectedCount', 'duplicatedCount', 'failedCount', 'activeCount'] })
+  .openapi('GetImportationReportResponseProductMetrics')
+
+const GetImportationReportResponseSchema = z
+  .object({
+    categories: GetImportationReportResponseDiffSchema.exactOptional(),
+    columns: GetImportationReportResponseDiffSchema.exactOptional(),
+    errors: GetImportationReportResponseErrorsSchema,
+    executionId: ExecutionIdSchema,
+    importationInfo: GetImportationReportResponseImportationInfoSchema,
+    productMetrics: GetImportationReportResponseProductMetricsSchema.exactOptional(),
+    products: GetImportationReportResponseDiffSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Get Importation Report Response',
+    required: ['executionId', 'importationInfo', 'errors'],
+  })
+  .openapi('GetImportationReportResponse')
+
+const InvoiceContentHtmlSchema = z
+  .string()
+  .openapi({ description: 'Invoice Content HTML' })
+  .openapi('InvoiceContentHtml')
+
+const GetOrderInvoiceDesignPreviewResponseSchema = z
+  .object({ invoiceHtmlContent: InvoiceContentHtmlSchema })
+  .openapi({ required: ['invoiceHtmlContent'] })
+  .openapi('GetOrderInvoiceDesignPreviewResponse')
+
+const InvoicePrefixSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9#_-]{1,50}$/)
+  .openapi({
+    description:
+      'Invoice Prefix. Can contain 1 to 50 characters, with alphanumeric characters in lowercase uppercase and #, _, -',
+    example: 'TOTO',
+    'x-pattern': '^[a-zA-Z0-9#_-]{1,50}$',
+  })
+  .openapi('InvoicePrefix')
+
+const ProductVATPercentSchema = z
+  .number()
+  .min(0)
+  .max(100)
+  .openapi({ description: 'Product VAT in percent', example: '4.0' })
+  .openapi('ProductVATPercent')
+
+const ShippingVATPercentSchema = z
+  .number()
+  .min(0)
+  .max(100)
+  .openapi({ description: 'Shipping cost VAT in percent', example: '8.0' })
+  .openapi('ShippingVATPercent')
+
+const OrderInvoiceGeneralSettingsSchema = z
+  .object({
+    cultureName: CultureNameSchema,
+    invoicePrefix: InvoicePrefixSchema,
+    invoiceStartingSequenceNumber: InvoiceSequenceNumberSchema,
+    productVATPercent: ProductVATPercentSchema,
+    shippingVATPercent: ShippingVATPercentSchema,
+  })
+  .openapi({
+    description: 'Order Invoice General Settings',
+    required: [
+      'cultureName',
+      'productVATPercent',
+      'shippingVATPercent',
+      'invoicePrefix',
+      'invoiceStartingSequenceNumber',
+    ],
+  })
+  .openapi('OrderInvoiceGeneralSettings')
+
+const GetOrderInvoiceGeneralSettingsResponseSchema = OrderInvoiceGeneralSettingsSchema.and(
+  z
+    .object({ lastInvoiceSequenceNumber: InvoiceSequenceNumberSchema.exactOptional() })
+    .openapi({ required: [] }),
+).openapi('GetOrderInvoiceGeneralSettingsResponse')
+
+const OrderInvoiceUriSchema = z
+  .string()
+  .regex(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.?&\%-=])*\/?$/)
+  .openapi({
+    description: 'order invoice url',
+    example: 'http://www.mydomain.com',
+    'x-exclude': true,
+    'x-pattern': '^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.?&\\%-=])*\\/?$',
+  })
+  .openapi('OrderInvoiceUri')
+
+const GetOrderInvoicePdfFromHtmlInvoiceUrlRequestSchema = z
+  .object({ orderInvoiceUri: OrderInvoiceUriSchema })
+  .openapi({ required: ['orderInvoiceUri'] })
+  .openapi('GetOrderInvoicePdfFromHtmlInvoiceUrlRequest')
+
+const GetProductsRequestSchema = z
+  .object({
+    categoryPath: BeezUPCommonCatalogCategoryPathSchema.exactOptional(),
+    columnIdList: z.array(BeezUPCommonCatalogColumnIdSchema).min(1).max(5).exactOptional(),
+    ean: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Search for product by ean', example: 'MySku123' }),
+    exists: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Search for existing products or not. If null you will received both.',
+        example: 'true',
+      }),
+    mpn: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Search for product by mpn', example: 'MySku123' }),
+    orderByCatalogColumnId: BeezUPCommonCatalogColumnIdSchema.exactOptional(),
+    pageNumber: BeezUPCommonPageNumberSchema,
+    pageSize: BeezUPCommonPageSizeSchema,
+    productIdList: z
+      .array(BeezUPCommonProductIdSchema)
+      .exactOptional()
+      .openapi({ description: 'Filter with a list of product identifier' }),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Search for product by sku', example: 'MySku123' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Search for products containing this title', example: 'Frigo' }),
+    withoutSubCategories: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Do not retrieve sub categories. By default, this value is set to false',
+        example: 'false',
+      }),
+  })
+  .openapi({
+    description: 'The request message to get products based on these filters',
+    required: ['pageNumber', 'pageSize'],
+  })
+  .openapi('GetProductsRequest')
+
+const HarvestOrderReportingSchema = z
+  .object({
+    beezUPForcedStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The marketplace order status forced by BeezUP during the order change oepration. This could happend when there is no status on the marketplace side.',
+        example: 'In_progress_3',
+      }),
+    beezUPStatus: BeezUPOrderStatusSchema.exactOptional(),
+    creationUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The creation UTC date of the execution',
+        example: '2017-04-01T13:10:03Z',
+      }),
+    errorMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The warning message during the execution',
+        example: 'This is an error message',
+      }),
+    executionUUID: ExecutionUUIDSchema.exactOptional(),
+    lastUpdateUtcDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The last update UTC date of the execution',
+        example: '2017-04-01T13:10:05Z',
+      }),
+    marketplaceStatus: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The order marketplace status', example: 'In_progress_3' }),
+    processingStatus: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The processing status of the execution', example: 'Done' }),
+    warningMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The warning message during the execution',
+        example: 'This is a warning',
+      }),
+  })
+  .openapi({ description: 'The reporting related to a harvest order operation', required: [] })
+  .openapi('HarvestOrderReporting')
+
+const HeaderContentHtmlSchema = z
+  .string()
+  .max(1000)
+  .openapi({ description: 'Header Content HTML', 'x-minValueLength': '0' })
+  .openapi('HeaderContentHtml')
+
+const ImportAlreadyInProgressResponseSchema: z.ZodType<ImportAlreadyInProgressResponseType> = z
+  .object({
+    errors: z
+      .array(BeezUPCommonUserErrorMessageSchema)
+      .openapi({ description: 'The error message list' }),
+    links: ImportAlreadyInProgressResponseLinksSchema,
+  })
+  .openapi({ required: ['errors', 'links'] })
+  .openapi('ImportAlreadyInProgressResponse')
+
+const ImportationCustomColumnListSchema: z.ZodType<ImportationCustomColumnListType> = z
+  .object({
+    customColumns: z.array(ImportationCustomColumnSchema),
+    links: CustomColumnListLinksSchema,
+  })
+  .openapi({ required: ['links', 'customColumns'] })
+  .openapi('ImportationCustomColumnList')
+
+const ImportationCustomColumnListLinksSchema = z
+  .object({
+    add: LinksImportationSaveCustomColumnLinkSchema.exactOptional(),
+    self: LinksImportationGetCustomColumnsLinkSchema,
+  })
+  .openapi({ required: ['self'] })
+  .openapi('ImportationCustomColumnListLinks')
+
+const ImportationMonitoringSchema: z.ZodType<ImportationMonitoringType> = z
+  .object({
+    beginUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The start date of the importation',
+        example: '2017-04-01T13:01:01Z',
+      }),
+    errors: z
+      .array(BeezUPCommonUserErrorMessageSchema)
+      .exactOptional()
+      .openapi({ description: 'In case of error a description will be indicated' }),
+    executionId: ExecutionIdSchema,
+    lastUpdateUtcDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The last update of the reporting',
+        example: '2017-04-01T13:10:09Z',
+      }),
+    links: ImportationMonitoringLinksSchema.exactOptional(),
+    steps: z
+      .record(z.string(), z.boolean())
+      .openapi({
+        description:
+          'Contains all steps of the importation process with a boolean. If true the step has been passed, false the step is not complete',
+        example: {
+          isCatalogImportComputeDiffCompleted: 'false',
+          isCatalogImportPrepareReadCompleted: 'false',
+          isCatalogUpdateCompleted: 'false',
+          isSavedInDb: 'false',
+        },
+      }),
+    success: z
+      .boolean()
+      .openapi({
+        description: 'Indicates if the importation was successfully completed or not',
+        example: 'true',
+      }),
+    userId: BeezUPCommonUserIdSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Describe the reporting of the catalog importation',
+    required: ['success', 'executionId', 'lastUpdateUtcDate', 'beginUtcDate', 'steps'],
+  })
+  .openapi('ImportationMonitoring')
+
+const ImportationTechnicalProgressionSchema = z
+  .object({
+    stepsProgression: z
+      .record(z.string(), z.array(z.string()))
+      .exactOptional()
+      .openapi({ description: 'Indicate for each step of the importation the uris to look at' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ImportationTechnicalProgression')
+
+const ImportationsPerStoreResponseSchema: z.ZodType<ImportationsPerStoreResponseType> = z
+  .record(z.string(), ImportationsResponseSchema)
+  .openapi('ImportationsPerStoreResponse')
+
+const InvoiceListSchema: z.ZodType<InvoiceListType> = z
+  .object({
+    invoices: z
+      .array(InvoiceSchema)
+      .openapi({
+        example: [
+          {
+            amount: '101',
+            amountToBePaid: '0',
+            contractId: '7098487a-86f6-4322-b8a5-b67f7363b3e7',
+            currencyCode: 'EUR',
+            dueDate: '2016-05-10',
+            invoiceDate: '2016-05-01',
+            invoiceNumber: 'B1234',
+            invoiceUrl:
+              'https://beezupbilling.blob.core.windows.net/invoicepdf/2000/CustomerUserId_00000000-0000-0000-0000-000000000000/ContractId_00000000-0000-0000-0000-000000000000/2000-01-01_B1234.pdf',
+            paymentStatus: 'Paid',
+          },
+        ],
+      }),
+    links: InvoiceListLinksSchema,
+  })
+  .openapi({ required: ['links', 'invoices'] })
+  .openapi('InvoiceList')
+
+const LastManualImportInputConfigurationSchema = z
+  .object({ input: InputConfigurationSchema })
+  .openapi({ description: 'Last manual import input configuration', required: ['input'] })
+  .openapi('LastManualImportInputConfiguration')
+
+const LegacyTrackingChannelCatalogListSchema: z.ZodType<LegacyTrackingChannelCatalogListType> = z
+  .object({
+    channelCatalogs: z
+      .record(z.string(), LegacyTrackingChannelCatalogSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The channel catalog list. The key is the channel catalog identifier',
+      }),
+    links: LegacyTrackingChannelCatalogListLinksSchema.exactOptional(),
+  })
+  .openapi({ description: 'This is the index of the channel catalog API', required: [] })
+  .openapi('LegacyTrackingChannelCatalogList')
+
+const LinksChangeOrderV3LinkSchema = Link3Schema.and(
+  z
+    .object({
+      rel: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Indicate the relation name related to the link',
+          example: 'self',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .and(
+    z
+      .any()
+      .openapi({
+        example: {
+          href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/ShipOrder',
+          method: 'POST',
+          parameters: {
+            'If-Match': {
+              in: 'header',
+              required: true,
+              type: 'string',
+              value: '"ca071a4580129f932a03971968ffef69"',
+            },
+            request: {
+              in: 'body',
+              properties: {
+                order_Shipping_CarrierName: {
+                  lovLink: { href: '/v2/user/PriceMinisterCarrierName' },
+                  lovRequired: 'true',
+                  required: true,
+                  type: 'string',
+                },
+                order_Shipping_FulfillmentDate: { required: true, type: 'date-time' },
+                order_Shipping_Method: {
+                  lovLink: { href: '/v2/user/ShippingMethod_PriceMinister' },
+                  lovRequired: 'false',
+                  required: true,
+                  type: 'string',
+                },
+                order_Shipping_ShipperTrackingNumber: { required: true, type: 'string' },
+              },
+              schema: 'changeOrderRequest',
+              type: 'object',
+            },
+            testMode: { in: 'query', required: false, type: 'boolean', value: 'false' },
+            userName: { in: 'query', required: true, type: 'string' },
+          },
+          rel: 'ShipOrder',
+          templated: 'true',
+        },
+      }),
+  )
+  .openapi('LinksChangeOrderV3Link')
+
+const LinksClearMerchantOrderInfoListV3LinkSchema = Link3Schema.and(
+  z.any().openapi({ example: { href: '/orders/v3/clearMerchantOrderInfos', method: 'POST' } }),
+).openapi('LinksClearMerchantOrderInfoListV3Link')
+
+const LinksClearMerchantOrderInfoV3LinkSchema = Link3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/clearMerchantOrderInfo',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksClearMerchantOrderInfoV3Link')
+
+const LinksConfigureChannelCatalogExclusionFiltersCopyLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/copy',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksConfigureChannelCatalogExclusionFiltersCopyLink')
+
+const LinksConfigureChannelCatalogProductValueOverrideCopyLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides/copy',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksConfigureChannelCatalogProductValueOverrideCopyLink')
+
+const LinksGetChannelCatalogExclusionFiltersCopyLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/copy',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetChannelCatalogExclusionFiltersCopyLink')
+
+const LinksGetChannelCatalogProductValueOverrideCopyLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides/copy',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetChannelCatalogProductValueOverrideCopyLink')
+
+const LinksGetMarketplaceAccountsSynchronizationV3LinkSchema = Link3Schema.and(
+  z.any().openapi({ example: { href: '/orders/v3/status', method: 'GET' } }),
+).openapi('LinksGetMarketplaceAccountsSynchronizationV3Link')
+
+const LinksGetOrderHistoryV3LinkSchema = Link3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/history',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetOrderHistoryV3Link')
+
+const LinksGetOrderListFullV3LinkSchema = Link3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/orders/v3/list/full',
+        method: 'POST',
+        properties: {
+          'Accept-Encoding': { in: 'header', required: true, type: 'string' },
+          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksGetOrderListFullV3Link')
+
+const LinksGetOrderListLightV3LinkSchema = Link3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/orders/v3/list/light',
+        method: 'POST',
+        properties: {
+          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksGetOrderListLightV3Link')
+
+const LinksGetOrderV3LinkSchema = Link3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksGetOrderV3Link')
+
+const LinksHarvestAllV3LinkSchema = Link3Schema.and(
+  z.any().openapi({ example: { href: '/orders/v3/harvest', method: 'POST' } }),
+).openapi('LinksHarvestAllV3Link')
+
+const LinksHarvestOrderV3LinkSchema = Link3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/orders/v3/Amazon/1001#/00000000000000000000000000000000000000000000000/harvest',
+        method: 'POST',
+      },
+    }),
+).openapi('LinksHarvestOrderV3Link')
+
+const LinksImportationDeleteCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
+        method: 'DELETE',
+      },
+    }),
+).openapi('LinksImportationDeleteCustomColumnLink')
+
+const LinksImportationGetCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
+        method: 'GET',
+      },
+    }),
+).openapi('LinksImportationGetCustomColumnExpressionLink')
+
+const LinksSetMerchantOrderInfoListV3LinkSchema = Link3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/orders/v3/setMerchantOrderInfos',
+        method: 'POST',
+        parameters: {
+          request: {
+            in: 'body',
+            required: true,
+            schema: 'setMerchantOrderInfoRequest',
+            type: 'object',
+          },
+        },
+      },
+    }),
+).openapi('LinksSetMerchantOrderInfoListV3Link')
+
+const LinksSetMerchantOrderInfoV3LinkSchema = Link3Schema.and(
+  z
+    .any()
+    .openapi({
+      example: {
+        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/setMerchantOrderInfo',
+        method: 'POST',
+        parameters: {
+          request: { in: 'body', schema: 'setMerchantOrderInfoRequest', type: 'object' },
+        },
+      },
+    }),
+).openapi('LinksSetMerchantOrderInfoV3Link')
+
+const ListOfValueItemSchema = z
+  .object({
+    codeIdentifier: z.string().openapi({ example: 'FRA' }),
+    intIdentifier: z.int32().openapi({ example: '1' }),
+    position: z.int32().exactOptional().openapi({ example: '1' }),
+    translationText: z.string().exactOptional().openapi({ example: 'France' }),
+  })
+  .openapi({
+    description: 'This object is used by LOV apis',
+    required: ['codeIdentifier', 'intIdentifier'],
+  })
+  .openapi('ListOfValueItem')
+
+const LoginRequestSchema = z
+  .object({
+    login: BeezUPCommonEmailSchema,
+    password: z.string().openapi({ description: 'Your password', example: 'I@mW0nder$Full' }),
+  })
+  .openapi({ required: ['login', 'password'] })
+  .openapi('LoginRequest')
+
+const MapBeezUPColumnRequestSchema = z
+  .object({ beezUPColumnName: BeezUPCommonBeezUPColumnNameSchema })
+  .openapi({ required: ['beezUPColumnName'] })
+  .openapi('MapBeezUPColumnRequest')
+
+const MarketplaceChannelCatalogListSchema: z.ZodType<MarketplaceChannelCatalogListType> = z
+  .object({
+    links: MarketplaceChannelCatalogListLinksSchema,
+    marketplaceChannelCatalogs: z
+      .array(MarketplaceChannelCatalogSchema)
+      .openapi({ description: 'The list of marketplace channel catalog' }),
+  })
+  .openapi({
+    description: 'The marketplace channel catalog list',
+    required: ['links', 'marketplaceChannelCatalogs'],
+  })
+  .openapi('MarketplaceChannelCatalogList')
+
+const MessageIdSchema = z
+  .string()
+  .openapi({
+    description: "The message identifier. It's a guid.",
+    example: 'b0d3faea-f881-439f-ba92-02b1168511ea',
+    'x-exclude': true,
+  })
+  .openapi('MessageId')
+
+const OMReadyMarketplaceBusinessCodeResponseSchema = z
+  .array(ListOfValueItemSchema)
+  .openapi('OMReadyMarketplaceBusinessCodeResponse')
+
+const OfferSchema: z.ZodType<OfferType> = z
+  .object({
+    content: OfferContentSchema.exactOptional(),
+    info: BeezUPCommonInfoSummariesSchema.exactOptional(),
+    links: OfferLinksSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Offer')
+
+const OrderByDirectionSchema = z
+  .enum(['Ascending', 'Descending'])
+  .openapi({ description: 'Indicate which direction to order results by', example: 'Ascending' })
+  .openapi('OrderByDirection')
+
+const OrderedReportFilterCommonParametersSchema = ReportFilterCommonParametersSchema.and(
+  z
+    .object({
+      orderBy: PerformanceIndicatorTypeSchema.exactOptional(),
+      orderByDirection: OrderByDirectionSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ description: 'Contains common filter parameters with Order By functionnality' })
+  .openapi('OrderedReportFilterCommonParameters')
+
+const OptimiseAllRequestSchema = OrderedReportFilterCommonParametersSchema.and(
+  z
+    .object({
+      analyticsProductColumnFilters: AnalyticsProductColumnFiltersSchema.exactOptional(),
+      productColumnsToDisplay: ProductColumnsToDisplaySchema.exactOptional(),
+      productState: ProductStateFilterSchema.exactOptional(),
+      reportType: ReportTypeSchema,
+    })
+    .openapi({
+      required: ['beginPeriodUtcDate', 'endPeriodUtcDate', 'advancedFilters', 'reportType'],
+    }),
+).openapi('OptimiseAllRequest')
+
+const PaginationRequestParametersSchema = z
+  .object({
+    pageNumber: BeezUPCommonPageNumberSchema.exactOptional(),
+    pageSize: BeezUPCommonPageSizeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PaginationRequestParameters')
+
+const OptimiseRequestSchema = OptimiseAllRequestSchema.and(
+  PaginationRequestParametersSchema,
+).openapi('OptimiseRequest')
+
+const OrderChangeTypeSchema = z
+  .string()
+  .openapi({
+    description: 'The business operation type that can be done on an order',
+    'x-lov': 'OrderChangeBusinessOperationType',
+  })
+  .openapi('OrderChangeType')
+
+const OrderExportationsSchema: z.ZodType<OrderExportationsType> = z
+  .object({
+    exportations: z.array(OrderExportationReportingSchema),
+    links: OrderExportationsLinksSchema,
+    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The list of Order report exportations.\\\nThe paginationResult properties can be null if the list is empty.\n',
+    required: ['links', 'exportations'],
+  })
+  .openapi('OrderExportations')
+
+const OrderHarvestErrorValueSchema = z
+  .object({ errorMessage: z.string(), technicalCodePropertyName: z.string() })
+  .openapi({ required: ['technicalCodePropertyName', 'errorMessage'] })
+  .openapi('OrderHarvestErrorValue')
+
+const OrderHarvestErrorsSchema = z
+  .record(z.string(), OrderHarvestErrorValueSchema)
+  .openapi({ description: 'The key is the OrderMetaInfo.' })
+  .openapi('OrderHarvestErrors')
+
+const OrderHistorySchema = z
+  .object({
+    changeOrderReportings: z
+      .array(ChangeOrderReportingSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of change order operation' }),
+    harvestOrderReportings: z.array(HarvestOrderReportingSchema).exactOptional(),
+    lastModificationUtcDate: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ description: 'Describe the history related to an order', required: [] })
+  .openapi('OrderHistory')
+
+const OrderIndexSchema: z.ZodType<OrderIndexType> = z
+  .object({ links: OrderIndexLinksSchema, lovLinks: OrderIndexLovLinksSchema })
+  .openapi({ required: ['links', 'lovLinks'] })
+  .openapi('OrderIndex')
+
+const OrderInvoiceDesignSettingsSchema = z
+  .object({
+    footerContentHtml: FooterContentHtmlSchema.exactOptional(),
+    headerContentHtml: HeaderContentHtmlSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderInvoiceDesignSettings')
+
+const OrderListDateSearchTypeSchema = z
+  .enum(['Modification', 'Purchase', 'MarketPlaceModification'])
+  .default('Modification')
+  .openapi({ description: 'Indicates on which date you want to make the filter' })
+  .openapi('OrderListDateSearchType')
+
+const OrderListFullSchema: z.ZodType<OrderListFullType> = z
+  .object({
+    links: OrderListFullLinksSchema,
+    orders: z.array(OrderSchema),
+    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The order list with all information we have from the orders and its items.\\\nThe paginationResult properties can be null if the list is empty.\n',
+    required: ['orders', 'links'],
+  })
+  .openapi('OrderListFull')
+
+const OrderListFullWithLinksSchema: z.ZodType<OrderListFullWithLinksType> = z
+  .object({
+    links: OrderListFullLinksSchema,
+    orders: z.array(OrderWithLinksSchema),
+    paginationResult: PaginationResultSchema,
+  })
+  .openapi({ required: ['paginationResult', 'orders', 'links'] })
+  .openapi('OrderListFullWithLinks')
+
+const OrderListLightSchema: z.ZodType<OrderListLightType> = z
+  .object({
+    links: OrderListLightLinksSchema,
+    orders: z.array(OrderHeaderSchema),
+    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The order list with minimum information we have from the orders.\\\nThe paginationResult properties can be null if the list is empty.\n',
+    required: ['orders', 'links'],
+  })
+  .openapi('OrderListLight')
+
+const OrderListLightWithLinksSchema: z.ZodType<OrderListLightWithLinksType> = z
+  .object({
+    links: OrderListLightLinksSchema,
+    orders: z.array(OrderHeaderWithLinksSchema),
+    paginationResult: PaginationResultSchema,
+  })
+  .openapi({ required: ['paginationResult', 'orders', 'links'] })
+  .openapi('OrderListLightWithLinks')
+
+const PageNumberSchema = z
+  .int32()
+  .min(1)
+  .default(1)
+  .openapi({ description: 'Indicates the page number', example: '1' })
+  .openapi('PageNumber')
+
+const PageSizeSchema = z
+  .int32()
+  .min(25)
+  .max(100)
+  .default(100)
+  .openapi({ description: 'Indicate the order count per page', example: '100' })
+  .openapi('PageSize')
+
+const OrderListRequestSchema = OrderListRequestWithoutPaginationSchema.and(
+  z
+    .object({ pageNumber: PageNumberSchema, pageSize: PageSizeSchema })
+    .openapi({ required: ['beginPeriodUtcDate', 'endPeriodUtcDate', 'pageSize', 'pageNumber'] }),
+).openapi('OrderListRequest')
+
+const PreviewOrderInvoiceRequestSchema = z
+  .object({ invoiceSequenceNumber: InvoiceSequenceNumberSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('PreviewOrderInvoiceRequest')
+
+const PreviewOrderInvoiceResponseSchema = z
+  .object({ invoiceHtmlContent: InvoiceContentHtmlSchema })
+  .openapi({ required: ['invoiceHtmlContent'] })
+  .openapi('PreviewOrderInvoiceResponse')
+
+const ProductListSchema: z.ZodType<ProductListType> = z
+  .object({
+    paginationResult: BeezUPCommonPaginationResultSchema,
+    products: z.array(ProductSchema),
+  })
+  .openapi({ required: ['paginationResult', 'products'] })
+  .openapi('ProductList')
+
+const ProductOverridesSchema = z
+  .record(z.string(), z.string())
+  .openapi({
+    description: 'The key is the channel column identifier',
+    example: {
+      '0EA21509-1141-57BD-B679-371BC98B2ADA': 'http://www.blalbla.nl/images/cache/ldldld.jpg',
+      '2A77749D-0AAB-5245-89B5-6A1A4E06DACA': 'http://www.blalbla.nl/images/cache/dldldl.jpg',
+      '54B3B3CB-5CA5-5471-9DAE-5310C032059A': 'http://www.blalbla.nl/images/cache/dlmdl.jpg',
+      '57F70E81-E4F2-5034-BC65-E1D5C48EBEDA': 'Sony bravia',
+      '8a76f06a-fefc-4c0d-bcfe-b210f1482977': '3563',
+      'B7B79A0B-A8DE-54DA-964C-E2704DF3738A': 'SHBELNL56',
+    },
+  })
+  .openapi('ProductOverrides')
+
+const ProductOverridesCopyResponseSchema = z
+  .record(z.string(), z.string())
+  .openapi({
+    description: 'Product overrides compatibilites list',
+    example: {
+      '0EA21509-1141-57BD-B679-371BC98B2ADA': 'http://www.blalbla.nl/images/cache/ldldld.jpg',
+      '2A77749D-0AAB-5245-89B5-6A1A4E06DACA': 'http://www.blalbla.nl/images/cache/dldldl.jpg',
+      '54B3B3CB-5CA5-5471-9DAE-5310C032059A': 'http://www.blalbla.nl/images/cache/dlmdl.jpg',
+      '57F70E81-E4F2-5034-BC65-E1D5C48EBEDA': 'Sony bravia',
+      '8a76f06a-fefc-4c0d-bcfe-b210f1482977': '3563',
+      'B7B79A0B-A8DE-54DA-964C-E2704DF3738A': 'SHBELNL56',
+    },
+  })
+  .openapi('ProductOverridesCopyResponse')
+
+const ProductSampleSchema = z
+  .object({ productValues: ProductValuesSchema.exactOptional() })
+  .openapi({ description: 'Describe a product sample', required: [] })
+  .openapi('ProductSample')
+
+const ProfilePictureInfoResponseSchema: z.ZodType<ProfilePictureInfoResponseType> = z
+  .object({
+    links: ProfilePictureInfoResponseLinksSchema,
+    profilePictureInfo: ProfilePictureInfoWithDefaultSchema,
+  })
+  .openapi({ required: ['profilePictureInfo', 'links'] })
+  .openapi('ProfilePictureInfoResponse')
+
+const PublicChannelIndexSchema: z.ZodType<PublicChannelIndexType> = z
+  .object({
+    channels: z
+      .record(z.string(), LinksGetChannelsLinkSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The key is the country iso code',
+        example: {
+          DEU: { href: '/v2/public/channels/DEU', method: 'GET' },
+          ESP: { href: "/v2/public/channels/ESP'", method: 'GET' },
+          FRA: { href: '/v2/public/channels/FRA', method: 'GET' },
+          GBR: { href: '/v2/public/channels/GBR', method: 'GET' },
+          ITA: { href: '/v2/public/channels/ITA', method: 'GET' },
+        },
+      }),
+    links: z
+      .object({
+        channelCountryLov: LinksGetPublicListOfValuesLinkSchema.exactOptional(),
+        channelTypeLov: LinksGetPublicListOfValuesLinkSchema.exactOptional(),
+        sectorLov: LinksGetPublicListOfValuesLinkSchema.exactOptional(),
+        self: LinksGetChannelsIndexLinkSchema.exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        example: {
+          channelCountryLov: { href: '/v2/public/lov/www_ChannelCountry', method: 'GET' },
+          channelTypeLov: { href: '/v2/public/lov/ChannelType', method: 'GET' },
+          sectorLov: { href: '/v2/public/lov/ParamSector', method: 'GET' },
+          self: { href: '/v2/public/channels', method: 'GET' },
+        },
+        required: [],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PublicChannelIndex')
+
+const PublicChannelInfoListSchema: z.ZodType<PublicChannelInfoListType> = z
+  .object({
+    channels: z.array(PublicChannelInfoSchema).exactOptional(),
+    links: z
+      .object({ self: LinksGetChannelsLinkSchema.exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('PublicChannelInfoList')
+
+const PublicListOfValuesResponseSchema: z.ZodType<PublicListOfValuesResponseType> = z
+  .object({
+    items: z.array(BeezUPCommonListOfValueItemSchema).exactOptional(),
+    links: PublicListOfValuesResponseLinksSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PublicListOfValuesResponse')
+
+const PublicLovIndexSchema: z.ZodType<PublicLovIndexType> = z
+  .object({ links: PublicLovIndexLinksSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('PublicLovIndex')
+
+const PublishCatalogToMarketplaceRequestSchema = z
+  .object({
+    feedType: FeedTypeSchema,
+    publicationStrategyKind: PublicationStrategyKindSchema,
+    withUnpublish: z
+      .boolean()
+      .openapi({
+        description:
+          'In full publication strategy kind, for some marktetplace, you can ask to unpublish or not your existing feeds on the markeptlace absent from your exported catalog.',
+      }),
+  })
+  .openapi({
+    description: 'Publish the catalog to the marketplace',
+    required: ['feedType', 'publicationStrategyKind', 'withUnpublish'],
+  })
+  .openapi('PublishCatalogToMarketplaceRequest')
+
+const RandomProductListSchema = z
+  .object({ products: z.array(ProductSchema) })
+  .openapi({ required: ['products'] })
+  .openapi('RandomProductList')
+
+const RegisterRequestSchema = z
+  .object({
+    commercialOwnerUserId: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'The user id of your commercial in BeezUP.',
+        example: '47ea14ab-195d-4f9a-a24e-32c329ee40f6',
+      }),
+    cultureName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Can be null. Default: en-GB. The culture name you want to use. FYI. \\\nThe email activation will use this culture.\n',
+        example: 'en-GB',
+      }),
+    email: z
+      .string()
+      .openapi({
+        description: 'Your email. We refuse disposable email.',
+        example: 'myemail@mycompany.com',
+      }),
+    password: z
+      .string()
+      .openapi({
+        description:
+          'The password you want to use for your new account. \\\nThe password length must be greater or equals to 6 and lower or equals to 128. \\\nThe password must contains at least one number and one special character\n',
+        example: 'I@mW0nder$Full',
+      }),
+  })
+  .openapi({ required: ['email', 'password'] })
+  .openapi('RegisterRequest')
+
+const ReportByCategoryRequestSchema = OrderedReportFilterCommonParametersSchema.and(
+  PaginationRequestParametersSchema,
+).openapi('ReportByCategoryRequest')
+
+const ReportByCategoryResponseSchema: z.ZodType<ReportByCategoryResponseType> = z
+  .object({
+    categories: z.array(ReportByCategorySchema).exactOptional(),
+    currencyCode: BeezUPCommonCurrencyCodeSchema.exactOptional(),
+    links: ReportByCategoryResponseLinksSchema.exactOptional(),
+    paginationResult: BeezUPCommonPaginationResultSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReportByCategoryResponse')
+
+const ReportByChannelRequestSchema = OrderedReportFilterCommonParametersSchema.and(
+  PaginationRequestParametersSchema,
+).openapi('ReportByChannelRequest')
+
+const ReportByChannelResponseSchema: z.ZodType<ReportByChannelResponseType> = z
   .object({
     channels: z.array(ReportByChannelSchema),
     currencyCode: BeezUPCommonCurrencyCodeSchema,
@@ -10543,96 +11918,6 @@ const ReportByDayRequestSchema = z
   .openapi({ required: ['beginPeriodUtcDate', 'endPeriodUtcDate'] })
   .openapi('ReportByDayRequest')
 
-const ReportByProductAllChannelsLinksSchema = z
-  .object({
-    disableProductForAllChannels: LinksOptimiseByProductLinkSchema,
-    enableProductForAllChannels: LinksOptimiseByProductLinkSchema,
-  })
-  .openapi({ required: ['enableProductForAllChannels', 'disableProductForAllChannels'] })
-  .openapi('ReportByProductAllChannelsLinks')
-
-const ReportByProductOneChannelLinksSchema = z
-  .object({
-    disableProductForOneChannel: LinksOptimiseByProductLinkSchema,
-    enableProductForOneChannel: LinksOptimiseByProductLinkSchema,
-    productInfo: LinksGetChannelCatalogProductInfoLinkSchema,
-  })
-  .openapi({
-    description:
-      'If the report concerned one product for one channel the channel catalog product info will give you all you need to enable or disable the product.',
-    required: ['productInfo', 'enableProductForOneChannel', 'disableProductForOneChannel'],
-  })
-  .openapi('ReportByProductOneChannelLinks')
-
-const ReportByProductLinksSchema = z
-  .object({
-    allChannelsLinks: ReportByProductAllChannelsLinksSchema.exactOptional(),
-    oneChannelLinks: ReportByProductOneChannelLinksSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Depending if the report concerned multiple channels or one channel.',
-    required: [],
-  })
-  .openapi('ReportByProductLinks')
-
-const ReportByProductSchema = z
-  .object({
-    channelCount: z
-      .int()
-      .openapi({
-        description: 'The channel count where this product can be enabled',
-        example: '2',
-      }),
-    clickCount: z
-      .int()
-      .openapi({ description: 'The click count for this product', example: '1234' }),
-    cost: z.number().openapi({ description: 'The cost for this product', example: '101.42' }),
-    enabledOnChannelCount: z
-      .int()
-      .openapi({ description: 'The count of channel where this product is enabled', example: '1' }),
-    links: ReportByProductLinksSchema,
-    margin: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The margin for this product', example: '50.0' }),
-    orderCount: z
-      .int()
-      .openapi({ description: 'The order count for this product', example: '234' }),
-    performanceIndicator: z
-      .number()
-      .openapi({
-        description:
-          'The performance indicator based on the performance indicator formula indicated in the request for this product',
-        example: '10.12',
-      }),
-    product: BeezUPCommonProductBasicInfoSchema,
-    roi: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The Return On Investment for this product', example: '42.01' }),
-    soldProductCount: z
-      .int()
-      .openapi({ description: 'The product sold count count for this product', example: '2' }),
-    totalSales: z
-      .number()
-      .openapi({ description: 'The total sales for this product', example: '234.42' }),
-  })
-  .openapi({
-    required: [
-      'product',
-      'enabledOnChannelCount',
-      'channelCount',
-      'clickCount',
-      'cost',
-      'orderCount',
-      'performanceIndicator',
-      'totalSales',
-      'soldProductCount',
-      'links',
-    ],
-  })
-  .openapi('ReportByProduct')
-
 const ReportByProductRequestSchema = OrderedReportFilterCommonParametersSchema.and(
   PaginationRequestParametersSchema,
 )
@@ -10649,11 +11934,7 @@ const ReportByProductRequestSchema = OrderedReportFilterCommonParametersSchema.a
   )
   .openapi('ReportByProductRequest')
 
-const ReportByProductResponseLinksSchema = ReportByCommonResponseLinksSchema.openapi(
-  'ReportByProductResponseLinks',
-)
-
-const ReportByProductResponseSchema = z
+const ReportByProductResponseSchema: z.ZodType<ReportByProductResponseType> = z
   .object({
     currencyCode: BeezUPCommonCurrencyCodeSchema,
     links: ReportByProductResponseLinksSchema,
@@ -10663,29 +11944,7 @@ const ReportByProductResponseSchema = z
   .openapi({ required: ['paginationResult', 'currencyCode', 'products', 'links'] })
   .openapi('ReportByProductResponse')
 
-const ReportFilterLinksSchema = z
-  .object({
-    delete: LinksDeleteReportFilterLinkSchema.exactOptional(),
-    save: LinksSaveReportFilterLinkSchema.exactOptional(),
-    self: LinksGetReportFilterLinkSchema.exactOptional(),
-  })
-  .openapi({ description: 'Indicates the actions you can do on this report filter', required: [] })
-  .openapi('ReportFilterLinks')
-
-const ReportFilterParametersSchema = ReportFilterCommonParametersSchema.and(
-  z
-    .object({
-      analyticsProductColumnFilters: AnalyticsProductColumnFiltersSchema.exactOptional(),
-      productColumnsToDisplay: ProductColumnsToDisplaySchema.exactOptional(),
-      productState: ProductStateFilterSchema.exactOptional(),
-      reportType: ReportTypeSchema,
-    })
-    .openapi({
-      required: ['beginPeriodUtcDate', 'endPeriodUtcDate', 'advancedFilters', 'reportType'],
-    }),
-).openapi('ReportFilterParameters')
-
-const ReportFilterSchema = z
+const ReportFilterSchema: z.ZodType<ReportFilterType> = z
   .object({
     links: ReportFilterLinksSchema.exactOptional(),
     parameters: ReportFilterParametersSchema,
@@ -10702,192 +11961,12 @@ const ReportFilterSchema = z
   .openapi({ required: ['reportFilterId', 'reportFilterName', 'parameters'] })
   .openapi('ReportFilter')
 
-const ReportFilterHeaderLinksSchema = z
-  .object({ self: LinksGetReportFilterLinkSchema })
-  .openapi({ required: ['self'] })
-  .openapi('ReportFilterHeaderLinks')
-
-const ReportFilterHeaderSchema = z
-  .object({
-    links: ReportFilterHeaderLinksSchema,
-    reportFilterId: z
-      .guid()
-      .openapi({
-        description: 'Report filter identifier',
-        example: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
-      }),
-    reportFilterName: z
-      .string()
-      .openapi({ description: 'Report filter name', example: 'My report filter' }),
-    reportType: ReportTypeSchema,
-  })
-  .openapi({ required: ['reportFilterName', 'reportFilterId', 'reportType', 'links'] })
-  .openapi('ReportFilterHeader')
-
-const ReportFiltersLinksSchema = z
-  .object({ save: LinksSaveReportFilterLinkSchema, self: LinksGetReportFiltersLinkSchema })
-  .openapi({ required: ['self', 'save'] })
-  .openapi('ReportFiltersLinks')
-
-const ReportFilterListSchema = z
+const ReportFilterListSchema: z.ZodType<ReportFilterListType> = z
   .object({ links: ReportFiltersLinksSchema, reportFilters: z.array(ReportFilterHeaderSchema) })
   .openapi({ required: ['reportFilters', 'links'] })
   .openapi('ReportFilterList')
 
-const RuleLastExecutionStatusSchema = z
-  .enum(['InProgress', 'Succeeded', 'Failed', 'Unknown'])
-  .openapi({ description: 'The status of the last execution', example: 'Succeeded' })
-  .openapi('RuleLastExecutionStatus')
-
-const RuleLinksSchema = z
-  .object({
-    delete: LinksDeleteRuleLinkSchema.exactOptional(),
-    disable: LinksDisableRuleLinkSchema.exactOptional(),
-    enable: LinksEnableRuleLinkSchema.exactOptional(),
-    movedown: LinksMoveDownRuleLinkSchema.exactOptional(),
-    moveup: LinksMoveUpRuleLinkSchema.exactOptional(),
-    reportFilter: LinksGetReportFilterLinkSchema.exactOptional(),
-    run: LinksRunRuleLinkSchema.exactOptional(),
-    self: LinksGetRuleLinkSchema,
-    update: LinksUpdateRuleLinkSchema.exactOptional(),
-  })
-  .openapi({ description: 'Links to retrieve/action on other entities', required: ['self'] })
-  .openapi('RuleLinks')
-
-const RuleSchema = z
-  .object({
-    actionName: OptimisationActionNameSchema,
-    enabled: z.boolean().openapi({ description: 'Is the rule enabled', example: 'true' }),
-    lastExecutionStatus: RuleLastExecutionStatusSchema.exactOptional(),
-    lastExecutionUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The utc date of the last execution',
-        example: '2016-08-29T09:12:33.001Z',
-      }),
-    links: RuleLinksSchema,
-    position: z.int().openapi({ description: 'Rule execution position', example: '1' }),
-    reportFilterId: z
-      .guid()
-      .openapi({
-        description: 'Report filter identifier linked to the rule',
-        example: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
-      }),
-    ruleId: z
-      .guid()
-      .openapi({
-        description: 'The identifier of the rule',
-        example: 'c38006b4-29d0-4b8a-978b-701a0b12d5a8',
-      }),
-    ruleName: z.string().openapi({ description: 'The name of the rule', example: 'My Rule' }),
-    validityEndUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Rule validity end utc date', example: '3016-08-29T09:12:33.001Z' }),
-    validityStartUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Rule validity start utc date',
-        example: '2016-08-29T09:12:33.001Z',
-      }),
-  })
-  .openapi({
-    required: [
-      'ruleId',
-      'ruleName',
-      'actionName',
-      'reportFilterId',
-      'position',
-      'enabled',
-      'links',
-    ],
-  })
-  .openapi('Rule')
-
-const RuleExecutionReportingErrorTypeSchema = z
-  .enum(['ChannelNotPresent', 'StoreIsInSystemBlockState'])
-  .openapi({
-    description: 'The error type for this execution if any',
-    example: 'ChannelNotPresent',
-  })
-  .openapi('RuleExecutionReportingErrorType')
-
-const RuleExecutionReportingExecutionSourceSchema = z
-  .enum(['Scheduler', 'User'])
-  .openapi({ description: 'The requestor type for the execution of the rule', example: 'User' })
-  .openapi('RuleExecutionReportingExecutionSource')
-
-const RuleExecutionReportingLinksSchema = z
-  .object({ rule: LinksGetRuleLinkSchema.exactOptional() })
-  .openapi({ description: 'Links to retrieve/action on this rule execution', required: [] })
-  .openapi('RuleExecutionReportingLinks')
-
-const RuleExecutionReportingStatusSchema = z
-  .enum(['InProgress', 'Succeeded', 'AlreadyInProgress', 'Aborted', 'Failed', 'Unknown'])
-  .openapi({ description: 'The status of the execution of the rule', example: 'Succeeded' })
-  .openapi('RuleExecutionReportingStatus')
-
-const RuleExecutionReportingSchema = z
-  .object({
-    activeAffectedProductCount: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The count of affected active products', example: '1' }),
-    affectedChannelCount: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The count of affected Channels across all products', example: '1' }),
-    affectedProductCount: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The count of affected products, active or not', example: '1' }),
-    completedUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The completed utc date of the execution of the rule',
-        example: '2016-08-29T09:12:33.001Z',
-      }),
-    errorType: RuleExecutionReportingErrorTypeSchema.exactOptional(),
-    executionSource: RuleExecutionReportingExecutionSourceSchema,
-    links: RuleExecutionReportingLinksSchema.exactOptional(),
-    optimisationActionName: OptimisationActionNameSchema.exactOptional(),
-    reportUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The url for the excel report for this execution',
-        example: 'http://www.google.com',
-      }),
-    ruleId: z
-      .guid()
-      .openapi({
-        description: 'The rule identifier',
-        example: 'fd9a23a1-569b-40af-af91-f7275a57bf89',
-      }),
-    ruleName: z.string().openapi({ description: 'The name of the rule', example: 'toto' }),
-    startedUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The start utc date of the execution of the rule',
-        example: '2016-08-29T09:12:33.001Z',
-      }),
-    status: RuleExecutionReportingStatusSchema,
-    userId: z
-      .guid()
-      .exactOptional()
-      .openapi({
-        description: 'The userId that executed the rule if any',
-        example: 'e8289350-69f8-45a6-b0ca-b641c83e0422',
-      }),
-  })
-  .openapi({ required: ['ruleId', 'ruleName', 'status', 'executionSource'] })
-  .openapi('RuleExecutionReporting')
-
-const RuleExecutionReportingsSchema = z
+const RuleExecutionReportingsSchema: z.ZodType<RuleExecutionReportingsType> = z
   .object({
     executions: z
       .array(RuleExecutionReportingSchema)
@@ -10898,20 +11977,7 @@ const RuleExecutionReportingsSchema = z
   .openapi({ required: [] })
   .openapi('RuleExecutionReportings')
 
-const RuleListLinksSchema = z
-  .object({
-    create: LinksCreateRuleLinkSchema,
-    history: LinksGetRulesExecutionsLinkSchema,
-    run: LinksRunRulesLinkSchema,
-    self: LinksGetRulesLinkSchema,
-  })
-  .openapi({
-    description: 'Links to know if the user can create a rule or run all rules',
-    required: ['self', 'create', 'history', 'run'],
-  })
-  .openapi('RuleListLinks')
-
-const RuleListSchema = z
+const RuleListSchema: z.ZodType<RuleListType> = z
   .object({
     links: RuleListLinksSchema,
     rules: z.array(RuleSchema).openapi({ description: 'Rule list' }),
@@ -10928,11 +11994,6 @@ const SaveReportFilterRequestSchema = z
   })
   .openapi({ required: ['reportFilterName', 'parameters'] })
   .openapi('SaveReportFilterRequest')
-
-const StoreAlertPropertySchema = z
-  .object({ propertyId: AlertPropertyIdSchema, propertyValue: AlertPropertyValueSchema })
-  .openapi({ required: ['propertyId', 'propertyValue'] })
-  .openapi('StoreAlertProperty')
 
 const SaveStoreAlertRequestSchema = z
   .object({
@@ -11071,64 +12132,7 @@ const SetMerchantOrderInfoRequestSchema = z
   })
   .openapi('SetMerchantOrderInfoRequest')
 
-const StandardOfferLinksSchema = z
-  .object({ getOffer: LinksGetOfferLinkSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('StandardOfferLinks')
-
-const StandardOfferSchema = z
-  .object({
-    additionalClickPrice: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The additional click price', example: '0.1234' }),
-    currencyCode: BeezUPCommonCurrencyCodeSchema.exactOptional(),
-    fixedPrice: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The fixed price of the offer', example: '101.42' }),
-    functionalities: z
-      .array(OfferFunctionalitySchema)
-      .exactOptional()
-      .openapi({
-        example: [
-          {
-            functionalityCode: 'MARKETMANA',
-            maxValueInteger: '4',
-            text: 'Marketplace management',
-            unlimited: 'false',
-          },
-        ],
-      }),
-    includedClick: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The included click', example: '1200' }),
-    isMostPopular: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'UI purpose. Is the offer is the most popular', example: 'true' }),
-    isOldOffer: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Is an old offer', example: 'false' }),
-    links: StandardOfferLinksSchema,
-    name: z.string().openapi({ description: 'The offer name', example: 'Wonder offer' }),
-    offerId: z.int32().openapi({ description: 'The offer Id', example: '1234' }),
-    position: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'UI purpose. The position of the offer', example: '1' }),
-  })
-  .openapi({ required: ['offerId', 'name', 'links'] })
-  .openapi('StandardOffer')
-
-const StandardOffersLinksSchema = z
-  .object({ self: LinksGetStandardOffersLinkSchema })
-  .openapi({ required: ['self'] })
-  .openapi('StandardOffersLinks')
-
-const StandardOffersSchema = z
+const StandardOffersSchema: z.ZodType<StandardOffersType> = z
   .object({
     functionalities: z
       .array(FunctionalitySchema)
@@ -11178,131 +12182,7 @@ const StartManualImportRequestSchema = z
   })
   .openapi('StartManualImportRequest')
 
-const StoreLinksSchema = z
-  .object({
-    deleteStore: LinksDeleteStoreLinkSchema.exactOptional(),
-    self: LinksGetStoreLinkSchema.exactOptional(),
-    share: LinksShareStoreLinkSchema.exactOptional(),
-    shares: LinksGetStoreSharesLinkSchema.exactOptional(),
-    updateStore: LinksUpdateStoreLinkSchema.exactOptional(),
-  })
-  .openapi({ description: 'The action links for this store', required: [] })
-  .openapi('StoreLinks')
-
-const StoreStatusSchema = z
-  .enum(['Active', 'SystemBlocked', 'UserBlocked'])
-  .openapi({
-    description:
-      'The store status\n* Active:  When the store is active\n* SystemBlocked:  When the store is blocked by the system\n* UserBlocked: When the store is blocked on GO not on the system\n',
-    example: 'Active',
-  })
-  .openapi('StoreStatus')
-
-const StoreUserRoleSchema = z
-  .enum(['Owner', 'User'])
-  .openapi({
-    description:
-      'Indicates the role can have a user on a store.\n* Owner: Indicates that you are the owner of this store\n* User: Indicates that you are a simple user on this store\n',
-    example: 'User',
-  })
-  .openapi('StoreUserRole')
-
-const StoreSchema = z
-  .object({
-    countryIsoCodeAlpha3: StoreCountryIsoCodeAlpha3Schema,
-    creationUtcDate: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The creation date of the store', example: '2017-04-01T22:30:00Z' }),
-    currencyCode: BeezUPCommonCurrencyCodeSchema,
-    goVersion: z.int32().openapi({ description: 'The version of GO to use', example: '2' }),
-    isTest: z.boolean().openapi({ description: 'Is the store a test or a production store' }),
-    links: StoreLinksSchema,
-    name: StoreNameSchema,
-    offerId: OfferIdSchema,
-    offerName: z.string().openapi({ description: 'The offer Name', example: 'Premium' }),
-    ownerUserId: z
-      .guid()
-      .openapi({
-        description: 'The user id of the owner of the store',
-        example: '00000000-0000-0000-0000-000000000000',
-      }),
-    sectors: StoreSectorsSchema,
-    shareCount: z
-      .int()
-      .openapi({ description: 'The share count related to this store', example: '5' }),
-    status: StoreStatusSchema,
-    storeId: BeezUPCommonStoreIdSchema,
-    url: StoreUrlSchema,
-    userRole: StoreUserRoleSchema,
-  })
-  .openapi({
-    required: [
-      'storeId',
-      'name',
-      'url',
-      'countryIsoCodeAlpha3',
-      'currencyCode',
-      'userRole',
-      'status',
-      'ownerUserId',
-      'shareCount',
-      'creationUtcDate',
-      'sectors',
-      'goVersion',
-      'links',
-      'offerId',
-      'offerName',
-      'isTest',
-    ],
-  })
-  .openapi('Store')
-
-const StoreAlertLinksSchema = z
-  .object({ save: LinksSaveStoreAlertsLinkSchema.exactOptional() })
-  .openapi({ description: 'The different actions you can make on this alert', required: [] })
-  .openapi('StoreAlertLinks')
-
-const StoreAlertPropertyInfoSchema = StoreAlertPropertySchema.and(
-  z
-    .object({
-      propertyName: z
-        .string()
-        .openapi({ description: 'The property name of the alert', example: 'NbDays' }),
-      propertyValidationExpression: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The regular expression related to the alert property',
-          example: '\\b0*([1-9]|[12][0-9]|30)\\b',
-        }),
-    })
-    .openapi({ required: ['propertyId', 'propertyName', 'propertyValue'] }),
-).openapi('StoreAlertPropertyInfo')
-
-const StoreAlertSchema = z
-  .object({
-    alertId: AlertIdSchema,
-    alertName: AlertNameSchema,
-    enabled: AlertEnabledSchema,
-    links: StoreAlertLinksSchema,
-    properties: z
-      .array(StoreAlertPropertyInfoSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The current configuration properties of the alert',
-        example: [
-          {
-            propertyId: '2',
-            propertyValidationExpression: '\\b0*([1-9]|[12][0-9]|30)\\b',
-            propertyValue: '2',
-          },
-        ],
-      }),
-  })
-  .openapi({ required: ['links', 'alertId', 'alertName', 'enabled'] })
-  .openapi('StoreAlert')
-
-const StoreAlertsSchema = z
+const StoreAlertsSchema: z.ZodType<StoreAlertsType> = z
   .object({
     alerts: z
       .array(StoreAlertSchema)
@@ -11332,42 +12212,12 @@ const StoreIdSchema = z
   .openapi({ description: 'The store identifier', 'x-exclude': true })
   .openapi('StoreId')
 
-const StoreListLinksSchema = z
-  .object({
-    createStore: LinksCreateStoreLinkSchema.exactOptional(),
-    self: LinksGetStoresLinkSchema.exactOptional(),
-  })
-  .openapi({ description: 'The action links you can do globally on stores', required: [] })
-  .openapi('StoreListLinks')
-
-const StoreListSchema = z
+const StoreListSchema: z.ZodType<StoreListType> = z
   .object({ links: StoreListLinksSchema, stores: z.array(StoreSchema) })
   .openapi({ required: ['links', 'stores'] })
   .openapi('StoreList')
 
-const StoreShareLinksSchema = z
-  .object({ deleteShare: LinksDeleteStoreShareLinkSchema.exactOptional() })
-  .openapi({ description: 'The different actions you can make on this store share', required: [] })
-  .openapi('StoreShareLinks')
-
-const StoreShareSchema = z
-  .object({
-    links: StoreShareLinksSchema,
-    userId: BeezUPCommonUserIdSchema,
-    userRole: StoreUserRoleSchema,
-  })
-  .openapi({ required: ['userId', 'userRole', 'links'] })
-  .openapi('StoreShare')
-
-const StoreSharesLinksSchema = z
-  .object({
-    self: LinksGetStoreSharesLinkSchema.exactOptional(),
-    share: LinksShareStoreLinkSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('StoreSharesLinks')
-
-const StoreSharesSchema = z
+const StoreSharesSchema: z.ZodType<StoreSharesType> = z
   .object({ links: StoreSharesLinksSchema, shares: z.array(StoreShareSchema) })
   .openapi({ required: ['links', 'shares'] })
   .openapi('StoreShares')
@@ -11399,110 +12249,7 @@ const StoreTrackingStatusSchema = z
   .openapi({ required: [] })
   .openapi('StoreTrackingStatus')
 
-const SubscriptionIdSchema = z
-  .guid()
-  .openapi({ description: 'The identifier of the subscription to the orders for a merchant' })
-  .openapi('SubscriptionId')
-
-const SubscriptionStatusSchema = z
-  .enum(['active', 'inactive'])
-  .openapi({ description: 'The status of your subscription', example: 'active' })
-  .openapi('SubscriptionStatus')
-
-const SubscriptionSchema = z
-  .object({
-    consumerHealthStatus: ConsumptionAvailabilityStatusSchema.exactOptional(),
-    consumerLastRequestSentUri: HttpUrlSchema.exactOptional(),
-    consumerUnvailableSinceUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'This date indicates since when the subscription consumer is unavailable',
-      }),
-    id: SubscriptionIdSchema,
-    lastErrorMessage: ErrorResponseMessageSchema.exactOptional(),
-    lastOrderPushedModificationUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'This modification date correspond to the last order pushed by your subscription consumer',
-      }),
-    lastRetryUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The last date we retry to send orders' }),
-    lastSuccessfulOrderPushedUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date of the last pushed order successfully received by your subscription consumer',
-      }),
-    maxRetryCount: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum BeezUP will retry to push orders. When we the retry count will reach maximum retry count, the subscription will be deactivated.',
-      }),
-    merchantApplicationName: SubscriptionMerchantApplicationNameSchema,
-    merchantApplicationVersion: SubscriptionMerchantApplicationVersionSchema,
-    merchantEmailAlert: EmailSchema.exactOptional(),
-    name: SubscriptionNameSchema,
-    nextScheduledRetryUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The next scheduled  date we retry to send orders' }),
-    recoverBeginPeriodOrderLastModificationUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Recover existing orders using the begin period order last modification date. If not set then you will receive new/updated orders in real-time.',
-      }),
-    recoverEndPeriodOrderLastModificationUtcDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Recover existing orders using the begin and the end period order last modification date.\nOtherwise, you will receive new/updated orders in real-time.\n',
-      }),
-    retryCount: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The retry count. When we the retry count will reach maximum retry count, the subscription will be deactivated.',
-      }),
-    status: SubscriptionStatusSchema,
-    targetUrl: HttpUrlSchema,
-  })
-  .openapi({
-    description: 'The subscription definition',
-    required: [
-      'id',
-      'targetUrl',
-      'status',
-      'name',
-      'merchantApplicationName',
-      'merchantApplicationVersion',
-    ],
-  })
-  .openapi('Subscription')
-
-const SubscriptionLinksSchema = z
-  .object({
-    activate: Link3Schema.exactOptional(),
-    deactivate: Link3Schema.exactOptional(),
-    delete: Link3Schema.exactOptional(),
-    reporting: Link3Schema.exactOptional(),
-    retry: Link3Schema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SubscriptionLinks')
-
-const SubscriptionIndexSchema = SubscriptionSchema.and(
+const SubscriptionIndexSchema: z.ZodType<SubscriptionIndexType> = SubscriptionSchema.and(
   z.object({ links: SubscriptionLinksSchema.exactOptional() }).openapi({ required: [] }),
 ).openapi('SubscriptionIndex')
 
@@ -11919,12 +12666,7 @@ const UserIdSchema = z
   })
   .openapi('UserId')
 
-const UserListOfValuesResponseLinksSchema = z
-  .object({ self: LinksGetUserListOfValuesLinkSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('UserListOfValuesResponseLinks')
-
-const UserListOfValuesResponseSchema = z
+const UserListOfValuesResponseSchema: z.ZodType<UserListOfValuesResponseType> = z
   .object({
     items: z.array(BeezUPCommonListOfValueItemSchema).exactOptional(),
     links: UserListOfValuesResponseLinksSchema.exactOptional(),
@@ -11932,20 +12674,7 @@ const UserListOfValuesResponseSchema = z
   .openapi({ required: [] })
   .openapi('UserListOfValuesResponse')
 
-const UserLovLinksSchema = z
-  .record(z.string(), LinksGetUserListOfValuesLinkSchema)
-  .openapi({ description: 'List of lov link. The key is the list name.' })
-  .openapi('UserLovLinks')
-
-const UserLovIndexLinksSchema = z
-  .object({
-    lists: UserLovLinksSchema.exactOptional(),
-    self: LinksGetUserLovIndexLinkSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UserLovIndexLinks')
-
-const UserLovIndexSchema = z
+const UserLovIndexSchema: z.ZodType<UserLovIndexType> = z
   .object({ links: UserLovIndexLinksSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('UserLovIndex')
@@ -11968,30 +12697,22 @@ const _304NotModifiedResponse = {
   description:
     'The ETag sent in the http header If-None-Match did not change. So you are up to date !',
   headers: z.object({
-    ETag: {
-      description:
-        'ETag value to identify the current version of the resource\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'ETag value to identify the current version of the resource\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-          param: { required: false },
-        }),
-    },
-    'Last-Modified': {
-      description:
-        'Last modification UTC date of the resource\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-      schema: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description:
-            'Last modification UTC date of the resource\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-          param: { required: false },
-        }),
-    },
+    ETag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ETag value to identify the current version of the resource\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
+        param: { required: false },
+      }),
+    'Last-Modified': z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Last modification UTC date of the resource\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -11999,18 +12720,14 @@ const _412PreConditionFailedResponse = {
   description:
     'The ETag sent in the http header If-Match did not match with the current version. Please refresh the information related to this resource.',
   headers: z.object({
-    ETag: {
-      description:
-        'The ETag value to identify the resource.\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The ETag value to identify the resource.\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-          param: { required: false },
-        }),
-    },
+    ETag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ETag value to identify the resource.\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -12045,28 +12762,22 @@ const ImportStartedResponse = {
   description: 'Catalog importation started',
   content: { 'application/json': { schema: LinksImportationGetImportationMonitoringLinkSchema } },
   headers: z.object({
-    Location: {
-      description: 'The location of the new resource to poll',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The location of the new resource to poll',
-          param: { required: false },
-        }),
-    },
-    'Retry-After': {
-      description: 'The duration in second to wait before polling this resource',
-      schema: z
-        .int()
-        .min(5)
-        .default(5)
-        .exactOptional()
-        .openapi({
-          description: 'The duration in second to wait before polling this resource',
-          param: { required: false },
-        }),
-    },
+    Location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The location of the new resource to poll',
+        param: { required: false },
+      }),
+    'Retry-After': z
+      .int()
+      .min(5)
+      .default(5)
+      .exactOptional()
+      .openapi({
+        description: 'The duration in second to wait before polling this resource',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -12120,16 +12831,13 @@ const ProcessingResponseResponse = {
   description:
     'The marketplace configuration related to this channel catalog is currently in progress. Please retry later.',
   headers: z.object({
-    'Retry-After': {
-      description: 'Indicate the duration to before the next retry in second.',
-      schema: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'Indicate the duration to before the next retry in second.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Indicate the duration to before the next retry in second.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -12817,18 +13525,14 @@ export const postOrdersV3HarvestRoute = createRoute({
     202: {
       description: 'Successfully sent harvest request to all marketplaces',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the duration in seconds to wait to be able to make this request again',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the duration in seconds to wait to be able to make this request again',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the duration in seconds to wait to be able to make this request again',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -12839,18 +13543,14 @@ export const postOrdersV3HarvestRoute = createRoute({
       description: 'Failed to send harvest request because allowed rate limits have been exceeded',
       content: { 'application/json': { schema: ErrorResponseMessageSchema } },
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the duration in seconds to wait to be able to make this request again',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the duration in seconds to wait to be able to make this request again',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the duration in seconds to wait to be able to make this request again',
+            param: { required: false },
+          }),
       }),
     },
     default: GeneralErrorResponse,
@@ -13006,18 +13706,14 @@ export const postOrdersV3MarketplaceTechnicalCodeAccountIdHarvestRoute = createR
     202: {
       description: 'Successfully sent Order harvest request',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the duration in seconds to wait to be able to make this request again',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the duration in seconds to wait to be able to make this request again',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the duration in seconds to wait to be able to make this request again',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -13028,18 +13724,14 @@ export const postOrdersV3MarketplaceTechnicalCodeAccountIdHarvestRoute = createR
       description: 'Failed to send harvest request because allowed rate limits have been exceeded',
       content: { 'application/json': { schema: ErrorResponseMessageSchema } },
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the duration in seconds to wait to be able to make this request again',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the duration in seconds to wait to be able to make this request again',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the duration in seconds to wait to be able to make this request again',
+            param: { required: false },
+          }),
       }),
     },
     default: GeneralErrorResponse,
@@ -13065,30 +13757,22 @@ export const getOrdersV3MarketplaceTechnicalCodeAccountIdBeezUPOrderIdRoute = cr
       description: 'Successfully fetched Order and Order Item(s) properties',
       content: { 'application/json': { schema: OrderWithLinksSchema } },
       headers: z.object({
-        ETag: {
-          description:
-            'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-              param: { required: false },
-            }),
-        },
-        'Last-Modified': {
-          description:
-            'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-          schema: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description:
-                'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
+            param: { required: false },
+          }),
+        'Last-Modified': z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
+            param: { required: false },
+          }),
       }),
     },
     304: _304NotModifiedResponse,
@@ -13120,30 +13804,22 @@ export const headOrdersV3MarketplaceTechnicalCodeAccountIdBeezUPOrderIdRoute = c
     200: {
       description: 'Successfully fetched Order and Order Item(s) properties',
       headers: z.object({
-        ETag: {
-          description:
-            'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-              param: { required: false },
-            }),
-        },
-        'Last-Modified': {
-          description:
-            'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-          schema: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description:
-                'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
+            param: { required: false },
+          }),
+        'Last-Modified': z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
+            param: { required: false },
+          }),
       }),
     },
     304: _304NotModifiedResponse,
@@ -13202,18 +13878,14 @@ export const postOrdersV3MarketplaceTechnicalCodeAccountIdBeezUPOrderIdHarvestRo
     202: {
       description: 'Successfully sent Order harvest request',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the duration in seconds to wait to be able to make this request again',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the duration in seconds to wait to be able to make this request again',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the duration in seconds to wait to be able to make this request again',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -13224,18 +13896,14 @@ export const postOrdersV3MarketplaceTechnicalCodeAccountIdBeezUPOrderIdHarvestRo
       description: 'Failed to send harvest request because allowed rate limits have been exceeded',
       content: { 'application/json': { schema: ErrorResponseMessageSchema } },
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the duration in seconds to wait to be able to make this request again',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the duration in seconds to wait to be able to make this request again',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the duration in seconds to wait to be able to make this request again',
+            param: { required: false },
+          }),
       }),
     },
     default: GeneralErrorResponse,
@@ -13364,18 +14032,14 @@ export const postOrdersV3MarketplaceTechnicalCodeAccountIdBeezUPOrderIdChangeOrd
       202: {
         description: 'Order change request accepted',
         headers: z.object({
-          Location: {
-            description:
-              'Indicate the address you should follow to know the status of your order change operation',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Indicate the address you should follow to know the status of your order change operation',
-                param: { required: false },
-              }),
-          },
+          Location: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Indicate the address you should follow to know the status of your order change operation',
+              param: { required: false },
+            }),
         }),
       },
       400: {
@@ -13392,30 +14056,22 @@ export const postOrdersV3MarketplaceTechnicalCodeAccountIdBeezUPOrderIdChangeOrd
           'Already processing a change request for this Order.\\\nPlease refresh your clients Order information and retry later.\n',
         content: { 'application/json': { schema: ErrorResponseMessageSchema } },
         headers: z.object({
-          Location: {
-            description:
-              'Indicate the address you should follow to know the status of the existing order change operation',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Indicate the address you should follow to know the status of the existing order change operation',
-                param: { required: false },
-              }),
-          },
-          'Retry-After': {
-            description:
-              'Indicates the duration in seconds to wait to be able to make this request again',
-            schema: z
-              .int()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Indicates the duration in seconds to wait to be able to make this request again',
-                param: { required: false },
-              }),
-          },
+          Location: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Indicate the address you should follow to know the status of the existing order change operation',
+              param: { required: false },
+            }),
+          'Retry-After': z
+            .int()
+            .exactOptional()
+            .openapi({
+              description:
+                'Indicates the duration in seconds to wait to be able to make this request again',
+              param: { required: false },
+            }),
         }),
       },
       412: _412PreConditionFailedResponse,
@@ -13513,58 +14169,42 @@ export const getV2PublicLovIndexRoute = createRoute({
       description: 'Get the list names',
       content: { 'application/json': { schema: PublicLovIndexSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description: 'The ETag corresponding to the LOV Index',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The ETag corresponding to the LOV Index',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The ETag corresponding to the LOV Index',
+            param: { required: false },
+          }),
       }),
     },
     304: {
       description:
         'The ETag sent in the http header If-None-Match did not change. So you can keep your version.',
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description: 'The ETag corresponding to the LOV Index',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The ETag corresponding to the LOV Index',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The ETag corresponding to the LOV Index',
+            param: { required: false },
+          }),
       }),
     },
     default: GeneralErrorResponse,
@@ -13601,69 +14241,49 @@ export const getV2PublicLovListNameRoute = createRoute({
       description: 'The list of values',
       content: { 'application/json': { schema: PublicListOfValuesResponseSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-              param: { required: false },
-            }),
-        },
-        'Content-Language': {
-          description: 'Indicates the language use in the response',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description: 'Indicates the language use in the response',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description: 'The ETag corresponding to the LOV Index',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The ETag corresponding to the LOV Index',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
+            param: { required: false },
+          }),
+        'Content-Language': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description: 'Indicates the language use in the response',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The ETag corresponding to the LOV Index',
+            param: { required: false },
+          }),
       }),
     },
     304: {
       description:
         'The ETag sent in the http header If-None-Match did not change. So you can keep your version.',
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description: 'The ETag corresponding to the LOV Index',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The ETag corresponding to the LOV Index',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The ETag corresponding to the LOV Index',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -15042,17 +15662,13 @@ export const getV2UserCatalogsStoreIdCategoriesRoute = createRoute({
       description: 'Categories',
       content: { 'application/json': { schema: CategoryListSchema } },
       headers: z.object({
-        'Content-Encoding': {
-          description: 'Indicates the compression use in the response',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description: 'Indicates the compression use in the response',
-              param: { required: false },
-            }),
-        },
+        'Content-Encoding': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description: 'Indicates the compression use in the response',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -15912,18 +16528,15 @@ export const getV2UserCatalogsStoreIdImportationsExecutionIdProductSamplesProduc
           'ExecutionId not found or not yet synchronized. If not synchronized within 30 sec, please contact our support',
         content: { 'application/json': { schema: BeezUPCommonErrorResponseMessageSchema } },
         headers: z.object({
-          'Retry-After': {
-            description: 'The duration in second to wait before polling this resource',
-            schema: z
-              .int()
-              .min(5)
-              .default(5)
-              .exactOptional()
-              .openapi({
-                description: 'The duration in second to wait before polling this resource',
-                param: { required: false },
-              }),
-          },
+          'Retry-After': z
+            .int()
+            .min(5)
+            .default(5)
+            .exactOptional()
+            .openapi({
+              description: 'The duration in second to wait before polling this resource',
+              param: { required: false },
+            }),
         }),
       },
       409: {
@@ -16198,25 +16811,19 @@ export const postV2UserChannelCatalogsIndexRoute = createRoute({
       description: 'When the channel has been successfully added for this store',
       content: { 'application/json': { schema: LinksGetChannelCatalogLinkSchema } },
       headers: z.object({
-        Location: {
-          description: 'The new location',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The new location', param: { required: false } }),
-        },
-        'Retry-After': {
-          description: 'The duration in second to wait before polling this resource',
-          schema: z
-            .int()
-            .min(5)
-            .default(5)
-            .exactOptional()
-            .openapi({
-              description: 'The duration in second to wait before polling this resource',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The new location', param: { required: false } }),
+        'Retry-After': z
+          .int()
+          .min(5)
+          .default(5)
+          .exactOptional()
+          .openapi({
+            description: 'The duration in second to wait before polling this resource',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -16628,18 +17235,14 @@ export const postV2UserChannelCatalogsChannelCatalogIdProductsExportRoute = crea
         },
       },
       headers: z.object({
-        Location: {
-          description:
-            'To indicate the url of the export file\nExample: https://beezupchannel.blob.core.windows.net/reports/exports/Excel_Products.xslx\n',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'To indicate the url of the export file\nExample: https://beezupchannel.blob.core.windows.net/reports/exports/Excel_Products.xslx\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'To indicate the url of the export file\nExample: https://beezupchannel.blob.core.windows.net/reports/exports/Excel_Products.xslx\n',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -16953,17 +17556,13 @@ export const getV2UserChannelsChannelIdCategoriesRoute = createRoute({
       description: 'Channel categories',
       content: { 'application/json': { schema: ChannelRootCategorySchema } },
       headers: z.object({
-        'Content-Encoding': {
-          description: 'Indicates the compression use in the response',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description: 'Indicates the compression use in the response',
-              param: { required: false },
-            }),
-        },
+        'Content-Encoding': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description: 'Indicates the compression use in the response',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17010,17 +17609,13 @@ export const postV2UserChannelsChannelIdColumnsRoute = createRoute({
       description: 'Channel columns',
       content: { 'application/json': { schema: z.array(ChannelColumnSchema) } },
       headers: z.object({
-        'Content-Encoding': {
-          description: 'Indicates the compression use in the response',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description: 'Indicates the compression use in the response',
-              param: { required: false },
-            }),
-        },
+        'Content-Encoding': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description: 'Indicates the compression use in the response',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17289,17 +17884,14 @@ export const postV2UserCustomerAccountResendEmailActivationRoute = createRoute({
       description: 'Email activation sent recently, must retry later. (One per hour)',
       content: { 'application/json': { schema: BeezUPCommonErrorResponseMessageSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'The duration in second to wait before making another request',
-          schema: z
-            .int()
-            .default(60)
-            .exactOptional()
-            .openapi({
-              description: 'The duration in second to wait before making another request',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .default(60)
+          .exactOptional()
+          .openapi({
+            description: 'The duration in second to wait before making another request',
+            param: { required: false },
+          }),
       }),
     },
     502: {
@@ -17904,58 +18496,42 @@ export const getV2UserLovIndexRoute = createRoute({
       description: 'Get the list names',
       content: { 'application/json': { schema: UserLovIndexSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description: 'The ETag corresponding to the LOV Index',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The ETag corresponding to the LOV Index',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The ETag corresponding to the LOV Index',
+            param: { required: false },
+          }),
       }),
     },
     304: {
       description:
         'The ETag sent in the http header If-None-Match did not change. So you can keep your version.',
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description: 'The ETag corresponding to the LOV Index',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The ETag corresponding to the LOV Index',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The ETag corresponding to the LOV Index',
+            param: { required: false },
+          }),
       }),
     },
     default: GeneralErrorResponse,
@@ -17992,69 +18568,49 @@ export const getV2UserLovListNameRoute = createRoute({
       description: 'The list of values',
       content: { 'application/json': { schema: UserListOfValuesResponseSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-              param: { required: false },
-            }),
-        },
-        'Content-Language': {
-          description: 'Indicates the language use in the response',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description: 'Indicates the language use in the response',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description: 'The ETag corresponding to the LOV Index',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The ETag corresponding to the LOV Index',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
+            param: { required: false },
+          }),
+        'Content-Language': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description: 'Indicates the language use in the response',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The ETag corresponding to the LOV Index',
+            param: { required: false },
+          }),
       }),
     },
     304: {
       description:
         'The ETag sent in the http header If-None-Match did not change. So you can keep your version.',
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
-              param: { required: false },
-            }),
-        },
-        ETag: {
-          description: 'The ETag corresponding to the LOV Index',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The ETag corresponding to the LOV Index',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the directive around the caching mechanisms.\\\nFor more information, please go to this link: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9\n',
+            param: { required: false },
+          }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The ETag corresponding to the LOV Index',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -18677,18 +19233,14 @@ export const postV2UserMarketplacesOrdersHarvestRoute = createRoute({
     202: {
       description: 'Successfully sent harvest request to all marketplaces',
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the duration in seconds to wait to be able to make this request again',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the duration in seconds to wait to be able to make this request again',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the duration in seconds to wait to be able to make this request again',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -18699,18 +19251,14 @@ export const postV2UserMarketplacesOrdersHarvestRoute = createRoute({
       description: 'Failed to send harvest request because allowed rate limits have been exceeded',
       content: { 'application/json': { schema: BeezUPCommonErrorResponseMessageSchema } },
       headers: z.object({
-        'Retry-After': {
-          description:
-            'Indicates the duration in seconds to wait to be able to make this request again',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates the duration in seconds to wait to be able to make this request again',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Indicates the duration in seconds to wait to be able to make this request again',
+            param: { required: false },
+          }),
       }),
     },
     default: GeneralErrorResponse,
@@ -18899,18 +19447,14 @@ export const postV2UserMarketplacesOrdersInvoicesMarketplaceTechnicalCodeAccount
       202: {
         description: 'Request Accepted.',
         headers: z.object({
-          Location: {
-            description:
-              'The location of the generated invoice. Might take a few seconds to be available',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The location of the generated invoice. Might take a few seconds to be available',
-                param: { required: false },
-              }),
-          },
+          Location: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The location of the generated invoice. Might take a few seconds to be available',
+              param: { required: false },
+            }),
         }),
       },
       403: OrderGenerateForbiddenResponseResponse,
@@ -19245,29 +19789,21 @@ export const getV2UserMarketplacesOrdersSubscriptionsIdReportingRoute = createRo
       description: 'Subscription push reporting info',
       content: { 'application/json': { schema: z.array(SubscriptionPushReportingSchema) } },
       headers: z.object({
-        Link: {
-          description:
-            'Based on the RFC 5988 - Web Linking, the page navigation will be indicated here with the rel=next, rel=previous, rel=first, rel=last, the pageNumber and the pageSize will be indicated in the link param',
-          style: 'simple',
-          schema: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Based on the RFC 5988 - Web Linking, the page navigation will be indicated here with the rel=next, rel=previous, rel=first, rel=last, the pageNumber and the pageSize will be indicated in the link param',
-              param: { required: false },
-            }),
-        },
-        'X-Total-Count': {
-          description: 'The total item count related to this query',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The total item count related to this query',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Based on the RFC 5988 - Web Linking, the page navigation will be indicated here with the rel=next, rel=previous, rel=first, rel=last, the pageNumber and the pageSize will be indicated in the link param',
+            param: { required: false },
+          }),
+        'X-Total-Count': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total item count related to this query',
+            param: { required: false },
+          }),
       }),
     },
     404: SubscriptionNotFoundResponseResponse,
@@ -19313,30 +19849,22 @@ export const getV2UserMarketplacesOrdersMarketplaceTechnicalCodeAccountIdBeezUPO
         description: 'Successfully fetched Order and Order Item(s) properties',
         content: { 'application/json': { schema: OrderSchema } },
         headers: z.object({
-          ETag: {
-            description:
-              'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-                param: { required: false },
-              }),
-          },
-          'Last-Modified': {
-            description:
-              'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-            schema: z.iso
-              .datetime({ offset: true })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
+              param: { required: false },
+            }),
+          'Last-Modified': z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description:
+                'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
+              param: { required: false },
+            }),
         }),
       },
       304: _304NotModifiedResponse,
@@ -19371,30 +19899,22 @@ export const headV2UserMarketplacesOrdersMarketplaceTechnicalCodeAccountIdBeezUP
       200: {
         description: 'Successfully fetched Order and Order Item(s) properties',
         headers: z.object({
-          ETag: {
-            description:
-              'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
-                param: { required: false },
-              }),
-          },
-          'Last-Modified': {
-            description:
-              'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-            schema: z.iso
-              .datetime({ offset: true })
-              .exactOptional()
-              .openapi({
-                description:
-                  'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
-                param: { required: false },
-              }),
-          },
+          ETag: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'ETag value to identify the current version of requested Order\\\nFor more details go to this link: http://tools.ietf.org/html/rfc7232#section-2.3\n',
+              param: { required: false },
+            }),
+          'Last-Modified': z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({
+              description:
+                'Last modification UTC date of the order\\\nFor more details go to this link: https://tools.ietf.org/html/rfc7232#section-2.2\n',
+              param: { required: false },
+            }),
         }),
       },
       304: _304NotModifiedResponse,
@@ -19455,18 +19975,14 @@ export const postV2UserMarketplacesOrdersMarketplaceTechnicalCodeAccountIdBeezUP
       202: {
         description: 'Successfully sent Order harvest request',
         headers: z.object({
-          'Retry-After': {
-            description:
-              'Indicates the duration in seconds to wait to be able to make this request again',
-            schema: z
-              .int()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Indicates the duration in seconds to wait to be able to make this request again',
-                param: { required: false },
-              }),
-          },
+          'Retry-After': z
+            .int()
+            .exactOptional()
+            .openapi({
+              description:
+                'Indicates the duration in seconds to wait to be able to make this request again',
+              param: { required: false },
+            }),
         }),
       },
       404: {
@@ -19478,18 +19994,14 @@ export const postV2UserMarketplacesOrdersMarketplaceTechnicalCodeAccountIdBeezUP
           'Failed to send harvest request because allowed rate limits have been exceeded',
         content: { 'application/json': { schema: BeezUPCommonErrorResponseMessageSchema } },
         headers: z.object({
-          'Retry-After': {
-            description:
-              'Indicates the duration in seconds to wait to be able to make this request again',
-            schema: z
-              .int()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Indicates the duration in seconds to wait to be able to make this request again',
-                param: { required: false },
-              }),
-          },
+          'Retry-After': z
+            .int()
+            .exactOptional()
+            .openapi({
+              description:
+                'Indicates the duration in seconds to wait to be able to make this request again',
+              param: { required: false },
+            }),
         }),
       },
       default: GeneralErrorResponse,
@@ -19595,18 +20107,14 @@ export const postV2UserMarketplacesOrdersMarketplaceTechnicalCodeAccountIdBeezUP
           'Already processing a change request for this Order.\\\nPlease refresh your clients Order information and retry later.\n',
         content: { 'application/json': { schema: BeezUPCommonErrorResponseMessageSchema } },
         headers: z.object({
-          'Retry-After': {
-            description:
-              'Indicates the duration in seconds to wait to be able to make this request again',
-            schema: z
-              .int()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Indicates the duration in seconds to wait to be able to make this request again',
-                param: { required: false },
-              }),
-          },
+          'Retry-After': z
+            .int()
+            .exactOptional()
+            .openapi({
+              description:
+                'Indicates the duration in seconds to wait to be able to make this request again',
+              param: { required: false },
+            }),
         }),
       },
       412: _412PreConditionFailedResponse,

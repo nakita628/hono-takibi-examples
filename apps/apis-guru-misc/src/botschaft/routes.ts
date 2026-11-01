@@ -2,7 +2,7 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const ConfigSchema = z
   .object({
-    providers: z.object({}).openapi({ title: 'Providers' }),
+    providers: z.looseObject({}).openapi({ title: 'Providers' }),
     topics: z.array(z.any()).openapi({ title: 'Topics' }),
   })
   .openapi({ required: ['providers', 'topics'], title: 'Config' })

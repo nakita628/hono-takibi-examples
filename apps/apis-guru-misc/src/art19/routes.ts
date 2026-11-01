@@ -10,7 +10,7 @@ const ClassificationSchema = z
           .exactOptional()
           .openapi({ description: 'Human readable representation of the classification' }),
         metadata: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -1327,18 +1327,14 @@ const NotFoundResponse = {
 const RateLimitExceededResponse = {
   description: 'Rate limit exceeded',
   headers: z.object({
-    'Retry-After': {
-      description:
-        'The number of seconds after which the request can be retried.\nSince the rate limit is per minute, this value ranges from 1 to 59.\nConforms to [RFC 7231 § 7.1.3](https://tools.ietf.org/html/rfc7231#section-7.1.3).\n',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description:
-            'The number of seconds after which the request can be retried.\nSince the rate limit is per minute, this value ranges from 1 to 59.\nConforms to [RFC 7231 § 7.1.3](https://tools.ietf.org/html/rfc7231#section-7.1.3).\n',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of seconds after which the request can be retried.\nSince the rate limit is per minute, this value ranges from 1 to 59.\nConforms to [RFC 7231 § 7.1.3](https://tools.ietf.org/html/rfc7231#section-7.1.3).\n',
+        param: { required: false },
+      }),
   }),
 }
 

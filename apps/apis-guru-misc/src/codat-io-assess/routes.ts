@@ -31,269 +31,157 @@ const ExcelStatusSchema = z
     success: z.boolean().exactOptional(),
   })
   .openapi({
-    examples: {
-      'Example 1': {
-        value: {
-          errorMessage: 'string',
-          fileSize: 0,
-          inProgress: true,
-          lastGenerated: '2023-01-25T22:36:05.125Z',
-          lastInvocationId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          queued: '2023-01-25T22:36:05.125Z',
-          reportType: 'string',
-          success: true,
-        },
+    examples: [
+      {
+        errorMessage: 'string',
+        fileSize: 0,
+        inProgress: true,
+        lastGenerated: '2023-01-25T22:36:05.125Z',
+        lastInvocationId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        queued: '2023-01-25T22:36:05.125Z',
+        reportType: 'string',
+        success: true,
       },
-    },
+    ],
     title: 'Excel status',
     required: [],
   })
   .openapi('ExcelStatus')
 
-const DataIntegrityDetailsSchema = z
-  .object({
-    amount: z.number().exactOptional().openapi({ description: 'The transaction value.' }),
-    connectionId: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description: 'ID GUID representing the connection of the accounting or banking platform.',
-        readOnly: true,
-      }),
-    currency: CurrencySchema.exactOptional().openapi({
-      description: 'The currency of the transaction.',
-    }),
-    date: z
-      .lazy(() => ExcelStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'The date of the transaction.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The transaction description.' }),
-    id: z.string().exactOptional().openapi({ description: 'ID GUID of the transaction.' }),
-    matches: z
-      .array(
-        z
-          .object({
-            amount: z.string().exactOptional().openapi({ description: 'The transaction value.' }),
-            connectionId: z
-              .uuid()
-              .exactOptional()
-              .openapi({
-                description:
-                  'ID GUID representing the connection of the accounting or banking platform.',
-              }),
-            currency: CurrencySchema.exactOptional().openapi({
-              description: 'The currency of the transaction.',
-            }),
-            date: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The date of the transaction.' }),
-            description: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The transaction description.' }),
-            id: z.string().exactOptional().openapi({ description: 'ID GUID of the transaction.' }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  "The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.",
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    type: z.string().exactOptional().openapi({ description: 'The data type of the record.' }),
-  })
-  .openapi({ title: 'Data integrity details', required: [] })
-  .openapi('DataIntegrityDetails')
-
-const HalRefSchema = z
-  .object({ href: z.string().exactOptional() })
-  .openapi({ title: 'Hypertext reference', 'x-internal': true, required: [] })
-  .openapi('HalRef')
-
-const LinksSchema = z
-  .object({
-    current: HalRefSchema,
-    next: HalRefSchema.exactOptional(),
-    previous: HalRefSchema.exactOptional(),
-    self: HalRefSchema,
-  })
+const CurrencyRateSchema = z
+  .number()
+  .nullable()
   .openapi({
-    examples: [
-      {
-        current: { href: '/companies/{id}/data/{dataType}?page=1&pageSize=10' },
-        self: { href: '/companies/{id}/data/{dataType}' },
-      },
-    ],
-    required: ['self', 'current'],
-    'x-internal': true,
+    description:
+      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
+    title: 'Currency rate',
   })
-  .openapi('Links')
+  .openapi('CurrencyRate')
 
-const PagingInfoSchema = z
-  .object({ _links: LinksSchema, pageNumber: z.int(), pageSize: z.int(), totalResults: z.int() })
-  .openapi({
-    examples: [
-      {
-        _links: {
-          current: { href: '/companies/{id}/data/{dataType}?page=1&pageSize=10' },
-          pageNumber: 1,
-          pageSize: 10,
-          self: { href: '/companies/{id}/data/{dataType}' },
-          totalResults: 1,
-        },
-      },
-    ],
-    required: ['pageNumber', 'pageSize', 'totalResults', '_links'],
-    'x-internal': true,
-  })
-  .openapi('PagingInfo')
+type EnhancedInvoicesReportType = {
+  reportInfo?: {
+    companyName?: string
+    generatedDate?: string
+    pageNumber?: number
+    pageSize?: number
+    reportName?: string
+    totalResults?: number
+  }
+  reportItems?: {
+    invoices?: {
+      amountDue?: number
+      currency?: z.infer<typeof CurrencySchema>
+      customerRef?: { companyName?: string | null; id: string }
+      dueDate?: z.infer<typeof ExcelStatusSchema>
+      id?: string
+      invoiceNumber?: string
+      issueDate?: z.infer<typeof ExcelStatusSchema>
+      paidOnDate?: z.infer<typeof ExcelStatusSchema>
+      payments?: ({
+        accountRef?: { id?: string; name?: string }
+        currency?: z.infer<typeof CurrencySchema>
+        currencyRate?: z.infer<typeof CurrencyRateSchema>
+        customerRef?: { companyName?: string | null; id: string }
+        date?: z.infer<typeof ExcelStatusSchema>
+        id?: string
+        lines?:
+          | {
+              allocatedOnDate?: z.infer<typeof ExcelStatusSchema>
+              amount: number
+              links?:
+                | {
+                    amount?: number | null
+                    currencyRate?: z.infer<typeof CurrencyRateSchema>
+                    id?: string
+                    type:
+                      | 'Unknown'
+                      | 'Unlinked'
+                      | 'Invoice'
+                      | 'CreditNote'
+                      | 'Other'
+                      | 'Refund'
+                      | 'Payment'
+                      | 'PaymentOnAccount'
+                      | 'ManualJournal'
+                      | 'Discount'
+                  }[]
+                | null
+            }[]
+          | null
+        metadata?: { isDeleted?: boolean | null }
+        note?: string | null
+        paymentMethodRef?: { id?: string; name?: string | null }
+        reference?: string | null
+        supplementalData?: { content?: { [key: string]: { [key: string]: unknown } } | null }
+        totalAmount?: number
+      } & ({ modifiedDate?: z.infer<typeof ExcelStatusSchema> } & {
+        sourceModifiedDate?: z.infer<typeof ExcelStatusSchema>
+      }))[]
+      status?: 'Unknown' | 'Draft' | 'Submitted' | 'PartiallyPaid' | 'Paid' | 'Void'
+      totalAmount?: number
+    }[]
+  }[]
+}
 
-type DetailsType = { results?: z.infer<typeof DataIntegrityDetailsSchema>[] } & z.infer<
-  typeof PagingInfoSchema
->
+type FinancialMetricsType = {
+  currency?: z.infer<typeof CurrencySchema>
+  errors?: {
+    message?: string
+    type?: 'DataNotSynced' | 'DataNotSupported' | 'DataSyncFailed' | 'DataTypeNotEnabled'
+  }[]
+  metrics?: {
+    errors?: {
+      details?: { [key: string]: string[] }
+      message?: string
+      type?: 'UncategorizedAccounts' | 'MissingInputData' | 'InputDataError'
+    }[]
+    key?:
+      | 'Unknown'
+      | 'EBITDA'
+      | 'DebtServiceCoverageRatio'
+      | 'CurrentRatio QuickRatio'
+      | 'GrossProfitMargin'
+      | 'FixedChargeCoverageRatio'
+      | 'WorkingCapital'
+      | 'FreeCashFlow'
+      | 'NetProfitMargin'
+      | 'ReturnOnAssetsRatio'
+      | 'ReturnOnEquityRatio'
+      | 'OperatingProfitMargin'
+      | 'DeptToEquity'
+      | 'DebtToAssets'
+      | 'InterestCoverageRatio'
+      | 'CashRatio'
+      | 'InventoryTurnoverRatio'
+      | 'AssetTurnoverRatio'
+      | 'WorkingCapitalTurnoverRatio'
+      | 'DaysSalesOutstanding'
+      | 'DaysPayablesOutstanding'
+    metricUnit?: 'Ratio' | 'Money'
+    name?: string
+    periods?: {
+      errors?: {
+        details?: { [key: string]: string[] }
+        massage?: string
+        type?: 'MissingAccountData' | 'DatesOutOfRange'
+      }[]
+      fromDate?: string
+      inputs?: { name?: string; value?: number }[]
+      toDate?: string
+      value?: number
+    }[]
+  }[]
+  periodUnit?: 'Month' | 'Week' | 'Day'
+}
 
-const DataIntegrityStatusSchema = z
-  .object({
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.",
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        amounts: z
-          .object({
-            currency: CurrencySchema.exactOptional(),
-            max: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Highest value of transaction set.' }),
-            min: z
-              .number()
-              .exactOptional()
-              .openapi({ description: 'Lowest value of transaction set.' }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Only returned for transactions. For accounts, there is nothing returned.',
-            required: [],
-          }),
-        connectionIds: z
-          .object({
-            source: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({
-                description:
-                  'An array of strings. The connection IDs for the type specified in the url.',
-              }),
-            target: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({
-                description:
-                  'An array of strings. The connection IDs for the type being matched to.',
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        dates: z
-          .object({
-            maxDate: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({ description: 'Latest date of transaction set.', readOnly: true }),
-            maxOverlappingDate: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({
-                description:
-                  'Latest date where transactions exist in both account and banking platforms.',
-                readOnly: true,
-              }),
-            minDate: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({ description: 'Earliest date of transaction set.', readOnly: true }),
-            minOverlappingDate: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({
-                description:
-                  'Earliest date where transactions exist in both accounting and banking platforms.',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Only returned for transactions. For accounts, there is nothing returned.',
-            required: [],
-          }),
-        statusInfo: z
-          .object({
-            currentStatus: z
-              .enum(['Unknown', 'DoesNotExist', 'Error', 'Complete'])
-              .exactOptional()
-              .openapi({
-                description: 'The current status of the most recently run matching algorithm.',
-              }),
-            lastMatched: z
-              .lazy(() => ExcelStatusSchema)
-              .exactOptional()
-              .openapi({
-                description:
-                  'The date the matching algorithm last ran against the company’s data type specified.',
-                readOnly: true,
-              }),
-            statusMessage: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Detailed explanation supporting the status value.' }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    examples: [
-      {
-        amounts: { currency: 'GBP', max: 2450, min: 130 },
-        connectionIds: {
-          source: ['d5a8d1b2-b38a-4e44-8641-548ad43be6bb', 'da8c9f39-8af9-4a98-964b-f1e207942837'],
-          target: ['3d7ce25a-c107-44bc-8e0c-36c10bdd14e0', 'a5300eac-01fa-4a77-b5b0-ea0b86a3be69'],
-        },
-        dates: {
-          maxDate: '2021-12-16T12:12:53.441Z',
-          maxOverlappingDate: '2021-11-27T12:19:33.441Z',
-          minDate: '2021-09-17T12:09:33.441Z',
-          minOverlappingDate: '2021-09-30T12:09:13.441Z',
-        },
-        statusInfo: {
-          currentStatus: 'Unknown',
-          lastMatched: '2021-10-24T14:15:22Z',
-          statusMessage: 'string',
-        },
-        type: 'string',
-      },
-    ],
-    title: 'Data integrity status',
-  })
-  .openapi('DataIntegrityStatus')
-
-type StatusType = { metadata?: z.infer<typeof DataIntegrityStatusSchema>[] }
+type ReportComponentType = {
+  components?: ReportComponentType[]
+  dimension?: number
+  dimensionDisplayName?: string
+  item?: number
+  itemDisplayName?: string
+  measures?: { index?: number; measureDisplayName?: string; value?: number }[]
+}
 
 const AccountCategoriesUpdatedWebhookSchema = z
   .object({
@@ -496,6 +384,49 @@ const CategorisedAccountSchema = z
   })
   .openapi('CategorisedAccount')
 
+const HalRefSchema = z
+  .object({ href: z.string().exactOptional() })
+  .openapi({ title: 'Hypertext reference', 'x-internal': true, required: [] })
+  .openapi('HalRef')
+
+const LinksSchema = z
+  .object({
+    current: HalRefSchema,
+    next: HalRefSchema.exactOptional(),
+    previous: HalRefSchema.exactOptional(),
+    self: HalRefSchema,
+  })
+  .openapi({
+    examples: [
+      {
+        current: { href: '/companies/{id}/data/{dataType}?page=1&pageSize=10' },
+        self: { href: '/companies/{id}/data/{dataType}' },
+      },
+    ],
+    required: ['self', 'current'],
+    'x-internal': true,
+  })
+  .openapi('Links')
+
+const PagingInfoSchema = z
+  .object({ _links: LinksSchema, pageNumber: z.int(), pageSize: z.int(), totalResults: z.int() })
+  .openapi({
+    examples: [
+      {
+        _links: {
+          current: { href: '/companies/{id}/data/{dataType}?page=1&pageSize=10' },
+          pageNumber: 1,
+          pageSize: 10,
+          self: { href: '/companies/{id}/data/{dataType}' },
+          totalResults: 1,
+        },
+      },
+    ],
+    required: ['pageNumber', 'pageSize', 'totalResults', '_links'],
+    'x-internal': true,
+  })
+  .openapi('PagingInfo')
+
 const CategorisedAccountsSchema = z
   .object({
     results: z
@@ -546,15 +477,201 @@ const ConfirmCategorySchema = z
   .openapi({ required: ['confirmed'], 'x-internal': true })
   .openapi('ConfirmCategory')
 
-const CurrencyRateSchema = z
-  .number()
-  .nullable()
-  .openapi({
-    description:
-      'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
-    title: 'Currency rate',
+const DataIntegrityDetailsSchema = z
+  .object({
+    amount: z.number().exactOptional().openapi({ description: 'The transaction value.' }),
+    connectionId: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'ID GUID representing the connection of the accounting or banking platform.',
+        readOnly: true,
+      }),
+    currency: CurrencySchema.exactOptional().openapi({
+      description: 'The currency of the transaction.',
+    }),
+    date: z
+      .lazy(() => ExcelStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'The date of the transaction.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The transaction description.' }),
+    id: z.string().exactOptional().openapi({ description: 'ID GUID of the transaction.' }),
+    matches: z
+      .array(
+        z
+          .object({
+            amount: z.string().exactOptional().openapi({ description: 'The transaction value.' }),
+            connectionId: z
+              .uuid()
+              .exactOptional()
+              .openapi({
+                description:
+                  'ID GUID representing the connection of the accounting or banking platform.',
+              }),
+            currency: CurrencySchema.exactOptional().openapi({
+              description: 'The currency of the transaction.',
+            }),
+            date: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The date of the transaction.' }),
+            description: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The transaction description.' }),
+            id: z.string().exactOptional().openapi({ description: 'ID GUID of the transaction.' }),
+            type: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  "The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.",
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    type: z.string().exactOptional().openapi({ description: 'The data type of the record.' }),
   })
-  .openapi('CurrencyRate')
+  .openapi({ title: 'Data integrity details', required: [] })
+  .openapi('DataIntegrityDetails')
+
+const DataIntegrityStatusSchema = z
+  .object({
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.",
+      }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        amounts: z
+          .object({
+            currency: CurrencySchema.exactOptional(),
+            max: z
+              .number()
+              .exactOptional()
+              .openapi({ description: 'Highest value of transaction set.' }),
+            min: z
+              .number()
+              .exactOptional()
+              .openapi({ description: 'Lowest value of transaction set.' }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Only returned for transactions. For accounts, there is nothing returned.',
+            required: [],
+          }),
+        connectionIds: z
+          .object({
+            source: z
+              .array(z.string())
+              .exactOptional()
+              .openapi({
+                description:
+                  'An array of strings. The connection IDs for the type specified in the url.',
+              }),
+            target: z
+              .array(z.string())
+              .exactOptional()
+              .openapi({
+                description:
+                  'An array of strings. The connection IDs for the type being matched to.',
+              }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        dates: z
+          .object({
+            maxDate: z
+              .lazy(() => ExcelStatusSchema)
+              .exactOptional()
+              .openapi({ description: 'Latest date of transaction set.', readOnly: true }),
+            maxOverlappingDate: z
+              .lazy(() => ExcelStatusSchema)
+              .exactOptional()
+              .openapi({
+                description:
+                  'Latest date where transactions exist in both account and banking platforms.',
+                readOnly: true,
+              }),
+            minDate: z
+              .lazy(() => ExcelStatusSchema)
+              .exactOptional()
+              .openapi({ description: 'Earliest date of transaction set.', readOnly: true }),
+            minOverlappingDate: z
+              .lazy(() => ExcelStatusSchema)
+              .exactOptional()
+              .openapi({
+                description:
+                  'Earliest date where transactions exist in both accounting and banking platforms.',
+                readOnly: true,
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Only returned for transactions. For accounts, there is nothing returned.',
+            required: [],
+          }),
+        statusInfo: z
+          .object({
+            currentStatus: z
+              .enum(['Unknown', 'DoesNotExist', 'Error', 'Complete'])
+              .exactOptional()
+              .openapi({
+                description: 'The current status of the most recently run matching algorithm.',
+              }),
+            lastMatched: z
+              .lazy(() => ExcelStatusSchema)
+              .exactOptional()
+              .openapi({
+                description:
+                  'The date the matching algorithm last ran against the company’s data type specified.',
+                readOnly: true,
+              }),
+            statusMessage: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Detailed explanation supporting the status value.' }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    examples: [
+      {
+        amounts: { currency: 'GBP', max: 2450, min: 130 },
+        connectionIds: {
+          source: ['d5a8d1b2-b38a-4e44-8641-548ad43be6bb', 'da8c9f39-8af9-4a98-964b-f1e207942837'],
+          target: ['3d7ce25a-c107-44bc-8e0c-36c10bdd14e0', 'a5300eac-01fa-4a77-b5b0-ea0b86a3be69'],
+        },
+        dates: {
+          maxDate: '2021-12-16T12:12:53.441Z',
+          maxOverlappingDate: '2021-11-27T12:19:33.441Z',
+          minDate: '2021-09-17T12:09:33.441Z',
+          minOverlappingDate: '2021-09-30T12:09:13.441Z',
+        },
+        statusInfo: {
+          currentStatus: 'Unknown',
+          lastMatched: '2021-10-24T14:15:22Z',
+          statusMessage: 'string',
+        },
+        type: 'string',
+      },
+    ],
+    title: 'Data integrity status',
+  })
+  .openapi('DataIntegrityStatus')
 
 const DataIntegritySummarySchema = z
   .object({
@@ -637,14 +754,11 @@ const DataIntegritySummarySchema = z
   .openapi({ title: 'Data integrity summary' })
   .openapi('DataIntegritySummary')
 
-const DetailsSchema: z.ZodType<DetailsType> = z
-  .lazy(() =>
-    z
-      .object({ results: z.array(DataIntegrityDetailsSchema).exactOptional() })
-      .openapi({ required: [] })
-      .and(PagingInfoSchema)
-      .openapi({ 'x-internal': true }),
-  )
+const DetailsSchema = z
+  .object({ results: z.array(DataIntegrityDetailsSchema).exactOptional() })
+  .openapi({ required: [] })
+  .and(PagingInfoSchema)
+  .openapi({ 'x-internal': true })
   .openapi('Details')
 
 const EnhancedCashFlowTransactionsSchema = z
@@ -831,7 +945,7 @@ const EnhancedCashFlowTransactionsSchema = z
   .openapi({ description: '', title: 'Enhanced cash flow transactions', required: [] })
   .openapi('EnhancedCashFlowTransactions')
 
-const EnhancedInvoicesReportSchema = z
+const EnhancedInvoicesReportSchema: z.ZodType<EnhancedInvoicesReportType> = z
   .object({
     reportInfo: z
       .object({
@@ -1233,12 +1347,7 @@ const EnhancedReportSchema = z
                   }),
               })
               .exactOptional()
-              .openapi({
-                descrciption:
-                  'An object containing the suggested or confirmed account categories, up to five levels.',
-                title: 'Account category',
-                required: [],
-              }),
+              .openapi({ title: 'Account category', required: [] }),
             accountId: z
               .string()
               .exactOptional()
@@ -1323,7 +1432,7 @@ const EnhancedReportSchema = z
   })
   .openapi('EnhancedReport')
 
-const FinancialMetricsSchema = z
+const FinancialMetricsSchema: z.ZodType<FinancialMetricsType> = z
   .object({
     currency: CurrencySchema.exactOptional(),
     errors: z
@@ -1498,6 +1607,31 @@ const FinancialMetricsSchema = z
   .openapi({ title: 'Enhanced financial metrics', required: [] })
   .openapi('FinancialMetrics')
 
+const ReportComponentSchema: z.ZodType<ReportComponentType> = z
+  .lazy(() =>
+    z
+      .object({
+        components: z.array(ReportComponentSchema).exactOptional(),
+        dimension: z.int().exactOptional(),
+        dimensionDisplayName: z.string().exactOptional(),
+        item: z.int().exactOptional(),
+        itemDisplayName: z.string().exactOptional(),
+        measures: z
+          .array(
+            z
+              .object({
+                index: z.int().exactOptional(),
+                measureDisplayName: z.string().exactOptional(),
+                value: z.number().exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+      })
+      .openapi({ title: 'Report component', required: [] }),
+  )
+  .openapi('ReportComponent')
+
 const ReportSchema = z
   .object({
     dimensions: z
@@ -1537,30 +1671,7 @@ const ReportSchema = z
           .openapi({ title: 'Measure', required: [] }),
       )
       .exactOptional(),
-    reportData: z
-      .array(
-        z
-          .object({
-            components: z.array(ReportComponentSchema).exactOptional(),
-            dimension: z.int().exactOptional(),
-            dimensionDisplayName: z.string().exactOptional(),
-            item: z.int().exactOptional(),
-            itemDisplayName: z.string().exactOptional(),
-            measures: z
-              .array(
-                z
-                  .object({
-                    index: z.int().exactOptional(),
-                    measureDisplayName: z.string().exactOptional(),
-                    value: z.number().exactOptional(),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional(),
-          })
-          .openapi({ title: 'Report component', required: [] }),
-      )
-      .exactOptional(),
+    reportData: z.array(ReportComponentSchema).exactOptional(),
     reportInfo: z.record(z.string(), z.string()).exactOptional(),
   })
   .openapi({
@@ -1569,7 +1680,7 @@ const ReportSchema = z
     title: 'Assess report',
     'x-examples': {
       'Example 1': {
-        dimensions: [{ displayName: 'string', index: 0, type: 'string' }],
+        dimensions: [{ displayName: 'string', index: 0, items: [{ index: 0 }], type: 'string' }],
         errors: [
           {
             details: {
@@ -1603,12 +1714,9 @@ const ReportSchema = z
   })
   .openapi('Report')
 
-const StatusSchema: z.ZodType<StatusType> = z
-  .lazy(() =>
-    z
-      .object({ metadata: z.array(DataIntegrityStatusSchema).exactOptional() })
-      .openapi({ 'x-internal': true, required: [] }),
-  )
+const StatusSchema = z
+  .object({ metadata: z.array(DataIntegrityStatusSchema).exactOptional() })
+  .openapi({ 'x-internal': true, required: [] })
   .openapi('Status')
 
 const SummariesSchema = z
@@ -3095,7 +3203,10 @@ export const getDataCompaniesCompanyIdAssessExcelDownloadRoute = createRoute({
     query: z.object({ reportType: ExcelReportTypeParamsSchema }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/octet-stream': { schema: z.object({}) } } },
+    200: {
+      description: 'OK',
+      content: { 'application/octet-stream': { schema: z.looseObject({}) } },
+    },
   },
 })
 
@@ -3111,7 +3222,10 @@ export const postDataCompaniesCompanyIdAssessExcelDownloadRoute = createRoute({
     query: z.object({ reportType: ExcelReportTypeParamsSchema }),
   },
   responses: {
-    200: { description: 'OK', content: { 'application/octet-stream': { schema: z.object({}) } } },
+    200: {
+      description: 'OK',
+      content: { 'application/octet-stream': { schema: z.looseObject({}) } },
+    },
   },
   deprecated: true,
 })

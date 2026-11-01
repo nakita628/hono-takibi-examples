@@ -2110,7 +2110,7 @@ const OutputCollectionNumberSchema = z
       .exactOptional()
       .openapi({ description: 'Success', 'x-ms-summary': 'Success' }),
   })
-  .openapi({ example: { item: 1.25, status: false }, required: [] })
+  .openapi({ example: { item: 1.25, items: [1.25, 2.5, 3.75], status: false }, required: [] })
   .openapi('OutputCollectionNumber')
 
 const OutputCollectionResultSchema = z
@@ -2141,7 +2141,7 @@ const OutputCollectionStringSchema = z
       .exactOptional()
       .openapi({ description: 'Success', 'x-ms-summary': 'Success' }),
   })
-  .openapi({ example: { item: 'string', status: false }, required: [] })
+  .openapi({ example: { item: 'string', items: ['string'], status: false }, required: [] })
   .openapi('OutputCollectionString')
 
 const OutputDateDifferenceSchema = z

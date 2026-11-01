@@ -406,7 +406,7 @@ export const getStatusRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })

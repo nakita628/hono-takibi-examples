@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SystemObjectSchema = z.object({}).openapi('SystemObject')
+const SystemObjectSchema = z.looseObject({}).openapi('SystemObject')
 
 type ApiCoreDtoAggregatedAggregatedResultType = {
   activityDay?: string

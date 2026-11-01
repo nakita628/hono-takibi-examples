@@ -1,17 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const WannabeEnvSchema = z
-  .object({ name: z.string(), value: z.string() })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('WannabeEnv')
-
-type EnvType = {
-  addon_id: string
-  addon_name: string
-  env: z.infer<typeof WannabeEnvSchema>[]
-  provider_id: string
-}
-
 const FeatureSchema = z
   .object({
     name: z.string().openapi({ description: 'The name of the properties' }),
@@ -198,7 +186,7 @@ const DeploymentSchema = z
   .openapi({ required: ['repoState', 'shutdownable', 'type', 'url'] })
   .openapi('Deployment')
 
-const MapSchema = z.object({}).openapi('Map')
+const MapSchema = z.looseObject({}).openapi('Map')
 
 const VariantSchema = z
   .object({
@@ -449,17 +437,19 @@ const DeploymentSummarySchema = z
   .openapi({ required: [] })
   .openapi('DeploymentSummary')
 
-const EnvSchema: z.ZodType<EnvType> = z
-  .lazy(() =>
-    z
-      .object({
-        addon_id: z.string(),
-        addon_name: z.string(),
-        env: z.array(WannabeEnvSchema),
-        provider_id: z.string(),
-      })
-      .openapi({ required: ['addon_id', 'addon_name', 'env', 'provider_id'] }),
-  )
+const WannabeEnvSchema = z
+  .object({ name: z.string(), value: z.string() })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('WannabeEnv')
+
+const EnvSchema = z
+  .object({
+    addon_id: z.string(),
+    addon_name: z.string(),
+    env: z.array(WannabeEnvSchema),
+    provider_id: z.string(),
+  })
+  .openapi({ required: ['addon_id', 'addon_name', 'env', 'provider_id'] })
   .openapi('Env')
 
 const EnvVarSchema = z.any().openapi('EnvVar')
@@ -3682,7 +3672,7 @@ export const postOrganisationsIdAddonsAddonIdMigrationsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ description: 'The output of the POST to the add-on API.' }),
         },
       },
@@ -4984,7 +4974,7 @@ export const getOrganisationsIdInstancesRoute = createRoute({
   responses: {
     200: {
       description: 'getInstancesForAllApps',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })

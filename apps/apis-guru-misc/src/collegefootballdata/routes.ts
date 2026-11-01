@@ -1,5 +1,18 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type PlayerGameType = {
+  id?: number
+  teams?: {
+    categories?: {
+      name?: string
+      types?: { athletes?: { id?: number; name?: string; stat?: string }[]; name?: string }[]
+    }[]
+    homeAway?: boolean
+    points?: number
+    school?: { conference?: string; name?: string }
+  }[]
+}
+
 const AdvancedGameStatSchema = z
   .object({
     defense: z
@@ -1094,7 +1107,7 @@ const PlayerSchema = z
   .openapi({ required: [] })
   .openapi('Player')
 
-const PlayerGameSchema = z
+const PlayerGameSchema: z.ZodType<PlayerGameType> = z
   .object({
     id: z.int().exactOptional(),
     teams: z

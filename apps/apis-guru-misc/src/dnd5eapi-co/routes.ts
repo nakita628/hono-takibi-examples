@@ -2,6 +2,52 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 type APIReferenceType = { index?: string; name?: string; url?: string }
 
+const APIReferenceSchema: z.ZodType<APIReferenceType> = z
+  .object({
+    index: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Resource index for shorthand searching.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the referenced resource.' }),
+    url: z.string().exactOptional().openapi({ description: 'URL of the referenced resource.' }),
+  })
+  .openapi({ description: '`APIReference`\n', required: [] })
+  .openapi('APIReference')
+
+const ChoiceSchema: z.ZodType<ChoiceType> = z
+  .lazy(() =>
+    z
+      .object({
+        choose: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'Number of items to pick from the list.' }),
+        desc: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Description of the choice to be made.' }),
+        from: OptionSetSchema.exactOptional(),
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Type of the resources to choose from.' }),
+      })
+      .openapi({ description: '`Choice`\n', required: [] }),
+  )
+  .openapi('Choice')
+
+type BackgroundType = z.infer<typeof APIReferenceSchema> & {
+  bonds?: z.infer<typeof ChoiceSchema>
+  feature?: { desc?: string[]; name?: string }
+  flaws?: z.infer<typeof ChoiceSchema>
+  ideals?: z.infer<typeof ChoiceSchema>
+  language_options?: z.infer<typeof ChoiceSchema>
+  personality_traits?: { [key: string]: unknown }
+  starting_equipment?: z.infer<typeof APIReferenceSchema>[]
+  starting_equipment_options?: z.infer<typeof ChoiceSchema>
+  starting_proficiencies?: z.infer<typeof APIReferenceSchema>[]
+}
+
 const OptionSetSchema: z.ZodType<OptionSetType> = z
   .lazy(() =>
     z
@@ -51,17 +97,90 @@ type ChoiceType = {
   type?: string
 }
 
-const APIReferenceSchema: z.ZodType<APIReferenceType> = z
+const PrerequisiteSchema = z
   .object({
-    index: z
-      .string()
+    ability_score: APIReferenceSchema.exactOptional(),
+    minimum_score: z
+      .number()
       .exactOptional()
-      .openapi({ description: 'Resource index for shorthand searching.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the referenced resource.' }),
-    url: z.string().exactOptional().openapi({ description: 'URL of the referenced resource.' }),
+      .openapi({ description: 'Minimum score to meet the prerequisite.' }),
   })
-  .openapi({ description: '`APIReference`\n', required: [] })
-  .openapi('APIReference')
+  .openapi({ description: '`Prerequisite`\n', required: [] })
+  .openapi('Prerequisite')
+
+type MulticlassingType = {
+  prerequisite_options?: z.infer<typeof ChoiceSchema>[]
+  prerequisites?: z.infer<typeof PrerequisiteSchema>[]
+  proficiencies?: z.infer<typeof APIReferenceSchema>[]
+  proficiency_choices?: z.infer<typeof ChoiceSchema>[]
+}
+
+const MulticlassingSchema: z.ZodType<MulticlassingType> = z
+  .object({
+    prerequisite_options: z
+      .array(ChoiceSchema)
+      .exactOptional()
+      .openapi({ description: 'List of choices of prerequisites to meet for.' }),
+    prerequisites: z
+      .array(PrerequisiteSchema)
+      .exactOptional()
+      .openapi({ description: 'List of prerequisites that must be met.' }),
+    proficiencies: z
+      .array(APIReferenceSchema)
+      .exactOptional()
+      .openapi({ description: 'List of proficiencies available when multiclassing.' }),
+    proficiency_choices: z
+      .array(ChoiceSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of choices of proficiencies that are given when multiclassing.',
+      }),
+  })
+  .openapi({ description: '`Multiclassing`\n', required: [] })
+  .openapi('Multiclassing')
+
+const SpellcastingSchema = z
+  .object({
+    info: z
+      .array(
+        z
+          .object({
+            desc: z
+              .array(z.string())
+              .exactOptional()
+              .openapi({ description: 'Feature description.' }),
+            name: z.string().exactOptional().openapi({ description: 'Feature name.' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: "Descriptions of the class' ability to cast spells." }),
+    level: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Level at which the class can start using its spellcasting abilities.',
+      }),
+    spellcasting_ability: APIReferenceSchema.exactOptional().openapi({
+      description: 'Reference to the `AbilityScore` used for spellcasting by the class.',
+    }),
+  })
+  .openapi({ description: '`Spellcasting`\n', required: [] })
+  .openapi('Spellcasting')
+
+type ClassType = z.infer<typeof APIReferenceSchema> & {
+  class_levels?: string
+  hit_die?: number
+  multi_classing?: z.infer<typeof MulticlassingSchema>
+  proficiencies?: z.infer<typeof APIReferenceSchema>[]
+  proficiency_choices?: z.infer<typeof ChoiceSchema>[]
+  saving_throws?: z.infer<typeof APIReferenceSchema>[]
+  spellcasting?: z.infer<typeof SpellcastingSchema>
+  spells?: string
+  starting_equipment?: { equipment?: z.infer<typeof APIReferenceSchema>; quantity?: number }[]
+  starting_equipment_options?: z.infer<typeof ChoiceSchema>[]
+  subclasses?: z.infer<typeof APIReferenceSchema>[]
+}
 
 type DCType = {
   dc_type?: z.infer<typeof APIReferenceSchema>
@@ -71,35 +190,15 @@ type DCType = {
 
 type DamageType = { damage_dice?: string; damage_type?: z.infer<typeof APIReferenceSchema> }
 
-const ChoiceSchema: z.ZodType<ChoiceType> = z
-  .lazy(() =>
-    z
-      .object({
-        choose: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Number of items to pick from the list.' }),
-        desc: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Description of the choice to be made.' }),
-        from: OptionSetSchema.exactOptional(),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Type of the resources to choose from.' }),
-      })
-      .openapi({ description: '`Choice`\n', required: [] }),
-  )
-  .openapi('Choice')
-
-const DamageSchema: z.ZodType<DamageType> = z
+const ResourceDescriptionSchema = z
   .object({
-    damage_dice: z.string().exactOptional(),
-    damage_type: APIReferenceSchema.exactOptional(),
+    desc: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Description of the resource.' }),
   })
-  .openapi({ description: '`Damage`\n', required: [] })
-  .openapi('Damage')
+  .openapi({ required: [] })
+  .openapi('ResourceDescription')
 
 const DCSchema: z.ZodType<DCType> = z
   .object({
@@ -114,6 +213,152 @@ const DCSchema: z.ZodType<DCType> = z
   })
   .openapi({ description: '`DC`\n', required: [] })
   .openapi('DC')
+
+type MonsterType = z.infer<typeof APIReferenceSchema> &
+  z.infer<typeof ResourceDescriptionSchema> & {
+    charisma?: number
+    constitution?: number
+    dexterity?: number
+    intelligence?: number
+    strength?: number
+    wisdom?: number
+  } & {
+    actions?: {
+      action_options?: z.infer<typeof ChoiceSchema>
+      actions?: {
+        action_name?: string
+        count?: number
+        type?: 'melee' | 'ranged' | 'ability' | 'magic'
+      }[]
+      attack_bonus?: number
+      attacks?: { damage?: unknown; dc?: z.infer<typeof DCSchema>; name?: string }[]
+      damage?: { damage_dice?: string; damage_type?: z.infer<typeof APIReferenceSchema> }[]
+      dc?: z.infer<typeof DCSchema>
+      desc?: string
+      multiattack_type?: string
+      name?: string
+      options?: z.infer<typeof ChoiceSchema>
+    }[]
+    alignments?:
+      | 'chaotic neutral'
+      | 'chaotic evil'
+      | 'chaotic good'
+      | 'lawful neutral'
+      | 'lawful evil'
+      | 'lawful good'
+      | 'neutral'
+      | 'neutral evil'
+      | 'neutral good'
+      | 'any alignment'
+      | 'unaligned'
+    armor_class?: (
+      | { desc?: string; type?: 'dex'; value?: number }
+      | { desc?: string; type?: 'natural'; value?: number }
+      | {
+          armor?: z.infer<typeof APIReferenceSchema>[]
+          desc?: string
+          type?: 'armor'
+          value?: number
+        }
+      | {
+          desc?: string
+          spell?: z.infer<typeof APIReferenceSchema>
+          type?: 'spell'
+          value?: number
+        }
+      | {
+          condition?: z.infer<typeof APIReferenceSchema>
+          desc?: string
+          type?: 'condition'
+          value?: number
+        }
+    )[]
+    challenge_rating?: number
+    condition_immunities?: z.infer<typeof APIReferenceSchema>[]
+    damage_immunities?: string[]
+    damage_resistances?: string[]
+    damage_vulnerabilities?: string[]
+    forms?: z.infer<typeof APIReferenceSchema>[]
+    hit_dice?: string
+    hit_points?: number
+    hit_points_roll?: string
+    image?: string
+    languages?: string
+    legendary_actions?: {
+      action_options?: z.infer<typeof ChoiceSchema>
+      actions?: {
+        action_name?: string
+        count?: number
+        type?: 'melee' | 'ranged' | 'ability' | 'magic'
+      }[]
+      attack_bonus?: number
+      attacks?: { damage?: unknown; dc?: z.infer<typeof DCSchema>; name?: string }[]
+      damage?: { damage_dice?: string; damage_type?: z.infer<typeof APIReferenceSchema> }[]
+      dc?: z.infer<typeof DCSchema>
+      desc?: string
+      multiattack_type?: string
+      name?: string
+      options?: z.infer<typeof ChoiceSchema>
+    }[]
+    proficiencies?: { proficiency?: z.infer<typeof APIReferenceSchema>; value?: number }[]
+    reactions?: {
+      action_options?: z.infer<typeof ChoiceSchema>
+      actions?: {
+        action_name?: string
+        count?: number
+        type?: 'melee' | 'ranged' | 'ability' | 'magic'
+      }[]
+      attack_bonus?: number
+      attacks?: { damage?: unknown; dc?: z.infer<typeof DCSchema>; name?: string }[]
+      damage?: { damage_dice?: string; damage_type?: z.infer<typeof APIReferenceSchema> }[]
+      dc?: z.infer<typeof DCSchema>
+      desc?: string
+      multiattack_type?: string
+      name?: string
+      options?: z.infer<typeof ChoiceSchema>
+    }[]
+    senses?: {
+      blindsight?: string
+      darkvision?: string
+      passive_perception?: number
+      tremorsense?: string
+      truesight?: string
+    }
+    size?: 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Gargantuan'
+    special_abilities?: {
+      attack_bonus?: number
+      damage?: unknown[]
+      dc?: z.infer<typeof DCSchema>
+      desc?: string
+      name?: string
+      spellcasting?: {
+        ability?: z.infer<typeof APIReferenceSchema>
+        components_required?: string[]
+        dc?: number
+        modifier?: number
+        school?: string
+        slots?: { [key: string]: number }
+        spells?: { level?: number; name?: string; url?: string; usage?: unknown }[]
+      }
+      usage?: {
+        rest_types?: string[]
+        times?: number
+        type?: 'at will' | 'per day' | 'recharge after rest' | 'recharge on roll'
+      }
+    }[]
+    speed?: { burrow?: string; climb?: string; fly?: string; swim?: string; walk?: string }
+    subtype?: string
+    type?: string
+    xp?: number
+  }
+
+const DamageSchema: z.ZodType<DamageType> = z
+  .object({
+    damage_dice: z.string().exactOptional(),
+    damage_type: APIReferenceSchema.exactOptional(),
+  })
+  .openapi({ description: '`Damage`\n', required: [] })
+  .openapi('Damage')
 
 type OptionType =
   | { item?: z.infer<typeof APIReferenceSchema>; option_type?: string }
@@ -306,17 +551,6 @@ type OptionSetType =
   | { equipment_category?: z.infer<typeof APIReferenceSchema>; option_set_type?: string }
   | { option_set_type?: string; resource_list?: string }
 
-const APIReferenceListSchema = z
-  .object({
-    count: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Total number of resources available.' }),
-    results: z.array(APIReferenceSchema).exactOptional(),
-  })
-  .openapi({ description: '`APIReferenceList`\n', required: [] })
-  .openapi('APIReferenceList')
-
 const AbilityBonusSchema = z
   .object({
     ability_score: APIReferenceSchema.exactOptional(),
@@ -328,15 +562,75 @@ const AbilityBonusSchema = z
   .openapi({ required: [] })
   .openapi('AbilityBonus')
 
-const ResourceDescriptionSchema = z
+type RaceType = z.infer<typeof APIReferenceSchema> & {
+  ability_bonuses?: z.infer<typeof AbilityBonusSchema>[]
+  age?: string
+  alignment?: string
+  language_desc?: string
+  languages?: z.infer<typeof APIReferenceSchema>[]
+  size?: string
+  size_description?: string
+  speed?: number
+  starting_proficiencies?: z.infer<typeof APIReferenceSchema>[]
+  starting_proficiency_options?: z.infer<typeof ChoiceSchema>
+  subraces?: z.infer<typeof APIReferenceSchema>[]
+  traits?: z.infer<typeof APIReferenceSchema>[]
+}
+
+type SubraceType = z.infer<typeof APIReferenceSchema> & {
+  ability_bonuses?: z.infer<typeof AbilityBonusSchema>[]
+  desc?: string
+  language_options?: z.infer<typeof ChoiceSchema>
+  languages?: z.infer<typeof APIReferenceSchema>[]
+  race?: z.infer<typeof APIReferenceSchema>
+  racial_traits?: z.infer<typeof APIReferenceSchema>[]
+  starting_proficiencies?: z.infer<typeof APIReferenceSchema>[]
+}
+
+const AreaOfEffectSchema = z
   .object({
-    desc: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Description of the resource.' }),
+    size: z.number().exactOptional(),
+    type: z.enum(['sphere', 'cone', 'cylinder', 'line', 'cube']).exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('ResourceDescription')
+  .openapi('AreaOfEffect')
+
+type TraitType = z.infer<typeof APIReferenceSchema> &
+  z.infer<typeof ResourceDescriptionSchema> & {
+    language_options?: z.infer<typeof ChoiceSchema>
+    proficiencies?: z.infer<typeof APIReferenceSchema>[]
+    proficiency_choices?: z.infer<typeof ChoiceSchema>
+    races?: z.infer<typeof APIReferenceSchema>[]
+    subraces?: z.infer<typeof APIReferenceSchema>[]
+    trait_specific?:
+      | z.infer<typeof ChoiceSchema>
+      | z.infer<typeof ChoiceSchema>
+      | {
+          'breath-weapon'?: {
+            area_of_effect?: z.infer<typeof AreaOfEffectSchema>
+            damage?: {
+              damage_at_character_level?: { [key: string]: string }
+              damage_type?: z.infer<typeof APIReferenceSchema>
+            }
+            dc?: z.infer<typeof DCSchema>
+            desc?: string
+            name?: string
+            usage?: { times?: number; type?: string }
+          }
+          'damage-type'?: z.infer<typeof APIReferenceSchema>
+        }
+  }
+
+const APIReferenceListSchema = z
+  .object({
+    count: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Total number of resources available.' }),
+    results: z.array(APIReferenceSchema).exactOptional(),
+  })
+  .openapi({ description: '`APIReferenceList`\n', required: [] })
+  .openapi('APIReferenceList')
 
 const AbilityScoreSchema = APIReferenceSchema.and(ResourceDescriptionSchema)
   .and(
@@ -372,14 +666,6 @@ const AlignmentSchema = APIReferenceSchema.and(
 )
   .openapi({ description: '`Alignment`\n' })
   .openapi('Alignment')
-
-const AreaOfEffectSchema = z
-  .object({
-    size: z.number().exactOptional(),
-    type: z.enum(['sphere', 'cone', 'cylinder', 'line', 'cube']).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AreaOfEffect')
 
 const CostSchema = z
   .object({
@@ -421,7 +707,7 @@ const ArmorSchema = APIReferenceSchema.and(ResourceDescriptionSchema)
   .openapi({ description: '`Armor`\n' })
   .openapi('Armor')
 
-const BackgroundSchema = APIReferenceSchema.and(
+const BackgroundSchema: z.ZodType<BackgroundType> = APIReferenceSchema.and(
   z
     .object({
       bonds: ChoiceSchema.exactOptional(),
@@ -436,7 +722,7 @@ const BackgroundSchema = APIReferenceSchema.and(
       ideals: ChoiceSchema.exactOptional(),
       language_options: ChoiceSchema.exactOptional(),
       personality_traits: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({ description: 'Choice of personality traits for this background.' }),
       starting_equipment: z
@@ -456,71 +742,7 @@ const BackgroundSchema = APIReferenceSchema.and(
   .openapi({ description: '`Background`\n' })
   .openapi('Background')
 
-const PrerequisiteSchema = z
-  .object({
-    ability_score: APIReferenceSchema.exactOptional(),
-    minimum_score: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Minimum score to meet the prerequisite.' }),
-  })
-  .openapi({ description: '`Prerequisite`\n', required: [] })
-  .openapi('Prerequisite')
-
-const MulticlassingSchema = z
-  .object({
-    prerequisite_options: z
-      .array(ChoiceSchema)
-      .exactOptional()
-      .openapi({ description: 'List of choices of prerequisites to meet for.' }),
-    prerequisites: z
-      .array(PrerequisiteSchema)
-      .exactOptional()
-      .openapi({ description: 'List of prerequisites that must be met.' }),
-    proficiencies: z
-      .array(APIReferenceSchema)
-      .exactOptional()
-      .openapi({ description: 'List of proficiencies available when multiclassing.' }),
-    proficiency_choices: z
-      .array(ChoiceSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of choices of proficiencies that are given when multiclassing.',
-      }),
-  })
-  .openapi({ description: '`Multiclassing`\n', required: [] })
-  .openapi('Multiclassing')
-
-const SpellcastingSchema = z
-  .object({
-    info: z
-      .array(
-        z
-          .object({
-            desc: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({ description: 'Feature description.' }),
-            name: z.string().exactOptional().openapi({ description: 'Feature name.' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: "Descriptions of the class' ability to cast spells." }),
-    level: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Level at which the class can start using its spellcasting abilities.',
-      }),
-    spellcasting_ability: APIReferenceSchema.exactOptional().openapi({
-      description: 'Reference to the `AbilityScore` used for spellcasting by the class.',
-    }),
-  })
-  .openapi({ description: '`Spellcasting`\n', required: [] })
-  .openapi('Spellcasting')
-
-const ClassSchema = APIReferenceSchema.and(
+const ClassSchema: z.ZodType<ClassType> = APIReferenceSchema.and(
   z
     .object({
       class_levels: z
@@ -972,7 +1194,7 @@ const MagicSchoolSchema = APIReferenceSchema.and(
   .openapi({ description: '`MagicSchool`\n' })
   .openapi('MagicSchool')
 
-const MonsterSchema = APIReferenceSchema.and(ResourceDescriptionSchema)
+const MonsterSchema: z.ZodType<MonsterType> = APIReferenceSchema.and(ResourceDescriptionSchema)
   .and(
     z
       .object({
@@ -1511,7 +1733,7 @@ const ProficiencySchema = APIReferenceSchema.and(
   .openapi({ description: '`Proficiency`\n' })
   .openapi('Proficiency')
 
-const RaceSchema = APIReferenceSchema.and(
+const RaceSchema: z.ZodType<RaceType> = APIReferenceSchema.and(
   z
     .object({
       ability_bonuses: z
@@ -1763,7 +1985,7 @@ const SubclassLevelResourceSchema = z
   .openapi({ required: [] })
   .openapi('SubclassLevelResource')
 
-const SubraceSchema = APIReferenceSchema.and(
+const SubraceSchema: z.ZodType<SubraceType> = APIReferenceSchema.and(
   z
     .object({
       ability_bonuses: z
@@ -1795,7 +2017,7 @@ const SubraceSchema = APIReferenceSchema.and(
   .openapi({ description: '`Subrace`\n' })
   .openapi('Subrace')
 
-const TraitSchema = APIReferenceSchema.and(ResourceDescriptionSchema)
+const TraitSchema: z.ZodType<TraitType> = APIReferenceSchema.and(ResourceDescriptionSchema)
   .and(
     z
       .object({

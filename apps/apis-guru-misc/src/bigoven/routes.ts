@@ -672,7 +672,7 @@ const API2ModelsRecipesRecipeResponseSchema = z
   .openapi({ description: 'DTO used to return a recipe with videos', required: [] })
   .openapi('API2ModelsRecipesRecipeResponse')
 
-const SystemObjectSchema = z.object({}).openapi('SystemObject')
+const SystemObjectSchema = z.looseObject({}).openapi('SystemObject')
 
 const API2ResultSchema = z
   .object({

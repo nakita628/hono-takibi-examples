@@ -44,12 +44,10 @@ export const postQuestionsRoute = createRoute({
       description: 'Created',
       content: {},
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

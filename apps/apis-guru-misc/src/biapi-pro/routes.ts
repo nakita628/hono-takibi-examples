@@ -29,7 +29,7 @@ const AccountSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Name of the company holding the employee savings of the account' }),
-    currency: z.object({}).exactOptional().openapi({ description: 'Account currency' }),
+    currency: z.looseObject({}).exactOptional().openapi({ description: 'Account currency' }),
     deleted: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -769,7 +769,7 @@ const DeviceSchema = z
 
 const DocumentSchema = z
   .object({
-    currency: z.object({}).exactOptional().openapi({ description: 'Document currency' }),
+    currency: z.looseObject({}).exactOptional().openapi({ description: 'Document currency' }),
     date: z.iso.datetime({ offset: true }).exactOptional(),
     duedate: z.iso.date().exactOptional(),
     has_file_on_website: z
@@ -988,7 +988,10 @@ const InvestmentSchema = z
       .datetime({ offset: true })
       .exactOptional()
       .openapi({ description: 'Last update of the investment' }),
-    original_currency: z.object({}).exactOptional().openapi({ description: 'Original currency' }),
+    original_currency: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Original currency' }),
     original_diff: z
       .float32()
       .exactOptional()
@@ -1067,7 +1070,10 @@ const InvestmentValueSchema = z
   .object({
     id: z.int().openapi({ description: 'ID of the value' }),
     id_investment: z.int().openapi({ description: 'ID of the related investment' }),
-    original_currency: z.object({}).exactOptional().openapi({ description: 'Original currency' }),
+    original_currency: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Original currency' }),
     original_unitvalue: z
       .float32()
       .exactOptional()
@@ -1433,7 +1439,7 @@ const RecipientSchema = z
       .openapi({ description: 'Was the recipient adding authorized' }),
     bank_name: z.string().exactOptional().openapi({ description: 'Bank of the recipient' }),
     category: z.string().openapi({ description: 'Category in which the recipient is' }),
-    currency: z.object({}).exactOptional().openapi({ description: 'Currency of the object' }),
+    currency: z.looseObject({}).exactOptional().openapi({ description: 'Currency of the object' }),
     deleted: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -1704,7 +1710,7 @@ const TransactionSchema = z
       .exactOptional()
       .openapi({ description: 'Commission taken on the transaction' }),
     commission_currency: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Commission currency' }),
     counterparty: z.string().exactOptional().openapi({ description: 'Counterparty' }),
@@ -1737,7 +1743,10 @@ const TransactionSchema = z
       .exactOptional()
       .openapi({ description: 'Last update of the transaction' }),
     nature: z.string().default('inconnu').openapi({ description: 'Type of transaction' }),
-    original_currency: z.object({}).exactOptional().openapi({ description: 'Original currency' }),
+    original_currency: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Original currency' }),
     original_gross_value: z
       .float32()
       .exactOptional()
@@ -1893,7 +1902,7 @@ const TransferSchema = z
         description:
           "Type of beneficiary number, for example: 'recipient' (in bank recipient list), 'iban' or 'phone_number'",
       }),
-    currency: z.object({}).exactOptional().openapi({ description: 'Currency of the object' }),
+    currency: z.looseObject({}).exactOptional().openapi({ description: 'Currency of the object' }),
     error: z
       .string()
       .exactOptional()
@@ -2439,7 +2448,7 @@ export const postAdminJwtRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ required: ['jwt_token', 'payload'] }),
+          schema: z.looseObject({}).openapi({ required: ['jwt_token', 'payload'] }),
         },
       },
     },
@@ -2558,7 +2567,7 @@ export const postAuthJwtRoute = createRoute({
             .object({
               jwt_token: z.string().openapi({ description: 'the jwt token' }),
               payload: z
-                .object({})
+                .looseObject({})
                 .openapi({ description: 'the payload contained in the jwt token' }),
             })
             .openapi({ required: ['jwt_token', 'payload'] }),
@@ -2766,7 +2775,7 @@ export const getAuthTokenCodeRoute = createRoute({
               expires_in: z
                 .int()
                 .openapi({ description: 'duration in seconds of the token validity' }),
-              type: z.object({}).openapi({ description: 'the token type' }),
+              type: z.looseObject({}).openapi({ description: 'the token type' }),
             })
             .openapi({ required: ['code', 'type', 'access', 'expires_in'] }),
         },
@@ -3641,7 +3650,7 @@ export const postCategorizeRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ required: ['failed', 'total', 'transactions'] }),
+          schema: z.looseObject({}).openapi({ required: ['failed', 'total', 'transactions'] }),
         },
       },
     },
@@ -7956,7 +7965,9 @@ export const getUsersIdUserConfigRoute = createRoute({
     200: {
       description: '',
       content: {
-        'application/json': { schema: z.object({}).openapi({ required: ['biapi.last_push'] }) },
+        'application/json': {
+          schema: z.looseObject({}).openapi({ required: ['biapi.last_push'] }),
+        },
       },
     },
   },
@@ -12234,7 +12245,9 @@ export const postUsersIdUserTokenRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'application/json': { schema: z.object({}).openapi({ required: ['token'] }) } },
+      content: {
+        'application/json': { schema: z.looseObject({}).openapi({ required: ['token'] }) },
+      },
     },
   },
 })

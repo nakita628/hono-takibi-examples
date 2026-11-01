@@ -2,7 +2,7 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const ResponseItemSchema = z
   .object({
-    data: z.object({}),
+    data: z.looseObject({}),
     message: z.string().openapi({ example: 'SUCCESS' }),
     result: z.int().openapi({ example: 200 }),
   })

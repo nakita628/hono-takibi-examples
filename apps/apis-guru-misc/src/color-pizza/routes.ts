@@ -34,7 +34,7 @@ const ColorSchema = z
       .openapi({ required: [] }),
     svg: z.string().exactOptional(),
     svgNamed: z.string().exactOptional(),
-    swatchImg: z.object({}).exactOptional(),
+    swatchImg: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('Color')

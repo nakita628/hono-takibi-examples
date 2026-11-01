@@ -390,7 +390,7 @@ const CacheImageResponseSchema = z
   .openapi('CacheImageResponse')
 
 const CarListingRankSchema = z
-  .object({ ranked_listing: z.object({}).exactOptional() })
+  .object({ ranked_listing: z.looseObject({}).exactOptional() })
   .openapi({ description: 'Ranking query response', required: [] })
   .openapi('CarListingRank')
 
@@ -485,7 +485,7 @@ const CarRankRequestSchema = z
     listing_ids: z
       .array(z.string().openapi({ description: 'MC active listing id' }))
       .exactOptional(),
-    ranking_criteria: z.object({}).exactOptional(),
+    ranking_criteria: z.looseObject({}).exactOptional(),
   })
   .openapi({ description: 'Ranking query request', required: [] })
   .openapi('CarRankRequest')
@@ -548,19 +548,19 @@ const CarSearchFacetsSchema = z
 
 const CarSearchRangeFacetsSchema = z
   .object({
-    dom: z.object({}).exactOptional(),
-    dom_180: z.object({}).exactOptional(),
-    dom_active: z.object({}).exactOptional(),
-    finance_down_payment: z.object({}).exactOptional(),
-    finance_emp: z.object({}).exactOptional(),
-    finance_loan_apr: z.object({}).exactOptional(),
-    finance_loan_term: z.object({}).exactOptional(),
-    lease_down_payment: z.object({}).exactOptional(),
-    lease_emp: z.object({}).exactOptional(),
-    lease_term: z.object({}).exactOptional(),
-    miles: z.object({}).exactOptional(),
-    msrp: z.object({}).exactOptional(),
-    price: z.object({}).exactOptional(),
+    dom: z.looseObject({}).exactOptional(),
+    dom_180: z.looseObject({}).exactOptional(),
+    dom_active: z.looseObject({}).exactOptional(),
+    finance_down_payment: z.looseObject({}).exactOptional(),
+    finance_emp: z.looseObject({}).exactOptional(),
+    finance_loan_apr: z.looseObject({}).exactOptional(),
+    finance_loan_term: z.looseObject({}).exactOptional(),
+    lease_down_payment: z.looseObject({}).exactOptional(),
+    lease_emp: z.looseObject({}).exactOptional(),
+    lease_term: z.looseObject({}).exactOptional(),
+    miles: z.looseObject({}).exactOptional(),
+    msrp: z.looseObject({}).exactOptional(),
+    price: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('CarSearchRangeFacets')
@@ -1286,20 +1286,20 @@ const HeavyEquipmentsSearchFacetsSchema = z
 
 const HeavyEquipmentsSearchRangeFacetsSchema = z
   .object({
-    hours_used: z.object({}).exactOptional(),
-    miles: z.object({}).exactOptional(),
-    price: z.object({}).exactOptional(),
+    hours_used: z.looseObject({}).exactOptional(),
+    miles: z.looseObject({}).exactOptional(),
+    price: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('HeavyEquipmentsSearchRangeFacets')
 
 const HeavyEquipmentsSearchResponseSchema = z
   .object({
-    facets: z.object({}).exactOptional(),
+    facets: z.looseObject({}).exactOptional(),
     listings: z.array(HeavyEquipmentsBaseListingSchema).exactOptional(),
     num_found: z.int().exactOptional().openapi({ description: 'The number of listings found' }),
-    range_facets: z.object({}).exactOptional(),
-    stats: z.object({}).exactOptional(),
+    range_facets: z.looseObject({}).exactOptional(),
+    stats: z.looseObject({}).exactOptional(),
   })
   .openapi({ description: 'Heavy Equipments search query response', required: [] })
   .openapi('HeavyEquipmentsSearchResponse')
@@ -2002,17 +2002,17 @@ const MotorcycleSearchFacetsSchema = z
   .openapi('MotorcycleSearchFacets')
 
 const MotorcycleSearchRangeFacetsSchema = z
-  .object({ miles: z.object({}).exactOptional(), price: z.object({}).exactOptional() })
+  .object({ miles: z.looseObject({}).exactOptional(), price: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('MotorcycleSearchRangeFacets')
 
 const MotorcycleSearchResponseSchema = z
   .object({
-    facets: z.object({}).exactOptional(),
+    facets: z.looseObject({}).exactOptional(),
     listings: z.array(MotorcycleBaseListingSchema).exactOptional(),
     num_found: z.int().exactOptional().openapi({ description: 'The number of listings found' }),
-    range_facets: z.object({}).exactOptional(),
-    stats: z.object({}).exactOptional(),
+    range_facets: z.looseObject({}).exactOptional(),
+    stats: z.looseObject({}).exactOptional(),
   })
   .openapi({ description: 'Motorcycle search query response', required: [] })
   .openapi('MotorcycleSearchResponse')
@@ -2025,7 +2025,7 @@ const MotorcycleSearchStatsSchema = z
 const NeoVINSchema = z
   .object({
     available_options_details: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2070,14 +2070,14 @@ const NeoVINSchema = z
           'Base identification of the number of cylinders and configuration of the installed engine on the vehicle',
       }),
     exterior_color: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'The manufacturer defined option code and name for the exterior color of the vehicle',
       }),
     features: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2093,14 +2093,14 @@ const NeoVINSchema = z
       .openapi({ description: 'Overall height of the vehicle (in)' }),
     highway_mpg: z.float64().exactOptional().openapi({ description: 'Highway miles per gallon' }),
     installed_equipment: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'Detailed equipment identified as installed on the vehicle, including whether that item was standard to the version of the vehicle or was added as an installed option',
       }),
     installed_options_details: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2113,7 +2113,7 @@ const NeoVINSchema = z
         description: 'Calculated combination of the MSRP for the installed options and packages',
       }),
     interior_color: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2562,11 +2562,11 @@ const RVSearchFacetsSchema = z
 
 const RVSearchResponseSchema = z
   .object({
-    facets: z.object({}).exactOptional(),
+    facets: z.looseObject({}).exactOptional(),
     listings: z.array(RVBaseListingSchema).exactOptional(),
     num_found: z.int().exactOptional().openapi({ description: 'The number of listings found' }),
-    range_facets: z.object({}).exactOptional(),
-    stats: z.object({}).exactOptional(),
+    range_facets: z.looseObject({}).exactOptional(),
+    stats: z.looseObject({}).exactOptional(),
   })
   .openapi({ description: 'RV search query response', required: [] })
   .openapi('RVSearchResponse')
@@ -3096,22 +3096,22 @@ const UKRVSearchFacetsSchema = z
 
 const UKRVSearchRangeFacetsSchema = z
   .object({
-    exterior_length: z.object({}).exactOptional(),
-    interior_length: z.object({}).exactOptional(),
-    miles: z.object({}).exactOptional(),
-    price: z.object({}).exactOptional(),
-    width: z.object({}).exactOptional(),
+    exterior_length: z.looseObject({}).exactOptional(),
+    interior_length: z.looseObject({}).exactOptional(),
+    miles: z.looseObject({}).exactOptional(),
+    price: z.looseObject({}).exactOptional(),
+    width: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('UKRVSearchRangeFacets')
 
 const UKRVSearchResponseSchema = z
   .object({
-    facets: z.object({}).exactOptional(),
+    facets: z.looseObject({}).exactOptional(),
     listings: z.array(UKRVBaseListingSchema).exactOptional(),
     num_found: z.int().exactOptional().openapi({ description: 'The number of listings found' }),
-    range_facets: z.object({}).exactOptional(),
-    stats: z.object({}).exactOptional(),
+    range_facets: z.looseObject({}).exactOptional(),
+    stats: z.looseObject({}).exactOptional(),
   })
   .openapi({ description: 'RV search query response', required: [] })
   .openapi('UKRVSearchResponse')

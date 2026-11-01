@@ -1,67 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const BusinessCardRecognitionResultSchema = z
-  .object({
-    AddressString: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The address printed on the business card (if included on the business card)',
-      }),
-    BusinessName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the business printed on the business card (if included on the business card)',
-      }),
-    EmailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The email address printed on the business card (if included on the business card)',
-      }),
-    PersonName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the person printed on the business card (if included on the business card)',
-      }),
-    PersonTitle: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The title of the person printed on the business card (if included on the business card)',
-      }),
-    PhoneNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The phone number printed on the business card (if included on the business card)',
-      }),
-    Successful: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the operation was successful, false otherwise' }),
-    Timestamp: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time printed on the business card (if included on the business card)',
-      }),
-  })
-  .openapi({
-    description:
-      'Result of recognizing a business card, to extract the key information from the business card',
-    required: [],
-  })
-  .openapi('BusinessCardRecognitionResult')
-
 const PointSchema = z
   .object({
     X: z
@@ -316,29 +254,6 @@ const FormTableDefinitionSchema = z
   })
   .openapi('FormTableDefinition')
 
-const FormDefinitionTemplateSchema = z
-  .object({
-    FieldDefinitions: z
-      .array(FormFieldDefinitionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Field definitions in the template; a field is comprised of a key/value pair',
-      }),
-    TableDefinitions: z
-      .array(FormTableDefinitionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Table definitions in the template; a table is comprised of columns and rows and exists in a 2-dimensional layout; a common example of a table would be an invoice',
-      }),
-  })
-  .openapi({
-    description:
-      'Definition of a form template; use a form template definition to recognize the fields in a form with Cloudmersive OCR',
-    required: [],
-  })
-  .openapi('FormDefinitionTemplate')
-
 const TableCellResultSchema = z
   .object({
     CellValues: z
@@ -363,7 +278,12 @@ const TableRowResultSchema = z
   .openapi({ description: 'One row of data in the resulting table', required: [] })
   .openapi('TableRowResult')
 
-const TableResultSchema = z
+type TableResultType = {
+  TableDefinition?: z.infer<typeof FormTableDefinitionSchema>
+  TableRowsResult?: z.infer<typeof TableRowResultSchema>[]
+}
+
+const TableResultSchema: z.ZodType<TableResultType> = z
   .object({
     TableDefinition: FormTableDefinitionSchema.exactOptional(),
     TableRowsResult: z
@@ -374,7 +294,100 @@ const TableResultSchema = z
   .openapi({ description: 'The result of reading a table via OCR from a form', required: [] })
   .openapi('TableResult')
 
-const FormRecognitionResultSchema = z
+type FormRecognitionResultType = {
+  BestMatchFormSettingName?: string
+  Diagnostics?: string[]
+  FieldValueExtractionResult?: z.infer<typeof FieldResultSchema>[]
+  Successful?: boolean
+  TableValueExtractionResults?: z.infer<typeof TableResultSchema>[]
+}
+
+const BusinessCardRecognitionResultSchema = z
+  .object({
+    AddressString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The address printed on the business card (if included on the business card)',
+      }),
+    BusinessName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the business printed on the business card (if included on the business card)',
+      }),
+    EmailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address printed on the business card (if included on the business card)',
+      }),
+    PersonName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the person printed on the business card (if included on the business card)',
+      }),
+    PersonTitle: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The title of the person printed on the business card (if included on the business card)',
+      }),
+    PhoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The phone number printed on the business card (if included on the business card)',
+      }),
+    Successful: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the operation was successful, false otherwise' }),
+    Timestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time printed on the business card (if included on the business card)',
+      }),
+  })
+  .openapi({
+    description:
+      'Result of recognizing a business card, to extract the key information from the business card',
+    required: [],
+  })
+  .openapi('BusinessCardRecognitionResult')
+
+const FormDefinitionTemplateSchema = z
+  .object({
+    FieldDefinitions: z
+      .array(FormFieldDefinitionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Field definitions in the template; a field is comprised of a key/value pair',
+      }),
+    TableDefinitions: z
+      .array(FormTableDefinitionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Table definitions in the template; a table is comprised of columns and rows and exists in a 2-dimensional layout; a common example of a table would be an invoice',
+      }),
+  })
+  .openapi({
+    description:
+      'Definition of a form template; use a form template definition to recognize the fields in a form with Cloudmersive OCR',
+    required: [],
+  })
+  .openapi('FormDefinitionTemplate')
+
+const FormRecognitionResultSchema: z.ZodType<FormRecognitionResultType> = z
   .object({
     BestMatchFormSettingName: z
       .string()
@@ -2184,10 +2197,10 @@ export const postOcrReceiptsPhotoToCsvRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
-        'text/json': { schema: z.object({}) },
-        'text/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
+        'text/json': { schema: z.looseObject({}) },
+        'text/xml': { schema: z.looseObject({}) },
       },
     },
   },

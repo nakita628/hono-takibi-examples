@@ -1,28 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ExplicitDateComponentsSchema = z
-  .object({
-    calendarIdentifier: z.string().exactOptional(),
-    day: z.int32().exactOptional(),
-    era: z.int32().exactOptional(),
-    hour: z.int32().exactOptional(),
-    minute: z.int32().exactOptional(),
-    month: z.int32().exactOptional(),
-    nanosecond: z.int32().exactOptional(),
-    second: z.int32().exactOptional(),
-    timeZone: z.string().exactOptional(),
-    year: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ExplicitDateComponents')
-
-type DateComponentsType =
-  | string
-  | string
-  | string
-  | string
-  | z.infer<typeof ExplicitDateComponentsSchema>
-
 const IntentSchema = z
   .object({ class: z.string(), identifier: z.string() })
   .openapi({
@@ -90,18 +67,31 @@ const MediaItemSchema = z
 
 const MediaReferenceSchema = z.enum(['unknown', 'currentlyPlaying', 'my']).openapi('MediaReference')
 
-const DateComponentsSchema: z.ZodType<DateComponentsType> = z
-  .lazy(() =>
-    z
-      .xor([
-        z.string().regex(/[0-9]{4}/),
-        z.string().regex(/[0-9]{4}-[0-9]{2}/),
-        z.iso.date(),
-        z.iso.datetime({ offset: true }),
-        ExplicitDateComponentsSchema,
-      ])
-      .openapi({ example: '1980' }),
-  )
+const ExplicitDateComponentsSchema = z
+  .object({
+    calendarIdentifier: z.string().exactOptional(),
+    day: z.int32().exactOptional(),
+    era: z.int32().exactOptional(),
+    hour: z.int32().exactOptional(),
+    minute: z.int32().exactOptional(),
+    month: z.int32().exactOptional(),
+    nanosecond: z.int32().exactOptional(),
+    second: z.int32().exactOptional(),
+    timeZone: z.string().exactOptional(),
+    year: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ExplicitDateComponents')
+
+const DateComponentsSchema = z
+  .xor([
+    z.string().regex(/[0-9]{4}/),
+    z.string().regex(/[0-9]{4}-[0-9]{2}/),
+    z.iso.date(),
+    z.iso.datetime({ offset: true }),
+    ExplicitDateComponentsSchema,
+  ])
+  .openapi({ example: '1980' })
   .openapi('DateComponents')
 
 const DateComponentsRangeSchema = z
@@ -171,7 +161,7 @@ const InvocationResponseSchema = z
     debug: ServiceDebugReferenceSchema.exactOptional(),
     method: z.string(),
     metrics: ExecutionMetricsSchema.exactOptional(),
-    result: z.object({}).nullable(),
+    result: z.looseObject({}).nullable(),
   })
   .openapi({
     discriminator: {
@@ -215,7 +205,7 @@ const UserActivitySchema = z
     activityType: z.string().max(250).openapi({ example: 'com.mediastreamingservice.playmedia' }),
     persistentIdentifier: z.string().max(250).exactOptional(),
     title: z.string().max(250).exactOptional(),
-    userInfo: z.object({}).exactOptional().openapi({ title: 'UserActivityUserInfo' }),
+    userInfo: z.looseObject({}).exactOptional().openapi({ title: 'UserActivityUserInfo' }),
     version: z
       .string()
       .regex(/[0-9]+\.[0-9]+\.[0-9]+/)
@@ -338,7 +328,7 @@ const SessionSchema = z
 const InvocationSchema = z
   .object({
     method: z.string(),
-    params: z.object({}).nullable(),
+    params: z.looseObject({}).nullable(),
     session: SessionSchema.exactOptional(),
   })
   .openapi({
@@ -406,9 +396,9 @@ const AddMediaIntentHandlingInvocationSchema = InvocationSchema.and(
 const IntentResolutionResultSchema = z
   .object({
     class: z.string(),
-    needsValue: z.object({}).exactOptional().openapi({ 'x-flow-exception': 'Failure' }),
-    notRequired: z.object({}).exactOptional(),
-    unsupported: z.object({}).exactOptional().openapi({ 'x-flow-exception': 'Failure' }),
+    needsValue: z.looseObject({}).exactOptional().openapi({ 'x-flow-exception': 'Failure' }),
+    notRequired: z.looseObject({}).exactOptional(),
+    unsupported: z.looseObject({}).exactOptional().openapi({ 'x-flow-exception': 'Failure' }),
   })
   .openapi({
     discriminator: {
@@ -669,14 +659,17 @@ const ContentSchema = z
   .openapi('Content')
 
 const ExtensionEndpointConfigSchema = z
-  .object({ hdr: z.object({}).exactOptional(), url: z.string().min(0).max(2000).exactOptional() })
+  .object({
+    hdr: z.looseObject({}).exactOptional(),
+    url: z.string().min(0).max(2000).exactOptional(),
+  })
   .openapi({ required: [] })
   .openapi('ExtensionEndpointConfig')
 
 const ExtensionConfigSchema = z
   .object({
     hdr: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { 'x-client-type': 'headless', 'x-service-affinity': 'cluster1' } }),
     intent: z
@@ -689,7 +682,7 @@ const ExtensionConfigSchema = z
             .openapi({ required: [] }),
         ).exactOptional(),
         hdr: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ example: { 'x-service-affinity': 'intent2' } }),
         playMedia: ExtensionEndpointConfigSchema.and(
@@ -720,7 +713,7 @@ const ExtensionConfigSchema = z
         queues: z
           .object({
             hdr: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 example: { 'x-content-min-ttl': 1200, 'x-media-catalog-region': 'en_US' },
@@ -728,7 +721,7 @@ const ExtensionConfigSchema = z
             playMedia: z
               .object({
                 hdr: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ example: { 'x-headless-client': true } }),
                 url: z.string().min(1).max(4000).default('/queues/playMedia').exactOptional(),
@@ -737,7 +730,7 @@ const ExtensionConfigSchema = z
               .openapi({ required: [] }),
             updateActivity: z
               .object({
-                hdr: z.object({}).exactOptional(),
+                hdr: z.looseObject({}).exactOptional(),
                 url: z.string().min(1).max(4000).default('/queues/updateActivity').exactOptional(),
               })
               .exactOptional()
@@ -1468,38 +1461,26 @@ export const getConfigurationRoute = createRoute({
       description: '',
       content: { 'application/jose': { schema: ExtensionConfigSchema } },
       headers: z.object({
-        'Cache-Control': {
-          required: true,
-          example: 'max-age=1800, must-revalidate, private',
-          schema: z.string().openapi({ example: 'max-age=1800, must-revalidate, private' }),
-        },
-        ETag: { required: true, schema: ExtensionConfigTagSchema },
-        'x-applecloudextension-session-id': {
-          schema: z
-            .string()
-            .min(1)
-            .max(128)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z.string().openapi({ example: 'max-age=1800, must-revalidate, private' }),
+        ETag: ExtensionConfigTagSchema,
+        'x-applecloudextension-session-id': z
+          .string()
+          .min(1)
+          .max(128)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: '',
       headers: z.object({
-        'Cache-Control': {
-          required: true,
-          example: 'max-age=1800, must-revalidate, private',
-          schema: z.string().openapi({ example: 'max-age=1800, must-revalidate, private' }),
-        },
-        'x-applecloudextension-session-id': {
-          schema: z
-            .string()
-            .min(1)
-            .max(128)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z.string().openapi({ example: 'max-age=1800, must-revalidate, private' }),
+        'x-applecloudextension-session-id': z
+          .string()
+          .min(1)
+          .max(128)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1600,14 +1581,12 @@ export const postIntentAddMediaRoute = createRoute({
         'application/json': { schema: z.array(AddMediaIntentHandlingInvocationResponseSchema) },
       },
       headers: z.object({
-        'x-applecloudextension-session-id': {
-          schema: z
-            .string()
-            .min(1)
-            .max(128)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'x-applecloudextension-session-id': z
+          .string()
+          .min(1)
+          .max(128)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1708,14 +1687,12 @@ export const postIntentPlayMediaRoute = createRoute({
         'application/json': { schema: z.array(PlayMediaIntentHandlingInvocationResponseSchema) },
       },
       headers: z.object({
-        'x-applecloudextension-session-id': {
-          schema: z
-            .string()
-            .min(1)
-            .max(128)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'x-applecloudextension-session-id': z
+          .string()
+          .min(1)
+          .max(128)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1820,14 +1797,12 @@ export const postIntentUpdateMediaAffinityRoute = createRoute({
         },
       },
       headers: z.object({
-        'x-applecloudextension-session-id': {
-          schema: z
-            .string()
-            .min(1)
-            .max(128)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'x-applecloudextension-session-id': z
+          .string()
+          .min(1)
+          .max(128)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

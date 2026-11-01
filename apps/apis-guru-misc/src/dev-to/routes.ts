@@ -194,7 +194,7 @@ const PageSchema = z
     slug: z
       .string()
       .openapi({ description: 'Used to link to this page in URLs, must be unique and URL-safe' }),
-    social_image: z.object({}).nullable().exactOptional(),
+    social_image: z.looseObject({}).nullable().exactOptional(),
     template: z
       .enum(['contained', 'full_within_layout', 'nav_bar_included', 'json'])
       .default('contained')
@@ -989,7 +989,7 @@ export const getApiArticlesIdRoute = createRoute({
       description: 'An Article',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             body_html:
               '<p>Banjo carry cray vhs swag. Whatever celiac quinoa pabst chillwave. Vice pickled park lumbersexual salvia synth. Blog etsy austin mustache.</p>\n\n<p>Biodiesel forage street thundercats deep v.</p>\n\n',
@@ -1166,7 +1166,7 @@ export const getApiArticlesUsernameSlugRoute = createRoute({
       description: 'An Article',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             body_html:
               '<p>Synth tote bag venmo vice hoodie disrupt bitters mixtape. Fashion axe goth shoreditch kogi loko literally.</p>\n\n<p>Franzen ramps forage wayfarers thundercats put a bird on it loko.</p>\n\n',
@@ -1739,7 +1739,7 @@ export const getApiOrganizationsUsernameRoute = createRoute({
       description: 'An Organization',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             github_username: 'org217',
             id: 79,
@@ -2266,7 +2266,7 @@ export const getApiProfileImagesUsernameRoute = createRoute({
       description: 'An object containing profile image details',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             image_of: 'user',
             profile_image:
@@ -2460,7 +2460,7 @@ export const getApiUsersMeRoute = createRoute({
       description: 'successful',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             github_username: 'github480',
             id: 916,
@@ -2498,7 +2498,10 @@ export const getApiUsersIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'successful', content: { 'application/json': { schema: z.object({}) } } },
+    200: {
+      description: 'successful',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
   },
 })
 

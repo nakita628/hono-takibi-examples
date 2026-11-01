@@ -183975,12 +183975,12 @@ true
 |end|string(date-time)|false|none|none|
 |start|string(date-time)|false|none|none|
 
-<h2 id="tocS_date_range">date_range</h2>
+<h2 id="tocS_date_range2">date_range2</h2>
 <!-- backwards compatibility -->
-<a id="schemadate_range"></a>
-<a id="schema_date_range"></a>
-<a id="tocSdate_range"></a>
-<a id="tocsdate_range"></a>
+<a id="schemadate_range2"></a>
+<a id="schema_date_range2"></a>
+<a id="tocSdate_range2"></a>
+<a id="tocsdate_range2"></a>
 
 ```json
 {

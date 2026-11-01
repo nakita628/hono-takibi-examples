@@ -19,721 +19,6 @@ const RuleSourceSchema = z
   .openapi({ required: ['channelFilter', 'type'] })
   .openapi('RuleSource')
 
-const HttpRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .enum(['single', 'batch'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of rule. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema.exactOptional(),
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z
-          .enum(['json', 'msgpack'])
-          .exactOptional()
-          .openapi({
-            description:
-              'JSON provides a simpler text-based encoding, whereas MsgPack provides a more efficient binary encoding.',
-          }),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-        url: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('HttpRulePatch')
-
-const IftttRulePatchSchema = z
-  .any()
-  .openapi({
-    'x-requestMode': {
-      description:
-        'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-      enum: ['single'],
-      example: 'single',
-      type: 'string',
-    },
-    'x-ruleType': {
-      description:
-        'The type of rule. In this case IFTTT. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      enum: ['http/ifttt'],
-      type: 'string',
-    },
-    'x-source': { $ref: '#/components/schemas/rule_source' },
-    'x-target': {
-      additionalProperties: false,
-      properties: { eventName: { type: 'string' }, webhookKey: { type: 'string' } },
-      type: 'object',
-    },
-  })
-  .openapi('IftttRulePatch')
-
-const ZapierRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .enum(['single', 'batch'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/zapier')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of rule. In this case Zapier. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema.exactOptional(),
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-        url: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('ZapierRulePatch')
-
-const CloudflareWorkerRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .enum(['single', 'batch'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/cloudflare-worker')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of rule. In this case Cloudflare Worker. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema.exactOptional(),
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-        url: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('CloudflareWorkerRulePatch')
-
-const AzureFunctionRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .enum(['single', 'batch'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/azure-function')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of rule. In this case Microsoft Azure Function. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema.exactOptional(),
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        azureAppId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The Microsoft Azure Application ID. You can find your Microsoft Azure Application ID as shown in this <a href="https://dev.applicationinsights.io/documentation/Authorization/API-key-and-App-ID">article</a>.',
-            example: 'd1e9f419-c438-6032b32df979',
-          }),
-        azureFunctionName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of your Microsoft Azure Function.' }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z
-          .literal('json')
-          .exactOptional()
-          .openapi({ description: 'JSON provides a text-based encoding.' }),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('AzureFunctionRulePatch')
-
-const GoogleCloudFunctionRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .enum(['single', 'batch'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/google-cloud-function')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of rule. In this case Google Cloud Function. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema.exactOptional(),
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z
-          .literal('json')
-          .exactOptional()
-          .openapi({ description: 'JSON provides a text-based encoding.' }),
-        functionName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of your Google Cloud Function.' }),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        projectId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The project ID for your Google Cloud Project that was generated when you created your project.',
-          }),
-        region: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The region in which your Google Cloud Function is hosted. See the <a href="https://cloud.google.com/compute/docs/regions-zones/">Google documentation</a> for more details.',
-            example: 'us-west1',
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudFunctionRulePatch')
-
-const AwsAccessKeysSchema = z
-  .strictObject({
-    accessKeyId: z
-      .string()
-      .openapi({
-        description:
-          'The AWS key ID for the AWS IAM user. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
-      }),
-    authenticationMode: z
-      .literal('credentials')
-      .exactOptional()
-      .openapi({
-        description: 'Authentication method is using AWS credentials (AWS key ID and secret key).',
-      }),
-    secretAccessKey: z
-      .string()
-      .openapi({
-        description:
-          'The AWS secret key for the AWS IAM user. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
-      }),
-  })
-  .openapi({ required: ['accessKeyId', 'secretAccessKey'] })
-  .openapi('AwsAccessKeys')
-
-const AwsAssumeRoleSchema = z
-  .strictObject({
-    assumeRoleArn: z
-      .string()
-      .openapi({
-        description:
-          'If you are using the "ARN of an assumable role" authentication method, this is your Assume Role ARN. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
-      }),
-    authenticationMode: z
-      .literal('assumeRole')
-      .exactOptional()
-      .openapi({
-        description:
-          'Authentication method is using the ARN of an assumable role. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
-      }),
-  })
-  .openapi({ required: ['assumeRoleArn'] })
-  .openapi('AwsAssumeRole')
-
-const AwsLambdaRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('aws/lambda')
-      .openapi({
-        description:
-          'The type of rule. In this case AWS Lambda. See the <a href="https://ably.com/integrations">Ably documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        functionName: z.string().openapi({ description: 'The name of your AWS Lambda Function.' }),
-        region: z
-          .string()
-          .openapi({
-            description:
-              'The region is which your AWS Lambda Function is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-      })
-      .openapi({ required: ['region', 'functionName', 'authentication'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AwsLambdaRulePatch')
-
-const AwsKinesisRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .exactOptional()
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('aws/kinesis')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of rule. In this case AWS Kinesis. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema.exactOptional(),
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
-          .exactOptional()
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z
-          .literal('json')
-          .exactOptional()
-          .openapi({ description: 'JSON provides a text-based encoding.' }),
-        partitionKey: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The AWS Kinesis partition key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
-          }),
-        region: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The region is which AWS Kinesis is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-        streamName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of your AWS Kinesis Stream.' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('AwsKinesisRulePatch')
-
-const AwsSqsRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .exactOptional()
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('aws/sqs')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of rule. In this case AWS SQS. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema.exactOptional(),
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
-          .exactOptional()
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        awsAccountId: z.string().exactOptional().openapi({ description: 'Your AWS account ID.' }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.string().exactOptional(),
-        queueName: z.string().exactOptional().openapi({ description: 'The AWS SQS queue name.' }),
-        region: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The region is which AWS SQS is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('AwsSqsRulePatch')
-
-const AmqpRulePatchSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .exactOptional()
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('amqp')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of rule. In this case AMQP. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema.exactOptional(),
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.string().exactOptional(),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        queueId: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('AmqpRulePatch')
-
 const AmqpExternalRulePatchSchema = z
   .strictObject({
     requestMode: z
@@ -826,33 +111,120 @@ const AmqpExternalRulePatchSchema = z
   .openapi({ required: [] })
   .openapi('AmqpExternalRulePatch')
 
-type RulePatchType =
-  | z.infer<typeof HttpRulePatchSchema>
-  | z.infer<typeof IftttRulePatchSchema>
-  | z.infer<typeof ZapierRulePatchSchema>
-  | z.infer<typeof CloudflareWorkerRulePatchSchema>
-  | z.infer<typeof AzureFunctionRulePatchSchema>
-  | z.infer<typeof GoogleCloudFunctionRulePatchSchema>
-  | z.infer<typeof AwsLambdaRulePatchSchema>
-  | z.infer<typeof AwsKinesisRulePatchSchema>
-  | z.infer<typeof AwsSqsRulePatchSchema>
-  | z.infer<typeof AmqpRulePatchSchema>
-  | z.infer<typeof AmqpExternalRulePatchSchema>
-
-const HttpRulePostSchema = z
+const AmqpExternalRulePostSchema = z
   .strictObject({
     requestMode: z
-      .enum(['single', 'batch'])
+      .literal('single')
       .openapi({
         description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
         example: 'single',
       }),
     ruleType: z
-      .literal('http')
+      .literal('amqp/external')
       .openapi({
         description:
-          'The type of rule. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+          'The type of rule. In this case AMQP external (using Firehose). See the <a href="https://ably.com/documentation/general/firehose">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    target: z
+      .strictObject({
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.string().exactOptional(),
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        mandatoryRoute: z
+          .boolean()
+          .openapi({
+            description:
+              'Reject delivery of the message if the route does not exist, otherwise fail silently.',
+          }),
+        messageTtl: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'You can optionally override the default TTL on a queue and specify a TTL in minutes for messages to be persisted. It is unusual to change the default TTL, so if this field is left empty, the default TTL for the queue will be used.',
+          }),
+        persistentMessages: z
+          .boolean()
+          .openapi({
+            description:
+              'Marks the message as persistent, instructing the broker to write it to disk if it is in a durable queue.',
+          }),
+        routingKey: z
+          .string()
+          .openapi({
+            description:
+              'The AMQP routing key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
+          }),
+        url: z.string(),
+      })
+      .openapi({ required: ['url', 'routingKey', 'mandatoryRoute', 'persistentMessages'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AmqpExternalRulePost')
+
+const AmqpExternalRuleResponseSchema = z
+  .strictObject({
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
+      }),
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('amqp/external')
+      .openapi({
+        description:
+          'The type of rule. In this case AMQP external (using Firehose). See the <a href="https://ably.com/documentation/general/firehose">Ably documentation</a> for further information.',
       }),
     source: RuleSourceSchema,
     status: z
@@ -872,12 +244,7 @@ const HttpRulePostSchema = z
             description:
               'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
           }),
-        format: z
-          .enum(['json', 'msgpack'])
-          .openapi({
-            description:
-              'JSON provides a simpler text-based encoding, whereas MsgPack provides a more efficient binary encoding.',
-          }),
+        format: z.string().exactOptional(),
         headers: z
           .array(
             z
@@ -898,26 +265,110 @@ const HttpRulePostSchema = z
             description:
               "If you have additional information to send, you'll need to include the relevant headers.",
           }),
-        signingKeyId: z
+        mandatoryRoute: z
+          .boolean()
+          .openapi({
+            description:
+              'Reject delivery of the message if the route does not exist, otherwise fail silently.',
+          }),
+        messageTtl: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'You can optionally override the default TTL on a queue and specify a TTL in minutes for messages to be persisted. It is unusual to change the default TTL, so if this field is left empty, the default TTL for the queue will be used.',
+          }),
+        persistentMessages: z
+          .boolean()
+          .openapi({
+            description:
+              'Marks the message as persistent, instructing the broker to write it to disk if it is in a durable queue.',
+          }),
+        routingKey: z
           .string()
+          .openapi({
+            description:
+              'The AMQP routing key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
+          }),
+        url: z.string(),
+      })
+      .openapi({ required: ['url', 'routingKey', 'mandatoryRoute', 'persistentMessages'] }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
+      }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AmqpExternalRuleResponse')
+
+const AmqpRulePatchSchema = z
+  .strictObject({
+    requestMode: z
+      .literal('single')
+      .exactOptional()
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('amqp')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of rule. In this case AMQP. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema.exactOptional(),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        enveloped: z
+          .boolean()
           .nullable()
           .exactOptional()
           .openapi({
             description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
           }),
-        url: z
-          .string()
+        format: z.string().exactOptional(),
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
           .openapi({
-            description: 'The URL of the endpoint that is invoked when events occur on Ably.',
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
           }),
+        queueId: z.string().exactOptional(),
       })
-      .openapi({ required: ['url', 'format'] }),
+      .exactOptional()
+      .openapi({ required: [] }),
   })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('HttpRulePost')
+  .openapi({ required: [] })
+  .openapi('AmqpRulePatch')
 
-const IftttRulePostSchema = z
+const AmqpRulePostSchema = z
   .strictObject({
     requestMode: z
       .literal('single')
@@ -927,40 +378,10 @@ const IftttRulePostSchema = z
         example: 'single',
       }),
     ruleType: z
-      .literal('http/ifttt')
+      .literal('amqp')
       .openapi({
         description:
-          'The type of rule. In this case IFTTT. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({ eventName: z.string(), webhookKey: z.string() })
-      .openapi({ required: ['webhookKey', 'eventName'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('IftttRulePost')
-
-const ZapierRulePostSchema = z
-  .strictObject({
-    requestMode: z
-      .enum(['single', 'batch'])
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/zapier')
-      .openapi({
-        description:
-          'The type of rule. In this case Zapier. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+          'The type of rule. In this case AMQP. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
       }),
     source: RuleSourceSchema,
     status: z
@@ -972,6 +393,1044 @@ const ZapierRulePostSchema = z
       }),
     target: z
       .strictObject({
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.string().exactOptional(),
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        queueId: z.string(),
+      })
+      .openapi({ required: ['queueId'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AmqpRulePost')
+
+const AmqpRuleResponseSchema = z
+  .strictObject({
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
+      }),
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('amqp')
+      .openapi({
+        description:
+          'The type of rule. In this case AMQP. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.string().exactOptional(),
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        queueId: z.string(),
+      })
+      .openapi({ required: ['queueId'] }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
+      }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AmqpRuleResponse')
+
+const AppPatchSchema = z
+  .strictObject({
+    apnsCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The Apple Push Notification service certificate.' }),
+    apnsPrivateKey: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The Apple Push Notification service private key.' }),
+    apnsUseSandboxEndpoint: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The Apple Push Notification service sandbox endpoint.' }),
+    fcmKey: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The Firebase Cloud Messaging key.', example: false }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the application for your reference only.',
+        example: 'My App',
+      }),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the application. Can be `enabled` or `disabled`. Enabled means available to accept inbound connections and all services are available.',
+        example: 'enabled',
+      }),
+    tlsOnly: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Enforce TLS for all connections.', example: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppPatch')
+
+const AppPkcs12Schema = z
+  .strictObject({
+    p12File: z
+      .file()
+      .openapi({
+        type: 'string',
+        format: 'binary',
+        description: "The `.p12` file containing the app's APNs information.",
+      }),
+    p12Pass: z.string().openapi({ description: 'The password for the corresponding `.p12` file.' }),
+  })
+  .openapi({ required: ['p12File', 'p12Pass'] })
+  .openapi('AppPkcs12')
+
+const AppPostSchema = z
+  .strictObject({
+    apnsCertificate: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The Apple Push Notification service certificate.' }),
+    apnsPrivateKey: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The Apple Push Notification service private key.' }),
+    apnsUseSandboxEndpoint: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The Apple Push Notification service sandbox endpoint.' }),
+    fcmKey: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The Firebase Cloud Messaging key.', example: false }),
+    name: z
+      .string()
+      .openapi({
+        description: 'The name of the application for your reference only.',
+        example: 'My App',
+      }),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the application. Can be `enabled` or `disabled`. Enabled means available to accept inbound connections and all services are available.',
+        example: 'enabled',
+      }),
+    tlsOnly: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Enforce TLS for all connections.', example: true }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('AppPost')
+
+const AppResponseSchema = z
+  .strictObject({
+    _links: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A link self-referencing the app that has been created.' }),
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of your Ably account.', example: 'WgRpOB' }),
+    apnsUseSandboxEndpoint: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Apple Push Notification service endpoint.', example: false }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The application ID.', example: '28AB6x' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The application name.', example: 'Default' }),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The application status. Disabled applications will not accept new connections and will return an error to all clients.',
+        example: 'enabled',
+      }),
+    tlsOnly: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Enforce TLS for all connections. This setting overrides any channel setting.',
+        example: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppResponse')
+
+const AwsAccessKeysSchema = z
+  .strictObject({
+    accessKeyId: z
+      .string()
+      .openapi({
+        description:
+          'The AWS key ID for the AWS IAM user. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
+      }),
+    authenticationMode: z
+      .literal('credentials')
+      .exactOptional()
+      .openapi({
+        description: 'Authentication method is using AWS credentials (AWS key ID and secret key).',
+      }),
+    secretAccessKey: z
+      .string()
+      .openapi({
+        description:
+          'The AWS secret key for the AWS IAM user. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
+      }),
+  })
+  .openapi({ required: ['accessKeyId', 'secretAccessKey'] })
+  .openapi('AwsAccessKeys')
+
+const AwsAccessKeysResponseSchema = z
+  .strictObject({
+    accessKeyId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The AWS key ID for the AWS IAM user. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
+      }),
+    authenticationMode: z
+      .literal('credentials')
+      .exactOptional()
+      .openapi({
+        description: 'Authentication method is using AWS credentials (AWS key ID and secret key).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AwsAccessKeysResponse')
+
+const AwsAssumeRoleSchema = z
+  .strictObject({
+    assumeRoleArn: z
+      .string()
+      .openapi({
+        description:
+          'If you are using the "ARN of an assumable role" authentication method, this is your Assume Role ARN. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
+      }),
+    authenticationMode: z
+      .literal('assumeRole')
+      .exactOptional()
+      .openapi({
+        description:
+          'Authentication method is using the ARN of an assumable role. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
+      }),
+  })
+  .openapi({ required: ['assumeRoleArn'] })
+  .openapi('AwsAssumeRole')
+
+const AwsKinesisRulePatchSchema = z
+  .strictObject({
+    requestMode: z
+      .literal('single')
+      .exactOptional()
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/kinesis')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of rule. In this case AWS Kinesis. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema.exactOptional(),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
+          .exactOptional()
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z
+          .literal('json')
+          .exactOptional()
+          .openapi({ description: 'JSON provides a text-based encoding.' }),
+        partitionKey: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The AWS Kinesis partition key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
+          }),
+        region: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The region is which AWS Kinesis is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+        streamName: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of your AWS Kinesis Stream.' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('AwsKinesisRulePatch')
+
+const AwsKinesisRulePostSchema = z
+  .strictObject({
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/kinesis')
+      .openapi({
+        description:
+          'The type of rule. In this case AWS Kinesis. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.literal('json').openapi({ description: 'JSON provides a text-based encoding.' }),
+        partitionKey: z
+          .string()
+          .openapi({
+            description:
+              'The AWS Kinesis partition key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
+          }),
+        region: z
+          .string()
+          .openapi({
+            description:
+              'The region is which AWS Kinesis is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+        streamName: z.string().openapi({ description: 'The name of your AWS Kinesis Stream.' }),
+      })
+      .openapi({ required: ['region', 'streamName', 'partitionKey', 'authentication', 'format'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AwsKinesisRulePost')
+
+const AwsKinesisRuleResponseSchema = z
+  .strictObject({
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
+      }),
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/kinesis')
+      .openapi({
+        description:
+          'The type of rule. In this case AWS Kinesis. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys_response',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.literal('json').openapi({ description: 'JSON provides a text-based encoding.' }),
+        partitionKey: z
+          .string()
+          .openapi({
+            description:
+              'The AWS Kinesis partition key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
+          }),
+        region: z
+          .string()
+          .openapi({
+            description:
+              'The region is which AWS Kinesis is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+        streamName: z.string().openapi({ description: 'The name of your AWS Kinesis Stream.' }),
+      })
+      .openapi({ required: ['region', 'streamName', 'partitionKey', 'authentication', 'format'] }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
+      }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AwsKinesisRuleResponse')
+
+const AwsLambdaRulePatchSchema = z
+  .strictObject({
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/lambda')
+      .openapi({
+        description:
+          'The type of rule. In this case AWS Lambda. See the <a href="https://ably.com/integrations">Ably documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        functionName: z.string().openapi({ description: 'The name of your AWS Lambda Function.' }),
+        region: z
+          .string()
+          .openapi({
+            description:
+              'The region is which your AWS Lambda Function is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+      })
+      .openapi({ required: ['region', 'functionName', 'authentication'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AwsLambdaRulePatch')
+
+const AwsLambdaRulePostSchema = z
+  .strictObject({
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/lambda')
+      .openapi({
+        description:
+          'The type of rule. In this case AWS Lambda. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        functionName: z.string().openapi({ description: 'The name of your AWS Lambda Function.' }),
+        region: z
+          .string()
+          .openapi({
+            description:
+              'The region is which your AWS Lambda Function is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+      })
+      .openapi({ required: ['region', 'functionName', 'authentication'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AwsLambdaRulePost')
+
+const AwsLambdaRuleResponseSchema = z
+  .strictObject({
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
+      }),
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/lambda')
+      .openapi({
+        description:
+          'The type of rule. In this case AWS Lambda. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys_response',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.string().exactOptional(),
+        functionName: z.string().openapi({ description: 'The name of your AWS Lambda Function.' }),
+        region: z
+          .string()
+          .openapi({
+            description:
+              'The region is which your AWS Lambda Function is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+      })
+      .openapi({ required: ['region', 'functionName', 'authentication'] }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
+      }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AwsLambdaRuleResponse')
+
+const AwsSqsRulePatchSchema = z
+  .strictObject({
+    requestMode: z
+      .literal('single')
+      .exactOptional()
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/sqs')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of rule. In this case AWS SQS. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema.exactOptional(),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
+          .exactOptional()
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        awsAccountId: z.string().exactOptional().openapi({ description: 'Your AWS account ID.' }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.string().exactOptional(),
+        queueName: z.string().exactOptional().openapi({ description: 'The AWS SQS queue name.' }),
+        region: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The region is which AWS SQS is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('AwsSqsRulePatch')
+
+const AwsSqsRulePostSchema = z
+  .strictObject({
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/sqs')
+      .openapi({
+        description:
+          'The type of rule. In this case AWS SQS. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        awsAccountId: z.string().openapi({ description: 'Your AWS account ID.' }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.string().exactOptional(),
+        queueName: z.string().openapi({ description: 'The AWS SQS queue name.' }),
+        region: z
+          .string()
+          .openapi({
+            description:
+              'The region is which AWS SQS is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+      })
+      .openapi({ required: ['region', 'awsAccountId', 'queueName', 'authentication'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AwsSqsRulePost')
+
+const AwsSqsRuleResponseSchema = z
+  .strictObject({
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
+      }),
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('aws/sqs')
+      .openapi({
+        description:
+          'The type of rule. In this case AWS SQS. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        authentication: z
+          .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
+          .openapi({
+            discriminator: {
+              mapping: {
+                assumeRole: '#/components/schemas/aws_assume_role',
+                credentials: '#/components/schemas/aws_access_keys_response',
+              },
+              propertyName: 'authenticationMode',
+            },
+          }),
+        awsAccountId: z.string().openapi({ description: 'Your AWS account ID.' }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z.string().exactOptional(),
+        queueName: z.string().openapi({ description: 'The AWS SQS queue name.' }),
+        region: z
+          .string()
+          .openapi({
+            description:
+              'The region is which AWS SQS is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
+            example: 'us-west-1',
+          }),
+      })
+      .openapi({ required: ['region', 'awsAccountId', 'queueName', 'authentication'] }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
+      }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('AwsSqsRuleResponse')
+
+const AzureFunctionRulePatchSchema = z
+  .strictObject({
+    requestMode: z
+      .enum(['single', 'batch'])
+      .exactOptional()
+      .openapi({
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('http/azure-function')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of rule. In this case Microsoft Azure Function. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema.exactOptional(),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        azureAppId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The Microsoft Azure Application ID. You can find your Microsoft Azure Application ID as shown in this <a href="https://dev.applicationinsights.io/documentation/Authorization/API-key-and-App-ID">article</a>.',
+            example: 'd1e9f419-c438-6032b32df979',
+          }),
+        azureFunctionName: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of your Microsoft Azure Function.' }),
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z
+          .literal('json')
+          .exactOptional()
+          .openapi({ description: 'JSON provides a text-based encoding.' }),
         headers: z
           .array(
             z
@@ -1000,72 +1459,12 @@ const ZapierRulePostSchema = z
             description:
               'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
           }),
-        url: z.string(),
       })
-      .openapi({ required: ['url'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('ZapierRulePost')
-
-const CloudflareWorkerRulePostSchema = z
-  .strictObject({
-    requestMode: z
-      .enum(['single', 'batch'])
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/cloudflare-worker')
-      .openapi({
-        description:
-          'The type of rule. In this case Cloudflare Worker. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
       .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-        url: z.string(),
-      })
-      .openapi({ required: ['url'] }),
+      .openapi({ required: [] }),
   })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('CloudflareWorkerRulePost')
+  .openapi({ required: [] })
+  .openapi('AzureFunctionRulePatch')
 
 const AzureFunctionRulePostSchema = z
   .strictObject({
@@ -1148,816 +1547,9 @@ const AzureFunctionRulePostSchema = z
   .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
   .openapi('AzureFunctionRulePost')
 
-const GoogleCloudFunctionRulePostSchema = z
-  .strictObject({
-    requestMode: z
-      .enum(['single', 'batch'])
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/google-cloud-function')
-      .openapi({
-        description:
-          'The type of rule. In this case Google Cloud Function. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    target: z
-      .strictObject({
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z
-          .literal('json')
-          .exactOptional()
-          .openapi({ description: 'JSON provides a text-based encoding.' }),
-        functionName: z
-          .string()
-          .openapi({ description: 'The name of your Google Cloud Function.' }),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        projectId: z
-          .string()
-          .openapi({
-            description:
-              'The project ID for your Google Cloud Project that was generated when you created your project.',
-          }),
-        region: z
-          .string()
-          .openapi({
-            description:
-              'The region in which your Google Cloud Function is hosted. See the <a href="https://cloud.google.com/compute/docs/regions-zones/">Google documentation</a> for more details.',
-            example: 'us-west1',
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-      })
-      .openapi({ required: ['region', 'projectId', 'functionName'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('GoogleCloudFunctionRulePost')
-
-const AwsLambdaRulePostSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('aws/lambda')
-      .openapi({
-        description:
-          'The type of rule. In this case AWS Lambda. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        functionName: z.string().openapi({ description: 'The name of your AWS Lambda Function.' }),
-        region: z
-          .string()
-          .openapi({
-            description:
-              'The region is which your AWS Lambda Function is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-      })
-      .openapi({ required: ['region', 'functionName', 'authentication'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AwsLambdaRulePost')
-
-const AwsKinesisRulePostSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('aws/kinesis')
-      .openapi({
-        description:
-          'The type of rule. In this case AWS Kinesis. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.literal('json').openapi({ description: 'JSON provides a text-based encoding.' }),
-        partitionKey: z
-          .string()
-          .openapi({
-            description:
-              'The AWS Kinesis partition key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
-          }),
-        region: z
-          .string()
-          .openapi({
-            description:
-              'The region is which AWS Kinesis is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-        streamName: z.string().openapi({ description: 'The name of your AWS Kinesis Stream.' }),
-      })
-      .openapi({ required: ['region', 'streamName', 'partitionKey', 'authentication', 'format'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AwsKinesisRulePost')
-
-const AwsSqsRulePostSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('aws/sqs')
-      .openapi({
-        description:
-          'The type of rule. In this case AWS SQS. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        awsAccountId: z.string().openapi({ description: 'Your AWS account ID.' }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.string().exactOptional(),
-        queueName: z.string().openapi({ description: 'The AWS SQS queue name.' }),
-        region: z
-          .string()
-          .openapi({
-            description:
-              'The region is which AWS SQS is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-      })
-      .openapi({ required: ['region', 'awsAccountId', 'queueName', 'authentication'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AwsSqsRulePost')
-
-const AmqpRulePostSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('amqp')
-      .openapi({
-        description:
-          'The type of rule. In this case AMQP. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.string().exactOptional(),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        queueId: z.string(),
-      })
-      .openapi({ required: ['queueId'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AmqpRulePost')
-
-const AmqpExternalRulePostSchema = z
-  .strictObject({
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('amqp/external')
-      .openapi({
-        description:
-          'The type of rule. In this case AMQP external (using Firehose). See the <a href="https://ably.com/documentation/general/firehose">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    target: z
-      .strictObject({
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.string().exactOptional(),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        mandatoryRoute: z
-          .boolean()
-          .openapi({
-            description:
-              'Reject delivery of the message if the route does not exist, otherwise fail silently.',
-          }),
-        messageTtl: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'You can optionally override the default TTL on a queue and specify a TTL in minutes for messages to be persisted. It is unusual to change the default TTL, so if this field is left empty, the default TTL for the queue will be used.',
-          }),
-        persistentMessages: z
-          .boolean()
-          .openapi({
-            description:
-              'Marks the message as persistent, instructing the broker to write it to disk if it is in a durable queue.',
-          }),
-        routingKey: z
-          .string()
-          .openapi({
-            description:
-              'The AMQP routing key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
-          }),
-        url: z.string(),
-      })
-      .openapi({ required: ['url', 'routingKey', 'mandatoryRoute', 'persistentMessages'] }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AmqpExternalRulePost')
-
-const UnsupportedRuleResponseSchema = z
-  .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
-    requestMode: z
-      .enum(['single', 'batch'])
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('unsupported')
-      .openapi({ description: 'This rule type is currently unsupported.' }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z.strictObject({ url: z.string() }).openapi({ required: ['url'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('UnsupportedRuleResponse')
-
-type RulePostType =
-  | z.infer<typeof HttpRulePostSchema>
-  | z.infer<typeof IftttRulePostSchema>
-  | z.infer<typeof ZapierRulePostSchema>
-  | z.infer<typeof CloudflareWorkerRulePostSchema>
-  | z.infer<typeof AzureFunctionRulePostSchema>
-  | z.infer<typeof GoogleCloudFunctionRulePostSchema>
-  | z.infer<typeof AwsLambdaRulePostSchema>
-  | z.infer<typeof AwsKinesisRulePostSchema>
-  | z.infer<typeof AwsSqsRulePostSchema>
-  | z.infer<typeof AmqpRulePostSchema>
-  | z.infer<typeof AmqpExternalRulePostSchema>
-  | z.infer<typeof UnsupportedRuleResponseSchema>
-
-const HttpRuleResponseSchema = z
-  .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
-    requestMode: z
-      .enum(['single', 'batch'])
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http')
-      .openapi({
-        description:
-          'The type of rule. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z
-          .enum(['json', 'msgpack'])
-          .openapi({
-            description:
-              'JSON provides a simpler text-based encoding, whereas MsgPack provides a more efficient binary encoding.',
-          }),
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-        url: z.string(),
-      })
-      .openapi({ required: ['url', 'format'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('HttpRuleResponse')
-
-const IftttRuleResponseSchema = z
-  .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/ifttt')
-      .openapi({
-        description:
-          'The type of rule. In this case IFTTT. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({ eventName: z.string(), webhookKey: z.string() })
-      .openapi({ required: ['webhookKey', 'eventName'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('IftttRuleResponse')
-
-const ZapierRuleResponseSchema = z
-  .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
-    requestMode: z
-      .enum(['single', 'batch'])
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/zapier')
-      .openapi({
-        description:
-          'The type of rule. In this case Zapier. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-        url: z.string(),
-      })
-      .openapi({ required: ['url'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('ZapierRuleResponse')
-
-const CloudflareWorkerRuleResponseSchema = z
-  .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
-    requestMode: z
-      .enum(['single', 'batch'])
-      .openapi({
-        description:
-          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('http/cloudflare-worker')
-      .openapi({
-        description:
-          'The type of rule. In this case Cloudflare Worker. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-        example: 'http/cloudflare-worker',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        headers: z
-          .array(
-            z
-              .object({
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The name of the header.' }),
-                value: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The value of the header.' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              "If you have additional information to send, you'll need to include the relevant headers.",
-          }),
-        signingKeyId: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
-          }),
-        url: z.string(),
-      })
-      .openapi({ required: ['url'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('CloudflareWorkerRuleResponse')
-
 const AzureFunctionRuleResponseSchema = z
   .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
+    _links: z.looseObject({}).nullable().exactOptional(),
     appId: z
       .string()
       .exactOptional()
@@ -2064,9 +1656,409 @@ const AzureFunctionRuleResponseSchema = z
   .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
   .openapi('AzureFunctionRuleResponse')
 
+const CloudflareWorkerRulePatchSchema = z
+  .strictObject({
+    requestMode: z
+      .enum(['single', 'batch'])
+      .exactOptional()
+      .openapi({
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('http/cloudflare-worker')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of rule. In this case Cloudflare Worker. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema.exactOptional(),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+        url: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('CloudflareWorkerRulePatch')
+
+const CloudflareWorkerRulePostSchema = z
+  .strictObject({
+    requestMode: z
+      .enum(['single', 'batch'])
+      .openapi({
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('http/cloudflare-worker')
+      .openapi({
+        description:
+          'The type of rule. In this case Cloudflare Worker. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+        url: z.string(),
+      })
+      .openapi({ required: ['url'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('CloudflareWorkerRulePost')
+
+const CloudflareWorkerRuleResponseSchema = z
+  .strictObject({
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
+      }),
+    requestMode: z
+      .enum(['single', 'batch'])
+      .openapi({
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('http/cloudflare-worker')
+      .openapi({
+        description:
+          'The type of rule. In this case Cloudflare Worker. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+        example: 'http/cloudflare-worker',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+        url: z.string(),
+      })
+      .openapi({ required: ['url'] }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
+      }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('CloudflareWorkerRuleResponse')
+
+const ErrorSchema = z
+  .strictObject({
+    code: z.int().openapi({ description: 'The HTTP status code returned.' }),
+    details: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Any additional details about the error message.' }),
+    href: z.string().openapi({ description: 'The URL to documentation about the error code.' }),
+    message: z.string().openapi({ description: 'The error message.' }),
+    statusCode: z.int().openapi({ description: 'The Ably error code.' }),
+  })
+  .openapi({ required: ['message', 'code', 'statusCode', 'href'] })
+  .openapi('Error')
+
+const GoogleCloudFunctionRulePatchSchema = z
+  .strictObject({
+    requestMode: z
+      .enum(['single', 'batch'])
+      .exactOptional()
+      .openapi({
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('http/google-cloud-function')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of rule. In this case Google Cloud Function. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema.exactOptional(),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z
+          .literal('json')
+          .exactOptional()
+          .openapi({ description: 'JSON provides a text-based encoding.' }),
+        functionName: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The name of your Google Cloud Function.' }),
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        projectId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The project ID for your Google Cloud Project that was generated when you created your project.',
+          }),
+        region: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The region in which your Google Cloud Function is hosted. See the <a href="https://cloud.google.com/compute/docs/regions-zones/">Google documentation</a> for more details.',
+            example: 'us-west1',
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudFunctionRulePatch')
+
+const GoogleCloudFunctionRulePostSchema = z
+  .strictObject({
+    requestMode: z
+      .enum(['single', 'batch'])
+      .openapi({
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('http/google-cloud-function')
+      .openapi({
+        description:
+          'The type of rule. In this case Google Cloud Function. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    target: z
+      .strictObject({
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z
+          .literal('json')
+          .exactOptional()
+          .openapi({ description: 'JSON provides a text-based encoding.' }),
+        functionName: z
+          .string()
+          .openapi({ description: 'The name of your Google Cloud Function.' }),
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        projectId: z
+          .string()
+          .openapi({
+            description:
+              'The project ID for your Google Cloud Project that was generated when you created your project.',
+          }),
+        region: z
+          .string()
+          .openapi({
+            description:
+              'The region in which your Google Cloud Function is hosted. See the <a href="https://cloud.google.com/compute/docs/regions-zones/">Google documentation</a> for more details.',
+            example: 'us-west1',
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+      })
+      .openapi({ required: ['region', 'projectId', 'functionName'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('GoogleCloudFunctionRulePost')
+
 const GoogleCloudFunctionRuleResponseSchema = z
   .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
+    _links: z.looseObject({}).nullable().exactOptional(),
     appId: z
       .string()
       .exactOptional()
@@ -2179,328 +2171,98 @@ const GoogleCloudFunctionRuleResponseSchema = z
   .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
   .openapi('GoogleCloudFunctionRuleResponse')
 
-const AwsAccessKeysResponseSchema = z
+const HttpRulePatchSchema = z
   .strictObject({
-    accessKeyId: z
-      .string()
+    requestMode: z
+      .enum(['single', 'batch'])
       .exactOptional()
       .openapi({
         description:
-          'The AWS key ID for the AWS IAM user. See this <a href="https://knowledge.ably.com/authentication-for-reactor-rules-for-aws-reactor-events-for-lambda-functions-reactor-firehose-for-aws-sqs-and-kinesis">Ably knowledge base article</a> for details.',
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
       }),
-    authenticationMode: z
-      .literal('credentials')
+    ruleType: z
+      .literal('http')
       .exactOptional()
       .openapi({
-        description: 'Authentication method is using AWS credentials (AWS key ID and secret key).',
+        description:
+          'The type of rule. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
       }),
+    source: RuleSourceSchema.exactOptional(),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        enveloped: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
+          }),
+        format: z
+          .enum(['json', 'msgpack'])
+          .exactOptional()
+          .openapi({
+            description:
+              'JSON provides a simpler text-based encoding, whereas MsgPack provides a more efficient binary encoding.',
+          }),
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+        url: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
   })
   .openapi({ required: [] })
-  .openapi('AwsAccessKeysResponse')
+  .openapi('HttpRulePatch')
 
-const AwsLambdaRuleResponseSchema = z
+const HttpRulePostSchema = z
   .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
     requestMode: z
-      .literal('single')
+      .enum(['single', 'batch'])
       .openapi({
         description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
         example: 'single',
       }),
     ruleType: z
-      .literal('aws/lambda')
+      .literal('http')
       .openapi({
         description:
-          'The type of rule. In this case AWS Lambda. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys_response',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.string().exactOptional(),
-        functionName: z.string().openapi({ description: 'The name of your AWS Lambda Function.' }),
-        region: z
-          .string()
-          .openapi({
-            description:
-              'The region is which your AWS Lambda Function is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-      })
-      .openapi({ required: ['region', 'functionName', 'authentication'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AwsLambdaRuleResponse')
-
-const AwsKinesisRuleResponseSchema = z
-  .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('aws/kinesis')
-      .openapi({
-        description:
-          'The type of rule. In this case AWS Kinesis. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys_response',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.literal('json').openapi({ description: 'JSON provides a text-based encoding.' }),
-        partitionKey: z
-          .string()
-          .openapi({
-            description:
-              'The AWS Kinesis partition key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
-          }),
-        region: z
-          .string()
-          .openapi({
-            description:
-              'The region is which AWS Kinesis is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-        streamName: z.string().openapi({ description: 'The name of your AWS Kinesis Stream.' }),
-      })
-      .openapi({ required: ['region', 'streamName', 'partitionKey', 'authentication', 'format'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AwsKinesisRuleResponse')
-
-const AwsSqsRuleResponseSchema = z
-  .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('aws/sqs')
-      .openapi({
-        description:
-          'The type of rule. In this case AWS SQS. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
-      }),
-    source: RuleSourceSchema,
-    status: z
-      .enum(['enabled', 'disabled'])
-      .exactOptional()
-      .openapi({
-        description: 'The status of the rule. Rules can be enabled or disabled.',
-        example: 'enabled',
-      }),
-    target: z
-      .strictObject({
-        authentication: z
-          .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
-          .openapi({
-            discriminator: {
-              mapping: {
-                assumeRole: '#/components/schemas/aws_assume_role',
-                credentials: '#/components/schemas/aws_access_keys_response',
-              },
-              propertyName: 'authenticationMode',
-            },
-          }),
-        awsAccountId: z.string().openapi({ description: 'Your AWS account ID.' }),
-        enveloped: z
-          .boolean()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
-          }),
-        format: z.string().exactOptional(),
-        queueName: z.string().openapi({ description: 'The AWS SQS queue name.' }),
-        region: z
-          .string()
-          .openapi({
-            description:
-              'The region is which AWS SQS is hosted. See the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#lambda_region">AWS documentation</a> for more detail.',
-            example: 'us-west-1',
-          }),
-      })
-      .openapi({ required: ['region', 'awsAccountId', 'queueName', 'authentication'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
-  })
-  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AwsSqsRuleResponse')
-
-const AmqpRuleResponseSchema = z
-  .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
-    created: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Unix timestamp representing the date and time of creation of the rule.',
-        example: 1602844091815,
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
-    modified: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix timestamp representing the date and time of last modification of the rule.',
-        example: 1614679682091,
-      }),
-    requestMode: z
-      .literal('single')
-      .openapi({
-        description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
-        example: 'single',
-      }),
-    ruleType: z
-      .literal('amqp')
-      .openapi({
-        description:
-          'The type of rule. In this case AMQP. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+          'The type of rule. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
       }),
     source: RuleSourceSchema,
     status: z
@@ -2520,7 +2282,12 @@ const AmqpRuleResponseSchema = z
             description:
               'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
           }),
-        format: z.string().exactOptional(),
+        format: z
+          .enum(['json', 'msgpack'])
+          .openapi({
+            description:
+              'JSON provides a simpler text-based encoding, whereas MsgPack provides a more efficient binary encoding.',
+          }),
         headers: z
           .array(
             z
@@ -2541,23 +2308,28 @@ const AmqpRuleResponseSchema = z
             description:
               "If you have additional information to send, you'll need to include the relevant headers.",
           }),
-        queueId: z.string(),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+        url: z
+          .string()
+          .openapi({
+            description: 'The URL of the endpoint that is invoked when events occur on Ably.',
+          }),
       })
-      .openapi({ required: ['queueId'] }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
-      }),
+      .openapi({ required: ['url', 'format'] }),
   })
   .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AmqpRuleResponse')
+  .openapi('HttpRulePost')
 
-const AmqpExternalRuleResponseSchema = z
+const HttpRuleResponseSchema = z
   .strictObject({
-    _links: z.object({}).nullable().exactOptional(),
+    _links: z.looseObject({}).nullable().exactOptional(),
     appId: z
       .string()
       .exactOptional()
@@ -2579,17 +2351,17 @@ const AmqpExternalRuleResponseSchema = z
         example: 1614679682091,
       }),
     requestMode: z
-      .literal('single')
+      .enum(['single', 'batch'])
       .openapi({
         description:
-          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
         example: 'single',
       }),
     ruleType: z
-      .literal('amqp/external')
+      .literal('http')
       .openapi({
         description:
-          'The type of rule. In this case AMQP external (using Firehose). See the <a href="https://ably.com/documentation/general/firehose">Ably documentation</a> for further information.',
+          'The type of rule. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
       }),
     source: RuleSourceSchema,
     status: z
@@ -2609,7 +2381,12 @@ const AmqpExternalRuleResponseSchema = z
             description:
               'Messages delivered through Reactor are wrapped in an Ably envelope by default that contains metadata about the message and its payload. The form of the envelope depends on whether it is part of a Webhook/Function or a Queue/Firehose rule. For everything besides Webhooks, you can ensure you only get the raw payload by unchecking "Enveloped" when setting up the rule.',
           }),
-        format: z.string().exactOptional(),
+        format: z
+          .enum(['json', 'msgpack'])
+          .openapi({
+            description:
+              'JSON provides a simpler text-based encoding, whereas MsgPack provides a more efficient binary encoding.',
+          }),
         headers: z
           .array(
             z
@@ -2630,34 +2407,17 @@ const AmqpExternalRuleResponseSchema = z
             description:
               "If you have additional information to send, you'll need to include the relevant headers.",
           }),
-        mandatoryRoute: z
-          .boolean()
-          .openapi({
-            description:
-              'Reject delivery of the message if the route does not exist, otherwise fail silently.',
-          }),
-        messageTtl: z
-          .int()
+        signingKeyId: z
+          .string()
+          .nullable()
           .exactOptional()
           .openapi({
             description:
-              'You can optionally override the default TTL on a queue and specify a TTL in minutes for messages to be persisted. It is unusual to change the default TTL, so if this field is left empty, the default TTL for the queue will be used.',
-          }),
-        persistentMessages: z
-          .boolean()
-          .openapi({
-            description:
-              'Marks the message as persistent, instructing the broker to write it to disk if it is in a durable queue.',
-          }),
-        routingKey: z
-          .string()
-          .openapi({
-            description:
-              'The AMQP routing key. See this <a href="https://knowledge.ably.com/what-is-the-format-of-the-routingkey-for-an-amqp-or-kinesis-reactor-rule">Ably knowledge base article</a> for details.',
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
           }),
         url: z.string(),
       })
-      .openapi({ required: ['url', 'routingKey', 'mandatoryRoute', 'persistentMessages'] }),
+      .openapi({ required: ['url', 'format'] }),
     version: z
       .string()
       .exactOptional()
@@ -2667,184 +2427,120 @@ const AmqpExternalRuleResponseSchema = z
       }),
   })
   .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
-  .openapi('AmqpExternalRuleResponse')
+  .openapi('HttpRuleResponse')
 
-type RuleResponseType =
-  | z.infer<typeof HttpRuleResponseSchema>
-  | z.infer<typeof IftttRuleResponseSchema>
-  | z.infer<typeof ZapierRuleResponseSchema>
-  | z.infer<typeof CloudflareWorkerRuleResponseSchema>
-  | z.infer<typeof AzureFunctionRuleResponseSchema>
-  | z.infer<typeof GoogleCloudFunctionRuleResponseSchema>
-  | z.infer<typeof AwsLambdaRuleResponseSchema>
-  | z.infer<typeof AwsKinesisRuleResponseSchema>
-  | z.infer<typeof AwsSqsRuleResponseSchema>
-  | z.infer<typeof AmqpRuleResponseSchema>
-  | z.infer<typeof AmqpExternalRuleResponseSchema>
+const IftttRulePatchSchema = z
+  .any()
+  .openapi({
+    'x-requestMode': {
+      description:
+        'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+      enum: ['single'],
+      example: 'single',
+      type: 'string',
+    },
+    'x-ruleType': {
+      description:
+        'The type of rule. In this case IFTTT. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      enum: ['http/ifttt'],
+      type: 'string',
+    },
+    'x-source': { $ref: '#/components/schemas/rule_source' },
+    'x-target': {
+      additionalProperties: false,
+      properties: { eventName: { type: 'string' }, webhookKey: { type: 'string' } },
+      type: 'object',
+    },
+  })
+  .openapi('IftttRulePatch')
 
-const AppPatchSchema = z
+const IftttRulePostSchema = z
   .strictObject({
-    apnsCertificate: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The Apple Push Notification service certificate.' }),
-    apnsPrivateKey: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The Apple Push Notification service private key.' }),
-    apnsUseSandboxEndpoint: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The Apple Push Notification service sandbox endpoint.' }),
-    fcmKey: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The Firebase Cloud Messaging key.', example: false }),
-    name: z
-      .string()
-      .exactOptional()
+    requestMode: z
+      .literal('single')
       .openapi({
-        description: 'The name of the application for your reference only.',
-        example: 'My App',
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
       }),
+    ruleType: z
+      .literal('http/ifttt')
+      .openapi({
+        description:
+          'The type of rule. In this case IFTTT. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
     status: z
       .enum(['enabled', 'disabled'])
       .exactOptional()
       .openapi({
-        description:
-          'The status of the application. Can be `enabled` or `disabled`. Enabled means available to accept inbound connections and all services are available.',
+        description: 'The status of the rule. Rules can be enabled or disabled.',
         example: 'enabled',
       }),
-    tlsOnly: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Enforce TLS for all connections.', example: true }),
+    target: z
+      .strictObject({ eventName: z.string(), webhookKey: z.string() })
+      .openapi({ required: ['webhookKey', 'eventName'] }),
   })
-  .openapi({ required: [] })
-  .openapi('AppPatch')
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('IftttRulePost')
 
-const AppPkcs12Schema = z
+const IftttRuleResponseSchema = z
   .strictObject({
-    p12File: z
-      .file()
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
       .openapi({
-        type: 'string',
-        format: 'binary',
-        description: "The `.p12` file containing the app's APNs information.",
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
       }),
-    p12Pass: z.string().openapi({ description: 'The password for the corresponding `.p12` file.' }),
-  })
-  .openapi({ required: ['p12File', 'p12Pass'] })
-  .openapi('AppPkcs12')
-
-const AppPostSchema = z
-  .strictObject({
-    apnsCertificate: z
-      .string()
-      .nullable()
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
       .exactOptional()
-      .openapi({ description: 'The Apple Push Notification service certificate.' }),
-    apnsPrivateKey: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The Apple Push Notification service private key.' }),
-    apnsUseSandboxEndpoint: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The Apple Push Notification service sandbox endpoint.' }),
-    fcmKey: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The Firebase Cloud Messaging key.', example: false }),
-    name: z
-      .string()
       .openapi({
-        description: 'The name of the application for your reference only.',
-        example: 'My App',
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
       }),
+    requestMode: z
+      .literal('single')
+      .openapi({
+        description:
+          'Single request mode sends each event separately to the endpoint specified by the rule. You can read more about single request mode events in the <a href="https://ably.com/documentation/general/events#batching">Ably documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('http/ifttt')
+      .openapi({
+        description:
+          'The type of rule. In this case IFTTT. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
     status: z
       .enum(['enabled', 'disabled'])
       .exactOptional()
       .openapi({
-        description:
-          'The status of the application. Can be `enabled` or `disabled`. Enabled means available to accept inbound connections and all services are available.',
+        description: 'The status of the rule. Rules can be enabled or disabled.',
         example: 'enabled',
       }),
-    tlsOnly: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Enforce TLS for all connections.', example: true }),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('AppPost')
-
-const AppResponseSchema = z
-  .strictObject({
-    _links: z
-      .object({})
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'A link self-referencing the app that has been created.' }),
-    accountId: z
+    target: z
+      .strictObject({ eventName: z.string(), webhookKey: z.string() })
+      .openapi({ required: ['webhookKey', 'eventName'] }),
+    version: z
       .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of your Ably account.', example: 'WgRpOB' }),
-    apnsUseSandboxEndpoint: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Apple Push Notification service endpoint.', example: false }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The application ID.', example: '28AB6x' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The application name.', example: 'Default' }),
-    status: z
-      .enum(['enabled', 'disabled'])
       .exactOptional()
       .openapi({
         description:
-          'The application status. Disabled applications will not accept new connections and will return an error to all clients.',
-        example: 'enabled',
-      }),
-    tlsOnly: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Enforce TLS for all connections. This setting overrides any channel setting.',
-        example: true,
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
       }),
   })
-  .openapi({ required: [] })
-  .openapi('AppResponse')
-
-const ErrorSchema = z
-  .strictObject({
-    code: z.int().openapi({ description: 'The HTTP status code returned.' }),
-    details: z
-      .object({})
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Any additional details about the error message.' }),
-    href: z.string().openapi({ description: 'The URL to documentation about the error code.' }),
-    message: z.string().openapi({ description: 'The error message.' }),
-    statusCode: z.int().openapi({ description: 'The Ably error code.' }),
-  })
-  .openapi({ required: ['message', 'code', 'statusCode', 'href'] })
-  .openapi('Error')
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('IftttRuleResponse')
 
 const KeyPatchSchema = z
   .strictObject({
@@ -3404,118 +3100,372 @@ const RuleAttributesSchema = z
   .openapi({ required: [] })
   .openapi('RuleAttributes')
 
-const RulePatchSchema: z.ZodType<RulePatchType> = z
-  .lazy(() =>
-    z
-      .xor([
-        HttpRulePatchSchema,
-        IftttRulePatchSchema,
-        ZapierRulePatchSchema,
-        CloudflareWorkerRulePatchSchema,
-        AzureFunctionRulePatchSchema,
-        GoogleCloudFunctionRulePatchSchema,
-        AwsLambdaRulePatchSchema,
-        AwsKinesisRulePatchSchema,
-        AwsSqsRulePatchSchema,
-        AmqpRulePatchSchema,
-        AmqpExternalRulePatchSchema,
-      ])
+const ZapierRulePatchSchema = z
+  .strictObject({
+    requestMode: z
+      .enum(['single', 'batch'])
+      .exactOptional()
       .openapi({
-        discriminator: {
-          mapping: {
-            amqp: '#/components/schemas/amqp_rule_patch',
-            'amqp/external': '#/components/schemas/amqp_external_rule_patch',
-            'aws/kinesis': '#/components/schemas/aws_kinesis_rule_patch',
-            'aws/lambda': '#/components/schemas/aws_lambda_rule_patch',
-            'aws/sqs': '#/components/schemas/aws_sqs_rule_patch',
-            http: '#/components/schemas/http_rule_patch',
-            'http/azure-function': '#/components/schemas/azure_function_rule_patch',
-            'http/cloudflare-worker': '#/components/schemas/cloudflare_worker_rule_patch',
-            'http/google-cloud-function': '#/components/schemas/google_cloud_function_rule_patch',
-            'http/ifttt': '#/components/schemas/ifttt_rule_patch',
-            'http/zapier': '#/components/schemas/zapier_rule_patch',
-          },
-          propertyName: 'ruleType',
-        },
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
       }),
-  )
+    ruleType: z
+      .literal('http/zapier')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of rule. In this case Zapier. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema.exactOptional(),
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+        url: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('ZapierRulePatch')
+
+const RulePatchSchema = z
+  .xor([
+    HttpRulePatchSchema,
+    IftttRulePatchSchema,
+    ZapierRulePatchSchema,
+    CloudflareWorkerRulePatchSchema,
+    AzureFunctionRulePatchSchema,
+    GoogleCloudFunctionRulePatchSchema,
+    AwsLambdaRulePatchSchema,
+    AwsKinesisRulePatchSchema,
+    AwsSqsRulePatchSchema,
+    AmqpRulePatchSchema,
+    AmqpExternalRulePatchSchema,
+  ])
+  .openapi({
+    discriminator: {
+      mapping: {
+        amqp: '#/components/schemas/amqp_rule_patch',
+        'amqp/external': '#/components/schemas/amqp_external_rule_patch',
+        'aws/kinesis': '#/components/schemas/aws_kinesis_rule_patch',
+        'aws/lambda': '#/components/schemas/aws_lambda_rule_patch',
+        'aws/sqs': '#/components/schemas/aws_sqs_rule_patch',
+        http: '#/components/schemas/http_rule_patch',
+        'http/azure-function': '#/components/schemas/azure_function_rule_patch',
+        'http/cloudflare-worker': '#/components/schemas/cloudflare_worker_rule_patch',
+        'http/google-cloud-function': '#/components/schemas/google_cloud_function_rule_patch',
+        'http/ifttt': '#/components/schemas/ifttt_rule_patch',
+        'http/zapier': '#/components/schemas/zapier_rule_patch',
+      },
+      propertyName: 'ruleType',
+    },
+  })
   .openapi('RulePatch')
 
-const RulePostSchema: z.ZodType<RulePostType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('ruleType', [
-        HttpRulePostSchema,
-        IftttRulePostSchema,
-        ZapierRulePostSchema,
-        CloudflareWorkerRulePostSchema,
-        AzureFunctionRulePostSchema,
-        GoogleCloudFunctionRulePostSchema,
-        AwsLambdaRulePostSchema,
-        AwsKinesisRulePostSchema,
-        AwsSqsRulePostSchema,
-        AmqpRulePostSchema,
-        AmqpExternalRulePostSchema,
-        UnsupportedRuleResponseSchema,
-      ])
+const ZapierRulePostSchema = z
+  .strictObject({
+    requestMode: z
+      .enum(['single', 'batch'])
       .openapi({
-        discriminator: {
-          mapping: {
-            amqp: '#/components/schemas/amqp_rule_post',
-            'amqp/external': '#/components/schemas/amqp_external_rule_post',
-            'aws/kinesis': '#/components/schemas/aws_kinesis_rule_post',
-            'aws/lambda': '#/components/schemas/aws_lambda_rule_post',
-            'aws/sqs': '#/components/schemas/aws_sqs_rule_post',
-            http: '#/components/schemas/http_rule_post',
-            'http/azure-function': '#/components/schemas/azure_function_rule_post',
-            'http/cloudflare-worker': '#/components/schemas/cloudflare_worker_rule_post',
-            'http/google-cloud-function': '#/components/schemas/google_cloud_function_rule_post',
-            'http/ifttt': '#/components/schemas/ifttt_rule_post',
-            'http/zapier': '#/components/schemas/zapier_rule_post',
-            unsupported: '#/components/schemas/unsupported_rule_response',
-          },
-          propertyName: 'ruleType',
-        },
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
       }),
-  )
+    ruleType: z
+      .literal('http/zapier')
+      .openapi({
+        description:
+          'The type of rule. In this case Zapier. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+        url: z.string(),
+      })
+      .openapi({ required: ['url'] }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('ZapierRulePost')
+
+const UnsupportedRuleResponseSchema = z
+  .strictObject({
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
+      }),
+    requestMode: z
+      .enum(['single', 'batch'])
+      .openapi({
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('unsupported')
+      .openapi({ description: 'This rule type is currently unsupported.' }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z.strictObject({ url: z.string() }).openapi({ required: ['url'] }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
+      }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('UnsupportedRuleResponse')
+
+const RulePostSchema = z
+  .discriminatedUnion('ruleType', [
+    HttpRulePostSchema,
+    IftttRulePostSchema,
+    ZapierRulePostSchema,
+    CloudflareWorkerRulePostSchema,
+    AzureFunctionRulePostSchema,
+    GoogleCloudFunctionRulePostSchema,
+    AwsLambdaRulePostSchema,
+    AwsKinesisRulePostSchema,
+    AwsSqsRulePostSchema,
+    AmqpRulePostSchema,
+    AmqpExternalRulePostSchema,
+    UnsupportedRuleResponseSchema,
+  ])
+  .openapi({
+    discriminator: {
+      mapping: {
+        amqp: '#/components/schemas/amqp_rule_post',
+        'amqp/external': '#/components/schemas/amqp_external_rule_post',
+        'aws/kinesis': '#/components/schemas/aws_kinesis_rule_post',
+        'aws/lambda': '#/components/schemas/aws_lambda_rule_post',
+        'aws/sqs': '#/components/schemas/aws_sqs_rule_post',
+        http: '#/components/schemas/http_rule_post',
+        'http/azure-function': '#/components/schemas/azure_function_rule_post',
+        'http/cloudflare-worker': '#/components/schemas/cloudflare_worker_rule_post',
+        'http/google-cloud-function': '#/components/schemas/google_cloud_function_rule_post',
+        'http/ifttt': '#/components/schemas/ifttt_rule_post',
+        'http/zapier': '#/components/schemas/zapier_rule_post',
+        unsupported: '#/components/schemas/unsupported_rule_response',
+      },
+      propertyName: 'ruleType',
+    },
+  })
   .openapi('RulePost')
 
-const RuleResponseSchema: z.ZodType<RuleResponseType> = z
-  .lazy(() =>
-    z
-      .discriminatedUnion('ruleType', [
-        HttpRuleResponseSchema,
-        IftttRuleResponseSchema,
-        ZapierRuleResponseSchema,
-        CloudflareWorkerRuleResponseSchema,
-        AzureFunctionRuleResponseSchema,
-        GoogleCloudFunctionRuleResponseSchema,
-        AwsLambdaRuleResponseSchema,
-        AwsKinesisRuleResponseSchema,
-        AwsSqsRuleResponseSchema,
-        AmqpRuleResponseSchema,
-        AmqpExternalRuleResponseSchema,
-      ])
+const ZapierRuleResponseSchema = z
+  .strictObject({
+    _links: z.looseObject({}).nullable().exactOptional(),
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Ably application ID.', example: '28GY6a' }),
+    created: z
+      .number()
+      .exactOptional()
       .openapi({
-        discriminator: {
-          mapping: {
-            amqp: '#/components/schemas/amqp_rule_response',
-            'amqp/external': '#/components/schemas/amqp_external_rule_response',
-            'aws/kinesis': '#/components/schemas/aws_kinesis_rule_response',
-            'aws/lambda': '#/components/schemas/aws_lambda_rule_response',
-            'aws/sqs': '#/components/schemas/aws_sqs_rule_response',
-            http: '#/components/schemas/http_rule_response',
-            'http/azure-function': '#/components/schemas/azure_function_rule_response',
-            'http/cloudflare-worker': '#/components/schemas/cloudflare_worker_rule_response',
-            'http/google-cloud-function':
-              '#/components/schemas/google_cloud_function_rule_response',
-            'http/ifttt': '#/components/schemas/ifttt_rule_response',
-            'http/zapier': '#/components/schemas/zapier_rule_response',
-          },
-          propertyName: 'ruleType',
-        },
+        description: 'Unix timestamp representing the date and time of creation of the rule.',
+        example: 1602844091815,
       }),
-  )
+    id: z.string().exactOptional().openapi({ description: 'The rule ID.', example: '83IzAB' }),
+    modified: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unix timestamp representing the date and time of last modification of the rule.',
+        example: 1614679682091,
+      }),
+    requestMode: z
+      .enum(['single', 'batch'])
+      .openapi({
+        description:
+          'This is Single Request mode or Batch Request mode. Single Request mode sends each event separately to the endpoint specified by the rule. Batch Request mode rolls up multiple events into the same request. You can read more about the difference between single and batched events in the Ably <a href="https://ably.com/documentation/general/events#batching">documentation</a>.',
+        example: 'single',
+      }),
+    ruleType: z
+      .literal('http/zapier')
+      .openapi({
+        description:
+          'The type of rule. In this case Zapier. See the <a href="https://ably.com/integrations">documentation</a> for further information.',
+      }),
+    source: RuleSourceSchema,
+    status: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({
+        description: 'The status of the rule. Rules can be enabled or disabled.',
+        example: 'enabled',
+      }),
+    target: z
+      .strictObject({
+        headers: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The name of the header.' }),
+                value: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'The value of the header.' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              "If you have additional information to send, you'll need to include the relevant headers.",
+          }),
+        signingKeyId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The signing key ID for use in `batch` mode. Ably will optionally sign the payload using an API key ensuring your servers can validate the payload using the private API key. See the <a href="https://ably.com/documentation/general/events#security">webhook security docs</a> for more information.',
+          }),
+        url: z.string(),
+      })
+      .openapi({ required: ['url'] }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'API version. Events and the format of their payloads are versioned. Please see the <a href="https://ably.com/documentation/general/events">Events documentation</a>.',
+      }),
+  })
+  .openapi({ required: ['ruleType', 'requestMode', 'source', 'target'] })
+  .openapi('ZapierRuleResponse')
+
+const RuleResponseSchema = z
+  .discriminatedUnion('ruleType', [
+    HttpRuleResponseSchema,
+    IftttRuleResponseSchema,
+    ZapierRuleResponseSchema,
+    CloudflareWorkerRuleResponseSchema,
+    AzureFunctionRuleResponseSchema,
+    GoogleCloudFunctionRuleResponseSchema,
+    AwsLambdaRuleResponseSchema,
+    AwsKinesisRuleResponseSchema,
+    AwsSqsRuleResponseSchema,
+    AmqpRuleResponseSchema,
+    AmqpExternalRuleResponseSchema,
+  ])
+  .openapi({
+    discriminator: {
+      mapping: {
+        amqp: '#/components/schemas/amqp_rule_response',
+        'amqp/external': '#/components/schemas/amqp_external_rule_response',
+        'aws/kinesis': '#/components/schemas/aws_kinesis_rule_response',
+        'aws/lambda': '#/components/schemas/aws_lambda_rule_response',
+        'aws/sqs': '#/components/schemas/aws_sqs_rule_response',
+        http: '#/components/schemas/http_rule_response',
+        'http/azure-function': '#/components/schemas/azure_function_rule_response',
+        'http/cloudflare-worker': '#/components/schemas/cloudflare_worker_rule_response',
+        'http/google-cloud-function': '#/components/schemas/google_cloud_function_rule_response',
+        'http/ifttt': '#/components/schemas/ifttt_rule_response',
+        'http/zapier': '#/components/schemas/zapier_rule_response',
+      },
+      propertyName: 'ruleType',
+    },
+  })
   .openapi('RuleResponse')
 
 const RuleSourcePatchSchema = z

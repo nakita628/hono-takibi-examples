@@ -1,5 +1,22 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ArtifactSchema = z
+  .object({
+    node_index: z.int().exactOptional(),
+    path: z.string().exactOptional(),
+    pretty_path: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Artifact')
+
+const ArtifactsSchema = z.array(ArtifactSchema).openapi('Artifacts')
+
+const AwsSchema = z
+  .object({ keypair: z.string().nullable().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Aws')
+
 const LifecycleSchema = z
   .enum(['queued', 'scheduled', 'not_run', 'not_running', 'running', 'finished'])
   .openapi('Lifecycle')
@@ -31,89 +48,48 @@ const PreviousBuildSchema = z
   .openapi({ description: 'previous build', required: [] })
   .openapi('PreviousBuild')
 
-type BuildType = {
-  body?: string
-  branch?: string
-  build_time_millis?: number
-  build_url?: string
-  committer_email?: string
-  committer_name?: string
-  dont_build?: string | null
-  lifecycle?: z.infer<typeof LifecycleSchema>
-  previous?: z.infer<typeof PreviousBuildSchema>
-  queued_at?: string
-  reponame?: string
-  retry_of?: number | null
-  start_time?: string
-  stop_time?: string
-  subject?: string
-  username?: string
-  vcs_url?: string
-  why?: string
-}
-
-const ArtifactSchema = z
+const BuildSchema = z
   .object({
-    node_index: z.int().exactOptional(),
-    path: z.string().exactOptional(),
-    pretty_path: z.string().exactOptional(),
-    url: z.string().exactOptional(),
+    body: z.string().exactOptional().openapi({ description: 'commit message body' }),
+    branch: z.string().exactOptional(),
+    build_time_millis: z.int().exactOptional(),
+    build_url: z.url().exactOptional(),
+    committer_email: z.email().exactOptional(),
+    committer_name: z.string().exactOptional(),
+    dont_build: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "reason why we didn't build, if we didn't build" }),
+    lifecycle: LifecycleSchema.exactOptional(),
+    previous: PreviousBuildSchema.exactOptional(),
+    queued_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'time build was queued' }),
+    reponame: z.string().exactOptional(),
+    retry_of: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'build_num of the build this is a retry of' }),
+    start_time: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'time build started' }),
+    stop_time: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'time build finished' }),
+    subject: z.string().exactOptional(),
+    username: z.string().exactOptional(),
+    vcs_url: z.url().exactOptional(),
+    why: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'short string explaining the reason we built' }),
   })
   .openapi({ required: [] })
-  .openapi('Artifact')
-
-const ArtifactsSchema = z.array(ArtifactSchema).openapi('Artifacts')
-
-const AwsSchema = z
-  .object({ keypair: z.string().nullable().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Aws')
-
-const BuildSchema: z.ZodType<BuildType> = z
-  .lazy(() =>
-    z
-      .object({
-        body: z.string().exactOptional().openapi({ description: 'commit message body' }),
-        branch: z.string().exactOptional(),
-        build_time_millis: z.int().exactOptional(),
-        build_url: z.url().exactOptional(),
-        committer_email: z.email().exactOptional(),
-        committer_name: z.string().exactOptional(),
-        dont_build: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: "reason why we didn't build, if we didn't build" }),
-        lifecycle: LifecycleSchema.exactOptional(),
-        previous: PreviousBuildSchema.exactOptional(),
-        queued_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'time build was queued' }),
-        reponame: z.string().exactOptional(),
-        retry_of: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'build_num of the build this is a retry of' }),
-        start_time: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'time build started' }),
-        stop_time: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'time build finished' }),
-        subject: z.string().exactOptional(),
-        username: z.string().exactOptional(),
-        vcs_url: z.url().exactOptional(),
-        why: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'short string explaining the reason we built' }),
-      })
-      .openapi({ required: [] }),
-  )
   .openapi('Build')
 
 const Sha1Schema = z.string().openapi('Sha1')
@@ -159,10 +135,10 @@ const UserSchema = z
     in_beta_program: z.boolean().exactOptional(),
     login: z.string().exactOptional(),
     name: z.string().exactOptional(),
-    organization_prefs: z.object({}).exactOptional(),
+    organization_prefs: z.looseObject({}).exactOptional(),
     parallelism: z.int().exactOptional(),
     plan: z.string().nullable().exactOptional(),
-    projects: z.object({}).exactOptional(),
+    projects: z.looseObject({}).exactOptional(),
     pusher_id: z.string().exactOptional(),
     selected_email: z.email().exactOptional(),
     sign_in_count: z.int().exactOptional(),
@@ -188,7 +164,7 @@ const BuildDetailSchema = z
   .openapi('BuildDetail')
 
 const BuildParametersSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Additional environment variables to inject into the build environment. A map of names to values.\n',
@@ -264,7 +240,7 @@ const ScopeSchema = z
 const ProjectSchema = z
   .object({
     aws: AwsSchema.exactOptional(),
-    branches: z.object({}).exactOptional(),
+    branches: z.looseObject({}).exactOptional(),
     campfire_notify_prefs: StringOrNullSchema.exactOptional(),
     campfire_room: StringOrNullSchema.exactOptional(),
     campfire_subdomain: StringOrNullSchema.exactOptional(),
@@ -778,12 +754,10 @@ export const postProjectUsernameProjectTreeBranchRoute = createRoute({
       description: 'returns a summary of the build',
       content: { 'application/json': { schema: BuildSchema } },
       headers: z.object({
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
