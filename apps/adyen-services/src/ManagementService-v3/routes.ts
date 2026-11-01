@@ -1,722 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const TransactionDescriptionResponseInfoSchema = z
-  .strictObject({
-    doingBusinessAsName: z
-      .string()
-      .max(22)
-      .exactOptional()
-      .openapi({
-        description:
-          "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
-      }),
-    type: z
-      .enum(['append', 'dynamic', 'fixed'])
-      .default('dynamic')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of transaction description you want to use:\n- **fixed**: The transaction description set in this request is used for all payments with this payment method.\n- **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.\n- **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TransactionDescriptionResponseInfo')
-
-const AccelResponseInfoSchema = z
-  .strictObject({
-    processingType: z
-      .enum(['billpay', 'ecom', 'pos'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
-      }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('AccelResponseInfo')
-
-const AffirmResponseInfoSchema = z
-  .strictObject({
-    publicApiKey: z.string().exactOptional().openapi({ description: 'Affirm public API key' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AffirmResponseInfo')
-
-const AfterpayTouchResponseInfoSchema = z
-  .strictObject({
-    supportEmail: z.string().exactOptional().openapi({ description: 'Support Email' }),
-    supportUrl: z.string().exactOptional().openapi({ description: 'Support Url' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AfterpayTouchResponseInfo')
-
-const AlipayPlusResponseInfoSchema = z
-  .strictObject({
-    settlementCurrencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The currency used for settlement.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AlipayPlusResponseInfo')
-
-const AmexResponseInfoSchema = z
-  .strictObject({
-    midNumber: z.string().exactOptional().openapi({ description: 'Merchant ID (MID) number.' }),
-    reuseMidNumber: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the Amex Merchant ID is reused from a previously setup Amex payment method.',
-      }),
-    serviceLevel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          ' The service level (settlement type) of this payment method. Possible values:\n* **noContract**: Adyen holds the contract with American Express.\n* **gatewayContract**: American Express receives the settlement and handles disputes, then pays out to you or your sub-merchant directly.\n* **paymentDesignatorContract**: Adyen receives the settlement, and handles disputes and payouts.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AmexResponseInfo')
-
-const AncvResponseInfoSchema = z
-  .strictObject({
-    shopId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ANCV [Shop ID](https://static.ancv.com/ddmc/connect/PTL/PAP_PTL_avec_interm%C3%A9diaire_Raccordement_et_Shop_ID.pdf). Format: exactly 8 numeric characters with the first digit set as **1** in the live environment and **9** in the test environment.\nExample: 10000008.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AncvResponseInfo')
-
-const ApplePayResponseInfoSchema = z
-  .strictObject({
-    domains: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of merchant domains.\n\nFor more information, see [Apple Pay documentation](https://docs.adyen.com/payment-methods/apple-pay/web-drop-in?tab=adyen-certificate-live_1#going-live).',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApplePayResponseInfo')
-
-const AssociatedPaymentMethodSchema = z
-  .strictObject({
-    enabled: z
-      .boolean()
-      .openapi({
-        description:
-          'Indicates whether the payment method is enabled (**true**) or disabled (**false**).',
-      }),
-    id: z.string().openapi({ description: 'The identifier of the payment method.' }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).\n\nFor payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object.',
-      }),
-  })
-  .openapi({ required: ['enabled', 'id', 'type'] })
-  .openapi('AssociatedPaymentMethod')
-
-const BcmcResponseInfoSchema = z
-  .strictObject({
-    enableBcmcMobile: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if [Bancontact mobile](https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile) is enabled.',
-      }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('BcmcResponseInfo')
-
-const CarnetResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('CarnetResponseInfo')
-
-const CartesBancairesResponseInfoSchema = z
-  .strictObject({
-    siret: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Cartes Bancaires SIRET. Format: 14 digits.' }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('CartesBancairesResponseInfo')
-
-const ClearpayResponseInfoSchema = z
-  .strictObject({ supportUrl: z.string().exactOptional().openapi({ description: 'Support Url' }) })
-  .openapi({ required: [] })
-  .openapi('ClearpayResponseInfo')
-
-const CupResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('CupResponseInfo')
-
-const DinersResponseInfoSchema = z
-  .strictObject({
-    midNumber: z.string().exactOptional().openapi({ description: 'MID (Merchant ID) number.' }),
-    reuseMidNumber: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the JCB Merchant ID is reused from a previously configured JCB payment method.',
-      }),
-    serviceLevel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The service level (settlement type) of this payment method. Possible values:\n * **noContract**: Adyen holds the contract with JCB.\n * **gatewayContract**: JCB receives the settlement and handles disputes, then pays out to you or your sub-merchant directly.',
-      }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('DinersResponseInfo')
-
-const DiscoverResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('DiscoverResponseInfo')
-
-const EbtResponseInfoSchema = z
-  .strictObject({
-    fnaNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Food and Nutrition Administration (FNA) number for EBT.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EbtResponseInfo')
-
-const EFTDirectDebitCAResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('EFTDirectDebitCAResponseInfo')
-
-const EftPosAustraliaResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('EftPosAustraliaResponseInfo')
-
-const GirocardResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('GirocardResponseInfo')
-
-const GivexResponseInfoSchema = z
-  .strictObject({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The three-character ISO currency code' }),
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The password provided by the acquirer.' }),
-    paymentFlow: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The sales channel used for the payment.' }),
-    username: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The username provided by the acquirer.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GivexResponseInfo')
-
-const GooglePayResponseInfoSchema = z
-  .strictObject({
-    merchantId: z.string().exactOptional().openapi({ description: 'Google Pay [Merchant ID]' }),
-    reuseMerchantId: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the Google Pay Merchant ID is used for several merchant accounts.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GooglePayResponseInfo')
-
-const IdealResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('IdealResponseInfo')
-
-const InteracCardResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('InteracCardResponseInfo')
-
-const JCBResponseInfoSchema = z
-  .strictObject({
-    midNumber: z.string().exactOptional().openapi({ description: 'MID (Merchant ID) number.' }),
-    reuseMidNumber: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the JCB Merchant ID is reused from a previously setup JCB payment method.',
-      }),
-    serviceLevel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Specifies the service level (settlement type) of this payment method.',
-      }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('JCBResponseInfo')
-
-const KlarnaResponseInfoSchema = z
-  .strictObject({
-    autoCapture: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the status of [Automatic capture](https://docs.adyen.com/online-payments/capture#automatic-capture).',
-      }),
-    disputeEmail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The email address for disputes.' }),
-    region: z
-      .enum(['AU', 'CH', 'EU', 'NA'])
-      .exactOptional()
-      .openapi({ description: 'The region of operation.' }),
-    supportEmail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The email address of merchant support.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('KlarnaResponseInfo')
-
-const MaestroResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('MaestroResponseInfo')
-
-const MaestroUSAResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('MaestroUSAResponseInfo')
-
-const MCResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('MCResponseInfo')
-
-const MealVoucherFRResponseInfoSchema = z
-  .strictObject({
-    conecsId: z.string().exactOptional().openapi({ description: 'Meal Voucher conecsId.' }),
-    siret: z.string().exactOptional().openapi({ description: 'Meal Voucher siret.' }),
-    subTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The list of additional payment methods.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MealVoucherFRResponseInfo')
-
-const NyceResponseInfoSchema = z
-  .strictObject({
-    processingType: z
-      .enum(['billpay', 'ecom', 'pos'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
-      }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('NyceResponseInfo')
-
-const PayByBankPlaidResponseInfoSchema = z
-  .strictObject({
-    logo: z.string().exactOptional().openapi({ deprecated: true, description: 'Merchant logo' }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('PayByBankPlaidResponseInfo')
-
-const PayMeResponseInfoSchema = z
-  .strictObject({
-    displayName: z.string().exactOptional().openapi({ description: 'Merchant display name' }),
-    logo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Merchant logo. Format: Base64-encoded string.' }),
-    supportEmail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The email address of merchant support.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PayMeResponseInfo')
-
-const PayPalResponseInfoSchema = z
-  .strictObject({
-    directCapture: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if direct (immediate) capture for PayPal is enabled. If set to **true**, this setting overrides the [capture](https://docs.adyen.com/online-payments/capture) settings of your merchant account. Default value: **true**.',
-      }),
-    payerId: z
-      .string()
-      .length(13)
-      .exactOptional()
-      .openapi({
-        description:
-          'PayPal Merchant ID. Character length and limitations: 13 single-byte alphanumeric characters.',
-      }),
-    subject: z.string().exactOptional().openapi({ description: 'Your business email address.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PayPalResponseInfo')
-
-const PayToResponseInfoSchema = z
-  .strictObject({
-    merchantName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Merchant name displayed to the shopper in the Agreements' }),
-    payToPurpose: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Represents the purpose of the Agreements created, it relates to the business type\n**Allowed values**: mortgage, utility, loan, gambling, retail, salary, personal, government, pension, tax, other',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('PayToResponseInfo')
-
-const PulseResponseInfoSchema = z
-  .strictObject({
-    processingType: z
-      .enum(['billpay', 'ecom', 'pos'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
-      }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('PulseResponseInfo')
-
-const SepaDirectDebitResponseInfoSchema = z
-  .strictObject({
-    creditorId: z.string().exactOptional().openapi({ description: 'Creditor id' }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('SepaDirectDebitResponseInfo')
-
-const SodexoResponseInfoSchema = z
-  .strictObject({
-    merchantContactPhone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Sodexo merchantContactPhone' }),
-  })
-  .openapi({ required: [] })
-  .openapi('SodexoResponseInfo')
-
-const SofortResponseInfoSchema = z
-  .strictObject({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Sofort currency code. For example, **EUR**.' }),
-    logo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Sofort logo. Format: Base64-encoded string.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('SofortResponseInfo')
-
-const StarResponseInfoSchema = z
-  .strictObject({
-    processingType: z
-      .enum(['billpay', 'ecom', 'pos'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
-      }),
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('StarResponseInfo')
-
-const SvsResponseInfoSchema = z
-  .strictObject({
-    authorisationMid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The merchant ID (MID) that the acquirer recognizes you by.' }),
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The three-character ISO currency code, example **USD**' }),
-  })
-  .openapi({ required: [] })
-  .openapi('SvsResponseInfo')
-
-const SwishResponseInfoSchema = z
-  .strictObject({
-    swishNumber: z
-      .string()
-      .length(10)
-      .exactOptional()
-      .openapi({
-        description: 'Swish number. Format: 10 digits without spaces. For example, **1231111111**.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SwishResponseInfo')
-
-const TicketResponseInfoSchema = z
-  .strictObject({
-    requestorId: z.string().exactOptional().openapi({ description: 'Ticket requestorId' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TicketResponseInfo')
-
-const TwintResponseInfoSchema = z
-  .strictObject({
-    logo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Twint logo. Format: Base64-encoded string.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TwintResponseInfo')
-
-const ValuelinkResponseInfoSchema = z
-  .strictObject({
-    alternateMerchantNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Alternate Merchant Number' }),
-    authorisationMid: z.string().exactOptional().openapi({ description: 'Authorisation Mid' }),
-    pinSupport: z
-      .enum(['PIN', 'NO PIN'])
-      .exactOptional()
-      .openapi({ description: 'PIN Support. For ecommerce, PIN is required.' }),
-    terminalId: z.string().exactOptional().openapi({ description: 'Terminal ID' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ValuelinkResponseInfo')
-
-const VippsResponseInfoSchema = z
-  .strictObject({
-    logo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Vipps logo. Format: Base64-encoded string.' }),
-    subscriptionCancelUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Vipps subscription cancel url (required in case of [recurring payments](https://docs.adyen.com/online-payments/tokenization))',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('VippsResponseInfo')
-
-const VisaResponseInfoSchema = z
-  .strictObject({
-    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
-      description: 'Information regarding the transaction description.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('VisaResponseInfo')
-
-const WeChatPayResponseInfoSchema = z
-  .strictObject({
-    contactPersonName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the contact person from merchant support.' }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The email address of merchant support.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('WeChatPayResponseInfo')
-
-const WeChatPayPosResponseInfoSchema = z
-  .strictObject({
-    contactPersonName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the contact person from merchant support.' }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The email address of merchant support.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('WeChatPayPosResponseInfo')
-
-type PaymentMethodType = {
-  accel?: z.infer<typeof AccelResponseInfoSchema>
-  affirm?: z.infer<typeof AffirmResponseInfoSchema>
-  afterpayTouch?: z.infer<typeof AfterpayTouchResponseInfoSchema>
-  alipayPlus?: z.infer<typeof AlipayPlusResponseInfoSchema>
-  allowed?: boolean
-  amex?: z.infer<typeof AmexResponseInfoSchema>
-  ancv?: z.infer<typeof AncvResponseInfoSchema>
-  applePay?: z.infer<typeof ApplePayResponseInfoSchema>
-  associatedPaymentMethods?: z.infer<typeof AssociatedPaymentMethodSchema>[]
-  bcmc?: z.infer<typeof BcmcResponseInfoSchema>
-  businessLineId?: string
-  carnet?: z.infer<typeof CarnetResponseInfoSchema>
-  cartesBancaires?: z.infer<typeof CartesBancairesResponseInfoSchema>
-  clearpay?: z.infer<typeof ClearpayResponseInfoSchema>
-  countries?: string[]
-  cup?: z.infer<typeof CupResponseInfoSchema>
-  currencies?: string[]
-  customRoutingFlags?: string[]
-  diners?: z.infer<typeof DinersResponseInfoSchema>
-  discover?: z.infer<typeof DiscoverResponseInfoSchema>
-  ebt?: z.infer<typeof EbtResponseInfoSchema>
-  eft_directdebit_CA?: z.infer<typeof EFTDirectDebitCAResponseInfoSchema>
-  eftpos_australia?: z.infer<typeof EftPosAustraliaResponseInfoSchema>
-  enabled?: boolean
-  girocard?: z.infer<typeof GirocardResponseInfoSchema>
-  givex?: z.infer<typeof GivexResponseInfoSchema>
-  googlePay?: z.infer<typeof GooglePayResponseInfoSchema>
-  id: string
-  ideal?: z.infer<typeof IdealResponseInfoSchema>
-  interac_card?: z.infer<typeof InteracCardResponseInfoSchema>
-  jcb?: z.infer<typeof JCBResponseInfoSchema>
-  klarna?: z.infer<typeof KlarnaResponseInfoSchema>
-  maestro?: z.infer<typeof MaestroResponseInfoSchema>
-  maestro_usa?: z.infer<typeof MaestroUSAResponseInfoSchema>
-  mc?: z.infer<typeof MCResponseInfoSchema>
-  mealVoucher_FR?: z.infer<typeof MealVoucherFRResponseInfoSchema>
-  merchantCategoryCode?: string
-  mid?: string
-  nyce?: z.infer<typeof NyceResponseInfoSchema>
-  paybybank_plaid?: z.infer<typeof PayByBankPlaidResponseInfoSchema>
-  payme?: z.infer<typeof PayMeResponseInfoSchema>
-  paypal?: z.infer<typeof PayPalResponseInfoSchema>
-  payto?: z.infer<typeof PayToResponseInfoSchema>
-  pulse?: z.infer<typeof PulseResponseInfoSchema>
-  reference?: string
-  sepadirectdebit?: z.infer<typeof SepaDirectDebitResponseInfoSchema>
-  shopperInteraction?: string
-  sodexo?: z.infer<typeof SodexoResponseInfoSchema>
-  sofort?: z.infer<typeof SofortResponseInfoSchema>
-  star?: z.infer<typeof StarResponseInfoSchema>
-  storeIds?: string[]
-  svs?: z.infer<typeof SvsResponseInfoSchema>
-  swish?: z.infer<typeof SwishResponseInfoSchema>
-  ticket?: z.infer<typeof TicketResponseInfoSchema>
-  twint?: z.infer<typeof TwintResponseInfoSchema>
-  type?: string
-  valuelink?: z.infer<typeof ValuelinkResponseInfoSchema>
-  verificationStatus?: 'valid' | 'pending' | 'invalid' | 'rejected'
-  vipps?: z.infer<typeof VippsResponseInfoSchema>
-  visa?: z.infer<typeof VisaResponseInfoSchema>
-  wechatpay?: z.infer<typeof WeChatPayResponseInfoSchema>
-  wechatpay_pos?: z.infer<typeof WeChatPayPosResponseInfoSchema>
-}
-
 const TransactionDescriptionInfoSchema = z
   .strictObject({
     doingBusinessAsName: z
@@ -754,6 +37,44 @@ const AccelInfoSchema = z
   })
   .openapi({ required: ['processingType'] })
   .openapi('AccelInfo')
+
+const TransactionDescriptionResponseInfoSchema = z
+  .strictObject({
+    doingBusinessAsName: z
+      .string()
+      .max(22)
+      .exactOptional()
+      .openapi({
+        description:
+          "The text to be shown on the shopper's bank statement.\n We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.\n Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.",
+      }),
+    type: z
+      .enum(['append', 'dynamic', 'fixed'])
+      .default('dynamic')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of transaction description you want to use:\n- **fixed**: The transaction description set in this request is used for all payments with this payment method.\n- **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.\n- **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TransactionDescriptionResponseInfo')
+
+const AccelResponseInfoSchema = z
+  .strictObject({
+    processingType: z
+      .enum(['billpay', 'ecom', 'pos'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
+      }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccelResponseInfo')
 
 const AccelUpdateInfoSchema = z
   .strictObject({
@@ -904,6 +225,13 @@ const AffirmInfoSchema = z
   .openapi({ required: ['supportEmail'] })
   .openapi('AffirmInfo')
 
+const AffirmResponseInfoSchema = z
+  .strictObject({
+    publicApiKey: z.string().exactOptional().openapi({ description: 'Affirm public API key' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AffirmResponseInfo')
+
 const AffirmUpdateInfoSchema = z
   .strictObject({
     pricePlan: z
@@ -924,6 +252,14 @@ const AfterpayTouchInfoSchema = z
   })
   .openapi({ required: ['supportUrl'] })
   .openapi('AfterpayTouchInfo')
+
+const AfterpayTouchResponseInfoSchema = z
+  .strictObject({
+    supportEmail: z.string().exactOptional().openapi({ description: 'Support Email' }),
+    supportUrl: z.string().exactOptional().openapi({ description: 'Support Url' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AfterpayTouchResponseInfo')
 
 const AlipayPlusInfoSchema = z
   .strictObject({
@@ -948,6 +284,16 @@ const AlipayPlusInfoSchema = z
   })
   .openapi({ required: [] })
   .openapi('AlipayPlusInfo')
+
+const AlipayPlusResponseInfoSchema = z
+  .strictObject({
+    settlementCurrencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The currency used for settlement.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AlipayPlusResponseInfo')
 
 const LinksElementSchema = z
   .object({ href: z.string().exactOptional() })
@@ -1015,6 +361,27 @@ const AmexInfoSchema = z
   .openapi({ required: ['serviceLevel'] })
   .openapi('AmexInfo')
 
+const AmexResponseInfoSchema = z
+  .strictObject({
+    midNumber: z.string().exactOptional().openapi({ description: 'Merchant ID (MID) number.' }),
+    reuseMidNumber: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the Amex Merchant ID is reused from a previously setup Amex payment method.',
+      }),
+    serviceLevel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          ' The service level (settlement type) of this payment method. Possible values:\n* **noContract**: Adyen holds the contract with American Express.\n* **gatewayContract**: American Express receives the settlement and handles disputes, then pays out to you or your sub-merchant directly.\n* **paymentDesignatorContract**: Adyen receives the settlement, and handles disputes and payouts.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AmexResponseInfo')
+
 const AmountSchema = z
   .strictObject({
     currency: z
@@ -1057,6 +424,19 @@ const AncvInfoSchema = z
   })
   .openapi({ required: ['shopId'] })
   .openapi('AncvInfo')
+
+const AncvResponseInfoSchema = z
+  .strictObject({
+    shopId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ANCV [Shop ID](https://static.ancv.com/ddmc/connect/PTL/PAP_PTL_avec_interm%C3%A9diaire_Raccordement_et_Shop_ID.pdf). Format: exactly 8 numeric characters with the first digit set as **1** in the live environment and **9** in the test environment.\nExample: 10000008.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AncvResponseInfo')
 
 const AndroidAppErrorSchema = z
   .strictObject({
@@ -1275,6 +655,38 @@ const ApplePayInfoSchema = z
   .openapi({ required: ['domains'] })
   .openapi('ApplePayInfo')
 
+const ApplePayResponseInfoSchema = z
+  .strictObject({
+    domains: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of merchant domains.\n\nFor more information, see [Apple Pay documentation](https://docs.adyen.com/payment-methods/apple-pay/web-drop-in?tab=adyen-certificate-live_1#going-live).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApplePayResponseInfo')
+
+const AssociatedPaymentMethodSchema = z
+  .strictObject({
+    enabled: z
+      .boolean()
+      .openapi({
+        description:
+          'Indicates whether the payment method is enabled (**true**) or disabled (**false**).',
+      }),
+    id: z.string().openapi({ description: 'The identifier of the payment method.' }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).\n\nFor payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object.',
+      }),
+  })
+  .openapi({ required: ['enabled', 'id', 'type'] })
+  .openapi('AssociatedPaymentMethod')
+
 const BcmcInfoSchema = z
   .strictObject({
     enableBcmcMobile: z
@@ -1287,6 +699,22 @@ const BcmcInfoSchema = z
   })
   .openapi({ required: [] })
   .openapi('BcmcInfo')
+
+const BcmcResponseInfoSchema = z
+  .strictObject({
+    enableBcmcMobile: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if [Bancontact mobile](https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile) is enabled.',
+      }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BcmcResponseInfo')
 
 const BcmcUpdateInfoSchema = z
   .strictObject({
@@ -1368,6 +796,15 @@ const CarnetInfoSchema = z
   .openapi({ required: [] })
   .openapi('CarnetInfo')
 
+const CarnetResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CarnetResponseInfo')
+
 const CartesBancairesInfoSchema = z
   .strictObject({
     siret: z.string().openapi({ description: 'Cartes Bancaires SIRET. Format: 14 digits.' }),
@@ -1378,6 +815,19 @@ const CartesBancairesInfoSchema = z
   })
   .openapi({ required: ['siret'] })
   .openapi('CartesBancairesInfo')
+
+const CartesBancairesResponseInfoSchema = z
+  .strictObject({
+    siret: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Cartes Bancaires SIRET. Format: 14 digits.' }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CartesBancairesResponseInfo')
 
 const CartesBancairesUpdateInfoSchema = z
   .strictObject({
@@ -1409,6 +859,11 @@ const ClearpayInfoSchema = z
   .strictObject({ supportUrl: z.string().openapi({ description: 'Support Url' }) })
   .openapi({ required: ['supportUrl'] })
   .openapi('ClearpayInfo')
+
+const ClearpayResponseInfoSchema = z
+  .strictObject({ supportUrl: z.string().exactOptional().openapi({ description: 'Support Url' }) })
+  .openapi({ required: [] })
+  .openapi('ClearpayResponseInfo')
 
 const CommissionSchema = z
   .strictObject({
@@ -2484,6 +1939,15 @@ const CreateUserResponseSchema = z
   .openapi({ required: ['email', 'id', 'roles', 'timeZoneCode', 'username'] })
   .openapi('CreateUserResponse')
 
+const CupResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CupResponseInfo')
+
 const CustomNotificationSchema = z
   .strictObject({
     amount: AmountSchema.exactOptional().openapi({
@@ -2575,6 +2039,48 @@ const DinersInfoSchema = z
   .openapi({ required: ['reuseMidNumber'] })
   .openapi('DinersInfo')
 
+const DinersResponseInfoSchema = z
+  .strictObject({
+    midNumber: z.string().exactOptional().openapi({ description: 'MID (Merchant ID) number.' }),
+    reuseMidNumber: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the JCB Merchant ID is reused from a previously configured JCB payment method.',
+      }),
+    serviceLevel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The service level (settlement type) of this payment method. Possible values:\n * **noContract**: Adyen holds the contract with JCB.\n * **gatewayContract**: JCB receives the settlement and handles disputes, then pays out to you or your sub-merchant directly.',
+      }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DinersResponseInfo')
+
+const DiscoverResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DiscoverResponseInfo')
+
+const EFTDirectDebitCAResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('EFTDirectDebitCAResponseInfo')
+
 const EbtInfoSchema = z
   .strictObject({
     fnaNumber: z
@@ -2586,6 +2092,16 @@ const EbtInfoSchema = z
   .openapi({ required: ['fnaNumber'] })
   .openapi('EbtInfo')
 
+const EbtResponseInfoSchema = z
+  .strictObject({
+    fnaNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Food and Nutrition Administration (FNA) number for EBT.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EbtResponseInfo')
+
 const EbtUpdateInfoSchema = z
   .strictObject({
     fnaNumber: z
@@ -2596,6 +2112,15 @@ const EbtUpdateInfoSchema = z
   })
   .openapi({ required: ['fnaNumber'] })
   .openapi('EbtUpdateInfo')
+
+const EftPosAustraliaResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('EftPosAustraliaResponseInfo')
 
 const ExternalTerminalActionSchema = z
   .strictObject({
@@ -2706,6 +2231,15 @@ const GenericPmWithTdiUpdateInfoSchema = z
   .openapi({ required: [] })
   .openapi('GenericPmWithTdiUpdateInfo')
 
+const GirocardResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('GirocardResponseInfo')
+
 const GivexInfoSchema = z
   .strictObject({
     currencyCode: z
@@ -2719,6 +2253,28 @@ const GivexInfoSchema = z
   })
   .openapi({ required: ['currencyCode', 'password', 'paymentFlow', 'username'] })
   .openapi('GivexInfo')
+
+const GivexResponseInfoSchema = z
+  .strictObject({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-character ISO currency code' }),
+    password: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The password provided by the acquirer.' }),
+    paymentFlow: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The sales channel used for the payment.' }),
+    username: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The username provided by the acquirer.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GivexResponseInfo')
 
 const GooglePayInfoSchema = z
   .strictObject({
@@ -2740,6 +2296,20 @@ const GooglePayInfoSchema = z
   })
   .openapi({ required: ['merchantId'] })
   .openapi('GooglePayInfo')
+
+const GooglePayResponseInfoSchema = z
+  .strictObject({
+    merchantId: z.string().exactOptional().openapi({ description: 'Google Pay [Merchant ID]' }),
+    reuseMerchantId: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the Google Pay Merchant ID is used for several merchant accounts.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GooglePayResponseInfo')
 
 const GratuitySchema = z
   .strictObject({
@@ -2828,6 +2398,15 @@ const IdNameSchema = z
   .openapi({ required: [] })
   .openapi('IdName')
 
+const IdealResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('IdealResponseInfo')
+
 const InstallAndroidAppDetailsSchema = z
   .strictObject({
     appId: z
@@ -2876,6 +2455,15 @@ const InstalledAPKsSchema = z
   .openapi({ required: [] })
   .openapi('InstalledAPKs')
 
+const InteracCardResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('InteracCardResponseInfo')
+
 const InvalidFieldSchema = z
   .object({
     message: z.string().openapi({ description: 'Description of the validation error.' }),
@@ -2918,7 +2506,30 @@ const JCBInfoSchema = z
   .openapi({ required: [] })
   .openapi('JCBInfo')
 
-const JSONObjectSchema = z.object({}).openapi('JSONObject')
+const JCBResponseInfoSchema = z
+  .strictObject({
+    midNumber: z.string().exactOptional().openapi({ description: 'MID (Merchant ID) number.' }),
+    reuseMidNumber: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the JCB Merchant ID is reused from a previously setup JCB payment method.',
+      }),
+    serviceLevel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Specifies the service level (settlement type) of this payment method.',
+      }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('JCBResponseInfo')
+
+const JSONObjectSchema = z.looseObject({}).openapi('JSONObject')
 
 const KeySchema = z
   .strictObject({
@@ -2977,6 +2588,31 @@ const KlarnaInfoSchema = z
   })
   .openapi({ required: ['disputeEmail', 'region', 'supportEmail'] })
   .openapi('KlarnaInfo')
+
+const KlarnaResponseInfoSchema = z
+  .strictObject({
+    autoCapture: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the status of [Automatic capture](https://docs.adyen.com/online-payments/capture#automatic-capture).',
+      }),
+    disputeEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address for disputes.' }),
+    region: z
+      .enum(['AU', 'CH', 'EU', 'NA'])
+      .exactOptional()
+      .openapi({ description: 'The region of operation.' }),
+    supportEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address of merchant support.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('KlarnaResponseInfo')
 
 const PaginationLinksSchema = z
   .object({
@@ -3853,6 +3489,33 @@ const LogoSchema = z
   .openapi({ required: [] })
   .openapi('Logo')
 
+const MCResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('MCResponseInfo')
+
+const MaestroResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('MaestroResponseInfo')
+
+const MaestroUSAResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('MaestroUSAResponseInfo')
+
 const MeApiCredentialSchema = z
   .strictObject({
     _links: ApiCredentialLinksSchema.exactOptional().openapi({
@@ -3926,6 +3589,18 @@ const MealVoucherFRInfoSchema = z
   })
   .openapi({ required: ['conecsId', 'siret', 'subTypes'] })
   .openapi('MealVoucherFRInfo')
+
+const MealVoucherFRResponseInfoSchema = z
+  .strictObject({
+    conecsId: z.string().exactOptional().openapi({ description: 'Meal Voucher conecsId.' }),
+    siret: z.string().exactOptional().openapi({ description: 'Meal Voucher siret.' }),
+    subTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The list of additional payment methods.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MealVoucherFRResponseInfo')
 
 const MinorUnitsMonetaryValueSchema = z
   .strictObject({
@@ -4071,6 +3746,22 @@ const NyceInfoSchema = z
   .openapi({ required: ['processingType'] })
   .openapi('NyceInfo')
 
+const NyceResponseInfoSchema = z
+  .strictObject({
+    processingType: z
+      .enum(['billpay', 'ecom', 'pos'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
+      }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('NyceResponseInfo')
+
 const NyceUpdateInfoSchema = z
   .strictObject({
     transactionDescription: TransactionDescriptionInfoSchema.exactOptional().openapi({
@@ -4211,6 +3902,16 @@ const PayByBankPlaidInfoSchema = z
   .openapi({ required: [] })
   .openapi('PayByBankPlaidInfo')
 
+const PayByBankPlaidResponseInfoSchema = z
+  .strictObject({
+    logo: z.string().exactOptional().openapi({ deprecated: true, description: 'Merchant logo' }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('PayByBankPlaidResponseInfo')
+
 const PayByBankPlaidUpdateInfoSchema = z
   .strictObject({
     transactionDescription: TransactionDescriptionInfoSchema.exactOptional().openapi({
@@ -4229,6 +3930,21 @@ const PayMeInfoSchema = z
   })
   .openapi({ required: ['displayName', 'logo', 'supportEmail'] })
   .openapi('PayMeInfo')
+
+const PayMeResponseInfoSchema = z
+  .strictObject({
+    displayName: z.string().exactOptional().openapi({ description: 'Merchant display name' }),
+    logo: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Merchant logo. Format: Base64-encoded string.' }),
+    supportEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address of merchant support.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PayMeResponseInfo')
 
 const PayPalInfoSchema = z
   .strictObject({
@@ -4251,6 +3967,28 @@ const PayPalInfoSchema = z
   .openapi({ required: ['payerId', 'subject'] })
   .openapi('PayPalInfo')
 
+const PayPalResponseInfoSchema = z
+  .strictObject({
+    directCapture: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if direct (immediate) capture for PayPal is enabled. If set to **true**, this setting overrides the [capture](https://docs.adyen.com/online-payments/capture) settings of your merchant account. Default value: **true**.',
+      }),
+    payerId: z
+      .string()
+      .length(13)
+      .exactOptional()
+      .openapi({
+        description:
+          'PayPal Merchant ID. Character length and limitations: 13 single-byte alphanumeric characters.',
+      }),
+    subject: z.string().exactOptional().openapi({ description: 'Your business email address.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PayPalResponseInfo')
+
 const PayToInfoSchema = z
   .strictObject({
     merchantName: z
@@ -4265,6 +4003,23 @@ const PayToInfoSchema = z
   })
   .openapi({ required: ['merchantName', 'payToPurpose'] })
   .openapi('PayToInfo')
+
+const PayToResponseInfoSchema = z
+  .strictObject({
+    merchantName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Merchant name displayed to the shopper in the Agreements' }),
+    payToPurpose: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Represents the purpose of the Agreements created, it relates to the business type\n**Allowed values**: mortgage, utility, loan, gambling, retail, salary, personal, government, pension, tax, other',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PayToResponseInfo')
 
 const PaymentSchema = z
   .strictObject({
@@ -4287,234 +4042,379 @@ const PaymentSchema = z
   .openapi({ required: [] })
   .openapi('Payment')
 
-const PaymentMethodSchema: z.ZodType<PaymentMethodType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        accel: AccelResponseInfoSchema.exactOptional().openapi({
-          description: '**accel** details',
-        }),
-        affirm: AffirmResponseInfoSchema.exactOptional().openapi({
-          description: '**affirm** details',
-        }),
-        afterpayTouch: AfterpayTouchResponseInfoSchema.exactOptional().openapi({
-          description: '**afterpaytouch** details',
-        }),
-        alipayPlus: AlipayPlusResponseInfoSchema.exactOptional().openapi({
-          description: '**alipay_plus** details',
-        }),
-        allowed: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account.',
-          }),
-        amex: AmexResponseInfoSchema.exactOptional().openapi({ description: '**amex** details' }),
-        ancv: AncvResponseInfoSchema.exactOptional().openapi({ description: '**ancv** details' }),
-        applePay: ApplePayResponseInfoSchema.exactOptional().openapi({
-          description: '**applepay** details',
-        }),
-        associatedPaymentMethods: z
-          .array(AssociatedPaymentMethodSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Payment methods that were also updated as part of an associated transition.',
-          }),
-        bcmc: BcmcResponseInfoSchema.exactOptional().openapi({
-          description: '**bcmc** (Bancontact) details',
-        }),
-        businessLineId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms).',
-          }),
-        carnet: CarnetResponseInfoSchema.exactOptional().openapi({
-          description: '**carnet** details',
-        }),
-        cartesBancaires: CartesBancairesResponseInfoSchema.exactOptional().openapi({
-          description: '**cartesbancaires** details',
-        }),
-        clearpay: ClearpayResponseInfoSchema.exactOptional().openapi({
-          description: '**clearpay** details',
-        }),
-        countries: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of countries where a payment method is available. By default, all countries supported by the payment method.',
-          }),
-        cup: CupResponseInfoSchema.exactOptional().openapi({
-          description: '**cup** (China Union Pay) details',
-        }),
-        currencies: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of currencies that a payment method supports. By default, all currencies supported by the payment method.',
-          }),
-        customRoutingFlags: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of custom routing flags to route payment to the intended acquirer.',
-          }),
-        diners: DinersResponseInfoSchema.exactOptional().openapi({
-          description: '**diners** details',
-        }),
-        discover: DiscoverResponseInfoSchema.exactOptional().openapi({
-          description: '**discover** details',
-        }),
-        ebt: EbtResponseInfoSchema.exactOptional().openapi({ description: '**ebt** details' }),
-        eft_directdebit_CA: EFTDirectDebitCAResponseInfoSchema.exactOptional().openapi({
-          description: '**eft_directdebit_CA** (EFT PAD) details',
-        }),
-        eftpos_australia: EftPosAustraliaResponseInfoSchema.exactOptional().openapi({
-          description: '**eftpos_australia** details',
-        }),
-        enabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Indicates whether the payment method is enabled (**true**) or disabled (**false**).',
-          }),
-        girocard: GirocardResponseInfoSchema.exactOptional().openapi({
-          description: '**girocard** details',
-        }),
-        givex: GivexResponseInfoSchema.exactOptional().openapi({
-          description: '**givex** details',
-        }),
-        googlePay: GooglePayResponseInfoSchema.exactOptional().openapi({
-          description: '**googlepay** details',
-        }),
-        id: z.string().openapi({ description: 'The identifier of the resource.' }),
-        ideal: IdealResponseInfoSchema.exactOptional().openapi({
-          description: '**ideal** details',
-        }),
-        interac_card: InteracCardResponseInfoSchema.exactOptional().openapi({
-          description: '**interac_card** details',
-        }),
-        jcb: JCBResponseInfoSchema.exactOptional().openapi({ description: '**jcb** details' }),
-        klarna: KlarnaResponseInfoSchema.exactOptional().openapi({
-          description: '**klarna** or its variant details',
-        }),
-        maestro: MaestroResponseInfoSchema.exactOptional().openapi({
-          description: '**maestro** details',
-        }),
-        maestro_usa: MaestroUSAResponseInfoSchema.exactOptional().openapi({
-          description: '**maestro_usa** details',
-        }),
-        mc: MCResponseInfoSchema.exactOptional().openapi({ description: '**mc** details' }),
-        mealVoucher_FR: MealVoucherFRResponseInfoSchema.exactOptional().openapi({
-          description: '**mealVoucher_FR** details',
-        }),
-        merchantCategoryCode: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The Merchant Category Code (MCC) associated with the payment method.',
-          }),
-        mid: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The Merchant Identifier (MID) associated with the payment method.',
-          }),
-        nyce: NyceResponseInfoSchema.exactOptional().openapi({ description: '**nyce** details' }),
-        paybybank_plaid: PayByBankPlaidResponseInfoSchema.exactOptional().openapi({
-          description: '**paybybank_plaid** details',
-        }),
-        payme: PayMeResponseInfoSchema.exactOptional().openapi({
-          description: '**payme** details',
-        }),
-        paypal: PayPalResponseInfoSchema.exactOptional().openapi({
-          description: '**paypal** details',
-        }),
-        payto: PayToResponseInfoSchema.exactOptional().openapi({
-          description: '**payto** details',
-        }),
-        pulse: PulseResponseInfoSchema.exactOptional().openapi({
-          description: '**pulse** details',
-        }),
-        reference: z
-          .string()
-          .max(150)
-          .exactOptional()
-          .openapi({
-            description:
-              'Your reference for the payment method. Supported characters a-z, A-Z, 0-9.',
-          }),
-        sepadirectdebit: SepaDirectDebitResponseInfoSchema.exactOptional().openapi({
-          description: '**sepadirectdebit** details',
-        }),
-        shopperInteraction: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The sales channel.' }),
-        sodexo: SodexoResponseInfoSchema.exactOptional().openapi({
-          description: '**sodexo** details',
-        }),
-        sofort: SofortResponseInfoSchema.exactOptional().openapi({
-          deprecated: true,
-          description: 'Sofort details.',
-          'x-deprecatedInVersion': '1',
-        }),
-        star: StarResponseInfoSchema.exactOptional().openapi({ description: '**star** details' }),
-        storeIds: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The unique identifier of the store for which to configure the payment method, if any.',
-            'x-addedInVersion': '3',
-          }),
-        svs: SvsResponseInfoSchema.exactOptional().openapi({ description: '**svs** details' }),
-        swish: SwishResponseInfoSchema.exactOptional().openapi({
-          description: '**swish** or its variant details',
-        }),
-        ticket: TicketResponseInfoSchema.exactOptional().openapi({
-          description: '**ticket** (Edenred Brazil) details',
-        }),
-        twint: TwintResponseInfoSchema.exactOptional().openapi({
-          description: '**twint** details',
-        }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).\n\nFor payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object.',
-          }),
-        valuelink: ValuelinkResponseInfoSchema.exactOptional().openapi({
-          description: '**valuelink** details',
-        }),
-        verificationStatus: z
-          .enum(['valid', 'pending', 'invalid', 'rejected'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Payment method status. Possible values:\n* **valid**\n* **pending**\n* **invalid**\n* **rejected**',
-          }),
-        vipps: VippsResponseInfoSchema.exactOptional().openapi({
-          description: '**vipps** details',
-        }),
-        visa: VisaResponseInfoSchema.exactOptional().openapi({ description: '**visa** details' }),
-        wechatpay: WeChatPayResponseInfoSchema.exactOptional().openapi({
-          description: '**wechatpay** details',
-        }),
-        wechatpay_pos: WeChatPayPosResponseInfoSchema.exactOptional().openapi({
-          description: '**wechatpay_pos** details',
-        }),
-      })
-      .openapi({ required: ['id'] }),
-  )
+const PulseResponseInfoSchema = z
+  .strictObject({
+    processingType: z
+      .enum(['billpay', 'ecom', 'pos'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
+      }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('PulseResponseInfo')
+
+const SepaDirectDebitResponseInfoSchema = z
+  .strictObject({
+    creditorId: z.string().exactOptional().openapi({ description: 'Creditor id' }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('SepaDirectDebitResponseInfo')
+
+const SodexoResponseInfoSchema = z
+  .strictObject({
+    merchantContactPhone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Sodexo merchantContactPhone' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SodexoResponseInfo')
+
+const SofortResponseInfoSchema = z
+  .strictObject({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Sofort currency code. For example, **EUR**.' }),
+    logo: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Sofort logo. Format: Base64-encoded string.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SofortResponseInfo')
+
+const StarResponseInfoSchema = z
+  .strictObject({
+    processingType: z
+      .enum(['billpay', 'ecom', 'pos'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
+      }),
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('StarResponseInfo')
+
+const SvsResponseInfoSchema = z
+  .strictObject({
+    authorisationMid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant ID (MID) that the acquirer recognizes you by.' }),
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-character ISO currency code, example **USD**' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SvsResponseInfo')
+
+const SwishResponseInfoSchema = z
+  .strictObject({
+    swishNumber: z
+      .string()
+      .length(10)
+      .exactOptional()
+      .openapi({
+        description: 'Swish number. Format: 10 digits without spaces. For example, **1231111111**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SwishResponseInfo')
+
+const TicketResponseInfoSchema = z
+  .strictObject({
+    requestorId: z.string().exactOptional().openapi({ description: 'Ticket requestorId' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TicketResponseInfo')
+
+const TwintResponseInfoSchema = z
+  .strictObject({
+    logo: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Twint logo. Format: Base64-encoded string.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TwintResponseInfo')
+
+const ValuelinkResponseInfoSchema = z
+  .strictObject({
+    alternateMerchantNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Alternate Merchant Number' }),
+    authorisationMid: z.string().exactOptional().openapi({ description: 'Authorisation Mid' }),
+    pinSupport: z
+      .enum(['PIN', 'NO PIN'])
+      .exactOptional()
+      .openapi({ description: 'PIN Support. For ecommerce, PIN is required.' }),
+    terminalId: z.string().exactOptional().openapi({ description: 'Terminal ID' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ValuelinkResponseInfo')
+
+const VippsResponseInfoSchema = z
+  .strictObject({
+    logo: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Vipps logo. Format: Base64-encoded string.' }),
+    subscriptionCancelUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Vipps subscription cancel url (required in case of [recurring payments](https://docs.adyen.com/online-payments/tokenization))',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('VippsResponseInfo')
+
+const VisaResponseInfoSchema = z
+  .strictObject({
+    transactionDescription: TransactionDescriptionResponseInfoSchema.exactOptional().openapi({
+      description: 'Information regarding the transaction description.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('VisaResponseInfo')
+
+const WeChatPayResponseInfoSchema = z
+  .strictObject({
+    contactPersonName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the contact person from merchant support.' }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address of merchant support.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('WeChatPayResponseInfo')
+
+const WeChatPayPosResponseInfoSchema = z
+  .strictObject({
+    contactPersonName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the contact person from merchant support.' }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address of merchant support.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('WeChatPayPosResponseInfo')
+
+const PaymentMethodSchema = z
+  .strictObject({
+    accel: AccelResponseInfoSchema.exactOptional().openapi({ description: '**accel** details' }),
+    affirm: AffirmResponseInfoSchema.exactOptional().openapi({ description: '**affirm** details' }),
+    afterpayTouch: AfterpayTouchResponseInfoSchema.exactOptional().openapi({
+      description: '**afterpaytouch** details',
+    }),
+    alipayPlus: AlipayPlusResponseInfoSchema.exactOptional().openapi({
+      description: '**alipay_plus** details',
+    }),
+    allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account.',
+      }),
+    amex: AmexResponseInfoSchema.exactOptional().openapi({ description: '**amex** details' }),
+    ancv: AncvResponseInfoSchema.exactOptional().openapi({ description: '**ancv** details' }),
+    applePay: ApplePayResponseInfoSchema.exactOptional().openapi({
+      description: '**applepay** details',
+    }),
+    associatedPaymentMethods: z
+      .array(AssociatedPaymentMethodSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Payment methods that were also updated as part of an associated transition.',
+      }),
+    bcmc: BcmcResponseInfoSchema.exactOptional().openapi({
+      description: '**bcmc** (Bancontact) details',
+    }),
+    businessLineId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms).',
+      }),
+    carnet: CarnetResponseInfoSchema.exactOptional().openapi({ description: '**carnet** details' }),
+    cartesBancaires: CartesBancairesResponseInfoSchema.exactOptional().openapi({
+      description: '**cartesbancaires** details',
+    }),
+    clearpay: ClearpayResponseInfoSchema.exactOptional().openapi({
+      description: '**clearpay** details',
+    }),
+    countries: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of countries where a payment method is available. By default, all countries supported by the payment method.',
+      }),
+    cup: CupResponseInfoSchema.exactOptional().openapi({
+      description: '**cup** (China Union Pay) details',
+    }),
+    currencies: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of currencies that a payment method supports. By default, all currencies supported by the payment method.',
+      }),
+    customRoutingFlags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The list of custom routing flags to route payment to the intended acquirer.',
+      }),
+    diners: DinersResponseInfoSchema.exactOptional().openapi({ description: '**diners** details' }),
+    discover: DiscoverResponseInfoSchema.exactOptional().openapi({
+      description: '**discover** details',
+    }),
+    ebt: EbtResponseInfoSchema.exactOptional().openapi({ description: '**ebt** details' }),
+    eft_directdebit_CA: EFTDirectDebitCAResponseInfoSchema.exactOptional().openapi({
+      description: '**eft_directdebit_CA** (EFT PAD) details',
+    }),
+    eftpos_australia: EftPosAustraliaResponseInfoSchema.exactOptional().openapi({
+      description: '**eftpos_australia** details',
+    }),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the payment method is enabled (**true**) or disabled (**false**).',
+      }),
+    girocard: GirocardResponseInfoSchema.exactOptional().openapi({
+      description: '**girocard** details',
+    }),
+    givex: GivexResponseInfoSchema.exactOptional().openapi({ description: '**givex** details' }),
+    googlePay: GooglePayResponseInfoSchema.exactOptional().openapi({
+      description: '**googlepay** details',
+    }),
+    id: z.string().openapi({ description: 'The identifier of the resource.' }),
+    ideal: IdealResponseInfoSchema.exactOptional().openapi({ description: '**ideal** details' }),
+    interac_card: InteracCardResponseInfoSchema.exactOptional().openapi({
+      description: '**interac_card** details',
+    }),
+    jcb: JCBResponseInfoSchema.exactOptional().openapi({ description: '**jcb** details' }),
+    klarna: KlarnaResponseInfoSchema.exactOptional().openapi({
+      description: '**klarna** or its variant details',
+    }),
+    maestro: MaestroResponseInfoSchema.exactOptional().openapi({
+      description: '**maestro** details',
+    }),
+    maestro_usa: MaestroUSAResponseInfoSchema.exactOptional().openapi({
+      description: '**maestro_usa** details',
+    }),
+    mc: MCResponseInfoSchema.exactOptional().openapi({ description: '**mc** details' }),
+    mealVoucher_FR: MealVoucherFRResponseInfoSchema.exactOptional().openapi({
+      description: '**mealVoucher_FR** details',
+    }),
+    merchantCategoryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The Merchant Category Code (MCC) associated with the payment method.',
+      }),
+    mid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The Merchant Identifier (MID) associated with the payment method.',
+      }),
+    nyce: NyceResponseInfoSchema.exactOptional().openapi({ description: '**nyce** details' }),
+    paybybank_plaid: PayByBankPlaidResponseInfoSchema.exactOptional().openapi({
+      description: '**paybybank_plaid** details',
+    }),
+    payme: PayMeResponseInfoSchema.exactOptional().openapi({ description: '**payme** details' }),
+    paypal: PayPalResponseInfoSchema.exactOptional().openapi({ description: '**paypal** details' }),
+    payto: PayToResponseInfoSchema.exactOptional().openapi({ description: '**payto** details' }),
+    pulse: PulseResponseInfoSchema.exactOptional().openapi({ description: '**pulse** details' }),
+    reference: z
+      .string()
+      .max(150)
+      .exactOptional()
+      .openapi({
+        description: 'Your reference for the payment method. Supported characters a-z, A-Z, 0-9.',
+      }),
+    sepadirectdebit: SepaDirectDebitResponseInfoSchema.exactOptional().openapi({
+      description: '**sepadirectdebit** details',
+    }),
+    shopperInteraction: z.string().exactOptional().openapi({ description: 'The sales channel.' }),
+    sodexo: SodexoResponseInfoSchema.exactOptional().openapi({ description: '**sodexo** details' }),
+    sofort: SofortResponseInfoSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Sofort details.',
+      'x-deprecatedInVersion': '1',
+    }),
+    star: StarResponseInfoSchema.exactOptional().openapi({ description: '**star** details' }),
+    storeIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the store for which to configure the payment method, if any.',
+        'x-addedInVersion': '3',
+      }),
+    svs: SvsResponseInfoSchema.exactOptional().openapi({ description: '**svs** details' }),
+    swish: SwishResponseInfoSchema.exactOptional().openapi({
+      description: '**swish** or its variant details',
+    }),
+    ticket: TicketResponseInfoSchema.exactOptional().openapi({
+      description: '**ticket** (Edenred Brazil) details',
+    }),
+    twint: TwintResponseInfoSchema.exactOptional().openapi({ description: '**twint** details' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).\n\nFor payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object.',
+      }),
+    valuelink: ValuelinkResponseInfoSchema.exactOptional().openapi({
+      description: '**valuelink** details',
+    }),
+    verificationStatus: z
+      .enum(['valid', 'pending', 'invalid', 'rejected'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Payment method status. Possible values:\n* **valid**\n* **pending**\n* **invalid**\n* **rejected**',
+      }),
+    vipps: VippsResponseInfoSchema.exactOptional().openapi({ description: '**vipps** details' }),
+    visa: VisaResponseInfoSchema.exactOptional().openapi({ description: '**visa** details' }),
+    wechatpay: WeChatPayResponseInfoSchema.exactOptional().openapi({
+      description: '**wechatpay** details',
+    }),
+    wechatpay_pos: WeChatPayPosResponseInfoSchema.exactOptional().openapi({
+      description: '**wechatpay_pos** details',
+    }),
+  })
+  .openapi({ required: ['id'] })
   .openapi('PaymentMethod')
 
 const PaymentMethodResponseSchema = z

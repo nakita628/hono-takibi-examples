@@ -1,5 +1,15 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AuthTypeSchema = z
+  .enum(['oauth2', 'apiKey', 'basic', 'custom', 'none'])
+  .openapi({
+    description: 'Type of authorization used by the connector',
+    example: 'oauth2',
+    readOnly: true,
+    'x-apideck-enum-id': 'auth_types',
+  })
+  .openapi('AuthType')
+
 const SimpleFormFieldOptionSchema = z
   .object({
     label: z.string().exactOptional().openapi({ example: 'General Channel' }),
@@ -27,76 +37,8 @@ const FormFieldOptionGroupSchema = z
   .openapi({ 'x-apideck-schema-id': 'FormFieldOptionGroup', required: [] })
   .openapi('FormFieldOptionGroup')
 
-type FormFieldOptionType =
-  | z.infer<typeof SimpleFormFieldOptionSchema>
-  | z.infer<typeof FormFieldOptionGroupSchema>
-
-const ApplicationIdSchema = z
-  .string()
-  .openapi({
-    description: 'ID of your Apideck Application',
-    example: 'dSBdXd2H6Mqwfg0atXHXYcysLJE9qyn1VwBtXHX',
-  })
-  .openapi('ApplicationId')
-
-const AuthTypeSchema = z
-  .enum(['oauth2', 'apiKey', 'basic', 'custom', 'none'])
-  .openapi({
-    description: 'Type of authorization used by the connector',
-    example: 'oauth2',
-    readOnly: true,
-    'x-apideck-enum-id': 'auth_types',
-  })
-  .openapi('AuthType')
-
-const BadRequestResponseSchema = z
-  .object({
-    detail: z
-      .union([
-        z.string().openapi({ example: 'Missing property foobar' }),
-        z.object({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains parameter or domain specific information related to the error and why it occurred.',
-      }),
-    error: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains an explanation of the status_code as defined in HTTP/1.1 standard (RFC 7231)',
-        example: 'Bad Request',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A human-readable message providing more details about the error.',
-        example: 'Invalid Params',
-      }),
-    ref: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to documentation of error type',
-        example: 'https://developers.apideck.com/errors#requestvalidationerror',
-      }),
-    status_code: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'HTTP status code', example: 400 }),
-    type_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of error returned', example: 'RequestValidationError' }),
-  })
-  .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
-  .openapi('BadRequestResponse')
-
-const FormFieldOptionSchema: z.ZodType<FormFieldOptionType> = z
-  .lazy(() => z.union([SimpleFormFieldOptionSchema, FormFieldOptionGroupSchema]))
+const FormFieldOptionSchema = z
+  .union([SimpleFormFieldOptionSchema, FormFieldOptionGroupSchema])
   .openapi('FormFieldOption')
 
 const FormFieldSchema = z
@@ -284,7 +226,47 @@ const WebhookSubscriptionSchema = z
   .openapi({ readOnly: true, 'x-apideck-schema-id': 'WebhookSubscription', required: [] })
   .openapi('WebhookSubscription')
 
-const ConnectionSchema = z
+type ConnectionType = {
+  auth_type?: z.infer<typeof AuthTypeSchema>
+  authorize_url?: string | null
+  configurable_resources?: string[]
+  configuration?: {
+    defaults?: {
+      id?: string
+      options?: z.infer<typeof FormFieldOptionSchema>[]
+      target?: 'custom_fields' | 'resource'
+      value?: string | number | number | boolean | (string | number | number)[]
+    }[]
+    resource?: string
+  }[]
+  created_at?: number
+  enabled?: boolean
+  form_fields?: z.infer<typeof FormFieldSchema>[]
+  has_guide?: boolean
+  icon?: string
+  id?: string
+  integration_state?: z.infer<typeof IntegrationStateSchema>
+  logo?: string
+  metadata?: { [key: string]: unknown } | null
+  name?: string
+  oauth_grant_type?: z.infer<typeof OAuthGrantTypeSchema>
+  resource_schema_support?: string[]
+  resource_settings_support?: string[]
+  revoke_url?: string | null
+  service_id?: string
+  settings?: { [key: string]: unknown } | null
+  settings_required_for_authorization?: string[]
+  state?: z.infer<typeof ConnectionStateSchema>
+  status?: 'live' | 'upcoming' | 'requested'
+  subscriptions?: z.infer<typeof WebhookSubscriptionSchema>[]
+  tag_line?: string
+  unified_api?: string
+  updated_at?: number | null
+  validation_support?: boolean
+  website?: string
+}
+
+const ConnectionSchema: z.ZodType<ConnectionType> = z
   .object({
     auth_type: AuthTypeSchema.exactOptional(),
     authorize_url: z
@@ -530,6 +512,84 @@ const ConnectionSchema = z
   .openapi({ 'x-apideck-schema-id': 'Connection', required: [] })
   .openapi('Connection')
 
+type CreateConnectionResponseType = {
+  data: z.infer<typeof ConnectionSchema>
+  status: string
+  status_code: number
+}
+
+type GetConnectionResponseType = {
+  data: z.infer<typeof ConnectionSchema>
+  status: string
+  status_code: number
+}
+
+type GetConnectionsResponseType = {
+  data: z.infer<typeof ConnectionSchema>[]
+  status: string
+  status_code: number
+}
+
+type UpdateConnectionResponseType = {
+  data: z.infer<typeof ConnectionSchema>
+  status: string
+  status_code: number
+}
+
+const ApplicationIdSchema = z
+  .string()
+  .openapi({
+    description: 'ID of your Apideck Application',
+    example: 'dSBdXd2H6Mqwfg0atXHXYcysLJE9qyn1VwBtXHX',
+  })
+  .openapi('ApplicationId')
+
+const BadRequestResponseSchema = z
+  .object({
+    detail: z
+      .union([
+        z.string().openapi({ example: 'Missing property foobar' }),
+        z.looseObject({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains parameter or domain specific information related to the error and why it occurred.',
+      }),
+    error: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains an explanation of the status_code as defined in HTTP/1.1 standard (RFC 7231)',
+        example: 'Bad Request',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A human-readable message providing more details about the error.',
+        example: 'Invalid Params',
+      }),
+    ref: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to documentation of error type',
+        example: 'https://developers.apideck.com/errors#requestvalidationerror',
+      }),
+    status_code: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'HTTP status code', example: 400 }),
+    type_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of error returned', example: 'RequestValidationError' }),
+  })
+  .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
+  .openapi('BadRequestResponse')
+
 const ConsumerConnectionSchema = z
   .object({
     auth_type: AuthTypeSchema.exactOptional(),
@@ -565,7 +625,7 @@ const ConsumerConnectionSchema = z
     name: z.string().exactOptional().openapi({ example: 'Salesforce' }),
     service_id: z.string().exactOptional().openapi({ example: 'teamleader' }),
     settings: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -714,7 +774,7 @@ const ConnectionImportDataSchema = z
         },
       }),
     settings: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1063,7 +1123,7 @@ const ConsumerRequestCountsInDateRangeResponseSchema = z
   })
   .openapi('ConsumerRequestCountsInDateRangeResponse')
 
-const CreateConnectionResponseSchema = z
+const CreateConnectionResponseSchema: z.ZodType<CreateConnectionResponseType> = z
   .object({
     data: ConnectionSchema,
     status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
@@ -1128,7 +1188,7 @@ const DeleteConsumerResponseSchema = z
   })
   .openapi('DeleteConsumerResponse')
 
-const GetConnectionResponseSchema = z
+const GetConnectionResponseSchema: z.ZodType<GetConnectionResponseType> = z
   .object({
     data: ConnectionSchema,
     status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
@@ -1140,7 +1200,7 @@ const GetConnectionResponseSchema = z
   })
   .openapi('GetConnectionResponse')
 
-const GetConnectionsResponseSchema = z
+const GetConnectionsResponseSchema: z.ZodType<GetConnectionsResponseType> = z
   .object({
     data: z.array(ConnectionSchema),
     status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
@@ -1495,7 +1555,7 @@ const NotFoundResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: "Could not find widget with id: '123'" }),
-        z.object({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
+        z.looseObject({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
       ])
       .exactOptional()
       .openapi({
@@ -1546,7 +1606,7 @@ const NotImplementedResponseSchema = z
             example:
               "Failed to retrieve Widget tokenUrl from 'components.securitySchemes.OAuth2.flows'",
           }),
-        z.object({}),
+        z.looseObject({}),
       ])
       .exactOptional()
       .openapi({
@@ -1632,7 +1692,7 @@ const PaymentRequiredResponseSchema = z
   .openapi('PaymentRequiredResponse')
 
 const ProxyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: {
       account_sid: 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
@@ -1914,7 +1974,9 @@ const UnexpectedErrorResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: 'Missing Header: x-apideck-consumer-id' }),
-        z.object({}).openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
+        z
+          .looseObject({})
+          .openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
       ])
       .exactOptional()
       .openapi({
@@ -2002,7 +2064,7 @@ const UnprocessableResponseSchema = z
   .openapi({ 'x-apideck-schema-id': 'Unprocessable', required: [] })
   .openapi('UnprocessableResponse')
 
-const UpdateConnectionResponseSchema = z
+const UpdateConnectionResponseSchema: z.ZodType<UpdateConnectionResponseType> = z
   .object({
     data: ConnectionSchema,
     status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
@@ -2125,15 +2187,13 @@ const ProxyErrorResponse = {
   description: 'Proxy error',
   content: { 'application/json': { schema: z.any() } },
   headers: z.object({
-    'x-apideck-downstream-error': {
-      schema: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          param: { required: false },
-          description: 'Indicates if the error returned in the body is from the downstream',
-        }),
-    },
+    'x-apideck-downstream-error': z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        param: { required: false },
+        description: 'Indicates if the error returned in the body is from the downstream',
+      }),
   }),
 }
 

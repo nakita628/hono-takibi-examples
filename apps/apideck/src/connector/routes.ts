@@ -1,173 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const UnifiedPropertySchema = z
-  .string()
-  .openapi({ description: 'Name of the property in our Unified API.', example: 'owner_id' })
-  .openapi('UnifiedProperty')
-
-type SupportedPropertyType = {
-  child_properties?: { unified_property?: SupportedPropertyType }[]
-  unified_property?: z.infer<typeof UnifiedPropertySchema>
-}
-
-const ResourceStatusSchema = z
-  .enum(['live', 'beta', 'development', 'upcoming', 'considering'])
-  .openapi({
-    description: 'Status of the resource. Resources with status live or beta are callable.',
-  })
-  .openapi('ResourceStatus')
-
-const ApiStatusSchema = z
-  .enum(['live', 'beta', 'development', 'considering'])
-  .openapi({ description: 'Status of the API. APIs with status live or beta are callable.' })
-  .openapi('ApiStatus')
-
-const ApiSchema = z
-  .object({
-    api_reference_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to the API reference of the API.',
-        example: 'https://developers.apideck.com/apis/file-storage/reference',
-      }),
-    categories: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'List of categories the API belongs to.',
-        example: ['files', 'file-storage', 'cloud-storage', 'object-storage'],
-      }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Description of the API.',
-        example: 'Manage API keys, access tokens, OAuth flows and integrations.',
-      }),
-    events: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'List of event types this API supports.',
-        example: ['crm.contact.updated', 'accounting.invoice.created'],
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the API.', example: 'file-storage', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the API.', example: 'File Storage API' }),
-    postman_collection_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'ID of the Postman collection of the API.',
-        example: '1311564-00e7266b-a3d6-4f40-b172-baaa66a3ed6f',
-      }),
-    resources: z
-      .array(
-        z
-          .object({
-            excluded_from_coverage: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Exclude from mapping coverage', example: false }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'ID of the resource, typically a lowercased version of its name.',
-                example: 'companies',
-              }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Name of the resource (plural)', example: 'Companies' }),
-            status: ResourceStatusSchema.exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'List of resources supported in this API.' }),
-    spec_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to the latest OpenAPI specification of the API.',
-        example: 'https://specs.apideck.com/file-storage.yml',
-      }),
-    status: ApiStatusSchema.exactOptional(),
-    type: z
-      .enum(['platform', 'unified'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the API is a Unified API. If unified_api is false, the API is a Platform API.',
-      }),
-  })
-  .openapi({ 'x-apideck-schema-id': 'Api', required: [] })
-  .openapi('Api')
-
-const ResourceIdSchema = z
-  .string()
-  .openapi({
-    description: 'ID of the resource, typically a lowercased version of name.',
-    example: 'companies',
-  })
-  .openapi('ResourceId')
-
-const ApiResourceSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of the resource, typically a lowercased version of name.',
-        example: 'companies',
-      }),
-    linked_resources: z
-      .array(
-        z
-          .object({
-            id: ResourceIdSchema.exactOptional(),
-            unified_property: UnifiedPropertySchema.exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'List of linked resources.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the resource (plural)', example: 'Companies' }),
-    schema: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description: 'JSON Schema of the resource in our Unified API',
-        example: {
-          additionalProperties: false,
-          properties: {
-            created_at: { example: '2020-09-30T07:43:32.000Z', readOnly: true, type: 'string' },
-            id: { example: '12345', readOnly: true, type: 'string' },
-            name: { example: 'Elon Musk', minLength: 1, type: 'string' },
-            updated_at: { example: '2020-09-30T07:43:32.000Z', readOnly: true, type: 'string' },
-          },
-          required: ['name', 'company_name'],
-          'x-pii': ['name', 'email', 'first_name', 'last_name'],
-        },
-        'x-json-schema': true,
-      }),
-    status: ResourceStatusSchema.exactOptional(),
-  })
-  .openapi({ 'x-apideck-schema-id': 'ApiResource', required: [] })
-  .openapi('ApiResource')
-
 const PaginationCoverageSchema = z
   .object({
     limit_support: z
@@ -213,6 +45,13 @@ const SupportedPropertySchema: z.ZodType<SupportedPropertyType> = z
       .openapi({ required: [] }),
   )
   .openapi('SupportedProperty')
+
+const ResourceStatusSchema = z
+  .enum(['live', 'beta', 'development', 'upcoming', 'considering'])
+  .openapi({
+    description: 'Status of the resource. Resources with status live or beta are callable.',
+  })
+  .openapi('ResourceStatus')
 
 const ApiResourceCoverageSchema = z
   .object({
@@ -291,61 +130,99 @@ const ApiResourceCoverageSchema = z
   .openapi({ 'x-apideck-schema-id': 'ApiResourceCoverage', required: [] })
   .openapi('ApiResourceCoverage')
 
-const ApisFilterSchema = z
-  .strictObject({ status: ApiStatusSchema.exactOptional() })
+const LinksSchema = z
+  .object({
+    current: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to navigate to the current page through the API',
+        example: 'https://unify.apideck.com/crm/companies',
+      }),
+    next: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Link to navigate to the previous page through the API',
+        example: 'https://unify.apideck.com/crm/companies?cursor=em9oby1jcm06OnBhZ2U6OjM',
+      }),
+    previous: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Link to navigate to the previous page through the API',
+        example: 'https://unify.apideck.com/crm/companies?cursor=em9oby1jcm06OnBhZ2U6OjE%3D',
+      }),
+  })
   .openapi({
-    example: { status: 'beta' },
-    'x-apideck-schema-id': 'ApisFilter',
-    'x-graphql-type-name': 'ApisFilter',
+    description: 'Links to navigate to previous or next pages through the API',
+    'x-apideck-schema-id': 'Links',
     required: [],
   })
-  .openapi('ApisFilter')
+  .openapi('Links')
 
-const BadRequestResponseSchema = z
+const MetaSchema = z
   .object({
-    detail: z
-      .union([
-        z.string().openapi({ example: 'Missing property foobar' }),
-        z.object({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
-      ])
+    cursors: z
+      .object({
+        current: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Cursor to navigate to the current page of results through the API',
+            example: 'em9oby1jcm06OnBhZ2U6OjI=',
+          }),
+        next: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Cursor to navigate to the next page of results through the API',
+            example: 'em9oby1jcm06OnBhZ2U6OjM=',
+          }),
+        previous: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Cursor to navigate to the previous page of results through the API',
+            example: 'em9oby1jcm06OnBhZ2U6OjE=',
+          }),
+      })
       .exactOptional()
       .openapi({
-        description:
-          'Contains parameter or domain specific information related to the error and why it occurred.',
+        description: 'Cursors to navigate to previous or next pages through the API',
+        required: [],
       }),
-    error: z
-      .string()
+    items_on_page: z
+      .int()
       .exactOptional()
       .openapi({
-        description:
-          'Contains an explanation of the status_code as defined in HTTP/1.1 standard (RFC 7231)',
-        example: 'Bad Request',
+        description: 'Number of items returned in the data property of the response',
+        example: 50,
       }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A human-readable message providing more details about the error.',
-        example: 'Invalid Params',
-      }),
-    ref: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to documentation of error type',
-        example: 'https://developers.apideck.com/errors#requestvalidationerror',
-      }),
-    status_code: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'HTTP status code', example: 400 }),
-    type_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of error returned', example: 'RequestValidationError' }),
   })
-  .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
-  .openapi('BadRequestResponse')
+  .openapi({ description: 'Response metadata', 'x-apideck-schema-id': 'Meta', required: [] })
+  .openapi('Meta')
+
+type GetApiResourceCoverageResponseType = {
+  data: z.infer<typeof ApiResourceCoverageSchema>
+  links?: z.infer<typeof LinksSchema>
+  meta?: z.infer<typeof MetaSchema>
+  status: string
+  status_code: number
+}
+
+const ResourceIdSchema = z
+  .string()
+  .openapi({
+    description: 'ID of the resource, typically a lowercased version of name.',
+    example: 'companies',
+  })
+  .openapi('ResourceId')
 
 const IdSchema = z
   .string()
@@ -544,7 +421,7 @@ const WebhookSupportSchema = z
             title: 'Request Rate',
           }),
         resources: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'The resources that will be requested from downstream.',
@@ -811,6 +688,223 @@ const ConnectorSchema = z
   .openapi({ 'x-apideck-schema-id': 'Connector', required: [] })
   .openapi('Connector')
 
+type GetConnectorsResponseType = {
+  data: z.infer<typeof ConnectorSchema>[]
+  links?: z.infer<typeof LinksSchema>
+  meta?: z.infer<typeof MetaSchema>
+  status: string
+  status_code: number
+}
+
+const UnifiedPropertySchema = z
+  .string()
+  .openapi({ description: 'Name of the property in our Unified API.', example: 'owner_id' })
+  .openapi('UnifiedProperty')
+
+type SupportedPropertyType = {
+  child_properties?: { unified_property?: SupportedPropertyType }[]
+  unified_property?: z.infer<typeof UnifiedPropertySchema>
+}
+
+const ApiStatusSchema = z
+  .enum(['live', 'beta', 'development', 'considering'])
+  .openapi({ description: 'Status of the API. APIs with status live or beta are callable.' })
+  .openapi('ApiStatus')
+
+const ApiSchema = z
+  .object({
+    api_reference_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to the API reference of the API.',
+        example: 'https://developers.apideck.com/apis/file-storage/reference',
+      }),
+    categories: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'List of categories the API belongs to.',
+        example: ['files', 'file-storage', 'cloud-storage', 'object-storage'],
+      }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Description of the API.',
+        example: 'Manage API keys, access tokens, OAuth flows and integrations.',
+      }),
+    events: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'List of event types this API supports.',
+        example: ['crm.contact.updated', 'accounting.invoice.created'],
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the API.', example: 'file-storage', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the API.', example: 'File Storage API' }),
+    postman_collection_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the Postman collection of the API.',
+        example: '1311564-00e7266b-a3d6-4f40-b172-baaa66a3ed6f',
+      }),
+    resources: z
+      .array(
+        z
+          .object({
+            excluded_from_coverage: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: 'Exclude from mapping coverage', example: false }),
+            id: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'ID of the resource, typically a lowercased version of its name.',
+                example: 'companies',
+              }),
+            name: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Name of the resource (plural)', example: 'Companies' }),
+            status: ResourceStatusSchema.exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'List of resources supported in this API.' }),
+    spec_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to the latest OpenAPI specification of the API.',
+        example: 'https://specs.apideck.com/file-storage.yml',
+      }),
+    status: ApiStatusSchema.exactOptional(),
+    type: z
+      .enum(['platform', 'unified'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the API is a Unified API. If unified_api is false, the API is a Platform API.',
+      }),
+  })
+  .openapi({ 'x-apideck-schema-id': 'Api', required: [] })
+  .openapi('Api')
+
+const ApiResourceSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the resource, typically a lowercased version of name.',
+        example: 'companies',
+      }),
+    linked_resources: z
+      .array(
+        z
+          .object({
+            id: ResourceIdSchema.exactOptional(),
+            unified_property: UnifiedPropertySchema.exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'List of linked resources.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the resource (plural)', example: 'Companies' }),
+    schema: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description: 'JSON Schema of the resource in our Unified API',
+        example: {
+          additionalProperties: false,
+          properties: {
+            created_at: { example: '2020-09-30T07:43:32.000Z', readOnly: true, type: 'string' },
+            id: { example: '12345', readOnly: true, type: 'string' },
+            name: { example: 'Elon Musk', minLength: 1, type: 'string' },
+            updated_at: { example: '2020-09-30T07:43:32.000Z', readOnly: true, type: 'string' },
+          },
+          required: ['name', 'company_name'],
+          'x-pii': ['name', 'email', 'first_name', 'last_name'],
+        },
+        'x-json-schema': true,
+      }),
+    status: ResourceStatusSchema.exactOptional(),
+  })
+  .openapi({ 'x-apideck-schema-id': 'ApiResource', required: [] })
+  .openapi('ApiResource')
+
+const ApisFilterSchema = z
+  .strictObject({ status: ApiStatusSchema.exactOptional() })
+  .openapi({
+    example: { status: 'beta' },
+    'x-apideck-schema-id': 'ApisFilter',
+    'x-graphql-type-name': 'ApisFilter',
+    required: [],
+  })
+  .openapi('ApisFilter')
+
+const BadRequestResponseSchema = z
+  .object({
+    detail: z
+      .union([
+        z.string().openapi({ example: 'Missing property foobar' }),
+        z.looseObject({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains parameter or domain specific information related to the error and why it occurred.',
+      }),
+    error: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains an explanation of the status_code as defined in HTTP/1.1 standard (RFC 7231)',
+        example: 'Bad Request',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A human-readable message providing more details about the error.',
+        example: 'Invalid Params',
+      }),
+    ref: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to documentation of error type',
+        example: 'https://developers.apideck.com/errors#requestvalidationerror',
+      }),
+    status_code: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'HTTP status code', example: 400 }),
+    type_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of error returned', example: 'RequestValidationError' }),
+  })
+  .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
+  .openapi('BadRequestResponse')
+
 const ConnectorResourceSchema = z
   .object({
     custom_fields_supported: z
@@ -898,85 +992,7 @@ const ConnectorsFilterSchema = z
   })
   .openapi('ConnectorsFilter')
 
-const LinksSchema = z
-  .object({
-    current: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to navigate to the current page through the API',
-        example: 'https://unify.apideck.com/crm/companies',
-      }),
-    next: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Link to navigate to the previous page through the API',
-        example: 'https://unify.apideck.com/crm/companies?cursor=em9oby1jcm06OnBhZ2U6OjM',
-      }),
-    previous: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Link to navigate to the previous page through the API',
-        example: 'https://unify.apideck.com/crm/companies?cursor=em9oby1jcm06OnBhZ2U6OjE%3D',
-      }),
-  })
-  .openapi({
-    description: 'Links to navigate to previous or next pages through the API',
-    'x-apideck-schema-id': 'Links',
-    required: [],
-  })
-  .openapi('Links')
-
-const MetaSchema = z
-  .object({
-    cursors: z
-      .object({
-        current: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Cursor to navigate to the current page of results through the API',
-            example: 'em9oby1jcm06OnBhZ2U6OjI=',
-          }),
-        next: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Cursor to navigate to the next page of results through the API',
-            example: 'em9oby1jcm06OnBhZ2U6OjM=',
-          }),
-        previous: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Cursor to navigate to the previous page of results through the API',
-            example: 'em9oby1jcm06OnBhZ2U6OjE=',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Cursors to navigate to previous or next pages through the API',
-        required: [],
-      }),
-    items_on_page: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Number of items returned in the data property of the response',
-        example: 50,
-      }),
-  })
-  .openapi({ description: 'Response metadata', 'x-apideck-schema-id': 'Meta', required: [] })
-  .openapi('Meta')
-
-const GetApiResourceCoverageResponseSchema = z
+const GetApiResourceCoverageResponseSchema: z.ZodType<GetApiResourceCoverageResponseType> = z
   .object({
     data: ApiResourceCoverageSchema,
     links: LinksSchema.exactOptional(),
@@ -1058,7 +1074,7 @@ const GetConnectorResponseSchema = z
   })
   .openapi('GetConnectorResponse')
 
-const GetConnectorsResponseSchema = z
+const GetConnectorsResponseSchema: z.ZodType<GetConnectorsResponseType> = z
   .object({
     data: z.array(ConnectorSchema),
     links: LinksSchema.exactOptional(),
@@ -1078,7 +1094,7 @@ const NotFoundResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: "Could not find widget with id: '123'" }),
-        z.object({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
+        z.looseObject({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
       ])
       .exactOptional()
       .openapi({
@@ -1252,7 +1268,9 @@ const UnexpectedErrorResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: 'Missing Header: x-apideck-consumer-id' }),
-        z.object({}).openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
+        z
+          .looseObject({})
+          .openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
       ])
       .exactOptional()
       .openapi({

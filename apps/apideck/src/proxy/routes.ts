@@ -9,15 +9,13 @@ const ProxyErrorResponse = {
   description: 'Proxy error',
   content: { 'application/json': { schema: z.any() } },
   headers: z.object({
-    'x-apideck-downstream-error': {
-      schema: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          param: { required: false },
-          description: 'Indicates if the error returned in the body is from the downstream',
-        }),
-    },
+    'x-apideck-downstream-error': z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        param: { required: false },
+        description: 'Indicates if the error returned in the body is from the downstream',
+      }),
   }),
 }
 
@@ -236,7 +234,7 @@ export const putProxyRoute = createRoute({
         '*/*': {
           schema: z.union([
             z
-              .object({})
+              .looseObject({})
               .openapi({
                 example: {
                   addresses: [
@@ -296,7 +294,7 @@ export const postProxyRoute = createRoute({
         '*/*': {
           schema: z.union([
             z
-              .object({})
+              .looseObject({})
               .openapi({
                 example: {
                   addresses: [
@@ -398,7 +396,7 @@ export const patchProxyRoute = createRoute({
         '*/*': {
           schema: z.union([
             z
-              .object({})
+              .looseObject({})
               .openapi({
                 example: {
                   addresses: [

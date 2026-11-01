@@ -19,456 +19,6 @@ const CommonNTAActivityV2Schema = z
   })
   .openapi('CommonNTAActivityV2')
 
-const CommonCaActivityV2Schema = CommonNTAActivityV2Schema.and(
-  z
-    .object({
-      ca_id: z
-        .uuid()
-        .exactOptional()
-        .openapi({ description: 'The unique identifier for this corporate action' }),
-      position_date: z.iso
-        .date()
-        .min(1)
-        .openapi({ description: 'The position_date for this corporate action' }),
-      reorg_id: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The reorg identifier, if present in the source corporate action definition',
-        }),
-    })
-    .openapi({ required: ['position_date'] }),
-).openapi('CommonCaActivityV2')
-
-const CommonCDIVActivityV2Schema = z
-  .object({
-    cusip: z
-      .string()
-      .openapi({ description: 'The CUSIP of the security involved with the activity' }),
-    due_bill_off_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'When due bills stop applying for this event' }),
-    due_bill_on_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'When due bills begin to apply for this event' }),
-    ex_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The ex_date for this corporate action' }),
-    foreign: z
-      .enum(['true', 'false'])
-      .openapi({
-        description:
-          'Indicates if related to a non-US security. Serialized as the JSON strings `"true"` or `"false"`, not a JSON boolean.',
-        example: 'false',
-      }),
-    isin: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ISIN of the security involved with the activity' }),
-    payable_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The payable_date for this corporate action' }),
-    rate: z.string().openapi({ description: 'Dividend rate per share' }),
-    record_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The record_date for this corporate action' }),
-    special: z
-      .enum(['true', 'false'])
-      .openapi({
-        description:
-          'Indicates if this is a special dividend. Serialized as the JSON strings `"true"` or `"false"`, not a JSON boolean.',
-        example: 'false',
-      }),
-    symbol: z
-      .string()
-      .openapi({ description: 'The symbol of the security involved with the activity' }),
-  })
-  .openapi({ required: ['symbol', 'cusip', 'rate', 'foreign', 'special'] })
-  .openapi('CommonCDIVActivityV2')
-
-type CDIVActivityV2Type = z.infer<typeof CommonCaActivityV2Schema> &
-  z.infer<typeof CommonCDIVActivityV2Schema> & { cash_payout: string; entitled_qty: string }
-
-const FixedIncomeInterestTypeSchema = z
-  .enum(['coupon', 'accrued'])
-  .openapi({
-    description: 'Distinguishes coupon payments from accrued interest on INT/FI activities.',
-    example: 'accrued',
-    title: 'FixedIncomeInterestType',
-  })
-  .openapi('FixedIncomeInterestType')
-
-const CommonFixedIncomeInterestActivityV2Schema = z
-  .object({
-    accrued_interest_rate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Accrued interest rate (present for accrued-interest-on-call variants)',
-      }),
-    cash_payout: z.string().openapi({ description: 'The cash payout for this interest activity' }),
-    cusip: z
-      .string()
-      .openapi({ description: 'The CUSIP of the security involved with the activity' }),
-    entitled_qty: z
-      .string()
-      .openapi({ description: 'The entitled quantity (principal / face amount)', example: '1000' }),
-    interest_type: FixedIncomeInterestTypeSchema,
-    isin: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ISIN of the security involved with the activity' }),
-    order_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The order that generated this accrued interest. Present for trade-accrued INT/FI.',
-        example: '257bf308-a6b7-4777-8cf6-00dc441dc4d3',
-      }),
-    parent_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ref_id of the parent trade this interest is attached to. Present for trade-accrued INT/FI when a parent trade `ref_id` is available.',
-        example: '46aecae1-4629-4bcf-b441-0d8c847a1787',
-      }),
-    payment_date: z.iso.date().exactOptional().openapi({ description: 'The payment date' }),
-    price: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Call price used for accrued-interest-on-call variants' }),
-    rate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Coupon rate amount (present for regular coupon payments)' }),
-    record_date: z.iso.date().exactOptional().openapi({ description: 'The record date' }),
-  })
-  .openapi({
-    description:
-      'Fixed income interest fields (INT/FI). Variants from the same activity type:\n\n- Coupon: `interest_type` is `coupon`. Includes `rate` (no `price` / `accrued_interest_rate`). No `order_id`.\n- Accrued interest on call: `interest_type` is `accrued`. Includes `price` and `accrued_interest_rate` (no `rate`). No `order_id`.\n- Trade accrued: `interest_type` is `accrued`. Includes `order_id` so the interest NTA can be linked to the fill. `parent_id` is set when a parent trade `ref_id` is available.',
-    required: ['entitled_qty', 'cash_payout', 'cusip', 'interest_type'],
-  })
-  .openapi('CommonFixedIncomeInterestActivityV2')
-
-type FixedIncomeInterestActivityV2Type = z.infer<typeof CommonCaActivityV2Schema> &
-  z.infer<typeof CommonFixedIncomeInterestActivityV2Schema>
-
-const CommonMAActivityV2Schema = z
-  .object({
-    acquiree_cusip: z.string().openapi({ description: 'CUSIP of the acquiree' }),
-    acquiree_isin: z.string().exactOptional().openapi({ description: 'ISIN of the acquiree' }),
-    acquiree_rate: z.string().exactOptional().openapi({ description: 'Rate of the acquiree' }),
-    acquiree_symbol: z.string().openapi({ description: 'Symbol of the acquiree' }),
-    acquirer_cusip: z.string().exactOptional().openapi({ description: 'CUSIP of the acquirer' }),
-    acquirer_isin: z.string().exactOptional().openapi({ description: 'ISIN of the acquirer' }),
-    acquirer_rate: z.string().exactOptional().openapi({ description: 'Rate of the acquirer' }),
-    acquirer_symbol: z.string().exactOptional().openapi({ description: 'Symbol of the acquirer' }),
-    effective_date: z.iso
-      .date()
-      .min(1)
-      .openapi({ description: 'When the merger/acquisition becomes effective' }),
-    payable_date: z.iso.date().min(1).openapi({ description: 'The payable date' }),
-  })
-  .openapi({ required: ['acquiree_cusip', 'acquiree_symbol', 'effective_date', 'payable_date'] })
-  .openapi('CommonMAActivityV2')
-
-type MAActivityV2Type = z.infer<typeof CommonCaActivityV2Schema> &
-  z.infer<typeof CommonMAActivityV2Schema> & {
-    acquiree_qty: string
-    acquirer_qty?: string
-    cash_payout?: string
-    cash_rate?: string
-  }
-
-const CommonNCActivityV2Schema = z
-  .object({
-    new_cusip: z.string().openapi({ description: 'New CUSIP for the name change' }),
-    new_symbol: z.string().openapi({ description: 'New symbol for the name change' }),
-    old_cusip: z.string().openapi({ description: 'Old CUSIP for the name change' }),
-    old_symbol: z.string().openapi({ description: 'Old symbol for the name change' }),
-  })
-  .openapi({ required: ['old_cusip', 'old_symbol', 'new_cusip', 'new_symbol'] })
-  .openapi('CommonNCActivityV2')
-
-type NCActivityV2Type = z.infer<typeof CommonCaActivityV2Schema> &
-  z.infer<typeof CommonNCActivityV2Schema> & { position_qty: string }
-
-const AssetClassSchema = z
-  .enum([
-    'us_equity',
-    'us_option',
-    'crypto',
-    'crypto_perp',
-    'treasury',
-    'corporate',
-    'global_equity',
-    'us_index',
-    'us_equity_chain',
-    'ipo',
-  ])
-  .openapi({
-    description:
-      'This represents the category to which the asset belongs to. It serves to identify the nature of the financial instrument, with options including "us_equity" for U.S. equities, "us_option" for U.S. options, "crypto" for cryptocurrencies, and "ipo" for IPO indications of interest/orders. This `asset_class: ipo` value is distinct from the assets API `attributes: ["ipo"]` flag.',
-    example: 'us_equity',
-    examples: ['us_equity'],
-    title: 'AssetClass',
-  })
-  .openapi('AssetClass')
-
-const ExchangeForPositionSchema = z
-  .enum([
-    'AMEX',
-    'ARCA',
-    'BATS',
-    'NYSE',
-    'NASDAQ',
-    'NYSEARCA',
-    'OTC',
-    'CRYPTO',
-    'TXSE',
-    'ERSX',
-    'CRXL',
-    'ASCX',
-    'INDEX',
-    '',
-  ])
-  .openapi({
-    description:
-      'Represents the current exchanges Alpaca supports. List is currently:\n\nUS equities:\n- AMEX\n- ARCA\n- BATS\n- NYSE\n- NASDAQ\n- NYSEARCA\n- OTC\n- TXSE\n\nCrypto:\n- CRYPTO\n- ERSX\n- CRXL\n\nCrypto perpetuals:\n- ASCX\n\nIndex symbols:\n- INDEX\n\nINDEX is the artificial exchange for index symbols such as SPX.\n\nCan be empty if not applicable (e.g., for options contracts)',
-    example: 'NYSE',
-    title: 'Exchange',
-  })
-  .openapi('ExchangeForPosition')
-
-const USDPositionValuesSchema = z
-  .object({
-    avg_entry_price: z
-      .string()
-      .openapi({ description: 'Average entry price of the position in USD', example: '71.43' }),
-    change_today: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Percent change from last day price (by a factor of 1)',
-        example: '0.67',
-      }),
-    cost_basis: z.string().openapi({ description: 'Total cost basis in USD', example: '333.33' }),
-    current_price: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Current asset price per share in USD', example: '80.0' }),
-    lastday_price: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Last day's asset price per share based on the closing value of the last trading day in USD",
-        example: '79.33',
-      }),
-    market_value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total market value of the position in USD', example: '400.00' }),
-    unrealized_intraday_pl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unrealized profit/loss in USD for the day', example: '6.67' }),
-    unrealized_intraday_plpc: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unrealized intraday profit/loss percent (by a factor of 1)',
-        example: '0.0084',
-      }),
-    unrealized_pl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unrealized profit/loss in USD', example: '66.67' }),
-    unrealized_plpc: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unrealized profit/loss percent (by a factor of 1)',
-        example: '0.2',
-      }),
-  })
-  .openapi({
-    description: 'Position values in USD. This is returned for LCT (non-USD) accounts only.',
-    required: ['avg_entry_price', 'cost_basis'],
-    title: 'USDPositionValues',
-  })
-  .openapi('USDPositionValues')
-
-type PositionType = {
-  asset_class: z.infer<typeof AssetClassSchema>
-  asset_id: string
-  asset_marginable: boolean
-  avg_entry_price: string
-  avg_entry_swap_rate?: string
-  change_today: string
-  cost_basis: string
-  current_price: string
-  exchange: z.infer<typeof ExchangeForPositionSchema>
-  lastday_price: string
-  market_value: string
-  prev_swap_rate?: string
-  qty: string
-  qty_available?: string
-  side: 'long' | 'short'
-  swap_rate?: string
-  symbol: string
-  unrealized_intraday_pl: string
-  unrealized_intraday_plpc: string
-  unrealized_pl: string
-  unrealized_plpc: string
-  usd?: z.infer<typeof USDPositionValuesSchema>
-}
-
-const CommonREOActivityV2Schema = z
-  .object({
-    cash_payout: z.string().exactOptional().openapi({ description: 'Cash payout amount' }),
-    cash_rate: z.string().exactOptional().openapi({ description: 'Cash rate per share' }),
-    cusip: z.string().exactOptional().openapi({ description: 'CUSIP received on this stock leg' }),
-    effective_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({ description: 'Effective date of the reorganization' }),
-    isin: z.string().exactOptional().openapi({ description: 'ISIN received on this stock leg' }),
-    new_rate: z.string().exactOptional().openapi({ description: 'New ratio for this stock leg' }),
-    payable_date: z.iso.date().openapi({ description: 'Payable date of the reorganization' }),
-    qty: z.string().exactOptional().openapi({ description: 'Quantity received on this stock leg' }),
-    removed_qty: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Positive quantity removed from the source position' }),
-    source_cusip: z.string().openapi({ description: 'CUSIP of the source security' }),
-    source_isin: z.string().exactOptional().openapi({ description: 'ISIN of the source security' }),
-    source_qty: z.string().exactOptional().openapi({ description: 'Source position quantity' }),
-    source_rate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Source ratio for this stock leg' }),
-    source_symbol: z
-      .string()
-      .openapi({ description: 'Symbol of the source security', example: 'CEPT' }),
-    symbol: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Symbol received on this stock leg', example: 'SECZ' }),
-  })
-  .openapi({
-    description:
-      'Reorganization (REO) activity sub-types:\n- **REOS**: Stock only (1 or more stock legs)\n- **REOC**: Cash only (one cash leg)\n- **REOSC**: Stock and cash',
-    required: ['source_symbol', 'source_cusip', 'payable_date'],
-  })
-  .openapi('CommonREOActivityV2')
-
-type REOActivityV2Type = z.infer<typeof CommonCaActivityV2Schema> &
-  z.infer<typeof CommonREOActivityV2Schema>
-
-const CommonSDIVActivityV2Schema = z
-  .object({
-    cusip: z
-      .string()
-      .openapi({ description: 'The CUSIP of the security involved with the activity' }),
-    ex_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The ex_date for this corporate action' }),
-    isin: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ISIN of the security involved with the activity' }),
-    payable_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The payable_date for this corporate action' }),
-    rate: z.string().openapi({ description: 'Dividend rate per share' }),
-    record_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The record_date for this corporate action' }),
-    symbol: z
-      .string()
-      .openapi({ description: 'The symbol of the security involved with the activity' }),
-  })
-  .openapi({ required: ['symbol', 'cusip', 'rate'] })
-  .openapi('CommonSDIVActivityV2')
-
-type SDIVActivityV2Type = z.infer<typeof CommonCaActivityV2Schema> &
-  z.infer<typeof CommonSDIVActivityV2Schema> & {
-    entitled_qty: string
-    new_qty: string
-    paid_qty: string
-  }
-
-const CommonSpinoffActivityV2Schema = z
-  .object({
-    due_bill_redemption_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'When due bills related to the spinoff are redeemed' }),
-    ex_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The ex_date for this corporate action' }),
-    new_cusip: z.string().openapi({ description: 'CUSIP of the new security' }),
-    new_isin: z.string().exactOptional().openapi({ description: 'ISIN of the new security' }),
-    new_price: z.string().openapi({ description: 'Market price of new shares after the spinoff' }),
-    new_rate: z.string().openapi({ description: 'Ratio of new shares received' }),
-    new_symbol: z.string().openapi({ description: 'Symbol of the new security' }),
-    payable_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The payable_date for this corporate action' }),
-    record_date: z.iso
-      .date()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The record_date for this corporate action' }),
-    source_cusip: z.string().openapi({ description: 'CUSIP of the parent security' }),
-    source_isin: z.string().exactOptional().openapi({ description: 'ISIN of the parent security' }),
-    source_price: z
-      .string()
-      .openapi({ description: 'Market price of parent shares before the spinoff' }),
-    source_rate: z.string().openapi({ description: 'Ratio of parent shares' }),
-    source_symbol: z.string().openapi({ description: 'Symbol of the parent security' }),
-  })
-  .openapi({
-    required: [
-      'source_cusip',
-      'source_symbol',
-      'source_rate',
-      'source_price',
-      'new_cusip',
-      'new_symbol',
-      'new_rate',
-      'new_price',
-    ],
-  })
-  .openapi('CommonSpinoffActivityV2')
-
-type SpinoffActivityV2Type = z.infer<typeof CommonCaActivityV2Schema> &
-  z.infer<typeof CommonSpinoffActivityV2Schema> & { new_qty: string; source_qty: string }
-
 const CommonAcatActivityV2Schema = z
   .object({
     external_id: z.string().openapi({ description: 'The ID that DTCC assigned to this transfer' }),
@@ -957,6 +507,27 @@ const ActivityV2DetailTRDSchema = z
   })
   .openapi('ActivityV2DetailTRD')
 
+const CommonCaActivityV2Schema = CommonNTAActivityV2Schema.and(
+  z
+    .object({
+      ca_id: z
+        .uuid()
+        .exactOptional()
+        .openapi({ description: 'The unique identifier for this corporate action' }),
+      position_date: z.iso
+        .date()
+        .min(1)
+        .openapi({ description: 'The position_date for this corporate action' }),
+      reorg_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The reorg identifier, if present in the source corporate action definition',
+        }),
+    })
+    .openapi({ required: ['position_date'] }),
+).openapi('CommonCaActivityV2')
+
 const DIVSPDActivityV2Schema = CommonCaActivityV2Schema.and(
   z
     .object({
@@ -1022,47 +593,128 @@ const DIVSPDActivityV2Schema = CommonCaActivityV2Schema.and(
   .openapi({ description: 'Substitute payment in lieu of dividend' })
   .openapi('DIVSPDActivityV2')
 
-const CDIVActivityV2Schema: z.ZodType<CDIVActivityV2Type> = z
-  .lazy(() =>
-    CommonCaActivityV2Schema.and(CommonCDIVActivityV2Schema)
-      .and(
-        z
-          .object({
-            cash_payout: z.string().openapi({ description: 'Total cash amount paid' }),
-            entitled_qty: z
-              .string()
-              .openapi({
-                description:
-                  'Quantity of shares entitled to receive the dividend or return of capital',
-              }),
-          })
-          .openapi({ required: ['entitled_qty', 'cash_payout'] }),
-      )
+const CommonCDIVActivityV2Schema = z
+  .object({
+    cusip: z
+      .string()
+      .openapi({ description: 'The CUSIP of the security involved with the activity' }),
+    due_bill_off_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'When due bills stop applying for this event' }),
+    due_bill_on_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'When due bills begin to apply for this event' }),
+    ex_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The ex_date for this corporate action' }),
+    foreign: z
+      .enum(['true', 'false'])
       .openapi({
         description:
-          'Cash-dividend related details. Used for both Cash Dividend and Return of Capital.',
+          'Indicates if related to a non-US security. Serialized as the JSON strings `"true"` or `"false"`, not a JSON boolean.',
+        example: 'false',
       }),
+    isin: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ISIN of the security involved with the activity' }),
+    payable_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The payable_date for this corporate action' }),
+    rate: z.string().openapi({ description: 'Dividend rate per share' }),
+    record_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The record_date for this corporate action' }),
+    special: z
+      .enum(['true', 'false'])
+      .openapi({
+        description:
+          'Indicates if this is a special dividend. Serialized as the JSON strings `"true"` or `"false"`, not a JSON boolean.',
+        example: 'false',
+      }),
+    symbol: z
+      .string()
+      .openapi({ description: 'The symbol of the security involved with the activity' }),
+  })
+  .openapi({ required: ['symbol', 'cusip', 'rate', 'foreign', 'special'] })
+  .openapi('CommonCDIVActivityV2')
+
+const CDIVActivityV2Schema = CommonCaActivityV2Schema.and(CommonCDIVActivityV2Schema)
+  .and(
+    z
+      .object({
+        cash_payout: z.string().openapi({ description: 'Total cash amount paid' }),
+        entitled_qty: z
+          .string()
+          .openapi({
+            description: 'Quantity of shares entitled to receive the dividend or return of capital',
+          }),
+      })
+      .openapi({ required: ['entitled_qty', 'cash_payout'] }),
   )
+  .openapi({
+    description:
+      'Cash-dividend related details. Used for both Cash Dividend and Return of Capital.',
+  })
   .openapi('CDIVActivityV2')
 
-const SDIVActivityV2Schema: z.ZodType<SDIVActivityV2Type> = z
-  .lazy(() =>
-    CommonCaActivityV2Schema.and(CommonSDIVActivityV2Schema)
-      .and(
-        z
-          .object({
-            entitled_qty: z
-              .string()
-              .openapi({ description: 'Quantity of shares entitled to receive the dividend' }),
-            new_qty: z
-              .string()
-              .openapi({ description: 'The total number of shares after the dividend' }),
-            paid_qty: z.string().openapi({ description: 'The paid quantity' }),
-          })
-          .openapi({ required: ['entitled_qty', 'paid_qty', 'new_qty'] }),
-      )
-      .openapi({ description: 'Stock dividend' }),
+const CommonSDIVActivityV2Schema = z
+  .object({
+    cusip: z
+      .string()
+      .openapi({ description: 'The CUSIP of the security involved with the activity' }),
+    ex_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The ex_date for this corporate action' }),
+    isin: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ISIN of the security involved with the activity' }),
+    payable_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The payable_date for this corporate action' }),
+    rate: z.string().openapi({ description: 'Dividend rate per share' }),
+    record_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The record_date for this corporate action' }),
+    symbol: z
+      .string()
+      .openapi({ description: 'The symbol of the security involved with the activity' }),
+  })
+  .openapi({ required: ['symbol', 'cusip', 'rate'] })
+  .openapi('CommonSDIVActivityV2')
+
+const SDIVActivityV2Schema = CommonCaActivityV2Schema.and(CommonSDIVActivityV2Schema)
+  .and(
+    z
+      .object({
+        entitled_qty: z
+          .string()
+          .openapi({ description: 'Quantity of shares entitled to receive the dividend' }),
+        new_qty: z
+          .string()
+          .openapi({ description: 'The total number of shares after the dividend' }),
+        paid_qty: z.string().openapi({ description: 'The paid quantity' }),
+      })
+      .openapi({ required: ['entitled_qty', 'paid_qty', 'new_qty'] }),
   )
+  .openapi({ description: 'Stock dividend' })
   .openapi('SDIVActivityV2')
 
 const CGDActivityV2Schema = CommonCaActivityV2Schema.and(
@@ -1247,51 +899,120 @@ const UnitSplitActivityV2Schema = CommonSplitStockActivityV2Schema.and(
   .openapi({ description: 'Unit split' })
   .openapi('UnitSplitActivityV2')
 
-const SpinoffActivityV2Schema: z.ZodType<SpinoffActivityV2Type> = z
-  .lazy(() =>
-    CommonCaActivityV2Schema.and(CommonSpinoffActivityV2Schema)
-      .and(
-        z
-          .object({
-            new_qty: z.string().openapi({ description: 'The new quantity' }),
-            source_qty: z.string().openapi({ description: 'The source quantity' }),
-          })
-          .openapi({ required: ['source_qty', 'new_qty'] }),
-      )
-      .openapi({ description: 'Spinoff' }),
+const CommonSpinoffActivityV2Schema = z
+  .object({
+    due_bill_redemption_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'When due bills related to the spinoff are redeemed' }),
+    ex_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The ex_date for this corporate action' }),
+    new_cusip: z.string().openapi({ description: 'CUSIP of the new security' }),
+    new_isin: z.string().exactOptional().openapi({ description: 'ISIN of the new security' }),
+    new_price: z.string().openapi({ description: 'Market price of new shares after the spinoff' }),
+    new_rate: z.string().openapi({ description: 'Ratio of new shares received' }),
+    new_symbol: z.string().openapi({ description: 'Symbol of the new security' }),
+    payable_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The payable_date for this corporate action' }),
+    record_date: z.iso
+      .date()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The record_date for this corporate action' }),
+    source_cusip: z.string().openapi({ description: 'CUSIP of the parent security' }),
+    source_isin: z.string().exactOptional().openapi({ description: 'ISIN of the parent security' }),
+    source_price: z
+      .string()
+      .openapi({ description: 'Market price of parent shares before the spinoff' }),
+    source_rate: z.string().openapi({ description: 'Ratio of parent shares' }),
+    source_symbol: z.string().openapi({ description: 'Symbol of the parent security' }),
+  })
+  .openapi({
+    required: [
+      'source_cusip',
+      'source_symbol',
+      'source_rate',
+      'source_price',
+      'new_cusip',
+      'new_symbol',
+      'new_rate',
+      'new_price',
+    ],
+  })
+  .openapi('CommonSpinoffActivityV2')
+
+const SpinoffActivityV2Schema = CommonCaActivityV2Schema.and(CommonSpinoffActivityV2Schema)
+  .and(
+    z
+      .object({
+        new_qty: z.string().openapi({ description: 'The new quantity' }),
+        source_qty: z.string().openapi({ description: 'The source quantity' }),
+      })
+      .openapi({ required: ['source_qty', 'new_qty'] }),
   )
+  .openapi({ description: 'Spinoff' })
   .openapi('SpinoffActivityV2')
 
-const MAActivityV2Schema: z.ZodType<MAActivityV2Type> = z
-  .lazy(() =>
-    CommonCaActivityV2Schema.and(CommonMAActivityV2Schema)
-      .and(
-        z
-          .object({
-            acquiree_qty: z.string().openapi({ description: 'Quantity of the acquiree' }),
-            acquirer_qty: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Quantity of the acquirer' }),
-            cash_payout: z.string().exactOptional().openapi({ description: 'The cash payout' }),
-            cash_rate: z.string().exactOptional().openapi({ description: 'The cash rate' }),
-          })
-          .openapi({ required: ['acquiree_qty'] }),
-      )
-      .openapi({ description: 'Merger and acquisition' }),
+const CommonMAActivityV2Schema = z
+  .object({
+    acquiree_cusip: z.string().openapi({ description: 'CUSIP of the acquiree' }),
+    acquiree_isin: z.string().exactOptional().openapi({ description: 'ISIN of the acquiree' }),
+    acquiree_rate: z.string().exactOptional().openapi({ description: 'Rate of the acquiree' }),
+    acquiree_symbol: z.string().openapi({ description: 'Symbol of the acquiree' }),
+    acquirer_cusip: z.string().exactOptional().openapi({ description: 'CUSIP of the acquirer' }),
+    acquirer_isin: z.string().exactOptional().openapi({ description: 'ISIN of the acquirer' }),
+    acquirer_rate: z.string().exactOptional().openapi({ description: 'Rate of the acquirer' }),
+    acquirer_symbol: z.string().exactOptional().openapi({ description: 'Symbol of the acquirer' }),
+    effective_date: z.iso
+      .date()
+      .min(1)
+      .openapi({ description: 'When the merger/acquisition becomes effective' }),
+    payable_date: z.iso.date().min(1).openapi({ description: 'The payable date' }),
+  })
+  .openapi({ required: ['acquiree_cusip', 'acquiree_symbol', 'effective_date', 'payable_date'] })
+  .openapi('CommonMAActivityV2')
+
+const MAActivityV2Schema = CommonCaActivityV2Schema.and(CommonMAActivityV2Schema)
+  .and(
+    z
+      .object({
+        acquiree_qty: z.string().openapi({ description: 'Quantity of the acquiree' }),
+        acquirer_qty: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Quantity of the acquirer' }),
+        cash_payout: z.string().exactOptional().openapi({ description: 'The cash payout' }),
+        cash_rate: z.string().exactOptional().openapi({ description: 'The cash rate' }),
+      })
+      .openapi({ required: ['acquiree_qty'] }),
   )
+  .openapi({ description: 'Merger and acquisition' })
   .openapi('MAActivityV2')
 
-const NCActivityV2Schema: z.ZodType<NCActivityV2Type> = z
-  .lazy(() =>
-    CommonCaActivityV2Schema.and(CommonNCActivityV2Schema)
-      .and(
-        z
-          .object({ position_qty: z.string().openapi({ description: 'The position quantity' }) })
-          .openapi({ required: ['position_qty'] }),
-      )
-      .openapi({ description: 'Name change' }),
+const CommonNCActivityV2Schema = z
+  .object({
+    new_cusip: z.string().openapi({ description: 'New CUSIP for the name change' }),
+    new_symbol: z.string().openapi({ description: 'New symbol for the name change' }),
+    old_cusip: z.string().openapi({ description: 'Old CUSIP for the name change' }),
+    old_symbol: z.string().openapi({ description: 'Old symbol for the name change' }),
+  })
+  .openapi({ required: ['old_cusip', 'old_symbol', 'new_cusip', 'new_symbol'] })
+  .openapi('CommonNCActivityV2')
+
+const NCActivityV2Schema = CommonCaActivityV2Schema.and(CommonNCActivityV2Schema)
+  .and(
+    z
+      .object({ position_qty: z.string().openapi({ description: 'The position quantity' }) })
+      .openapi({ required: ['position_qty'] }),
   )
+  .openapi({ description: 'Name change' })
   .openapi('NCActivityV2')
 
 const FixedIncomeRedemptionActivityV2Schema = CommonNTAActivityV2Schema.and(
@@ -1310,20 +1031,116 @@ const FixedIncomeRedemptionActivityV2Schema = CommonNTAActivityV2Schema.and(
   .openapi({ description: 'Redemption' })
   .openapi('FixedIncomeRedemptionActivityV2')
 
-const FixedIncomeInterestActivityV2Schema: z.ZodType<FixedIncomeInterestActivityV2Type> = z
-  .lazy(() =>
-    CommonCaActivityV2Schema.and(CommonFixedIncomeInterestActivityV2Schema).openapi({
-      description: 'Fixed income interest (INT/FI)',
-    }),
-  )
+const FixedIncomeInterestTypeSchema = z
+  .enum(['coupon', 'accrued'])
+  .openapi({
+    description: 'Distinguishes coupon payments from accrued interest on INT/FI activities.',
+    example: 'accrued',
+    title: 'FixedIncomeInterestType',
+  })
+  .openapi('FixedIncomeInterestType')
+
+const CommonFixedIncomeInterestActivityV2Schema = z
+  .object({
+    accrued_interest_rate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Accrued interest rate (present for accrued-interest-on-call variants)',
+      }),
+    cash_payout: z.string().openapi({ description: 'The cash payout for this interest activity' }),
+    cusip: z
+      .string()
+      .openapi({ description: 'The CUSIP of the security involved with the activity' }),
+    entitled_qty: z
+      .string()
+      .openapi({ description: 'The entitled quantity (principal / face amount)', example: '1000' }),
+    interest_type: FixedIncomeInterestTypeSchema,
+    isin: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ISIN of the security involved with the activity' }),
+    order_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The order that generated this accrued interest. Present for trade-accrued INT/FI.',
+        example: '257bf308-a6b7-4777-8cf6-00dc441dc4d3',
+      }),
+    parent_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ref_id of the parent trade this interest is attached to. Present for trade-accrued INT/FI when a parent trade `ref_id` is available.',
+        example: '46aecae1-4629-4bcf-b441-0d8c847a1787',
+      }),
+    payment_date: z.iso.date().exactOptional().openapi({ description: 'The payment date' }),
+    price: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Call price used for accrued-interest-on-call variants' }),
+    rate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Coupon rate amount (present for regular coupon payments)' }),
+    record_date: z.iso.date().exactOptional().openapi({ description: 'The record date' }),
+  })
+  .openapi({
+    description:
+      'Fixed income interest fields (INT/FI). Variants from the same activity type:\n\n- Coupon: `interest_type` is `coupon`. Includes `rate` (no `price` / `accrued_interest_rate`). No `order_id`.\n- Accrued interest on call: `interest_type` is `accrued`. Includes `price` and `accrued_interest_rate` (no `rate`). No `order_id`.\n- Trade accrued: `interest_type` is `accrued`. Includes `order_id` so the interest NTA can be linked to the fill. `parent_id` is set when a parent trade `ref_id` is available.',
+    required: ['entitled_qty', 'cash_payout', 'cusip', 'interest_type'],
+  })
+  .openapi('CommonFixedIncomeInterestActivityV2')
+
+const FixedIncomeInterestActivityV2Schema = CommonCaActivityV2Schema.and(
+  CommonFixedIncomeInterestActivityV2Schema,
+)
+  .openapi({ description: 'Fixed income interest (INT/FI)' })
   .openapi('FixedIncomeInterestActivityV2')
 
-const REOActivityV2Schema: z.ZodType<REOActivityV2Type> = z
-  .lazy(() =>
-    CommonCaActivityV2Schema.and(CommonREOActivityV2Schema).openapi({
-      description: 'Reorganization (REO)',
-    }),
-  )
+const CommonREOActivityV2Schema = z
+  .object({
+    cash_payout: z.string().exactOptional().openapi({ description: 'Cash payout amount' }),
+    cash_rate: z.string().exactOptional().openapi({ description: 'Cash rate per share' }),
+    cusip: z.string().exactOptional().openapi({ description: 'CUSIP received on this stock leg' }),
+    effective_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({ description: 'Effective date of the reorganization' }),
+    isin: z.string().exactOptional().openapi({ description: 'ISIN received on this stock leg' }),
+    new_rate: z.string().exactOptional().openapi({ description: 'New ratio for this stock leg' }),
+    payable_date: z.iso.date().openapi({ description: 'Payable date of the reorganization' }),
+    qty: z.string().exactOptional().openapi({ description: 'Quantity received on this stock leg' }),
+    removed_qty: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Positive quantity removed from the source position' }),
+    source_cusip: z.string().openapi({ description: 'CUSIP of the source security' }),
+    source_isin: z.string().exactOptional().openapi({ description: 'ISIN of the source security' }),
+    source_qty: z.string().exactOptional().openapi({ description: 'Source position quantity' }),
+    source_rate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Source ratio for this stock leg' }),
+    source_symbol: z
+      .string()
+      .openapi({ description: 'Symbol of the source security', example: 'CEPT' }),
+    symbol: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Symbol received on this stock leg', example: 'SECZ' }),
+  })
+  .openapi({
+    description:
+      'Reorganization (REO) activity sub-types:\n- **REOS**: Stock only (1 or more stock legs)\n- **REOC**: Cash only (one cash leg)\n- **REOSC**: Stock and cash',
+    required: ['source_symbol', 'source_cusip', 'payable_date'],
+  })
+  .openapi('CommonREOActivityV2')
+
+const REOActivityV2Schema = CommonCaActivityV2Schema.and(CommonREOActivityV2Schema)
+  .openapi({ description: 'Reorganization (REO)' })
   .openapi('REOActivityV2')
 
 const RightsDistributionActivityV2Schema = CommonCaActivityV2Schema.and(
@@ -1580,23 +1397,23 @@ const CommonOptionsActivityV2Schema = z
   .and(CommonNTAActivityV2Schema)
   .openapi('CommonOptionsActivityV2')
 
-const OPASNActivityV2Schema = CommonOptionsActivityV2Schema.and(z.object({}))
+const OPASNActivityV2Schema = CommonOptionsActivityV2Schema.and(z.looseObject({}))
   .openapi({ description: 'Option assignment' })
   .openapi('OPASNActivityV2')
 
-const OPEXCActivityV2Schema = CommonOptionsActivityV2Schema.and(z.object({}))
+const OPEXCActivityV2Schema = CommonOptionsActivityV2Schema.and(z.looseObject({}))
   .openapi({ description: 'Option exercise' })
   .openapi('OPEXCActivityV2')
 
-const OPEXPActivityV2Schema = CommonOptionsActivityV2Schema.and(z.object({}))
+const OPEXPActivityV2Schema = CommonOptionsActivityV2Schema.and(z.looseObject({}))
   .openapi({ description: 'Option expiry' })
   .openapi('OPEXPActivityV2')
 
-const OPTRDActivityV2Schema = CommonOptionsActivityV2Schema.and(z.object({}))
+const OPTRDActivityV2Schema = CommonOptionsActivityV2Schema.and(z.looseObject({}))
   .openapi({ description: 'Trading activity that is paired with the assignment/exercise' })
   .openapi('OPTRDActivityV2')
 
-const OPCSHActivityV2Schema = CommonOptionsActivityV2Schema.and(z.object({}))
+const OPCSHActivityV2Schema = CommonOptionsActivityV2Schema.and(z.looseObject({}))
   .openapi({ description: 'Option cash deliverable for non-standard contracts' })
   .openapi('OPCSHActivityV2')
 
@@ -1696,7 +1513,7 @@ const JNLSActivityV2Schema = CommonJournalActivityV2Schema.and(
   .openapi({ description: 'Journal entry (stock)' })
   .openapi('JNLSActivityV2')
 
-const JNLCActivityV2Schema = CommonJournalActivityV2Schema.and(z.object({}))
+const JNLCActivityV2Schema = CommonJournalActivityV2Schema.and(z.looseObject({}))
   .openapi({ description: 'Journal entry (cash)' })
   .openapi('JNLCActivityV2')
 
@@ -2020,6 +1837,28 @@ const AssetAttributeSchema = z
     example: 'ptp_no_exception',
   })
   .openapi('AssetAttribute')
+
+const AssetClassSchema = z
+  .enum([
+    'us_equity',
+    'us_option',
+    'crypto',
+    'crypto_perp',
+    'treasury',
+    'corporate',
+    'global_equity',
+    'us_index',
+    'us_equity_chain',
+    'ipo',
+  ])
+  .openapi({
+    description:
+      'This represents the category to which the asset belongs to. It serves to identify the nature of the financial instrument, with options including "us_equity" for U.S. equities, "us_option" for U.S. options, "crypto" for cryptocurrencies, and "ipo" for IPO indications of interest/orders. This `asset_class: ipo` value is distinct from the assets API `attributes: ["ipo"]` flag.',
+    example: 'us_equity',
+    examples: ['us_equity'],
+    title: 'AssetClass',
+  })
+  .openapi('AssetClass')
 
 const ExchangeSchema = z
   .enum([
@@ -2693,6 +2532,31 @@ const ErrorResponseSchema = z
   .object({ message: z.string().exactOptional().openapi({ example: 'Internal Server Error' }) })
   .openapi({ description: 'API error response.', required: [] })
   .openapi('ErrorResponse')
+
+const ExchangeForPositionSchema = z
+  .enum([
+    'AMEX',
+    'ARCA',
+    'BATS',
+    'NYSE',
+    'NASDAQ',
+    'NYSEARCA',
+    'OTC',
+    'CRYPTO',
+    'TXSE',
+    'ERSX',
+    'CRXL',
+    'ASCX',
+    'INDEX',
+    '',
+  ])
+  .openapi({
+    description:
+      'Represents the current exchanges Alpaca supports. List is currently:\n\nUS equities:\n- AMEX\n- ARCA\n- BATS\n- NYSE\n- NASDAQ\n- NYSEARCA\n- OTC\n- TXSE\n\nCrypto:\n- CRYPTO\n- ERSX\n- CRXL\n\nCrypto perpetuals:\n- ASCX\n\nIndex symbols:\n- INDEX\n\nINDEX is the artificial exchange for index symbols such as SPX.\n\nCan be empty if not applicable (e.g., for options contracts)',
+    example: 'NYSE',
+    title: 'Exchange',
+  })
+  .openapi('ExchangeForPosition')
 
 const LocateQuoteErrorSchema = z
   .object({
@@ -3391,7 +3255,7 @@ const OrderLegSchema = z
       }),
     id: z.uuid().exactOptional().openapi({ description: 'Order ID' }),
     legs: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .max(0)
       .nullable()
       .exactOptional()
@@ -3730,154 +3594,202 @@ const PortfolioHistoryErrorSchema = z
   .openapi({ required: ['code', 'message'], title: 'Portfolio History Error' })
   .openapi('PortfolioHistoryError')
 
-const PositionSchema: z.ZodType<PositionType> = z
-  .lazy(() =>
-    z
-      .object({
-        asset_class: AssetClassSchema,
-        asset_id: z
-          .uuid()
-          .openapi({
-            description: 'Asset ID (For options this represents the option contract ID)',
-          }),
-        asset_marginable: z.boolean(),
-        avg_entry_price: z
-          .string()
-          .min(1)
-          .openapi({ description: 'Average entry price of the position' }),
-        avg_entry_swap_rate: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The weighted-average exchange rate at the time the position was entered.',
-          }),
-        change_today: z
-          .string()
-          .min(1)
-          .openapi({ description: 'Percent change from last day price (by a factor of 1)' }),
-        cost_basis: z.string().min(1).openapi({ description: 'Total cost basis in dollar' }),
-        current_price: z.string().min(1).openapi({ description: 'Current asset price per share' }),
-        exchange: ExchangeForPositionSchema,
-        lastday_price: z
-          .string()
-          .min(1)
-          .openapi({
-            description:
-              "Last day's asset price per share based on the closing value of the last trading day",
-          }),
-        market_value: z
-          .string()
-          .min(1)
-          .openapi({ description: 'Total dollar amount of the position' }),
-        prev_swap_rate: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: "The exchange rate as of the previous close (i.e. yesterday's rate)",
-          }),
-        qty: z.string().min(1).openapi({ description: 'The number of shares' }),
-        qty_available: z
-          .string()
-          .min(1)
-          .exactOptional()
-          .openapi({
-            description:
-              'Total number of shares available minus open orders / locked for options covered call',
-          }),
-        side: z.enum(['long', 'short']).openapi({ description: 'long' }),
-        swap_rate: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The current exchange rate (without mark-up) used to convert local-currency position values into USD. Present only for LCT (Local Currency Trading) accounts',
-          }),
-        symbol: z.string().openapi({ description: 'Symbol name of the asset', example: 'AAPL' }),
-        unrealized_intraday_pl: z
-          .string()
-          .min(1)
-          .openapi({ description: 'Unrealized profit/loss in dollars for the day' }),
-        unrealized_intraday_plpc: z
-          .string()
-          .min(1)
-          .openapi({ description: 'Unrealized profit/loss percent (by a factor of 1)' }),
-        unrealized_pl: z
-          .string()
-          .min(1)
-          .openapi({ description: 'Unrealized profit/loss in dollars' }),
-        unrealized_plpc: z
-          .string()
-          .min(1)
-          .openapi({ description: 'Unrealized profit/loss percent (by a factor of 1)' }),
-        usd: USDPositionValuesSchema.exactOptional(),
-      })
+const USDPositionValuesSchema = z
+  .object({
+    avg_entry_price: z
+      .string()
+      .openapi({ description: 'Average entry price of the position in USD', example: '71.43' }),
+    change_today: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Percent change from last day price (by a factor of 1)',
+        example: '0.67',
+      }),
+    cost_basis: z.string().openapi({ description: 'Total cost basis in USD', example: '333.33' }),
+    current_price: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Current asset price per share in USD', example: '80.0' }),
+    lastday_price: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          "The positions API provides information about an account's current open positions. The response will include information such as cost basis, shares traded, and market value, which will be updated live as price information is updated. Once a position is closed, it will no longer be queryable through this API.",
-        examples: [
-          {
-            asset_class: 'us_equity',
-            asset_id: '904837e3-3b76-47ec-b432-046db621571b',
-            asset_marginable: true,
-            avg_entry_price: '100.0',
-            change_today: '0.0084',
-            cost_basis: '500.0',
-            current_price: '120.0',
-            exchange: 'NASDAQ',
-            lastday_price: '119.0',
-            market_value: '600.0',
-            qty: '5',
-            qty_available: '4',
-            side: 'long',
-            symbol: 'AAPL',
-            unrealized_intraday_pl: '10.0',
-            unrealized_intraday_plpc: '0.0084',
-            unrealized_pl: '100.0',
-            unrealized_plpc: '0.20',
-          },
-          {
-            asset_class: 'us_equity',
-            asset_id: 'b0b6dd9d-8b9b-48a9-ba46-b9d54906e415',
-            asset_marginable: false,
-            avg_entry_price: '174.78',
-            change_today: '-0.0018326556325525',
-            cost_basis: '349.56',
-            current_price: '174.29',
-            exchange: 'NASDAQ',
-            lastday_price: '174.61',
-            market_value: '348.58',
-            qty: '2',
-            qty_available: '2',
-            side: 'long',
-            symbol: 'AAPL',
-            unrealized_intraday_pl: '-0.98',
-            unrealized_intraday_plpc: '-0.0028035244307129',
-            unrealized_pl: '-0.98',
-            unrealized_plpc: '-0.0028035244307129',
-          },
-        ],
-        required: [
-          'asset_id',
-          'symbol',
-          'exchange',
-          'asset_class',
-          'avg_entry_price',
-          'qty',
-          'side',
-          'market_value',
-          'cost_basis',
-          'unrealized_pl',
-          'unrealized_plpc',
-          'unrealized_intraday_pl',
-          'unrealized_intraday_plpc',
-          'current_price',
-          'lastday_price',
-          'change_today',
-          'asset_marginable',
-        ],
-        title: 'Position',
+          "Last day's asset price per share based on the closing value of the last trading day in USD",
+        example: '79.33',
       }),
-  )
+    market_value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total market value of the position in USD', example: '400.00' }),
+    unrealized_intraday_pl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unrealized profit/loss in USD for the day', example: '6.67' }),
+    unrealized_intraday_plpc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unrealized intraday profit/loss percent (by a factor of 1)',
+        example: '0.0084',
+      }),
+    unrealized_pl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unrealized profit/loss in USD', example: '66.67' }),
+    unrealized_plpc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unrealized profit/loss percent (by a factor of 1)',
+        example: '0.2',
+      }),
+  })
+  .openapi({
+    description: 'Position values in USD. This is returned for LCT (non-USD) accounts only.',
+    required: ['avg_entry_price', 'cost_basis'],
+    title: 'USDPositionValues',
+  })
+  .openapi('USDPositionValues')
+
+const PositionSchema = z
+  .object({
+    asset_class: AssetClassSchema,
+    asset_id: z
+      .uuid()
+      .openapi({ description: 'Asset ID (For options this represents the option contract ID)' }),
+    asset_marginable: z.boolean(),
+    avg_entry_price: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Average entry price of the position' }),
+    avg_entry_swap_rate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The weighted-average exchange rate at the time the position was entered.',
+      }),
+    change_today: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Percent change from last day price (by a factor of 1)' }),
+    cost_basis: z.string().min(1).openapi({ description: 'Total cost basis in dollar' }),
+    current_price: z.string().min(1).openapi({ description: 'Current asset price per share' }),
+    exchange: ExchangeForPositionSchema,
+    lastday_price: z
+      .string()
+      .min(1)
+      .openapi({
+        description:
+          "Last day's asset price per share based on the closing value of the last trading day",
+      }),
+    market_value: z.string().min(1).openapi({ description: 'Total dollar amount of the position' }),
+    prev_swap_rate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The exchange rate as of the previous close (i.e. yesterday's rate)",
+      }),
+    qty: z.string().min(1).openapi({ description: 'The number of shares' }),
+    qty_available: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Total number of shares available minus open orders / locked for options covered call',
+      }),
+    side: z.enum(['long', 'short']).openapi({ description: 'long' }),
+    swap_rate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The current exchange rate (without mark-up) used to convert local-currency position values into USD. Present only for LCT (Local Currency Trading) accounts',
+      }),
+    symbol: z.string().openapi({ description: 'Symbol name of the asset', example: 'AAPL' }),
+    unrealized_intraday_pl: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Unrealized profit/loss in dollars for the day' }),
+    unrealized_intraday_plpc: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Unrealized profit/loss percent (by a factor of 1)' }),
+    unrealized_pl: z.string().min(1).openapi({ description: 'Unrealized profit/loss in dollars' }),
+    unrealized_plpc: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Unrealized profit/loss percent (by a factor of 1)' }),
+    usd: USDPositionValuesSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      "The positions API provides information about an account's current open positions. The response will include information such as cost basis, shares traded, and market value, which will be updated live as price information is updated. Once a position is closed, it will no longer be queryable through this API.",
+    examples: [
+      {
+        asset_class: 'us_equity',
+        asset_id: '904837e3-3b76-47ec-b432-046db621571b',
+        asset_marginable: true,
+        avg_entry_price: '100.0',
+        change_today: '0.0084',
+        cost_basis: '500.0',
+        current_price: '120.0',
+        exchange: 'NASDAQ',
+        lastday_price: '119.0',
+        market_value: '600.0',
+        qty: '5',
+        qty_available: '4',
+        side: 'long',
+        symbol: 'AAPL',
+        unrealized_intraday_pl: '10.0',
+        unrealized_intraday_plpc: '0.0084',
+        unrealized_pl: '100.0',
+        unrealized_plpc: '0.20',
+      },
+      {
+        asset_class: 'us_equity',
+        asset_id: 'b0b6dd9d-8b9b-48a9-ba46-b9d54906e415',
+        asset_marginable: false,
+        avg_entry_price: '174.78',
+        change_today: '-0.0018326556325525',
+        cost_basis: '349.56',
+        current_price: '174.29',
+        exchange: 'NASDAQ',
+        lastday_price: '174.61',
+        market_value: '348.58',
+        qty: '2',
+        qty_available: '2',
+        side: 'long',
+        symbol: 'AAPL',
+        unrealized_intraday_pl: '-0.98',
+        unrealized_intraday_plpc: '-0.0028035244307129',
+        unrealized_pl: '-0.98',
+        unrealized_plpc: '-0.0028035244307129',
+      },
+    ],
+    required: [
+      'asset_id',
+      'symbol',
+      'exchange',
+      'asset_class',
+      'avg_entry_price',
+      'qty',
+      'side',
+      'market_value',
+      'cost_basis',
+      'unrealized_pl',
+      'unrealized_plpc',
+      'unrealized_intraday_pl',
+      'unrealized_intraday_plpc',
+      'current_price',
+      'lastday_price',
+      'change_today',
+      'asset_marginable',
+    ],
+    title: 'Position',
+  })
   .openapi('Position')
 
 const PositionClosedResponseSchema = z
@@ -6613,16 +6525,13 @@ export const getV2AccountPortfolioHistoryRoute = createRoute({
       },
       headers: z.object({
         'Deprecated-Params': DeprecatedParamsHeaderSchema,
-        'Retry-After': {
-          description: 'Number of seconds to wait before retrying the request.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Number of seconds to wait before retrying the request.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Number of seconds to wait before retrying the request.',
+            param: { required: false },
+          }),
       }),
     },
     500: {

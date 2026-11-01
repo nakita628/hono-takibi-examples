@@ -1,5 +1,50 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AppIdentifierInfoSchema = z
+  .strictObject({
+    androidPackageId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Android package identifier for this app.' }),
+    iosScheme: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The iOS URL scheme for this app.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppIdentifierInfo')
+
+const PaymentMethodUPIAppsSchema = z
+  .strictObject({
+    appIdentifierInfo: AppIdentifierInfoSchema.exactOptional().openapi({
+      description: 'The app identifier information containing iOS scheme and Android package ID.',
+      'x-addedInVersion': '68',
+    }),
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of this app, to submit in requests to /payments.',
+      }),
+    name: z.string().openapi({ description: 'A localized name of the app.' }),
+  })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('PaymentMethodUPIApps')
+
+const PaymentMethodGroupSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ description: 'The name of the group.' }),
+    paymentMethodData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Echo data to be used if the payment method is displayed as part of this group.',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The unique code of the group.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentMethodGroup')
+
 const ItemSchema = z
   .strictObject({
     id: z.string().exactOptional().openapi({ description: 'The value to provide in the result.' }),
@@ -32,16 +77,216 @@ const SubInputDetailSchema = z
   .openapi({ required: [] })
   .openapi('SubInputDetail')
 
-type InputDetailType = {
-  configuration?: { [key: string]: string }
-  details?: z.infer<typeof SubInputDetailSchema>[]
-  inputDetails?: z.infer<typeof SubInputDetailSchema>[]
-  itemSearchUrl?: string
-  items?: z.infer<typeof ItemSchema>[]
-  key?: string
-  optional?: boolean
-  type?: string
-  value?: string
+const InputDetailSchema = z
+  .strictObject({
+    configuration: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Configuration parameters for the required input.' }),
+    details: z
+      .array(SubInputDetailSchema)
+      .exactOptional()
+      .openapi({ description: 'Input details can also be provided recursively.' }),
+    inputDetails: z
+      .array(SubInputDetailSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'Input details can also be provided recursively (deprecated).',
+      }),
+    itemSearchUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'In case of a select, the URL from which to query the items.' }),
+    items: z
+      .array(ItemSchema)
+      .exactOptional()
+      .openapi({ description: 'In case of a select, the items to choose from.' }),
+    key: z.string().exactOptional().openapi({ description: 'The value to provide in the result.' }),
+    optional: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if this input value is optional.' }),
+    type: z.string().exactOptional().openapi({ description: 'The type of the required input.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value can be pre-filled, if available.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('InputDetail')
+
+const PaymentMethodIssuerSchema = z
+  .strictObject({
+    disabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'A boolean value indicating whether this issuer is unavailable. Can be `true` whenever the issuer is offline.',
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of this issuer, to submit in requests to /payments.',
+      }),
+    name: z.string().openapi({ description: 'A localized name of the issuer.' }),
+  })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('PaymentMethodIssuer')
+
+const PaymentMethodSchema = z
+  .strictObject({
+    apps: z
+      .array(PaymentMethodUPIAppsSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of apps for this payment method.' }),
+    brand: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Brand for the selected gift card. For example: plastix, hmclub.',
+        'x-addedInVersion': '65',
+      }),
+    brands: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'List of possible brands. For example: visa, mc.',
+        'x-addedInVersion': '49',
+      }),
+    configuration: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The configuration of the payment method.' }),
+    fundingSource: z
+      .enum(['credit', 'debit', 'prepaid'])
+      .exactOptional()
+      .openapi({
+        description: 'The funding source of the payment method.',
+        'x-addedInVersion': '53',
+      }),
+    group: PaymentMethodGroupSchema.exactOptional().openapi({
+      description: 'The group where this payment method belongs to.',
+    }),
+    inputDetails: z
+      .array(InputDetailSchema)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'All input details to be provided to complete the payment with this payment method.',
+      }),
+    issuers: z
+      .array(PaymentMethodIssuerSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A list of issuers for this payment method.',
+        'x-addedInVersion': '68',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The displayable name of this payment method.' }),
+    promoted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether this payment method should be promoted or not.' }),
+    type: z.string().exactOptional().openapi({ description: 'The unique payment method code.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentMethod')
+
+const StoredPaymentMethodSchema = z
+  .strictObject({
+    bankAccountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The bank account number (without separators).' }),
+    bankLocationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The location id of the bank. The field value is `nil` in most cases.',
+      }),
+    brand: z.string().exactOptional().openapi({ description: 'The brand of the card.' }),
+    cashtag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper’s Cash App Pay Cashtag.', 'x-addedInVersion': '70' }),
+    expiryMonth: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The two-digit month when the card expires' }),
+    expiryYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last two digits of the year the card expires. For example, **22** for the year 2022.',
+      }),
+    holderName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the payment method holder.' }),
+    iban: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The IBAN of the bank account.', 'x-addedInVersion': '67' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique identifier of this stored payment method.' }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper’s issuer account label', 'x-addedInVersion': '70' }),
+    lastFour: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last four digits of the PAN.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name of the stored payment method.' }),
+    networkTxReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Returned in the response if you are not tokenizing with Adyen and are using the Merchant-initiated transactions (MIT) framework from Mastercard or Visa.\n\nThis contains either the Mastercard Trace ID or the Visa Transaction ID.',
+        'x-addedInVersion': '68',
+      }),
+    ownerName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the bank account holder.', 'x-addedInVersion': '67' }),
+    shopperEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The shopper’s email address.' }),
+    supportedRecurringProcessingModels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The supported recurring processing models for this stored payment method.',
+        'x-addedInVersion': '70',
+      }),
+    supportedShopperInteractions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The supported shopper interactions for this stored payment method.',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The type of payment method.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('StoredPaymentMethod')
+
+type PaymentMethodsResponseType = {
+  paymentMethods?: z.infer<typeof PaymentMethodSchema>[]
+  storedPaymentMethods?: z.infer<typeof StoredPaymentMethodSchema>[]
 }
 
 const AccountInfoSchema = z
@@ -2372,20 +2617,6 @@ const AndroidPayDetailsSchema = z
   })
   .openapi({ title: 'Android Pay', required: [] })
   .openapi('AndroidPayDetails')
-
-const AppIdentifierInfoSchema = z
-  .strictObject({
-    androidPackageId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Android package identifier for this app.' }),
-    iosScheme: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The iOS URL scheme for this app.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AppIdentifierInfo')
 
 const ApplePayDetailsSchema = z
   .strictObject({
@@ -9468,54 +9699,6 @@ const IdealDetailsSchema = z
   .openapi({ title: 'iDEAL', required: [] })
   .openapi('IdealDetails')
 
-const InputDetailSchema: z.ZodType<InputDetailType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        configuration: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({ description: 'Configuration parameters for the required input.' }),
-        details: z
-          .array(SubInputDetailSchema)
-          .exactOptional()
-          .openapi({ description: 'Input details can also be provided recursively.' }),
-        inputDetails: z
-          .array(SubInputDetailSchema)
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description: 'Input details can also be provided recursively (deprecated).',
-          }),
-        itemSearchUrl: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'In case of a select, the URL from which to query the items.' }),
-        items: z
-          .array(ItemSchema)
-          .exactOptional()
-          .openapi({ description: 'In case of a select, the items to choose from.' }),
-        key: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The value to provide in the result.' }),
-        optional: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'True if this input value is optional.' }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The type of the required input.' }),
-        value: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The value can be pre-filled, if available.' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('InputDetail')
-
 const InstallmentOptionSchema = z
   .strictObject({
     maxValue: z
@@ -11865,119 +12048,6 @@ const PaymentLinkResponseSchema = z
   .openapi({ required: ['amount', 'id', 'merchantAccount', 'reference', 'status', 'url'] })
   .openapi('PaymentLinkResponse')
 
-const PaymentMethodUPIAppsSchema = z
-  .strictObject({
-    appIdentifierInfo: AppIdentifierInfoSchema.exactOptional().openapi({
-      description: 'The app identifier information containing iOS scheme and Android package ID.',
-      'x-addedInVersion': '68',
-    }),
-    id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of this app, to submit in requests to /payments.',
-      }),
-    name: z.string().openapi({ description: 'A localized name of the app.' }),
-  })
-  .openapi({ required: ['id', 'name'] })
-  .openapi('PaymentMethodUPIApps')
-
-const PaymentMethodGroupSchema = z
-  .strictObject({
-    name: z.string().exactOptional().openapi({ description: 'The name of the group.' }),
-    paymentMethodData: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Echo data to be used if the payment method is displayed as part of this group.',
-      }),
-    type: z.string().exactOptional().openapi({ description: 'The unique code of the group.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PaymentMethodGroup')
-
-const PaymentMethodIssuerSchema = z
-  .strictObject({
-    disabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'A boolean value indicating whether this issuer is unavailable. Can be `true` whenever the issuer is offline.',
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of this issuer, to submit in requests to /payments.',
-      }),
-    name: z.string().openapi({ description: 'A localized name of the issuer.' }),
-  })
-  .openapi({ required: ['id', 'name'] })
-  .openapi('PaymentMethodIssuer')
-
-const PaymentMethodSchema = z
-  .strictObject({
-    apps: z
-      .array(PaymentMethodUPIAppsSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of apps for this payment method.' }),
-    brand: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Brand for the selected gift card. For example: plastix, hmclub.',
-        'x-addedInVersion': '65',
-      }),
-    brands: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'List of possible brands. For example: visa, mc.',
-        'x-addedInVersion': '49',
-      }),
-    configuration: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The configuration of the payment method.' }),
-    fundingSource: z
-      .enum(['credit', 'debit', 'prepaid'])
-      .exactOptional()
-      .openapi({
-        description: 'The funding source of the payment method.',
-        'x-addedInVersion': '53',
-      }),
-    group: PaymentMethodGroupSchema.exactOptional().openapi({
-      description: 'The group where this payment method belongs to.',
-    }),
-    inputDetails: z
-      .array(InputDetailSchema)
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'All input details to be provided to complete the payment with this payment method.',
-      }),
-    issuers: z
-      .array(PaymentMethodIssuerSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A list of issuers for this payment method.',
-        'x-addedInVersion': '68',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The displayable name of this payment method.' }),
-    promoted: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether this payment method should be promoted or not.' }),
-    type: z.string().exactOptional().openapi({ description: 'The unique payment method code.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PaymentMethod')
-
 const PaymentMethodToStoreSchema = z
   .strictObject({
     brand: z
@@ -12188,93 +12258,7 @@ const PaymentMethodsRequestSchema = z
   .openapi({ required: ['merchantAccount'] })
   .openapi('PaymentMethodsRequest')
 
-const StoredPaymentMethodSchema = z
-  .strictObject({
-    bankAccountNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The bank account number (without separators).' }),
-    bankLocationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The location id of the bank. The field value is `nil` in most cases.',
-      }),
-    brand: z.string().exactOptional().openapi({ description: 'The brand of the card.' }),
-    cashtag: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The shopper’s Cash App Pay Cashtag.', 'x-addedInVersion': '70' }),
-    expiryMonth: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The two-digit month when the card expires' }),
-    expiryYear: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The last two digits of the year the card expires. For example, **22** for the year 2022.',
-      }),
-    holderName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the payment method holder.' }),
-    iban: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The IBAN of the bank account.', 'x-addedInVersion': '67' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A unique identifier of this stored payment method.' }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The shopper’s issuer account label', 'x-addedInVersion': '70' }),
-    lastFour: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last four digits of the PAN.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name of the stored payment method.' }),
-    networkTxReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Returned in the response if you are not tokenizing with Adyen and are using the Merchant-initiated transactions (MIT) framework from Mastercard or Visa.\n\nThis contains either the Mastercard Trace ID or the Visa Transaction ID.',
-        'x-addedInVersion': '68',
-      }),
-    ownerName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the bank account holder.', 'x-addedInVersion': '67' }),
-    shopperEmail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The shopper’s email address.' }),
-    supportedRecurringProcessingModels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'The supported recurring processing models for this stored payment method.',
-        'x-addedInVersion': '70',
-      }),
-    supportedShopperInteractions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'The supported shopper interactions for this stored payment method.',
-      }),
-    type: z.string().exactOptional().openapi({ description: 'The type of payment method.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('StoredPaymentMethod')
-
-const PaymentMethodsResponseSchema = z
+const PaymentMethodsResponseSchema: z.ZodType<PaymentMethodsResponseType> = z
   .strictObject({
     paymentMethods: z
       .array(PaymentMethodSchema)

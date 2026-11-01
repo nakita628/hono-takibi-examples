@@ -411,7 +411,7 @@ const BadRequestResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: 'Missing property foobar' }),
-        z.object({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
+        z.looseObject({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
       ])
       .exactOptional()
       .openapi({
@@ -2982,7 +2982,7 @@ const NotFoundResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: "Could not find widget with id: '123'" }),
-        z.object({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
+        z.looseObject({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
       ])
       .exactOptional()
       .openapi({
@@ -3033,7 +3033,7 @@ const NotImplementedResponseSchema = z
             example:
               "Failed to retrieve Widget tokenUrl from 'components.securitySchemes.OAuth2.flows'",
           }),
-        z.object({}),
+        z.looseObject({}),
       ])
       .exactOptional()
       .openapi({
@@ -3259,7 +3259,9 @@ const UnexpectedErrorResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: 'Missing Header: x-apideck-consumer-id' }),
-        z.object({}).openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
+        z
+          .looseObject({})
+          .openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
       ])
       .exactOptional()
       .openapi({

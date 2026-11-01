@@ -1,21 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const RepaymentTermSchema = z
-  .strictObject({
-    estimatedDays: z
-      .int32()
-      .openapi({ description: 'The estimated term for repaying the grant, in days.' }),
-    maximumDays: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum term for repaying the grant, in days. Only applies when `contractType` is **loan**.',
-      }),
-  })
-  .openapi({ required: ['estimatedDays'] })
-  .openapi('RepaymentTerm')
-
 const AmountSchema = z
   .object({
     currency: z
@@ -43,38 +27,6 @@ const AmountSchema = z
   })
   .openapi({ required: ['currency', 'value'] })
   .openapi('Amount')
-
-const ThresholdRepaymentSchema = z
-  .strictObject({
-    amount: AmountSchema.openapi({ description: 'The amount to be repaid on a 30-day basis.' }),
-  })
-  .openapi({ required: ['amount'] })
-  .openapi('ThresholdRepayment')
-
-type RepaymentType = {
-  basisPoints: number
-  term?: z.infer<typeof RepaymentTermSchema>
-  threshold?: z.infer<typeof ThresholdRepaymentSchema>
-}
-
-const AULocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(5)
-      .max(9)
-      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-    bsbCode: z
-      .string()
-      .length(6)
-      .openapi({
-        description:
-          'The 6-digit [Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or whitespace.',
-      }),
-    type: z.literal('auLocal').default('auLocal').openapi({ description: '**auLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bsbCode', 'type'] })
-  .openapi('AULocalAccountIdentification')
 
 const CapabilitySettingsSchema = z
   .strictObject({
@@ -391,7 +343,20 @@ const AccountSupportingEntityCapabilitySchema = z
   .openapi({ required: [] })
   .openapi('AccountSupportingEntityCapability')
 
-const AccountHolderCapabilitySchema = z
+type AccountHolderCapabilityType = {
+  allowed?: boolean
+  allowedLevel?: 'high' | 'low' | 'medium' | 'notApplicable'
+  allowedSettings?: z.infer<typeof CapabilitySettingsSchema>
+  enabled?: boolean
+  problems?: z.infer<typeof CapabilityProblemSchema>[]
+  requested?: boolean
+  requestedLevel?: 'high' | 'low' | 'medium' | 'notApplicable'
+  requestedSettings?: z.infer<typeof CapabilitySettingsSchema>
+  transferInstruments?: z.infer<typeof AccountSupportingEntityCapabilitySchema>[]
+  verificationStatus?: 'invalid' | 'pending' | 'rejected' | 'valid'
+}
+
+const AccountHolderCapabilitySchema: z.ZodType<AccountHolderCapabilityType> = z
   .strictObject({
     allowed: z
       .boolean()
@@ -619,7 +584,49 @@ const VerificationDeadlineSchema = z
   .openapi({ required: ['capabilities', 'expiresAt'] })
   .openapi('VerificationDeadline')
 
-const AccountHolderSchema = z
+type AccountHolderType = {
+  balancePlatform?: string
+  capabilities?: { [key: string]: z.infer<typeof AccountHolderCapabilitySchema> }
+  contactDetails?: z.infer<typeof ContactDetailsSchema>
+  description?: string
+  id: string
+  legalEntityId: string
+  metadata?: { [key: string]: string }
+  migratedAccountHolderCode?: string
+  primaryBalanceAccount?: string
+  reference?: string
+  status?: 'active' | 'closed' | 'suspended'
+  timeZone?: string
+  verificationDeadlines?: z.infer<typeof VerificationDeadlineSchema>[]
+}
+
+type AccountHolderInfoType = {
+  balancePlatform?: string
+  capabilities?: { [key: string]: z.infer<typeof AccountHolderCapabilitySchema> }
+  contactDetails?: z.infer<typeof ContactDetailsSchema>
+  description?: string
+  legalEntityId: string
+  metadata?: { [key: string]: string }
+  migratedAccountHolderCode?: string
+  reference?: string
+  timeZone?: string
+}
+
+type AccountHolderUpdateRequestType = {
+  balancePlatform?: string
+  capabilities?: { [key: string]: z.infer<typeof AccountHolderCapabilitySchema> }
+  contactDetails?: z.infer<typeof ContactDetailsSchema>
+  description?: string
+  metadata?: { [key: string]: string }
+  migratedAccountHolderCode?: string
+  primaryBalanceAccount?: string
+  reference?: string
+  status?: 'active' | 'closed' | 'suspended'
+  timeZone?: string
+  verificationDeadlines?: z.infer<typeof VerificationDeadlineSchema>[]
+}
+
+const AccountHolderSchema: z.ZodType<AccountHolderType> = z
   .strictObject({
     balancePlatform: z
       .string()
@@ -706,7 +713,32 @@ const AccountHolderSchema = z
   .openapi({ required: ['id', 'legalEntityId'] })
   .openapi('AccountHolder')
 
-const AccountHolderInfoSchema = z
+type PaginatedAccountHoldersResponseType = {
+  accountHolders: z.infer<typeof AccountHolderSchema>[]
+  hasNext: boolean
+  hasPrevious: boolean
+}
+
+const AULocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(5)
+      .max(9)
+      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+    bsbCode: z
+      .string()
+      .length(6)
+      .openapi({
+        description:
+          'The 6-digit [Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or whitespace.',
+      }),
+    type: z.literal('auLocal').default('auLocal').openapi({ description: '**auLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bsbCode', 'type'] })
+  .openapi('AULocalAccountIdentification')
+
+const AccountHolderInfoSchema: z.ZodType<AccountHolderInfoType> = z
   .strictObject({
     balancePlatform: z
       .string()
@@ -768,7 +800,7 @@ const AccountHolderInfoSchema = z
   .openapi({ required: ['legalEntityId'] })
   .openapi('AccountHolderInfo')
 
-const AccountHolderUpdateRequestSchema = z
+const AccountHolderUpdateRequestSchema: z.ZodType<AccountHolderUpdateRequestType> = z
   .strictObject({
     balancePlatform: z
       .string()
@@ -3221,25 +3253,45 @@ const GetTaxFormResponseSchema = z
   .openapi({ required: ['content'] })
   .openapi('GetTaxFormResponse')
 
-const RepaymentSchema: z.ZodType<RepaymentType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        basisPoints: z
-          .int32()
-          .openapi({
-            description:
-              'The repayment that is deducted daily from incoming net volume, in [basis points](https://www.investopedia.com/terms/b/basispoint.asp).',
-          }),
-        term: RepaymentTermSchema.exactOptional().openapi({
-          description: 'An object containing the details of the configuration for repayment term.',
-        }),
-        threshold: ThresholdRepaymentSchema.exactOptional().openapi({
-          description: 'An object containing the details of the 30-day repayment threshold.',
-        }),
-      })
-      .openapi({ required: ['basisPoints'] }),
-  )
+const RepaymentTermSchema = z
+  .strictObject({
+    estimatedDays: z
+      .int32()
+      .openapi({ description: 'The estimated term for repaying the grant, in days.' }),
+    maximumDays: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum term for repaying the grant, in days. Only applies when `contractType` is **loan**.',
+      }),
+  })
+  .openapi({ required: ['estimatedDays'] })
+  .openapi('RepaymentTerm')
+
+const ThresholdRepaymentSchema = z
+  .strictObject({
+    amount: AmountSchema.openapi({ description: 'The amount to be repaid on a 30-day basis.' }),
+  })
+  .openapi({ required: ['amount'] })
+  .openapi('ThresholdRepayment')
+
+const RepaymentSchema = z
+  .strictObject({
+    basisPoints: z
+      .int32()
+      .openapi({
+        description:
+          'The repayment that is deducted daily from incoming net volume, in [basis points](https://www.investopedia.com/terms/b/basispoint.asp).',
+      }),
+    term: RepaymentTermSchema.exactOptional().openapi({
+      description: 'An object containing the details of the configuration for repayment term.',
+    }),
+    threshold: ThresholdRepaymentSchema.exactOptional().openapi({
+      description: 'An object containing the details of the 30-day repayment threshold.',
+    }),
+  })
+  .openapi({ required: ['basisPoints'] })
   .openapi('Repayment')
 
 const GrantOfferSchema = z
@@ -3340,7 +3392,7 @@ const InvalidFieldSchema = z
   .openapi({ required: ['message', 'name', 'value'] })
   .openapi('InvalidField')
 
-const JSONObjectSchema = z.object({}).openapi('JSONObject')
+const JSONObjectSchema = z.looseObject({}).openapi('JSONObject')
 
 const LinkSchema = z
   .object({
@@ -3472,7 +3524,7 @@ const NetworkTokenActivationDataResponseSchema = z
   .openapi({ required: [] })
   .openapi('NetworkTokenActivationDataResponse')
 
-const PaginatedAccountHoldersResponseSchema = z
+const PaginatedAccountHoldersResponseSchema: z.ZodType<PaginatedAccountHoldersResponseType> = z
   .strictObject({
     accountHolders: z
       .array(AccountHolderSchema)
@@ -15359,18 +15411,12 @@ export const postBalanceAccountsIdTransferLimitsRoute = createRoute({
         'Unauthorized - Authentication required via Strong Customer Authentication (SCA). The client must resolve the provided challenge.',
       content: { 'application/json': { schema: DefaultErrorResponseEntitySchema } },
       headers: z.object({
-        'WWW-Authenticate': {
-          description:
-            'SCA challenge header containing the details necessary for completing authentication. The client should solve the challenge contained.',
-          required: true,
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({
-              description:
-                'SCA challenge header containing the details necessary for completing authentication. The client should solve the challenge contained.',
-            }),
-        },
+        'WWW-Authenticate': z
+          .string()
+          .openapi({
+            description:
+              'SCA challenge header containing the details necessary for completing authentication. The client should solve the challenge contained.',
+          }),
       }),
     },
     422: {
@@ -15449,18 +15495,12 @@ export const postBalanceAccountsIdTransferLimitsApproveRoute = createRoute({
         'Unauthorized - Authentication required via Strong Customer Authentication (SCA). The client must resolve the provided challenge.',
       content: { 'application/json': { schema: DefaultErrorResponseEntitySchema } },
       headers: z.object({
-        'WWW-Authenticate': {
-          description:
-            'SCA challenge header containing the details necessary for completing authentication. The client should solve the challenge contained.',
-          required: true,
-          style: 'simple',
-          schema: z
-            .string()
-            .openapi({
-              description:
-                'SCA challenge header containing the details necessary for completing authentication. The client should solve the challenge contained.',
-            }),
-        },
+        'WWW-Authenticate': z
+          .string()
+          .openapi({
+            description:
+              'SCA challenge header containing the details necessary for completing authentication. The client should solve the challenge contained.',
+          }),
       }),
     },
     404: {
@@ -17613,19 +17653,14 @@ export const deleteScaAssociationsRoute = createRoute({
       description: 'Unauthorized - Authentication required.',
       content: { 'application/json': { schema: DefaultErrorResponseEntitySchema } },
       headers: z.object({
-        'WWW-Authenticate': {
-          description:
-            'Authentication header, a string that you must pass to the authentication SDK to continue with the deletion process.',
-          style: 'simple',
-          schema: z
-            .any()
-            .exactOptional()
-            .openapi({
-              description:
-                'Authentication header, a string that you must pass to the authentication SDK to continue with the deletion process.',
-              param: { required: false },
-            }),
-        },
+        'WWW-Authenticate': z
+          .any()
+          .exactOptional()
+          .openapi({
+            description:
+              'Authentication header, a string that you must pass to the authentication SDK to continue with the deletion process.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -17715,19 +17750,14 @@ export const patchScaAssociationsRoute = createRoute({
       description: 'Unauthorized - Authentication required.',
       content: { 'application/json': { schema: DefaultErrorResponseEntitySchema } },
       headers: z.object({
-        'WWW-Authenticate': {
-          description:
-            'Authentication header, a string that you must pass to the authentication SDK to continue with the association approval process.',
-          style: 'simple',
-          schema: z
-            .any()
-            .exactOptional()
-            .openapi({
-              description:
-                'Authentication header, a string that you must pass to the authentication SDK to continue with the association approval process.',
-              param: { required: false },
-            }),
-        },
+        'WWW-Authenticate': z
+          .any()
+          .exactOptional()
+          .openapi({
+            description:
+              'Authentication header, a string that you must pass to the authentication SDK to continue with the association approval process.',
+            param: { required: false },
+          }),
       }),
     },
     403: {

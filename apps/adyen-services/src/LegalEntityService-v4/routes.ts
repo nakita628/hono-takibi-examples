@@ -1,589 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AULocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(5)
-      .max(9)
-      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-    bsbCode: z
-      .string()
-      .length(6)
-      .openapi({
-        description:
-          'The 6-digit [Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or whitespace.',
-      }),
-    type: z.literal('auLocal').default('auLocal').openapi({ description: '**auLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bsbCode', 'type'] })
-  .openapi('AULocalAccountIdentification')
-
-const AcceptTermsOfServiceRequestSchema = z
-  .strictObject({
-    acceptedBy: z
-      .string()
-      .openapi({
-        description:
-          'The legal entity ID of the user accepting the Terms of Service.\n\nFor organizations, this must be the individual legal entity ID of an authorized signatory for the organization.\n\nFor sole proprietorships, this must be the individual legal entity ID of the owner.\n\nFor individuals, this must be the individual legal entity id of either the individual, parent, or guardian.\n\n',
-      }),
-    ipAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The IP address of the user accepting the Terms of Service.' }),
-  })
-  .openapi({ required: ['acceptedBy'] })
-  .openapi('AcceptTermsOfServiceRequest')
-
-const AcceptTermsOfServiceResponseSchema = z
-  .strictObject({
-    acceptedBy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of the user that accepted the Terms of Service.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the Terms of Service acceptance.' }),
-    ipAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The IP address of the user that accepted the Terms of Service.' }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The language used for the Terms of Service document, specified by the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code. Possible value: **en** for English or **fr** for French.\n\nNote that French is only available for some integration types in certain countries/regions. Reach out to your Adyen contact for more information.',
-      }),
-    termsOfServiceDocumentId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the Terms of Service document.' }),
-    type: z
-      .enum([
-        'adyenAccount',
-        'adyenCapital',
-        'adyenCapitalCashAdvance',
-        'adyenCard',
-        'adyenChargeCard',
-        'adyenForPlatformsAdvanced',
-        'adyenForPlatformsManage',
-        'adyenFranchisee',
-        'adyenIssuing',
-        'adyenPccr',
-        'directDebit',
-        'kycOnInvite',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of Terms of Service.\n\nPossible values:\n*  **adyenForPlatformsManage**\n*  **adyenIssuing**\n*  **adyenForPlatformsAdvanced**\n*  **adyenCapital**\n*  **adyenCapitalCashAdvance**\n*  **adyenAccount**\n*  **adyenCard**\n*  **adyenFranchisee**\n*  **adyenPccr**\n*  **adyenChargeCard**\n*  **kycOnInvite**\n*  **directDebit**\n\n',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AcceptTermsOfServiceResponse')
-
-const AdditionalBankIdentificationSchema = z
-  .strictObject({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value of the additional bank identification.' }),
-    type: z
-      .enum(['auBsbCode', 'caRoutingNumber', 'gbSortCode', 'usRoutingNumber'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of additional bank identification, depending on the country.\n\nPossible values:\n\n * **auBsbCode**: The 6-digit [Australian Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or spaces.\n * **caRoutingNumber**: The 9-digit [Canadian routing number](https://en.wikipedia.org/wiki/Routing_number_(Canada)), in EFT format, without separators or spaces.\n * **gbSortCode**: The 6-digit [UK sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or spaces\n * **usRoutingNumber**: The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or spaces.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AdditionalBankIdentification')
-
-const AddressSchema = z
-  .strictObject({
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the city. Required if `stateOrProvince` is provided.\n\nIf you specify the city, you must also send `postalCode` and `street`.\n\nThe city name must be at least 3 characters. If the city name contains only repeated characters, the minimum length is two characters. For example, Aa is accepted, but Aaaa is not.\n\nFor more information, see [validations on fields](https://docs.adyen.com/platforms/onboard-users/onboarding-versions/onboarding-v4/#validations).',
-      }),
-    country: z
-      .string()
-      .openapi({
-        description:
-          'The two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code.',
-      }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The postal code. Required if `stateOrProvince` and/or `city` is provided.\n\nWhen using alphanumeric postal codes, all letters must be uppercase. For example, 1234 AB or SW1A 1AA.',
-      }),
-    stateOrProvince: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The two-letter ISO 3166-2 state or province code. For example, **CA** in the US. Required for Australia and New Zealand.\n\nIf you specify the state or province, you must also send `city`, `postalCode`, and `street`.',
-      }),
-    street: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the street, and the house or building number. Must be at least 3 characters. Required if `stateOrProvince` and/or `city` is provided. For more information, see [validations on fields](https://docs.adyen.com/platforms/onboard-users/onboarding-versions/onboarding-v4/#validations).',
-      }),
-    street2: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The apartment, unit, or suite number.' }),
-  })
-  .openapi({ required: ['country'] })
-  .openapi('Address')
-
-const AmountSchema = z
-  .strictObject({
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of currency. Must be EUR (or EUR equivalent)' }),
-    value: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total value of amount. Must be >= 0',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Amount')
-
-const AttachmentSchema = z
-  .strictObject({
-    content: z.string().openapi({ description: 'The document in Base64-encoded string format.' }),
-    contentType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The file format.\n\n Possible values: **application/pdf**, **image/jpg**, **image/jpeg**, **image/png**. ',
-        'x-deprecatedInVersion': '1',
-      }),
-    filename: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'The name of the file including the file extension.',
-        'x-deprecatedInVersion': '1',
-      }),
-    pageName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the file including the file extension.',
-        'x-addedInVersion': '2',
-      }),
-    pageType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies which side of the ID card is uploaded.\n\n* If the `type` is **driversLicense** or **identityCard**, you must set this to **front** or **back** and include both sides in the same API request.\n\n* For any other types, when this is omitted, we infer the page number based on the order of attachments.',
-      }),
-  })
-  .openapi({ required: ['content'] })
-  .openapi('Attachment')
-
-const CALocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(5)
-      .max(12)
-      .openapi({
-        description: 'The 5- to 12-digit bank account number, without separators or whitespace.',
-      }),
-    accountType: z
-      .enum(['checking', 'savings'])
-      .default('checking')
-      .exactOptional()
-      .openapi({
-        description:
-          'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
-      }),
-    institutionNumber: z
-      .string()
-      .length(3)
-      .openapi({
-        description: 'The 3-digit institution number, without separators or whitespace.',
-      }),
-    transitNumber: z
-      .string()
-      .length(5)
-      .openapi({ description: 'The 5-digit transit number, without separators or whitespace.' }),
-    type: z.literal('caLocal').default('caLocal').openapi({ description: '**caLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'institutionNumber', 'transitNumber', 'type'] })
-  .openapi('CALocalAccountIdentification')
-
-const CZLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(2)
-      .max(17)
-      .openapi({
-        description:
-          'The 2- to 16-digit bank account number (Číslo účtu) in the following format:\n\n- The optional prefix (předčíslí).\n\n- The required second part (základní část) which must be at least two non-zero digits.\n\nExamples:\n\n- **19-123457** (with prefix)\n\n- **123457** (without prefix)\n\n- **000019-0000123457** (with prefix, normalized)\n\n- **000000-0000123457** (without prefix, normalized)',
-      }),
-    bankCode: z
-      .string()
-      .length(4)
-      .openapi({
-        description: 'The 4-digit bank code (Kód banky), without separators or whitespace.',
-      }),
-    type: z.literal('czLocal').default('czLocal').openapi({ description: '**czLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
-  .openapi('CZLocalAccountIdentification')
-
-const DKLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(4)
-      .max(10)
-      .openapi({
-        description:
-          'The 4-10 digits bank account number (Kontonummer) (without separators or whitespace).',
-      }),
-    bankCode: z
-      .string()
-      .length(4)
-      .openapi({
-        description:
-          'The 4-digit bank code (Registreringsnummer) (without separators or whitespace).',
-      }),
-    type: z.literal('dkLocal').default('dkLocal').openapi({ description: '**dkLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
-  .openapi('DKLocalAccountIdentification')
-
-const HKLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(9)
-      .max(17)
-      .openapi({
-        description:
-          'The 9- to 17-digit bank account number, without separators or whitespace. Starts with the 3-digit branch code.',
-      }),
-    clearingCode: z
-      .string()
-      .length(3)
-      .openapi({ description: 'The 3-digit clearing code, without separators or whitespace.' }),
-    type: z.literal('hkLocal').default('hkLocal').openapi({ description: '**hkLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'clearingCode', 'type'] })
-  .openapi('HKLocalAccountIdentification')
-
-const HULocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .length(24)
-      .openapi({
-        description: 'The 24-digit bank account number, without separators or whitespace.',
-      }),
-    type: z.literal('huLocal').default('huLocal').openapi({ description: '**huLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'type'] })
-  .openapi('HULocalAccountIdentification')
-
-const IbanAccountIdentificationSchema = z
-  .strictObject({
-    bic: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-    iban: z
-      .string()
-      .openapi({
-        description:
-          'The international bank account number as defined in the [ISO-13616](https://www.iso.org/standard/81090.html) standard.',
-      }),
-    type: z.literal('iban').default('iban').openapi({ description: '**iban**' }),
-  })
-  .openapi({ required: ['iban', 'type'] })
-  .openapi('IbanAccountIdentification')
-
-const NOLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .length(11)
-      .openapi({
-        description: 'The 11-digit bank account number, without separators or whitespace.',
-      }),
-    type: z.literal('noLocal').default('noLocal').openapi({ description: '**noLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'type'] })
-  .openapi('NOLocalAccountIdentification')
-
-const NZLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(15)
-      .max(16)
-      .openapi({
-        description:
-          'The 15-16 digit bank account number. The first 2 digits are the bank number, the next 4 digits are the branch number, the next 7 digits are the account number, and the final 2-3 digits are the suffix.',
-      }),
-    type: z.literal('nzLocal').default('nzLocal').openapi({ description: '**nzLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'type'] })
-  .openapi('NZLocalAccountIdentification')
-
-const NumberAndBicAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .max(34)
-      .openapi({
-        description:
-          'The bank account number, without separators or whitespace. The length and format depends on the bank or country.',
-      }),
-    additionalBankIdentification: AdditionalBankIdentificationSchema.exactOptional().openapi({
-      description:
-        'Additional identification codes of the bank. Some banks may require these identifiers for cross-border transfers.',
-    }),
-    bic: z
-      .string()
-      .min(8)
-      .max(11)
-      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-    type: z
-      .literal('numberAndBic')
-      .default('numberAndBic')
-      .openapi({ description: '**numberAndBic**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bic', 'type'] })
-  .openapi('NumberAndBicAccountIdentification')
-
-const PLLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .length(26)
-      .openapi({
-        description:
-          'The 26-digit bank account number ([Numer rachunku](https://pl.wikipedia.org/wiki/Numer_Rachunku_Bankowego)), without separators or whitespace.',
-      }),
-    type: z.literal('plLocal').default('plLocal').openapi({ description: '**plLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'type'] })
-  .openapi('PLLocalAccountIdentification')
-
-const SELocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(7)
-      .max(10)
-      .openapi({
-        description:
-          'The 7- to 10-digit bank account number ([Bankkontonummer](https://sv.wikipedia.org/wiki/Bankkonto)), without the clearing number, separators, or whitespace.',
-      }),
-    clearingNumber: z
-      .string()
-      .min(4)
-      .max(5)
-      .openapi({
-        description:
-          'The 4- to 5-digit clearing number ([Clearingnummer](https://sv.wikipedia.org/wiki/Clearingnummer)), without separators or whitespace.',
-      }),
-    type: z.literal('seLocal').default('seLocal').openapi({ description: '**seLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'clearingNumber', 'type'] })
-  .openapi('SELocalAccountIdentification')
-
-const SGLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(4)
-      .max(19)
-      .openapi({
-        description: 'The 4- to 19-digit bank account number, without separators or whitespace.',
-      }),
-    bic: z
-      .string()
-      .min(8)
-      .max(11)
-      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-    type: z
-      .literal('sgLocal')
-      .default('sgLocal')
-      .exactOptional()
-      .openapi({ description: '**sgLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bic'] })
-  .openapi('SGLocalAccountIdentification')
-
-const UKLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .length(8)
-      .openapi({
-        description: 'The 8-digit bank account number, without separators or whitespace.',
-      }),
-    sortCode: z
-      .string()
-      .length(6)
-      .openapi({
-        description:
-          'The 6-digit [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace.',
-      }),
-    type: z.literal('ukLocal').default('ukLocal').openapi({ description: '**ukLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'sortCode', 'type'] })
-  .openapi('UKLocalAccountIdentification')
-
-const USLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(2)
-      .max(18)
-      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-    accountType: z
-      .enum(['checking', 'savings'])
-      .default('checking')
-      .exactOptional()
-      .openapi({
-        description:
-          'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
-      }),
-    routingNumber: z
-      .string()
-      .length(9)
-      .openapi({
-        description:
-          'The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or whitespace.',
-      }),
-    type: z.literal('usLocal').default('usLocal').openapi({ description: '**usLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'routingNumber', 'type'] })
-  .openapi('USLocalAccountIdentification')
-
-const BankAccountInfoSchema = z
-  .strictObject({
-    accountIdentification: z
-      .xor([
-        AULocalAccountIdentificationSchema,
-        CALocalAccountIdentificationSchema,
-        CZLocalAccountIdentificationSchema,
-        DKLocalAccountIdentificationSchema,
-        HKLocalAccountIdentificationSchema,
-        HULocalAccountIdentificationSchema,
-        IbanAccountIdentificationSchema,
-        NOLocalAccountIdentificationSchema,
-        NZLocalAccountIdentificationSchema,
-        NumberAndBicAccountIdentificationSchema,
-        PLLocalAccountIdentificationSchema,
-        SELocalAccountIdentificationSchema,
-        SGLocalAccountIdentificationSchema,
-        UKLocalAccountIdentificationSchema,
-        USLocalAccountIdentificationSchema,
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Identification of the bank account.',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            iban: '#/components/schemas/IbanAccountIdentification',
-            numberAndBic: '#/components/schemas/NumberAndBicAccountIdentification',
-            auLocal: '#/components/schemas/AULocalAccountIdentification',
-            sgLocal: '#/components/schemas/SGLocalAccountIdentification',
-            nzLocal: '#/components/schemas/NZLocalAccountIdentification',
-            hkLocal: '#/components/schemas/HKLocalAccountIdentification',
-            czLocal: '#/components/schemas/CZLocalAccountIdentification',
-            noLocal: '#/components/schemas/NOLocalAccountIdentification',
-            plLocal: '#/components/schemas/PLLocalAccountIdentification',
-            huLocal: '#/components/schemas/HULocalAccountIdentification',
-            seLocal: '#/components/schemas/SELocalAccountIdentification',
-            ukLocal: '#/components/schemas/UKLocalAccountIdentification',
-            usLocal: '#/components/schemas/USLocalAccountIdentification',
-            dkLocal: '#/components/schemas/DKLocalAccountIdentification',
-            caLocal: '#/components/schemas/CALocalAccountIdentification',
-          },
-        },
-        'x-addedInVersion': '3',
-      }),
-    accountType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'The type of bank account.',
-        'x-deprecatedInVersion': '2',
-      }),
-    bankName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the banking institution where the bank account is held.',
-      }),
-    countryCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The two-character [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code where the bank account is registered. For example, **NL**.',
-      }),
-    trustedSource: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies if the bank account was created through [instant bank verification](https://docs.adyen.com/release-notes/platforms-and-financial-products#releaseNote=2023-05-08-hosted-onboarding).',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('BankAccountInfo')
-
-const BirthDataSchema = z
-  .strictObject({
-    dateOfBirth: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The individual's date of birth, in YYYY-MM-DD format." }),
-  })
-  .openapi({ required: [] })
-  .openapi('BirthData')
-
 const CapabilityProblemEntityRecursiveSchema = z
   .strictObject({
     documents: z
@@ -807,6 +223,32 @@ const CapabilityProblemSchema = z
   .openapi({ required: [] })
   .openapi('CapabilityProblem')
 
+const AmountSchema = z
+  .strictObject({
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of currency. Must be EUR (or EUR equivalent)' }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total value of amount. Must be >= 0',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Amount')
+
 const FinancierSchema = z
   .strictObject({
     amount: AmountSchema.openapi({
@@ -969,7 +411,20 @@ const WebDataExemptionSchema = z
   .openapi({ required: [] })
   .openapi('WebDataExemption')
 
-const BusinessLineSchema = z
+type BusinessLineType = {
+  id: string
+  industryCode: string
+  industryCodeDescription?: string
+  legalEntityId: string
+  problems?: z.infer<typeof CapabilityProblemSchema>[]
+  salesChannels?: string[]
+  service: 'paymentProcessing' | 'issuing' | 'banking'
+  sourceOfFunds?: z.infer<typeof SourceOfFundsSchema>
+  webData?: z.infer<typeof WebDataSchema>[]
+  webDataExemption?: z.infer<typeof WebDataExemptionSchema>
+}
+
+const BusinessLineSchema: z.ZodType<BusinessLineType> = z
   .strictObject({
     id: z
       .string()
@@ -1029,154 +484,7 @@ const BusinessLineSchema = z
   .openapi({ required: ['id', 'industryCode', 'legalEntityId', 'service'] })
   .openapi('BusinessLine')
 
-const BusinessLineInfoSchema = z
-  .strictObject({
-    industryCode: z
-      .string()
-      .openapi({
-        description:
-          'A code that represents the industry of the legal entity for [marketplaces](https://docs.adyen.com/marketplaces/verification-requirements/reference-additional-products/#list-industry-codes) or [platforms](https://docs.adyen.com/platforms/verification-requirements/reference-additional-products/#list-industry-codes). For example, **4431A** for computer software stores.',
-      }),
-    industryCodeDescription: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the industry code.', readOnly: true }),
-    legalEntityId: z
-      .string()
-      .openapi({
-        description:
-          'Unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/legalEntities__resParam_id) that owns the business line.',
-      }),
-    salesChannels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of channels where goods or services are sold.\n\nPossible values: **pos**, **posMoto**, **eCommerce**, **ecomMoto**, **payByLink**.\n\nRequired only in combination with the `service` **paymentProcessing**.',
-      }),
-    service: z
-      .enum(['paymentProcessing', 'issuing', 'banking'])
-      .openapi({
-        description:
-          'The service for which you are creating the business line.\n\n\n\nPossible values:\n*  **paymentProcessing**\n*  **issuing**\n*  **banking**\n\n',
-        'x-addedInVersion': '3',
-      }),
-    sourceOfFunds: SourceOfFundsSchema.exactOptional().openapi({
-      description:
-        "Contains information about the source of your user's funds. Required only if the `service` is **banking** or **issuing**.",
-    }),
-    webData: z
-      .array(WebDataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "List of website URLs where your user's goods or services are sold. When this is required for a service but your user does not have an online presence, provide the reason in the `webDataExemption` object.",
-      }),
-    webDataExemption: WebDataExemptionSchema.exactOptional().openapi({
-      description: 'The reason why the web data is not provided.',
-    }),
-  })
-  .openapi({ required: ['industryCode', 'legalEntityId', 'service'] })
-  .openapi('BusinessLineInfo')
-
-const BusinessLineInfoUpdateSchema = z
-  .strictObject({
-    industryCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A code that represents the industry of your legal entity. For example, **4431A** for computer software stores.',
-      }),
-    industryCodeDescription: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the industry code.', readOnly: true }),
-    salesChannels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of channels where goods or services are sold.\n\nPossible values: **pos**, **posMoto**, **eCommerce**, **ecomMoto**, **payByLink**.\n\nRequired only in combination with the `service` **paymentProcessing**.',
-      }),
-    sourceOfFunds: SourceOfFundsSchema.exactOptional().openapi({
-      description:
-        "Contains information about the source of your user's funds. Required only if the `service` is **banking** or **issuing**.",
-    }),
-    webData: z
-      .array(WebDataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "List of website URLs where your user's goods or services are sold. When this is required for a service but your user does not have an online presence, provide the reason in the `webDataExemption` object.",
-      }),
-    webDataExemption: WebDataExemptionSchema.exactOptional().openapi({
-      description: 'The reason why the web data is not provided.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('BusinessLineInfoUpdate')
-
-const BusinessLinesSchema = z
-  .strictObject({
-    businessLines: z.array(BusinessLineSchema).openapi({ description: 'List of business lines.' }),
-  })
-  .openapi({ required: ['businessLines'] })
-  .openapi('BusinessLines')
-
-const CalculatePciStatusRequestSchema = z
-  .strictObject({
-    additionalSalesChannels: z
-      .array(z.enum(['eCommerce', 'ecomMoto', 'pos', 'posMoto']))
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of additional sales channels to generate PCI questionnaires. Include the relevant sales channels if you need your user to sign PCI questionnaires. Not required if you [create stores](https://docs.adyen.com/platforms) and [add payment methods](https://docs.adyen.com/adyen-for-platforms-model) before you generate the questionnaires.\n\nPossible values:\n*  **eCommerce**\n*  **pos**\n*  **ecomMoto**\n*  **posMoto**\n\n',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CalculatePciStatusRequest')
-
-const CalculatePciStatusResponseSchema = z
-  .strictObject({
-    signingRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the user is required to sign PCI questionnaires. If **false**, they do not need to sign any questionnaires.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CalculatePciStatusResponse')
-
-const CalculateTermsOfServiceStatusResponseSchema = z
-  .strictObject({
-    termsOfServiceTypes: z
-      .array(
-        z.enum([
-          'adyenAccount',
-          'adyenCapital',
-          'adyenCapitalCashAdvance',
-          'adyenCard',
-          'adyenChargeCard',
-          'adyenForPlatformsAdvanced',
-          'adyenForPlatformsManage',
-          'adyenFranchisee',
-          'adyenIssuing',
-          'adyenPccr',
-          'directDebit',
-          'kycOnInvite',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of Terms of Service that the legal entity needs to accept. If empty, no Terms of Service needs to be accepted.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CalculateTermsOfServiceStatusResponse')
+type BusinessLinesType = { businessLines: z.infer<typeof BusinessLineSchema>[] }
 
 const CapabilitySettingsSchema = z
   .strictObject({
@@ -1203,132 +511,101 @@ const CapabilitySettingsSchema = z
   .openapi({ required: [] })
   .openapi('CapabilitySettings')
 
-const CheckTaxElectronicDeliveryConsentResponseSchema = z
+const SupportingEntityCapabilitySchema = z
   .strictObject({
-    US1099k: z
+    allowed: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Consent to electronically deliver tax form US1099-K.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CheckTaxElectronicDeliveryConsentResponse')
-
-const DataReviewConfirmationResponseSchema = z
-  .strictObject({
-    dataReviewedAt: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date when data review was confirmed.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('DataReviewConfirmationResponse')
-
-const OwnerEntitySchema = z
-  .strictObject({
-    id: z
-      .string()
       .openapi({
         description:
-          'Unique identifier of the resource that owns the document. For `type` **legalEntity**, this value is the unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id). For `type` **bankAccount**, this value is the unique identifier of the [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id).',
+          'Indicates whether the capability is allowed for the supporting entity.\n\nIf a capability is allowed for a supporting entity but not for the parent legal entity, this means the legal entity has other supporting entities that failed verification.\n\n**You can use the allowed supporting entity** regardless of the verification status of other supporting entities.',
+        readOnly: true,
       }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'Type of resource that owns the document.\n\nPossible values: **legalEntity**, **bankAccount**.',
-      }),
-  })
-  .openapi({ required: ['id', 'type'] })
-  .openapi('OwnerEntity')
-
-const DocumentSchema = z
-  .strictObject({
-    attachment: AttachmentSchema.exactOptional().openapi({
-      deprecated: true,
-      description: 'Object that contains the document.',
-      'x-deprecatedInVersion': '1',
-      'x-deprecatedMessage': 'Use the `attachments` array instead.',
-    }),
-    attachments: z
-      .array(AttachmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Array that contains the document. The array supports multiple attachments for uploading different sides or pages of a document.',
-      }),
-    creationDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The creation date of the document.', readOnly: true }),
-    description: z.string().openapi({ description: 'Your description for the document.' }),
-    expiryDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'The expiry date of the document, in YYYY-MM-DD format.',
-        'x-deprecatedInVersion': '1',
-      }),
-    fileName: z.string().exactOptional().openapi({ description: 'The filename of the document.' }),
     id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The unique identifier of the document.', readOnly: true }),
-    issuerCountry: z
+      .openapi({ description: 'Supporting entity reference ', readOnly: true }),
+    requested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the supporting entity capability is requested. ',
+        readOnly: true,
+      }),
+    verificationStatus: z
       .string()
       .exactOptional()
       .openapi({
-        deprecated: true,
         description:
-          'The two-character [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code where the document was issued. For example, **US**.',
-        'x-deprecatedInVersion': '1',
-      }),
-    issuerState: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'The state or province where the document was issued (AU only).',
-        'x-deprecatedInVersion': '1',
-      }),
-    modificationDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The modification date of the document.', readOnly: true }),
-    number: z.string().exactOptional().openapi({ description: 'The number in the document.' }),
-    owner: OwnerEntitySchema.exactOptional().openapi({
-      description: 'Contains information about the resource that owns the document.',
-    }),
-    type: z
-      .enum([
-        'bankStatement',
-        'driversLicense',
-        'identityCard',
-        'nationalIdNumber',
-        'passport',
-        'proofOfAddress',
-        'proofOfNationalIdNumber',
-        'proofOfResidency',
-        'registrationDocument',
-        'vatDocument',
-        'proofOfOrganizationTaxInfo',
-        'proofOfIndividualTaxId',
-        'proofOfOwnership',
-        'proofOfSignatory',
-        'liveSelfie',
-        'proofOfIndustry',
-        'constitutionalDocument',
-        'proofOfFundingOrWealthSource',
-        'proofOfRelationship',
-        'proofOfDirector',
-      ])
-      .openapi({
-        description:
-          'Type of document, used when providing an ID number or uploading a document. The possible values depend on the legal entity type.\n\n* For **organization**, the `type` values can be **proofOfAddress**, **registrationDocument**, **vatDocument**, **proofOfOrganizationTaxInfo**, **proofOfOwnership**, **proofOfIndustry**, **proofOfSignatory**, **proofOfDirector**, or **proofOfFundingOrWealthSource**.\n\n* For **individual**, the `type` values can be **identityCard**, **driversLicense**, **passport**, **liveSelfie**, **proofOfNationalIdNumber**, **proofOfResidency**, **proofOfIndustry**, **proofOfIndividualTaxId**, **proofOfFundingOrWealthSource** or **proofOfRelationship**.\n\n* For **soleProprietorship**, the `type` values can be **constitutionalDocument**, **proofOfAddress**, or **proofOfIndustry**.\n\n* For **trust**, the `type` value is **constitutionalDocument**.\n\n* For **unincorporatedPartnership**, the `type` value is **constitutionalDocument**.\n\n* Use **bankStatement** to upload documents for a [transfer instrument](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/transferInstruments__resParam_id).',
+          'The status of the verification checks for the capability of the supporting entity.\n\nPossible values:\n\n* **pending**: Adyen is running the verification.\n\n* **invalid**: The verification failed. Check if the `errors` array contains more information.\n\n* **valid**: The verification has been successfully completed.\n\n* **rejected**: Adyen has verified the information, but found reasons to not allow the capability.\n',
+        readOnly: true,
       }),
   })
-  .openapi({ required: ['description', 'type'] })
-  .openapi('Document')
+  .openapi({ required: [] })
+  .openapi('SupportingEntityCapability')
+
+const LegalEntityCapabilitySchema = z
+  .strictObject({
+    allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the capability is allowed. Adyen sets this to **true** if the verification is successful.',
+        readOnly: true,
+      }),
+    allowedLevel: z
+      .enum(['high', 'low', 'medium', 'notApplicable'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The capability level that is allowed for the legal entity.\n\nPossible values: **notApplicable**, **low**, **medium**, **high**.',
+        readOnly: true,
+      }),
+    allowedSettings: CapabilitySettingsSchema.exactOptional().openapi({
+      description: 'The settings that are allowed for the legal entity.',
+      readOnly: true,
+    }),
+    requested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the capability is requested. To check whether the legal entity is permitted to use the capability, refer to the `allowed` field.',
+        readOnly: true,
+      }),
+    requestedLevel: z
+      .enum(['high', 'low', 'medium', 'notApplicable'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The requested level of the capability. Some capabilities, such as those used in [card issuing](https://docs.adyen.com/issuing/add-capabilities#capability-levels), have different levels. Levels increase the capability, but also require additional checks and increased monitoring.\n\nPossible values: **notApplicable**, **low**, **medium**, **high**.',
+        readOnly: true,
+      }),
+    requestedSettings: CapabilitySettingsSchema.exactOptional().openapi({
+      description: 'The settings that are requested for the legal entity.',
+      readOnly: true,
+    }),
+    transferInstruments: z
+      .array(SupportingEntityCapabilitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The capability status of transfer instruments associated with the legal entity.',
+        readOnly: true,
+        'x-addedInVersion': '2',
+      }),
+    verificationStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the verification checks for the capability.\n\nPossible values:\n\n* **pending**: Adyen is running the verification.\n\n* **invalid**: The verification failed. Check if the `errors` array contains more information.\n\n* **valid**: The verification has been successfully completed.\n\n* **rejected**: Adyen has verified the information, but found reasons to not allow the capability.\n',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('LegalEntityCapability')
 
 const DocumentPageSchema = z
   .strictObject({
@@ -1382,332 +659,104 @@ const EntityReferenceSchema = z
   .openapi({ required: [] })
   .openapi('EntityReference')
 
-const FinancialReportSchema = z
+const LegalEntityAssociationSchema = z
   .strictObject({
-    annualTurnover: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The annual turnover of the business.', 'x-addedInVersion': '3' }),
-    balanceSheetTotal: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The balance sheet total of the business.',
-        'x-addedInVersion': '3',
-      }),
-    currencyOfFinancialData: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The currency used for the financial data.',
-        'x-addedInVersion': '3',
-      }),
-    dateOfFinancialData: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The date the financial data were provided, in YYYY-MM-DD format.',
-        'x-addedInVersion': '3',
-      }),
-    employeeCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The number of employees of the business.',
-        'x-addedInVersion': '3',
-      }),
-    netAssets: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The net assets of the business.', 'x-addedInVersion': '3' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FinancialReport')
-
-const GeneratePciDescriptionRequestSchema = z
-  .strictObject({
-    additionalSalesChannels: z
-      .array(z.enum(['eCommerce', 'ecomMoto', 'pos', 'posMoto']))
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of additional sales channels to generate PCI questionnaires. Include the relevant sales channels if you need your user to sign PCI questionnaires. Not required if you [create stores](https://docs.adyen.com/platforms) and [add payment methods](https://docs.adyen.com/adyen-for-platforms-model) before you generate the questionnaires.\n\nPossible values:\n*  **eCommerce**\n*  **pos**\n*  **ecomMoto**\n*  **posMoto**\n\n',
-      }),
-    language: z
+    associatorId: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Sets the language of the PCI questionnaire. Its value is a two-character [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code, for example, **en**.',
+          'The unique identifier of another legal entity with which the `legalEntityId` is associated. When the `legalEntityId` is associated to legal entities other than the current one, the response returns all the associations.',
+        readOnly: true,
       }),
-  })
-  .openapi({ required: [] })
-  .openapi('GeneratePciDescriptionRequest')
-
-const GeneratePciDescriptionResponseSchema = z
-  .strictObject({
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The generated questionnaires in a base64 encoded format.' }),
-    language: z
+    entityType: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The two-letter [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code for the questionnaire. For example, **en**.',
+          'The legal entity type of associated legal entity.\n\nFor example, **organization**, **soleProprietorship** or **individual**.',
+        readOnly: true,
       }),
-    pciTemplateReferences: z
+    jobTitle: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The individual's job title if the `type` is **uboThroughControl** or **signatory**.",
+      }),
+    legalEntityId: z
+      .string()
+      .openapi({
+        description:
+          'The unique identifier of the associated [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id).',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the associated [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id).\n\n- For **individual**, `name.firstName` and `name.lastName`.\n- For **organization**, `legalName`.\n- For **soleProprietorship**, `name`.',
+        readOnly: true,
+      }),
+    nominee: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Default value: **false**\nSet to **true** if the entity association `type` **director**, **secondaryPartner** or **shareholder** is also a nominee. Only applicable to New Zealand.',
+      }),
+    relationship: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The individual's relationship to a legal representative if the `type` is **legalRepresentative**. Possible values: **parent**, **guardian**.",
+      }),
+    settlorExemptionReason: z
       .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'The array of Adyen-generated unique identifiers for the questionnaires. If empty, the user is not required to sign questionnaires.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GeneratePciDescriptionResponse')
-
-const GetAcceptedTermsOfServiceDocumentResponseSchema = z
-  .strictObject({
-    document: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The accepted Terms of Service document in the requested format represented as a Base64-encoded bytes array.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the legal entity.' }),
-    termsOfServiceAcceptanceReference: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'An Adyen-generated reference for the accepted Terms of Service.' }),
-    termsOfServiceDocumentFormat: z
-      .enum(['JSON', 'PDF', 'TXT'])
-      .exactOptional()
-      .openapi({ description: 'The format of the Terms of Service document.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetAcceptedTermsOfServiceDocumentResponse')
-
-const PciDocumentInfoSchema = z
-  .strictObject({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date the questionnaire was created, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the signed questionnaire.' }),
-    validUntil: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The expiration date of the questionnaire, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('PciDocumentInfo')
-
-const GetPciQuestionnaireInfosResponseSchema = z
-  .strictObject({
-    data: z
-      .array(PciDocumentInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Information about the signed PCI questionnaires.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetPciQuestionnaireInfosResponse')
-
-const GetPciQuestionnaireResponseSchema = z
-  .strictObject({
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The generated questionnaire in a base64 encoded format.' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date the questionnaire was created, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the signed questionnaire.' }),
-    validUntil: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The expiration date of the questionnaire, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetPciQuestionnaireResponse')
-
-const TermsOfServiceAcceptanceInfoSchema = z
-  .strictObject({
-    acceptedBy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of the user that accepted the Terms of Service.',
-      }),
-    acceptedFor: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the legal entity for which the Terms of Service are accepted.',
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date when the Terms of Service were accepted, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'An Adyen-generated reference for the accepted Terms of Service.' }),
-    type: z
-      .enum([
-        'adyenAccount',
-        'adyenCapital',
-        'adyenCapitalCashAdvance',
-        'adyenCard',
-        'adyenChargeCard',
-        'adyenForPlatformsAdvanced',
-        'adyenForPlatformsManage',
-        'adyenFranchisee',
-        'adyenIssuing',
-        'adyenPccr',
-        'directDebit',
-        'kycOnInvite',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of Terms of Service.\n\nPossible values:\n*  **adyenForPlatformsManage**\n*  **adyenIssuing**\n*  **adyenForPlatformsAdvanced**\n*  **adyenCapital**\n*  **adyenCapitalCashAdvance**\n*  **adyenAccount**\n*  **adyenCard**\n*  **adyenFranchisee**\n*  **adyenPccr**\n*  **adyenChargeCard**\n*  **kycOnInvite**\n*  **directDebit**\n\n',
-      }),
-    validTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The expiration date for the Terms of Service acceptance, in ISO 8601 extended format. For example, 2022-12-18T00:00:00+01:00.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TermsOfServiceAcceptanceInfo')
-
-const GetTermsOfServiceAcceptanceInfosResponseSchema = z
-  .strictObject({
-    data: z
-      .array(TermsOfServiceAcceptanceInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'The Terms of Service acceptance information.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GetTermsOfServiceAcceptanceInfosResponse')
-
-const GetTermsOfServiceDocumentRequestSchema = z
-  .strictObject({
-    language: z
-      .string()
-      .openapi({
-        description:
-          'The language to be used for the Terms of Service document, specified by the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code. Possible values: **en** for English or **fr** for French.',
-      }),
-    termsOfServiceDocumentFormat: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The requested format for the Terms of Service document. Default value: JSON. Possible values: **JSON**, **PDF**, or **TXT**.',
+          'Defines the KYC exemption reason for a settlor associated with a trust. Only applicable to trusts in Australia.\n\nFor example, **professionalServiceProvider**, **deceased**, or **contributionBelowThreshold**.',
       }),
     type: z
       .enum([
-        'adyenAccount',
-        'adyenCapital',
-        'adyenCapitalCashAdvance',
-        'adyenCard',
-        'adyenChargeCard',
-        'adyenForPlatformsAdvanced',
-        'adyenForPlatformsManage',
-        'adyenFranchisee',
-        'adyenIssuing',
-        'adyenPccr',
-        'directDebit',
-        'kycOnInvite',
+        'definedBeneficiary',
+        'director',
+        'immediateParentCompany',
+        'legalRepresentative',
+        'pciSignatory',
+        'protector',
+        'secondaryPartner',
+        'secondaryTrustee',
+        'settlor',
+        'signatory',
+        'soleProprietorship',
+        'trust',
+        'trustOwnership',
+        'uboThroughControl',
+        'uboThroughOwnership',
+        'ultimateParentCompany',
+        'undefinedBeneficiary',
+        'unincorporatedPartnership',
       ])
       .openapi({
         description:
-          'The type of Terms of Service.\n\nPossible values:\n*  **adyenForPlatformsManage**\n*  **adyenIssuing**\n*  **adyenForPlatformsAdvanced**\n*  **adyenCapital**\n*  **adyenCapitalCashAdvance**\n*  **adyenAccount**\n*  **adyenCard**\n*  **adyenFranchisee**\n*  **adyenPccr**\n*  **adyenChargeCard**\n*  **kycOnInvite**\n*  **directDebit**\n\n',
+          'Defines the relationship of the legal entity to the current legal entity.\n\nPossible value for individuals: **legalRepresentative**.\n\nPossible values for organizations: **director**, **signatory**, **trustOwnership**, **uboThroughOwnership**, **uboThroughControl**, **ultimateParentCompany**, or **immediateParentCompany**.\n\nPossible values for sole proprietorships: **soleProprietorship**.\n\nPossible value for trusts: **trust**.\n\nPossible values for trust members: **definedBeneficiary**, **protector**, **secondaryTrustee**, **settlor**, **uboThroughControl**, or **uboThroughOwnership**.\n\nPossible value for unincorporated partnership: **unincorporatedPartnership**.\n\nPossible values for unincorporated partnership members: **secondaryPartner**, **uboThroughControl**, **uboThroughOwnership**',
       }),
   })
-  .openapi({ required: ['language', 'type'] })
-  .openapi('GetTermsOfServiceDocumentRequest')
+  .openapi({ required: ['legalEntityId', 'type'] })
+  .openapi('LegalEntityAssociation')
 
-const GetTermsOfServiceDocumentResponseSchema = z
+const BirthDataSchema = z
   .strictObject({
-    document: z
+    dateOfBirth: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The Terms of Service document in Base64-encoded format.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the legal entity.' }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The language used for the Terms of Service document, specified by the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code. Possible value: **en** for English or **fr** for French.\n\nNote that French is only available for some integration types in certain countries/regions. Reach out to your Adyen contact for more information.',
-      }),
-    termsOfServiceDocumentFormat: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The format of the Terms of Service document.' }),
-    termsOfServiceDocumentId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the Terms of Service document.' }),
-    type: z
-      .enum([
-        'adyenAccount',
-        'adyenCapital',
-        'adyenCapitalCashAdvance',
-        'adyenCard',
-        'adyenChargeCard',
-        'adyenForPlatformsAdvanced',
-        'adyenForPlatformsManage',
-        'adyenFranchisee',
-        'adyenIssuing',
-        'adyenPccr',
-        'directDebit',
-        'kycOnInvite',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of Terms of Service.\n\nPossible values:\n*  **adyenForPlatformsManage**\n*  **adyenIssuing**\n*  **adyenForPlatformsAdvanced**\n*  **adyenCapital**\n*  **adyenCapitalCashAdvance**\n*  **adyenAccount**\n*  **adyenCard**\n*  **adyenFranchisee**\n*  **adyenPccr**\n*  **adyenChargeCard**\n*  **kycOnInvite**\n*  **directDebit**\n\n',
-      }),
+      .openapi({ description: "The individual's date of birth, in YYYY-MM-DD format." }),
   })
   .openapi({ required: [] })
-  .openapi('GetTermsOfServiceDocumentResponse')
+  .openapi('BirthData')
 
 const IdentificationDataSchema = z
   .strictObject({
@@ -1802,6 +851,50 @@ const PhoneNumberSchema = z
   })
   .openapi({ required: ['number'] })
   .openapi('PhoneNumber')
+
+const AddressSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the city. Required if `stateOrProvince` is provided.\n\nIf you specify the city, you must also send `postalCode` and `street`.\n\nThe city name must be at least 3 characters. If the city name contains only repeated characters, the minimum length is two characters. For example, Aa is accepted, but Aaaa is not.\n\nFor more information, see [validations on fields](https://docs.adyen.com/platforms/onboard-users/onboarding-versions/onboarding-v4/#validations).',
+      }),
+    country: z
+      .string()
+      .openapi({
+        description:
+          'The two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code.',
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code. Required if `stateOrProvince` and/or `city` is provided.\n\nWhen using alphanumeric postal codes, all letters must be uppercase. For example, 1234 AB or SW1A 1AA.',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-letter ISO 3166-2 state or province code. For example, **CA** in the US. Required for Australia and New Zealand.\n\nIf you specify the state or province, you must also send `city`, `postalCode`, and `street`.',
+      }),
+    street: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the street, and the house or building number. Must be at least 3 characters. Required if `stateOrProvince` and/or `city` is provided. For more information, see [validations on fields](https://docs.adyen.com/platforms/onboard-users/onboarding-versions/onboarding-v4/#validations).',
+      }),
+    street2: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The apartment, unit, or suite number.' }),
+  })
+  .openapi({ required: ['country'] })
+  .openapi('Address')
 
 const SupportSchema = z
   .strictObject({
@@ -1900,190 +993,47 @@ const IndividualSchema = z
   .openapi({ required: ['name', 'residentialAddress'] })
   .openapi('Individual')
 
-const SupportingEntityCapabilitySchema = z
+const FinancialReportSchema = z
   .strictObject({
-    allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the capability is allowed for the supporting entity.\n\nIf a capability is allowed for a supporting entity but not for the parent legal entity, this means the legal entity has other supporting entities that failed verification.\n\n**You can use the allowed supporting entity** regardless of the verification status of other supporting entities.',
-        readOnly: true,
-      }),
-    id: z
+    annualTurnover: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Supporting entity reference ', readOnly: true }),
-    requested: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the supporting entity capability is requested. ',
-        readOnly: true,
-      }),
-    verificationStatus: z
+      .openapi({ description: 'The annual turnover of the business.', 'x-addedInVersion': '3' }),
+    balanceSheetTotal: z
       .string()
       .exactOptional()
       .openapi({
-        description:
-          'The status of the verification checks for the capability of the supporting entity.\n\nPossible values:\n\n* **pending**: Adyen is running the verification.\n\n* **invalid**: The verification failed. Check if the `errors` array contains more information.\n\n* **valid**: The verification has been successfully completed.\n\n* **rejected**: Adyen has verified the information, but found reasons to not allow the capability.\n',
-        readOnly: true,
+        description: 'The balance sheet total of the business.',
+        'x-addedInVersion': '3',
       }),
+    currencyOfFinancialData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The currency used for the financial data.',
+        'x-addedInVersion': '3',
+      }),
+    dateOfFinancialData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date the financial data were provided, in YYYY-MM-DD format.',
+        'x-addedInVersion': '3',
+      }),
+    employeeCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The number of employees of the business.',
+        'x-addedInVersion': '3',
+      }),
+    netAssets: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The net assets of the business.', 'x-addedInVersion': '3' }),
   })
   .openapi({ required: [] })
-  .openapi('SupportingEntityCapability')
-
-const LegalEntityCapabilitySchema = z
-  .strictObject({
-    allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the capability is allowed. Adyen sets this to **true** if the verification is successful.',
-        readOnly: true,
-      }),
-    allowedLevel: z
-      .enum(['high', 'low', 'medium', 'notApplicable'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The capability level that is allowed for the legal entity.\n\nPossible values: **notApplicable**, **low**, **medium**, **high**.',
-        readOnly: true,
-      }),
-    allowedSettings: CapabilitySettingsSchema.exactOptional().openapi({
-      description: 'The settings that are allowed for the legal entity.',
-      readOnly: true,
-    }),
-    requested: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the capability is requested. To check whether the legal entity is permitted to use the capability, refer to the `allowed` field.',
-        readOnly: true,
-      }),
-    requestedLevel: z
-      .enum(['high', 'low', 'medium', 'notApplicable'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The requested level of the capability. Some capabilities, such as those used in [card issuing](https://docs.adyen.com/issuing/add-capabilities#capability-levels), have different levels. Levels increase the capability, but also require additional checks and increased monitoring.\n\nPossible values: **notApplicable**, **low**, **medium**, **high**.',
-        readOnly: true,
-      }),
-    requestedSettings: CapabilitySettingsSchema.exactOptional().openapi({
-      description: 'The settings that are requested for the legal entity.',
-      readOnly: true,
-    }),
-    transferInstruments: z
-      .array(SupportingEntityCapabilitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The capability status of transfer instruments associated with the legal entity.',
-        readOnly: true,
-        'x-addedInVersion': '2',
-      }),
-    verificationStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the verification checks for the capability.\n\nPossible values:\n\n* **pending**: Adyen is running the verification.\n\n* **invalid**: The verification failed. Check if the `errors` array contains more information.\n\n* **valid**: The verification has been successfully completed.\n\n* **rejected**: Adyen has verified the information, but found reasons to not allow the capability.\n',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('LegalEntityCapability')
-
-const LegalEntityAssociationSchema = z
-  .strictObject({
-    associatorId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of another legal entity with which the `legalEntityId` is associated. When the `legalEntityId` is associated to legal entities other than the current one, the response returns all the associations.',
-        readOnly: true,
-      }),
-    entityType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The legal entity type of associated legal entity.\n\nFor example, **organization**, **soleProprietorship** or **individual**.',
-        readOnly: true,
-      }),
-    jobTitle: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The individual's job title if the `type` is **uboThroughControl** or **signatory**.",
-      }),
-    legalEntityId: z
-      .string()
-      .openapi({
-        description:
-          'The unique identifier of the associated [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id).',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the associated [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id).\n\n- For **individual**, `name.firstName` and `name.lastName`.\n- For **organization**, `legalName`.\n- For **soleProprietorship**, `name`.',
-        readOnly: true,
-      }),
-    nominee: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Default value: **false**\nSet to **true** if the entity association `type` **director**, **secondaryPartner** or **shareholder** is also a nominee. Only applicable to New Zealand.',
-      }),
-    relationship: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The individual's relationship to a legal representative if the `type` is **legalRepresentative**. Possible values: **parent**, **guardian**.",
-      }),
-    settlorExemptionReason: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the KYC exemption reason for a settlor associated with a trust. Only applicable to trusts in Australia.\n\nFor example, **professionalServiceProvider**, **deceased**, or **contributionBelowThreshold**.',
-      }),
-    type: z
-      .enum([
-        'definedBeneficiary',
-        'director',
-        'immediateParentCompany',
-        'legalRepresentative',
-        'pciSignatory',
-        'protector',
-        'secondaryPartner',
-        'secondaryTrustee',
-        'settlor',
-        'signatory',
-        'soleProprietorship',
-        'trust',
-        'trustOwnership',
-        'uboThroughControl',
-        'uboThroughOwnership',
-        'ultimateParentCompany',
-        'undefinedBeneficiary',
-        'unincorporatedPartnership',
-      ])
-      .openapi({
-        description:
-          'Defines the relationship of the legal entity to the current legal entity.\n\nPossible value for individuals: **legalRepresentative**.\n\nPossible values for organizations: **director**, **signatory**, **trustOwnership**, **uboThroughOwnership**, **uboThroughControl**, **ultimateParentCompany**, or **immediateParentCompany**.\n\nPossible values for sole proprietorships: **soleProprietorship**.\n\nPossible value for trusts: **trust**.\n\nPossible values for trust members: **definedBeneficiary**, **protector**, **secondaryTrustee**, **settlor**, **uboThroughControl**, or **uboThroughOwnership**.\n\nPossible value for unincorporated partnership: **unincorporatedPartnership**.\n\nPossible values for unincorporated partnership members: **secondaryPartner**, **uboThroughControl**, **uboThroughOwnership**',
-      }),
-  })
-  .openapi({ required: ['legalEntityId', 'type'] })
-  .openapi('LegalEntityAssociation')
+  .openapi('FinancialReport')
 
 const StockDataSchema = z
   .strictObject({
@@ -2814,7 +1764,1108 @@ const VerificationDeadlineSchema = z
   .openapi({ required: ['capabilities', 'expiresAt'] })
   .openapi('VerificationDeadline')
 
-const LegalEntitySchema = z
+type LegalEntityType = {
+  capabilities?: { [key: string]: z.infer<typeof LegalEntityCapabilitySchema> }
+  documentDetails?: z.infer<typeof DocumentReferenceSchema>[]
+  documents?: z.infer<typeof EntityReferenceSchema>[]
+  entityAssociations?: z.infer<typeof LegalEntityAssociationSchema>[]
+  id: string
+  individual?: z.infer<typeof IndividualSchema>
+  organization?: z.infer<typeof OrganizationSchema>
+  problems?: z.infer<typeof CapabilityProblemSchema>[]
+  reference?: string
+  soleProprietorship?: z.infer<typeof SoleProprietorshipSchema>
+  transferInstruments?: z.infer<typeof TransferInstrumentReferenceSchema>[]
+  trust?: z.infer<typeof TrustSchema>
+  type?:
+    | 'individual'
+    | 'organization'
+    | 'soleProprietorship'
+    | 'trust'
+    | 'unincorporatedPartnership'
+  unincorporatedPartnership?: z.infer<typeof UnincorporatedPartnershipSchema>
+  verificationDeadlines?: z.infer<typeof VerificationDeadlineSchema>[]
+  verificationPlan?: string
+}
+
+const AULocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(5)
+      .max(9)
+      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+    bsbCode: z
+      .string()
+      .length(6)
+      .openapi({
+        description:
+          'The 6-digit [Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or whitespace.',
+      }),
+    type: z.literal('auLocal').default('auLocal').openapi({ description: '**auLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bsbCode', 'type'] })
+  .openapi('AULocalAccountIdentification')
+
+const CALocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(5)
+      .max(12)
+      .openapi({
+        description: 'The 5- to 12-digit bank account number, without separators or whitespace.',
+      }),
+    accountType: z
+      .enum(['checking', 'savings'])
+      .default('checking')
+      .exactOptional()
+      .openapi({
+        description:
+          'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
+      }),
+    institutionNumber: z
+      .string()
+      .length(3)
+      .openapi({
+        description: 'The 3-digit institution number, without separators or whitespace.',
+      }),
+    transitNumber: z
+      .string()
+      .length(5)
+      .openapi({ description: 'The 5-digit transit number, without separators or whitespace.' }),
+    type: z.literal('caLocal').default('caLocal').openapi({ description: '**caLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'institutionNumber', 'transitNumber', 'type'] })
+  .openapi('CALocalAccountIdentification')
+
+const CZLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(2)
+      .max(17)
+      .openapi({
+        description:
+          'The 2- to 16-digit bank account number (Číslo účtu) in the following format:\n\n- The optional prefix (předčíslí).\n\n- The required second part (základní část) which must be at least two non-zero digits.\n\nExamples:\n\n- **19-123457** (with prefix)\n\n- **123457** (without prefix)\n\n- **000019-0000123457** (with prefix, normalized)\n\n- **000000-0000123457** (without prefix, normalized)',
+      }),
+    bankCode: z
+      .string()
+      .length(4)
+      .openapi({
+        description: 'The 4-digit bank code (Kód banky), without separators or whitespace.',
+      }),
+    type: z.literal('czLocal').default('czLocal').openapi({ description: '**czLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
+  .openapi('CZLocalAccountIdentification')
+
+const DKLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(4)
+      .max(10)
+      .openapi({
+        description:
+          'The 4-10 digits bank account number (Kontonummer) (without separators or whitespace).',
+      }),
+    bankCode: z
+      .string()
+      .length(4)
+      .openapi({
+        description:
+          'The 4-digit bank code (Registreringsnummer) (without separators or whitespace).',
+      }),
+    type: z.literal('dkLocal').default('dkLocal').openapi({ description: '**dkLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
+  .openapi('DKLocalAccountIdentification')
+
+const HKLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(9)
+      .max(17)
+      .openapi({
+        description:
+          'The 9- to 17-digit bank account number, without separators or whitespace. Starts with the 3-digit branch code.',
+      }),
+    clearingCode: z
+      .string()
+      .length(3)
+      .openapi({ description: 'The 3-digit clearing code, without separators or whitespace.' }),
+    type: z.literal('hkLocal').default('hkLocal').openapi({ description: '**hkLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'clearingCode', 'type'] })
+  .openapi('HKLocalAccountIdentification')
+
+const HULocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .length(24)
+      .openapi({
+        description: 'The 24-digit bank account number, without separators or whitespace.',
+      }),
+    type: z.literal('huLocal').default('huLocal').openapi({ description: '**huLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'type'] })
+  .openapi('HULocalAccountIdentification')
+
+const IbanAccountIdentificationSchema = z
+  .strictObject({
+    bic: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+    iban: z
+      .string()
+      .openapi({
+        description:
+          'The international bank account number as defined in the [ISO-13616](https://www.iso.org/standard/81090.html) standard.',
+      }),
+    type: z.literal('iban').default('iban').openapi({ description: '**iban**' }),
+  })
+  .openapi({ required: ['iban', 'type'] })
+  .openapi('IbanAccountIdentification')
+
+const NOLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .length(11)
+      .openapi({
+        description: 'The 11-digit bank account number, without separators or whitespace.',
+      }),
+    type: z.literal('noLocal').default('noLocal').openapi({ description: '**noLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'type'] })
+  .openapi('NOLocalAccountIdentification')
+
+const NZLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(15)
+      .max(16)
+      .openapi({
+        description:
+          'The 15-16 digit bank account number. The first 2 digits are the bank number, the next 4 digits are the branch number, the next 7 digits are the account number, and the final 2-3 digits are the suffix.',
+      }),
+    type: z.literal('nzLocal').default('nzLocal').openapi({ description: '**nzLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'type'] })
+  .openapi('NZLocalAccountIdentification')
+
+const AdditionalBankIdentificationSchema = z
+  .strictObject({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value of the additional bank identification.' }),
+    type: z
+      .enum(['auBsbCode', 'caRoutingNumber', 'gbSortCode', 'usRoutingNumber'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of additional bank identification, depending on the country.\n\nPossible values:\n\n * **auBsbCode**: The 6-digit [Australian Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or spaces.\n * **caRoutingNumber**: The 9-digit [Canadian routing number](https://en.wikipedia.org/wiki/Routing_number_(Canada)), in EFT format, without separators or spaces.\n * **gbSortCode**: The 6-digit [UK sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or spaces\n * **usRoutingNumber**: The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or spaces.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalBankIdentification')
+
+const NumberAndBicAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .max(34)
+      .openapi({
+        description:
+          'The bank account number, without separators or whitespace. The length and format depends on the bank or country.',
+      }),
+    additionalBankIdentification: AdditionalBankIdentificationSchema.exactOptional().openapi({
+      description:
+        'Additional identification codes of the bank. Some banks may require these identifiers for cross-border transfers.',
+    }),
+    bic: z
+      .string()
+      .min(8)
+      .max(11)
+      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+    type: z
+      .literal('numberAndBic')
+      .default('numberAndBic')
+      .openapi({ description: '**numberAndBic**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bic', 'type'] })
+  .openapi('NumberAndBicAccountIdentification')
+
+const PLLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .length(26)
+      .openapi({
+        description:
+          'The 26-digit bank account number ([Numer rachunku](https://pl.wikipedia.org/wiki/Numer_Rachunku_Bankowego)), without separators or whitespace.',
+      }),
+    type: z.literal('plLocal').default('plLocal').openapi({ description: '**plLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'type'] })
+  .openapi('PLLocalAccountIdentification')
+
+const SELocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(7)
+      .max(10)
+      .openapi({
+        description:
+          'The 7- to 10-digit bank account number ([Bankkontonummer](https://sv.wikipedia.org/wiki/Bankkonto)), without the clearing number, separators, or whitespace.',
+      }),
+    clearingNumber: z
+      .string()
+      .min(4)
+      .max(5)
+      .openapi({
+        description:
+          'The 4- to 5-digit clearing number ([Clearingnummer](https://sv.wikipedia.org/wiki/Clearingnummer)), without separators or whitespace.',
+      }),
+    type: z.literal('seLocal').default('seLocal').openapi({ description: '**seLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'clearingNumber', 'type'] })
+  .openapi('SELocalAccountIdentification')
+
+const SGLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(4)
+      .max(19)
+      .openapi({
+        description: 'The 4- to 19-digit bank account number, without separators or whitespace.',
+      }),
+    bic: z
+      .string()
+      .min(8)
+      .max(11)
+      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+    type: z
+      .literal('sgLocal')
+      .default('sgLocal')
+      .exactOptional()
+      .openapi({ description: '**sgLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bic'] })
+  .openapi('SGLocalAccountIdentification')
+
+const UKLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .length(8)
+      .openapi({
+        description: 'The 8-digit bank account number, without separators or whitespace.',
+      }),
+    sortCode: z
+      .string()
+      .length(6)
+      .openapi({
+        description:
+          'The 6-digit [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace.',
+      }),
+    type: z.literal('ukLocal').default('ukLocal').openapi({ description: '**ukLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'sortCode', 'type'] })
+  .openapi('UKLocalAccountIdentification')
+
+const USLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(2)
+      .max(18)
+      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+    accountType: z
+      .enum(['checking', 'savings'])
+      .default('checking')
+      .exactOptional()
+      .openapi({
+        description:
+          'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
+      }),
+    routingNumber: z
+      .string()
+      .length(9)
+      .openapi({
+        description:
+          'The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or whitespace.',
+      }),
+    type: z.literal('usLocal').default('usLocal').openapi({ description: '**usLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'routingNumber', 'type'] })
+  .openapi('USLocalAccountIdentification')
+
+const BankAccountInfoSchema = z
+  .strictObject({
+    accountIdentification: z
+      .xor([
+        AULocalAccountIdentificationSchema,
+        CALocalAccountIdentificationSchema,
+        CZLocalAccountIdentificationSchema,
+        DKLocalAccountIdentificationSchema,
+        HKLocalAccountIdentificationSchema,
+        HULocalAccountIdentificationSchema,
+        IbanAccountIdentificationSchema,
+        NOLocalAccountIdentificationSchema,
+        NZLocalAccountIdentificationSchema,
+        NumberAndBicAccountIdentificationSchema,
+        PLLocalAccountIdentificationSchema,
+        SELocalAccountIdentificationSchema,
+        SGLocalAccountIdentificationSchema,
+        UKLocalAccountIdentificationSchema,
+        USLocalAccountIdentificationSchema,
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Identification of the bank account.',
+        discriminator: {
+          propertyName: 'type',
+          mapping: {
+            iban: '#/components/schemas/IbanAccountIdentification',
+            numberAndBic: '#/components/schemas/NumberAndBicAccountIdentification',
+            auLocal: '#/components/schemas/AULocalAccountIdentification',
+            sgLocal: '#/components/schemas/SGLocalAccountIdentification',
+            nzLocal: '#/components/schemas/NZLocalAccountIdentification',
+            hkLocal: '#/components/schemas/HKLocalAccountIdentification',
+            czLocal: '#/components/schemas/CZLocalAccountIdentification',
+            noLocal: '#/components/schemas/NOLocalAccountIdentification',
+            plLocal: '#/components/schemas/PLLocalAccountIdentification',
+            huLocal: '#/components/schemas/HULocalAccountIdentification',
+            seLocal: '#/components/schemas/SELocalAccountIdentification',
+            ukLocal: '#/components/schemas/UKLocalAccountIdentification',
+            usLocal: '#/components/schemas/USLocalAccountIdentification',
+            dkLocal: '#/components/schemas/DKLocalAccountIdentification',
+            caLocal: '#/components/schemas/CALocalAccountIdentification',
+          },
+        },
+        'x-addedInVersion': '3',
+      }),
+    accountType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The type of bank account.',
+        'x-deprecatedInVersion': '2',
+      }),
+    bankName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the banking institution where the bank account is held.',
+      }),
+    countryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-character [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code where the bank account is registered. For example, **NL**.',
+      }),
+    trustedSource: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies if the bank account was created through [instant bank verification](https://docs.adyen.com/release-notes/platforms-and-financial-products#releaseNote=2023-05-08-hosted-onboarding).',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BankAccountInfo')
+
+type TransferInstrumentType = {
+  bankAccount: z.infer<typeof BankAccountInfoSchema>
+  capabilities?: { [key: string]: z.infer<typeof SupportingEntityCapabilitySchema> }
+  documentDetails?: z.infer<typeof DocumentReferenceSchema>[]
+  id: string
+  legalEntityId: string
+  problems?: z.infer<typeof CapabilityProblemSchema>[]
+  type: 'bankAccount' | 'recurringDetail'
+}
+
+type VerificationErrorsType = { problems?: z.infer<typeof CapabilityProblemSchema>[] }
+
+const AcceptTermsOfServiceRequestSchema = z
+  .strictObject({
+    acceptedBy: z
+      .string()
+      .openapi({
+        description:
+          'The legal entity ID of the user accepting the Terms of Service.\n\nFor organizations, this must be the individual legal entity ID of an authorized signatory for the organization.\n\nFor sole proprietorships, this must be the individual legal entity ID of the owner.\n\nFor individuals, this must be the individual legal entity id of either the individual, parent, or guardian.\n\n',
+      }),
+    ipAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The IP address of the user accepting the Terms of Service.' }),
+  })
+  .openapi({ required: ['acceptedBy'] })
+  .openapi('AcceptTermsOfServiceRequest')
+
+const AcceptTermsOfServiceResponseSchema = z
+  .strictObject({
+    acceptedBy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the user that accepted the Terms of Service.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the Terms of Service acceptance.' }),
+    ipAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The IP address of the user that accepted the Terms of Service.' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language used for the Terms of Service document, specified by the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code. Possible value: **en** for English or **fr** for French.\n\nNote that French is only available for some integration types in certain countries/regions. Reach out to your Adyen contact for more information.',
+      }),
+    termsOfServiceDocumentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the Terms of Service document.' }),
+    type: z
+      .enum([
+        'adyenAccount',
+        'adyenCapital',
+        'adyenCapitalCashAdvance',
+        'adyenCard',
+        'adyenChargeCard',
+        'adyenForPlatformsAdvanced',
+        'adyenForPlatformsManage',
+        'adyenFranchisee',
+        'adyenIssuing',
+        'adyenPccr',
+        'directDebit',
+        'kycOnInvite',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of Terms of Service.\n\nPossible values:\n*  **adyenForPlatformsManage**\n*  **adyenIssuing**\n*  **adyenForPlatformsAdvanced**\n*  **adyenCapital**\n*  **adyenCapitalCashAdvance**\n*  **adyenAccount**\n*  **adyenCard**\n*  **adyenFranchisee**\n*  **adyenPccr**\n*  **adyenChargeCard**\n*  **kycOnInvite**\n*  **directDebit**\n\n',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AcceptTermsOfServiceResponse')
+
+const AttachmentSchema = z
+  .strictObject({
+    content: z.string().openapi({ description: 'The document in Base64-encoded string format.' }),
+    contentType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The file format.\n\n Possible values: **application/pdf**, **image/jpg**, **image/jpeg**, **image/png**. ',
+        'x-deprecatedInVersion': '1',
+      }),
+    filename: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The name of the file including the file extension.',
+        'x-deprecatedInVersion': '1',
+      }),
+    pageName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the file including the file extension.',
+        'x-addedInVersion': '2',
+      }),
+    pageType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies which side of the ID card is uploaded.\n\n* If the `type` is **driversLicense** or **identityCard**, you must set this to **front** or **back** and include both sides in the same API request.\n\n* For any other types, when this is omitted, we infer the page number based on the order of attachments.',
+      }),
+  })
+  .openapi({ required: ['content'] })
+  .openapi('Attachment')
+
+const BusinessLineInfoSchema = z
+  .strictObject({
+    industryCode: z
+      .string()
+      .openapi({
+        description:
+          'A code that represents the industry of the legal entity for [marketplaces](https://docs.adyen.com/marketplaces/verification-requirements/reference-additional-products/#list-industry-codes) or [platforms](https://docs.adyen.com/platforms/verification-requirements/reference-additional-products/#list-industry-codes). For example, **4431A** for computer software stores.',
+      }),
+    industryCodeDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the industry code.', readOnly: true }),
+    legalEntityId: z
+      .string()
+      .openapi({
+        description:
+          'Unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/legalEntities__resParam_id) that owns the business line.',
+      }),
+    salesChannels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of channels where goods or services are sold.\n\nPossible values: **pos**, **posMoto**, **eCommerce**, **ecomMoto**, **payByLink**.\n\nRequired only in combination with the `service` **paymentProcessing**.',
+      }),
+    service: z
+      .enum(['paymentProcessing', 'issuing', 'banking'])
+      .openapi({
+        description:
+          'The service for which you are creating the business line.\n\n\n\nPossible values:\n*  **paymentProcessing**\n*  **issuing**\n*  **banking**\n\n',
+        'x-addedInVersion': '3',
+      }),
+    sourceOfFunds: SourceOfFundsSchema.exactOptional().openapi({
+      description:
+        "Contains information about the source of your user's funds. Required only if the `service` is **banking** or **issuing**.",
+    }),
+    webData: z
+      .array(WebDataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "List of website URLs where your user's goods or services are sold. When this is required for a service but your user does not have an online presence, provide the reason in the `webDataExemption` object.",
+      }),
+    webDataExemption: WebDataExemptionSchema.exactOptional().openapi({
+      description: 'The reason why the web data is not provided.',
+    }),
+  })
+  .openapi({ required: ['industryCode', 'legalEntityId', 'service'] })
+  .openapi('BusinessLineInfo')
+
+const BusinessLineInfoUpdateSchema = z
+  .strictObject({
+    industryCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A code that represents the industry of your legal entity. For example, **4431A** for computer software stores.',
+      }),
+    industryCodeDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the industry code.', readOnly: true }),
+    salesChannels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of channels where goods or services are sold.\n\nPossible values: **pos**, **posMoto**, **eCommerce**, **ecomMoto**, **payByLink**.\n\nRequired only in combination with the `service` **paymentProcessing**.',
+      }),
+    sourceOfFunds: SourceOfFundsSchema.exactOptional().openapi({
+      description:
+        "Contains information about the source of your user's funds. Required only if the `service` is **banking** or **issuing**.",
+    }),
+    webData: z
+      .array(WebDataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "List of website URLs where your user's goods or services are sold. When this is required for a service but your user does not have an online presence, provide the reason in the `webDataExemption` object.",
+      }),
+    webDataExemption: WebDataExemptionSchema.exactOptional().openapi({
+      description: 'The reason why the web data is not provided.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BusinessLineInfoUpdate')
+
+const BusinessLinesSchema: z.ZodType<BusinessLinesType> = z
+  .strictObject({
+    businessLines: z.array(BusinessLineSchema).openapi({ description: 'List of business lines.' }),
+  })
+  .openapi({ required: ['businessLines'] })
+  .openapi('BusinessLines')
+
+const CalculatePciStatusRequestSchema = z
+  .strictObject({
+    additionalSalesChannels: z
+      .array(z.enum(['eCommerce', 'ecomMoto', 'pos', 'posMoto']))
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of additional sales channels to generate PCI questionnaires. Include the relevant sales channels if you need your user to sign PCI questionnaires. Not required if you [create stores](https://docs.adyen.com/platforms) and [add payment methods](https://docs.adyen.com/adyen-for-platforms-model) before you generate the questionnaires.\n\nPossible values:\n*  **eCommerce**\n*  **pos**\n*  **ecomMoto**\n*  **posMoto**\n\n',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CalculatePciStatusRequest')
+
+const CalculatePciStatusResponseSchema = z
+  .strictObject({
+    signingRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the user is required to sign PCI questionnaires. If **false**, they do not need to sign any questionnaires.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CalculatePciStatusResponse')
+
+const CalculateTermsOfServiceStatusResponseSchema = z
+  .strictObject({
+    termsOfServiceTypes: z
+      .array(
+        z.enum([
+          'adyenAccount',
+          'adyenCapital',
+          'adyenCapitalCashAdvance',
+          'adyenCard',
+          'adyenChargeCard',
+          'adyenForPlatformsAdvanced',
+          'adyenForPlatformsManage',
+          'adyenFranchisee',
+          'adyenIssuing',
+          'adyenPccr',
+          'directDebit',
+          'kycOnInvite',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of Terms of Service that the legal entity needs to accept. If empty, no Terms of Service needs to be accepted.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CalculateTermsOfServiceStatusResponse')
+
+const CheckTaxElectronicDeliveryConsentResponseSchema = z
+  .strictObject({
+    US1099k: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Consent to electronically deliver tax form US1099-K.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CheckTaxElectronicDeliveryConsentResponse')
+
+const DataReviewConfirmationResponseSchema = z
+  .strictObject({
+    dataReviewedAt: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date when data review was confirmed.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DataReviewConfirmationResponse')
+
+const OwnerEntitySchema = z
+  .strictObject({
+    id: z
+      .string()
+      .openapi({
+        description:
+          'Unique identifier of the resource that owns the document. For `type` **legalEntity**, this value is the unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id). For `type` **bankAccount**, this value is the unique identifier of the [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id).',
+      }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'Type of resource that owns the document.\n\nPossible values: **legalEntity**, **bankAccount**.',
+      }),
+  })
+  .openapi({ required: ['id', 'type'] })
+  .openapi('OwnerEntity')
+
+const DocumentSchema = z
+  .strictObject({
+    attachment: AttachmentSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Object that contains the document.',
+      'x-deprecatedInVersion': '1',
+      'x-deprecatedMessage': 'Use the `attachments` array instead.',
+    }),
+    attachments: z
+      .array(AttachmentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array that contains the document. The array supports multiple attachments for uploading different sides or pages of a document.',
+      }),
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The creation date of the document.', readOnly: true }),
+    description: z.string().openapi({ description: 'Your description for the document.' }),
+    expiryDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The expiry date of the document, in YYYY-MM-DD format.',
+        'x-deprecatedInVersion': '1',
+      }),
+    fileName: z.string().exactOptional().openapi({ description: 'The filename of the document.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the document.', readOnly: true }),
+    issuerCountry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The two-character [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code where the document was issued. For example, **US**.',
+        'x-deprecatedInVersion': '1',
+      }),
+    issuerState: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The state or province where the document was issued (AU only).',
+        'x-deprecatedInVersion': '1',
+      }),
+    modificationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The modification date of the document.', readOnly: true }),
+    number: z.string().exactOptional().openapi({ description: 'The number in the document.' }),
+    owner: OwnerEntitySchema.exactOptional().openapi({
+      description: 'Contains information about the resource that owns the document.',
+    }),
+    type: z
+      .enum([
+        'bankStatement',
+        'driversLicense',
+        'identityCard',
+        'nationalIdNumber',
+        'passport',
+        'proofOfAddress',
+        'proofOfNationalIdNumber',
+        'proofOfResidency',
+        'registrationDocument',
+        'vatDocument',
+        'proofOfOrganizationTaxInfo',
+        'proofOfIndividualTaxId',
+        'proofOfOwnership',
+        'proofOfSignatory',
+        'liveSelfie',
+        'proofOfIndustry',
+        'constitutionalDocument',
+        'proofOfFundingOrWealthSource',
+        'proofOfRelationship',
+        'proofOfDirector',
+      ])
+      .openapi({
+        description:
+          'Type of document, used when providing an ID number or uploading a document. The possible values depend on the legal entity type.\n\n* For **organization**, the `type` values can be **proofOfAddress**, **registrationDocument**, **vatDocument**, **proofOfOrganizationTaxInfo**, **proofOfOwnership**, **proofOfIndustry**, **proofOfSignatory**, **proofOfDirector**, or **proofOfFundingOrWealthSource**.\n\n* For **individual**, the `type` values can be **identityCard**, **driversLicense**, **passport**, **liveSelfie**, **proofOfNationalIdNumber**, **proofOfResidency**, **proofOfIndustry**, **proofOfIndividualTaxId**, **proofOfFundingOrWealthSource** or **proofOfRelationship**.\n\n* For **soleProprietorship**, the `type` values can be **constitutionalDocument**, **proofOfAddress**, or **proofOfIndustry**.\n\n* For **trust**, the `type` value is **constitutionalDocument**.\n\n* For **unincorporatedPartnership**, the `type` value is **constitutionalDocument**.\n\n* Use **bankStatement** to upload documents for a [transfer instrument](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/transferInstruments__resParam_id).',
+      }),
+  })
+  .openapi({ required: ['description', 'type'] })
+  .openapi('Document')
+
+const GeneratePciDescriptionRequestSchema = z
+  .strictObject({
+    additionalSalesChannels: z
+      .array(z.enum(['eCommerce', 'ecomMoto', 'pos', 'posMoto']))
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of additional sales channels to generate PCI questionnaires. Include the relevant sales channels if you need your user to sign PCI questionnaires. Not required if you [create stores](https://docs.adyen.com/platforms) and [add payment methods](https://docs.adyen.com/adyen-for-platforms-model) before you generate the questionnaires.\n\nPossible values:\n*  **eCommerce**\n*  **pos**\n*  **ecomMoto**\n*  **posMoto**\n\n',
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sets the language of the PCI questionnaire. Its value is a two-character [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) language code, for example, **en**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GeneratePciDescriptionRequest')
+
+const GeneratePciDescriptionResponseSchema = z
+  .strictObject({
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The generated questionnaires in a base64 encoded format.' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-letter [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code for the questionnaire. For example, **en**.',
+      }),
+    pciTemplateReferences: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The array of Adyen-generated unique identifiers for the questionnaires. If empty, the user is not required to sign questionnaires.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GeneratePciDescriptionResponse')
+
+const GetAcceptedTermsOfServiceDocumentResponseSchema = z
+  .strictObject({
+    document: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The accepted Terms of Service document in the requested format represented as a Base64-encoded bytes array.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the legal entity.' }),
+    termsOfServiceAcceptanceReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An Adyen-generated reference for the accepted Terms of Service.' }),
+    termsOfServiceDocumentFormat: z
+      .enum(['JSON', 'PDF', 'TXT'])
+      .exactOptional()
+      .openapi({ description: 'The format of the Terms of Service document.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetAcceptedTermsOfServiceDocumentResponse')
+
+const PciDocumentInfoSchema = z
+  .strictObject({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date the questionnaire was created, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the signed questionnaire.' }),
+    validUntil: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The expiration date of the questionnaire, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PciDocumentInfo')
+
+const GetPciQuestionnaireInfosResponseSchema = z
+  .strictObject({
+    data: z
+      .array(PciDocumentInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'Information about the signed PCI questionnaires.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetPciQuestionnaireInfosResponse')
+
+const GetPciQuestionnaireResponseSchema = z
+  .strictObject({
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The generated questionnaire in a base64 encoded format.' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date the questionnaire was created, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the signed questionnaire.' }),
+    validUntil: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The expiration date of the questionnaire, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetPciQuestionnaireResponse')
+
+const TermsOfServiceAcceptanceInfoSchema = z
+  .strictObject({
+    acceptedBy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the user that accepted the Terms of Service.',
+      }),
+    acceptedFor: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the legal entity for which the Terms of Service are accepted.',
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date when the Terms of Service were accepted, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An Adyen-generated reference for the accepted Terms of Service.' }),
+    type: z
+      .enum([
+        'adyenAccount',
+        'adyenCapital',
+        'adyenCapitalCashAdvance',
+        'adyenCard',
+        'adyenChargeCard',
+        'adyenForPlatformsAdvanced',
+        'adyenForPlatformsManage',
+        'adyenFranchisee',
+        'adyenIssuing',
+        'adyenPccr',
+        'directDebit',
+        'kycOnInvite',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of Terms of Service.\n\nPossible values:\n*  **adyenForPlatformsManage**\n*  **adyenIssuing**\n*  **adyenForPlatformsAdvanced**\n*  **adyenCapital**\n*  **adyenCapitalCashAdvance**\n*  **adyenAccount**\n*  **adyenCard**\n*  **adyenFranchisee**\n*  **adyenPccr**\n*  **adyenChargeCard**\n*  **kycOnInvite**\n*  **directDebit**\n\n',
+      }),
+    validTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The expiration date for the Terms of Service acceptance, in ISO 8601 extended format. For example, 2022-12-18T00:00:00+01:00.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TermsOfServiceAcceptanceInfo')
+
+const GetTermsOfServiceAcceptanceInfosResponseSchema = z
+  .strictObject({
+    data: z
+      .array(TermsOfServiceAcceptanceInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'The Terms of Service acceptance information.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetTermsOfServiceAcceptanceInfosResponse')
+
+const GetTermsOfServiceDocumentRequestSchema = z
+  .strictObject({
+    language: z
+      .string()
+      .openapi({
+        description:
+          'The language to be used for the Terms of Service document, specified by the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code. Possible values: **en** for English or **fr** for French.',
+      }),
+    termsOfServiceDocumentFormat: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The requested format for the Terms of Service document. Default value: JSON. Possible values: **JSON**, **PDF**, or **TXT**.',
+      }),
+    type: z
+      .enum([
+        'adyenAccount',
+        'adyenCapital',
+        'adyenCapitalCashAdvance',
+        'adyenCard',
+        'adyenChargeCard',
+        'adyenForPlatformsAdvanced',
+        'adyenForPlatformsManage',
+        'adyenFranchisee',
+        'adyenIssuing',
+        'adyenPccr',
+        'directDebit',
+        'kycOnInvite',
+      ])
+      .openapi({
+        description:
+          'The type of Terms of Service.\n\nPossible values:\n*  **adyenForPlatformsManage**\n*  **adyenIssuing**\n*  **adyenForPlatformsAdvanced**\n*  **adyenCapital**\n*  **adyenCapitalCashAdvance**\n*  **adyenAccount**\n*  **adyenCard**\n*  **adyenFranchisee**\n*  **adyenPccr**\n*  **adyenChargeCard**\n*  **kycOnInvite**\n*  **directDebit**\n\n',
+      }),
+  })
+  .openapi({ required: ['language', 'type'] })
+  .openapi('GetTermsOfServiceDocumentRequest')
+
+const GetTermsOfServiceDocumentResponseSchema = z
+  .strictObject({
+    document: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Terms of Service document in Base64-encoded format.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the legal entity.' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language used for the Terms of Service document, specified by the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code. Possible value: **en** for English or **fr** for French.\n\nNote that French is only available for some integration types in certain countries/regions. Reach out to your Adyen contact for more information.',
+      }),
+    termsOfServiceDocumentFormat: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The format of the Terms of Service document.' }),
+    termsOfServiceDocumentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the Terms of Service document.' }),
+    type: z
+      .enum([
+        'adyenAccount',
+        'adyenCapital',
+        'adyenCapitalCashAdvance',
+        'adyenCard',
+        'adyenChargeCard',
+        'adyenForPlatformsAdvanced',
+        'adyenForPlatformsManage',
+        'adyenFranchisee',
+        'adyenIssuing',
+        'adyenPccr',
+        'directDebit',
+        'kycOnInvite',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of Terms of Service.\n\nPossible values:\n*  **adyenForPlatformsManage**\n*  **adyenIssuing**\n*  **adyenForPlatformsAdvanced**\n*  **adyenCapital**\n*  **adyenCapitalCashAdvance**\n*  **adyenAccount**\n*  **adyenCard**\n*  **adyenFranchisee**\n*  **adyenPccr**\n*  **adyenChargeCard**\n*  **kycOnInvite**\n*  **directDebit**\n\n',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetTermsOfServiceDocumentResponse')
+
+const LegalEntitySchema: z.ZodType<LegalEntityType> = z
   .strictObject({
     capabilities: z
       .record(z.string(), LegalEntityCapabilitySchema)
@@ -3306,7 +3357,7 @@ const SetTaxElectronicDeliveryConsentRequestSchema = z
   .openapi({ required: [] })
   .openapi('SetTaxElectronicDeliveryConsentRequest')
 
-const TransferInstrumentSchema = z
+const TransferInstrumentSchema: z.ZodType<TransferInstrumentType> = z
   .strictObject({
     bankAccount: BankAccountInfoSchema.openapi({
       description: "Contains information about the legal entity's bank account.",
@@ -3374,7 +3425,7 @@ const TransferInstrumentInfoSchema = z
   .openapi({ required: ['bankAccount', 'legalEntityId', 'type'] })
   .openapi('TransferInstrumentInfo')
 
-const VerificationErrorsSchema = z
+const VerificationErrorsSchema: z.ZodType<VerificationErrorsType> = z
   .strictObject({
     problems: z
       .array(CapabilityProblemSchema)

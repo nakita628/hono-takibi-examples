@@ -1,20 +1,39 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const RepaymentTermSchema = z
+const LinkSchema = z
   .strictObject({
-    estimatedDays: z
-      .int32()
-      .openapi({ description: 'The estimated term for repaying the grant, in days.' }),
-    maximumDays: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum term for repaying the grant, in days. Only applies when `contractType` is **loan**.',
-      }),
+    href: z.string().exactOptional().openapi({ description: 'The link to the resource.' }),
   })
-  .openapi({ required: ['estimatedDays'] })
-  .openapi('RepaymentTerm')
+  .openapi({ required: [] })
+  .openapi('Link')
+
+const LinksSchema = z
+  .strictObject({
+    next: LinkSchema.exactOptional().openapi({ description: 'Contains a link to the next page.' }),
+    prev: LinkSchema.exactOptional().openapi({
+      description: 'Contains a link to the previous page.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('Links')
+
+const ResourceReferenceSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the resource.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the resource.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference for the resource.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResourceReference')
 
 const AmountSchema = z
   .object({
@@ -43,216 +62,6 @@ const AmountSchema = z
   })
   .openapi({ required: ['currency', 'value'] })
   .openapi('Amount')
-
-const ThresholdRepaymentSchema = z
-  .strictObject({
-    amount: AmountSchema.openapi({ description: 'The amount to be repaid on a 30-day basis.' }),
-  })
-  .openapi({ required: ['amount'] })
-  .openapi('ThresholdRepayment')
-
-type RepaymentType = {
-  basisPoints: number
-  term?: z.infer<typeof RepaymentTermSchema>
-  threshold?: z.infer<typeof ThresholdRepaymentSchema>
-}
-
-const AULocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(5)
-      .max(9)
-      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-    bsbCode: z
-      .string()
-      .length(6)
-      .openapi({
-        description:
-          'The 6-digit [Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or whitespace.',
-      }),
-    type: z.literal('auLocal').default('auLocal').openapi({ description: '**auLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bsbCode', 'type'] })
-  .openapi('AULocalAccountIdentification')
-
-const AdditionalBankIdentificationSchema = z
-  .strictObject({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value of the additional bank identification.' }),
-    type: z
-      .enum(['auBsbCode', 'caRoutingNumber', 'gbSortCode', 'usRoutingNumber'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of additional bank identification, depending on the country.\n\nPossible values:\n\n * **auBsbCode**: The 6-digit [Australian Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or spaces.\n * **caRoutingNumber**: The 9-digit [Canadian routing number](https://en.wikipedia.org/wiki/Routing_number_(Canada)), in EFT format, without separators or spaces.\n * **gbSortCode**: The 6-digit [UK sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or spaces\n * **usRoutingNumber**: The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or spaces.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AdditionalBankIdentification')
-
-const AddressSchema = z
-  .strictObject({
-    city: z
-      .string()
-      .min(3)
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the city.\n\nSupported characters: **[a-z] [A-Z] [0-9] . - — / # , ’ ° ( ) : ; [ ] & \\ |** and Space.\n\n> Required when the `category` is **card**.\n',
-      }),
-    country: z
-      .string()
-      .openapi({
-        description:
-          'The two-character ISO 3166-1 alpha-2 country code. For example, **US**, **NL**, or **GB**.',
-      }),
-    line1: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The first line of the street address.\n\nSupported characters: **[a-z] [A-Z] [0-9] . - — / # , ’ ° ( ) : ; [ ] & \\ |** and Space.\n\n> Required when the `category` is **card**.\n',
-      }),
-    line2: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The second line of the street address.\n\nSupported characters: **[a-z] [A-Z] [0-9] . - — / # , ’ ° ( ) : ; [ ] & \\ |** and Space.\n\n> Required when the `category` is **card**.\n',
-      }),
-    postalCode: z
-      .string()
-      .min(3)
-      .exactOptional()
-      .openapi({
-        description:
-          'The postal code.\nMaximum length:\n* 5 digits for an address in the US.\n* 10 characters for an address in all other countries.\n\nSupported characters: **[a-z] [A-Z] [0-9]** and Space.\n\n> Required for addresses in the US.\n',
-      }),
-    stateOrProvince: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '   The two-letter ISO 3166-2 state or province code. For example, **CA** in the US or **ON** in Canada.\n\n   > Required for the US and Canada.\n',
-      }),
-  })
-  .openapi({ required: ['country'] })
-  .openapi('Address')
-
-const LegSchema = z
-  .strictObject({
-    arrivalAirportCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The IATA 3-letter airport code of the destination airport. This field is required if the airline data includes leg details.',
-      }),
-    basicFareCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The basic fare code for this leg.' }),
-    carrierCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'IATA code of the carrier operating the flight.' }),
-    departureAirportCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The IATA three-letter airport code of the departure airport. This field is required if the airline data includes leg details',
-      }),
-    departureDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The flight departure date.' }),
-    flightNumber: z.string().exactOptional().openapi({ description: 'The flight identifier.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Leg')
-
-const AirlineSchema = z
-  .strictObject({
-    legs: z
-      .array(LegSchema)
-      .exactOptional()
-      .openapi({ description: 'Details about the flight legs for this ticket.' }),
-    ticketNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The ticket's unique identifier" }),
-  })
-  .openapi({ required: [] })
-  .openapi('Airline')
-
-const AmountAdjustmentSchema = z
-  .strictObject({
-    amount: AmountSchema.exactOptional().openapi({
-      description: 'The adjustment amount.',
-      'x-addedInVersion': '3',
-    }),
-    amountAdjustmentType: z
-      .enum(['atmMarkup', 'authHoldReserve', 'exchange', 'forexMarkup'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of markup that is applied to an authorised payment.\n\nPossible values: **exchange**, **forexMarkup**, **authHoldReserve**, **atmMarkup**.',
-        'x-addedInVersion': '3',
-      }),
-    basepoints: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The basepoints associated with the applied markup.',
-        'x-addedInVersion': '3',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AmountAdjustment')
-
-const ApproveTransfersRequestSchema = z
-  .strictObject({
-    transferIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Contains the unique identifiers of the transfers that you want to approve.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApproveTransfersRequest')
-
-const BRLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(1)
-      .max(10)
-      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-    bankCode: z
-      .string()
-      .length(3)
-      .openapi({ description: 'The 3-digit bank code, with leading zeros.' }),
-    branchNumber: z
-      .string()
-      .min(1)
-      .max(4)
-      .openapi({
-        description: 'The bank account branch number, without separators or whitespace.',
-      }),
-    ispb: z
-      .string()
-      .length(8)
-      .exactOptional()
-      .openapi({ description: 'The 8-digit ISPB, with leading zeros.' }),
-    type: z.literal('brLocal').default('brLocal').openapi({ description: '**brLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bankCode', 'branchNumber', 'type'] })
-  .openapi('BRLocalAccountIdentification')
 
 const BalanceMutationSchema = z
   .strictObject({
@@ -322,419 +131,6 @@ const BalanceMutationSchema = z
   .openapi({ required: [] })
   .openapi('BalanceMutation')
 
-const PartyIdentificationSchema = z
-  .strictObject({
-    address: AddressSchema.exactOptional().openapi({
-      description: 'The address of the bank account or card owner.',
-    }),
-    dateOfBirth: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date of birth of the individual in [ISO-8601](https://www.w3.org/TR/NOTE-datetime) format. For example, **YYYY-MM-DD**.\n\nAllowed only when `type` is **individual**.',
-      }),
-    email: z
-      .string()
-      .max(254)
-      .exactOptional()
-      .openapi({
-        description:
-          'The email address of the organization or individual. Maximum length: 254 characters.',
-      }),
-    firstName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The first name of the individual.\n\nSupported characters: [a-z] [A-Z] - . / — and space.\n\nThis parameter is:\n- Allowed only when `type` is **individual**.\n- Required when `category` is **card**.',
-      }),
-    fullName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The full name of the entity that owns the bank account or card.\n\nSupported characters: [a-z] [A-Z] [0-9] , . ; : - — / \\ + & ! ? @ ( ) " \' and space.\n\nRequired when `category` is **bank**.',
-      }),
-    lastName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The last name of the individual.\n\nSupported characters: [a-z] [A-Z] - . / — and space.\n\nThis parameter is:\n- Allowed only when `type` is **individual**.\n- Required when `category` is **card**.',
-      }),
-    reference: z
-      .string()
-      .max(150)
-      .exactOptional()
-      .openapi({
-        description:
-          "A unique reference to identify the party or counterparty involved in the transfer. For example, your client's unique wallet or payee ID.\n\nRequired when you include `cardIdentification.storedPaymentMethodId`.",
-      }),
-    type: z
-      .enum(['individual', 'organization', 'unknown'])
-      .default('unknown')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of entity that owns the bank account or card.\n\nPossible values: **individual**, **organization**, or **unknown**.\n\nRequired when `category` is **card**. In this case, the value must be **individual**.',
-      }),
-    url: z
-      .string()
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description: 'The URL of the organization or individual. Maximum length: 255 characters.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('PartyIdentification')
-
-const CALocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(5)
-      .max(12)
-      .openapi({
-        description: 'The 5- to 12-digit bank account number, without separators or whitespace.',
-      }),
-    accountType: z
-      .enum(['checking', 'savings'])
-      .default('checking')
-      .exactOptional()
-      .openapi({
-        description:
-          'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
-      }),
-    institutionNumber: z
-      .string()
-      .length(3)
-      .openapi({
-        description: 'The 3-digit institution number, without separators or whitespace.',
-      }),
-    transitNumber: z
-      .string()
-      .length(5)
-      .openapi({ description: 'The 5-digit transit number, without separators or whitespace.' }),
-    type: z.literal('caLocal').default('caLocal').openapi({ description: '**caLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'institutionNumber', 'transitNumber', 'type'] })
-  .openapi('CALocalAccountIdentification')
-
-const CZLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(2)
-      .max(17)
-      .openapi({
-        description:
-          'The 2- to 16-digit bank account number (Číslo účtu) in the following format:\n\n- The optional prefix (předčíslí).\n\n- The required second part (základní část) which must be at least two non-zero digits.\n\nExamples:\n\n- **19-123457** (with prefix)\n\n- **123457** (without prefix)\n\n- **000019-0000123457** (with prefix, normalized)\n\n- **000000-0000123457** (without prefix, normalized)',
-      }),
-    bankCode: z
-      .string()
-      .length(4)
-      .openapi({
-        description: 'The 4-digit bank code (Kód banky), without separators or whitespace.',
-      }),
-    type: z.literal('czLocal').default('czLocal').openapi({ description: '**czLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
-  .openapi('CZLocalAccountIdentification')
-
-const DKLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(4)
-      .max(10)
-      .openapi({
-        description:
-          'The 4-10 digits bank account number (Kontonummer) (without separators or whitespace).',
-      }),
-    bankCode: z
-      .string()
-      .length(4)
-      .openapi({
-        description:
-          'The 4-digit bank code (Registreringsnummer) (without separators or whitespace).',
-      }),
-    type: z.literal('dkLocal').default('dkLocal').openapi({ description: '**dkLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
-  .openapi('DKLocalAccountIdentification')
-
-const HKLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(9)
-      .max(17)
-      .openapi({
-        description:
-          'The 9- to 17-digit bank account number, without separators or whitespace. Starts with the 3-digit branch code.',
-      }),
-    clearingCode: z
-      .string()
-      .length(3)
-      .openapi({ description: 'The 3-digit clearing code, without separators or whitespace.' }),
-    type: z.literal('hkLocal').default('hkLocal').openapi({ description: '**hkLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'clearingCode', 'type'] })
-  .openapi('HKLocalAccountIdentification')
-
-const HULocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .length(24)
-      .openapi({
-        description: 'The 24-digit bank account number, without separators or whitespace.',
-      }),
-    type: z.literal('huLocal').default('huLocal').openapi({ description: '**huLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'type'] })
-  .openapi('HULocalAccountIdentification')
-
-const IbanAccountIdentificationSchema = z
-  .strictObject({
-    bic: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-    iban: z
-      .string()
-      .openapi({
-        description:
-          'The international bank account number as defined in the [ISO-13616](https://www.iso.org/standard/81090.html) standard.',
-      }),
-    type: z.literal('iban').default('iban').openapi({ description: '**iban**' }),
-  })
-  .openapi({ required: ['iban', 'type'] })
-  .openapi('IbanAccountIdentification')
-
-const NOLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .length(11)
-      .openapi({
-        description: 'The 11-digit bank account number, without separators or whitespace.',
-      }),
-    type: z.literal('noLocal').default('noLocal').openapi({ description: '**noLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'type'] })
-  .openapi('NOLocalAccountIdentification')
-
-const NZLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(15)
-      .max(16)
-      .openapi({
-        description:
-          'The 15-16 digit bank account number. The first 2 digits are the bank number, the next 4 digits are the branch number, the next 7 digits are the account number, and the final 2-3 digits are the suffix.',
-      }),
-    type: z.literal('nzLocal').default('nzLocal').openapi({ description: '**nzLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'type'] })
-  .openapi('NZLocalAccountIdentification')
-
-const NumberAndBicAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .max(34)
-      .openapi({
-        description:
-          'The bank account number, without separators or whitespace. The length and format depends on the bank or country.',
-      }),
-    additionalBankIdentification: AdditionalBankIdentificationSchema.exactOptional().openapi({
-      description:
-        'Additional identification codes of the bank. Some banks may require these identifiers for cross-border transfers.',
-    }),
-    bic: z
-      .string()
-      .min(8)
-      .max(11)
-      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-    type: z
-      .literal('numberAndBic')
-      .default('numberAndBic')
-      .openapi({ description: '**numberAndBic**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bic', 'type'] })
-  .openapi('NumberAndBicAccountIdentification')
-
-const PLLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .length(26)
-      .openapi({
-        description:
-          'The 26-digit bank account number ([Numer rachunku](https://pl.wikipedia.org/wiki/Numer_Rachunku_Bankowego)), without separators or whitespace.',
-      }),
-    type: z.literal('plLocal').default('plLocal').openapi({ description: '**plLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'type'] })
-  .openapi('PLLocalAccountIdentification')
-
-const SELocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(7)
-      .max(10)
-      .openapi({
-        description:
-          'The 7- to 10-digit bank account number ([Bankkontonummer](https://sv.wikipedia.org/wiki/Bankkonto)), without the clearing number, separators, or whitespace.',
-      }),
-    clearingNumber: z
-      .string()
-      .min(4)
-      .max(5)
-      .openapi({
-        description:
-          'The 4- to 5-digit clearing number ([Clearingnummer](https://sv.wikipedia.org/wiki/Clearingnummer)), without separators or whitespace.',
-      }),
-    type: z.literal('seLocal').default('seLocal').openapi({ description: '**seLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'clearingNumber', 'type'] })
-  .openapi('SELocalAccountIdentification')
-
-const SGLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(4)
-      .max(19)
-      .openapi({
-        description: 'The 4- to 19-digit bank account number, without separators or whitespace.',
-      }),
-    bic: z
-      .string()
-      .min(8)
-      .max(11)
-      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
-    type: z
-      .literal('sgLocal')
-      .default('sgLocal')
-      .exactOptional()
-      .openapi({ description: '**sgLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'bic'] })
-  .openapi('SGLocalAccountIdentification')
-
-const UKLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .length(8)
-      .openapi({
-        description: 'The 8-digit bank account number, without separators or whitespace.',
-      }),
-    sortCode: z
-      .string()
-      .length(6)
-      .openapi({
-        description:
-          'The 6-digit [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace.',
-      }),
-    type: z.literal('ukLocal').default('ukLocal').openapi({ description: '**ukLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'sortCode', 'type'] })
-  .openapi('UKLocalAccountIdentification')
-
-const USLocalAccountIdentificationSchema = z
-  .strictObject({
-    accountNumber: z
-      .string()
-      .min(2)
-      .max(18)
-      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
-    accountType: z
-      .enum(['checking', 'savings'])
-      .default('checking')
-      .exactOptional()
-      .openapi({
-        description:
-          'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
-      }),
-    routingNumber: z
-      .string()
-      .length(9)
-      .openapi({
-        description:
-          'The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or whitespace.',
-      }),
-    type: z.literal('usLocal').default('usLocal').openapi({ description: '**usLocal**' }),
-  })
-  .openapi({ required: ['accountNumber', 'routingNumber', 'type'] })
-  .openapi('USLocalAccountIdentification')
-
-const BankAccountV3Schema = z
-  .strictObject({
-    accountHolder: PartyIdentificationSchema.openapi({
-      description: 'Information about the owner of the bank account.',
-    }),
-    accountIdentification: z
-      .xor([
-        AULocalAccountIdentificationSchema,
-        BRLocalAccountIdentificationSchema,
-        CALocalAccountIdentificationSchema,
-        CZLocalAccountIdentificationSchema,
-        DKLocalAccountIdentificationSchema,
-        HKLocalAccountIdentificationSchema,
-        HULocalAccountIdentificationSchema,
-        IbanAccountIdentificationSchema,
-        NOLocalAccountIdentificationSchema,
-        NZLocalAccountIdentificationSchema,
-        NumberAndBicAccountIdentificationSchema,
-        PLLocalAccountIdentificationSchema,
-        SELocalAccountIdentificationSchema,
-        SGLocalAccountIdentificationSchema,
-        UKLocalAccountIdentificationSchema,
-        USLocalAccountIdentificationSchema,
-      ])
-      .openapi({
-        description:
-          'Contains the bank account details. The fields required in this object depend on the country of the bank account and the currency of the transfer.',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            iban: '#/components/schemas/IbanAccountIdentification',
-            numberAndBic: '#/components/schemas/NumberAndBicAccountIdentification',
-            auLocal: '#/components/schemas/AULocalAccountIdentification',
-            czLocal: '#/components/schemas/CZLocalAccountIdentification',
-            noLocal: '#/components/schemas/NOLocalAccountIdentification',
-            plLocal: '#/components/schemas/PLLocalAccountIdentification',
-            huLocal: '#/components/schemas/HULocalAccountIdentification',
-            seLocal: '#/components/schemas/SELocalAccountIdentification',
-            sgLocal: '#/components/schemas/SGLocalAccountIdentification',
-            ukLocal: '#/components/schemas/UKLocalAccountIdentification',
-            usLocal: '#/components/schemas/USLocalAccountIdentification',
-            brLocal: '#/components/schemas/BRLocalAccountIdentification',
-            dkLocal: '#/components/schemas/DKLocalAccountIdentification',
-            caLocal: '#/components/schemas/CALocalAccountIdentification',
-            nzLocal: '#/components/schemas/NZLocalAccountIdentification',
-            hkLocal: '#/components/schemas/HKLocalAccountIdentification',
-          },
-        },
-      }),
-    storedPaymentMethodId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique token that identifies the stored bank account details of the counterparty for a payout.',
-      }),
-  })
-  .openapi({ required: ['accountHolder', 'accountIdentification'] })
-  .openapi('BankAccountV3')
-
 const BankCategoryDataSchema = z
   .strictObject({
     priority: z
@@ -749,523 +145,6 @@ const BankCategoryDataSchema = z
   })
   .openapi({ required: [] })
   .openapi('BankCategoryData')
-
-const CancelTransfersRequestSchema = z
-  .strictObject({
-    transferIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Contains the unique identifiers of the transfers that you want to cancel.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CancelTransfersRequest')
-
-const CapitalBalanceSchema = z
-  .strictObject({
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
-      }),
-    fee: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Fee amount.' }),
-    principal: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'Principal amount.' }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Total amount. A sum of principal amount and fee amount.',
-      }),
-  })
-  .openapi({ required: ['currency', 'fee', 'principal', 'total'] })
-  .openapi('CapitalBalance')
-
-const GrantCounterpartySchema = z
-  .strictObject({
-    accountHolderId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identifier of the receiving account holder.' }),
-    balanceAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the balance account that belongs to the receiving account holder.',
-      }),
-    transferInstrumentId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the transfer instrument that belongs to the legal entity of the account holder.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GrantCounterparty')
-
-const FeeSchema = z
-  .object({ amount: AmountSchema.openapi({ description: 'Contains the fee amount.' }) })
-  .openapi({ required: ['amount'] })
-  .openapi('Fee')
-
-const RepaymentSchema: z.ZodType<RepaymentType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        basisPoints: z
-          .int32()
-          .openapi({
-            description:
-              'The repayment that is deducted daily from incoming net volume, in [basis points](https://www.investopedia.com/terms/b/basispoint.asp).',
-          }),
-        term: RepaymentTermSchema.exactOptional().openapi({
-          description: 'An object containing the details of the configuration for repayment term.',
-        }),
-        threshold: ThresholdRepaymentSchema.exactOptional().openapi({
-          description: 'An object containing the details of the 30-day repayment threshold.',
-        }),
-      })
-      .openapi({ required: ['basisPoints'] }),
-  )
-  .openapi('Repayment')
-
-const CapitalGrantSchema = z
-  .strictObject({
-    amount: AmountSchema.exactOptional().openapi({
-      description:
-        'An object containing the amount of the grant, in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
-    }),
-    balances: CapitalBalanceSchema.openapi({
-      description: 'An object containing the details of the existing grant.',
-    }),
-    counterparty: GrantCounterpartySchema.exactOptional().openapi({
-      description: 'An object containing the details of the receiving party of the grant.',
-    }),
-    fee: FeeSchema.exactOptional().openapi({
-      description:
-        'An object containing the fee currency and value, in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
-    }),
-    grantAccountId: z
-      .string()
-      .openapi({ description: 'The identifier of the grant account used for the grant.' }),
-    grantOfferId: z
-      .string()
-      .openapi({
-        description:
-          'The identifier of the grant offer that has been selected and from which the grant details will be used.',
-      }),
-    id: z.string().openapi({ description: 'The identifier of the grant reference.' }),
-    repayment: RepaymentSchema.exactOptional().openapi({
-      description: 'An object containing the details of the 30-day repayment threshold.',
-    }),
-    status: z
-      .enum(['Pending', 'Active', 'Repaid', 'Failed', 'WrittenOff', 'Revoked'])
-      .openapi({
-        description:
-          'The current status of the grant. Possible values: **Pending**, **Active**, **Repaid**, **WrittenOff**, **Failed**, **Revoked**.',
-      }),
-  })
-  .openapi({ required: ['balances', 'grantAccountId', 'grantOfferId', 'id', 'status'] })
-  .openapi('CapitalGrant')
-
-const GrantInfoCounterpartySchema = z
-  .strictObject({
-    balanceAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the balance account that belongs to the receiving account holder.',
-      }),
-    transferInstrumentId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the transfer instrument that belongs to the legal entity of the account holder.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GrantInfoCounterparty')
-
-const CapitalGrantInfoSchema = z
-  .strictObject({
-    counterparty: GrantInfoCounterpartySchema.exactOptional().openapi({
-      description: 'An object containing the details of the receiving party of the grant.',
-    }),
-    grantAccountId: z
-      .string()
-      .openapi({ description: 'The identifier of the grant account used for the grant.' }),
-    grantOfferId: z
-      .string()
-      .openapi({
-        description:
-          'The identifier of the grant offer that has been selected and from which the grant details will be used.',
-      }),
-  })
-  .openapi({ required: ['grantAccountId', 'grantOfferId'] })
-  .openapi('CapitalGrantInfo')
-
-const CapitalGrantsSchema = z
-  .strictObject({
-    grants: z
-      .array(CapitalGrantSchema)
-      .openapi({ description: 'The unique identifier of the grant.' }),
-  })
-  .openapi({ required: ['grants'] })
-  .openapi('CapitalGrants')
-
-const CardIdentificationSchema = z
-  .strictObject({
-    expiryMonth: z
-      .string()
-      .length(2)
-      .exactOptional()
-      .openapi({
-        description:
-          'The expiry month of the card.\n\nFormat: two digits. Add a leading zero for single-digit months. For example:\n* 03 = March\n* 11 = November',
-      }),
-    expiryYear: z
-      .string()
-      .length(4)
-      .exactOptional()
-      .openapi({
-        description: 'The expiry year of the card.\n\nFormat: four digits. For example: 2020',
-      }),
-    issueNumber: z
-      .string()
-      .min(1)
-      .max(2)
-      .exactOptional()
-      .openapi({
-        description: 'The issue number of the card. Applies only to some UK debit cards.',
-      }),
-    number: z
-      .string()
-      .min(4)
-      .max(19)
-      .exactOptional()
-      .openapi({
-        description:
-          'The card number without any separators.\n\nFor security, the response only includes the last four digits of the card number.',
-      }),
-    startMonth: z
-      .string()
-      .length(2)
-      .exactOptional()
-      .openapi({
-        description:
-          'The month when the card was issued. Applies only to some UK debit cards.\n\nFormat: two digits. Add a leading zero for single-digit months. For example:\n* 03 = March\n* 11 = November',
-      }),
-    startYear: z
-      .string()
-      .length(4)
-      .exactOptional()
-      .openapi({
-        description:
-          'The year when the card was issued. Applies only to some UK debit cards.\n\nFormat: four digits. For example: 2020',
-      }),
-    storedPaymentMethodId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique [token](/payouts/payout-service/pay-out-to-cards/manage-card-information#save-card-details) created to identify the counterparty.\n\n',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CardIdentification')
-
-const CardSchema = z
-  .strictObject({
-    cardHolder: PartyIdentificationSchema.openapi({
-      description: 'Contains information about the cardholder.',
-    }),
-    cardIdentification: CardIdentificationSchema.openapi({
-      description: 'Contains the identification details of the card.',
-    }),
-  })
-  .openapi({ required: ['cardHolder', 'cardIdentification'] })
-  .openapi('Card')
-
-const ConfirmationTrackingDataSchema = z
-  .strictObject({
-    status: z
-      .enum(['credited', 'accepted'])
-      .openapi({
-        description:
-          "The status of the transfer.\n\nPossible values:\n\n - **credited**: the funds are credited to your user's transfer instrument or bank account.- **accepted**: the request is accepted by the integration.",
-      }),
-    type: z
-      .literal('confirmation')
-      .default('confirmation')
-      .openapi({
-        description:
-          "The type of the tracking event.\n\nPossible values:\n\n - **confirmation**: the transfer passed Adyen's internal review.",
-      }),
-  })
-  .openapi({ required: ['status', 'type'] })
-  .openapi('ConfirmationTrackingData')
-
-const CounterpartyInfoV3Schema = z
-  .strictObject({
-    balanceAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the counterparty [balance account](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id).',
-      }),
-    bankAccount: BankAccountV3Schema.exactOptional().openapi({
-      description: 'Contains information about the counterparty bank account.',
-    }),
-    card: CardSchema.exactOptional().openapi({
-      description: 'Contains information about the counterparty card.',
-    }),
-    transferInstrumentId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the counterparty [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id).',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CounterpartyInfoV3')
-
-const NameLocationSchema = z
-  .strictObject({
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The city where the merchant is located.' }),
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The country where the merchant is located in [three-letter country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.',
-      }),
-    countryOfOrigin: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The home country in [three-digit country code](https://en.wikipedia.org/wiki/ISO_3166-1_numeric) format, used for government-controlled merchants such as embassies.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The name of the merchant's shop or service." }),
-    rawData: z.string().exactOptional().openapi({ description: 'The raw data.' }),
-    state: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The state where the merchant is located.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('NameLocation')
-
-const MerchantDataSchema = z
-  .strictObject({
-    acquirerId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The unique identifier of the merchant's acquirer." }),
-    mcc: z.string().exactOptional().openapi({ description: 'The merchant category code.' }),
-    merchantId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the merchant.' }),
-    nameLocation: NameLocationSchema.exactOptional().openapi({
-      description: 'Contains the name and location of the merchant.',
-    }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The postal code of the merchant.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MerchantData')
-
-const CounterpartyV3Schema = z
-  .strictObject({
-    balanceAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the counterparty [balance account](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id).',
-      }),
-    bankAccount: BankAccountV3Schema.exactOptional().openapi({
-      description: 'Contains information about the counterparty bank account.',
-    }),
-    card: CardSchema.exactOptional().openapi({
-      description: 'Contains information about the counterparty card.',
-    }),
-    merchant: MerchantDataSchema.exactOptional().openapi({
-      description: 'Contains information about the merchant.',
-    }),
-    transferInstrumentId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the counterparty [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id).',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CounterpartyV3')
-
-const DirectDebitInformationSchema = z
-  .strictObject({
-    dateOfSignature: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date when the direct debit mandate was accepted by your user, in [ISO-8601](https://www.w3.org/TR/NOTE-datetime) format.',
-      }),
-    dueDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: "The date when the funds are deducted from your user's balance account.",
-      }),
-    mandateId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Your unique identifier for the direct debit mandate.' }),
-    sequenceType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Identifies the direct debit transfer's type.\nPossible values: **OneOff**, **First**, **Recurring**, **Final**.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DirectDebitInformation')
-
-const EstimationTrackingDataSchema = z
-  .strictObject({
-    estimatedArrivalTime: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The estimated time the beneficiary should have access to the funds.',
-      }),
-    type: z
-      .literal('estimation')
-      .default('estimation')
-      .openapi({
-        description:
-          'The type of tracking event. \n\nPossible values: \n\n- **estimation**: the estimated date and time of when the funds will be credited has been determined.',
-      }),
-  })
-  .openapi({ required: ['estimatedArrivalTime', 'type'] })
-  .openapi('EstimationTrackingData')
-
-const ExecutionDateSchema = z
-  .strictObject({
-    date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date when the transfer will be processed. This date must be:\n* Within 30 days of the current date.\n* In the [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) **YYYY-MM-DD**. For example: 2025-01-31',
-      }),
-    timezone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timezone that applies to the execution date. Use a timezone identifier from the [tz database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).\n\nExample: **America/Los_Angeles**.\n Default value: **Europe/Amsterdam**.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ExecutionDate')
-
-const ExternalReasonSchema = z
-  .strictObject({
-    code: z.string().exactOptional().openapi({ description: 'The reason code.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the reason code.' }),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The namespace for the reason code.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ExternalReason')
-
-const LinkSchema = z
-  .strictObject({
-    href: z.string().exactOptional().openapi({ description: 'The link to the resource.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Link')
-
-const LinksSchema = z
-  .strictObject({
-    next: LinkSchema.exactOptional().openapi({ description: 'Contains a link to the next page.' }),
-    prev: LinkSchema.exactOptional().openapi({
-      description: 'Contains a link to the previous page.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('Links')
-
-const ResourceReferenceSchema = z
-  .strictObject({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the resource.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the resource.' }),
-    reference: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The reference for the resource.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ResourceReference')
 
 const InternalCategoryDataSchema = z
   .strictObject({
@@ -1488,6 +367,605 @@ const PlatformPaymentSchema = z
   .openapi({ required: [] })
   .openapi('PlatformPayment')
 
+const AddressSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .min(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the city.\n\nSupported characters: **[a-z] [A-Z] [0-9] . - — / # , ’ ° ( ) : ; [ ] & \\ |** and Space.\n\n> Required when the `category` is **card**.\n',
+      }),
+    country: z
+      .string()
+      .openapi({
+        description:
+          'The two-character ISO 3166-1 alpha-2 country code. For example, **US**, **NL**, or **GB**.',
+      }),
+    line1: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The first line of the street address.\n\nSupported characters: **[a-z] [A-Z] [0-9] . - — / # , ’ ° ( ) : ; [ ] & \\ |** and Space.\n\n> Required when the `category` is **card**.\n',
+      }),
+    line2: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The second line of the street address.\n\nSupported characters: **[a-z] [A-Z] [0-9] . - — / # , ’ ° ( ) : ; [ ] & \\ |** and Space.\n\n> Required when the `category` is **card**.\n',
+      }),
+    postalCode: z
+      .string()
+      .min(3)
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code.\nMaximum length:\n* 5 digits for an address in the US.\n* 10 characters for an address in all other countries.\n\nSupported characters: **[a-z] [A-Z] [0-9]** and Space.\n\n> Required for addresses in the US.\n',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '   The two-letter ISO 3166-2 state or province code. For example, **CA** in the US or **ON** in Canada.\n\n   > Required for the US and Canada.\n',
+      }),
+  })
+  .openapi({ required: ['country'] })
+  .openapi('Address')
+
+const PartyIdentificationSchema = z
+  .strictObject({
+    address: AddressSchema.exactOptional().openapi({
+      description: 'The address of the bank account or card owner.',
+    }),
+    dateOfBirth: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date of birth of the individual in [ISO-8601](https://www.w3.org/TR/NOTE-datetime) format. For example, **YYYY-MM-DD**.\n\nAllowed only when `type` is **individual**.',
+      }),
+    email: z
+      .string()
+      .max(254)
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address of the organization or individual. Maximum length: 254 characters.',
+      }),
+    firstName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The first name of the individual.\n\nSupported characters: [a-z] [A-Z] - . / — and space.\n\nThis parameter is:\n- Allowed only when `type` is **individual**.\n- Required when `category` is **card**.',
+      }),
+    fullName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The full name of the entity that owns the bank account or card.\n\nSupported characters: [a-z] [A-Z] [0-9] , . ; : - — / \\ + & ! ? @ ( ) " \' and space.\n\nRequired when `category` is **bank**.',
+      }),
+    lastName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The last name of the individual.\n\nSupported characters: [a-z] [A-Z] - . / — and space.\n\nThis parameter is:\n- Allowed only when `type` is **individual**.\n- Required when `category` is **card**.',
+      }),
+    reference: z
+      .string()
+      .max(150)
+      .exactOptional()
+      .openapi({
+        description:
+          "A unique reference to identify the party or counterparty involved in the transfer. For example, your client's unique wallet or payee ID.\n\nRequired when you include `cardIdentification.storedPaymentMethodId`.",
+      }),
+    type: z
+      .enum(['individual', 'organization', 'unknown'])
+      .default('unknown')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of entity that owns the bank account or card.\n\nPossible values: **individual**, **organization**, or **unknown**.\n\nRequired when `category` is **card**. In this case, the value must be **individual**.',
+      }),
+    url: z
+      .string()
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description: 'The URL of the organization or individual. Maximum length: 255 characters.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PartyIdentification')
+
+const AULocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(5)
+      .max(9)
+      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+    bsbCode: z
+      .string()
+      .length(6)
+      .openapi({
+        description:
+          'The 6-digit [Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or whitespace.',
+      }),
+    type: z.literal('auLocal').default('auLocal').openapi({ description: '**auLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bsbCode', 'type'] })
+  .openapi('AULocalAccountIdentification')
+
+const BRLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(1)
+      .max(10)
+      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+    bankCode: z
+      .string()
+      .length(3)
+      .openapi({ description: 'The 3-digit bank code, with leading zeros.' }),
+    branchNumber: z
+      .string()
+      .min(1)
+      .max(4)
+      .openapi({
+        description: 'The bank account branch number, without separators or whitespace.',
+      }),
+    ispb: z
+      .string()
+      .length(8)
+      .exactOptional()
+      .openapi({ description: 'The 8-digit ISPB, with leading zeros.' }),
+    type: z.literal('brLocal').default('brLocal').openapi({ description: '**brLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bankCode', 'branchNumber', 'type'] })
+  .openapi('BRLocalAccountIdentification')
+
+const CALocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(5)
+      .max(12)
+      .openapi({
+        description: 'The 5- to 12-digit bank account number, without separators or whitespace.',
+      }),
+    accountType: z
+      .enum(['checking', 'savings'])
+      .default('checking')
+      .exactOptional()
+      .openapi({
+        description:
+          'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
+      }),
+    institutionNumber: z
+      .string()
+      .length(3)
+      .openapi({
+        description: 'The 3-digit institution number, without separators or whitespace.',
+      }),
+    transitNumber: z
+      .string()
+      .length(5)
+      .openapi({ description: 'The 5-digit transit number, without separators or whitespace.' }),
+    type: z.literal('caLocal').default('caLocal').openapi({ description: '**caLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'institutionNumber', 'transitNumber', 'type'] })
+  .openapi('CALocalAccountIdentification')
+
+const CZLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(2)
+      .max(17)
+      .openapi({
+        description:
+          'The 2- to 16-digit bank account number (Číslo účtu) in the following format:\n\n- The optional prefix (předčíslí).\n\n- The required second part (základní část) which must be at least two non-zero digits.\n\nExamples:\n\n- **19-123457** (with prefix)\n\n- **123457** (without prefix)\n\n- **000019-0000123457** (with prefix, normalized)\n\n- **000000-0000123457** (without prefix, normalized)',
+      }),
+    bankCode: z
+      .string()
+      .length(4)
+      .openapi({
+        description: 'The 4-digit bank code (Kód banky), without separators or whitespace.',
+      }),
+    type: z.literal('czLocal').default('czLocal').openapi({ description: '**czLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
+  .openapi('CZLocalAccountIdentification')
+
+const DKLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(4)
+      .max(10)
+      .openapi({
+        description:
+          'The 4-10 digits bank account number (Kontonummer) (without separators or whitespace).',
+      }),
+    bankCode: z
+      .string()
+      .length(4)
+      .openapi({
+        description:
+          'The 4-digit bank code (Registreringsnummer) (without separators or whitespace).',
+      }),
+    type: z.literal('dkLocal').default('dkLocal').openapi({ description: '**dkLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bankCode', 'type'] })
+  .openapi('DKLocalAccountIdentification')
+
+const HKLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(9)
+      .max(17)
+      .openapi({
+        description:
+          'The 9- to 17-digit bank account number, without separators or whitespace. Starts with the 3-digit branch code.',
+      }),
+    clearingCode: z
+      .string()
+      .length(3)
+      .openapi({ description: 'The 3-digit clearing code, without separators or whitespace.' }),
+    type: z.literal('hkLocal').default('hkLocal').openapi({ description: '**hkLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'clearingCode', 'type'] })
+  .openapi('HKLocalAccountIdentification')
+
+const HULocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .length(24)
+      .openapi({
+        description: 'The 24-digit bank account number, without separators or whitespace.',
+      }),
+    type: z.literal('huLocal').default('huLocal').openapi({ description: '**huLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'type'] })
+  .openapi('HULocalAccountIdentification')
+
+const IbanAccountIdentificationSchema = z
+  .strictObject({
+    bic: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+    iban: z
+      .string()
+      .openapi({
+        description:
+          'The international bank account number as defined in the [ISO-13616](https://www.iso.org/standard/81090.html) standard.',
+      }),
+    type: z.literal('iban').default('iban').openapi({ description: '**iban**' }),
+  })
+  .openapi({ required: ['iban', 'type'] })
+  .openapi('IbanAccountIdentification')
+
+const NOLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .length(11)
+      .openapi({
+        description: 'The 11-digit bank account number, without separators or whitespace.',
+      }),
+    type: z.literal('noLocal').default('noLocal').openapi({ description: '**noLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'type'] })
+  .openapi('NOLocalAccountIdentification')
+
+const NZLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(15)
+      .max(16)
+      .openapi({
+        description:
+          'The 15-16 digit bank account number. The first 2 digits are the bank number, the next 4 digits are the branch number, the next 7 digits are the account number, and the final 2-3 digits are the suffix.',
+      }),
+    type: z.literal('nzLocal').default('nzLocal').openapi({ description: '**nzLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'type'] })
+  .openapi('NZLocalAccountIdentification')
+
+const AdditionalBankIdentificationSchema = z
+  .strictObject({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value of the additional bank identification.' }),
+    type: z
+      .enum(['auBsbCode', 'caRoutingNumber', 'gbSortCode', 'usRoutingNumber'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of additional bank identification, depending on the country.\n\nPossible values:\n\n * **auBsbCode**: The 6-digit [Australian Bank State Branch (BSB) code](https://en.wikipedia.org/wiki/Bank_state_branch), without separators or spaces.\n * **caRoutingNumber**: The 9-digit [Canadian routing number](https://en.wikipedia.org/wiki/Routing_number_(Canada)), in EFT format, without separators or spaces.\n * **gbSortCode**: The 6-digit [UK sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or spaces\n * **usRoutingNumber**: The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or spaces.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalBankIdentification')
+
+const NumberAndBicAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .max(34)
+      .openapi({
+        description:
+          'The bank account number, without separators or whitespace. The length and format depends on the bank or country.',
+      }),
+    additionalBankIdentification: AdditionalBankIdentificationSchema.exactOptional().openapi({
+      description:
+        'Additional identification codes of the bank. Some banks may require these identifiers for cross-border transfers.',
+    }),
+    bic: z
+      .string()
+      .min(8)
+      .max(11)
+      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+    type: z
+      .literal('numberAndBic')
+      .default('numberAndBic')
+      .openapi({ description: '**numberAndBic**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bic', 'type'] })
+  .openapi('NumberAndBicAccountIdentification')
+
+const PLLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .length(26)
+      .openapi({
+        description:
+          'The 26-digit bank account number ([Numer rachunku](https://pl.wikipedia.org/wiki/Numer_Rachunku_Bankowego)), without separators or whitespace.',
+      }),
+    type: z.literal('plLocal').default('plLocal').openapi({ description: '**plLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'type'] })
+  .openapi('PLLocalAccountIdentification')
+
+const SELocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(7)
+      .max(10)
+      .openapi({
+        description:
+          'The 7- to 10-digit bank account number ([Bankkontonummer](https://sv.wikipedia.org/wiki/Bankkonto)), without the clearing number, separators, or whitespace.',
+      }),
+    clearingNumber: z
+      .string()
+      .min(4)
+      .max(5)
+      .openapi({
+        description:
+          'The 4- to 5-digit clearing number ([Clearingnummer](https://sv.wikipedia.org/wiki/Clearingnummer)), without separators or whitespace.',
+      }),
+    type: z.literal('seLocal').default('seLocal').openapi({ description: '**seLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'clearingNumber', 'type'] })
+  .openapi('SELocalAccountIdentification')
+
+const SGLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(4)
+      .max(19)
+      .openapi({
+        description: 'The 4- to 19-digit bank account number, without separators or whitespace.',
+      }),
+    bic: z
+      .string()
+      .min(8)
+      .max(11)
+      .openapi({ description: "The bank's 8- or 11-character BIC or SWIFT code." }),
+    type: z
+      .literal('sgLocal')
+      .default('sgLocal')
+      .exactOptional()
+      .openapi({ description: '**sgLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'bic'] })
+  .openapi('SGLocalAccountIdentification')
+
+const UKLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .length(8)
+      .openapi({
+        description: 'The 8-digit bank account number, without separators or whitespace.',
+      }),
+    sortCode: z
+      .string()
+      .length(6)
+      .openapi({
+        description:
+          'The 6-digit [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace.',
+      }),
+    type: z.literal('ukLocal').default('ukLocal').openapi({ description: '**ukLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'sortCode', 'type'] })
+  .openapi('UKLocalAccountIdentification')
+
+const USLocalAccountIdentificationSchema = z
+  .strictObject({
+    accountNumber: z
+      .string()
+      .min(2)
+      .max(18)
+      .openapi({ description: 'The bank account number, without separators or whitespace.' }),
+    accountType: z
+      .enum(['checking', 'savings'])
+      .default('checking')
+      .exactOptional()
+      .openapi({
+        description:
+          'The bank account type.\n\nPossible values: **checking** or **savings**. Defaults to **checking**.',
+      }),
+    routingNumber: z
+      .string()
+      .length(9)
+      .openapi({
+        description:
+          'The 9-digit [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or whitespace.',
+      }),
+    type: z.literal('usLocal').default('usLocal').openapi({ description: '**usLocal**' }),
+  })
+  .openapi({ required: ['accountNumber', 'routingNumber', 'type'] })
+  .openapi('USLocalAccountIdentification')
+
+const BankAccountV3Schema = z
+  .strictObject({
+    accountHolder: PartyIdentificationSchema.openapi({
+      description: 'Information about the owner of the bank account.',
+    }),
+    accountIdentification: z
+      .xor([
+        AULocalAccountIdentificationSchema,
+        BRLocalAccountIdentificationSchema,
+        CALocalAccountIdentificationSchema,
+        CZLocalAccountIdentificationSchema,
+        DKLocalAccountIdentificationSchema,
+        HKLocalAccountIdentificationSchema,
+        HULocalAccountIdentificationSchema,
+        IbanAccountIdentificationSchema,
+        NOLocalAccountIdentificationSchema,
+        NZLocalAccountIdentificationSchema,
+        NumberAndBicAccountIdentificationSchema,
+        PLLocalAccountIdentificationSchema,
+        SELocalAccountIdentificationSchema,
+        SGLocalAccountIdentificationSchema,
+        UKLocalAccountIdentificationSchema,
+        USLocalAccountIdentificationSchema,
+      ])
+      .openapi({
+        description:
+          'Contains the bank account details. The fields required in this object depend on the country of the bank account and the currency of the transfer.',
+        discriminator: {
+          propertyName: 'type',
+          mapping: {
+            iban: '#/components/schemas/IbanAccountIdentification',
+            numberAndBic: '#/components/schemas/NumberAndBicAccountIdentification',
+            auLocal: '#/components/schemas/AULocalAccountIdentification',
+            czLocal: '#/components/schemas/CZLocalAccountIdentification',
+            noLocal: '#/components/schemas/NOLocalAccountIdentification',
+            plLocal: '#/components/schemas/PLLocalAccountIdentification',
+            huLocal: '#/components/schemas/HULocalAccountIdentification',
+            seLocal: '#/components/schemas/SELocalAccountIdentification',
+            sgLocal: '#/components/schemas/SGLocalAccountIdentification',
+            ukLocal: '#/components/schemas/UKLocalAccountIdentification',
+            usLocal: '#/components/schemas/USLocalAccountIdentification',
+            brLocal: '#/components/schemas/BRLocalAccountIdentification',
+            dkLocal: '#/components/schemas/DKLocalAccountIdentification',
+            caLocal: '#/components/schemas/CALocalAccountIdentification',
+            nzLocal: '#/components/schemas/NZLocalAccountIdentification',
+            hkLocal: '#/components/schemas/HKLocalAccountIdentification',
+          },
+        },
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique token that identifies the stored bank account details of the counterparty for a payout.',
+      }),
+  })
+  .openapi({ required: ['accountHolder', 'accountIdentification'] })
+  .openapi('BankAccountV3')
+
+const CardIdentificationSchema = z
+  .strictObject({
+    expiryMonth: z
+      .string()
+      .length(2)
+      .exactOptional()
+      .openapi({
+        description:
+          'The expiry month of the card.\n\nFormat: two digits. Add a leading zero for single-digit months. For example:\n* 03 = March\n* 11 = November',
+      }),
+    expiryYear: z
+      .string()
+      .length(4)
+      .exactOptional()
+      .openapi({
+        description: 'The expiry year of the card.\n\nFormat: four digits. For example: 2020',
+      }),
+    issueNumber: z
+      .string()
+      .min(1)
+      .max(2)
+      .exactOptional()
+      .openapi({
+        description: 'The issue number of the card. Applies only to some UK debit cards.',
+      }),
+    number: z
+      .string()
+      .min(4)
+      .max(19)
+      .exactOptional()
+      .openapi({
+        description:
+          'The card number without any separators.\n\nFor security, the response only includes the last four digits of the card number.',
+      }),
+    startMonth: z
+      .string()
+      .length(2)
+      .exactOptional()
+      .openapi({
+        description:
+          'The month when the card was issued. Applies only to some UK debit cards.\n\nFormat: two digits. Add a leading zero for single-digit months. For example:\n* 03 = March\n* 11 = November',
+      }),
+    startYear: z
+      .string()
+      .length(4)
+      .exactOptional()
+      .openapi({
+        description:
+          'The year when the card was issued. Applies only to some UK debit cards.\n\nFormat: four digits. For example: 2020',
+      }),
+    storedPaymentMethodId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique [token](/payouts/payout-service/pay-out-to-cards/manage-card-information#save-card-details) created to identify the counterparty.\n\n',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CardIdentification')
+
+const CardSchema = z
+  .strictObject({
+    cardHolder: PartyIdentificationSchema.openapi({
+      description: 'Contains information about the cardholder.',
+    }),
+    cardIdentification: CardIdentificationSchema.openapi({
+      description: 'Contains the identification details of the card.',
+    }),
+  })
+  .openapi({ required: ['cardHolder', 'cardIdentification'] })
+  .openapi('Card')
+
 const TransferNotificationMerchantDataSchema = z
   .strictObject({
     acquirerId: z
@@ -1555,6 +1033,61 @@ const TransferNotificationCounterPartySchema = z
   .openapi({ required: [] })
   .openapi('TransferNotificationCounterParty')
 
+const DirectDebitInformationSchema = z
+  .strictObject({
+    dateOfSignature: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date when the direct debit mandate was accepted by your user, in [ISO-8601](https://www.w3.org/TR/NOTE-datetime) format.',
+      }),
+    dueDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: "The date when the funds are deducted from your user's balance account.",
+      }),
+    mandateId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Your unique identifier for the direct debit mandate.' }),
+    sequenceType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Identifies the direct debit transfer's type.\nPossible values: **OneOff**, **First**, **Recurring**, **Final**.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DirectDebitInformation')
+
+const AmountAdjustmentSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description: 'The adjustment amount.',
+      'x-addedInVersion': '3',
+    }),
+    amountAdjustmentType: z
+      .enum(['atmMarkup', 'authHoldReserve', 'exchange', 'forexMarkup'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of markup that is applied to an authorised payment.\n\nPossible values: **exchange**, **forexMarkup**, **authHoldReserve**, **atmMarkup**.',
+        'x-addedInVersion': '3',
+      }),
+    basepoints: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The basepoints associated with the applied markup.',
+        'x-addedInVersion': '3',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AmountAdjustment')
+
 const InterchangeDataSchema = z
   .strictObject({
     interchangeAmount: AmountSchema.exactOptional().openapi({
@@ -1595,6 +1128,53 @@ const IssuingTransactionDataSchema = z
   .openapi({ required: ['type'] })
   .openapi('IssuingTransactionData')
 
+const LegSchema = z
+  .strictObject({
+    arrivalAirportCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IATA 3-letter airport code of the destination airport. This field is required if the airline data includes leg details.',
+      }),
+    basicFareCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The basic fare code for this leg.' }),
+    carrierCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'IATA code of the carrier operating the flight.' }),
+    departureAirportCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IATA three-letter airport code of the departure airport. This field is required if the airline data includes leg details',
+      }),
+    departureDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The flight departure date.' }),
+    flightNumber: z.string().exactOptional().openapi({ description: 'The flight identifier.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Leg')
+
+const AirlineSchema = z
+  .strictObject({
+    legs: z
+      .array(LegSchema)
+      .exactOptional()
+      .openapi({ description: 'Details about the flight legs for this ticket.' }),
+    ticketNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The ticket's unique identifier" }),
+  })
+  .openapi({ required: [] })
+  .openapi('Airline')
+
 const LodgingSchema = z
   .strictObject({
     checkInDate: z.string().exactOptional().openapi({ description: 'The check-in date.' }),
@@ -1623,6 +1203,21 @@ const MerchantPurchaseDataSchema = z
   })
   .openapi({ required: ['type'] })
   .openapi('MerchantPurchaseData')
+
+const ExternalReasonSchema = z
+  .strictObject({
+    code: z.string().exactOptional().openapi({ description: 'The reason code.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the reason code.' }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The namespace for the reason code.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ExternalReason')
 
 const ModificationSchema = z
   .strictObject({
@@ -1750,6 +1345,43 @@ const USAchTracingDataSchema = z
   })
   .openapi({ required: ['traceNumber', 'type'] })
   .openapi('USAchTracingData')
+
+const ConfirmationTrackingDataSchema = z
+  .strictObject({
+    status: z
+      .enum(['credited', 'accepted'])
+      .openapi({
+        description:
+          "The status of the transfer.\n\nPossible values:\n\n - **credited**: the funds are credited to your user's transfer instrument or bank account.- **accepted**: the request is accepted by the integration.",
+      }),
+    type: z
+      .literal('confirmation')
+      .default('confirmation')
+      .openapi({
+        description:
+          "The type of the tracking event.\n\nPossible values:\n\n - **confirmation**: the transfer passed Adyen's internal review.",
+      }),
+  })
+  .openapi({ required: ['status', 'type'] })
+  .openapi('ConfirmationTrackingData')
+
+const EstimationTrackingDataSchema = z
+  .strictObject({
+    estimatedArrivalTime: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The estimated time the beneficiary should have access to the funds.',
+      }),
+    type: z
+      .literal('estimation')
+      .default('estimation')
+      .openapi({
+        description:
+          'The type of tracking event. \n\nPossible values: \n\n- **estimation**: the estimated date and time of when the funds will be credited has been determined.',
+      }),
+  })
+  .openapi({ required: ['estimatedArrivalTime', 'type'] })
+  .openapi('EstimationTrackingData')
 
 const InternalReviewTrackingDataSchema = z
   .strictObject({
@@ -2097,6 +1729,26 @@ const TransferEventSchema = z
   .openapi({ required: [] })
   .openapi('TransferEvent')
 
+const ExecutionDateSchema = z
+  .strictObject({
+    date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date when the transfer will be processed. This date must be:\n* Within 30 days of the current date.\n* In the [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) **YYYY-MM-DD**. For example: 2025-01-31',
+      }),
+    timezone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timezone that applies to the execution date. Use a timezone identifier from the [tz database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).\n\nExample: **America/Los_Angeles**.\n Default value: **Europe/Amsterdam**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ExecutionDate')
+
 const NetworkReasonSchema = z
   .strictObject({
     code: z
@@ -2359,7 +2011,246 @@ const UltimatePartyIdentificationSchema = z
   .openapi({ required: [] })
   .openapi('UltimatePartyIdentification')
 
-const TransferDataSchema = z
+type TransferDataType = {
+  accountHolder?: z.infer<typeof ResourceReferenceSchema>
+  amount: z.infer<typeof AmountSchema>
+  balanceAccount?: z.infer<typeof ResourceReferenceSchema>
+  balancePlatform?: string
+  balances?: z.infer<typeof BalanceMutationSchema>[]
+  category: 'bank' | 'card' | 'interest' | 'internal' | 'issuedCard' | 'platformPayment' | 'topUp'
+  categoryData?:
+    | z.infer<typeof BankCategoryDataSchema>
+    | z.infer<typeof InternalCategoryDataSchema>
+    | z.infer<typeof IssuedCardSchema>
+    | z.infer<typeof PlatformPaymentSchema>
+  counterparty?: z.infer<typeof TransferNotificationCounterPartySchema>
+  createdAt?: string
+  creationDate?: string
+  description?: string
+  directDebitInformation?: z.infer<typeof DirectDebitInformationSchema>
+  direction?: 'incoming' | 'outgoing'
+  eventId?: string
+  events?: z.infer<typeof TransferEventSchema>[]
+  executionDate?: z.infer<typeof ExecutionDateSchema>
+  externalReason?: z.infer<typeof ExternalReasonSchema>
+  id?: string
+  networkReason?: z.infer<typeof NetworkReasonSchema>
+  paymentInstrument?: z.infer<typeof PaymentInstrumentSchema>
+  reason?:
+    | 'accountHierarchyNotActive'
+    | 'amountLimitExceeded'
+    | 'approvalExpired'
+    | 'approved'
+    | 'avsDeclined'
+    | 'balanceAccountTemporarilyBlockedByTransactionRule'
+    | 'blockCard'
+    | 'callReferral'
+    | 'cancelled'
+    | 'captureCard'
+    | 'cardExpired'
+    | 'cardholderAuthenticationRequired'
+    | 'cashbackAmountExceedsLimit'
+    | 'cavvDeclined'
+    | 'contactlessFallback'
+    | 'contactlessLimitReached'
+    | 'counterpartyAccountBlocked'
+    | 'counterpartyAccountClosed'
+    | 'counterpartyAccountNotFound'
+    | 'counterpartyAddressRequired'
+    | 'counterpartyBankTimedOut'
+    | 'counterpartyBankUnavailable'
+    | 'cryptographicFailure'
+    | 'cvcDeclined'
+    | 'declined'
+    | 'declinedByBapValidation'
+    | 'declinedByTransactionRule'
+    | 'declinedNonGeneric'
+    | 'directDebitNotSupported'
+    | 'doNotHonor'
+    | 'domesticDebitTransactionNotAllowed'
+    | 'duplicateTransmissionDetected'
+    | 'error'
+    | 'formatError'
+    | 'fraud'
+    | 'fraudCancelled'
+    | 'honorWithId'
+    | 'internalTimeout'
+    | 'invalidAccount'
+    | 'invalidAmount'
+    | 'invalidAuthorizationLifeCycle'
+    | 'invalidCard'
+    | 'invalidExpiryDate'
+    | 'invalidFromAccount'
+    | 'invalidIssuer'
+    | 'invalidMerchant'
+    | 'invalidPin'
+    | 'invalidToAccount'
+    | 'invalidTransaction'
+    | 'issuerSuspectedFraud'
+    | 'lostCard'
+    | 'mobilePinRequired'
+    | 'noCheckingAccount'
+    | 'noSavingsAccount'
+    | 'not3dAuthenticated'
+    | 'notEnoughBalance'
+    | 'notSubmitted'
+    | 'notSupported'
+    | 'partiallyApproved'
+    | 'pending'
+    | 'pendingApproval'
+    | 'pendingExecution'
+    | 'pinNotChanged'
+    | 'pinRequired'
+    | 'pinTriesExceeded'
+    | 'pinValidationNotPossible'
+    | 'purchaseAmountOnlyNoCashBack'
+    | 'refusedByCounterpartyBank'
+    | 'refusedByCustomer'
+    | 'restrictedCard'
+    | 'revocationOfAuth'
+    | 'routeNotFound'
+    | 'scaAuthenticationRequired'
+    | 'scaFailed'
+    | 'schemeAdvice'
+    | 'securityViolation'
+    | 'shopperCancelled'
+    | 'stolenCard'
+    | 'threedsDynamicLinkingMismatch'
+    | 'transactionNotPermitted'
+    | 'transferInstrumentDoesNotExist'
+    | 'unableToRouteTransaction'
+    | 'unknown'
+    | 'withdrawalAmountExceeded'
+    | 'withdrawalCountExceeded'
+  reference?: string
+  referenceForBeneficiary?: string
+  review?: z.infer<typeof TransferReviewSchema>
+  sequenceNumber?: number
+  status:
+    | 'approvalPending'
+    | 'atmWithdrawal'
+    | 'atmWithdrawalReversalPending'
+    | 'atmWithdrawalReversed'
+    | 'authAdjustmentAuthorised'
+    | 'authAdjustmentError'
+    | 'authAdjustmentRefused'
+    | 'authorised'
+    | 'bankTransfer'
+    | 'bankTransferPending'
+    | 'booked'
+    | 'bookingPending'
+    | 'cancelled'
+    | 'capturePending'
+    | 'captureReversalPending'
+    | 'captureReversed'
+    | 'captured'
+    | 'capturedExternally'
+    | 'chargeback'
+    | 'chargebackExternally'
+    | 'chargebackPending'
+    | 'chargebackReversalPending'
+    | 'chargebackReversed'
+    | 'credited'
+    | 'depositCorrection'
+    | 'depositCorrectionPending'
+    | 'dispute'
+    | 'disputeClosed'
+    | 'disputeExpired'
+    | 'disputeNeedsReview'
+    | 'error'
+    | 'expired'
+    | 'failed'
+    | 'fee'
+    | 'feePending'
+    | 'interchangeAdjusted'
+    | 'internalTransfer'
+    | 'internalTransferPending'
+    | 'invoiceDeduction'
+    | 'invoiceDeductionPending'
+    | 'manualCorrectionPending'
+    | 'manuallyCorrected'
+    | 'matchedStatement'
+    | 'matchedStatementPending'
+    | 'merchantPayin'
+    | 'merchantPayinPending'
+    | 'merchantPayinReversed'
+    | 'merchantPayinReversedPending'
+    | 'miscCost'
+    | 'miscCostPending'
+    | 'paymentCost'
+    | 'paymentCostPending'
+    | 'pending'
+    | 'pendingApproval'
+    | 'pendingExecution'
+    | 'received'
+    | 'refundPending'
+    | 'refundReversalPending'
+    | 'refundReversed'
+    | 'refunded'
+    | 'refundedExternally'
+    | 'refused'
+    | 'rejected'
+    | 'reserveAdjustment'
+    | 'reserveAdjustmentPending'
+    | 'returned'
+    | 'reversalReceived'
+    | 'reversed'
+    | 'secondChargeback'
+    | 'secondChargebackPending'
+    | 'undefined'
+  tracing?: z.infer<typeof UKFpsTracingDataSchema> | z.infer<typeof USAchTracingDataSchema>
+  tracking?:
+    | z.infer<typeof ConfirmationTrackingDataSchema>
+    | z.infer<typeof EstimationTrackingDataSchema>
+    | z.infer<typeof InternalReviewTrackingDataSchema>
+  transactionRulesResult?: z.infer<typeof TransactionRulesResultSchema>
+  type?:
+    | 'payment'
+    | 'capture'
+    | 'captureReversal'
+    | 'refund'
+    | 'refundReversal'
+    | 'chargeback'
+    | 'chargebackCorrection'
+    | 'chargebackReversal'
+    | 'chargebackReversalCorrection'
+    | 'secondChargeback'
+    | 'secondChargebackCorrection'
+    | 'atmWithdrawal'
+    | 'atmWithdrawalReversal'
+    | 'internalTransfer'
+    | 'internalDirectDebit'
+    | 'manualCorrection'
+    | 'invoiceDeduction'
+    | 'depositCorrection'
+    | 'reserveAdjustment'
+    | 'bankTransfer'
+    | 'bankDirectDebit'
+    | 'cardTransfer'
+    | 'miscCost'
+    | 'paymentCost'
+    | 'fee'
+    | 'leftover'
+    | 'grant'
+    | 'capitalFundsCollection'
+    | 'cashOutInstruction'
+    | 'cashoutFee'
+    | 'cashoutRepayment'
+    | 'cashoutFunding'
+    | 'repayment'
+    | 'installment'
+    | 'installmentReversal'
+    | 'balanceAdjustment'
+    | 'balanceRollover'
+    | 'balanceMigration'
+    | 'interestPayout'
+    | 'fxSell'
+    | 'fxBuy'
+  ultimateParty?: z.infer<typeof UltimatePartyIdentificationSchema>
+  updatedAt?: string
+}
+
+const TransferDataSchema: z.ZodType<TransferDataType> = z
   .strictObject({
     accountHolder: ResourceReferenceSchema.exactOptional().openapi({
       description:
@@ -2386,10 +2277,10 @@ const TransferDataSchema = z
         'x-addedInVersion': '3',
       }),
     category: z
-      .enum(['bank', 'card', 'internal', 'issuedCard', 'platformPayment', 'topUp'])
+      .enum(['bank', 'card', 'interest', 'internal', 'issuedCard', 'platformPayment', 'topUp'])
       .openapi({
         description:
-          'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
+          'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
         'x-addedInVersion': '3',
       }),
     categoryData: z
@@ -2769,6 +2660,7 @@ const TransferDataSchema = z
         'balanceAdjustment',
         'balanceRollover',
         'balanceMigration',
+        'interestPayout',
         'fxSell',
         'fxBuy',
       ])
@@ -2794,7 +2686,351 @@ const TransferDataSchema = z
   .openapi({ required: ['amount', 'category', 'status'] })
   .openapi('TransferData')
 
-const FindTransfersResponseSchema = z
+type FindTransfersResponseType = {
+  _links?: z.infer<typeof LinksSchema>
+  data?: z.infer<typeof TransferDataSchema>[]
+}
+
+const ApproveTransfersRequestSchema = z
+  .strictObject({
+    transferIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Contains the unique identifiers of the transfers that you want to approve.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApproveTransfersRequest')
+
+const CancelTransfersRequestSchema = z
+  .strictObject({
+    transferIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Contains the unique identifiers of the transfers that you want to cancel.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CancelTransfersRequest')
+
+const CapitalBalanceSchema = z
+  .strictObject({
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).',
+      }),
+    fee: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Fee amount.' }),
+    principal: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'Principal amount.' }),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Total amount. A sum of principal amount and fee amount.',
+      }),
+  })
+  .openapi({ required: ['currency', 'fee', 'principal', 'total'] })
+  .openapi('CapitalBalance')
+
+const GrantCounterpartySchema = z
+  .strictObject({
+    accountHolderId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identifier of the receiving account holder.' }),
+    balanceAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the balance account that belongs to the receiving account holder.',
+      }),
+    transferInstrumentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the transfer instrument that belongs to the legal entity of the account holder.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GrantCounterparty')
+
+const FeeSchema = z
+  .object({ amount: AmountSchema.openapi({ description: 'Contains the fee amount.' }) })
+  .openapi({ required: ['amount'] })
+  .openapi('Fee')
+
+const RepaymentTermSchema = z
+  .strictObject({
+    estimatedDays: z
+      .int32()
+      .openapi({ description: 'The estimated term for repaying the grant, in days.' }),
+    maximumDays: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum term for repaying the grant, in days. Only applies when `contractType` is **loan**.',
+      }),
+  })
+  .openapi({ required: ['estimatedDays'] })
+  .openapi('RepaymentTerm')
+
+const ThresholdRepaymentSchema = z
+  .strictObject({
+    amount: AmountSchema.openapi({ description: 'The amount to be repaid on a 30-day basis.' }),
+  })
+  .openapi({ required: ['amount'] })
+  .openapi('ThresholdRepayment')
+
+const RepaymentSchema = z
+  .strictObject({
+    basisPoints: z
+      .int32()
+      .openapi({
+        description:
+          'The repayment that is deducted daily from incoming net volume, in [basis points](https://www.investopedia.com/terms/b/basispoint.asp).',
+      }),
+    term: RepaymentTermSchema.exactOptional().openapi({
+      description: 'An object containing the details of the configuration for repayment term.',
+    }),
+    threshold: ThresholdRepaymentSchema.exactOptional().openapi({
+      description: 'An object containing the details of the 30-day repayment threshold.',
+    }),
+  })
+  .openapi({ required: ['basisPoints'] })
+  .openapi('Repayment')
+
+const CapitalGrantSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        'An object containing the amount of the grant, in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+    }),
+    balances: CapitalBalanceSchema.openapi({
+      description: 'An object containing the details of the existing grant.',
+    }),
+    counterparty: GrantCounterpartySchema.exactOptional().openapi({
+      description: 'An object containing the details of the receiving party of the grant.',
+    }),
+    fee: FeeSchema.exactOptional().openapi({
+      description:
+        'An object containing the fee currency and value, in [minor units](https://docs.adyen.com/development-resources/currency-codes).',
+    }),
+    grantAccountId: z
+      .string()
+      .openapi({ description: 'The identifier of the grant account used for the grant.' }),
+    grantOfferId: z
+      .string()
+      .openapi({
+        description:
+          'The identifier of the grant offer that has been selected and from which the grant details will be used.',
+      }),
+    id: z.string().openapi({ description: 'The identifier of the grant reference.' }),
+    repayment: RepaymentSchema.exactOptional().openapi({
+      description: 'An object containing the details of the 30-day repayment threshold.',
+    }),
+    status: z
+      .enum(['Pending', 'Active', 'Repaid', 'Failed', 'WrittenOff', 'Revoked'])
+      .openapi({
+        description:
+          'The current status of the grant. Possible values: **Pending**, **Active**, **Repaid**, **WrittenOff**, **Failed**, **Revoked**.',
+      }),
+  })
+  .openapi({ required: ['balances', 'grantAccountId', 'grantOfferId', 'id', 'status'] })
+  .openapi('CapitalGrant')
+
+const GrantInfoCounterpartySchema = z
+  .strictObject({
+    balanceAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the balance account that belongs to the receiving account holder.',
+      }),
+    transferInstrumentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the transfer instrument that belongs to the legal entity of the account holder.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GrantInfoCounterparty')
+
+const CapitalGrantInfoSchema = z
+  .strictObject({
+    counterparty: GrantInfoCounterpartySchema.exactOptional().openapi({
+      description: 'An object containing the details of the receiving party of the grant.',
+    }),
+    grantAccountId: z
+      .string()
+      .openapi({ description: 'The identifier of the grant account used for the grant.' }),
+    grantOfferId: z
+      .string()
+      .openapi({
+        description:
+          'The identifier of the grant offer that has been selected and from which the grant details will be used.',
+      }),
+  })
+  .openapi({ required: ['grantAccountId', 'grantOfferId'] })
+  .openapi('CapitalGrantInfo')
+
+const CapitalGrantsSchema = z
+  .strictObject({
+    grants: z
+      .array(CapitalGrantSchema)
+      .openapi({ description: 'The unique identifier of the grant.' }),
+  })
+  .openapi({ required: ['grants'] })
+  .openapi('CapitalGrants')
+
+const CounterpartyInfoV3Schema = z
+  .strictObject({
+    balanceAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the counterparty [balance account](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id).',
+      }),
+    bankAccount: BankAccountV3Schema.exactOptional().openapi({
+      description: 'Contains information about the counterparty bank account.',
+    }),
+    card: CardSchema.exactOptional().openapi({
+      description: 'Contains information about the counterparty card.',
+    }),
+    transferInstrumentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the counterparty [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CounterpartyInfoV3')
+
+const NameLocationSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The city where the merchant is located.' }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country where the merchant is located in [three-letter country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.',
+      }),
+    countryOfOrigin: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The home country in [three-digit country code](https://en.wikipedia.org/wiki/ISO_3166-1_numeric) format, used for government-controlled merchants such as embassies.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The name of the merchant's shop or service." }),
+    rawData: z.string().exactOptional().openapi({ description: 'The raw data.' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The state where the merchant is located.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NameLocation')
+
+const MerchantDataSchema = z
+  .strictObject({
+    acquirerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The unique identifier of the merchant's acquirer." }),
+    mcc: z.string().exactOptional().openapi({ description: 'The merchant category code.' }),
+    merchantId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the merchant.' }),
+    nameLocation: NameLocationSchema.exactOptional().openapi({
+      description: 'Contains the name and location of the merchant.',
+    }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The postal code of the merchant.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MerchantData')
+
+const CounterpartyV3Schema = z
+  .strictObject({
+    balanceAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the counterparty [balance account](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id).',
+      }),
+    bankAccount: BankAccountV3Schema.exactOptional().openapi({
+      description: 'Contains information about the counterparty bank account.',
+    }),
+    card: CardSchema.exactOptional().openapi({
+      description: 'Contains information about the counterparty card.',
+    }),
+    merchant: MerchantDataSchema.exactOptional().openapi({
+      description: 'Contains information about the merchant.',
+    }),
+    transferInstrumentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the counterparty [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CounterpartyV3')
+
+const FindTransfersResponseSchema: z.ZodType<FindTransfersResponseType> = z
   .strictObject({
     _links: LinksSchema.exactOptional().openapi({
       description: 'Contains links to the next and previous page whenever applicable.',
@@ -2816,7 +3052,7 @@ const InvalidFieldSchema = z
   .openapi({ required: ['message', 'name', 'value'] })
   .openapi('InvalidField')
 
-const JSONObjectSchema = z.object({}).openapi('JSONObject')
+const JSONObjectSchema = z.looseObject({}).openapi('JSONObject')
 
 const RestServiceErrorSchema = z
   .strictObject({
@@ -3099,10 +3335,10 @@ const TransferSchema = z
       'x-addedInVersion': '3',
     }),
     category: z
-      .enum(['bank', 'card', 'internal', 'issuedCard', 'platformPayment', 'topUp'])
+      .enum(['bank', 'card', 'interest', 'internal', 'issuedCard', 'platformPayment', 'topUp'])
       .openapi({
         description:
-          'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
+          'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
         'x-addedInVersion': '3',
       }),
     categoryData: z
@@ -3412,6 +3648,7 @@ const TransferSchema = z
         'balanceAdjustment',
         'balanceRollover',
         'balanceMigration',
+        'interestPayout',
         'fxSell',
         'fxBuy',
       ])
@@ -5205,7 +5442,7 @@ export const getTransfersRoute = createRoute({
             name: 'category',
             in: 'query',
             description:
-              'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
+              'The category of the transfer.\n\nPossible values:\n\n - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.\n\n- **card**: A transfer involving a third-party card.\n\n- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.\n\n- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.\n\n- **issuedCard**: A transfer initiated by an Adyen-issued card.\n\n- **platformPayment**: Funds movements related to payments that are acquired for your users.\n\n- **topUp**: An incoming transfer initiated by your user to top up their balance account.',
             required: false,
             style: 'form',
             explode: true,

@@ -1,124 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const PayoutScheduleResponseSchema = z
-  .strictObject({
-    nextScheduledPayout: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date of the next scheduled payout.' }),
-    schedule: z
-      .enum([
-        'BIWEEKLY_ON_1ST_AND_15TH_AT_MIDNIGHT',
-        'DAILY',
-        'DAILY_AU',
-        'DAILY_EU',
-        'DAILY_SG',
-        'DAILY_US',
-        'HOLD',
-        'MONTHLY',
-        'WEEKLY',
-        'WEEKLY_MON_TO_FRI_AU',
-        'WEEKLY_MON_TO_FRI_EU',
-        'WEEKLY_MON_TO_FRI_US',
-        'WEEKLY_ON_TUE_FRI_MIDNIGHT',
-        'WEEKLY_SUN_TO_THU_AU',
-        'WEEKLY_SUN_TO_THU_US',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The payout schedule for the account.\n\nPossible values: `DEFAULT`, `DAILY`, `DAILY_US`, `DAILY_EU`, `DAILY_AU`, `DAILY_SG`, `WEEKLY`, `WEEKLY_ON_TUE_FRI_MIDNIGHT`, `BIWEEKLY_ON_1ST_AND_15TH_AT_MIDNIGHT`, `MONTHLY`, `HOLD`.\n> `HOLD` prevents scheduled payouts, but you can still initiate payouts manually.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('PayoutScheduleResponse')
-
-const AccountSchema = z
-  .strictObject({
-    accountCode: z.string().exactOptional().openapi({ description: 'The code of the account.' }),
-    bankAccountUUID: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '5',
-        description:
-          'The bankAccountUUID of the bank account held by the account holder to couple the account with. Scheduled payouts in currencies matching the currency of this bank account will be sent to this bank account. Payouts in different currencies will be sent to a matching bank account of the account holder.',
-      }),
-    beneficiaryAccount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The beneficiary of the account.' }),
-    beneficiaryMerchantReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason that a beneficiary has been set up for this account. This may have been supplied during the setup of a beneficiary at the discretion of the executing user.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-addedInVersion': '4', description: 'A description of the account.' }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '5',
-        description:
-          'A set of key and value pairs for general use by the merchant.\nThe keys do not have specific names and may be used for storing miscellaneous data as desired.\n> Note that during an update of metadata, the omission of existing key-value pairs will result in the deletion of those key-value pairs.',
-      }),
-    payoutMethodCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '5',
-        description:
-          'The payout method code held by the account holder to couple the account with. Scheduled card payouts will be sent using this payout method code.',
-      }),
-    payoutSchedule: PayoutScheduleResponseSchema.exactOptional().openapi({
-      description: "The account's payout schedule.",
-    }),
-    payoutSpeed: z
-      .enum(['INSTANT', 'SAME_DAY', 'STANDARD'])
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '5',
-        description:
-          'Speed with which payouts for this account are processed. Permitted values: `STANDARD`, `SAME_DAY`.',
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '4',
-        description:
-          'The status of the account. Possible values: `Active`, `Inactive`, `Suspended`, `Closed`.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Account')
-
-const AccountEventSchema = z
-  .strictObject({
-    event: z
-      .enum(['InactivateAccount', 'RefundNotPaidOutTransfers'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The event.\n>Permitted values: `InactivateAccount`, `RefundNotPaidOutTransfers`.\nFor more information, refer to [Verification checks](https://docs.adyen.com/classic-platforms/verification-process).',
-      }),
-    executionDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date on which the event will take place.' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The reason why this event has been created.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountEvent')
-
 const ViasAddressSchema = z
   .strictObject({
     city: z
@@ -735,7 +616,37 @@ const LegalArrangementEntityDetailSchema = z
   .openapi({ required: [] })
   .openapi('LegalArrangementEntityDetail')
 
-const LegalArrangementDetailSchema = z
+type LegalArrangementDetailType = {
+  address: z.infer<typeof ViasAddressSchema>
+  legalArrangementCode?: string
+  legalArrangementEntities?: z.infer<typeof LegalArrangementEntityDetailSchema>[]
+  legalArrangementReference?: string
+  legalForm?:
+    | 'CashManagementTrust'
+    | 'CorporateUnitTrust'
+    | 'DeceasedEstate'
+    | 'DiscretionaryInvestmentTrust'
+    | 'DiscretionaryServicesManagementTrust'
+    | 'DiscretionaryTradingTrust'
+    | 'FirstHomeSaverAccountsTrust'
+    | 'FixedTrust'
+    | 'FixedUnitTrust'
+    | 'HybridTrust'
+    | 'ListedPublicUnitTrust'
+    | 'OtherTrust'
+    | 'PooledSuperannuationTrust'
+    | 'PublicTradingTrust'
+    | 'UnlistedPublicUnitTrust'
+    | 'LimitedPartnership'
+    | 'FamilyPartnership'
+    | 'OtherPartnership'
+  name: string
+  registrationNumber?: string
+  taxNumber?: string
+  type: 'Association' | 'Partnership' | 'SoleProprietorship' | 'Trust'
+}
+
+const LegalArrangementDetailSchema: z.ZodType<LegalArrangementDetailType> = z
   .strictObject({
     address: ViasAddressSchema.openapi({ description: 'The address of the legal arrangement.' }),
     legalArrangementCode: z
@@ -938,7 +849,26 @@ const StoreDetailSchema = z
   .openapi({ required: ['merchantCategoryCode', 'address', 'merchantAccount'] })
   .openapi('StoreDetail')
 
-const AccountHolderDetailsSchema = z
+type AccountHolderDetailsType = {
+  address: z.infer<typeof ViasAddressSchema>
+  bankAccountDetails?: z.infer<typeof BankAccountDetailSchema>[]
+  bankAggregatorDataReference?: string
+  businessDetails?: z.infer<typeof BusinessDetailsSchema>
+  email?: string
+  fullPhoneNumber?: string
+  individualDetails?: z.infer<typeof IndividualDetailsSchema>
+  lastReviewDate?: string
+  legalArrangements?: z.infer<typeof LegalArrangementDetailSchema>[]
+  merchantCategoryCode?: string
+  metadata?: { [key: string]: string }
+  payoutMethods?: z.infer<typeof PayoutMethodSchema>[]
+  phoneNumber?: z.infer<typeof ViasPhoneNumberSchema>
+  principalBusinessAddress?: z.infer<typeof ViasAddressSchema>
+  storeDetails?: z.infer<typeof StoreDetailSchema>[]
+  webAddress?: string
+}
+
+const AccountHolderDetailsSchema: z.ZodType<AccountHolderDetailsType> = z
   .strictObject({
     address: ViasAddressSchema.openapi({ description: 'The address of the account holder.' }),
     bankAccountDetails: z
@@ -1034,6 +964,38 @@ const AccountHolderDetailsSchema = z
   })
   .openapi({ required: ['address'] })
   .openapi('AccountHolderDetails')
+
+type CreateAccountHolderRequestType = {
+  accountHolderCode: string
+  accountHolderDetails: z.infer<typeof AccountHolderDetailsSchema>
+  createDefaultAccount?: boolean
+  description?: string
+  legalEntity: 'Business' | 'Individual' | 'NonProfit' | 'Partnership' | 'PublicCompany'
+  primaryCurrency?: string
+  processingTier?: number
+  verificationProfile?: string
+}
+
+const AccountEventSchema = z
+  .strictObject({
+    event: z
+      .enum(['InactivateAccount', 'RefundNotPaidOutTransfers'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The event.\n>Permitted values: `InactivateAccount`, `RefundNotPaidOutTransfers`.\nFor more information, refer to [Verification checks](https://docs.adyen.com/classic-platforms/verification-process).',
+      }),
+    executionDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date on which the event will take place.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reason why this event has been created.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountEvent')
 
 const AmountSchema = z
   .strictObject({
@@ -1164,15 +1126,6 @@ const AccountHolderStatusSchema = z
   })
   .openapi({ required: ['status'] })
   .openapi('AccountHolderStatus')
-
-const CloseAccountHolderRequestSchema = z
-  .strictObject({
-    accountHolderCode: z
-      .string()
-      .openapi({ description: 'The code of the Account Holder to be closed.' }),
-  })
-  .openapi({ required: ['accountHolderCode'] })
-  .openapi('CloseAccountHolderRequest')
 
 const FieldTypeSchema = z
   .strictObject({
@@ -1367,141 +1320,6 @@ const ErrorFieldTypeSchema = z
   })
   .openapi({ required: [] })
   .openapi('ErrorFieldType')
-
-const CloseAccountHolderResponseSchema = z
-  .strictObject({
-    accountHolderStatus: AccountHolderStatusSchema.exactOptional().openapi({
-      description: 'The new status of the Account Holder.',
-    }),
-    invalidFields: z
-      .array(ErrorFieldTypeSchema)
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '5',
-        description:
-          'Contains field validation errors that would prevent requests from being processed.',
-      }),
-    pspReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The reference of a request. Can be used to uniquely identify the request.',
-      }),
-    resultCode: z.string().exactOptional().openapi({ description: 'The result code.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CloseAccountHolderResponse')
-
-const CloseAccountRequestSchema = z
-  .strictObject({
-    accountCode: z.string().openapi({ description: 'The code of account to be closed.' }),
-  })
-  .openapi({ required: ['accountCode'] })
-  .openapi('CloseAccountRequest')
-
-const CloseAccountResponseSchema = z
-  .strictObject({
-    accountCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '5',
-        description: 'The account code of the account that is closed.',
-      }),
-    invalidFields: z
-      .array(ErrorFieldTypeSchema)
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '5',
-        description:
-          'Contains field validation errors that would prevent requests from being processed.',
-      }),
-    pspReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The reference of a request. Can be used to uniquely identify the request.',
-      }),
-    resultCode: z.string().exactOptional().openapi({ description: 'The result code.' }),
-    status: z
-      .enum(['Active', 'Closed', 'Inactive', 'Suspended'])
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '2',
-        description:
-          'The new status of the account.\n>Permitted values: `Active`, `Inactive`, `Suspended`, `Closed`.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CloseAccountResponse')
-
-const CloseStoresRequestSchema = z
-  .strictObject({
-    accountHolderCode: z.string().openapi({ description: 'The code of the account holder.' }),
-    stores: z.array(z.string()).openapi({ description: 'List of stores to be closed.' }),
-  })
-  .openapi({ required: ['accountHolderCode', 'stores'] })
-  .openapi('CloseStoresRequest')
-
-const CreateAccountHolderRequestSchema = z
-  .strictObject({
-    accountHolderCode: z
-      .string()
-      .openapi({
-        description:
-          'Your unique identifier for the prospective account holder.\nThe length must be between three (3) and fifty (50) characters long. Only letters, digits, and hyphens (-) are allowed.',
-      }),
-    accountHolderDetails: AccountHolderDetailsSchema.openapi({
-      description: 'The details of the prospective account holder.',
-    }),
-    createDefaultAccount: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to **true**, an account with the default options is automatically created for the account holder.\nBy default, this field is set to **true**.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '4',
-        description:
-          'A description of the prospective account holder, maximum 256 characters. You can use alphanumeric characters (A-Z, a-z, 0-9), white spaces, and underscores `_`.',
-      }),
-    legalEntity: z
-      .enum(['Business', 'Individual', 'NonProfit', 'Partnership', 'PublicCompany'])
-      .openapi({
-        description:
-          'The legal entity type of the account holder. This determines the information that should be provided in the request.\n\nPossible values: **Business**, **Individual**, or **NonProfit**.\n\n* If set to **Business** or **NonProfit**, then `accountHolderDetails.businessDetails` must be provided, with at least one entry in the `accountHolderDetails.businessDetails.shareholders` list.\n\n* If set to **Individual**, then `accountHolderDetails.individualDetails` must be provided.',
-      }),
-    primaryCurrency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '4',
-        deprecated: true,
-        description:
-          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes), with which the prospective account holder primarily deals.',
-      }),
-    processingTier: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '3',
-        description:
-          'The starting [processing tier](https://docs.adyen.com/classic-platforms/onboarding-and-verification/precheck-kyc-information) for the prospective account holder.',
-      }),
-    verificationProfile: z
-      .string()
-      .exactOptional()
-      .openapi({
-        'x-addedInVersion': '6',
-        description: 'The identifier of the profile that applies to this entity.',
-      }),
-  })
-  .openapi({ required: ['accountHolderCode', 'legalEntity', 'accountHolderDetails'] })
-  .openapi('CreateAccountHolderRequest')
 
 const KYCCheckSummarySchema = z
   .strictObject({
@@ -1734,7 +1552,427 @@ const KYCVerificationResultSchema = z
   .openapi({ required: [] })
   .openapi('KYCVerificationResult')
 
-const CreateAccountHolderResponseSchema = z
+type CreateAccountHolderResponseType = {
+  accountCode?: string
+  accountHolderCode?: string
+  accountHolderDetails?: z.infer<typeof AccountHolderDetailsSchema>
+  accountHolderStatus?: z.infer<typeof AccountHolderStatusSchema>
+  description?: string
+  invalidFields?: z.infer<typeof ErrorFieldTypeSchema>[]
+  legalEntity?: 'Business' | 'Individual' | 'NonProfit' | 'Partnership' | 'PublicCompany'
+  primaryCurrency?: string
+  pspReference?: string
+  resultCode?: string
+  verification?: z.infer<typeof KYCVerificationResultSchema>
+  verificationProfile?: string
+}
+
+const PayoutScheduleResponseSchema = z
+  .strictObject({
+    nextScheduledPayout: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date of the next scheduled payout.' }),
+    schedule: z
+      .enum([
+        'BIWEEKLY_ON_1ST_AND_15TH_AT_MIDNIGHT',
+        'DAILY',
+        'DAILY_AU',
+        'DAILY_EU',
+        'DAILY_SG',
+        'DAILY_US',
+        'HOLD',
+        'MONTHLY',
+        'WEEKLY',
+        'WEEKLY_MON_TO_FRI_AU',
+        'WEEKLY_MON_TO_FRI_EU',
+        'WEEKLY_MON_TO_FRI_US',
+        'WEEKLY_ON_TUE_FRI_MIDNIGHT',
+        'WEEKLY_SUN_TO_THU_AU',
+        'WEEKLY_SUN_TO_THU_US',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The payout schedule for the account.\n\nPossible values: `DEFAULT`, `DAILY`, `DAILY_US`, `DAILY_EU`, `DAILY_AU`, `DAILY_SG`, `WEEKLY`, `WEEKLY_ON_TUE_FRI_MIDNIGHT`, `BIWEEKLY_ON_1ST_AND_15TH_AT_MIDNIGHT`, `MONTHLY`, `HOLD`.\n> `HOLD` prevents scheduled payouts, but you can still initiate payouts manually.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PayoutScheduleResponse')
+
+const AccountSchema = z
+  .strictObject({
+    accountCode: z.string().exactOptional().openapi({ description: 'The code of the account.' }),
+    bankAccountUUID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '5',
+        description:
+          'The bankAccountUUID of the bank account held by the account holder to couple the account with. Scheduled payouts in currencies matching the currency of this bank account will be sent to this bank account. Payouts in different currencies will be sent to a matching bank account of the account holder.',
+      }),
+    beneficiaryAccount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The beneficiary of the account.' }),
+    beneficiaryMerchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason that a beneficiary has been set up for this account. This may have been supplied during the setup of a beneficiary at the discretion of the executing user.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-addedInVersion': '4', description: 'A description of the account.' }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '5',
+        description:
+          'A set of key and value pairs for general use by the merchant.\nThe keys do not have specific names and may be used for storing miscellaneous data as desired.\n> Note that during an update of metadata, the omission of existing key-value pairs will result in the deletion of those key-value pairs.',
+      }),
+    payoutMethodCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '5',
+        description:
+          'The payout method code held by the account holder to couple the account with. Scheduled card payouts will be sent using this payout method code.',
+      }),
+    payoutSchedule: PayoutScheduleResponseSchema.exactOptional().openapi({
+      description: "The account's payout schedule.",
+    }),
+    payoutSpeed: z
+      .enum(['INSTANT', 'SAME_DAY', 'STANDARD'])
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '5',
+        description:
+          'Speed with which payouts for this account are processed. Permitted values: `STANDARD`, `SAME_DAY`.',
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '4',
+        description:
+          'The status of the account. Possible values: `Active`, `Inactive`, `Suspended`, `Closed`.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Account')
+
+const MigratedAccountsSchema = z
+  .strictObject({
+    accountCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the account of the migrated account holder in the classic integration.',
+      }),
+    balanceAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the account of the migrated account holder in the balance platform.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MigratedAccounts')
+
+const MigratedShareholdersSchema = z
+  .strictObject({
+    legalEntityCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the legal entity of that shareholder in the balance platform.',
+      }),
+    shareholderCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the account of the migrated shareholder in the classic integration.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MigratedShareholders')
+
+const MigratedStoresSchema = z
+  .strictObject({
+    businessLineId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the business line associated with the migrated account holder in the balance platform.',
+      }),
+    storeCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the store associated with the migrated account holder in the classic integration.',
+      }),
+    storeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the store associated with the migrated account holder in the balance platform.',
+      }),
+    storeReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your reference for the store in the classic integration. The [Customer Area](https://ca-test.adyen.com/) uses this value for the store description.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MigratedStores')
+
+const MigrationDataSchema = z
+  .strictObject({
+    accountHolderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique identifier of the account holder in the balance platform.',
+      }),
+    balancePlatform: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the balance platfrom to which the account holder was migrated.',
+      }),
+    migrated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Set to **true** if the account holder has been migrated.' }),
+    migratedAccounts: z
+      .array(MigratedAccountsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains the mapping of virtual account codes (classic integration) to the balance account codes (balance platform) associated with the migrated account holder.',
+      }),
+    migratedShareholders: z
+      .array(MigratedShareholdersSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains the mapping of shareholders associated with the migrated legal entities.',
+      }),
+    migratedStores: z
+      .array(MigratedStoresSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains the mapping of business lines and stores associated with the migrated account holder.',
+      }),
+    migrationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date when account holder was migrated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MigrationData')
+
+type GetAccountHolderResponseType = {
+  accountHolderCode?: string
+  accountHolderDetails?: z.infer<typeof AccountHolderDetailsSchema>
+  accountHolderStatus?: z.infer<typeof AccountHolderStatusSchema>
+  accounts?: z.infer<typeof AccountSchema>[]
+  description?: string
+  invalidFields?: z.infer<typeof ErrorFieldTypeSchema>[]
+  legalEntity?: 'Business' | 'Individual' | 'NonProfit' | 'Partnership' | 'PublicCompany'
+  migrationData?: z.infer<typeof MigrationDataSchema>
+  primaryCurrency?: string
+  pspReference?: string
+  resultCode?: string
+  systemUpToDateTime?: string
+  verification?: z.infer<typeof KYCVerificationResultSchema>
+  verificationProfile?: string
+}
+
+type UpdateAccountHolderRequestType = {
+  accountHolderCode: string
+  accountHolderDetails?: z.infer<typeof AccountHolderDetailsSchema>
+  description?: string
+  legalEntity?: 'Business' | 'Individual' | 'NonProfit' | 'Partnership' | 'PublicCompany'
+  primaryCurrency?: string
+  processingTier?: number
+  verificationProfile?: string
+}
+
+type UpdateAccountHolderResponseType = {
+  accountHolderCode?: string
+  accountHolderDetails?: z.infer<typeof AccountHolderDetailsSchema>
+  accountHolderStatus?: z.infer<typeof AccountHolderStatusSchema>
+  description?: string
+  invalidFields?: z.infer<typeof ErrorFieldTypeSchema>[]
+  legalEntity?: 'Business' | 'Individual' | 'NonProfit' | 'Partnership' | 'PublicCompany'
+  primaryCurrency?: string
+  pspReference?: string
+  resultCode?: string
+  verification?: z.infer<typeof KYCVerificationResultSchema>
+  verificationProfile?: string
+}
+
+const CloseAccountHolderRequestSchema = z
+  .strictObject({
+    accountHolderCode: z
+      .string()
+      .openapi({ description: 'The code of the Account Holder to be closed.' }),
+  })
+  .openapi({ required: ['accountHolderCode'] })
+  .openapi('CloseAccountHolderRequest')
+
+const CloseAccountHolderResponseSchema = z
+  .strictObject({
+    accountHolderStatus: AccountHolderStatusSchema.exactOptional().openapi({
+      description: 'The new status of the Account Holder.',
+    }),
+    invalidFields: z
+      .array(ErrorFieldTypeSchema)
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '5',
+        description:
+          'Contains field validation errors that would prevent requests from being processed.',
+      }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The reference of a request. Can be used to uniquely identify the request.',
+      }),
+    resultCode: z.string().exactOptional().openapi({ description: 'The result code.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CloseAccountHolderResponse')
+
+const CloseAccountRequestSchema = z
+  .strictObject({
+    accountCode: z.string().openapi({ description: 'The code of account to be closed.' }),
+  })
+  .openapi({ required: ['accountCode'] })
+  .openapi('CloseAccountRequest')
+
+const CloseAccountResponseSchema = z
+  .strictObject({
+    accountCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '5',
+        description: 'The account code of the account that is closed.',
+      }),
+    invalidFields: z
+      .array(ErrorFieldTypeSchema)
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '5',
+        description:
+          'Contains field validation errors that would prevent requests from being processed.',
+      }),
+    pspReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The reference of a request. Can be used to uniquely identify the request.',
+      }),
+    resultCode: z.string().exactOptional().openapi({ description: 'The result code.' }),
+    status: z
+      .enum(['Active', 'Closed', 'Inactive', 'Suspended'])
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '2',
+        description:
+          'The new status of the account.\n>Permitted values: `Active`, `Inactive`, `Suspended`, `Closed`.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CloseAccountResponse')
+
+const CloseStoresRequestSchema = z
+  .strictObject({
+    accountHolderCode: z.string().openapi({ description: 'The code of the account holder.' }),
+    stores: z.array(z.string()).openapi({ description: 'List of stores to be closed.' }),
+  })
+  .openapi({ required: ['accountHolderCode', 'stores'] })
+  .openapi('CloseStoresRequest')
+
+const CreateAccountHolderRequestSchema: z.ZodType<CreateAccountHolderRequestType> = z
+  .strictObject({
+    accountHolderCode: z
+      .string()
+      .openapi({
+        description:
+          'Your unique identifier for the prospective account holder.\nThe length must be between three (3) and fifty (50) characters long. Only letters, digits, and hyphens (-) are allowed.',
+      }),
+    accountHolderDetails: AccountHolderDetailsSchema.openapi({
+      description: 'The details of the prospective account holder.',
+    }),
+    createDefaultAccount: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to **true**, an account with the default options is automatically created for the account holder.\nBy default, this field is set to **true**.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '4',
+        description:
+          'A description of the prospective account holder, maximum 256 characters. You can use alphanumeric characters (A-Z, a-z, 0-9), white spaces, and underscores `_`.',
+      }),
+    legalEntity: z
+      .enum(['Business', 'Individual', 'NonProfit', 'Partnership', 'PublicCompany'])
+      .openapi({
+        description:
+          'The legal entity type of the account holder. This determines the information that should be provided in the request.\n\nPossible values: **Business**, **Individual**, or **NonProfit**.\n\n* If set to **Business** or **NonProfit**, then `accountHolderDetails.businessDetails` must be provided, with at least one entry in the `accountHolderDetails.businessDetails.shareholders` list.\n\n* If set to **Individual**, then `accountHolderDetails.individualDetails` must be provided.',
+      }),
+    primaryCurrency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '4',
+        deprecated: true,
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes), with which the prospective account holder primarily deals.',
+      }),
+    processingTier: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '3',
+        description:
+          'The starting [processing tier](https://docs.adyen.com/classic-platforms/onboarding-and-verification/precheck-kyc-information) for the prospective account holder.',
+      }),
+    verificationProfile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        'x-addedInVersion': '6',
+        description: 'The identifier of the profile that applies to this entity.',
+      }),
+  })
+  .openapi({ required: ['accountHolderCode', 'legalEntity', 'accountHolderDetails'] })
+  .openapi('CreateAccountHolderRequest')
+
+const CreateAccountHolderResponseSchema: z.ZodType<CreateAccountHolderResponseType> = z
   .strictObject({
     accountCode: z
       .string()
@@ -2164,129 +2402,7 @@ const GetAccountHolderRequestSchema = z
   .openapi({ required: [] })
   .openapi('GetAccountHolderRequest')
 
-const MigratedAccountsSchema = z
-  .strictObject({
-    accountCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the account of the migrated account holder in the classic integration.',
-      }),
-    balanceAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the account of the migrated account holder in the balance platform.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MigratedAccounts')
-
-const MigratedShareholdersSchema = z
-  .strictObject({
-    legalEntityCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the legal entity of that shareholder in the balance platform.',
-      }),
-    shareholderCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the account of the migrated shareholder in the classic integration.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MigratedShareholders')
-
-const MigratedStoresSchema = z
-  .strictObject({
-    businessLineId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the business line associated with the migrated account holder in the balance platform.',
-      }),
-    storeCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the store associated with the migrated account holder in the classic integration.',
-      }),
-    storeId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the store associated with the migrated account holder in the balance platform.',
-      }),
-    storeReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Your reference for the store in the classic integration. The [Customer Area](https://ca-test.adyen.com/) uses this value for the store description.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MigratedStores')
-
-const MigrationDataSchema = z
-  .strictObject({
-    accountHolderId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique identifier of the account holder in the balance platform.',
-      }),
-    balancePlatform: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the balance platfrom to which the account holder was migrated.',
-      }),
-    migrated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Set to **true** if the account holder has been migrated.' }),
-    migratedAccounts: z
-      .array(MigratedAccountsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains the mapping of virtual account codes (classic integration) to the balance account codes (balance platform) associated with the migrated account holder.',
-      }),
-    migratedShareholders: z
-      .array(MigratedShareholdersSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains the mapping of shareholders associated with the migrated legal entities.',
-      }),
-    migratedStores: z
-      .array(MigratedStoresSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains the mapping of business lines and stores associated with the migrated account holder.',
-      }),
-    migrationDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date when account holder was migrated.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MigrationData')
-
-const GetAccountHolderResponseSchema = z
+const GetAccountHolderResponseSchema: z.ZodType<GetAccountHolderResponseType> = z
   .strictObject({
     accountHolderCode: z
       .string()
@@ -2589,7 +2705,7 @@ const UnSuspendAccountHolderResponseSchema = z
   .openapi({ required: [] })
   .openapi('UnSuspendAccountHolderResponse')
 
-const UpdateAccountHolderRequestSchema = z
+const UpdateAccountHolderRequestSchema: z.ZodType<UpdateAccountHolderRequestType> = z
   .strictObject({
     accountHolderCode: z
       .string()
@@ -2642,7 +2758,7 @@ const UpdateAccountHolderRequestSchema = z
   .openapi({ required: ['accountHolderCode'] })
   .openapi('UpdateAccountHolderRequest')
 
-const UpdateAccountHolderResponseSchema = z
+const UpdateAccountHolderResponseSchema: z.ZodType<UpdateAccountHolderResponseType> = z
   .strictObject({
     accountHolderCode: z
       .string()

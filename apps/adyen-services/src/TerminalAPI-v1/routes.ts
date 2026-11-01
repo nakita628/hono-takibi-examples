@@ -1,5 +1,516 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const MessageClassSchema = z
+  .enum(['Service', 'Device', 'Event'])
+  .openapi({ description: '\nPossible values:\n* **Service**\n* **Device**\n* **Event**' })
+  .openapi('MessageClass')
+
+const MessageCategorySchema = z
+  .enum([
+    'Abort',
+    'Admin',
+    'BalanceInquiry',
+    'CardAcquisition',
+    'Diagnosis',
+    'Display',
+    'EnableService',
+    'Event',
+    'GetTotals',
+    'Input',
+    'InputUpdate',
+    'Login',
+    'Logout',
+    'Loyalty',
+    'Payment',
+    'Print',
+    'Reconciliation',
+    'Reversal',
+    'StoredValue',
+    'TransactionStatus',
+    'None',
+  ])
+  .openapi({
+    description:
+      '\nPossible values:\n* **Abort**\n* **Admin**\n* **BalanceInquiry**\n* **CardAcquisition**\n* **Diagnosis**\n* **Display**\n* **EnableService**\n* **Event**\n* **GetTotals**\n* **Input**\n* **InputUpdate**\n* **Login**\n* **Logout**\n* **Loyalty**\n* **Payment**\n* **Print**\n* **Reconciliation**\n* **Reversal**\n* **StoredValue**\n* **TransactionStatus**\n* **None**',
+  })
+  .openapi('MessageCategory')
+
+const MessageTypeSchema = z
+  .enum(['Request', 'Response', 'Notification'])
+  .openapi({ description: '\nPossible values:\n* **Request**\n* **Response**\n* **Notification**' })
+  .openapi('MessageType')
+
+const MessageHeaderSchema = z
+  .object({
+    ProtocolVersion: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'If MessageCategory is Login or Diagnosis.' }),
+    MessageClass: MessageClassSchema.openapi({
+      description:
+        'Class of the message.\nPossible values:\n* **Device**\n* **Event**\n* **Service**',
+    }),
+    MessageCategory: MessageCategorySchema.openapi({
+      description:
+        'Category of message.\nPossible values:\n* **Abort**\n* **Admin**\n* **BalanceInquiry**\n* **Batch**\n* **CardAcquisition**\n* **CardReaderInit**\n* **CardReaderPowerOff**\n* **Diagnosis**\n* **Display**\n* **EnableService**\n* **Event**\n* **GetTotals**\n* **Input**\n* **InputUpdate**\n* **Login**\n* **Logout**\n* **Loyalty**\n* **None**\n* **PIN**\n* **Payment**\n* **Print**\n* **Reconciliation**\n* **Reversal**\n* **Sound**\n* **StoredValue**\n* **TransactionStatus**\n* **Transmit**',
+    }),
+    MessageType: MessageTypeSchema.openapi({
+      description:
+        'Type of message of the Sale to POI protocol.\nPossible values:\n* **Notification**\n* **Request**\n* **Response**',
+    }),
+    ServiceID: z
+      .string()
+      .regex(/^.{1,10}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identification of a message pair, which processes a transaction.\nRequired if Service or Event MessageClass message or if Device MessageClass and request from POI or response from Sale.',
+        'x-nexo-min': 1,
+        'x-nexo-max': 10,
+      }),
+    DeviceID: z
+      .string()
+      .regex(/^.{1,10}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Identification of a device message pair.\nIf Device MessageClass.',
+        'x-nexo-min': 1,
+        'x-nexo-max': 10,
+      }),
+    SaleID: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description:
+          'Identification of a Sale System or a Sale Terminal for the Sale to POI protocol.',
+      }),
+    POIID: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description:
+          'Identification of a POI System or a POI Terminal for the Sale to POI protocol.',
+      }),
+  })
+  .openapi({
+    description:
+      'Message header of the Sale to POI protocol message.\nIt conveys Information related to the Sale to POI protocol management.',
+    required: ['MessageClass', 'MessageCategory', 'MessageType', 'SaleID', 'POIID'],
+    'x-nexo-exported': true,
+  })
+  .openapi('MessageHeader')
+
+const MessageReferenceSchema = z
+  .object({
+    MessageCategory: MessageCategorySchema.exactOptional().openapi({
+      description:
+        'Category of message.\nCardAcquisition, Display, Input, Loyalty, Payment, Print, CardReaderInit, CardReaderPowerOff.\nPossible values:\n* **Abort**\n* **Admin**\n* **BalanceInquiry**\n* **Batch**\n* **CardAcquisition**\n* **CardReaderInit**\n* **CardReaderPowerOff**\n* **Diagnosis**\n* **Display**\n* **EnableService**\n* **Event**\n* **GetTotals**\n* **Input**\n* **InputUpdate**\n* **Login**\n* **Logout**\n* **Loyalty**\n* **None**\n* **PIN**\n* **Payment**\n* **Print**\n* **Reconciliation**\n* **Reversal**\n* **Sound**\n* **StoredValue**\n* **TransactionStatus**\n* **Transmit**',
+    }),
+    ServiceID: z
+      .string()
+      .regex(/^.{1,10}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Identification of a message pair, which processes a transaction.',
+        'x-nexo-min': 1,
+        'x-nexo-max': 10,
+      }),
+    DeviceID: z
+      .string()
+      .regex(/^.{1,10}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Identification of a device message pair.',
+        'x-nexo-min': 1,
+        'x-nexo-max': 10,
+      }),
+    SaleID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identification of a Sale System or a Sale Terminal for the Sale to POI protocol.\ndefault MessageHeader.SaleID.',
+      }),
+    POIID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identification of a POI System or a POI Terminal for the Sale to POI protocol.\nDefault `MessageHeader.POIID`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Identification of a previous POI transaction.\nTo abort a transaction in progress or to request the status of a transaction from which no response has been received. It identifies the message header of the message request to abort or request the status.',
+    required: [],
+  })
+  .openapi('MessageReference')
+
+const DeviceSchema = z
+  .enum(['CashierDisplay', 'CustomerDisplay', 'CashierInput', 'CustomerInput'])
+  .openapi({
+    description:
+      '\nPossible values:\n* **CashierDisplay**\n* **CustomerDisplay**\n* **CashierInput**\n* **CustomerInput**',
+  })
+  .openapi('Device')
+
+const InfoQualifySchema = z
+  .enum([
+    'Status',
+    'Error',
+    'Display',
+    'Sound',
+    'Input',
+    'POIReplication',
+    'CustomerAssistance',
+    'Receipt',
+    'Document',
+    'Voucher',
+  ])
+  .openapi({
+    description:
+      '\nPossible values:\n* **Status**\n* **Error**\n* **Display**\n* **Sound**\n* **Input**\n* **POIReplication**\n* **CustomerAssistance**\n* **Receipt**\n* **Document**\n* **Voucher**',
+  })
+  .openapi('InfoQualify')
+
+const OutputFormatSchema = z
+  .enum(['MessageRef', 'Text', 'XHTML', 'BarCode'])
+  .openapi({
+    description:
+      'Format of the content to display or print. Display or print device function.\nPossible values:\n* **MessageRef**\n* **Text**\n* **XHTML**\n* **BarCode**',
+  })
+  .openapi('OutputFormat')
+
+const PredefinedContentSchema = z
+  .object({
+    ReferenceID: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({ description: 'Identification of a predefined message to display or print.' }),
+    Language: z
+      .string()
+      .regex(/^[a-z]{2,2}$/)
+      .exactOptional()
+      .openapi({ description: 'Identification of a language.' }),
+  })
+  .openapi({
+    description:
+      'Reference of a predefined message to display or print.\nIt conveys information related to the predefined message.',
+    required: ['ReferenceID'],
+  })
+  .openapi('PredefinedContent')
+
+const CharacterWidthSchema = z
+  .enum(['SingleWidth', 'DoubleWidth'])
+  .openapi({ description: '\nPossible values:\n* **SingleWidth**\n* **DoubleWidth**' })
+  .openapi('CharacterWidth')
+
+const CharacterHeightSchema = z
+  .enum(['SingleHeight', 'DoubleHeight', 'HalfHeight'])
+  .openapi({
+    description: '\nPossible values:\n* **SingleHeight**\n* **DoubleHeight**\n* **HalfHeight**',
+  })
+  .openapi('CharacterHeight')
+
+const CharacterStyleSchema = z
+  .enum(['Normal', 'Bold', 'Italic', 'Underline'])
+  .openapi({
+    description: '\nPossible values:\n* **Normal**\n* **Bold**\n* **Italic**\n* **Underline**',
+  })
+  .openapi('CharacterStyle')
+
+const AlignmentSchema = z
+  .enum(['Left', 'Right', 'Centred', 'Justified'])
+  .openapi({
+    description: '\nPossible values:\n* **Left**\n* **Right**\n* **Centred**\n* **Justified**',
+  })
+  .openapi('Alignment')
+
+const OutputTextSchema = z
+  .object({
+    Text: z
+      .string()
+      .openapi({
+        description: 'Content of text message to display, print or play.',
+        'x-nexo-kind': 'unicode',
+      }),
+    CharacterSet: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Character height of the text string to display or print. Absence of this data element means the characters have normal height.',
+        'x-nexo-kind': 'integer',
+      }),
+    StartRow: z
+      .int()
+      .min(1)
+      .max(500)
+      .exactOptional()
+      .openapi({
+        description: 'Row where the text string has to be displayed or printed.',
+        'x-nexo-kind': 'integer',
+      }),
+    StartColumn: z
+      .int()
+      .min(1)
+      .max(500)
+      .exactOptional()
+      .openapi({
+        description: 'Column where the text string has to be displayed or printed.',
+        'x-nexo-kind': 'integer',
+      }),
+    CharacterWidth: CharacterWidthSchema.exactOptional().openapi({
+      description:
+        'Character width of the text string to display or print. Absence of this data element means the characters have normal width.\nPossible values:\n* **DoubleWidth**\n* **SingleWidth**',
+    }),
+    CharacterHeight: CharacterHeightSchema.exactOptional().openapi({
+      description:
+        'Character height of the text string to display or print. Absence of this data element means the characters have normal height.\nPossible values:\n* **DoubleHeight**\n* **HalfHeight**\n* **SingleHeight**',
+    }),
+    CharacterStyle: CharacterStyleSchema.exactOptional().openapi({
+      description:
+        'Typographic style of the sequence of characters to display or print. Absence of this data element means the characters have normal style.\nPossible values:\n* **Bold**\n* **Italic**\n* **Normal**\n* **Underline**',
+    }),
+    Alignment: AlignmentSchema.exactOptional().openapi({
+      description:
+        'Alignment of the text string on the display line or print line. Absence of this data element means the characters have normal alignment.\nPossible values:\n* **Centred**\n* **Justified**\n* **Left**\n* **Right**',
+    }),
+    EndOfLineFlag: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the text is at the end of a line. Allows the display or the print of a new line and a carry-over return characters after the formatted text.',
+      }),
+  })
+  .openapi({
+    description:
+      'Content of text message to display or print.\nIt conveys information related to the content of the text message and its format. All the data elements related to the format of the text to display or print are parameters valid for the whole text content.',
+    required: ['Text'],
+  })
+  .openapi('OutputText')
+
+const OutputBarcodeSchema = z
+  .object({
+    BarcodeValue: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description: 'Value with a Barcode coding. The barcode value to display or print.',
+      }),
+  })
+  .openapi({ required: ['BarcodeValue'] })
+  .openapi('OutputBarcode')
+
+const OutputContentSchema = z
+  .object({
+    OutputFormat: OutputFormatSchema.openapi({
+      description:
+        'Format of the content to display or print.\nPossible values:\n* **BarCode**\n* **MessageRef**\n* **Text**\n* **XHTML**',
+    }),
+    PredefinedContent: PredefinedContentSchema.exactOptional().openapi({
+      description:
+        'Reference of a predefined message to display or print.\nMandatory, if `OutputFormat` is MessageRef, not allowed otherwise.',
+    }),
+    OutputText: z
+      .array(OutputTextSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Content of text message to display or print.\nMandatory, if `OutputFormat` is Text, not allowed otherwise. One instance of `OutputText` per shared format.',
+      }),
+    OutputXHTML: z
+      .string()
+      .regex(/^.{0,262144}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'XHTML document body containing the message to display or print.\nMandatory if `OutputFormat` is XHTML, not allowed otherwise.',
+        'x-nexo-min': 0,
+        'x-nexo-max': 262144,
+      }),
+    OutputBarcode: OutputBarcodeSchema.exactOptional().openapi({
+      description:
+        'Barcode content to display or print.\nMandatory if `OutputFormat` is Barcode, not allowed otherwise.',
+    }),
+  })
+  .openapi({
+    description:
+      'Content to display or print.\nThis is a sequence of elements if they have different formats.',
+    required: ['OutputFormat'],
+  })
+  .openapi('OutputContent')
+
+const MenuEntryTagSchema = z
+  .enum(['Selectable', 'NonSelectable', 'SubMenu', 'NonSelectableSubMenu'])
+  .openapi({
+    description:
+      'Characteristics related to the selection of a menu entry.\nPossible values:\n* **Selectable**\n* **NonSelectable**\n* **SubMenu**\n* **NonSelectableSubMenu**',
+  })
+  .openapi('MenuEntryTag')
+
+const MenuEntrySchema = z
+  .object({
+    MenuEntryTag: MenuEntryTagSchema.exactOptional().openapi({
+      description:
+        'Characteristics related to the selection of a menu entry.\nPossible values:\n* **NonSelectable**\n* **NonSelectableSubMenu**\n* **Selectable**\n* **SubMenu**',
+      'x-nexo-default': 'Selectable',
+    }),
+    DefaultSelectedFlag: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Selection of a menu entry to be displayed. In Input request message, it allows selection of one or several menu entries before any user action.',
+      }),
+    OutputFormat: OutputFormatSchema.openapi({
+      description: 'Possible values:\n* **BarCode**\n* **MessageRef**\n* **Text**\n* **XHTML**',
+    }),
+    PredefinedContent: PredefinedContentSchema.exactOptional(),
+    OutputText: z
+      .array(OutputTextSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Content of text message to display or print. It conveys Information related to the content of the text message and its format. All the data elements related to the format of the text to display or print are parameters valid for the whole Text content.',
+      }),
+    OutputXHTML: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'XHTML document body containing the message to display or print.' }),
+  })
+  .openapi({
+    description:
+      'An entry of the menu to present to the Cashier.\nIt conveys message text and parameters of the menu entry. This output data could be only provided for an input command, in order to choose an entry of the menu.',
+    required: ['OutputFormat'],
+  })
+  .openapi('MenuEntry')
+
+const DisplayOutputSchema = z
+  .object({
+    ResponseRequiredFlag: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'Indicates if the message response is required.' }),
+    MinimumDisplayTime: z
+      .int()
+      .min(0)
+      .max(999)
+      .default(0)
+      .exactOptional()
+      .openapi({
+        description: 'Number of seconds the message has to be displayed.',
+        'x-nexo-kind': 'integer',
+      }),
+    Device: DeviceSchema.openapi({
+      description:
+        'Logical device located on a Sale Terminal or a POI Terminal, in terms of class of information to output (display, print, or store), or input (keyboard) for the Cashier or the Customer.\nPossible values:\n* **CashierDisplay**\n* **CashierInput**\n* **CustomerDisplay**\n* **CustomerInput**',
+    }),
+    InfoQualify: InfoQualifySchema.openapi({
+      description:
+        'Qualification of the information to sent to an output logical device, to display or print to the Cashier or the Customer. Allows the manager of the device, Sale or POI Terminal, to send the information to a particular physical device or to present the information accordingly.\nPossible values:\n* **CustomerAssistance**\n* **Display**\n* **Document**\n* **Error**\n* **Input**\n* **POIReplication**\n* **Receipt**\n* **Sound**\n* **Status**\n* **Voucher**',
+    }),
+    OutputContent: OutputContentSchema.openapi({ description: 'Content to display or print.' }),
+    MenuEntry: z
+      .array(MenuEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An entry of the menu to present to the Cashier. It conveys the message text and parameters of the menu entry. This output data could be only provided for an input command, in order to choose an entryof the menu.',
+      }),
+    OutputSignature: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Vendor-specific signature of the text message to display or print.\nIf protection has to be provided to the vendor on the text to display or print.',
+      }),
+  })
+  .openapi({
+    description:
+      'Information to display and how to process it.\nContains a complete display operation for a Display or an Input Device type. For the Input Devices, Diagnosis and `EnableService`, `ResponseRequiredFlag`, and `MinimumDisplayTime` shall be absent.',
+    required: ['Device', 'InfoQualify', 'OutputContent'],
+  })
+  .openapi('DisplayOutput')
+
+const AbortRequestSchema = z
+  .object({
+    MessageReference: MessageReferenceSchema.openapi({
+      description: 'Identification of a previous POI transaction.',
+    }),
+    AbortReason: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({ description: 'Reason of aborting a transaction.' }),
+    DisplayOutput: DisplayOutputSchema.exactOptional().openapi({
+      description:
+        'Information to display and the way to process the display.\nTo display an abort message to the Customer.',
+    }),
+  })
+  .openapi({
+    description:
+      'Body of the Abort Request message.\nIt conveys Information requested for identification of the message request carrying the transaction to abort. A message to display on the CustomerError Device could be sent by the Sale System (DisplayOutput).',
+    required: ['MessageReference', 'AbortReason'],
+    'x-nexo-kind': 'request',
+  })
+  .openapi('AbortRequest')
+
+const AccountTypeSchema = z
+  .enum([
+    'Default',
+    'Savings',
+    'Checking',
+    'CreditCard',
+    'Universal',
+    'Investment',
+    'CardTotals',
+    'EpurseCard',
+  ])
+  .openapi({
+    description:
+      'Type of cardholder account used for the transaction. Allows a cardholder to select the type of account used for the transaction.\nPossible values:\n* **Default**\n* **Savings**\n* **Checking**\n* **CreditCard**\n* **Universal**\n* **Investment**\n* **CardTotals**\n* **EpurseCard**',
+  })
+  .openapi('AccountType')
+
+const TransactionIDTypeSchema = z
+  .object({
+    TransactionID: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description:
+          'Unique identification of a transaction to identify the transaction on\nthe Sale System (e.g. ticket number), or the POI System.',
+      }),
+    TimeStamp: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'Date and time of a transaction for the Sale System, the POI System or the Acquirer.\n Ensures the uniqueness of a transaction and indicates the time when the event\n occurs in the EventNotification message.',
+      }),
+  })
+  .openapi({
+    description: 'Identification of a transaction for the Sale System or the POI System.',
+    required: ['TransactionID', 'TimeStamp'],
+  })
+  .openapi('TransactionIDType')
+
+const PaymentInstrumentTypeSchema = z
+  .enum(['Card', 'Check', 'Mobile', 'StoredValue', 'Cash'])
+  .openapi({
+    description:
+      '\nPossible values:\n* **Card**\n* **Check**\n* **Mobile**\n* **StoredValue**\n* **Cash**',
+  })
+  .openapi('PaymentInstrumentType')
+
 const EntryModeSchema = z
   .array(
     z.enum([
@@ -127,16 +638,123 @@ const PaymentTokenSchema = z
   })
   .openapi('PaymentToken')
 
-type CardDataType = {
-  PaymentBrand?: string
-  MaskedPan?: string
-  PaymentAccountRef?: string
-  EntryMode?: z.infer<typeof EntryModeSchema>
-  CardCountryCode?: number
-  ProtectedCardData?: string
-  SensitiveCardData?: z.infer<typeof SensitiveCardDataSchema>
-  PaymentToken?: z.infer<typeof PaymentTokenSchema>
-}
+const CardDataSchema = z
+  .object({
+    PaymentBrand: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of payment card.\nIf card PAN is readable.\nIndicates the card used to pay in the PaymentResponse. Sent in the CardAcquisitionResponse, to leave the Cashier to choose between several applications in a smartcard, or several brand in a co-branded card. In this case, the CardAcquisitionRequest.ForceCustomerSelectionFlag must contain the value False. Brands are part of the POI and Sale Systems configurations.',
+      }),
+    MaskedPan: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Masked Primary Account Number\nPart of the PAN is replaced by a string of * characters, to identify a customer account or relationship. Presence of this data element, which replace the PAN when SensitiveCardData is protected and replaced by ProtectedCardData. Alternatively the MaskedPAN can be used as a token to identify a customer.',
+      }),
+    PaymentAccountRef: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Reference of the PAN, which identifies the PAN or the card uniquely, named also PAR (Payment Account Reference). This reference may be defined by the card issuer or by a token service provider under the control of the card issuer, and cannot be used for a payment transaction.',
+      }),
+    EntryMode: EntryModeSchema.exactOptional().openapi({
+      description:
+        'Entry mode of the payment instrument information. In the Payment, Loyalty or StoredValue Request messages, it informs the POI System the entry mode of the payment instrument information when read by the Sale Terminal. In the Payment, Loyalty or StoredValue Response messages, it informs the Sale System the entry mode of the payment instrument.\nPossible values:\n* **Contactless**\n* **File**\n* **ICC**\n* **Keyed**\n* **MagStripe**\n* **Manual**\n* **Mobile**\n* **RFID**\n* **Scanned**\n* **SynchronousICC**\n* **Tapped**',
+    }),
+    CardCountryCode: z
+      .int()
+      .min(3)
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description: 'Country Code attached to the card (3 numerics).\nIf available in the card.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    ProtectedCardData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sensitive information related to the payment card, protected by CMS.\nSensitiveCardData protected by CMS EnvelopedData.',
+        'x-nexo-kind': 'contentinformation',
+      }),
+    SensitiveCardData: SensitiveCardDataSchema.exactOptional().openapi({
+      description:
+        'Sensitive information related to the payment card, entered or read by the Sale System.\nIf structure non empty and unprotected.',
+    }),
+    PaymentToken: PaymentTokenSchema.exactOptional().openapi({
+      description:
+        'Surrogate of the PAN (Primary Account Number) of the payment card to identify the payment mean of the customer. It allows, for a merchant, to identify the customer.\nRestriction of product payable by a card.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information related to the payment card used for the transaction.\nAllows acquisition of the card data by the Sale System before the Payment, CardAcquisition, or BalanceInquiry request to the POI. It can also be sent in the CardAcquisition response, to be processed by the Sale System.',
+    required: [],
+  })
+  .openapi('CardData')
+
+const TypeCodeSchema = z
+  .enum(['Personal', 'Company'])
+  .openapi({ description: '\nPossible values:\n* **Personal**\n* **Company**' })
+  .openapi('TypeCode')
+
+const CheckDataSchema = z
+  .object({
+    BankID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'Identification of the bank.\nMandatory if TrackData absent.' }),
+    AccountNumber: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Identification of the customer account.\nMandatory if TrackData absent.',
+      }),
+    CheckNumber: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Identification of the bank check.\nMandatory if TrackData absent.',
+      }),
+    TrackData: TrackDataSchema.exactOptional().openapi({
+      description:
+        'Magnetic track or magnetic ink characters line.\nMandatory if CheckNumber absent.',
+    }),
+    CheckCardNumber: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'Check guarantee card number.\nIf provided by the customer.' }),
+    TypeCode: TypeCodeSchema.exactOptional().openapi({
+      description: 'Type of bank check.\nPossible values:\n* **Company**\n* **Personal**',
+      'x-nexo-default': 'Personal',
+    }),
+    Country: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Country of the bank check.\nAbsent if country of the Sale system.',
+        'x-nexo-kind': 'isocountry3a',
+      }),
+  })
+  .openapi({
+    description:
+      'Information related to the paper check used for the transaction.\nAllows the check information to be provided by the Sale System before requesting the payment, or stored by the Sale System after processing of the payment.',
+    required: [],
+  })
+  .openapi('CheckData')
 
 const GeographicCoordinatesSchema = z
   .object({
@@ -219,213 +837,57 @@ const SensitiveMobileDataSchema = z
   .openapi({ required: ['MSISDN'] })
   .openapi('SensitiveMobileData')
 
-type MobileDataType = {
-  MobileCountryCode?: number
-  MobileNetworkCode?: number
-  MaskedMSISDN?: number
-  Geolocation?: z.infer<typeof GeolocationSchema>
-  ProtectedMobileData?: string
-  SensitiveMobileData?: z.infer<typeof SensitiveMobileDataSchema>
-}
-
-const SaleCapabilitiesSchema = z
-  .array(
-    z.enum([
-      'CashierStatus',
-      'CashierError',
-      'CashierDisplay',
-      'POIReplication',
-      'CashierInput',
-      'CustomerAssistance',
-      'CustomerDisplay',
-      'CustomerError',
-      'CustomerInput',
-      'PrinterReceipt',
-      'PrinterDocument',
-      'PrinterVoucher',
-      'MagStripe',
-      'ICC',
-      'EMVContactless',
-    ]),
-  )
+const MobileDataSchema = z
+  .object({
+    MobileCountryCode: z
+      .int()
+      .min(3)
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description: 'Identifies the country of a mobile phone operator.\nIf data available.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    MobileNetworkCode: z
+      .int()
+      .min(2)
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description: 'Identifies the mobile phone operator inside a country.\nIf data available.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    MaskedMSISDN: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Masked Mobile Subscriber Integrated Service Digital Network.\nIf data available.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    Geolocation: GeolocationSchema.exactOptional().openapi({
+      description:
+        'Geographic location specified by geographic or UTM coordinates.\nIf data available.',
+    }),
+    ProtectedMobileData: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sensitive information related to the mobile phone, protected by CMS.\nSensitiveMobileData.',
+        'x-nexo-kind': 'contentinformation',
+      }),
+    SensitiveMobileData: SensitiveMobileDataSchema.exactOptional().openapi({
+      description:
+        'Sensitive information related to the mobile phone.\nIf unprotected mobile data.',
+    }),
+  })
   .openapi({
     description:
-      'place holder!\nPossible values:\n* **CashierDisplay**\n* **CashierError**\n* **CashierInput**\n* **CashierStatus**\n* **CustomerAssistance**\n* **CustomerDisplay**\n* **CustomerError**\n* **CustomerInput**\n* **EMVContactless**\n* **ICC**\n* **MagStripe**\n* **POIReplication**\n* **PrinterDocument**\n* **PrinterReceipt**\n* **PrinterVoucher**',
+      'Mobile phone is used as a payment instrument for the transaction.\nInformation related to the mobile for the payment transaction.',
+    required: [],
   })
-  .openapi('SaleCapabilities')
-
-const CustomerOrderReqSchema = z
-  .array(z.enum(['Open', 'Closed', 'Both']))
-  .openapi({
-    description:
-      'List of customer order open, closed or both to be sent in the response messages.\nPossible values:\n* **Both**\n* **Closed**\n* **Open**',
-  })
-  .openapi('CustomerOrderReq')
-
-const ResultSchema = z
-  .enum(['Success', 'Failure', 'Partial'])
-  .openapi({ description: '\nPossible values:\n* **Success**\n* **Failure**\n* **Partial**' })
-  .openapi('Result')
-
-const ErrorConditionSchema = z
-  .enum([
-    'Aborted',
-    'Busy',
-    'Cancel',
-    'DeviceOut',
-    'InsertedCard',
-    'InProgress',
-    'LoggedOut',
-    'MessageFormat',
-    'NotAllowed',
-    'NotFound',
-    'PaymentRestriction',
-    'Refusal',
-    'UnavailableDevice',
-    'UnavailableService',
-    'InvalidCard',
-    'UnreachableHost',
-    'WrongPIN',
-  ])
-  .openapi({
-    description:
-      '\nPossible values:\n* **Aborted**\n* **Busy**\n* **Cancel**\n* **DeviceOut**\n* **InsertedCard**\n* **InProgress**\n* **LoggedOut**\n* **MessageFormat**\n* **NotAllowed**\n* **NotFound**\n* **PaymentRestriction**\n* **Refusal**\n* **UnavailableDevice**\n* **UnavailableService**\n* **InvalidCard**\n* **UnreachableHost**\n* **WrongPIN**',
-  })
-  .openapi('ErrorCondition')
-
-const GlobalStatusSchema = z
-  .enum(['OK', 'Busy', 'Maintenance', 'Unreachable'])
-  .openapi({
-    description: '\nPossible values:\n* **OK**\n* **Busy**\n* **Maintenance**\n* **Unreachable**',
-  })
-  .openapi('GlobalStatus')
-
-const PrinterStatusSchema = z
-  .enum(['OK', 'PaperLow', 'NoPaper', 'PaperJam', 'OutOfOrder'])
-  .openapi({
-    description:
-      'Indicates if the printer is working and usable.\nPossible values:\n* **OK**\n* **PaperLow**\n* **NoPaper**\n* **PaperJam**\n* **OutOfOrder**',
-  })
-  .openapi('PrinterStatus')
-
-const DeviceSchema = z
-  .enum(['CashierDisplay', 'CustomerDisplay', 'CashierInput', 'CustomerInput'])
-  .openapi({
-    description:
-      '\nPossible values:\n* **CashierDisplay**\n* **CustomerDisplay**\n* **CashierInput**\n* **CustomerInput**',
-  })
-  .openapi('Device')
-
-const InfoQualifySchema = z
-  .enum([
-    'Status',
-    'Error',
-    'Display',
-    'Sound',
-    'Input',
-    'POIReplication',
-    'CustomerAssistance',
-    'Receipt',
-    'Document',
-    'Voucher',
-  ])
-  .openapi({
-    description:
-      '\nPossible values:\n* **Status**\n* **Error**\n* **Display**\n* **Sound**\n* **Input**\n* **POIReplication**\n* **CustomerAssistance**\n* **Receipt**\n* **Document**\n* **Voucher**',
-  })
-  .openapi('InfoQualify')
-
-const OutputFormatSchema = z
-  .enum(['MessageRef', 'Text', 'XHTML', 'BarCode'])
-  .openapi({
-    description:
-      'Format of the content to display or print. Display or print device function.\nPossible values:\n* **MessageRef**\n* **Text**\n* **XHTML**\n* **BarCode**',
-  })
-  .openapi('OutputFormat')
-
-const CharacterWidthSchema = z
-  .enum(['SingleWidth', 'DoubleWidth'])
-  .openapi({ description: '\nPossible values:\n* **SingleWidth**\n* **DoubleWidth**' })
-  .openapi('CharacterWidth')
-
-const CharacterHeightSchema = z
-  .enum(['SingleHeight', 'DoubleHeight', 'HalfHeight'])
-  .openapi({
-    description: '\nPossible values:\n* **SingleHeight**\n* **DoubleHeight**\n* **HalfHeight**',
-  })
-  .openapi('CharacterHeight')
-
-const CharacterStyleSchema = z
-  .enum(['Normal', 'Bold', 'Italic', 'Underline'])
-  .openapi({
-    description: '\nPossible values:\n* **Normal**\n* **Bold**\n* **Italic**\n* **Underline**',
-  })
-  .openapi('CharacterStyle')
-
-const AlignmentSchema = z
-  .enum(['Left', 'Right', 'Centred', 'Justified'])
-  .openapi({
-    description: '\nPossible values:\n* **Left**\n* **Right**\n* **Centred**\n* **Justified**',
-  })
-  .openapi('Alignment')
-
-const MenuEntryTagSchema = z
-  .enum(['Selectable', 'NonSelectable', 'SubMenu', 'NonSelectableSubMenu'])
-  .openapi({
-    description:
-      'Characteristics related to the selection of a menu entry.\nPossible values:\n* **Selectable**\n* **NonSelectable**\n* **SubMenu**\n* **NonSelectableSubMenu**',
-  })
-  .openapi('MenuEntryTag')
-
-const TransactionActionSchema = z
-  .enum(['StartTransaction', 'AbortTransaction'])
-  .openapi({
-    description:
-      'Action to realise on a transaction. In an `EnableService` request message:\n  - Starts a transaction by a swipe-ahead mechanism, with the services which are enabled.\n  - Aborts a swipe-ahead transaction or started by a `CardAcquisition`, and not followed by a service request from the Sale System to complete the transaction.\nPossible values:\n* **StartTransaction**\n* **AbortTransaction**',
-  })
-  .openapi('TransactionAction')
-
-const ServicesEnabledSchema = z
-  .array(z.enum(['CardAcquisition', 'Payment', 'Loyalty']))
-  .openapi({
-    description:
-      'Services which are enabled before the start-up of a transaction.\nMandatory if `TransactionAction` is `StartTransaction`, absent if not.\nPossible values:\n* **CardAcquisition**\n* **Loyalty**\n* **Payment**',
-  })
-  .openapi('ServicesEnabled')
-
-const PaymentTypeSchema = z
-  .enum([
-    'Normal',
-    'Refund',
-    'OneTimeReservation',
-    'FirstReservation',
-    'UpdateReservation',
-    'Completion',
-    'CashAdvance',
-    'CashDeposit',
-    'Recurring',
-    'Instalment',
-    'IssuerInstalment',
-    'PaidOut',
-  ])
-  .openapi({
-    description:
-      '\nPossible values:\n* **Normal**\n* **Refund**\n* **OneTimeReservation**\n* **FirstReservation**\n* **UpdateReservation**\n* **Completion**\n* **CashAdvance**\n* **CashDeposit**\n* **Recurring**\n* **Instalment**\n* **IssuerInstalment**\n* **PaidOut**',
-  })
-  .openapi('PaymentType')
-
-const PaymentInstrumentTypeSchema = z
-  .enum(['Card', 'Check', 'Mobile', 'StoredValue', 'Cash'])
-  .openapi({
-    description:
-      '\nPossible values:\n* **Card**\n* **Check**\n* **Mobile**\n* **StoredValue**\n* **Cash**',
-  })
-  .openapi('PaymentInstrumentType')
-
-const TypeCodeSchema = z
-  .enum(['Personal', 'Company'])
-  .openapi({ description: '\nPossible values:\n* **Personal**\n* **Company**' })
-  .openapi('TypeCode')
+  .openapi('MobileData')
 
 const StoredValueAccountTypeSchema = z
   .enum(['GiftCard', 'PhoneCard', 'Other'])
@@ -439,1111 +901,6 @@ const IdentificationTypeSchema = z
       '\nPossible values:\n* **PAN**\n* **ISOTrack2**\n* **BarCode**\n* **AccountNumber**\n* **PhoneNumber**',
   })
   .openapi('IdentificationType')
-
-const IdentificationSupportSchema = z
-  .enum(['NoCard', 'LoyaltyCard', 'HybridCard', 'LinkedCard'])
-  .openapi({
-    description:
-      'Support of the loyalty account identification. Allows knowing where and how you have found the loyalty account identification.\nPossible values:\n* **NoCard**\n* **LoyaltyCard**\n* **HybridCard**\n* **LinkedCard**',
-  })
-  .openapi('IdentificationSupport')
-
-const InstalmentTypeSchema = z
-  .enum(['DeferredInstalments', 'EqualInstalments', 'InequalInstalments'])
-  .openapi({
-    description:
-      'Type of instalment transaction. For requesting an instalment payment transaction.\nPossible values:\n* **DeferredInstalments**\n* **EqualInstalments**\n* **InequalInstalments**',
-  })
-  .openapi('InstalmentType')
-
-const PeriodUnitSchema = z
-  .enum(['Daily', 'Weekly', 'Monthly', 'Annual'])
-  .openapi({
-    description:
-      'Type of instalment transaction.\nPossible values:\n* **Daily**\n* **Weekly**\n* **Monthly**\n* **Annual**',
-  })
-  .openapi('PeriodUnit')
-
-const LoyaltyHandlingSchema = z
-  .enum(['Forbidden', 'Processed', 'Allowed', 'Proposed', 'Required'])
-  .openapi({
-    description:
-      '\nPossible values:\n* **Forbidden**\n* **Processed**\n* **Allowed**\n* **Proposed**\n* **Required**',
-  })
-  .openapi('LoyaltyHandling')
-
-const ForceEntryModeSchema = z
-  .array(
-    z.enum([
-      'RFID',
-      'Keyed',
-      'Manual',
-      'File',
-      'Scanned',
-      'MagStripe',
-      'ICC',
-      'SynchronousICC',
-      'Tapped',
-      'Contactless',
-      'CheckReader',
-    ]),
-  )
-  .openapi('ForceEntryMode')
-
-const DocumentQualifierSchema = z
-  .enum(['SaleReceipt', 'CashierReceipt', 'CustomerReceipt', 'Document', 'Voucher', 'Journal'])
-  .openapi({
-    description:
-      '\nPossible values:\n* **SaleReceipt**\n* **CashierReceipt**\n* **CustomerReceipt**\n* **Document**\n* **Voucher**\n* **Journal**',
-  })
-  .openapi('DocumentQualifier')
-
-const AuthenticationMethodSchema = z
-  .array(
-    z.enum([
-      'Bypass',
-      'ManualVerification',
-      'MerchantAuthentication',
-      'OfflinePIN',
-      'OnlinePIN',
-      'PaperSignature',
-      'SecuredChannel',
-      'SecureCertificate',
-      'SecureNoCertificate',
-      'SignatureCapture',
-      'UnknownMethod',
-    ]),
-  )
-  .openapi({
-    description:
-      'Method for customer authentication. Allows the Sale System informed about customer authentication for the payment transaction.\nPossible values:\n* **Bypass**\n* **ManualVerification**\n* **MerchantAuthentication**\n* **OfflinePIN**\n* **OnlinePIN**\n* **PaperSignature**\n* **SecureCertificate**\n* **SecureNoCertificate**\n* **SecuredChannel**\n* **SignatureCapture**\n* **UnknownMethod**',
-  })
-  .openapi('AuthenticationMethod')
-
-const StoredValueTransactionTypeSchema = z
-  .enum(['Reserve', 'Activate', 'Load', 'Unload', 'Reverse', 'Duplicate'])
-  .openapi({
-    description:
-      '\nPossible values:\n* **Reserve**\n* **Activate**\n* **Load**\n* **Unload**\n* **Reverse**\n* **Duplicate**',
-  })
-  .openapi('StoredValueTransactionType')
-
-const ReversalReasonSchema = z
-  .enum(['CustCancel', 'MerchantCancel', 'Malfunction', 'Unable2Compl'])
-  .openapi({
-    description:
-      'Reason of the payment or loyalty reversal.\nPossible values:\n* **CustCancel**\n* **MerchantCancel**\n* **Malfunction**\n* **Unable2Compl**',
-  })
-  .openapi('ReversalReason')
-
-const ReconciliationTypeSchema = z
-  .enum([
-    'SaleReconciliation',
-    'AcquirerSynchronisation',
-    'AcquirerReconciliation',
-    'PreviousReconciliation',
-  ])
-  .openapi({
-    description:
-      '\nPossible values:\n* **SaleReconciliation**\n* **AcquirerSynchronisation**\n* **AcquirerReconciliation**\n* **PreviousReconciliation**',
-  })
-  .openapi('ReconciliationType')
-
-const TransactionTypeSchema = z
-  .enum([
-    'Debit',
-    'Credit',
-    'ReverseDebit',
-    'ReverseCredit',
-    'OneTimeReservation',
-    'CompletedDeffered',
-    'FirstReservation',
-    'UpdateReservation',
-    'CompletedReservation',
-    'CashAdvance',
-    'IssuerInstalment',
-    'Declined',
-    'Failed',
-    'Award',
-    'ReverseAward',
-    'Redemption',
-    'ReverseRedemption',
-    'Rebate',
-    'ReverseRebate',
-  ])
-  .openapi({
-    description:
-      '\nPossible values:\n* **Debit**\n* **Credit**\n* **ReverseDebit**\n* **ReverseCredit**\n* **OneTimeReservation**\n* **CompletedDeffered**\n* **FirstReservation**\n* **UpdateReservation**\n* **CompletedReservation**\n* **CashAdvance**\n* **IssuerInstalment**\n* **Declined**\n* **Failed**\n* **Award**\n* **ReverseAward**\n* **Redemption**\n* **ReverseRedemption**\n* **Rebate**\n* **ReverseRebate**',
-  })
-  .openapi('TransactionType')
-
-const TotalDetailsSchema = z
-  .array(z.enum(['POIID', 'SaleID', 'OperatorID', 'ShiftNumber', 'TotalsGroupID']))
-  .openapi({
-    description:
-      'Indicates the hierarchical structure of the reconciliation result of the Sale to POI reconciliation.\nRequired to present totals per value of element included in this cluster (POI Terminal, Sale Terminal, Cashier, Shift, TotalsGroupID).\nPossible values:\n* **OperatorID**\n* **POIID**\n* **SaleID**\n* **ShiftNumber**\n* **TotalsGroupID**',
-  })
-  .openapi('TotalDetails')
-
-const AccountTypeSchema = z
-  .enum([
-    'Default',
-    'Savings',
-    'Checking',
-    'CreditCard',
-    'Universal',
-    'Investment',
-    'CardTotals',
-    'EpurseCard',
-  ])
-  .openapi({
-    description:
-      'Type of cardholder account used for the transaction. Allows a cardholder to select the type of account used for the transaction.\nPossible values:\n* **Default**\n* **Savings**\n* **Checking**\n* **CreditCard**\n* **Universal**\n* **Investment**\n* **CardTotals**\n* **EpurseCard**',
-  })
-  .openapi('AccountType')
-
-const MessageCategorySchema = z
-  .enum([
-    'Abort',
-    'Admin',
-    'BalanceInquiry',
-    'CardAcquisition',
-    'Diagnosis',
-    'Display',
-    'EnableService',
-    'Event',
-    'GetTotals',
-    'Input',
-    'InputUpdate',
-    'Login',
-    'Logout',
-    'Loyalty',
-    'Payment',
-    'Print',
-    'Reconciliation',
-    'Reversal',
-    'StoredValue',
-    'TransactionStatus',
-    'None',
-  ])
-  .openapi({
-    description:
-      '\nPossible values:\n* **Abort**\n* **Admin**\n* **BalanceInquiry**\n* **CardAcquisition**\n* **Diagnosis**\n* **Display**\n* **EnableService**\n* **Event**\n* **GetTotals**\n* **Input**\n* **InputUpdate**\n* **Login**\n* **Logout**\n* **Loyalty**\n* **Payment**\n* **Print**\n* **Reconciliation**\n* **Reversal**\n* **StoredValue**\n* **TransactionStatus**\n* **None**',
-  })
-  .openapi('MessageCategory')
-
-const MessageTypeSchema = z
-  .enum(['Request', 'Response', 'Notification'])
-  .openapi({ description: '\nPossible values:\n* **Request**\n* **Response**\n* **Notification**' })
-  .openapi('MessageType')
-
-const MessageClassSchema = z
-  .enum(['Service', 'Device', 'Event'])
-  .openapi({ description: '\nPossible values:\n* **Service**\n* **Device**\n* **Event**' })
-  .openapi('MessageClass')
-
-const EventToNotifySchema = z
-  .enum([
-    'BeginMaintenance',
-    'EndMaintenance',
-    'Shutdown',
-    'Initialised',
-    'OutOfOrder',
-    'Completed',
-    'Abort',
-    'SaleWakeUp',
-    'SaleAdmin',
-    'CustomerLanguage',
-    'KeyPressed',
-    'SecurityAlarm',
-    'StopAssistance',
-    'CardInserted',
-    'CardRemoved',
-    'Reject',
-    'UseAnotherCardForPreauth',
-    'ScanBarcodeResult',
-  ])
-  .openapi({
-    description:
-      'Event the POI notifies to the Sale System.\nPossible values:\n* **BeginMaintenance**\n* **EndMaintenance**\n* **Shutdown**\n* **Initialised**\n* **OutOfOrder**\n* **Completed**\n* **Abort**\n* **SaleWakeUp**\n* **SaleAdmin**\n* **CustomerLanguage**\n* **KeyPressed**\n* **SecurityAlarm**\n* **StopAssistance**\n* **CardInserted**\n* **CardRemoved**\n* **Reject**\n* **UseAnotherCardForPreauth**\n* **ScanBarcodeResult**',
-  })
-  .openapi('EventToNotify')
-
-const InputCommandSchema = z
-  .enum([
-    'GetAnyKey',
-    'GetConfirmation',
-    'SiteManager',
-    'TextString',
-    'DigitString',
-    'DecimalString',
-    'GetFunctionKey',
-    'GetMenuEntry',
-    'Password',
-  ])
-  .openapi({
-    description:
-      '\nPossible values:\n* **GetAnyKey**\n* **GetConfirmation**\n* **SiteManager**\n* **TextString**\n* **DigitString**\n* **DecimalString**\n* **GetFunctionKey**\n* **GetMenuEntry**\n* **Password**',
-  })
-  .openapi('InputCommand')
-
-const ResponseModeSchema = z
-  .enum(['NotRequired', 'Immediate', 'PrintEnd', 'SoundEnd'])
-  .openapi({
-    description:
-      '\nPossible values:\n* **NotRequired**\n* **Immediate**\n* **PrintEnd**\n* **SoundEnd**',
-  })
-  .openapi('ResponseMode')
-
-const SoundFormatSchema = z
-  .enum(['SoundRef', 'MessageRef', 'Text'])
-  .openapi({ description: '\nPossible values:\n* **SoundRef**\n* **MessageRef**\n* **Text**' })
-  .openapi('SoundFormat')
-
-const SoundActionSchema = z
-  .enum(['StartSound', 'StopSound', 'SetDefaultVolume'])
-  .openapi({
-    description: '\nPossible values:\n* **StartSound**\n* **StopSound**\n* **SetDefaultVolume**',
-  })
-  .openapi('SoundAction')
-
-const PINFormatSchema = z.enum(['ISO0', 'ISO1', 'ISO2', 'ISO3']).openapi('PINFormat')
-
-const PINRequestTypeSchema = z
-  .enum(['PINVerify', 'PINVerifyOnly', 'PINEnter'])
-  .openapi({
-    description:
-      'Type of PIN Service.\nPossible values:\n* **PINVerify**\n* **PINVerifyOnly**\n* **PINEnter**',
-  })
-  .openapi('PINRequestType')
-
-const SaleToIssuerDataSchema = z
-  .object({
-    StatementReference: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Label to print on the bank statement.' }),
-  })
-  .openapi({
-    description:
-      'Sale information intended for the Issuer.\nThe POI System receives this information and sends it to the Acquirer for the Issuer without any change.',
-    required: [],
-  })
-  .openapi('SaleToIssuerData')
-
-const CardDataSchema: z.ZodType<CardDataType> = z
-  .lazy(() =>
-    z
-      .object({
-        PaymentBrand: z
-          .string()
-          .regex(/^.+$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Type of payment card.\nIf card PAN is readable.\nIndicates the card used to pay in the PaymentResponse. Sent in the CardAcquisitionResponse, to leave the Cashier to choose between several applications in a smartcard, or several brand in a co-branded card. In this case, the CardAcquisitionRequest.ForceCustomerSelectionFlag must contain the value False. Brands are part of the POI and Sale Systems configurations.',
-          }),
-        MaskedPan: z
-          .string()
-          .regex(/^.+$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Masked Primary Account Number\nPart of the PAN is replaced by a string of * characters, to identify a customer account or relationship. Presence of this data element, which replace the PAN when SensitiveCardData is protected and replaced by ProtectedCardData. Alternatively the MaskedPAN can be used as a token to identify a customer.',
-          }),
-        PaymentAccountRef: z
-          .string()
-          .regex(/^.+$/)
-          .exactOptional()
-          .openapi({
-            description:
-              'Reference of the PAN, which identifies the PAN or the card uniquely, named also PAR (Payment Account Reference). This reference may be defined by the card issuer or by a token service provider under the control of the card issuer, and cannot be used for a payment transaction.',
-          }),
-        EntryMode: EntryModeSchema.exactOptional().openapi({
-          description:
-            'Entry mode of the payment instrument information. In the Payment, Loyalty or StoredValue Request messages, it informs the POI System the entry mode of the payment instrument information when read by the Sale Terminal. In the Payment, Loyalty or StoredValue Response messages, it informs the Sale System the entry mode of the payment instrument.\nPossible values:\n* **Contactless**\n* **File**\n* **ICC**\n* **Keyed**\n* **MagStripe**\n* **Manual**\n* **Mobile**\n* **RFID**\n* **Scanned**\n* **SynchronousICC**\n* **Tapped**',
-        }),
-        CardCountryCode: z
-          .int()
-          .min(3)
-          .max(3)
-          .exactOptional()
-          .openapi({
-            description:
-              'Country Code attached to the card (3 numerics).\nIf available in the card.',
-            'x-nexo-kind': 'digitstring',
-          }),
-        ProtectedCardData: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Sensitive information related to the payment card, protected by CMS.\nSensitiveCardData protected by CMS EnvelopedData.',
-            'x-nexo-kind': 'contentinformation',
-          }),
-        SensitiveCardData: SensitiveCardDataSchema.exactOptional().openapi({
-          description:
-            'Sensitive information related to the payment card, entered or read by the Sale System.\nIf structure non empty and unprotected.',
-        }),
-        PaymentToken: PaymentTokenSchema.exactOptional().openapi({
-          description:
-            'Surrogate of the PAN (Primary Account Number) of the payment card to identify the payment mean of the customer. It allows, for a merchant, to identify the customer.\nRestriction of product payable by a card.',
-        }),
-      })
-      .openapi({
-        description:
-          'Information related to the payment card used for the transaction.\nAllows acquisition of the card data by the Sale System before the Payment, CardAcquisition, or BalanceInquiry request to the POI. It can also be sent in the CardAcquisition response, to be processed by the Sale System.',
-        required: [],
-      }),
-  )
-  .openapi('CardData')
-
-const TransactionIDTypeSchema = z
-  .object({
-    TransactionID: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description:
-          'Unique identification of a transaction to identify the transaction on\nthe Sale System (e.g. ticket number), or the POI System.',
-      }),
-    TimeStamp: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'Date and time of a transaction for the Sale System, the POI System or the Acquirer.\n Ensures the uniqueness of a transaction and indicates the time when the event\n occurs in the EventNotification message.',
-      }),
-  })
-  .openapi({
-    description: 'Identification of a transaction for the Sale System or the POI System.',
-    required: ['TransactionID', 'TimeStamp'],
-  })
-  .openapi('TransactionIDType')
-
-const SaleTerminalDataSchema = z
-  .object({
-    TotalsGroupID: z
-      .string()
-      .regex(/^.{1,16}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of a group of transactions on a POI Terminal, having the same Sale features.\nCould be used to group POI for reconciliation or other purpose defined by the Sale System. The default value is assigned by the Login Request.',
-        'x-nexo-min': 1,
-        'x-nexo-max': 16,
-      }),
-  })
-  .openapi({
-    description:
-      'Information related to the software and hardware features of the Sale Terminal.\nSent in the Login Request if a Sale Terminal is involved in the login. In other messages, sent when a logical device is out of order (SaleCapabilities) or when other data have changed or were missing in the Login.',
-    required: [],
-  })
-  .openapi('SaleTerminalData')
-
-const SaleDataSchema = z
-  .object({
-    OperatorID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Identification of the Cashier or Operator.' }),
-    OperatorLanguage: z
-      .string()
-      .regex(/^[a-z]{2,2}$/)
-      .exactOptional()
-      .openapi({
-        description: 'Language of the Cashier or Operator.\nIf different from the Login.',
-      }),
-    ShiftNumber: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Shift number.\nIf different from the Login, see Login SaleData.' }),
-    SaleTransactionID: TransactionIDTypeSchema.openapi({
-      description: 'Identification of a Sale transaction.',
-    }),
-    SaleReferenceID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of a Sale global transaction for a sequence of related POI transactions.\nIf payment reservation.',
-      }),
-    SaleTerminalData: SaleTerminalDataSchema.exactOptional().openapi({
-      description:
-        'Information related to the software and hardware features of the Sale Terminal.\nIf content is not empty.',
-    }),
-    TokenRequestedType: TokenRequestedTypeSchema.exactOptional().openapi({
-      description:
-        'Type of token replacing the PAN of a payment card to identify the payment\n mean of the customer. It allows, for a merchant, to use a token for a transaction\n only or for a longer period.\nPossible values:\n* **Customer**\n* **Transaction**',
-    }),
-    CustomerOrderID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Additional and optional identification of a customer order.' }),
-    CustomerOrderReq: CustomerOrderReqSchema.exactOptional().openapi({
-      description:
-        'List of customer order open, closed or both to be sent in the response messages.\nPossible values:\n* **Both**\n* **Closed**\n* **Open**',
-    }),
-    SaleToPOIData: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description: 'Sale information intended for the POI.\nStored with the transaction.',
-      }),
-    SaleToAcquirerData: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Sale information intended for the Acquirer.\nSend to the Acquirer if present.',
-      }),
-    SaleToIssuerData: SaleToIssuerDataSchema.exactOptional().openapi({
-      description: 'Sale information intended for the Issuer.\nSend to the Acquirer if present.',
-    }),
-  })
-  .openapi({
-    description:
-      'Data associated with the Sale System, with a particular value during the processing of the payment by the POI, including the cards acquisition.',
-    required: ['SaleTransactionID'],
-    'x-nexo-exported': true,
-  })
-  .openapi('SaleData')
-
-const POIDataSchema = z
-  .object({
-    POITransactionID: TransactionIDTypeSchema.openapi({
-      description: 'Unique identification of a POI transaction for a POI.',
-    }),
-    POIReconciliationID: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of the reconciliation period between Sale and POI.\nIf Result is Success.',
-        'x-nexo-kind': 'digitstring',
-      }),
-  })
-  .openapi({
-    description:
-      'Data related to the POI System.\nIn the Message Response, identification of the POI transaction.',
-    required: ['POITransactionID'],
-  })
-  .openapi('POIData')
-
-const SaleSoftwareSchema = z
-  .object({
-    ManufacturerID: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({ description: 'Identification of the Manufacturer.' }),
-    ApplicationName: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({ description: 'Name of the software product.' }),
-    SoftwareVersion: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({ description: 'Version of the software product.' }),
-    CertificationCode: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description: 'Certification code of the software which manages the Sale to POI protocol.',
-      }),
-  })
-  .openapi({
-    description:
-      'Information related to the software of the Sale System which manages the NEXO Sale to POI protocol.',
-    required: ['ManufacturerID', 'ApplicationName', 'SoftwareVersion', 'CertificationCode'],
-  })
-  .openapi('SaleSoftware')
-
-const POIStatusSchema = z
-  .object({
-    GlobalStatus: GlobalStatusSchema.openapi({
-      description:
-        'Global status of a POI Server or POI Terminal.\nPossible values:\n* **Busy**\n* **Maintenance**\n* **OK**\n* **Unreachable**',
-    }),
-    SecurityOKFlag: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the security module of the POI is working and usable.\nIf security module present.',
-      }),
-    PEDOKFlag: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the PED is working and usable.\nIf PED present.' }),
-    CardReaderOKFlag: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the card readers are working and usable.\nIf card reader device present.',
-      }),
-    PrinterStatus: PrinterStatusSchema.exactOptional().openapi({
-      description:
-        'Possible values:\n* **NoPaper**\n* **OK**\n* **OutOfOrder**\n* **PaperJam**\n* **PaperLow**',
-    }),
-    CommunicationOKFlag: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the communication infrastructure is working and usable.\nIf communication infrastructure present.',
-      }),
-    FraudPreventionFlag: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates a suspicion of fraud by the POI System.\nCould be set to True by the POI system to notify to the Sale system and the Cashier that a suspicion of fraud had been detected on the POI as an unexpected reboot of the POI.',
-      }),
-  })
-  .openapi({
-    description:
-      'Indicate the availability of the POI Terminal components. The data element is absent if the component is not part of the POI Terminal.\nState of a POI Terminal.',
-    required: ['GlobalStatus'],
-  })
-  .openapi('POIStatus')
-
-const ResponseSchema = z
-  .object({
-    Result: ResultSchema.openapi({
-      description:
-        'Result of the processing of the message.\nPossible values:\n* **Failure**\n* **Partial**\n* **Success**',
-    }),
-    ErrorCondition: ErrorConditionSchema.exactOptional().openapi({
-      description:
-        'Condition that has produced an error on the processing of a message request.\nReturned if Result is not Success.\nPossible values:\n* **Aborted**\n* **Busy**\n* **Cancel**\n* **DeviceOut**\n* **InProgress**\n* **InsertedCard**\n* **InvalidCard**\n* **LoggedOut**\n* **MessageFormat**\n* **NotAllowed**\n* **NotFound**\n* **PaymentRestriction**\n* **Refusal**\n* **UnavailableDevice**\n* **UnavailableService**\n* **UnreachableHost**\n* **WrongPIN**',
-    }),
-    AdditionalResponse: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional information related to processing status of a message request.\nIf present, the POI logs it for further examination.',
-      }),
-  })
-  .openapi({
-    description:
-      'Result of a message request processing.\nIf Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present and can refine the processing of the message response. `AdditionalResponse` gives more information about the success or the failure of the message request processing, for logging without real time involvements.',
-    required: ['Result'],
-  })
-  .openapi('Response')
-
-const POISoftwareSchema = z
-  .object({
-    ManufacturerID: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description:
-          'Identification of the Manufacturer. Sent in the Login Request (Response) to identify the Sale System (POI System) manufacturer during the session.',
-      }),
-    ApplicationName: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description:
-          'Name of the software product. Sent in the Login Request (Response) to identify the Sale System (POI System) product name during the session.',
-      }),
-    SoftwareVersion: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description:
-          'Version of the software product. Sent in the Login Request (Response) to identify the version of the Sale System (POI System) product software during the session.',
-      }),
-    CertificationCode: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description:
-          'Certification code of the software which manages the Sale to POI protocol. Sent in the Login Request (Response) to get the certification code of the Sale System (POI System) product software. This code can be a software checksum or any number associated with the software.',
-      }),
-  })
-  .openapi({
-    description:
-      'Information related to the software of the POI System which manages the Sale to POI protocol. In a session allows identifying the product features of a POI System.',
-    required: ['ManufacturerID', 'ApplicationName', 'SoftwareVersion', 'CertificationCode'],
-  })
-  .openapi('POISoftware')
-
-const POISystemDataSchema = z
-  .object({
-    DateTime: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'Date and Time. In the response, the POI System gives its date and time to the Sale System.',
-      }),
-    POISoftware: POISoftwareSchema,
-    POIStatus: POIStatusSchema.exactOptional(),
-  })
-  .openapi({ required: ['DateTime', 'POISoftware'] })
-  .openapi('POISystemData')
-
-const OutputTextSchema = z
-  .object({
-    Text: z
-      .string()
-      .openapi({
-        description: 'Content of text message to display, print or play.',
-        'x-nexo-kind': 'unicode',
-      }),
-    CharacterSet: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Character height of the text string to display or print. Absence of this data element means the characters have normal height.',
-        'x-nexo-kind': 'integer',
-      }),
-    StartRow: z
-      .int()
-      .min(1)
-      .max(500)
-      .exactOptional()
-      .openapi({
-        description: 'Row where the text string has to be displayed or printed.',
-        'x-nexo-kind': 'integer',
-      }),
-    StartColumn: z
-      .int()
-      .min(1)
-      .max(500)
-      .exactOptional()
-      .openapi({
-        description: 'Column where the text string has to be displayed or printed.',
-        'x-nexo-kind': 'integer',
-      }),
-    CharacterWidth: CharacterWidthSchema.exactOptional().openapi({
-      description:
-        'Character width of the text string to display or print. Absence of this data element means the characters have normal width.\nPossible values:\n* **DoubleWidth**\n* **SingleWidth**',
-    }),
-    CharacterHeight: CharacterHeightSchema.exactOptional().openapi({
-      description:
-        'Character height of the text string to display or print. Absence of this data element means the characters have normal height.\nPossible values:\n* **DoubleHeight**\n* **HalfHeight**\n* **SingleHeight**',
-    }),
-    CharacterStyle: CharacterStyleSchema.exactOptional().openapi({
-      description:
-        'Typographic style of the sequence of characters to display or print. Absence of this data element means the characters have normal style.\nPossible values:\n* **Bold**\n* **Italic**\n* **Normal**\n* **Underline**',
-    }),
-    Alignment: AlignmentSchema.exactOptional().openapi({
-      description:
-        'Alignment of the text string on the display line or print line. Absence of this data element means the characters have normal alignment.\nPossible values:\n* **Centred**\n* **Justified**\n* **Left**\n* **Right**',
-    }),
-    EndOfLineFlag: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the text is at the end of a line. Allows the display or the print of a new line and a carry-over return characters after the formatted text.',
-      }),
-  })
-  .openapi({
-    description:
-      'Content of text message to display or print.\nIt conveys information related to the content of the text message and its format. All the data elements related to the format of the text to display or print are parameters valid for the whole text content.',
-    required: ['Text'],
-  })
-  .openapi('OutputText')
-
-const PredefinedContentSchema = z
-  .object({
-    ReferenceID: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({ description: 'Identification of a predefined message to display or print.' }),
-    Language: z
-      .string()
-      .regex(/^[a-z]{2,2}$/)
-      .exactOptional()
-      .openapi({ description: 'Identification of a language.' }),
-  })
-  .openapi({
-    description:
-      'Reference of a predefined message to display or print.\nIt conveys information related to the predefined message.',
-    required: ['ReferenceID'],
-  })
-  .openapi('PredefinedContent')
-
-const OutputBarcodeSchema = z
-  .object({
-    BarcodeValue: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description: 'Value with a Barcode coding. The barcode value to display or print.',
-      }),
-  })
-  .openapi({ required: ['BarcodeValue'] })
-  .openapi('OutputBarcode')
-
-const OutputContentSchema = z
-  .object({
-    OutputFormat: OutputFormatSchema.openapi({
-      description:
-        'Format of the content to display or print.\nPossible values:\n* **BarCode**\n* **MessageRef**\n* **Text**\n* **XHTML**',
-    }),
-    PredefinedContent: PredefinedContentSchema.exactOptional().openapi({
-      description:
-        'Reference of a predefined message to display or print.\nMandatory, if `OutputFormat` is MessageRef, not allowed otherwise.',
-    }),
-    OutputText: z
-      .array(OutputTextSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Content of text message to display or print.\nMandatory, if `OutputFormat` is Text, not allowed otherwise. One instance of `OutputText` per shared format.',
-      }),
-    OutputXHTML: z
-      .string()
-      .regex(/^.{0,262144}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'XHTML document body containing the message to display or print.\nMandatory if `OutputFormat` is XHTML, not allowed otherwise.',
-        'x-nexo-min': 0,
-        'x-nexo-max': 262144,
-      }),
-    OutputBarcode: OutputBarcodeSchema.exactOptional().openapi({
-      description:
-        'Barcode content to display or print.\nMandatory if `OutputFormat` is Barcode, not allowed otherwise.',
-    }),
-  })
-  .openapi({
-    description:
-      'Content to display or print.\nThis is a sequence of elements if they have different formats.',
-    required: ['OutputFormat'],
-  })
-  .openapi('OutputContent')
-
-const MenuEntrySchema = z
-  .object({
-    MenuEntryTag: MenuEntryTagSchema.exactOptional().openapi({
-      description:
-        'Characteristics related to the selection of a menu entry.\nPossible values:\n* **NonSelectable**\n* **NonSelectableSubMenu**\n* **Selectable**\n* **SubMenu**',
-      'x-nexo-default': 'Selectable',
-    }),
-    DefaultSelectedFlag: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Selection of a menu entry to be displayed. In Input request message, it allows selection of one or several menu entries before any user action.',
-      }),
-    OutputFormat: OutputFormatSchema.openapi({
-      description: 'Possible values:\n* **BarCode**\n* **MessageRef**\n* **Text**\n* **XHTML**',
-    }),
-    PredefinedContent: PredefinedContentSchema.exactOptional(),
-    OutputText: z
-      .array(OutputTextSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Content of text message to display or print. It conveys Information related to the content of the text message and its format. All the data elements related to the format of the text to display or print are parameters valid for the whole Text content.',
-      }),
-    OutputXHTML: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'XHTML document body containing the message to display or print.' }),
-  })
-  .openapi({
-    description:
-      'An entry of the menu to present to the Cashier.\nIt conveys message text and parameters of the menu entry. This output data could be only provided for an input command, in order to choose an entry of the menu.',
-    required: ['OutputFormat'],
-  })
-  .openapi('MenuEntry')
-
-const DisplayOutputSchema = z
-  .object({
-    ResponseRequiredFlag: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({ description: 'Indicates if the message response is required.' }),
-    MinimumDisplayTime: z
-      .int()
-      .min(0)
-      .max(999)
-      .default(0)
-      .exactOptional()
-      .openapi({
-        description: 'Number of seconds the message has to be displayed.',
-        'x-nexo-kind': 'integer',
-      }),
-    Device: DeviceSchema.openapi({
-      description:
-        'Logical device located on a Sale Terminal or a POI Terminal, in terms of class of information to output (display, print, or store), or input (keyboard) for the Cashier or the Customer.\nPossible values:\n* **CashierDisplay**\n* **CashierInput**\n* **CustomerDisplay**\n* **CustomerInput**',
-    }),
-    InfoQualify: InfoQualifySchema.openapi({
-      description:
-        'Qualification of the information to sent to an output logical device, to display or print to the Cashier or the Customer. Allows the manager of the device, Sale or POI Terminal, to send the information to a particular physical device or to present the information accordingly.\nPossible values:\n* **CustomerAssistance**\n* **Display**\n* **Document**\n* **Error**\n* **Input**\n* **POIReplication**\n* **Receipt**\n* **Sound**\n* **Status**\n* **Voucher**',
-    }),
-    OutputContent: OutputContentSchema.openapi({ description: 'Content to display or print.' }),
-    MenuEntry: z
-      .array(MenuEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An entry of the menu to present to the Cashier. It conveys the message text and parameters of the menu entry. This output data could be only provided for an input command, in order to choose an entryof the menu.',
-      }),
-    OutputSignature: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Vendor-specific signature of the text message to display or print.\nIf protection has to be provided to the vendor on the text to display or print.',
-      }),
-  })
-  .openapi({
-    description:
-      'Information to display and how to process it.\nContains a complete display operation for a Display or an Input Device type. For the Input Devices, Diagnosis and `EnableService`, `ResponseRequiredFlag`, and `MinimumDisplayTime` shall be absent.',
-    required: ['Device', 'InfoQualify', 'OutputContent'],
-  })
-  .openapi('DisplayOutput')
-
-const LoyaltyAccountIDSchema = z
-  .object({
-    EntryMode: EntryModeSchema.openapi({
-      description:
-        'Entry mode of the payment instrument information. In the Payment, Loyalty or StoredValue Request messages, it informs the POI System the entry mode of the payment instrument information when read by the Sale Terminal. In the Payment, Loyalty or StoredValue Response messages, it informs the Sale System the entry mode of the payment instrument.\nPossible values:\n* **Contactless**\n* **File**\n* **ICC**\n* **Keyed**\n* **MagStripe**\n* **Manual**\n* **Mobile**\n* **RFID**\n* **Scanned**\n* **SynchronousICC**\n* **Tapped**',
-    }),
-    IdentificationType: IdentificationTypeSchema.openapi({
-      description:
-        'Type of account identification. In a request message, it informs the POI System the type of the account or card identification, when provided by the Sale Terminal. (e.g. because the card information is a barcode read by the Cashier on a scanner device). In a response message, it informs the Sale System the type of the account or card identification.\nPossible values:\n* **AccountNumber**\n* **BarCode**\n* **ISOTrack2**\n* **PAN**\n* **PhoneNumber**',
-    }),
-    IdentificationSupport: IdentificationSupportSchema.exactOptional().openapi({
-      description:
-        'Support of the loyalty account identification. Allows knowing where and how you have found the loyalty account identification.\nPossible values:\n* **HybridCard**\n* **LinkedCard**\n* **LoyaltyCard**\n* **NoCard**',
-    }),
-    LoyaltyID: z
-      .string()
-      .openapi({
-        description: 'Loyalty account identification conforming to the IdentificationType.',
-        'x-nexo-kind': 'unicode',
-      }),
-  })
-  .openapi({
-    description:
-      'Identification of a Loyalty account.\nIn the Payment Request message, it allows to identify the loyalty account by the Sale Terminal instead of the POI Terminal (e.g. because the account identification is a bar-code read by the Cashier on a scanner device).',
-    required: ['EntryMode', 'IdentificationType', 'LoyaltyID'],
-  })
-  .openapi('LoyaltyAccountID')
-
-const LoyaltyDataSchema = z
-  .object({
-    CardAcquisitionReference: TransactionIDTypeSchema.exactOptional().openapi({
-      description:
-        'Reference to the last CardAcquisition, to use the same card.\nIf the loyalty account ID comes from a previous CardAcquisition.',
-    }),
-    LoyaltyAccountID: LoyaltyAccountIDSchema.exactOptional().openapi({
-      description:
-        'Identification of a Loyalty account.\nIf loyalty identification of the loyalty account is realised by the Sale System.',
-    }),
-  })
-  .openapi({
-    description:
-      'In the Payment, Loyalty or Balance Inquiry Request message, it allows the Sale Terminal to send the identification of the loyalty account or an awarded amount or an amount to redeem to the loyalty account.\nData related to a Loyalty program or account.',
-    required: [],
-  })
-  .openapi('LoyaltyData')
-
-const CheckDataSchema = z
-  .object({
-    BankID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Identification of the bank.\nMandatory if TrackData absent.' }),
-    AccountNumber: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description: 'Identification of the customer account.\nMandatory if TrackData absent.',
-      }),
-    CheckNumber: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description: 'Identification of the bank check.\nMandatory if TrackData absent.',
-      }),
-    TrackData: TrackDataSchema.exactOptional().openapi({
-      description:
-        'Magnetic track or magnetic ink characters line.\nMandatory if CheckNumber absent.',
-    }),
-    CheckCardNumber: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Check guarantee card number.\nIf provided by the customer.' }),
-    TypeCode: TypeCodeSchema.exactOptional().openapi({
-      description: 'Type of bank check.\nPossible values:\n* **Company**\n* **Personal**',
-      'x-nexo-default': 'Personal',
-    }),
-    Country: z
-      .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .exactOptional()
-      .openapi({
-        description: 'Country of the bank check.\nAbsent if country of the Sale system.',
-        'x-nexo-kind': 'isocountry3a',
-      }),
-  })
-  .openapi({
-    description:
-      'Information related to the paper check used for the transaction.\nAllows the check information to be provided by the Sale System before requesting the payment, or stored by the Sale System after processing of the payment.',
-    required: [],
-  })
-  .openapi('CheckData')
-
-const MobileDataSchema: z.ZodType<MobileDataType> = z
-  .lazy(() =>
-    z
-      .object({
-        MobileCountryCode: z
-          .int()
-          .min(3)
-          .max(3)
-          .exactOptional()
-          .openapi({
-            description: 'Identifies the country of a mobile phone operator.\nIf data available.',
-            'x-nexo-kind': 'digitstring',
-          }),
-        MobileNetworkCode: z
-          .int()
-          .min(2)
-          .max(3)
-          .exactOptional()
-          .openapi({
-            description:
-              'Identifies the mobile phone operator inside a country.\nIf data available.',
-            'x-nexo-kind': 'digitstring',
-          }),
-        MaskedMSISDN: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'Masked Mobile Subscriber Integrated Service Digital Network.\nIf data available.',
-            'x-nexo-kind': 'digitstring',
-          }),
-        Geolocation: GeolocationSchema.exactOptional().openapi({
-          description:
-            'Geographic location specified by geographic or UTM coordinates.\nIf data available.',
-        }),
-        ProtectedMobileData: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Sensitive information related to the mobile phone, protected by CMS.\nSensitiveMobileData.',
-            'x-nexo-kind': 'contentinformation',
-          }),
-        SensitiveMobileData: SensitiveMobileDataSchema.exactOptional().openapi({
-          description:
-            'Sensitive information related to the mobile phone.\nIf unprotected mobile data.',
-        }),
-      })
-      .openapi({
-        description:
-          'Mobile phone is used as a payment instrument for the transaction.\nInformation related to the mobile for the payment transaction.',
-        required: [],
-      }),
-  )
-  .openapi('MobileData')
-
-const InstalmentSchema = z
-  .object({
-    InstalmentType: InstalmentTypeSchema.exactOptional().openapi({
-      description:
-        'Type of instalment transaction. For requesting an instalment payment transaction.\nPossible values:\n* **DeferredInstalments**\n* **EqualInstalments**\n* **InequalInstalments**',
-    }),
-    SequenceNumber: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Sequence number of the instalment. For an instalment payment transaction, number of the payment, from 1 to TotalNbOfPayments.',
-        'x-nexo-kind': 'integer',
-      }),
-    PlanID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Identification of an instalment plan.' }),
-    Period: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Period of time with defined unit of time. A period between 2 payment instalments.',
-        'x-nexo-kind': 'integer',
-      }),
-    PeriodUnit: PeriodUnitSchema.exactOptional().openapi({
-      description:
-        'Type of instalment transaction.\nPossible values:\n* **Annual**\n* **Daily**\n* **Monthly**\n* **Weekly**',
-    }),
-    FirstPaymentDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'First date of a payment. For instalment, the date of the first payments, if not immediate.',
-      }),
-    TotalNbOfPayments: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total number of payments. For instalment, the number of payments, including the first one.',
-        'x-nexo-kind': 'integer',
-      }),
-    CumulativeAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description: 'Sum of a collection of amounts. Total amount of the payment instalments.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    FirstAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description: 'First amount of the payment instalments.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    Charges: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description: 'Charges related to a transaction. Charge related to the payment instalments.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Instalment')
 
 const StoredValueAccountIDSchema = z
   .object({
@@ -1632,676 +989,242 @@ const PaymentInstrumentDataSchema = z
   })
   .openapi('PaymentInstrumentData')
 
-const OriginalPOITransactionSchema = z
+const PaymentAccountReqSchema = z
   .object({
-    SaleID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Identification of a Sale System for the NEXO SaletoPOI protocol.' }),
-    POIID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of a payment terminal for the NEXO SaletoPOI protocol.\nIf original transaction is coming from another POI.',
-      }),
-    POITransactionID: TransactionIDTypeSchema.exactOptional().openapi({
+    AccountType: AccountTypeSchema.exactOptional().openapi({
       description:
-        'Unique identification of a POI transaction for a POI.\nAbsent if SaleReferenceID is sufficient to identify the transaction.',
+        'Type of cardholder account used for the transaction. Allows a cardholder to select the type of account used for the transaction.\nPossible values:\n* **CardTotals**\n* **Checking**\n* **CreditCard**\n* **Default**\n* **EpurseCard**\n* **Investment**\n* **Savings**\n* **Universal**',
     }),
-    ReuseCardDataFlag: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if the card data has to be retrieved from a previous transaction.',
-      }),
-    ApprovalCode: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description: 'Code assigned to a transaction approval by the Acquirer.\nIf referral.',
-      }),
-    AcquirerID: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Identification of the Acquirer.\nRestrict to the Acquirer if present.',
-        'x-nexo-kind': 'digitstring',
-      }),
-    AmountValue: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({ description: 'Value of an amount.', 'x-nexo-kind': 'simpleamount' }),
-    HostTransactionID: TransactionIDTypeSchema.exactOptional().openapi({
+    CardAcquisitionReference: TransactionIDTypeSchema.exactOptional(),
+    PaymentInstrumentData: PaymentInstrumentDataSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentAccountReq')
+
+const IdentificationSupportSchema = z
+  .enum(['NoCard', 'LoyaltyCard', 'HybridCard', 'LinkedCard'])
+  .openapi({
+    description:
+      'Support of the loyalty account identification. Allows knowing where and how you have found the loyalty account identification.\nPossible values:\n* **NoCard**\n* **LoyaltyCard**\n* **HybridCard**\n* **LinkedCard**',
+  })
+  .openapi('IdentificationSupport')
+
+const LoyaltyAccountIDSchema = z
+  .object({
+    EntryMode: EntryModeSchema.openapi({
       description:
-        'Identification of the transaction by the host in charge of the stored value transaction.\nIf POITransactionID not present.',
+        'Entry mode of the payment instrument information. In the Payment, Loyalty or StoredValue Request messages, it informs the POI System the entry mode of the payment instrument information when read by the Sale Terminal. In the Payment, Loyalty or StoredValue Response messages, it informs the Sale System the entry mode of the payment instrument.\nPossible values:\n* **Contactless**\n* **File**\n* **ICC**\n* **Keyed**\n* **MagStripe**\n* **Manual**\n* **Mobile**\n* **RFID**\n* **Scanned**\n* **SynchronousICC**\n* **Tapped**',
+    }),
+    IdentificationType: IdentificationTypeSchema.openapi({
+      description:
+        'Type of account identification. In a request message, it informs the POI System the type of the account or card identification, when provided by the Sale Terminal. (e.g. because the card information is a barcode read by the Cashier on a scanner device). In a response message, it informs the Sale System the type of the account or card identification.\nPossible values:\n* **AccountNumber**\n* **BarCode**\n* **ISOTrack2**\n* **PAN**\n* **PhoneNumber**',
+    }),
+    IdentificationSupport: IdentificationSupportSchema.exactOptional().openapi({
+      description:
+        'Support of the loyalty account identification. Allows knowing where and how you have found the loyalty account identification.\nPossible values:\n* **HybridCard**\n* **LinkedCard**\n* **LoyaltyCard**\n* **NoCard**',
+    }),
+    LoyaltyID: z
+      .string()
+      .openapi({
+        description: 'Loyalty account identification conforming to the IdentificationType.',
+        'x-nexo-kind': 'unicode',
+      }),
+  })
+  .openapi({
+    description:
+      'Identification of a Loyalty account.\nIn the Payment Request message, it allows to identify the loyalty account by the Sale Terminal instead of the POI Terminal (e.g. because the account identification is a bar-code read by the Cashier on a scanner device).',
+    required: ['EntryMode', 'IdentificationType', 'LoyaltyID'],
+  })
+  .openapi('LoyaltyAccountID')
+
+const LoyaltyAccountReqSchema = z
+  .object({
+    CardAcquisitionReference: TransactionIDTypeSchema.exactOptional(),
+    LoyaltyAccountID: LoyaltyAccountIDSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('LoyaltyAccountReq')
+
+const BalanceInquiryRequestSchema = z
+  .object({
+    PaymentAccountReq: PaymentAccountReqSchema.exactOptional().openapi({
+      description: 'Data related to the account pointed by the payment card.',
+    }),
+    LoyaltyAccountReq: LoyaltyAccountReqSchema.exactOptional().openapi({
+      description: 'Data related to a requested Loyalty program or account.',
     }),
   })
   .openapi({
     description:
-      'Identification of a previous POI transaction.\nIn the Payment Request message, it allows using the card of a previous CardAcquisition or Payment request.',
+      'It conveys Information related to the account for which a Balance Inquiry is requested.\nContent of the Balance Inquiry Request message.',
+    'x-nexo-kind': 'request',
     required: [],
   })
-  .openapi('OriginalPOITransaction')
+  .openapi('BalanceInquiryRequest')
 
-const TransactionConditionsSchema = z
+const SaleTerminalDataSchema = z
   .object({
-    AllowedPaymentBrand: z
-      .array(
-        z
-          .string()
-          .regex(/^.+$/)
-          .openapi({
-            description:
-              'Payment brands accepted for this transaction.\nCard payment brands allowed by the Sale System for the payment transaction.\nRestrict brand if data sent.',
-          }),
-      )
+    TotalsGroupID: z
+      .string()
+      .regex(/^.{1,16}$/)
       .exactOptional()
       .openapi({
         description:
-          'Payment brands accepted for this transaction.\nCard payment brands allowed by the Sale System for the payment transaction.\nRestrict brand if data sent.',
+          'Identification of a group of transactions on a POI Terminal, having the same Sale features.\nCould be used to group POI for reconciliation or other purpose defined by the Sale System. The default value is assigned by the Login Request.',
+        'x-nexo-min': 1,
+        'x-nexo-max': 16,
       }),
-    AcquirerID: z
-      .array(
-        z
-          .int()
-          .openapi({
-            description: 'Identification of the Acquirer.\nRestrict to these Acquirer if present.',
-            'x-nexo-kind': 'digitstring',
-          }),
-      )
+  })
+  .openapi({
+    description:
+      'Information related to the software and hardware features of the Sale Terminal.\nSent in the Login Request if a Sale Terminal is involved in the login. In other messages, sent when a logical device is out of order (SaleCapabilities) or when other data have changed or were missing in the Login.',
+    required: [],
+  })
+  .openapi('SaleTerminalData')
+
+const CustomerOrderReqSchema = z
+  .array(z.enum(['Open', 'Closed', 'Both']))
+  .openapi({
+    description:
+      'List of customer order open, closed or both to be sent in the response messages.\nPossible values:\n* **Both**\n* **Closed**\n* **Open**',
+  })
+  .openapi('CustomerOrderReq')
+
+const SaleToIssuerDataSchema = z
+  .object({
+    StatementReference: z
+      .string()
+      .regex(/^.+$/)
       .exactOptional()
-      .openapi({
-        description: 'Identification of the Acquirer.\nRestrict to these Acquirer if present.',
-      }),
-    DebitPreferredFlag: z
-      .boolean()
+      .openapi({ description: 'Label to print on the bank statement.' }),
+  })
+  .openapi({
+    description:
+      'Sale information intended for the Issuer.\nThe POI System receives this information and sends it to the Acquirer for the Issuer without any change.',
+    required: [],
+  })
+  .openapi('SaleToIssuerData')
+
+const SaleDataSchema = z
+  .object({
+    OperatorID: z
+      .string()
+      .regex(/^.+$/)
       .exactOptional()
-      .openapi({
-        description:
-          'The preferred type of payment is a debit transaction rather than a credit transaction.',
-      }),
-    AllowedLoyaltyBrand: z
-      .array(
-        z
-          .string()
-          .regex(/^.+$/)
-          .openapi({
-            description:
-              'Loyalty brands or programs allowed by the Sale System for the loyalty transaction.\nRestrict brand if data sent.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Loyalty brands or programs allowed by the Sale System for the loyalty transaction.\nRestrict brand if data sent.',
-      }),
-    LoyaltyHandling: LoyaltyHandlingSchema.exactOptional().openapi({
-      description:
-        'Type of Loyalty processing requested by the Sale System.\nPossible values:\n* **Allowed**\n* **Forbidden**\n* **Processed**\n* **Proposed**\n* **Required**',
-      'x-nexo-default': 'Forbidden',
-    }),
-    CustomerLanguage: z
+      .openapi({ description: 'Identification of the Cashier or Operator.' }),
+    OperatorLanguage: z
       .string()
       .regex(/^[a-z]{2,2}$/)
       .exactOptional()
       .openapi({
-        description:
-          'The language used on the terminal screen or in text printed by the terminal.\nTypical use case is setting the language on unattended terminals. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.',
+        description: 'Language of the Cashier or Operator.\nIf different from the Login.',
       }),
-    ForceOnlineFlag: z
-      .boolean()
-      .default(false)
+    ShiftNumber: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'Shift number.\nIf different from the Login, see Login SaleData.' }),
+    SaleTransactionID: TransactionIDTypeSchema.openapi({
+      description: 'Identification of a Sale transaction.',
+    }),
+    SaleReferenceID: z
+      .string()
+      .regex(/^.+$/)
       .exactOptional()
       .openapi({
         description:
-          'Indicates if the Cashier requires POI forces online access to the Acquirer.\nGo online if data sent.',
+          'Identification of a Sale global transaction for a sequence of related POI transactions.\nIf payment reservation.',
       }),
-    ForceEntryMode: ForceEntryModeSchema.exactOptional().openapi({
+    SaleTerminalData: SaleTerminalDataSchema.exactOptional().openapi({
       description:
-        'Payment instrument entry mode requested by the Sale System.\nRestrict entry mode if sent.\nPossible values:\n* **CheckReader**\n* **Contactless**\n* **File**\n* **ICC**\n* **Keyed**\n* **MagStripe**\n* **Manual**\n* **RFID**\n* **Scanned**\n* **SynchronousICC**\n* **Tapped**',
+        'Information related to the software and hardware features of the Sale Terminal.\nIf content is not empty.',
     }),
-    MerchantCategoryCode: z
-      .string()
-      .regex(/^.{3,4}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The code which identifies the category of the transaction (MCC).\nThe payment implies a specific MCC.',
-        'x-nexo-min': 3,
-        'x-nexo-max': 4,
-      }),
-  })
-  .openapi({ description: 'Conditions on which the transaction must be processed.', required: [] })
-  .openapi('TransactionConditions')
-
-const PaymentDataSchema = z
-  .object({
-    PaymentType: PaymentTypeSchema.exactOptional().openapi({
+    TokenRequestedType: TokenRequestedTypeSchema.exactOptional().openapi({
       description:
-        'Type of payment transaction. Elements requested by the Sale System that are related to the payment only.\nPossible values:\n* **CashAdvance**\n* **CashDeposit**\n* **Completion**\n* **FirstReservation**\n* **Instalment**\n* **IssuerInstalment**\n* **Normal**\n* **OneTimeReservation**\n* **PaidOut**\n* **Recurring**\n* **Refund**\n* **UpdateReservation**',
-      'x-nexo-default': 'Normal',
+        'Type of token replacing the PAN of a payment card to identify the payment\n mean of the customer. It allows, for a merchant, to use a token for a transaction\n only or for a longer period.\nPossible values:\n* **Customer**\n* **Transaction**',
     }),
-    SplitPaymentFlag: z
-      .boolean()
-      .default(false)
+    CustomerOrderID: z
+      .string()
+      .regex(/^.+$/)
       .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the payment of the Sale transaction is split. Allows the POI to decline payment means that cannot accept split payment.',
-      }),
-    RequestedValidityDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Requested validity date for the reservation. Allows a specific period for the reservation according to the need of the Merchant for the first reservation and the reservation updates as well.',
-      }),
-    CardAcquisitionReference: TransactionIDTypeSchema.exactOptional(),
-    Instalment: InstalmentSchema.exactOptional().openapi({
+      .openapi({ description: 'Additional and optional identification of a customer order.' }),
+    CustomerOrderReq: CustomerOrderReqSchema.exactOptional().openapi({
       description:
-        'Information related an instalment transaction. To request an instalment to the issuer, or to make individual instalments of a payment transaction.',
+        'List of customer order open, closed or both to be sent in the response messages.\nPossible values:\n* **Both**\n* **Closed**\n* **Open**',
     }),
-    PaymentInstrumentData: PaymentInstrumentDataSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PaymentData')
-
-const AmountsReqSchema = z
-  .object({
-    Currency: z
+    SaleToPOIData: z
       .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
-    RequestedAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .openapi({
-        description: 'Amount requested by the Sale for the payment.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    CashBackAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
+      .regex(/^.+$/)
       .exactOptional()
       .openapi({
-        description: 'The cash-back part of the amount requested by the Sale for the payment.',
-        'x-nexo-kind': 'simpleamount',
+        description: 'Sale information intended for the POI.\nStored with the transaction.',
       }),
-    TipAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description:
-          'Amount paid for a tip. Allow the printing of the tip on the receipt, and to qualify the tip part of the amount.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    PaidAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description:
-          'Amount already paid in case of split payment. Depending on the context, a split payment is either a split amount, or a split basket (required by some payment means as fleet cards). The PaidAmount is present when the split payment is a split\n     of the amount. Split of the basket involves two Sale Transactions, and does not have to be recognised by\n     the POI.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    MinimumAmountToDeliver: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description:
-          'Minimum amount the Sale System is allowed to deliver for this payment. For the OneTimeReservation, when the maximum amount is unknown, the Sale System indicates the minimum amount it allows.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    MaximumCashBackAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum amount which could be requested for cash-back to the Sale System. Allows the Cashier\n   to limit the amount value of cash-back to deliver to the Customer.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    MinimumSplitAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description:
-          'Minimum amount of a split, which could be requested by a Customer.Allows the Merchant to limit the number of split requested by the Customer.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-  })
-  .openapi({
-    description: 'Various amounts related to the payment request from the Sale System.',
-    required: ['Currency', 'RequestedAmount'],
-  })
-  .openapi('AmountsReq')
-
-const PaymentTransactionSchema = z
-  .object({
-    AmountsReq: AmountsReqSchema.openapi({
-      description: 'Various amounts related to the payment request from the Sale System.',
-    }),
-    OriginalPOITransaction: OriginalPOITransactionSchema.exactOptional(),
-    TransactionConditions: TransactionConditionsSchema.exactOptional(),
-  })
-  .openapi({ required: ['AmountsReq'] })
-  .openapi('PaymentTransaction')
-
-const ConvertedAmountSchema = z
-  .object({
-    AmountValue: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .openapi({ description: 'Value of an amount.', 'x-nexo-kind': 'simpleamount' }),
-    Currency: z
-      .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
-  })
-  .openapi({ required: ['AmountValue', 'Currency'] })
-  .openapi('ConvertedAmount')
-
-const CurrencyConversionSchema = z
-  .object({
-    CustomerApprovedFlag: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Notify if the customer has approved something. Indicates if the customer has accepted a currency conversion.',
-      }),
-    ConvertedAmount: ConvertedAmountSchema.openapi({
-      description: 'Amount after a currency conversion.',
-    }),
-    Rate: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Rate of currency conversion.', 'x-nexo-kind': 'decimal' }),
-    Markup: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Markup of a currency conversion amount as a percentage.',
-        'x-nexo-kind': 'decimal',
-      }),
-    Commission: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description: 'Commission for a currency conversion.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    Declaration: z
+    SaleToAcquirerData: z
       .string()
       .regex(/^.+$/)
       .exactOptional()
       .openapi({
         description:
-          'Declaration to present to the customer or the cashier for validation.\nIf a declaration has to be presented to the customer.',
+          'Sale information intended for the Acquirer.\nSend to the Acquirer if present.',
       }),
-  })
-  .openapi({
-    description:
-      'Information related to a currency conversion.\nA currency conversion occurred in the payment, and the merchant needs to know information related to this conversion (e.g. to print on the sale receipt).',
-    required: ['ConvertedAmount'],
-  })
-  .openapi('CurrencyConversion')
-
-const PointSchema = z
-  .object({
-    X: z
-      .string()
-      .openapi({
-        description: 'The hexadecimal value of the coordinates of a point on the abscissa.',
-        'x-nexo-kind': 'hexstring',
-        'x-nexo-min': 1,
-        'x-nexo-max': 4,
-      }),
-    Y: z
-      .string()
-      .openapi({
-        description: 'The hexadecimal value of the coordinates of a point on the ordinate.',
-        'x-nexo-kind': 'hexstring',
-        'x-nexo-min': 1,
-        'x-nexo-max': 4,
-      }),
-  })
-  .openapi({ required: ['X', 'Y'] })
-  .openapi('Point')
-
-const LoyaltyAccountSchema = z
-  .object({
-    LoyaltyAccountID: LoyaltyAccountIDSchema.openapi({
-      description: 'Identification of a Loyalty account.',
-    }),
-    LoyaltyBrand: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Identification of a Loyalty brand.\nIf a card is analysed.' }),
-  })
-  .openapi({
-    description:
-      'This data structure conveys the identification of the account and the associated loyalty brand.\nData related to a loyalty account processed in the transaction.',
-    required: ['LoyaltyAccountID'],
-  })
-  .openapi('LoyaltyAccount')
-
-const LoyaltyAcquirerDataSchema = z
-  .object({
-    LoyaltyAcquirerID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'Identification of the loyalty Acquirer.' }),
-    ApprovalCode: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Code assigned to a transaction approval by the Acquirer. Could be an identifier of the approved transaction for the Acquirer. This data element is conditional for the Loyalty Acquirers. Used in the PaymentRequest request for a referral.',
-      }),
-    LoyaltyTransactionID: TransactionIDTypeSchema.exactOptional(),
-    HostReconciliationID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifier of a reconciliation period with a payment or loyalty host. Allows the assignment of a transaction to the Acquirer reconciliation (or batch).',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('LoyaltyAcquirerData')
-
-const LoyaltyResultSchema = z
-  .object({
-    LoyaltyAccount: LoyaltyAccountSchema.openapi({
-      description: 'Data related to a loyalty account processed in the transaction.',
-    }),
-    CurrentBalance: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description: 'Balance of an account.\nIf known (provided by the card or an external host).',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    LoyaltyAcquirerData: LoyaltyAcquirerDataSchema.exactOptional().openapi({
-      description:
-        'Data related to the loyalty Acquirer during a loyalty transaction.\nIf content not empty.',
+    SaleToIssuerData: SaleToIssuerDataSchema.exactOptional().openapi({
+      description: 'Sale information intended for the Issuer.\nSend to the Acquirer if present.',
     }),
   })
   .openapi({
     description:
-      'Data related to the result of a processed loyalty transaction.\nIn the Message Response, the result of each loyalty brand transaction.',
-    required: ['LoyaltyAccount'],
+      'Data associated with the Sale System, with a particular value during the processing of the payment by the POI, including the cards acquisition.',
+    required: ['SaleTransactionID'],
+    'x-nexo-exported': true,
   })
-  .openapi('LoyaltyResult')
+  .openapi('SaleData')
 
-const PaymentReceiptSchema = z
-  .object({
-    DocumentQualifier: DocumentQualifierSchema.openapi({
-      description:
-        'Qualification of the document to print to the Cashier or the Customer.\nSaleReceipt or CashierReceipt.\nPossible values:\n* **CashierReceipt**\n* **CustomerReceipt**\n* **Document**\n* **Journal**\n* **SaleReceipt**\n* **Voucher**',
-    }),
-    IntegratedPrintFlag: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Type of the print integrated to other prints.' }),
-    RequiredSignatureFlag: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicate that the cardholder payment receipt requires a physical signature by the Customer.',
-      }),
-    OutputContent: OutputContentSchema.openapi({ description: 'Content to display or print.' }),
-  })
+const LoyaltyHandlingSchema = z
+  .enum(['Forbidden', 'Processed', 'Allowed', 'Proposed', 'Required'])
   .openapi({
     description:
-      'Customer or Merchant payment receipt.\nIf the payment receipts are printed by the Sale system and the POI or the Sale does not implement the Print exchange (Basic profile).',
-    required: ['DocumentQualifier', 'OutputContent'],
+      '\nPossible values:\n* **Forbidden**\n* **Processed**\n* **Allowed**\n* **Proposed**\n* **Required**',
   })
-  .openapi('PaymentReceipt')
+  .openapi('LoyaltyHandling')
 
-const PaymentAcquirerDataSchema = z
-  .object({
-    AcquirerID: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of the Acquirer.\nIdentification of the Acquirer when the POI System is multi-acquirer.',
-        'x-nexo-kind': 'digitstring',
-      }),
-    MerchantID: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({ description: 'Identification of the Merchant for the Acquirer.' }),
-    AcquirerPOIID: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({ description: 'Identification of the POI for the payment Acquirer.' }),
-    AcquirerTransactionID: TransactionIDTypeSchema.exactOptional().openapi({
-      description:
-        'Identification of the Transaction for the Acquirer.\nIf provided by the Acquirer.',
-    }),
-    ApprovalCode: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description: 'Code assigned to a transaction approval by the Acquirer.\nIf available.',
-      }),
-    HostReconciliationID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifier of a reconciliation period with a payment or loyalty host. Allows the assignment of a transaction to the Acquirer reconciliation (or batch).',
-      }),
-  })
+const ForceEntryModeSchema = z
+  .array(
+    z.enum([
+      'RFID',
+      'Keyed',
+      'Manual',
+      'File',
+      'Scanned',
+      'MagStripe',
+      'ICC',
+      'SynchronousICC',
+      'Tapped',
+      'Contactless',
+      'CheckReader',
+    ]),
+  )
+  .openapi('ForceEntryMode')
+
+const PaymentTypeSchema = z
+  .enum([
+    'Normal',
+    'Refund',
+    'OneTimeReservation',
+    'FirstReservation',
+    'UpdateReservation',
+    'Completion',
+    'CashAdvance',
+    'CashDeposit',
+    'Recurring',
+    'Instalment',
+    'IssuerInstalment',
+    'PaidOut',
+  ])
   .openapi({
-    description: 'Data related to the response from the payment Acquirer.',
-    required: ['MerchantID', 'AcquirerPOIID'],
+    description:
+      '\nPossible values:\n* **Normal**\n* **Refund**\n* **OneTimeReservation**\n* **FirstReservation**\n* **UpdateReservation**\n* **Completion**\n* **CashAdvance**\n* **CashDeposit**\n* **Recurring**\n* **Instalment**\n* **IssuerInstalment**\n* **PaidOut**',
   })
-  .openapi('PaymentAcquirerData')
-
-const AreaSizeSchema = z
-  .object({
-    X: z
-      .string()
-      .openapi({
-        description:
-          'Abscissa of a point coordinates. The hexadecimal value in text of the abscissa of the coordinates of a point. Leading zero can be removed (e.g. 3BC, 0, and 1287).',
-        'x-nexo-kind': 'hexstring',
-        'x-nexo-min': 1,
-        'x-nexo-max': 4,
-      }),
-    Y: z
-      .string()
-      .openapi({
-        description:
-          'Ordinate of a point coordinates. The hexadecimal value in text of the ordinate of the coordinates of a point. Leading zero can be removed (e.g. 3BC, 0, and 1287).',
-        'x-nexo-kind': 'hexstring',
-        'x-nexo-min': 1,
-        'x-nexo-max': 4,
-      }),
-  })
-  .openapi({ required: ['X', 'Y'] })
-  .openapi('AreaSize')
-
-const CapturedSignatureSchema = z
-  .object({
-    AreaSize: AreaSizeSchema.exactOptional().openapi({
-      description:
-        'Size of an area. Contain the size of the pad area where the signature is written, given with the maximum abscissa and ordinate values (X and Y). The maximum value is FFFF.',
-    }),
-    SignaturePoint: z
-      .array(PointSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Coordinates of a point where the pen changes direction or lift. Contain the Coordinates of a point of the written signature where the pen changes direction or lift where (X and Y). When the signer lifts the pen, both X and Y have the value FFFF.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CapturedSignature')
-
-const AmountsRespSchema = z
-  .object({
-    Currency: z
-      .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .exactOptional()
-      .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
-    AuthorizedAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .openapi({
-        description: 'Amount requested by the Sale for the payment.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    TotalRebatesAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description:
-          'Sum of rebates in amount (total amount or line item amount) for all the loyalty programs.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    TotalFeesAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({ description: 'Total amount of financial fees.', 'x-nexo-kind': 'simpleamount' }),
-    CashBackAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description: 'The cash-back part of the amount requested by the Sale for the payment.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-    TipAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({
-        description:
-          'Amount paid for a tip. Allow the printing of the tip on the receipt, and to qualify the tip part of the amount.',
-        'x-nexo-kind': 'simpleamount',
-      }),
-  })
-  .openapi({ required: ['AuthorizedAmount'] })
-  .openapi('AmountsResp')
-
-const PaymentResultSchema = z
-  .object({
-    PaymentType: PaymentTypeSchema.exactOptional().openapi({
-      description:
-        'Type of payment transaction. Elements requested by the Sale System that are related to the payment only.\nPossible values:\n* **CashAdvance**\n* **CashDeposit**\n* **Completion**\n* **FirstReservation**\n* **Instalment**\n* **IssuerInstalment**\n* **Normal**\n* **OneTimeReservation**\n* **PaidOut**\n* **Recurring**\n* **Refund**\n* **UpdateReservation**',
-      'x-nexo-default': 'Normal',
-    }),
-    PaymentInstrumentData: PaymentInstrumentDataSchema.exactOptional(),
-    AmountsResp: AmountsRespSchema.exactOptional().openapi({
-      description:
-        'Various amounts related to the payment response from the POI System. Amounts approved by the POI and the Acquirer for the payment and loyalty transaction, containing:\n  * The authorised amount to be paid.\n  * The amount of the rebates.\n  * The amount of financial fees.\n  * The cash back part of the requested amount for a payment with cash back.\n  * The tip part of the requested amount for a payment with tip.',
-    }),
-    Instalment: InstalmentSchema.exactOptional().openapi({
-      description:
-        'Information related an instalment transaction. To request an instalment to the issuer, or to make individual instalments of a payment transaction.',
-    }),
-    CurrencyConversion: z
-      .array(CurrencyConversionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Information related to a currency conversion. A currency conversion occurred in the payment, and the merchant needs to know information related to this conversion (e.g. to print on the sale receipt).',
-      }),
-    MerchantOverrideFlag: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that the Merchant forced the result of the payment to successful. Allows the Sale System to be sure that the payment has been forced.',
-      }),
-    CapturedSignature: CapturedSignatureSchema.exactOptional().openapi({
-      description:
-        'Numeric value of a handwritten signature. Contains the value of a handwritten signature, e.g. the signature of a cardholder on the merchant payment receipt. Only one format of the signature is allowed:\n  * The size of the pad area where the signature is written, given with the maximum abscissa and ordinate values.\n  * The sequence of coordinates where the pen changes direction or lift.',
-    }),
-    ProtectedSignature: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Numeric value of a handwritten signature. Contains the value of a handwritten signature, e.g. the signature of a cardholder on the merchant payment receipt. The format before encryption is the encoded data structure CapturedSignature. The data structure before encryption includes the start and end tags for an XML encoding, the identifier and length bytes for an ASN.1 encoding, and the complete member ProtectedSignature for a JSON encoding.',
-        'x-nexo-kind': 'contentinformation',
-      }),
-    CustomerLanguage: z
-      .string()
-      .regex(/^[a-z]{2,2}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'The language of the customer that was used on the terminal screen or in text printed by the terminal. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.',
-      }),
-    OnlineFlag: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicate that the payment transaction processing has required the approval of a host. Allows the Sale System to know if the payment was online or offline.',
-      }),
-    AuthenticationMethod: AuthenticationMethodSchema.exactOptional().openapi({
-      description:
-        'Method for customer authentication. Allows the Sale System informed about customer authentication for the payment transaction.\nPossible values:\n* **Bypass**\n* **ManualVerification**\n* **MerchantAuthentication**\n* **OfflinePIN**\n* **OnlinePIN**\n* **PaperSignature**\n* **SecureCertificate**\n* **SecureNoCertificate**\n* **SecuredChannel**\n* **SignatureCapture**\n* **UnknownMethod**',
-    }),
-    ValidityDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'End of the validity period for the reservation, for the first reservation, and the reservation updates as well.',
-      }),
-    PaymentAcquirerData: PaymentAcquirerDataSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PaymentResult')
+  .openapi('PaymentType')
 
 const CardAcquisitionTransactionSchema = z
   .object({
@@ -2380,295 +1303,6 @@ const CardAcquisitionTransactionSchema = z
   })
   .openapi({ required: [] })
   .openapi('CardAcquisitionTransaction')
-
-const StoredValueDataSchema = z
-  .object({
-    StoredValueProvider: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of the provider of the stored value account load/reload.\nIf more than one provider to manage on the POI, and StoredValueAccountID absent.',
-      }),
-    StoredValueTransactionType: StoredValueTransactionTypeSchema.openapi({
-      description:
-        'Identification of operation to proceed on the stored value account or the stored value card.\nPossible values:\n* **Activate**\n* **Duplicate**\n* **Load**\n* **Reserve**\n* **Reverse**\n* **Unload**',
-    }),
-    StoredValueAccountID: StoredValueAccountIDSchema.exactOptional().openapi({
-      description:
-        'Identification of the stored value account or the stored value card.\nIf the identification of the Stored Value account or card has been made by the Sale System before the request.',
-    }),
-    OriginalPOITransaction: OriginalPOITransactionSchema.exactOptional().openapi({
-      description:
-        'Identification of a previous POI transaction.\nIf StoredValueTransactionType is Reverse or Duplicate.',
-    }),
-    ProductCode: z
-      .int()
-      .min(1)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        description: 'Product code of item purchased with the transaction.',
-        'x-nexo-kind': 'digitstring',
-      }),
-    EanUpc: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Standard product code of item purchased with the transaction.',
-        'x-nexo-kind': 'digitstring',
-      }),
-    ItemAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({ description: 'Total amount of the item line.', 'x-nexo-kind': 'simpleamount' }),
-    Currency: z
-      .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .exactOptional()
-      .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
-  })
-  .openapi({
-    description:
-      'It contains: - the identification of the stored value accounts or the stored value cards, if provided by the Sale System, and - the associated products sold by the Sale System.\nData related to the stored value card.',
-    required: ['StoredValueTransactionType'],
-  })
-  .openapi('StoredValueData')
-
-const StoredValueAccountStatusSchema = z
-  .object({
-    StoredValueAccountID: StoredValueAccountIDSchema,
-    CurrentBalance: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({ description: 'If relevant and known.', 'x-nexo-kind': 'simpleamount' }),
-  })
-  .openapi({ required: ['StoredValueAccountID'] })
-  .openapi('StoredValueAccountStatus')
-
-const StoredValueResultSchema = z
-  .object({
-    StoredValueTransactionType: StoredValueTransactionTypeSchema.openapi({
-      description:
-        'Identification of operation to proceed on the stored value account or the stored value card.\nCopy.\nPossible values:\n* **Activate**\n* **Duplicate**\n* **Load**\n* **Reserve**\n* **Reverse**\n* **Unload**',
-    }),
-    ProductCode: z
-      .int()
-      .min(1)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        description: 'Product code of item purchased with the transaction.\nCopy.',
-        'x-nexo-kind': 'digitstring',
-      }),
-    EanUpc: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Standard product code of item purchased with the transaction.\nCopy.',
-        'x-nexo-kind': 'digitstring',
-      }),
-    ItemAmount: z
-      .number()
-      .min(0)
-      .max(99999999.999999)
-      .exactOptional()
-      .openapi({ description: 'Total amount of the item line.', 'x-nexo-kind': 'simpleamount' }),
-    Currency: z
-      .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .exactOptional()
-      .openapi({
-        description: 'Currency of a monetary amount.\nCopy.',
-        'x-nexo-kind': 'isocurrency3a',
-      }),
-    StoredValueAccountStatus: StoredValueAccountStatusSchema.exactOptional().openapi({
-      description: 'Data related to the result of the stored value card transaction.',
-    }),
-    HostTransactionID: TransactionIDTypeSchema.exactOptional().openapi({
-      description:
-        'Identification of the transaction by the host in charge of the stored value transaction.\nIf provided by the Host.',
-    }),
-  })
-  .openapi({
-    description:
-      'For each stored value card loaded or reloaded, in the StoredValue response message.\nResult of loading/reloading a stored value card.',
-    required: ['StoredValueTransactionType'],
-  })
-  .openapi('StoredValueResult')
-
-const MessageHeaderSchema = z
-  .object({
-    ProtocolVersion: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({ description: 'If MessageCategory is Login or Diagnosis.' }),
-    MessageClass: MessageClassSchema.openapi({
-      description:
-        'Class of the message.\nPossible values:\n* **Device**\n* **Event**\n* **Service**',
-    }),
-    MessageCategory: MessageCategorySchema.openapi({
-      description:
-        'Category of message.\nPossible values:\n* **Abort**\n* **Admin**\n* **BalanceInquiry**\n* **Batch**\n* **CardAcquisition**\n* **CardReaderInit**\n* **CardReaderPowerOff**\n* **Diagnosis**\n* **Display**\n* **EnableService**\n* **Event**\n* **GetTotals**\n* **Input**\n* **InputUpdate**\n* **Login**\n* **Logout**\n* **Loyalty**\n* **None**\n* **PIN**\n* **Payment**\n* **Print**\n* **Reconciliation**\n* **Reversal**\n* **Sound**\n* **StoredValue**\n* **TransactionStatus**\n* **Transmit**',
-    }),
-    MessageType: MessageTypeSchema.openapi({
-      description:
-        'Type of message of the Sale to POI protocol.\nPossible values:\n* **Notification**\n* **Request**\n* **Response**',
-    }),
-    ServiceID: z
-      .string()
-      .regex(/^.{1,10}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of a message pair, which processes a transaction.\nRequired if Service or Event MessageClass message or if Device MessageClass and request from POI or response from Sale.',
-        'x-nexo-min': 1,
-        'x-nexo-max': 10,
-      }),
-    DeviceID: z
-      .string()
-      .regex(/^.{1,10}$/)
-      .exactOptional()
-      .openapi({
-        description: 'Identification of a device message pair.\nIf Device MessageClass.',
-        'x-nexo-min': 1,
-        'x-nexo-max': 10,
-      }),
-    SaleID: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description:
-          'Identification of a Sale System or a Sale Terminal for the Sale to POI protocol.',
-      }),
-    POIID: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({
-        description:
-          'Identification of a POI System or a POI Terminal for the Sale to POI protocol.',
-      }),
-  })
-  .openapi({
-    description:
-      'Message header of the Sale to POI protocol message.\nIt conveys Information related to the Sale to POI protocol management.',
-    required: ['MessageClass', 'MessageCategory', 'MessageType', 'SaleID', 'POIID'],
-    'x-nexo-exported': true,
-  })
-  .openapi('MessageHeader')
-
-const MessageReferenceSchema = z
-  .object({
-    MessageCategory: MessageCategorySchema.exactOptional().openapi({
-      description:
-        'Category of message.\nCardAcquisition, Display, Input, Loyalty, Payment, Print, CardReaderInit, CardReaderPowerOff.\nPossible values:\n* **Abort**\n* **Admin**\n* **BalanceInquiry**\n* **Batch**\n* **CardAcquisition**\n* **CardReaderInit**\n* **CardReaderPowerOff**\n* **Diagnosis**\n* **Display**\n* **EnableService**\n* **Event**\n* **GetTotals**\n* **Input**\n* **InputUpdate**\n* **Login**\n* **Logout**\n* **Loyalty**\n* **None**\n* **PIN**\n* **Payment**\n* **Print**\n* **Reconciliation**\n* **Reversal**\n* **Sound**\n* **StoredValue**\n* **TransactionStatus**\n* **Transmit**',
-    }),
-    ServiceID: z
-      .string()
-      .regex(/^.{1,10}$/)
-      .exactOptional()
-      .openapi({
-        description: 'Identification of a message pair, which processes a transaction.',
-        'x-nexo-min': 1,
-        'x-nexo-max': 10,
-      }),
-    DeviceID: z
-      .string()
-      .regex(/^.{1,10}$/)
-      .exactOptional()
-      .openapi({
-        description: 'Identification of a device message pair.',
-        'x-nexo-min': 1,
-        'x-nexo-max': 10,
-      }),
-    SaleID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of a Sale System or a Sale Terminal for the Sale to POI protocol.\ndefault MessageHeader.SaleID.',
-      }),
-    POIID: z
-      .string()
-      .regex(/^.+$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identification of a POI System or a POI Terminal for the Sale to POI protocol.\nDefault `MessageHeader.POIID`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Identification of a previous POI transaction.\nTo abort a transaction in progress or to request the status of a transaction from which no response has been received. It identifies the message header of the message request to abort or request the status.',
-    required: [],
-  })
-  .openapi('MessageReference')
-
-const AbortRequestSchema = z
-  .object({
-    MessageReference: MessageReferenceSchema.openapi({
-      description: 'Identification of a previous POI transaction.',
-    }),
-    AbortReason: z
-      .string()
-      .regex(/^.+$/)
-      .openapi({ description: 'Reason of aborting a transaction.' }),
-    DisplayOutput: DisplayOutputSchema.exactOptional().openapi({
-      description:
-        'Information to display and the way to process the display.\nTo display an abort message to the Customer.',
-    }),
-  })
-  .openapi({
-    description:
-      'Body of the Abort Request message.\nIt conveys Information requested for identification of the message request carrying the transaction to abort. A message to display on the CustomerError Device could be sent by the Sale System (DisplayOutput).',
-    required: ['MessageReference', 'AbortReason'],
-    'x-nexo-kind': 'request',
-  })
-  .openapi('AbortRequest')
-
-const PaymentAccountReqSchema = z
-  .object({
-    AccountType: AccountTypeSchema.exactOptional().openapi({
-      description:
-        'Type of cardholder account used for the transaction. Allows a cardholder to select the type of account used for the transaction.\nPossible values:\n* **CardTotals**\n* **Checking**\n* **CreditCard**\n* **Default**\n* **EpurseCard**\n* **Investment**\n* **Savings**\n* **Universal**',
-    }),
-    CardAcquisitionReference: TransactionIDTypeSchema.exactOptional(),
-    PaymentInstrumentData: PaymentInstrumentDataSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PaymentAccountReq')
-
-const LoyaltyAccountReqSchema = z
-  .object({
-    CardAcquisitionReference: TransactionIDTypeSchema.exactOptional(),
-    LoyaltyAccountID: LoyaltyAccountIDSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('LoyaltyAccountReq')
-
-const BalanceInquiryRequestSchema = z
-  .object({
-    PaymentAccountReq: PaymentAccountReqSchema.exactOptional().openapi({
-      description: 'Data related to the account pointed by the payment card.',
-    }),
-    LoyaltyAccountReq: LoyaltyAccountReqSchema.exactOptional().openapi({
-      description: 'Data related to a requested Loyalty program or account.',
-    }),
-  })
-  .openapi({
-    description:
-      'It conveys Information related to the account for which a Balance Inquiry is requested.\nContent of the Balance Inquiry Request message.',
-    'x-nexo-kind': 'request',
-    required: [],
-  })
-  .openapi('BalanceInquiryRequest')
 
 const CardAcquisitionRequestSchema = z
   .object({
@@ -2756,6 +1390,22 @@ const DisplayRequestSchema = z
   })
   .openapi('DisplayRequest')
 
+const TransactionActionSchema = z
+  .enum(['StartTransaction', 'AbortTransaction'])
+  .openapi({
+    description:
+      'Action to realise on a transaction. In an `EnableService` request message:\n  - Starts a transaction by a swipe-ahead mechanism, with the services which are enabled.\n  - Aborts a swipe-ahead transaction or started by a `CardAcquisition`, and not followed by a service request from the Sale System to complete the transaction.\nPossible values:\n* **StartTransaction**\n* **AbortTransaction**',
+  })
+  .openapi('TransactionAction')
+
+const ServicesEnabledSchema = z
+  .array(z.enum(['CardAcquisition', 'Payment', 'Loyalty']))
+  .openapi({
+    description:
+      'Services which are enabled before the start-up of a transaction.\nMandatory if `TransactionAction` is `StartTransaction`, absent if not.\nPossible values:\n* **CardAcquisition**\n* **Loyalty**\n* **Payment**',
+  })
+  .openapi('ServicesEnabled')
+
 const EnableServiceRequestSchema = z
   .object({
     TransactionAction: TransactionActionSchema.openapi({
@@ -2777,6 +1427,33 @@ const EnableServiceRequestSchema = z
     'x-nexo-kind': 'request',
   })
   .openapi('EnableServiceRequest')
+
+const EventToNotifySchema = z
+  .enum([
+    'BeginMaintenance',
+    'EndMaintenance',
+    'Shutdown',
+    'Initialised',
+    'OutOfOrder',
+    'Completed',
+    'Abort',
+    'SaleWakeUp',
+    'SaleAdmin',
+    'CustomerLanguage',
+    'KeyPressed',
+    'SecurityAlarm',
+    'StopAssistance',
+    'CardInserted',
+    'CardRemoved',
+    'Reject',
+    'UseAnotherCardForPreauth',
+    'ScanBarcodeResult',
+  ])
+  .openapi({
+    description:
+      'Event the POI notifies to the Sale System.\nPossible values:\n* **BeginMaintenance**\n* **EndMaintenance**\n* **Shutdown**\n* **Initialised**\n* **OutOfOrder**\n* **Completed**\n* **Abort**\n* **SaleWakeUp**\n* **SaleAdmin**\n* **CustomerLanguage**\n* **KeyPressed**\n* **SecurityAlarm**\n* **StopAssistance**\n* **CardInserted**\n* **CardRemoved**\n* **Reject**\n* **UseAnotherCardForPreauth**\n* **ScanBarcodeResult**',
+  })
+  .openapi('EventToNotify')
 
 const EventNotificationSchema = z
   .object({
@@ -2828,6 +1505,14 @@ const EventNotificationSchema = z
     'x-nexo-kind': 'request',
   })
   .openapi('EventNotification')
+
+const TotalDetailsSchema = z
+  .array(z.enum(['POIID', 'SaleID', 'OperatorID', 'ShiftNumber', 'TotalsGroupID']))
+  .openapi({
+    description:
+      'Indicates the hierarchical structure of the reconciliation result of the Sale to POI reconciliation.\nRequired to present totals per value of element included in this cluster (POI Terminal, Sale Terminal, Cashier, Shift, TotalsGroupID).\nPossible values:\n* **OperatorID**\n* **POIID**\n* **SaleID**\n* **ShiftNumber**\n* **TotalsGroupID**',
+  })
+  .openapi('TotalDetails')
 
 const TotalFilterSchema = z
   .object({
@@ -2885,6 +1570,24 @@ const GetTotalsRequestSchema = z
     required: [],
   })
   .openapi('GetTotalsRequest')
+
+const InputCommandSchema = z
+  .enum([
+    'GetAnyKey',
+    'GetConfirmation',
+    'SiteManager',
+    'TextString',
+    'DigitString',
+    'DecimalString',
+    'GetFunctionKey',
+    'GetMenuEntry',
+    'Password',
+  ])
+  .openapi({
+    description:
+      '\nPossible values:\n* **GetAnyKey**\n* **GetConfirmation**\n* **SiteManager**\n* **TextString**\n* **DigitString**\n* **DecimalString**\n* **GetFunctionKey**\n* **GetMenuEntry**\n* **Password**',
+  })
+  .openapi('InputCommand')
 
 const InputDataSchema = z
   .object({
@@ -3071,6 +1774,34 @@ const InputUpdateSchema = z
   })
   .openapi('InputUpdate')
 
+const SaleSoftwareSchema = z
+  .object({
+    ManufacturerID: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({ description: 'Identification of the Manufacturer.' }),
+    ApplicationName: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({ description: 'Name of the software product.' }),
+    SoftwareVersion: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({ description: 'Version of the software product.' }),
+    CertificationCode: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description: 'Certification code of the software which manages the Sale to POI protocol.',
+      }),
+  })
+  .openapi({
+    description:
+      'Information related to the software of the Sale System which manages the NEXO Sale to POI protocol.',
+    required: ['ManufacturerID', 'ApplicationName', 'SoftwareVersion', 'CertificationCode'],
+  })
+  .openapi('SaleSoftware')
+
 const LoginRequestSchema = z
   .object({
     DateTime: z.iso
@@ -3158,6 +1889,389 @@ const LogoutRequestSchema = z
   })
   .openapi('LogoutRequest')
 
+const AmountsReqSchema = z
+  .object({
+    Currency: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
+    RequestedAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .openapi({
+        description: 'Amount requested by the Sale for the payment.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    CashBackAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description: 'The cash-back part of the amount requested by the Sale for the payment.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    TipAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount paid for a tip. Allow the printing of the tip on the receipt, and to qualify the tip part of the amount.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    PaidAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount already paid in case of split payment. Depending on the context, a split payment is either a split amount, or a split basket (required by some payment means as fleet cards). The PaidAmount is present when the split payment is a split\n     of the amount. Split of the basket involves two Sale Transactions, and does not have to be recognised by\n     the POI.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    MinimumAmountToDeliver: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum amount the Sale System is allowed to deliver for this payment. For the OneTimeReservation, when the maximum amount is unknown, the Sale System indicates the minimum amount it allows.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    MaximumCashBackAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum amount which could be requested for cash-back to the Sale System. Allows the Cashier\n   to limit the amount value of cash-back to deliver to the Customer.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    MinimumSplitAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum amount of a split, which could be requested by a Customer.Allows the Merchant to limit the number of split requested by the Customer.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+  })
+  .openapi({
+    description: 'Various amounts related to the payment request from the Sale System.',
+    required: ['Currency', 'RequestedAmount'],
+  })
+  .openapi('AmountsReq')
+
+const OriginalPOITransactionSchema = z
+  .object({
+    SaleID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'Identification of a Sale System for the NEXO SaletoPOI protocol.' }),
+    POIID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identification of a payment terminal for the NEXO SaletoPOI protocol.\nIf original transaction is coming from another POI.',
+      }),
+    POITransactionID: TransactionIDTypeSchema.exactOptional().openapi({
+      description:
+        'Unique identification of a POI transaction for a POI.\nAbsent if SaleReferenceID is sufficient to identify the transaction.',
+    }),
+    ReuseCardDataFlag: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if the card data has to be retrieved from a previous transaction.',
+      }),
+    ApprovalCode: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Code assigned to a transaction approval by the Acquirer.\nIf referral.',
+      }),
+    AcquirerID: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Identification of the Acquirer.\nRestrict to the Acquirer if present.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    AmountValue: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({ description: 'Value of an amount.', 'x-nexo-kind': 'simpleamount' }),
+    HostTransactionID: TransactionIDTypeSchema.exactOptional().openapi({
+      description:
+        'Identification of the transaction by the host in charge of the stored value transaction.\nIf POITransactionID not present.',
+    }),
+  })
+  .openapi({
+    description:
+      'Identification of a previous POI transaction.\nIn the Payment Request message, it allows using the card of a previous CardAcquisition or Payment request.',
+    required: [],
+  })
+  .openapi('OriginalPOITransaction')
+
+const TransactionConditionsSchema = z
+  .object({
+    AllowedPaymentBrand: z
+      .array(
+        z
+          .string()
+          .regex(/^.+$/)
+          .openapi({
+            description:
+              'Payment brands accepted for this transaction.\nCard payment brands allowed by the Sale System for the payment transaction.\nRestrict brand if data sent.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Payment brands accepted for this transaction.\nCard payment brands allowed by the Sale System for the payment transaction.\nRestrict brand if data sent.',
+      }),
+    AcquirerID: z
+      .array(
+        z
+          .int()
+          .openapi({
+            description: 'Identification of the Acquirer.\nRestrict to these Acquirer if present.',
+            'x-nexo-kind': 'digitstring',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Identification of the Acquirer.\nRestrict to these Acquirer if present.',
+      }),
+    DebitPreferredFlag: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'The preferred type of payment is a debit transaction rather than a credit transaction.',
+      }),
+    AllowedLoyaltyBrand: z
+      .array(
+        z
+          .string()
+          .regex(/^.+$/)
+          .openapi({
+            description:
+              'Loyalty brands or programs allowed by the Sale System for the loyalty transaction.\nRestrict brand if data sent.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Loyalty brands or programs allowed by the Sale System for the loyalty transaction.\nRestrict brand if data sent.',
+      }),
+    LoyaltyHandling: LoyaltyHandlingSchema.exactOptional().openapi({
+      description:
+        'Type of Loyalty processing requested by the Sale System.\nPossible values:\n* **Allowed**\n* **Forbidden**\n* **Processed**\n* **Proposed**\n* **Required**',
+      'x-nexo-default': 'Forbidden',
+    }),
+    CustomerLanguage: z
+      .string()
+      .regex(/^[a-z]{2,2}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The language used on the terminal screen or in text printed by the terminal.\nTypical use case is setting the language on unattended terminals. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.',
+      }),
+    ForceOnlineFlag: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the Cashier requires POI forces online access to the Acquirer.\nGo online if data sent.',
+      }),
+    ForceEntryMode: ForceEntryModeSchema.exactOptional().openapi({
+      description:
+        'Payment instrument entry mode requested by the Sale System.\nRestrict entry mode if sent.\nPossible values:\n* **CheckReader**\n* **Contactless**\n* **File**\n* **ICC**\n* **Keyed**\n* **MagStripe**\n* **Manual**\n* **RFID**\n* **Scanned**\n* **SynchronousICC**\n* **Tapped**',
+    }),
+    MerchantCategoryCode: z
+      .string()
+      .regex(/^.{3,4}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The code which identifies the category of the transaction (MCC).\nThe payment implies a specific MCC.',
+        'x-nexo-min': 3,
+        'x-nexo-max': 4,
+      }),
+  })
+  .openapi({ description: 'Conditions on which the transaction must be processed.', required: [] })
+  .openapi('TransactionConditions')
+
+const PaymentTransactionSchema = z
+  .object({
+    AmountsReq: AmountsReqSchema.openapi({
+      description: 'Various amounts related to the payment request from the Sale System.',
+    }),
+    OriginalPOITransaction: OriginalPOITransactionSchema.exactOptional(),
+    TransactionConditions: TransactionConditionsSchema.exactOptional(),
+  })
+  .openapi({ required: ['AmountsReq'] })
+  .openapi('PaymentTransaction')
+
+const InstalmentTypeSchema = z
+  .enum(['DeferredInstalments', 'EqualInstalments', 'InequalInstalments'])
+  .openapi({
+    description:
+      'Type of instalment transaction. For requesting an instalment payment transaction.\nPossible values:\n* **DeferredInstalments**\n* **EqualInstalments**\n* **InequalInstalments**',
+  })
+  .openapi('InstalmentType')
+
+const PeriodUnitSchema = z
+  .enum(['Daily', 'Weekly', 'Monthly', 'Annual'])
+  .openapi({
+    description:
+      'Type of instalment transaction.\nPossible values:\n* **Daily**\n* **Weekly**\n* **Monthly**\n* **Annual**',
+  })
+  .openapi('PeriodUnit')
+
+const InstalmentSchema = z
+  .object({
+    InstalmentType: InstalmentTypeSchema.exactOptional().openapi({
+      description:
+        'Type of instalment transaction. For requesting an instalment payment transaction.\nPossible values:\n* **DeferredInstalments**\n* **EqualInstalments**\n* **InequalInstalments**',
+    }),
+    SequenceNumber: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sequence number of the instalment. For an instalment payment transaction, number of the payment, from 1 to TotalNbOfPayments.',
+        'x-nexo-kind': 'integer',
+      }),
+    PlanID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'Identification of an instalment plan.' }),
+    Period: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Period of time with defined unit of time. A period between 2 payment instalments.',
+        'x-nexo-kind': 'integer',
+      }),
+    PeriodUnit: PeriodUnitSchema.exactOptional().openapi({
+      description:
+        'Type of instalment transaction.\nPossible values:\n* **Annual**\n* **Daily**\n* **Monthly**\n* **Weekly**',
+    }),
+    FirstPaymentDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'First date of a payment. For instalment, the date of the first payments, if not immediate.',
+      }),
+    TotalNbOfPayments: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total number of payments. For instalment, the number of payments, including the first one.',
+        'x-nexo-kind': 'integer',
+      }),
+    CumulativeAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description: 'Sum of a collection of amounts. Total amount of the payment instalments.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    FirstAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description: 'First amount of the payment instalments.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    Charges: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description: 'Charges related to a transaction. Charge related to the payment instalments.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Instalment')
+
+const PaymentDataSchema = z
+  .object({
+    PaymentType: PaymentTypeSchema.exactOptional().openapi({
+      description:
+        'Type of payment transaction. Elements requested by the Sale System that are related to the payment only.\nPossible values:\n* **CashAdvance**\n* **CashDeposit**\n* **Completion**\n* **FirstReservation**\n* **Instalment**\n* **IssuerInstalment**\n* **Normal**\n* **OneTimeReservation**\n* **PaidOut**\n* **Recurring**\n* **Refund**\n* **UpdateReservation**',
+      'x-nexo-default': 'Normal',
+    }),
+    SplitPaymentFlag: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the payment of the Sale transaction is split. Allows the POI to decline payment means that cannot accept split payment.',
+      }),
+    RequestedValidityDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Requested validity date for the reservation. Allows a specific period for the reservation according to the need of the Merchant for the first reservation and the reservation updates as well.',
+      }),
+    CardAcquisitionReference: TransactionIDTypeSchema.exactOptional(),
+    Instalment: InstalmentSchema.exactOptional().openapi({
+      description:
+        'Information related an instalment transaction. To request an instalment to the issuer, or to make individual instalments of a payment transaction.',
+    }),
+    PaymentInstrumentData: PaymentInstrumentDataSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentData')
+
+const LoyaltyDataSchema = z
+  .object({
+    CardAcquisitionReference: TransactionIDTypeSchema.exactOptional().openapi({
+      description:
+        'Reference to the last CardAcquisition, to use the same card.\nIf the loyalty account ID comes from a previous CardAcquisition.',
+    }),
+    LoyaltyAccountID: LoyaltyAccountIDSchema.exactOptional().openapi({
+      description:
+        'Identification of a Loyalty account.\nIf loyalty identification of the loyalty account is realised by the Sale System.',
+    }),
+  })
+  .openapi({
+    description:
+      'In the Payment, Loyalty or Balance Inquiry Request message, it allows the Sale Terminal to send the identification of the loyalty account or an awarded amount or an amount to redeem to the loyalty account.\nData related to a Loyalty program or account.',
+    required: [],
+  })
+  .openapi('LoyaltyData')
+
 const PaymentRequestSchema = z
   .object({
     SaleData: SaleDataSchema.openapi({ description: 'Data related to the Sale System.' }),
@@ -3182,6 +2296,22 @@ const PaymentRequestSchema = z
     'x-nexo-kind': 'request',
   })
   .openapi('PaymentRequest')
+
+const DocumentQualifierSchema = z
+  .enum(['SaleReceipt', 'CashierReceipt', 'CustomerReceipt', 'Document', 'Voucher', 'Journal'])
+  .openapi({
+    description:
+      '\nPossible values:\n* **SaleReceipt**\n* **CashierReceipt**\n* **CustomerReceipt**\n* **Document**\n* **Voucher**\n* **Journal**',
+  })
+  .openapi('DocumentQualifier')
+
+const ResponseModeSchema = z
+  .enum(['NotRequired', 'Immediate', 'PrintEnd', 'SoundEnd'])
+  .openapi({
+    description:
+      '\nPossible values:\n* **NotRequired**\n* **Immediate**\n* **PrintEnd**\n* **SoundEnd**',
+  })
+  .openapi('ResponseMode')
 
 const PrintOutputSchema = z
   .object({
@@ -3288,6 +2418,19 @@ const CardReaderAPDURequestSchema = z
   })
   .openapi('CardReaderAPDURequest')
 
+const ReconciliationTypeSchema = z
+  .enum([
+    'SaleReconciliation',
+    'AcquirerSynchronisation',
+    'AcquirerReconciliation',
+    'PreviousReconciliation',
+  ])
+  .openapi({
+    description:
+      '\nPossible values:\n* **SaleReconciliation**\n* **AcquirerSynchronisation**\n* **AcquirerReconciliation**\n* **PreviousReconciliation**',
+  })
+  .openapi('ReconciliationType')
+
 const ReconciliationRequestSchema = z
   .object({
     ReconciliationType: ReconciliationTypeSchema.openapi({
@@ -3326,6 +2469,14 @@ const ReconciliationRequestSchema = z
   })
   .openapi('ReconciliationRequest')
 
+const ReversalReasonSchema = z
+  .enum(['CustCancel', 'MerchantCancel', 'Malfunction', 'Unable2Compl'])
+  .openapi({
+    description:
+      'Reason of the payment or loyalty reversal.\nPossible values:\n* **CustCancel**\n* **MerchantCancel**\n* **Malfunction**\n* **Unable2Compl**',
+  })
+  .openapi('ReversalReason')
+
 const ReversalRequestSchema = z
   .object({
     SaleData: SaleDataSchema.exactOptional(),
@@ -3354,6 +2505,71 @@ const ReversalRequestSchema = z
     'x-nexo-kind': 'request',
   })
   .openapi('ReversalRequest')
+
+const StoredValueTransactionTypeSchema = z
+  .enum(['Reserve', 'Activate', 'Load', 'Unload', 'Reverse', 'Duplicate'])
+  .openapi({
+    description:
+      '\nPossible values:\n* **Reserve**\n* **Activate**\n* **Load**\n* **Unload**\n* **Reverse**\n* **Duplicate**',
+  })
+  .openapi('StoredValueTransactionType')
+
+const StoredValueDataSchema = z
+  .object({
+    StoredValueProvider: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identification of the provider of the stored value account load/reload.\nIf more than one provider to manage on the POI, and StoredValueAccountID absent.',
+      }),
+    StoredValueTransactionType: StoredValueTransactionTypeSchema.openapi({
+      description:
+        'Identification of operation to proceed on the stored value account or the stored value card.\nPossible values:\n* **Activate**\n* **Duplicate**\n* **Load**\n* **Reserve**\n* **Reverse**\n* **Unload**',
+    }),
+    StoredValueAccountID: StoredValueAccountIDSchema.exactOptional().openapi({
+      description:
+        'Identification of the stored value account or the stored value card.\nIf the identification of the Stored Value account or card has been made by the Sale System before the request.',
+    }),
+    OriginalPOITransaction: OriginalPOITransactionSchema.exactOptional().openapi({
+      description:
+        'Identification of a previous POI transaction.\nIf StoredValueTransactionType is Reverse or Duplicate.',
+    }),
+    ProductCode: z
+      .int()
+      .min(1)
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description: 'Product code of item purchased with the transaction.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    EanUpc: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Standard product code of item purchased with the transaction.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    ItemAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({ description: 'Total amount of the item line.', 'x-nexo-kind': 'simpleamount' }),
+    Currency: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .exactOptional()
+      .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
+  })
+  .openapi({
+    description:
+      'It contains: - the identification of the stored value accounts or the stored value cards, if provided by the Sale System, and - the associated products sold by the Sale System.\nData related to the stored value card.',
+    required: ['StoredValueTransactionType'],
+  })
+  .openapi('StoredValueData')
 
 const StoredValueRequestSchema = z
   .object({
@@ -3406,7 +2622,31 @@ const TransactionStatusRequestSchema = z
   })
   .openapi('TransactionStatusRequest')
 
-const SaleToPOIRequestSchema = z
+type SaleToPOIRequestType = {
+  MessageHeader: z.infer<typeof MessageHeaderSchema>
+  AbortRequest?: z.infer<typeof AbortRequestSchema>
+  BalanceInquiryRequest?: z.infer<typeof BalanceInquiryRequestSchema>
+  CardAcquisitionRequest?: z.infer<typeof CardAcquisitionRequestSchema>
+  AdminRequest?: z.infer<typeof AdminRequestSchema>
+  DiagnosisRequest?: z.infer<typeof DiagnosisRequestSchema>
+  DisplayRequest?: z.infer<typeof DisplayRequestSchema>
+  EnableServiceRequest?: z.infer<typeof EnableServiceRequestSchema>
+  EventNotification?: z.infer<typeof EventNotificationSchema>
+  GetTotalsRequest?: z.infer<typeof GetTotalsRequestSchema>
+  InputRequest?: z.infer<typeof InputRequestSchema>
+  InputUpdate?: z.infer<typeof InputUpdateSchema>
+  LoginRequest?: z.infer<typeof LoginRequestSchema>
+  LogoutRequest?: z.infer<typeof LogoutRequestSchema>
+  PaymentRequest?: z.infer<typeof PaymentRequestSchema>
+  PrintRequest?: z.infer<typeof PrintRequestSchema>
+  CardReaderAPDURequest?: z.infer<typeof CardReaderAPDURequestSchema>
+  ReconciliationRequest?: z.infer<typeof ReconciliationRequestSchema>
+  ReversalRequest?: z.infer<typeof ReversalRequestSchema>
+  StoredValueRequest?: z.infer<typeof StoredValueRequestSchema>
+  TransactionStatusRequest?: z.infer<typeof TransactionStatusRequestSchema>
+}
+
+const SaleToPOIRequestSchema: z.ZodType<SaleToPOIRequestType> = z
   .object({
     MessageHeader: MessageHeaderSchema,
     AbortRequest: AbortRequestSchema.exactOptional().openapi({
@@ -3477,13 +2717,108 @@ const SaleToPOIRequestSchema = z
   })
   .openapi('SaleToPOIRequest')
 
-const TerminalAPIRequestSchema = z
-  .object({ SaleToPOIRequest: SaleToPOIRequestSchema })
+type TerminalAPIRequestType = { SaleToPOIRequest: z.infer<typeof SaleToPOIRequestSchema> }
+
+const ResultSchema = z
+  .enum(['Success', 'Failure', 'Partial'])
+  .openapi({ description: '\nPossible values:\n* **Success**\n* **Failure**\n* **Partial**' })
+  .openapi('Result')
+
+const ErrorConditionSchema = z
+  .enum([
+    'Aborted',
+    'Busy',
+    'Cancel',
+    'DeviceOut',
+    'InsertedCard',
+    'InProgress',
+    'LoggedOut',
+    'MessageFormat',
+    'NotAllowed',
+    'NotFound',
+    'PaymentRestriction',
+    'Refusal',
+    'UnavailableDevice',
+    'UnavailableService',
+    'InvalidCard',
+    'UnreachableHost',
+    'WrongPIN',
+  ])
   .openapi({
-    description: 'The request payload of the Adyen Terminal API.',
-    required: ['SaleToPOIRequest'],
+    description:
+      '\nPossible values:\n* **Aborted**\n* **Busy**\n* **Cancel**\n* **DeviceOut**\n* **InsertedCard**\n* **InProgress**\n* **LoggedOut**\n* **MessageFormat**\n* **NotAllowed**\n* **NotFound**\n* **PaymentRestriction**\n* **Refusal**\n* **UnavailableDevice**\n* **UnavailableService**\n* **InvalidCard**\n* **UnreachableHost**\n* **WrongPIN**',
   })
-  .openapi('TerminalAPIRequest')
+  .openapi('ErrorCondition')
+
+const ResponseSchema = z
+  .object({
+    Result: ResultSchema.openapi({
+      description:
+        'Result of the processing of the message.\nPossible values:\n* **Failure**\n* **Partial**\n* **Success**',
+    }),
+    ErrorCondition: ErrorConditionSchema.exactOptional().openapi({
+      description:
+        'Condition that has produced an error on the processing of a message request.\nReturned if Result is not Success.\nPossible values:\n* **Aborted**\n* **Busy**\n* **Cancel**\n* **DeviceOut**\n* **InProgress**\n* **InsertedCard**\n* **InvalidCard**\n* **LoggedOut**\n* **MessageFormat**\n* **NotAllowed**\n* **NotFound**\n* **PaymentRestriction**\n* **Refusal**\n* **UnavailableDevice**\n* **UnavailableService**\n* **UnreachableHost**\n* **WrongPIN**',
+    }),
+    AdditionalResponse: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional information related to processing status of a message request.\nIf present, the POI logs it for further examination.',
+      }),
+  })
+  .openapi({
+    description:
+      'Result of a message request processing.\nIf Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present and can refine the processing of the message response. `AdditionalResponse` gives more information about the success or the failure of the message request processing, for logging without real time involvements.',
+    required: ['Result'],
+  })
+  .openapi('Response')
+
+const PaymentAcquirerDataSchema = z
+  .object({
+    AcquirerID: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identification of the Acquirer.\nIdentification of the Acquirer when the POI System is multi-acquirer.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    MerchantID: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({ description: 'Identification of the Merchant for the Acquirer.' }),
+    AcquirerPOIID: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({ description: 'Identification of the POI for the payment Acquirer.' }),
+    AcquirerTransactionID: TransactionIDTypeSchema.exactOptional().openapi({
+      description:
+        'Identification of the Transaction for the Acquirer.\nIf provided by the Acquirer.',
+    }),
+    ApprovalCode: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description: 'Code assigned to a transaction approval by the Acquirer.\nIf available.',
+      }),
+    HostReconciliationID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifier of a reconciliation period with a payment or loyalty host. Allows the assignment of a transaction to the Acquirer reconciliation (or batch).',
+      }),
+  })
+  .openapi({
+    description: 'Data related to the response from the payment Acquirer.',
+    required: ['MerchantID', 'AcquirerPOIID'],
+  })
+  .openapi('PaymentAcquirerData')
 
 const PaymentAccountStatusSchema = z
   .object({
@@ -3507,6 +2842,33 @@ const PaymentAccountStatusSchema = z
   .openapi({ required: [] })
   .openapi('PaymentAccountStatus')
 
+const PaymentReceiptSchema = z
+  .object({
+    DocumentQualifier: DocumentQualifierSchema.openapi({
+      description:
+        'Qualification of the document to print to the Cashier or the Customer.\nSaleReceipt or CashierReceipt.\nPossible values:\n* **CashierReceipt**\n* **CustomerReceipt**\n* **Document**\n* **Journal**\n* **SaleReceipt**\n* **Voucher**',
+    }),
+    IntegratedPrintFlag: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Type of the print integrated to other prints.' }),
+    RequiredSignatureFlag: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicate that the cardholder payment receipt requires a physical signature by the Customer.',
+      }),
+    OutputContent: OutputContentSchema.openapi({ description: 'Content to display or print.' }),
+  })
+  .openapi({
+    description:
+      'Customer or Merchant payment receipt.\nIf the payment receipts are printed by the Sale system and the POI or the Sale does not implement the Print exchange (Basic profile).',
+    required: ['DocumentQualifier', 'OutputContent'],
+  })
+  .openapi('PaymentReceipt')
+
 const BalanceInquiryResponseSchema = z
   .object({
     Response: ResponseSchema.openapi({ description: 'Result of a message request processing.' }),
@@ -3523,6 +2885,45 @@ const BalanceInquiryResponseSchema = z
     'x-nexo-kind': 'response',
   })
   .openapi('BalanceInquiryResponse')
+
+const POIDataSchema = z
+  .object({
+    POITransactionID: TransactionIDTypeSchema.openapi({
+      description: 'Unique identification of a POI transaction for a POI.',
+    }),
+    POIReconciliationID: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identification of the reconciliation period between Sale and POI.\nIf Result is Success.',
+        'x-nexo-kind': 'digitstring',
+      }),
+  })
+  .openapi({
+    description:
+      'Data related to the POI System.\nIn the Message Response, identification of the POI transaction.',
+    required: ['POITransactionID'],
+  })
+  .openapi('POIData')
+
+const LoyaltyAccountSchema = z
+  .object({
+    LoyaltyAccountID: LoyaltyAccountIDSchema.openapi({
+      description: 'Identification of a Loyalty account.',
+    }),
+    LoyaltyBrand: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'Identification of a Loyalty brand.\nIf a card is analysed.' }),
+  })
+  .openapi({
+    description:
+      'This data structure conveys the identification of the account and the associated loyalty brand.\nData related to a loyalty account processed in the transaction.',
+    required: ['LoyaltyAccountID'],
+  })
+  .openapi('LoyaltyAccount')
 
 const CardAcquisitionResponseSchema = z
   .object({
@@ -3572,6 +2973,71 @@ const AdminResponseSchema = z
     'x-nexo-kind': 'response',
   })
   .openapi('AdminResponse')
+
+const GlobalStatusSchema = z
+  .enum(['OK', 'Busy', 'Maintenance', 'Unreachable'])
+  .openapi({
+    description: '\nPossible values:\n* **OK**\n* **Busy**\n* **Maintenance**\n* **Unreachable**',
+  })
+  .openapi('GlobalStatus')
+
+const PrinterStatusSchema = z
+  .enum(['OK', 'PaperLow', 'NoPaper', 'PaperJam', 'OutOfOrder'])
+  .openapi({
+    description:
+      'Indicates if the printer is working and usable.\nPossible values:\n* **OK**\n* **PaperLow**\n* **NoPaper**\n* **PaperJam**\n* **OutOfOrder**',
+  })
+  .openapi('PrinterStatus')
+
+const POIStatusSchema = z
+  .object({
+    GlobalStatus: GlobalStatusSchema.openapi({
+      description:
+        'Global status of a POI Server or POI Terminal.\nPossible values:\n* **Busy**\n* **Maintenance**\n* **OK**\n* **Unreachable**',
+    }),
+    SecurityOKFlag: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the security module of the POI is working and usable.\nIf security module present.',
+      }),
+    PEDOKFlag: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the PED is working and usable.\nIf PED present.' }),
+    CardReaderOKFlag: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the card readers are working and usable.\nIf card reader device present.',
+      }),
+    PrinterStatus: PrinterStatusSchema.exactOptional().openapi({
+      description:
+        'Possible values:\n* **NoPaper**\n* **OK**\n* **OutOfOrder**\n* **PaperJam**\n* **PaperLow**',
+    }),
+    CommunicationOKFlag: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the communication infrastructure is working and usable.\nIf communication infrastructure present.',
+      }),
+    FraudPreventionFlag: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates a suspicion of fraud by the POI System.\nCould be set to True by the POI system to notify to the Sale system and the Cashier that a suspicion of fraud had been detected on the POI as an unexpected reboot of the POI.',
+      }),
+  })
+  .openapi({
+    description:
+      'Indicate the availability of the POI Terminal components. The data element is absent if the component is not part of the POI Terminal.\nState of a POI Terminal.',
+    required: ['GlobalStatus'],
+  })
+  .openapi('POIStatus')
 
 const HostStatusSchema = z
   .object({
@@ -3656,6 +3122,34 @@ const EnableServiceResponseSchema = z
     'x-nexo-kind': 'response',
   })
   .openapi('EnableServiceResponse')
+
+const TransactionTypeSchema = z
+  .enum([
+    'Debit',
+    'Credit',
+    'ReverseDebit',
+    'ReverseCredit',
+    'OneTimeReservation',
+    'CompletedDeffered',
+    'FirstReservation',
+    'UpdateReservation',
+    'CompletedReservation',
+    'CashAdvance',
+    'IssuerInstalment',
+    'Declined',
+    'Failed',
+    'Award',
+    'ReverseAward',
+    'Redemption',
+    'ReverseRedemption',
+    'Rebate',
+    'ReverseRebate',
+  ])
+  .openapi({
+    description:
+      '\nPossible values:\n* **Debit**\n* **Credit**\n* **ReverseDebit**\n* **ReverseCredit**\n* **OneTimeReservation**\n* **CompletedDeffered**\n* **FirstReservation**\n* **UpdateReservation**\n* **CompletedReservation**\n* **CashAdvance**\n* **IssuerInstalment**\n* **Declined**\n* **Failed**\n* **Award**\n* **ReverseAward**\n* **Redemption**\n* **ReverseRedemption**\n* **Rebate**\n* **ReverseRebate**',
+  })
+  .openapi('TransactionType')
 
 const PaymentTotalsSchema = z
   .object({
@@ -3894,6 +3388,58 @@ const InputResponseSchema = z
   })
   .openapi('InputResponse')
 
+const POISoftwareSchema = z
+  .object({
+    ManufacturerID: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description:
+          'Identification of the Manufacturer. Sent in the Login Request (Response) to identify the Sale System (POI System) manufacturer during the session.',
+      }),
+    ApplicationName: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description:
+          'Name of the software product. Sent in the Login Request (Response) to identify the Sale System (POI System) product name during the session.',
+      }),
+    SoftwareVersion: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description:
+          'Version of the software product. Sent in the Login Request (Response) to identify the version of the Sale System (POI System) product software during the session.',
+      }),
+    CertificationCode: z
+      .string()
+      .regex(/^.+$/)
+      .openapi({
+        description:
+          'Certification code of the software which manages the Sale to POI protocol. Sent in the Login Request (Response) to get the certification code of the Sale System (POI System) product software. This code can be a software checksum or any number associated with the software.',
+      }),
+  })
+  .openapi({
+    description:
+      'Information related to the software of the POI System which manages the Sale to POI protocol. In a session allows identifying the product features of a POI System.',
+    required: ['ManufacturerID', 'ApplicationName', 'SoftwareVersion', 'CertificationCode'],
+  })
+  .openapi('POISoftware')
+
+const POISystemDataSchema = z
+  .object({
+    DateTime: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'Date and Time. In the response, the POI System gives its date and time to the Sale System.',
+      }),
+    POISoftware: POISoftwareSchema,
+    POIStatus: POIStatusSchema.exactOptional(),
+  })
+  .openapi({ required: ['DateTime', 'POISoftware'] })
+  .openapi('POISystemData')
+
 const LoginResponseSchema = z
   .object({
     Response: ResponseSchema.openapi({ description: 'Result of a message request processing.' }),
@@ -3925,6 +3471,60 @@ const LogoutResponseSchema = z
   })
   .openapi('LogoutResponse')
 
+const LoyaltyAcquirerDataSchema = z
+  .object({
+    LoyaltyAcquirerID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({ description: 'Identification of the loyalty Acquirer.' }),
+    ApprovalCode: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Code assigned to a transaction approval by the Acquirer. Could be an identifier of the approved transaction for the Acquirer. This data element is conditional for the Loyalty Acquirers. Used in the PaymentRequest request for a referral.',
+      }),
+    LoyaltyTransactionID: TransactionIDTypeSchema.exactOptional(),
+    HostReconciliationID: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifier of a reconciliation period with a payment or loyalty host. Allows the assignment of a transaction to the Acquirer reconciliation (or batch).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('LoyaltyAcquirerData')
+
+const LoyaltyResultSchema = z
+  .object({
+    LoyaltyAccount: LoyaltyAccountSchema.openapi({
+      description: 'Data related to a loyalty account processed in the transaction.',
+    }),
+    CurrentBalance: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description: 'Balance of an account.\nIf known (provided by the card or an external host).',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    LoyaltyAcquirerData: LoyaltyAcquirerDataSchema.exactOptional().openapi({
+      description:
+        'Data related to the loyalty Acquirer during a loyalty transaction.\nIf content not empty.',
+    }),
+  })
+  .openapi({
+    description:
+      'Data related to the result of a processed loyalty transaction.\nIn the Message Response, the result of each loyalty brand transaction.',
+    required: ['LoyaltyAccount'],
+  })
+  .openapi('LoyaltyResult')
+
 const LoyaltyResponseSchema = z
   .object({
     Response: ResponseSchema.openapi({ description: 'Result of a message request processing.' }),
@@ -3946,6 +3546,284 @@ const LoyaltyResponseSchema = z
     'x-nexo-kind': 'response',
   })
   .openapi('LoyaltyResponse')
+
+const AmountsRespSchema = z
+  .object({
+    Currency: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .exactOptional()
+      .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
+    AuthorizedAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .openapi({
+        description: 'Amount requested by the Sale for the payment.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    TotalRebatesAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description:
+          'Sum of rebates in amount (total amount or line item amount) for all the loyalty programs.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    TotalFeesAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({ description: 'Total amount of financial fees.', 'x-nexo-kind': 'simpleamount' }),
+    CashBackAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description: 'The cash-back part of the amount requested by the Sale for the payment.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    TipAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount paid for a tip. Allow the printing of the tip on the receipt, and to qualify the tip part of the amount.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+  })
+  .openapi({ required: ['AuthorizedAmount'] })
+  .openapi('AmountsResp')
+
+const ConvertedAmountSchema = z
+  .object({
+    AmountValue: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .openapi({ description: 'Value of an amount.', 'x-nexo-kind': 'simpleamount' }),
+    Currency: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .openapi({ description: 'Currency of a monetary amount.', 'x-nexo-kind': 'isocurrency3a' }),
+  })
+  .openapi({ required: ['AmountValue', 'Currency'] })
+  .openapi('ConvertedAmount')
+
+const CurrencyConversionSchema = z
+  .object({
+    CustomerApprovedFlag: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Notify if the customer has approved something. Indicates if the customer has accepted a currency conversion.',
+      }),
+    ConvertedAmount: ConvertedAmountSchema.openapi({
+      description: 'Amount after a currency conversion.',
+    }),
+    Rate: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Rate of currency conversion.', 'x-nexo-kind': 'decimal' }),
+    Markup: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Markup of a currency conversion amount as a percentage.',
+        'x-nexo-kind': 'decimal',
+      }),
+    Commission: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({
+        description: 'Commission for a currency conversion.',
+        'x-nexo-kind': 'simpleamount',
+      }),
+    Declaration: z
+      .string()
+      .regex(/^.+$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Declaration to present to the customer or the cashier for validation.\nIf a declaration has to be presented to the customer.',
+      }),
+  })
+  .openapi({
+    description:
+      'Information related to a currency conversion.\nA currency conversion occurred in the payment, and the merchant needs to know information related to this conversion (e.g. to print on the sale receipt).',
+    required: ['ConvertedAmount'],
+  })
+  .openapi('CurrencyConversion')
+
+const AreaSizeSchema = z
+  .object({
+    X: z
+      .string()
+      .openapi({
+        description:
+          'Abscissa of a point coordinates. The hexadecimal value in text of the abscissa of the coordinates of a point. Leading zero can be removed (e.g. 3BC, 0, and 1287).',
+        'x-nexo-kind': 'hexstring',
+        'x-nexo-min': 1,
+        'x-nexo-max': 4,
+      }),
+    Y: z
+      .string()
+      .openapi({
+        description:
+          'Ordinate of a point coordinates. The hexadecimal value in text of the ordinate of the coordinates of a point. Leading zero can be removed (e.g. 3BC, 0, and 1287).',
+        'x-nexo-kind': 'hexstring',
+        'x-nexo-min': 1,
+        'x-nexo-max': 4,
+      }),
+  })
+  .openapi({ required: ['X', 'Y'] })
+  .openapi('AreaSize')
+
+const PointSchema = z
+  .object({
+    X: z
+      .string()
+      .openapi({
+        description: 'The hexadecimal value of the coordinates of a point on the abscissa.',
+        'x-nexo-kind': 'hexstring',
+        'x-nexo-min': 1,
+        'x-nexo-max': 4,
+      }),
+    Y: z
+      .string()
+      .openapi({
+        description: 'The hexadecimal value of the coordinates of a point on the ordinate.',
+        'x-nexo-kind': 'hexstring',
+        'x-nexo-min': 1,
+        'x-nexo-max': 4,
+      }),
+  })
+  .openapi({ required: ['X', 'Y'] })
+  .openapi('Point')
+
+const CapturedSignatureSchema = z
+  .object({
+    AreaSize: AreaSizeSchema.exactOptional().openapi({
+      description:
+        'Size of an area. Contain the size of the pad area where the signature is written, given with the maximum abscissa and ordinate values (X and Y). The maximum value is FFFF.',
+    }),
+    SignaturePoint: z
+      .array(PointSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Coordinates of a point where the pen changes direction or lift. Contain the Coordinates of a point of the written signature where the pen changes direction or lift where (X and Y). When the signer lifts the pen, both X and Y have the value FFFF.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CapturedSignature')
+
+const AuthenticationMethodSchema = z
+  .array(
+    z.enum([
+      'Bypass',
+      'ManualVerification',
+      'MerchantAuthentication',
+      'OfflinePIN',
+      'OnlinePIN',
+      'PaperSignature',
+      'SecuredChannel',
+      'SecureCertificate',
+      'SecureNoCertificate',
+      'SignatureCapture',
+      'UnknownMethod',
+    ]),
+  )
+  .openapi({
+    description:
+      'Method for customer authentication. Allows the Sale System informed about customer authentication for the payment transaction.\nPossible values:\n* **Bypass**\n* **ManualVerification**\n* **MerchantAuthentication**\n* **OfflinePIN**\n* **OnlinePIN**\n* **PaperSignature**\n* **SecureCertificate**\n* **SecureNoCertificate**\n* **SecuredChannel**\n* **SignatureCapture**\n* **UnknownMethod**',
+  })
+  .openapi('AuthenticationMethod')
+
+const PaymentResultSchema = z
+  .object({
+    PaymentType: PaymentTypeSchema.exactOptional().openapi({
+      description:
+        'Type of payment transaction. Elements requested by the Sale System that are related to the payment only.\nPossible values:\n* **CashAdvance**\n* **CashDeposit**\n* **Completion**\n* **FirstReservation**\n* **Instalment**\n* **IssuerInstalment**\n* **Normal**\n* **OneTimeReservation**\n* **PaidOut**\n* **Recurring**\n* **Refund**\n* **UpdateReservation**',
+      'x-nexo-default': 'Normal',
+    }),
+    PaymentInstrumentData: PaymentInstrumentDataSchema.exactOptional(),
+    AmountsResp: AmountsRespSchema.exactOptional().openapi({
+      description:
+        'Various amounts related to the payment response from the POI System. Amounts approved by the POI and the Acquirer for the payment and loyalty transaction, containing:\n  * The authorised amount to be paid.\n  * The amount of the rebates.\n  * The amount of financial fees.\n  * The cash back part of the requested amount for a payment with cash back.\n  * The tip part of the requested amount for a payment with tip.',
+    }),
+    Instalment: InstalmentSchema.exactOptional().openapi({
+      description:
+        'Information related an instalment transaction. To request an instalment to the issuer, or to make individual instalments of a payment transaction.',
+    }),
+    CurrencyConversion: z
+      .array(CurrencyConversionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Information related to a currency conversion. A currency conversion occurred in the payment, and the merchant needs to know information related to this conversion (e.g. to print on the sale receipt).',
+      }),
+    MerchantOverrideFlag: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the Merchant forced the result of the payment to successful. Allows the Sale System to be sure that the payment has been forced.',
+      }),
+    CapturedSignature: CapturedSignatureSchema.exactOptional().openapi({
+      description:
+        'Numeric value of a handwritten signature. Contains the value of a handwritten signature, e.g. the signature of a cardholder on the merchant payment receipt. Only one format of the signature is allowed:\n  * The size of the pad area where the signature is written, given with the maximum abscissa and ordinate values.\n  * The sequence of coordinates where the pen changes direction or lift.',
+    }),
+    ProtectedSignature: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Numeric value of a handwritten signature. Contains the value of a handwritten signature, e.g. the signature of a cardholder on the merchant payment receipt. The format before encryption is the encoded data structure CapturedSignature. The data structure before encryption includes the start and end tags for an XML encoding, the identifier and length bytes for an ASN.1 encoding, and the complete member ProtectedSignature for a JSON encoding.',
+        'x-nexo-kind': 'contentinformation',
+      }),
+    CustomerLanguage: z
+      .string()
+      .regex(/^[a-z]{2,2}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'The language of the customer that was used on the terminal screen or in text printed by the terminal. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.',
+      }),
+    OnlineFlag: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicate that the payment transaction processing has required the approval of a host. Allows the Sale System to know if the payment was online or offline.',
+      }),
+    AuthenticationMethod: AuthenticationMethodSchema.exactOptional().openapi({
+      description:
+        'Method for customer authentication. Allows the Sale System informed about customer authentication for the payment transaction.\nPossible values:\n* **Bypass**\n* **ManualVerification**\n* **MerchantAuthentication**\n* **OfflinePIN**\n* **OnlinePIN**\n* **PaperSignature**\n* **SecureCertificate**\n* **SecureNoCertificate**\n* **SecuredChannel**\n* **SignatureCapture**\n* **UnknownMethod**',
+    }),
+    ValidityDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'End of the validity period for the reservation, for the first reservation, and the reservation updates as well.',
+      }),
+    PaymentAcquirerData: PaymentAcquirerDataSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentResult')
 
 const PaymentResponseSchema = z
   .object({
@@ -4077,6 +3955,70 @@ const ReversalResponseSchema = z
   })
   .openapi('ReversalResponse')
 
+const StoredValueAccountStatusSchema = z
+  .object({
+    StoredValueAccountID: StoredValueAccountIDSchema,
+    CurrentBalance: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({ description: 'If relevant and known.', 'x-nexo-kind': 'simpleamount' }),
+  })
+  .openapi({ required: ['StoredValueAccountID'] })
+  .openapi('StoredValueAccountStatus')
+
+const StoredValueResultSchema = z
+  .object({
+    StoredValueTransactionType: StoredValueTransactionTypeSchema.openapi({
+      description:
+        'Identification of operation to proceed on the stored value account or the stored value card.\nCopy.\nPossible values:\n* **Activate**\n* **Duplicate**\n* **Load**\n* **Reserve**\n* **Reverse**\n* **Unload**',
+    }),
+    ProductCode: z
+      .int()
+      .min(1)
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description: 'Product code of item purchased with the transaction.\nCopy.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    EanUpc: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Standard product code of item purchased with the transaction.\nCopy.',
+        'x-nexo-kind': 'digitstring',
+      }),
+    ItemAmount: z
+      .number()
+      .min(0)
+      .max(99999999.999999)
+      .exactOptional()
+      .openapi({ description: 'Total amount of the item line.', 'x-nexo-kind': 'simpleamount' }),
+    Currency: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Currency of a monetary amount.\nCopy.',
+        'x-nexo-kind': 'isocurrency3a',
+      }),
+    StoredValueAccountStatus: StoredValueAccountStatusSchema.exactOptional().openapi({
+      description: 'Data related to the result of the stored value card transaction.',
+    }),
+    HostTransactionID: TransactionIDTypeSchema.exactOptional().openapi({
+      description:
+        'Identification of the transaction by the host in charge of the stored value transaction.\nIf provided by the Host.',
+    }),
+  })
+  .openapi({
+    description:
+      'For each stored value card loaded or reloaded, in the StoredValue response message.\nResult of loading/reloading a stored value card.',
+    required: ['StoredValueTransactionType'],
+  })
+  .openapi('StoredValueResult')
+
 const StoredValueResponseSchema = z
   .object({
     Response: ResponseSchema.openapi({ description: 'Result of a message request processing.' }),
@@ -4099,7 +4041,16 @@ const StoredValueResponseSchema = z
   })
   .openapi('StoredValueResponse')
 
-const RepeatedResponseMessageBodySchema = z
+type RepeatedResponseMessageBodyType = {
+  LoyaltyResponse?: z.infer<typeof LoyaltyResponseSchema>
+  PaymentResponse?: z.infer<typeof PaymentResponseSchema>
+  ReversalResponse?: z.infer<typeof ReversalResponseSchema>
+  StoredValueResponse?: z.infer<typeof StoredValueResponseSchema>
+  CardAcquisitionResponse?: z.infer<typeof CardAcquisitionResponseSchema>
+  CardReaderAPDUResponse?: z.infer<typeof CardReaderAPDUResponseSchema>
+}
+
+const RepeatedResponseMessageBodySchema: z.ZodType<RepeatedResponseMessageBodyType> = z
   .object({
     LoyaltyResponse: LoyaltyResponseSchema.exactOptional(),
     PaymentResponse: PaymentResponseSchema.exactOptional(),
@@ -4111,7 +4062,12 @@ const RepeatedResponseMessageBodySchema = z
   .openapi({ 'x-nexo-exported': true, required: [] })
   .openapi('RepeatedResponseMessageBody')
 
-const RepeatedMessageResponseSchema = z
+type RepeatedMessageResponseType = {
+  MessageHeader: z.infer<typeof MessageHeaderSchema>
+  RepeatedResponseMessageBody: z.infer<typeof RepeatedResponseMessageBodySchema>
+}
+
+const RepeatedMessageResponseSchema: z.ZodType<RepeatedMessageResponseType> = z
   .object({
     MessageHeader: MessageHeaderSchema,
     RepeatedResponseMessageBody: RepeatedResponseMessageBodySchema,
@@ -4119,7 +4075,13 @@ const RepeatedMessageResponseSchema = z
   .openapi({ required: ['MessageHeader', 'RepeatedResponseMessageBody'] })
   .openapi('RepeatedMessageResponse')
 
-const TransactionStatusResponseSchema = z
+type TransactionStatusResponseType = {
+  Response: z.infer<typeof ResponseSchema>
+  MessageReference?: z.infer<typeof MessageReferenceSchema>
+  RepeatedMessageResponse?: z.infer<typeof RepeatedMessageResponseSchema>
+}
+
+const TransactionStatusResponseSchema: z.ZodType<TransactionStatusResponseType> = z
   .object({
     Response: ResponseSchema.openapi({ description: 'Result of a message request processing.' }),
     MessageReference: MessageReferenceSchema.exactOptional().openapi({
@@ -4139,7 +4101,29 @@ const TransactionStatusResponseSchema = z
   })
   .openapi('TransactionStatusResponse')
 
-const SaleToPOIResponseSchema = z
+type SaleToPOIResponseType = {
+  MessageHeader: z.infer<typeof MessageHeaderSchema>
+  BalanceInquiryResponse?: z.infer<typeof BalanceInquiryResponseSchema>
+  CardAcquisitionResponse?: z.infer<typeof CardAcquisitionResponseSchema>
+  AdminResponse?: z.infer<typeof AdminResponseSchema>
+  DiagnosisResponse?: z.infer<typeof DiagnosisResponseSchema>
+  DisplayResponse?: z.infer<typeof DisplayResponseSchema>
+  EnableServiceResponse?: z.infer<typeof EnableServiceResponseSchema>
+  GetTotalsResponse?: z.infer<typeof GetTotalsResponseSchema>
+  InputResponse?: z.infer<typeof InputResponseSchema>
+  LoginResponse?: z.infer<typeof LoginResponseSchema>
+  LogoutResponse?: z.infer<typeof LogoutResponseSchema>
+  LoyaltyResponse?: z.infer<typeof LoyaltyResponseSchema>
+  PaymentResponse?: z.infer<typeof PaymentResponseSchema>
+  PrintResponse?: z.infer<typeof PrintResponseSchema>
+  CardReaderAPDUResponse?: z.infer<typeof CardReaderAPDUResponseSchema>
+  ReconciliationResponse?: z.infer<typeof ReconciliationResponseSchema>
+  ReversalResponse?: z.infer<typeof ReversalResponseSchema>
+  StoredValueResponse?: z.infer<typeof StoredValueResponseSchema>
+  TransactionStatusResponse?: z.infer<typeof TransactionStatusResponseSchema>
+}
+
+const SaleToPOIResponseSchema: z.ZodType<SaleToPOIResponseType> = z
   .object({
     MessageHeader: MessageHeaderSchema,
     BalanceInquiryResponse: BalanceInquiryResponseSchema.exactOptional().openapi({
@@ -4204,7 +4188,65 @@ const SaleToPOIResponseSchema = z
   })
   .openapi('SaleToPOIResponse')
 
-const TerminalAPIResponseSchema = z
+type TerminalAPIResponseType = { SaleToPOIResponse: z.infer<typeof SaleToPOIResponseSchema> }
+
+const SaleCapabilitiesSchema = z
+  .array(
+    z.enum([
+      'CashierStatus',
+      'CashierError',
+      'CashierDisplay',
+      'POIReplication',
+      'CashierInput',
+      'CustomerAssistance',
+      'CustomerDisplay',
+      'CustomerError',
+      'CustomerInput',
+      'PrinterReceipt',
+      'PrinterDocument',
+      'PrinterVoucher',
+      'MagStripe',
+      'ICC',
+      'EMVContactless',
+    ]),
+  )
+  .openapi({
+    description:
+      'place holder!\nPossible values:\n* **CashierDisplay**\n* **CashierError**\n* **CashierInput**\n* **CashierStatus**\n* **CustomerAssistance**\n* **CustomerDisplay**\n* **CustomerError**\n* **CustomerInput**\n* **EMVContactless**\n* **ICC**\n* **MagStripe**\n* **POIReplication**\n* **PrinterDocument**\n* **PrinterReceipt**\n* **PrinterVoucher**',
+  })
+  .openapi('SaleCapabilities')
+
+const SoundFormatSchema = z
+  .enum(['SoundRef', 'MessageRef', 'Text'])
+  .openapi({ description: '\nPossible values:\n* **SoundRef**\n* **MessageRef**\n* **Text**' })
+  .openapi('SoundFormat')
+
+const SoundActionSchema = z
+  .enum(['StartSound', 'StopSound', 'SetDefaultVolume'])
+  .openapi({
+    description: '\nPossible values:\n* **StartSound**\n* **StopSound**\n* **SetDefaultVolume**',
+  })
+  .openapi('SoundAction')
+
+const PINFormatSchema = z.enum(['ISO0', 'ISO1', 'ISO2', 'ISO3']).openapi('PINFormat')
+
+const PINRequestTypeSchema = z
+  .enum(['PINVerify', 'PINVerifyOnly', 'PINEnter'])
+  .openapi({
+    description:
+      'Type of PIN Service.\nPossible values:\n* **PINVerify**\n* **PINVerifyOnly**\n* **PINEnter**',
+  })
+  .openapi('PINRequestType')
+
+const TerminalAPIRequestSchema: z.ZodType<TerminalAPIRequestType> = z
+  .object({ SaleToPOIRequest: SaleToPOIRequestSchema })
+  .openapi({
+    description: 'The request payload of the Adyen Terminal API.',
+    required: ['SaleToPOIRequest'],
+  })
+  .openapi('TerminalAPIRequest')
+
+const TerminalAPIResponseSchema: z.ZodType<TerminalAPIResponseType> = z
   .object({ SaleToPOIResponse: SaleToPOIResponseSchema })
   .openapi({
     description: 'The response payload of the Adyen Terminal API.',
@@ -4288,7 +4330,7 @@ const SecurityTrailerSchema = z
   .openapi('SecurityTrailer')
 
 const AbortResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A successful `AbortRequest` returns a response with a **200 OK** HTTP status code and no body.',

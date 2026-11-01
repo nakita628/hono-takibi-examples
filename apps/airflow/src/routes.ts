@@ -3647,7 +3647,7 @@ const ValidationErrorSchema = z
     msg: z.string().openapi({ title: 'Message' }),
     type: z.string().openapi({ title: 'Error Type' }),
     input: z.any().exactOptional().openapi({ title: 'Input' }),
-    ctx: z.object({}).exactOptional().openapi({ title: 'Context' }),
+    ctx: z.looseObject({}).exactOptional().openapi({ title: 'Context' }),
   })
   .openapi({ required: ['loc', 'msg', 'type'], title: 'ValidationError' })
   .openapi('ValidationError')

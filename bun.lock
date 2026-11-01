@@ -3153,7 +3153,7 @@
     "@hono/zod-openapi": "^1.6.3",
     "@types/node": "^26.6.5",
     "hono": "^4.13.13",
-    "hono-takibi": "^0.28.0",
+    "hono-takibi": "^0.29.0",
     "typescript": "^7.0.2",
     "zod": "^4.6.7",
   },
@@ -3854,7 +3854,7 @@
 
     "hono": ["hono@4.13.14", "", {}, "sha512-yhRLQ21U6qa9Hsu2N7Qcbh8tE+WKEcoErjIo56LeSGiGXGp9sA7UpE86Ui9uexb61KakiGwuHMn2QdV7w6i6kQ=="],
 
-    "hono-takibi": ["hono-takibi@0.28.0", "", { "dependencies": { "@apidevtools/swagger-parser": "^13.1.0", "@effect/platform-node": "4.0.6", "@typespec/compiler": "^1.17.0", "@typespec/openapi3": "^1.17.0", "effect": "4.0.6", "oxc-parser": "^0.155.0", "oxfmt": "^0.74.0" }, "bin": { "hono-takibi": "dist/cli.js" } }, "sha512-tqbtitEAD5fK/ncoWJpGxN4rzqbUXV09krdnmn6qHkxeyA8kekOo5dEIAZzhPJcFrS88IwNxYtmyCvY9rFq9EA=="],
+    "hono-takibi": ["hono-takibi@0.29.0", "", { "dependencies": { "@apidevtools/swagger-parser": "^13.1.0", "@effect/platform-node": "4.0.6", "@typespec/compiler": "^1.17.0", "@typespec/openapi3": "^1.17.0", "effect": "4.0.6", "oxc-parser": "^0.155.0", "oxfmt": "^0.74.0" }, "bin": { "hono-takibi": "dist/cli.js" } }, "sha512-qf/kYViuwfI8lFFNTzS7RsB7F8N+GU1kN3Fw3GFSQoVNna0zwjl6kkG9Vtk/0QVnyUB1kj1rIyzlz6LogwZaIA=="],
 
     "is-safe-filename": ["is-safe-filename@0.1.1", "", {}, "sha512-4SrR7AdnY11LHfDKTZY1u6Ga3RuxZdl3YKWWShO5iyuG5h8QS4GD2tOb04peBJ5I7pXbR+CGBNEhTcwK+FzN3g=="],
 

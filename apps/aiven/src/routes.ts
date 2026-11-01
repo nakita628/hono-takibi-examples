@@ -1,5 +1,331 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type VcsIntegrationRepositoryFileScanResponseType = {
+  file_scan: {
+    container_manifest_type?: 'compose' | 'containerfile'
+    scanned_attributes?: {
+      attribute_type: 'port' | 'environment_variable'
+      description: string
+      file_path?: string
+      line_number: number
+      value: string
+    }[]
+    service_suggestions?: {
+      service_integrations?: {
+        integration_type:
+          | 'alert_triage_kafka'
+          | 'alertmanager'
+          | 'application_service_credential'
+          | 'autoscaler'
+          | 'autoscaler_service'
+          | 'caching'
+          | 'clickhouse_credentials'
+          | 'clickhouse_kafka'
+          | 'clickhouse_postgresql'
+          | 'dashboard'
+          | 'datadog'
+          | 'datahub_metadata_ingestion'
+          | 'datasource'
+          | 'disaster_recovery'
+          | 'external_aws_cloudwatch_logs'
+          | 'external_aws_cloudwatch_metrics'
+          | 'external_elasticsearch_logs'
+          | 'external_google_cloud_logging'
+          | 'external_opensearch_logs'
+          | 'flink'
+          | 'flink_external_bigquery'
+          | 'flink_external_kafka'
+          | 'flink_external_postgresql'
+          | 'internal_connectivity'
+          | 'jolokia'
+          | 'kafka_connect'
+          | 'kafka_connect_postgresql'
+          | 'kafka_inkless_postgresql'
+          | 'kafka_logs'
+          | 'kafka_mirrormaker'
+          | 'logs'
+          | 'metrics'
+          | 'opensearch_cross_cluster_replication'
+          | 'opensearch_cross_cluster_search'
+          | 'opentelemetry'
+          | 'pg_for_analytics_credentials'
+          | 'postgresql_clickhouse_cdc'
+          | 'prometheus'
+          | 'read_replica'
+          | 'rsyslog'
+          | 'schema_registry_proxy'
+          | 'service_composition'
+          | 'stresstester'
+          | 'thanos_distributed_query'
+          | 'thanos_migrate'
+          | 'thanos_object_storage'
+          | 'thanoscompactor'
+          | 'thanosquery'
+          | 'thanosruler'
+          | 'thanosstore'
+          | 'vector'
+          | 'vmalert'
+        source_service: string
+        user_config: { [key: string]: unknown }
+      }[]
+      service_name: string
+      service_type: string
+      user_config?: {
+        application: {
+          environment_variables: { key: string; kind: 'secret' | 'variable'; value: string }[]
+          ports: {
+            custom_domains?: string[]
+            name: string
+            port: number
+            protocol: 'HTTP'
+            security?: {
+              authentication_method: 'oidc' | 'aiven_platform'
+              oidc?: { client_id: string; client_secret: string; issuer_url: string; name: string }
+            }
+          }[]
+          source: {
+            branch: string
+            build_path: string
+            containerfile_path: string
+            remote_repository_id: string
+            repository_url: string
+            vcs_integration_id: string
+          }
+        }
+      }
+    }[]
+  }
+}
+
+type ServiceListResponseType = {
+  errors?: { message: string; more_info?: string; status: number }[]
+  message?: string
+  services: {
+    acl?: {
+      id?: string
+      permission: 'admin' | 'read' | 'readwrite' | 'write'
+      topic: string
+      username: string
+    }[]
+    backups?: {
+      additional_regions?: {
+        cloud: string
+        pause_reason?: string
+        paused?: boolean
+        region?: string
+      }[]
+      backup_name: string
+      backup_time: string
+      data_size: number
+      incremental?: boolean
+      storage_location?: string
+      tiered_storage_data_size?: number
+    }[]
+    cloud_description?: string
+    cloud_name: string
+    cmk_id?: string
+    components?: {
+      az?: string
+      component: string
+      host: string
+      kafka_authentication_method?: 'certificate' | 'sasl'
+      kafka_ssl_ca?: 'project_ca' | 'letsencrypt'
+      path?: string
+      port: number
+      privatelink_connection_id?: string
+      route: 'dynamic' | 'public' | 'private' | 'privatelink'
+      ssl?: boolean
+      usage: 'disaster_recovery' | 'primary' | 'replica' | 'ha_replica'
+    }[]
+    connection_info?: { [key: string]: unknown }
+    connection_pools?: {
+      connection_uri: string
+      database: string
+      pool_mode: 'session' | 'transaction' | 'statement'
+      pool_name: string
+      pool_size: number
+      username?: string
+    }[]
+    create_time: string
+    databases?: string[]
+    disk_space_mb?: number
+    features?: { [key: string]: unknown }
+    first_use_time?: string
+    group_list: string[]
+    is_cluster_plan?: boolean
+    kafka_acl?: {
+      host: string
+      id: string
+      operation:
+        | 'All'
+        | 'Alter'
+        | 'AlterConfigs'
+        | 'ClusterAction'
+        | 'Create'
+        | 'CreateTokens'
+        | 'Delete'
+        | 'Describe'
+        | 'DescribeConfigs'
+        | 'DescribeTokens'
+        | 'IdempotentWrite'
+        | 'Read'
+        | 'Write'
+      pattern_type: 'LITERAL' | 'PREFIXED'
+      permission_type: 'ALLOW' | 'DENY'
+      principal: string
+      resource_name: string
+      resource_type: 'Cluster' | 'DelegationToken' | 'Group' | 'Topic' | 'TransactionalId' | 'User'
+    }[]
+    maintenance?: {
+      controlled_switchover?: {
+        completed_at?: string
+        enabled: boolean
+        scheduled_start_time: string
+        state: 'INACTIVE' | 'PENDING' | 'SCHEDULED' | 'RUNNING' | 'COMPLETED' | 'COMPLETED_EARLY'
+        termination_reason?: string
+      }
+      dow:
+        | 'monday'
+        | 'tuesday'
+        | 'wednesday'
+        | 'thursday'
+        | 'friday'
+        | 'saturday'
+        | 'sunday'
+        | 'never'
+      enabled: boolean
+      time: string
+      updates: {
+        deadline?: string
+        description?: string
+        documentation_link?: string
+        impact?: string
+        impact_portable_text?: string
+        start_after?: string
+        start_at?: string
+      }[]
+    }
+    metadata?: { [key: string]: unknown }
+    node_count?: number
+    node_cpu_count?: number
+    node_memory_mb?: number
+    node_states?: {
+      availability_zone: string
+      name: string
+      progress_updates?: {
+        completed: boolean
+        current?: number
+        max?: number
+        min?: number
+        phase: 'prepare' | 'basebackup' | 'basebackup_prepare' | 'stream' | 'finalize'
+        position?: {
+          backup_incremental: boolean
+          backup_name: string
+          chain_index: number
+          chain_total: number
+        }
+        unit?: 'binlogs' | 'bytes_compressed' | 'bytes_uncompressed' | 'prepare_percent' | 'wal_lsn'
+      }[]
+      role?: 'master' | 'standby' | 'read-replica'
+      roles?: string
+      shard?: { name?: string; position?: number }
+      state: 'leaving' | 'running' | 'setting_up_vm' | 'syncing_data' | 'timing_out' | 'unknown'
+    }[]
+    plan: string
+    project_vpc_id: string
+    schema_registry_acl?: {
+      id?: string
+      permission: 'schema_registry_read' | 'schema_registry_write'
+      resource: string
+      username: string
+    }[]
+    server_group?: { enabled?: boolean; type?: string }
+    service_integrations: {
+      active: boolean
+      description: string
+      dest_endpoint?: string
+      dest_endpoint_id?: string
+      dest_project: string
+      dest_service?: string
+      dest_service_type: string
+      enabled: boolean
+      integration_status?: {
+        state: {
+          errors: string[]
+          likely_error_cause?: 'null' | 'destination' | 'integration' | 'source' | 'unknown'
+          nodes: { [key: string]: unknown }
+          status: 'failed' | 'inactive' | 'running' | 'starting' | 'unknown'
+        }
+        status_user_desc: string
+      }
+      integration_type: string
+      service_integration_id: string
+      source_endpoint?: string
+      source_endpoint_id?: string
+      source_project: string
+      source_service: string
+      source_service_type: string
+      user_config?: { [key: string]: unknown }
+    }[]
+    service_name: string
+    service_notifications?: {
+      level: 'notice' | 'warning'
+      message: string
+      metadata: {
+        end_of_life_help_article_url?: string
+        end_of_life_policy_url?: string
+        service_end_of_life_time?: string
+        upgrade_to_service_type?: string
+        upgrade_to_version?: string
+      }
+      type: 'service_end_of_life' | 'service_powered_off_removal'
+    }[]
+    service_type: string
+    service_type_description?: string
+    service_uri: string
+    service_uri_params?: { [key: string]: unknown }
+    state: 'POWEROFF' | 'REBALANCING' | 'REBUILDING' | 'RUNNING'
+    tags?: { [key: string]: unknown }
+    tech_emails?: { email: string }[]
+    termination_protection: boolean
+    topics?: {
+      cleanup_policy: string
+      min_insync_replicas: number
+      partitions: number
+      replication: number
+      retention_bytes: number
+      retention_hours: number
+      state?: 'ACTIVE' | 'CONFIGURING' | 'DELETING'
+      topic_name: string
+    }[]
+    update_time: string
+    user_config: { [key: string]: unknown }
+    users?: {
+      access_cert?: string
+      access_cert_not_valid_after_time?: string
+      access_control?: {
+        pg_allow_replication?: boolean
+        redis_acl_categories?: string[]
+        redis_acl_channels?: string[]
+        redis_acl_commands?: string[]
+        redis_acl_keys?: string[]
+        valkey_acl_categories?: string[]
+        valkey_acl_channels?: string[]
+        valkey_acl_commands?: string[]
+        valkey_acl_keys?: string[]
+      }
+      access_key?: string
+      authentication?: 'null' | 'caching_sha2_password' | 'mysql_native_password'
+      expiring_cert_not_valid_after_time?: string
+      password: string
+      password_encryption_type?: 'scram-sha-256' | 'md5' | 'unknown'
+      password_updated_time?: string
+      type: string
+      username: string
+    }[]
+  }[]
+}
+
 const AIGatewayKeyCreateRequestBodySchema = z
   .object({
     description: z
@@ -1740,7 +2066,7 @@ const AccountCreateResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Timestamp in ISO 8601 format, always in UTC' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         is_account_member: z
           .boolean()
           .exactOptional()
@@ -1893,7 +2219,7 @@ const AccountGetResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Timestamp in ISO 8601 format, always in UTC' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         is_account_member: z
           .boolean()
           .exactOptional()
@@ -1974,7 +2300,7 @@ const AccountListResponseSchema = z
               .string()
               .max(36)
               .openapi({ description: 'Timestamp in ISO 8601 format, always in UTC' }),
-            features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+            features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
             is_account_member: z
               .boolean()
               .exactOptional()
@@ -2067,7 +2393,7 @@ const AccountMoveResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Timestamp in ISO 8601 format, always in UTC' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         is_account_member: z
           .boolean()
           .exactOptional()
@@ -2343,7 +2669,7 @@ const AccountProjectsListResponseSchema = z
               .string()
               .exactOptional()
               .openapi({ description: 'Estimated balance, in billing currency' }),
-            features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+            features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
             organization_id: z.string().max(36).openapi({ description: 'Organization ID' }),
             payment_method: z.string().openapi({ description: 'Payment method' }),
             project_name: z.string().max(63).openapi({ description: 'Project name' }),
@@ -2352,7 +2678,10 @@ const AccountProjectsListResponseSchema = z
               .max(30)
               .exactOptional()
               .openapi({ description: 'Address state or province' }),
-            tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+            tags: z
+              .looseObject({})
+              .exactOptional()
+              .openapi({ description: 'Set of resource tags' }),
             tech_emails: z
               .array(
                 z
@@ -3154,7 +3483,7 @@ const AccountUpdateResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Timestamp in ISO 8601 format, always in UTC' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         is_account_member: z
           .boolean()
           .exactOptional()
@@ -4710,7 +5039,7 @@ const BillingGroupInvoiceLinesListResponseSchema = z
               ])
               .exactOptional()
               .openapi({ description: 'Service type, if invoice line is for service use' }),
-            tags: z.object({}).exactOptional().openapi({ description: 'Billing tags' }),
+            tags: z.looseObject({}).exactOptional().openapi({ description: 'Billing tags' }),
             timestamp_begin: z
               .string()
               .exactOptional()
@@ -5744,7 +6073,7 @@ const CustomCloudEnvironmentCreateRequestBodySchema = z
       .openapi({
         description: 'CIDR range reserved for Aiven provisioned networks in the BYOC cloud',
       }),
-    tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+    tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
   })
   .openapi({
     description: 'CustomCloudEnvironmentCreateRequestBody',
@@ -5826,11 +6155,11 @@ const CustomCloudEnvironmentCreateResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Amazon Resource Name', title: 'ARN' }),
         aws_subnets_bastion: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Subnets to build in the bastion VPC' }),
         aws_subnets_workload: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Subnets to build in the workload VPC' }),
         azure_subscription_id: z
@@ -5852,11 +6181,11 @@ const CustomCloudEnvironmentCreateResponseSchema = z
             title: 'Azure tenant ID',
           }),
         bucket_names: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Names and usages of buckets required for workloads' }),
         byoc_resource_tags: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'Set of tags for the resources provisioned on the BYOC account',
@@ -5994,7 +6323,7 @@ const CustomCloudEnvironmentCreateResponseSchema = z
             'deleted',
           ])
           .openapi({ description: 'State of this BYOC cloud' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         update_time: z
           .string()
           .max(36)
@@ -6127,11 +6456,11 @@ const CustomCloudEnvironmentGetResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Amazon Resource Name', title: 'ARN' }),
         aws_subnets_bastion: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Subnets to build in the bastion VPC' }),
         aws_subnets_workload: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Subnets to build in the workload VPC' }),
         azure_subscription_id: z
@@ -6153,11 +6482,11 @@ const CustomCloudEnvironmentGetResponseSchema = z
             title: 'Azure tenant ID',
           }),
         bucket_names: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Names and usages of buckets required for workloads' }),
         byoc_resource_tags: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'Set of tags for the resources provisioned on the BYOC account',
@@ -6295,7 +6624,7 @@ const CustomCloudEnvironmentGetResponseSchema = z
             'deleted',
           ])
           .openapi({ description: 'State of this BYOC cloud' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         update_time: z
           .string()
           .max(36)
@@ -6509,11 +6838,11 @@ const CustomCloudEnvironmentProvisionResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Amazon Resource Name', title: 'ARN' }),
         aws_subnets_bastion: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Subnets to build in the bastion VPC' }),
         aws_subnets_workload: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Subnets to build in the workload VPC' }),
         azure_subscription_id: z
@@ -6535,11 +6864,11 @@ const CustomCloudEnvironmentProvisionResponseSchema = z
             title: 'Azure tenant ID',
           }),
         bucket_names: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Names and usages of buckets required for workloads' }),
         byoc_resource_tags: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'Set of tags for the resources provisioned on the BYOC account',
@@ -6677,7 +7006,7 @@ const CustomCloudEnvironmentProvisionResponseSchema = z
             'deleted',
           ])
           .openapi({ description: 'State of this BYOC cloud' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         update_time: z
           .string()
           .max(36)
@@ -6809,7 +7138,7 @@ const CustomCloudEnvironmentUpdateRequestBodySchema = z
       .openapi({
         description: 'CIDR range reserved for Aiven provisioned networks in the BYOC cloud',
       }),
-    tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+    tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
   })
   .openapi({ description: 'CustomCloudEnvironmentUpdateRequestBody', required: [] })
   .openapi('CustomCloudEnvironmentUpdateRequestBody')
@@ -6882,11 +7211,11 @@ const CustomCloudEnvironmentUpdateResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Amazon Resource Name', title: 'ARN' }),
         aws_subnets_bastion: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Subnets to build in the bastion VPC' }),
         aws_subnets_workload: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Subnets to build in the workload VPC' }),
         azure_subscription_id: z
@@ -6908,11 +7237,11 @@ const CustomCloudEnvironmentUpdateResponseSchema = z
             title: 'Azure tenant ID',
           }),
         bucket_names: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Names and usages of buckets required for workloads' }),
         byoc_resource_tags: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'Set of tags for the resources provisioned on the BYOC account',
@@ -7050,7 +7379,7 @@ const CustomCloudEnvironmentUpdateResponseSchema = z
             'deleted',
           ])
           .openapi({ description: 'State of this BYOC cloud' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         update_time: z
           .string()
           .max(36)
@@ -9805,7 +10134,7 @@ const OrganizationBillingInvoiceLinesListResponseSchema = z
             service_id: z.string().exactOptional().openapi({ description: 'ID of the service' }),
             service_type: z.string().exactOptional().openapi({ description: 'Type of service' }),
             tags: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Associated tags (key-value pairs)' }),
             total: z.string().openapi({ description: 'Total amount in local currency' }),
@@ -12636,15 +12965,15 @@ const OrganizationBillingReportReadResponseSchema = z
               .openapi({ description: 'The list price associated with the line item.' }),
             name: z.string().openapi({ description: 'Product name' }),
             presentation_group_values: z
-              .object({})
+              .looseObject({})
               .openapi({ description: 'Metadata for this particular product consumption' }),
             pricing_group_values: z
-              .object({})
+              .looseObject({})
               .openapi({
                 description: "Pricing dimensions for this particular product's consumption",
               }),
             product_custom_fields: z
-              .object({})
+              .looseObject({})
               .openapi({ description: 'Custom fields for this product' }),
             product_tags: z
               .array(z.string())
@@ -12853,7 +13182,7 @@ const OrganizationEventLogsGetResponseSchema = z
             event_type: z.string().openapi({ description: 'Type of the event' }),
             log_entry_id: z.string().openapi({ description: 'Unique event log entry ID' }),
             metadata: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'Additional metadata about the event as a key-value mapping',
@@ -14142,7 +14471,7 @@ const ProjectEventLogsGetResponseSchema = z
             event_type: z.string().openapi({ description: 'Type of the event' }),
             log_entry_id: z.string().openapi({ description: 'Unique event log entry ID' }),
             metadata: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'Additional metadata about the event as a key-value mapping',
@@ -14370,271 +14699,281 @@ const VcsIntegrationRepositoryFileScanRequestBodySchema = z
   })
   .openapi('VcsIntegrationRepositoryFileScanRequestBody')
 
-const VcsIntegrationRepositoryFileScanResponseSchema = z
-  .object({
-    file_scan: z
-      .object({
-        container_manifest_type: z
-          .enum(['compose', 'containerfile'])
-          .exactOptional()
-          .openapi({ description: 'An enumeration.', title: 'Detected file type' }),
-        scanned_attributes: z
-          .array(
-            z
-              .object({
-                attribute_type: z
-                  .enum(['port', 'environment_variable'])
-                  .openapi({ description: 'An enumeration.', title: 'Type of scanned attribute' }),
-                description: z.string().openapi({ description: 'Human-readable description' }),
-                file_path: z.string().exactOptional().openapi({ description: 'File path' }),
-                line_number: z
-                  .int()
-                  .openapi({ description: 'Line number where the attribute was found' }),
-                value: z.string().openapi({ description: 'Detected value' }),
-              })
-              .openapi({ required: ['attribute_type', 'description', 'line_number', 'value'] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'List of scanned attributes (e.g., detected ports)' }),
-        service_suggestions: z
-          .array(
-            z
-              .object({
-                service_integrations: z
-                  .array(
-                    z
-                      .object({
-                        integration_type: z
-                          .enum([
-                            'alert_triage_kafka',
-                            'alertmanager',
-                            'application_service_credential',
-                            'autoscaler',
-                            'autoscaler_service',
-                            'caching',
-                            'clickhouse_credentials',
-                            'clickhouse_kafka',
-                            'clickhouse_postgresql',
-                            'dashboard',
-                            'datadog',
-                            'datahub_metadata_ingestion',
-                            'datasource',
-                            'disaster_recovery',
-                            'external_aws_cloudwatch_logs',
-                            'external_aws_cloudwatch_metrics',
-                            'external_elasticsearch_logs',
-                            'external_google_cloud_logging',
-                            'external_opensearch_logs',
-                            'flink',
-                            'flink_external_bigquery',
-                            'flink_external_kafka',
-                            'flink_external_postgresql',
-                            'internal_connectivity',
-                            'jolokia',
-                            'kafka_connect',
-                            'kafka_connect_postgresql',
-                            'kafka_inkless_postgresql',
-                            'kafka_logs',
-                            'kafka_mirrormaker',
-                            'logs',
-                            'metrics',
-                            'opensearch_cross_cluster_replication',
-                            'opensearch_cross_cluster_search',
-                            'opentelemetry',
-                            'pg_for_analytics_credentials',
-                            'postgresql_clickhouse_cdc',
-                            'prometheus',
-                            'read_replica',
-                            'rsyslog',
-                            'schema_registry_proxy',
-                            'service_composition',
-                            'stresstester',
-                            'thanos_distributed_query',
-                            'thanos_migrate',
-                            'thanos_object_storage',
-                            'thanoscompactor',
-                            'thanosquery',
-                            'thanosruler',
-                            'thanosstore',
-                            'vector',
-                            'vmalert',
-                          ])
-                          .openapi({ description: 'Service integration type' }),
-                        source_service: z.string().openapi({ description: 'Source service name' }),
-                        user_config: z
-                          .object({})
-                          .openapi({ description: 'Application credential integration' }),
-                      })
-                      .openapi({ required: ['integration_type', 'source_service', 'user_config'] }),
-                  )
-                  .exactOptional()
-                  .openapi({ description: 'Suggested service integrations' }),
-                service_name: z.string().openapi({ description: 'Suggested service name' }),
-                service_type: z.string().openapi({ description: 'Aiven service type' }),
-                user_config: z
-                  .object({
-                    application: z
-                      .object({
-                        environment_variables: z
-                          .array(
-                            z
-                              .object({
-                                key: z.string().openapi({ description: 'Key' }),
-                                kind: z
-                                  .enum(['secret', 'variable'])
-                                  .openapi({ description: 'Kind' }),
-                                value: z.string().openapi({ description: 'Value' }),
-                              })
-                              .openapi({ required: ['key', 'kind', 'value'] }),
-                          )
-                          .openapi({ description: 'Suggested environment variables' }),
-                        ports: z
-                          .array(
-                            z
-                              .object({
-                                custom_domains: z
-                                  .array(z.string())
-                                  .max(20)
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      'Custom hostnames served by this port. At most 20 per port, and a hostname can be on only one port.',
-                                    title: 'Custom domains',
-                                  }),
-                                name: z
-                                  .string()
-                                  .min(1)
-                                  .max(32)
-                                  .openapi({
-                                    description:
-                                      'Allowed characters: ASCII letters, digits, underscore, hyphen. Single (non-consecutive) ASCII spaces are allowed between characters. No leading or trailing spaces.',
-                                    title: 'Port name',
-                                  }),
-                                port: z
-                                  .int()
-                                  .min(1)
-                                  .max(65535)
-                                  .openapi({ description: 'Port number' }),
-                                protocol: z.literal('HTTP').openapi({ description: 'Protocol' }),
-                                security: z
-                                  .object({
-                                    authentication_method: z
-                                      .enum(['oidc', 'aiven_platform'])
-                                      .openapi({
-                                        description:
-                                          'Which of the authentication configurations below applies to this port.',
-                                        title: 'Authentication method',
-                                      }),
-                                    oidc: z
-                                      .object({
-                                        client_id: z
-                                          .string()
-                                          .min(1)
-                                          .max(512)
-                                          .openapi({
-                                            description:
-                                              'OAuth2 client ID registered with the issuer.',
-                                            title: 'Client ID',
-                                          }),
-                                        client_secret: z
-                                          .string()
-                                          .min(8)
-                                          .max(4096)
-                                          .openapi({
-                                            description:
-                                              'OAuth2 client secret registered with the issuer. Redacted when read back.',
-                                            title: 'Client secret',
-                                          }),
-                                        issuer_url: z
-                                          .string()
-                                          .min(1)
-                                          .max(2048)
-                                          .openapi({
-                                            description:
-                                              'OIDC issuer base URL. Must serve /.well-known/openid-configuration over HTTPS.',
-                                            title: 'Issuer URL',
-                                          }),
-                                        name: z
-                                          .string()
-                                          .min(1)
-                                          .max(64)
-                                          .openapi({
-                                            description:
-                                              'Label for this authentication configuration, shown to the user.',
-                                            title: 'Configuration name',
-                                          }),
-                                      })
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'Generic OpenID Connect provider that callers of this port must authenticate against.',
-                                        title: 'OIDC authentication',
-                                        required: [
-                                          'client_id',
-                                          'client_secret',
-                                          'issuer_url',
-                                          'name',
-                                        ],
-                                      }),
-                                  })
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      "Access control for the application's ports. An application supports a single OIDC provider, which protects every port: set security on one port, or on several with the same value, and it is stored on every port. Omit it from every port to leave the ports reachable by anyone who can reach their address.",
-                                    title: 'Port security',
-                                    required: ['authentication_method'],
-                                  }),
-                              })
-                              .openapi({ required: ['name', 'port', 'protocol'] }),
-                          )
-                          .openapi({ description: 'Suggested ports' }),
-                        source: z
-                          .object({
-                            branch: z.string().openapi({ description: 'Branch' }),
-                            build_path: z.string().openapi({ description: 'Build Path' }),
-                            containerfile_path: z
-                              .string()
-                              .openapi({ description: 'Containerfile Path' }),
-                            remote_repository_id: z
-                              .string()
-                              .openapi({ description: 'Remote Repository ID' }),
-                            repository_url: z.string().openapi({ description: 'Repository Url' }),
-                            vcs_integration_id: z
-                              .string()
-                              .openapi({ description: 'Vcs Integration ID' }),
-                          })
-                          .openapi({
-                            description: 'Suggested source configuration',
-                            required: [
-                              'branch',
-                              'build_path',
-                              'containerfile_path',
-                              'remote_repository_id',
-                              'repository_url',
-                              'vcs_integration_id',
-                            ],
-                          }),
-                      })
-                      .openapi({
-                        description: 'Application configuration',
-                        required: ['environment_variables', 'ports', 'source'],
-                      }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description: 'Suggested user configuration',
-                    required: ['application'],
-                  }),
-              })
-              .openapi({ required: ['service_name', 'service_type'] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'List of suggested Aiven services based on the file contents' }),
-      })
-      .openapi({ description: 'File scan result', required: [] }),
-  })
-  .openapi({ description: 'VcsIntegrationRepositoryFileScanResponse', required: ['file_scan'] })
-  .openapi('VcsIntegrationRepositoryFileScanResponse')
+const VcsIntegrationRepositoryFileScanResponseSchema: z.ZodType<VcsIntegrationRepositoryFileScanResponseType> =
+  z
+    .object({
+      file_scan: z
+        .object({
+          container_manifest_type: z
+            .enum(['compose', 'containerfile'])
+            .exactOptional()
+            .openapi({ description: 'An enumeration.', title: 'Detected file type' }),
+          scanned_attributes: z
+            .array(
+              z
+                .object({
+                  attribute_type: z
+                    .enum(['port', 'environment_variable'])
+                    .openapi({
+                      description: 'An enumeration.',
+                      title: 'Type of scanned attribute',
+                    }),
+                  description: z.string().openapi({ description: 'Human-readable description' }),
+                  file_path: z.string().exactOptional().openapi({ description: 'File path' }),
+                  line_number: z
+                    .int()
+                    .openapi({ description: 'Line number where the attribute was found' }),
+                  value: z.string().openapi({ description: 'Detected value' }),
+                })
+                .openapi({ required: ['attribute_type', 'description', 'line_number', 'value'] }),
+            )
+            .exactOptional()
+            .openapi({ description: 'List of scanned attributes (e.g., detected ports)' }),
+          service_suggestions: z
+            .array(
+              z
+                .object({
+                  service_integrations: z
+                    .array(
+                      z
+                        .object({
+                          integration_type: z
+                            .enum([
+                              'alert_triage_kafka',
+                              'alertmanager',
+                              'application_service_credential',
+                              'autoscaler',
+                              'autoscaler_service',
+                              'caching',
+                              'clickhouse_credentials',
+                              'clickhouse_kafka',
+                              'clickhouse_postgresql',
+                              'dashboard',
+                              'datadog',
+                              'datahub_metadata_ingestion',
+                              'datasource',
+                              'disaster_recovery',
+                              'external_aws_cloudwatch_logs',
+                              'external_aws_cloudwatch_metrics',
+                              'external_elasticsearch_logs',
+                              'external_google_cloud_logging',
+                              'external_opensearch_logs',
+                              'flink',
+                              'flink_external_bigquery',
+                              'flink_external_kafka',
+                              'flink_external_postgresql',
+                              'internal_connectivity',
+                              'jolokia',
+                              'kafka_connect',
+                              'kafka_connect_postgresql',
+                              'kafka_inkless_postgresql',
+                              'kafka_logs',
+                              'kafka_mirrormaker',
+                              'logs',
+                              'metrics',
+                              'opensearch_cross_cluster_replication',
+                              'opensearch_cross_cluster_search',
+                              'opentelemetry',
+                              'pg_for_analytics_credentials',
+                              'postgresql_clickhouse_cdc',
+                              'prometheus',
+                              'read_replica',
+                              'rsyslog',
+                              'schema_registry_proxy',
+                              'service_composition',
+                              'stresstester',
+                              'thanos_distributed_query',
+                              'thanos_migrate',
+                              'thanos_object_storage',
+                              'thanoscompactor',
+                              'thanosquery',
+                              'thanosruler',
+                              'thanosstore',
+                              'vector',
+                              'vmalert',
+                            ])
+                            .openapi({ description: 'Service integration type' }),
+                          source_service: z
+                            .string()
+                            .openapi({ description: 'Source service name' }),
+                          user_config: z
+                            .looseObject({})
+                            .openapi({ description: 'Application credential integration' }),
+                        })
+                        .openapi({
+                          required: ['integration_type', 'source_service', 'user_config'],
+                        }),
+                    )
+                    .exactOptional()
+                    .openapi({ description: 'Suggested service integrations' }),
+                  service_name: z.string().openapi({ description: 'Suggested service name' }),
+                  service_type: z.string().openapi({ description: 'Aiven service type' }),
+                  user_config: z
+                    .object({
+                      application: z
+                        .object({
+                          environment_variables: z
+                            .array(
+                              z
+                                .object({
+                                  key: z.string().openapi({ description: 'Key' }),
+                                  kind: z
+                                    .enum(['secret', 'variable'])
+                                    .openapi({ description: 'Kind' }),
+                                  value: z.string().openapi({ description: 'Value' }),
+                                })
+                                .openapi({ required: ['key', 'kind', 'value'] }),
+                            )
+                            .openapi({ description: 'Suggested environment variables' }),
+                          ports: z
+                            .array(
+                              z
+                                .object({
+                                  custom_domains: z
+                                    .array(z.string())
+                                    .max(20)
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        'Custom hostnames served by this port. At most 20 per port, and a hostname can be on only one port.',
+                                      title: 'Custom domains',
+                                    }),
+                                  name: z
+                                    .string()
+                                    .min(1)
+                                    .max(32)
+                                    .openapi({
+                                      description:
+                                        'Allowed characters: ASCII letters, digits, underscore, hyphen. Single (non-consecutive) ASCII spaces are allowed between characters. No leading or trailing spaces.',
+                                      title: 'Port name',
+                                    }),
+                                  port: z
+                                    .int()
+                                    .min(1)
+                                    .max(65535)
+                                    .openapi({ description: 'Port number' }),
+                                  protocol: z.literal('HTTP').openapi({ description: 'Protocol' }),
+                                  security: z
+                                    .object({
+                                      authentication_method: z
+                                        .enum(['oidc', 'aiven_platform'])
+                                        .openapi({
+                                          description:
+                                            'Which of the authentication configurations below applies to this port.',
+                                          title: 'Authentication method',
+                                        }),
+                                      oidc: z
+                                        .object({
+                                          client_id: z
+                                            .string()
+                                            .min(1)
+                                            .max(512)
+                                            .openapi({
+                                              description:
+                                                'OAuth2 client ID registered with the issuer.',
+                                              title: 'Client ID',
+                                            }),
+                                          client_secret: z
+                                            .string()
+                                            .min(8)
+                                            .max(4096)
+                                            .openapi({
+                                              description:
+                                                'OAuth2 client secret registered with the issuer. Redacted when read back.',
+                                              title: 'Client secret',
+                                            }),
+                                          issuer_url: z
+                                            .string()
+                                            .min(1)
+                                            .max(2048)
+                                            .openapi({
+                                              description:
+                                                'OIDC issuer base URL. Must serve /.well-known/openid-configuration over HTTPS.',
+                                              title: 'Issuer URL',
+                                            }),
+                                          name: z
+                                            .string()
+                                            .min(1)
+                                            .max(64)
+                                            .openapi({
+                                              description:
+                                                'Label for this authentication configuration, shown to the user.',
+                                              title: 'Configuration name',
+                                            }),
+                                        })
+                                        .exactOptional()
+                                        .openapi({
+                                          description:
+                                            'Generic OpenID Connect provider that callers of this port must authenticate against.',
+                                          title: 'OIDC authentication',
+                                          required: [
+                                            'client_id',
+                                            'client_secret',
+                                            'issuer_url',
+                                            'name',
+                                          ],
+                                        }),
+                                    })
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        "Access control for the application's ports. An application supports a single OIDC provider, which protects every port: set security on one port, or on several with the same value, and it is stored on every port. Omit it from every port to leave the ports reachable by anyone who can reach their address.",
+                                      title: 'Port security',
+                                      required: ['authentication_method'],
+                                    }),
+                                })
+                                .openapi({ required: ['name', 'port', 'protocol'] }),
+                            )
+                            .openapi({ description: 'Suggested ports' }),
+                          source: z
+                            .object({
+                              branch: z.string().openapi({ description: 'Branch' }),
+                              build_path: z.string().openapi({ description: 'Build Path' }),
+                              containerfile_path: z
+                                .string()
+                                .openapi({ description: 'Containerfile Path' }),
+                              remote_repository_id: z
+                                .string()
+                                .openapi({ description: 'Remote Repository ID' }),
+                              repository_url: z.string().openapi({ description: 'Repository Url' }),
+                              vcs_integration_id: z
+                                .string()
+                                .openapi({ description: 'Vcs Integration ID' }),
+                            })
+                            .openapi({
+                              description: 'Suggested source configuration',
+                              required: [
+                                'branch',
+                                'build_path',
+                                'containerfile_path',
+                                'remote_repository_id',
+                                'repository_url',
+                                'vcs_integration_id',
+                              ],
+                            }),
+                        })
+                        .openapi({
+                          description: 'Application configuration',
+                          required: ['environment_variables', 'ports', 'source'],
+                        }),
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description: 'Suggested user configuration',
+                      required: ['application'],
+                    }),
+                })
+                .openapi({ required: ['service_name', 'service_type'] }),
+            )
+            .exactOptional()
+            .openapi({
+              description: 'List of suggested Aiven services based on the file contents',
+            }),
+        })
+        .openapi({ description: 'File scan result', required: [] }),
+    })
+    .openapi({ description: 'VcsIntegrationRepositoryFileScanResponse', required: ['file_scan'] })
+    .openapi('VcsIntegrationRepositoryFileScanResponse')
 
 const VcsIntegrationRepositoryListResponseSchema = z
   .object({
@@ -15134,7 +15473,7 @@ const ProjectCreateRequestBodySchema = z
       .max(30)
       .exactOptional()
       .openapi({ description: '[DEPRECATED] Address state' }),
-    tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+    tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
     tech_emails: z
       .array(
         z
@@ -15295,7 +15634,7 @@ const ProjectCreateResponseSchema = z
           .string()
           .exactOptional()
           .openapi({ description: 'Estimated balance, in billing currency' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         organization_id: z.string().max(36).openapi({ description: 'Organization ID' }),
         payment_method: z.string().openapi({ description: 'Payment method' }),
         project_name: z.string().max(63).openapi({ description: 'Project name' }),
@@ -15304,7 +15643,7 @@ const ProjectCreateResponseSchema = z
           .max(30)
           .exactOptional()
           .openapi({ description: 'Address state or province' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -15521,7 +15860,7 @@ const ProjectGetResponseSchema = z
           .string()
           .exactOptional()
           .openapi({ description: 'Estimated balance, in billing currency' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         organization_id: z.string().max(36).openapi({ description: 'Organization ID' }),
         payment_method: z.string().openapi({ description: 'Payment method' }),
         project_name: z.string().max(63).openapi({ description: 'Project name' }),
@@ -15530,7 +15869,7 @@ const ProjectGetResponseSchema = z
           .max(30)
           .exactOptional()
           .openapi({ description: 'Address state or province' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -15888,7 +16227,7 @@ const ProjectListResponseSchema = z
               .string()
               .exactOptional()
               .openapi({ description: 'Estimated balance, in billing currency' }),
-            features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+            features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
             organization_id: z.string().max(36).openapi({ description: 'Organization ID' }),
             payment_method: z.string().openapi({ description: 'Payment method' }),
             project_name: z.string().max(63).openapi({ description: 'Project name' }),
@@ -15897,7 +16236,10 @@ const ProjectListResponseSchema = z
               .max(30)
               .exactOptional()
               .openapi({ description: 'Address state or province' }),
-            tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+            tags: z
+              .looseObject({})
+              .exactOptional()
+              .openapi({ description: 'Set of resource tags' }),
             tech_emails: z
               .array(
                 z
@@ -16102,7 +16444,7 @@ const ProjectServicePlanListResponseSchema = z
                 description: 'Number of primary nodes in this Valkey cluster service plan',
               }),
             regions: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Service plan hourly price per cloud region' }),
             service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -16312,7 +16654,7 @@ const ProjectServiceTypesGetResponseSchema = z
       .openapi({ description: 'Latest available version of the service' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
     user_config_schema: z
-      .object({})
+      .looseObject({})
       .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
   })
   .openapi({
@@ -16337,7 +16679,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16359,7 +16701,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16381,7 +16723,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16403,7 +16745,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16440,7 +16782,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16462,7 +16804,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16484,7 +16826,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16506,7 +16848,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16528,7 +16870,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16551,7 +16893,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16573,7 +16915,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16595,7 +16937,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16617,7 +16959,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16639,7 +16981,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16661,7 +17003,7 @@ const ProjectServiceTypesListResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Latest available version of the service' }),
         user_config_schema: z
-          .object({})
+          .looseObject({})
           .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
       })
       .exactOptional()
@@ -16691,13 +17033,13 @@ const ProjectTagsListResponseSchema = z
       .exactOptional()
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
-    tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+    tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
   })
   .openapi({ description: 'ProjectTagsListResponse', required: [] })
   .openapi('ProjectTagsListResponse')
 
 const ProjectTagsReplaceRequestBodySchema = z
-  .object({ tags: z.object({}).openapi({ description: 'Set of resource tags' }) })
+  .object({ tags: z.looseObject({}).openapi({ description: 'Set of resource tags' }) })
   .openapi({ description: 'ProjectTagsReplaceRequestBody', required: ['tags'] })
   .openapi('ProjectTagsReplaceRequestBody')
 
@@ -16724,7 +17066,7 @@ const ProjectTagsReplaceResponseSchema = z
   .openapi('ProjectTagsReplaceResponse')
 
 const ProjectTagsUpdateRequestBodySchema = z
-  .object({ tags: z.object({}).openapi({ description: 'Set of resource tags' }) })
+  .object({ tags: z.looseObject({}).openapi({ description: 'Set of resource tags' }) })
   .openapi({ description: 'ProjectTagsUpdateRequestBody', required: ['tags'] })
   .openapi('ProjectTagsUpdateRequestBody')
 
@@ -16822,7 +17164,7 @@ const ProjectUpdateRequestBodySchema = z
       .max(30)
       .exactOptional()
       .openapi({ description: '[DEPRECATED] Address state' }),
-    tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+    tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
     tech_emails: z
       .array(
         z
@@ -16974,7 +17316,7 @@ const ProjectUpdateResponseSchema = z
           .string()
           .exactOptional()
           .openapi({ description: 'Estimated balance, in billing currency' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         organization_id: z.string().max(36).openapi({ description: 'Organization ID' }),
         payment_method: z.string().openapi({ description: 'Payment method' }),
         project_name: z.string().max(63).openapi({ description: 'Project name' }),
@@ -16983,7 +17325,7 @@ const ProjectUpdateResponseSchema = z
           .max(30)
           .exactOptional()
           .openapi({ description: 'Address state or province' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -19693,7 +20035,7 @@ const ServiceClickHouseQueryRequestBodySchema = z
 
 const ServiceClickHouseQueryResponseSchema = z
   .object({
-    data: z.array(z.object({})).openapi({ description: 'Data' }),
+    data: z.array(z.looseObject({})).openapi({ description: 'Data' }),
     errors: z
       .array(
         z
@@ -20473,7 +20815,7 @@ const ServiceFlinkCreateApplicationResponseSchema = z
                       .length(36)
                       .exactOptional()
                       .openapi({ description: 'Integration ID' }),
-                    options: z.object({}).openapi({ description: 'Option' }),
+                    options: z.looseObject({}).openapi({ description: 'Option' }),
                     table_id: z.string().length(36).openapi({ description: 'Sink ID' }),
                     table_name: z.string().openapi({ description: 'Table name' }),
                   })
@@ -20539,7 +20881,7 @@ const ServiceFlinkCreateApplicationResponseSchema = z
                       .length(36)
                       .exactOptional()
                       .openapi({ description: 'Integration ID' }),
-                    options: z.object({}).openapi({ description: 'Option' }),
+                    options: z.looseObject({}).openapi({ description: 'Option' }),
                     table_id: z.string().length(36).openapi({ description: 'Source ID' }),
                     table_name: z.string().openapi({ description: 'Table name' }),
                   })
@@ -20968,7 +21310,7 @@ const ServiceFlinkCreateApplicationVersionResponseSchema = z
               .length(36)
               .exactOptional()
               .openapi({ description: 'Integration ID' }),
-            options: z.object({}).openapi({ description: 'Option' }),
+            options: z.looseObject({}).openapi({ description: 'Option' }),
             table_id: z.string().length(36).openapi({ description: 'Sink ID' }),
             table_name: z.string().openapi({ description: 'Table name' }),
           })
@@ -21032,7 +21374,7 @@ const ServiceFlinkCreateApplicationVersionResponseSchema = z
               .length(36)
               .exactOptional()
               .openapi({ description: 'Integration ID' }),
-            options: z.object({}).openapi({ description: 'Option' }),
+            options: z.looseObject({}).openapi({ description: 'Option' }),
             table_id: z.string().length(36).openapi({ description: 'Source ID' }),
             table_name: z.string().openapi({ description: 'Table name' }),
           })
@@ -21586,7 +21928,7 @@ const ServiceFlinkDeleteApplicationResponseSchema = z
                       .length(36)
                       .exactOptional()
                       .openapi({ description: 'Integration ID' }),
-                    options: z.object({}).openapi({ description: 'Option' }),
+                    options: z.looseObject({}).openapi({ description: 'Option' }),
                     table_id: z.string().length(36).openapi({ description: 'Sink ID' }),
                     table_name: z.string().openapi({ description: 'Table name' }),
                   })
@@ -21652,7 +21994,7 @@ const ServiceFlinkDeleteApplicationResponseSchema = z
                       .length(36)
                       .exactOptional()
                       .openapi({ description: 'Integration ID' }),
-                    options: z.object({}).openapi({ description: 'Option' }),
+                    options: z.looseObject({}).openapi({ description: 'Option' }),
                     table_id: z.string().length(36).openapi({ description: 'Source ID' }),
                     table_name: z.string().openapi({ description: 'Table name' }),
                   })
@@ -21997,7 +22339,7 @@ const ServiceFlinkDeleteApplicationVersionResponseSchema = z
               .length(36)
               .exactOptional()
               .openapi({ description: 'Integration ID' }),
-            options: z.object({}).openapi({ description: 'Option' }),
+            options: z.looseObject({}).openapi({ description: 'Option' }),
             table_id: z.string().length(36).openapi({ description: 'Sink ID' }),
             table_name: z.string().openapi({ description: 'Table name' }),
           })
@@ -22061,7 +22403,7 @@ const ServiceFlinkDeleteApplicationVersionResponseSchema = z
               .length(36)
               .exactOptional()
               .openapi({ description: 'Integration ID' }),
-            options: z.object({}).openapi({ description: 'Option' }),
+            options: z.looseObject({}).openapi({ description: 'Option' }),
             table_id: z.string().length(36).openapi({ description: 'Source ID' }),
             table_name: z.string().openapi({ description: 'Table name' }),
           })
@@ -22559,7 +22901,7 @@ const ServiceFlinkGetApplicationResponseSchema = z
                       .length(36)
                       .exactOptional()
                       .openapi({ description: 'Integration ID' }),
-                    options: z.object({}).openapi({ description: 'Option' }),
+                    options: z.looseObject({}).openapi({ description: 'Option' }),
                     table_id: z.string().length(36).openapi({ description: 'Sink ID' }),
                     table_name: z.string().openapi({ description: 'Table name' }),
                   })
@@ -22625,7 +22967,7 @@ const ServiceFlinkGetApplicationResponseSchema = z
                       .length(36)
                       .exactOptional()
                       .openapi({ description: 'Integration ID' }),
-                    options: z.object({}).openapi({ description: 'Option' }),
+                    options: z.looseObject({}).openapi({ description: 'Option' }),
                     table_id: z.string().length(36).openapi({ description: 'Source ID' }),
                     table_name: z.string().openapi({ description: 'Table name' }),
                   })
@@ -22970,7 +23312,7 @@ const ServiceFlinkGetApplicationVersionResponseSchema = z
               .length(36)
               .exactOptional()
               .openapi({ description: 'Integration ID' }),
-            options: z.object({}).openapi({ description: 'Option' }),
+            options: z.looseObject({}).openapi({ description: 'Option' }),
             table_id: z.string().length(36).openapi({ description: 'Sink ID' }),
             table_name: z.string().openapi({ description: 'Table name' }),
           })
@@ -23034,7 +23376,7 @@ const ServiceFlinkGetApplicationVersionResponseSchema = z
               .length(36)
               .exactOptional()
               .openapi({ description: 'Integration ID' }),
-            options: z.object({}).openapi({ description: 'Option' }),
+            options: z.looseObject({}).openapi({ description: 'Option' }),
             table_id: z.string().length(36).openapi({ description: 'Source ID' }),
             table_name: z.string().openapi({ description: 'Table name' }),
           })
@@ -23487,7 +23829,7 @@ const ServiceFlinkJobDetailsResponseSchema = z
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
     name: z.string().exactOptional().openapi({ description: 'Job name' }),
     now: z.int().exactOptional().openapi({ description: 'Epoch time' }),
-    plan: z.object({}).exactOptional().openapi({ description: 'Plan' }),
+    plan: z.looseObject({}).exactOptional().openapi({ description: 'Plan' }),
     'start\\-time': z.int().exactOptional().openapi({ description: 'Start time epoch' }),
     state: z
       .enum([
@@ -23520,8 +23862,8 @@ const ServiceFlinkJobDetailsResponseSchema = z
       })
       .exactOptional()
       .openapi({ description: 'Status counts', required: [] }),
-    timestamps: z.object({}).exactOptional().openapi({ description: 'Timestamps' }),
-    vertices: z.array(z.object({})).exactOptional().openapi({ description: 'Vertices' }),
+    timestamps: z.looseObject({}).exactOptional().openapi({ description: 'Timestamps' }),
+    vertices: z.array(z.looseObject({})).exactOptional().openapi({ description: 'Vertices' }),
   })
   .openapi({ description: 'ServiceFlinkJobDetailsResponse', required: [] })
   .openapi('ServiceFlinkJobDetailsResponse')
@@ -24236,7 +24578,7 @@ const ServiceFlinkUpdateApplicationResponseSchema = z
                       .length(36)
                       .exactOptional()
                       .openapi({ description: 'Integration ID' }),
-                    options: z.object({}).openapi({ description: 'Option' }),
+                    options: z.looseObject({}).openapi({ description: 'Option' }),
                     table_id: z.string().length(36).openapi({ description: 'Sink ID' }),
                     table_name: z.string().openapi({ description: 'Table name' }),
                   })
@@ -24302,7 +24644,7 @@ const ServiceFlinkUpdateApplicationResponseSchema = z
                       .length(36)
                       .exactOptional()
                       .openapi({ description: 'Integration ID' }),
-                    options: z.object({}).openapi({ description: 'Option' }),
+                    options: z.looseObject({}).openapi({ description: 'Option' }),
                     table_id: z.string().length(36).openapi({ description: 'Source ID' }),
                     table_name: z.string().openapi({ description: 'Table name' }),
                   })
@@ -24812,7 +25154,7 @@ const ServiceFlinkValidateApplicationVersionResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Integration ID' }),
             message: z.string().exactOptional().openapi({ description: 'The error message.' }),
-            options: z.object({}).exactOptional().openapi({ description: 'Option' }),
+            options: z.looseObject({}).exactOptional().openapi({ description: 'Option' }),
             position: z
               .object({
                 character_number: z
@@ -24910,7 +25252,7 @@ const ServiceFlinkValidateApplicationVersionResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Integration ID' }),
             message: z.string().exactOptional().openapi({ description: 'The error message.' }),
-            options: z.object({}).exactOptional().openapi({ description: 'Option' }),
+            options: z.looseObject({}).exactOptional().openapi({ description: 'Option' }),
             position: z
               .object({
                 character_number: z
@@ -26500,7 +26842,7 @@ const ServiceKafkaTieredStorageStorageUsageByTopicResponseSchema = z
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
     storage_usage: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Storage usage by tiered storage by topics' }),
   })
   .openapi({
@@ -28976,7 +29318,7 @@ const ServiceKafkaTopicMessageListRequestBodySchema = z
           'The maximum number of bytes of unencoded keys and values that should be included in the response. This provides approximate control over the size of responses and the amount of memory required to store the decoded response. The actual limit will be the minimum of this setting and the server-side configuration consumer.request.max.bytes. Default is unlimited',
       }),
     partitions: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Object of desired partition / offset mappings' }),
     timeout: z
       .int()
@@ -29014,7 +29356,7 @@ const ServiceKafkaTopicMessageListResponseSchema = z
         z
           .object({
             key: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'The message key, formatted according to the embedded format',
@@ -29023,7 +29365,7 @@ const ServiceKafkaTopicMessageListResponseSchema = z
             partition: z.int().exactOptional().openapi({ description: 'Partition of the message' }),
             topic: z.string().exactOptional().openapi({ description: 'The name of the topic' }),
             value: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'The message value, formatted according to the embedded format',
@@ -29064,7 +29406,7 @@ const ServiceKafkaTopicMessageProduceRequestBodySchema = z
         z
           .object({
             key: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Key for the produced record' }),
             partition: z
@@ -29076,7 +29418,7 @@ const ServiceKafkaTopicMessageProduceRequestBodySchema = z
                 description: 'Optionally specify the partition where to produce the record',
               }),
             value: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Value for the produced record' }),
           })
@@ -31594,7 +31936,7 @@ const ManagedAgentsMessageListResponseSchema = z
               .openapi({ description: 'Tool name (for tool_call/tool_return messages)' }),
             role: z.string().exactOptional().openapi({ description: 'Role (user/assistant)' }),
             tool_call: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Tool call details (name, arguments, tool_call_id)' }),
             tool_return: z.string().exactOptional().openapi({ description: 'Tool return value' }),
@@ -31640,7 +31982,7 @@ const ManagedAgentsMessageSendResponseSchema = z
               .openapi({ description: 'Tool name (for tool_call/tool_return messages)' }),
             role: z.string().exactOptional().openapi({ description: 'Role (user/assistant)' }),
             tool_call: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Tool call details (name, arguments, tool_call_id)' }),
             tool_return: z.string().exactOptional().openapi({ description: 'Tool return value' }),
@@ -32716,7 +33058,7 @@ const ServiceOpensearchCustomRepoNameVerifyResponseSchema = z
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
     nodes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Nodes connected to the snapshot repository' }),
   })
@@ -33785,7 +34127,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -33800,7 +34142,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -33923,7 +34265,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -33938,7 +34280,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -34061,7 +34403,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -34076,7 +34418,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -34199,7 +34541,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -34214,7 +34556,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -34337,7 +34679,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -34352,7 +34694,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -34475,7 +34817,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -34490,7 +34832,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -34613,7 +34955,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -34628,7 +34970,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -34751,7 +35093,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -34766,7 +35108,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -34889,7 +35231,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -34904,7 +35246,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -35027,7 +35369,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -35042,7 +35384,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -35165,7 +35507,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -35180,7 +35522,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -35303,7 +35645,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -35318,7 +35660,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -35441,7 +35783,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -35456,7 +35798,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -35579,7 +35921,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -35594,7 +35936,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -35717,7 +36059,7 @@ const ListProjectServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -35732,7 +36074,7 @@ const ListProjectServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -35881,7 +36223,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -35896,7 +36238,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -36019,7 +36361,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -36034,7 +36376,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -36157,7 +36499,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -36172,7 +36514,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -36295,7 +36637,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -36310,7 +36652,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -36433,7 +36775,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -36448,7 +36790,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -36571,7 +36913,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -36586,7 +36928,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -36709,7 +37051,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -36724,7 +37066,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -36847,7 +37189,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -36862,7 +37204,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -36985,7 +37327,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -37000,7 +37342,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -37123,7 +37465,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -37138,7 +37480,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -37261,7 +37603,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -37276,7 +37618,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -37399,7 +37741,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -37414,7 +37756,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -37537,7 +37879,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -37552,7 +37894,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -37675,7 +38017,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -37690,7 +38032,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -37813,7 +38155,7 @@ const ListPublicServiceTypesResponseSchema = z
                         description: 'Number of primary nodes in this Valkey cluster service plan',
                       }),
                     regions: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service plan hourly price per cloud region' }),
                     service_plan: z.string().max(128).openapi({ description: 'Subscription plan' }),
@@ -37828,7 +38170,7 @@ const ListPublicServiceTypesResponseSchema = z
               )
               .openapi({ description: 'List of plans available for this type of service' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .exactOptional()
@@ -38132,13 +38474,13 @@ const ProjectServiceTagsListResponseSchema = z
       .exactOptional()
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
-    tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+    tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
   })
   .openapi({ description: 'ProjectServiceTagsListResponse', required: [] })
   .openapi('ProjectServiceTagsListResponse')
 
 const ProjectServiceTagsReplaceRequestBodySchema = z
-  .object({ tags: z.object({}).openapi({ description: 'Set of resource tags' }) })
+  .object({ tags: z.looseObject({}).openapi({ description: 'Set of resource tags' }) })
   .openapi({ description: 'ProjectServiceTagsReplaceRequestBody', required: ['tags'] })
   .openapi('ProjectServiceTagsReplaceRequestBody')
 
@@ -38165,7 +38507,7 @@ const ProjectServiceTagsReplaceResponseSchema = z
   .openapi('ProjectServiceTagsReplaceResponse')
 
 const ProjectServiceTagsUpdateRequestBodySchema = z
-  .object({ tags: z.object({}).openapi({ description: 'Set of resource tags' }) })
+  .object({ tags: z.looseObject({}).openapi({ description: 'Set of resource tags' }) })
   .openapi({ description: 'ProjectServiceTagsUpdateRequestBody', required: ['tags'] })
   .openapi('ProjectServiceTagsUpdateRequestBody')
 
@@ -38278,7 +38620,7 @@ const ServiceBackupToAnotherRegionReportResponseSchema = z
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
     metrics: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Service metrics in Google chart compatible format' }),
   })
   .openapi({ description: 'ServiceBackupToAnotherRegionReportResponse', required: ['metrics'] })
@@ -38628,7 +38970,7 @@ const ServiceCreateRequestBodySchema = z
               .exactOptional()
               .openapi({ description: 'Source service name' }),
             user_config: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Service type-specific settings' }),
           })
@@ -38647,7 +38989,7 @@ const ServiceCreateRequestBodySchema = z
       .max(128)
       .exactOptional()
       .openapi({ description: 'Static IP addresses to associate with the service' }),
-    tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+    tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
     tech_emails: z
       .array(
         z
@@ -38662,7 +39004,7 @@ const ServiceCreateRequestBodySchema = z
       .exactOptional()
       .openapi({ description: 'Service is protected against termination and powering off' }),
     user_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Service type-specific settings' }),
   })
@@ -38841,7 +39183,7 @@ const ServiceCreateResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Service component information objects' }),
         connection_info: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service-specific connection information properties' }),
         connection_pools: z
@@ -38886,7 +39228,7 @@ const ServiceCreateResponseSchema = z
           .min(0)
           .exactOptional()
           .openapi({ description: 'Megabytes of disk space for data storage' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         first_use_time: z
           .string()
           .max(36)
@@ -39075,7 +39417,7 @@ const ServiceCreateResponseSchema = z
             required: ['dow', 'enabled', 'time', 'updates'],
           }),
         metadata: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service type specific metadata' }),
         node_count: z
@@ -39303,7 +39645,7 @@ const ServiceCreateResponseSchema = z
                           .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                           .exactOptional()
                           .openapi({ description: 'Most likely cause of the errors' }),
-                        nodes: z.object({}).openapi({ description: 'Nodes' }),
+                        nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                         status: z
                           .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                           .openapi({ description: 'Service integration status' }),
@@ -39338,7 +39680,7 @@ const ServiceCreateResponseSchema = z
                   .max(64)
                   .openapi({ description: 'Service type code' }),
                 user_config: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'Service integration settings' }),
               })
@@ -39418,13 +39760,13 @@ const ServiceCreateResponseSchema = z
           .string()
           .openapi({ description: 'URI for connecting to the service (may be null)' }),
         service_uri_params: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'service_uri parameterized into key-value pairs' }),
         state: z
           .enum(['POWEROFF', 'REBALANCING', 'REBUILDING', 'RUNNING'])
           .openapi({ description: 'State of the service' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -39501,7 +39843,7 @@ const ServiceCreateResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Service last update timestamp (ISO 8601)' }),
-        user_config: z.object({}).openapi({ description: 'Service type-specific settings' }),
+        user_config: z.looseObject({}).openapi({ description: 'Service type-specific settings' }),
         users: z
           .array(
             z
@@ -40044,7 +40386,7 @@ const ServiceGetResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Service component information objects' }),
         connection_info: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service-specific connection information properties' }),
         connection_pools: z
@@ -40089,7 +40431,7 @@ const ServiceGetResponseSchema = z
           .min(0)
           .exactOptional()
           .openapi({ description: 'Megabytes of disk space for data storage' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         first_use_time: z
           .string()
           .max(36)
@@ -40278,7 +40620,7 @@ const ServiceGetResponseSchema = z
             required: ['dow', 'enabled', 'time', 'updates'],
           }),
         metadata: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service type specific metadata' }),
         node_count: z
@@ -40506,7 +40848,7 @@ const ServiceGetResponseSchema = z
                           .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                           .exactOptional()
                           .openapi({ description: 'Most likely cause of the errors' }),
-                        nodes: z.object({}).openapi({ description: 'Nodes' }),
+                        nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                         status: z
                           .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                           .openapi({ description: 'Service integration status' }),
@@ -40541,7 +40883,7 @@ const ServiceGetResponseSchema = z
                   .max(64)
                   .openapi({ description: 'Service type code' }),
                 user_config: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'Service integration settings' }),
               })
@@ -40621,13 +40963,13 @@ const ServiceGetResponseSchema = z
           .string()
           .openapi({ description: 'URI for connecting to the service (may be null)' }),
         service_uri_params: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'service_uri parameterized into key-value pairs' }),
         state: z
           .enum(['POWEROFF', 'REBALANCING', 'REBUILDING', 'RUNNING'])
           .openapi({ description: 'State of the service' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -40704,7 +41046,7 @@ const ServiceGetResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Service last update timestamp (ISO 8601)' }),
-        user_config: z.object({}).openapi({ description: 'Service type-specific settings' }),
+        user_config: z.looseObject({}).openapi({ description: 'Service type-specific settings' }),
         users: z
           .array(
             z
@@ -40934,7 +41276,7 @@ const ServiceGetMigrationStatusResponseSchema = z
   .openapi({ description: 'ServiceGetMigrationStatusResponse', required: ['migration'] })
   .openapi('ServiceGetMigrationStatusResponse')
 
-const ServiceListResponseSchema = z
+const ServiceListResponseSchema: z.ZodType<ServiceListResponseType> = z
   .object({
     errors: z
       .array(
@@ -41114,7 +41456,7 @@ const ServiceListResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Service component information objects' }),
             connection_info: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Service-specific connection information properties' }),
             connection_pools: z
@@ -41161,7 +41503,7 @@ const ServiceListResponseSchema = z
               .min(0)
               .exactOptional()
               .openapi({ description: 'Megabytes of disk space for data storage' }),
-            features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+            features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
             first_use_time: z
               .string()
               .max(36)
@@ -41363,7 +41705,7 @@ const ServiceListResponseSchema = z
                 required: ['dow', 'enabled', 'time', 'updates'],
               }),
             metadata: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Service type specific metadata' }),
             node_count: z
@@ -41605,7 +41947,7 @@ const ServiceListResponseSchema = z
                               .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                               .exactOptional()
                               .openapi({ description: 'Most likely cause of the errors' }),
-                            nodes: z.object({}).openapi({ description: 'Nodes' }),
+                            nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                             status: z
                               .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                               .openapi({ description: 'Service integration status' }),
@@ -41642,7 +41984,7 @@ const ServiceListResponseSchema = z
                       .max(64)
                       .openapi({ description: 'Service type code' }),
                     user_config: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'Service integration settings' }),
                   })
@@ -41724,13 +42066,16 @@ const ServiceListResponseSchema = z
               .string()
               .openapi({ description: 'URI for connecting to the service (may be null)' }),
             service_uri_params: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'service_uri parameterized into key-value pairs' }),
             state: z
               .enum(['POWEROFF', 'REBALANCING', 'REBUILDING', 'RUNNING'])
               .openapi({ description: 'State of the service' }),
-            tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+            tags: z
+              .looseObject({})
+              .exactOptional()
+              .openapi({ description: 'Set of resource tags' }),
             tech_emails: z
               .array(
                 z
@@ -41811,7 +42156,9 @@ const ServiceListResponseSchema = z
               .string()
               .max(36)
               .openapi({ description: 'Service last update timestamp (ISO 8601)' }),
-            user_config: z.object({}).openapi({ description: 'Service type-specific settings' }),
+            user_config: z
+              .looseObject({})
+              .openapi({ description: 'Service type-specific settings' }),
             users: z
               .array(
                 z
@@ -42017,7 +42364,7 @@ const ServiceMetricsFetchResponseSchema = z
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
     metrics: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Service metrics in Google chart compatible format' }),
   })
   .openapi({ description: 'ServiceMetricsFetchResponse', required: ['metrics'] })
@@ -43116,7 +43463,7 @@ const ServiceQueryStatisticsResetResponseSchema = z
       .exactOptional()
       .openapi({ description: 'List of errors occurred during request processing' }),
     message: z.string().exactOptional().openapi({ description: 'Printable result of the request' }),
-    queries: z.array(z.object({})).openapi({ description: 'List of query statistics' }),
+    queries: z.array(z.looseObject({})).openapi({ description: 'List of query statistics' }),
   })
   .openapi({ description: 'ServiceQueryStatisticsResetResponse', required: ['queries'] })
   .openapi('ServiceQueryStatisticsResetResponse')
@@ -43295,7 +43642,7 @@ const ServiceServiceTypeUpdateResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Service component information objects' }),
         connection_info: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service-specific connection information properties' }),
         connection_pools: z
@@ -43340,7 +43687,7 @@ const ServiceServiceTypeUpdateResponseSchema = z
           .min(0)
           .exactOptional()
           .openapi({ description: 'Megabytes of disk space for data storage' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         first_use_time: z
           .string()
           .max(36)
@@ -43529,7 +43876,7 @@ const ServiceServiceTypeUpdateResponseSchema = z
             required: ['dow', 'enabled', 'time', 'updates'],
           }),
         metadata: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service type specific metadata' }),
         node_count: z
@@ -43757,7 +44104,7 @@ const ServiceServiceTypeUpdateResponseSchema = z
                           .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                           .exactOptional()
                           .openapi({ description: 'Most likely cause of the errors' }),
-                        nodes: z.object({}).openapi({ description: 'Nodes' }),
+                        nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                         status: z
                           .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                           .openapi({ description: 'Service integration status' }),
@@ -43792,7 +44139,7 @@ const ServiceServiceTypeUpdateResponseSchema = z
                   .max(64)
                   .openapi({ description: 'Service type code' }),
                 user_config: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'Service integration settings' }),
               })
@@ -43872,13 +44219,13 @@ const ServiceServiceTypeUpdateResponseSchema = z
           .string()
           .openapi({ description: 'URI for connecting to the service (may be null)' }),
         service_uri_params: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'service_uri parameterized into key-value pairs' }),
         state: z
           .enum(['POWEROFF', 'REBALANCING', 'REBUILDING', 'RUNNING'])
           .openapi({ description: 'State of the service' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -43955,7 +44302,7 @@ const ServiceServiceTypeUpdateResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Service last update timestamp (ISO 8601)' }),
-        user_config: z.object({}).openapi({ description: 'Service type-specific settings' }),
+        user_config: z.looseObject({}).openapi({ description: 'Service type-specific settings' }),
         users: z
           .array(
             z
@@ -44402,7 +44749,7 @@ const ServiceUpdateRequestBodySchema = z
       .exactOptional()
       .openapi({ description: 'Service is protected against termination and powering off' }),
     user_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Service type-specific settings' }),
   })
@@ -44578,7 +44925,7 @@ const ServiceUpdateResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Service component information objects' }),
         connection_info: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service-specific connection information properties' }),
         connection_pools: z
@@ -44623,7 +44970,7 @@ const ServiceUpdateResponseSchema = z
           .min(0)
           .exactOptional()
           .openapi({ description: 'Megabytes of disk space for data storage' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         first_use_time: z
           .string()
           .max(36)
@@ -44812,7 +45159,7 @@ const ServiceUpdateResponseSchema = z
             required: ['dow', 'enabled', 'time', 'updates'],
           }),
         metadata: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service type specific metadata' }),
         node_count: z
@@ -45040,7 +45387,7 @@ const ServiceUpdateResponseSchema = z
                           .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                           .exactOptional()
                           .openapi({ description: 'Most likely cause of the errors' }),
-                        nodes: z.object({}).openapi({ description: 'Nodes' }),
+                        nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                         status: z
                           .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                           .openapi({ description: 'Service integration status' }),
@@ -45075,7 +45422,7 @@ const ServiceUpdateResponseSchema = z
                   .max(64)
                   .openapi({ description: 'Service type code' }),
                 user_config: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'Service integration settings' }),
               })
@@ -45155,13 +45502,13 @@ const ServiceUpdateResponseSchema = z
           .string()
           .openapi({ description: 'URI for connecting to the service (may be null)' }),
         service_uri_params: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'service_uri parameterized into key-value pairs' }),
         state: z
           .enum(['POWEROFF', 'REBALANCING', 'REBUILDING', 'RUNNING'])
           .openapi({ description: 'State of the service' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -45238,7 +45585,7 @@ const ServiceUpdateResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Service last update timestamp (ISO 8601)' }),
-        user_config: z.object({}).openapi({ description: 'Service type-specific settings' }),
+        user_config: z.looseObject({}).openapi({ description: 'Service type-specific settings' }),
         users: z
           .array(
             z
@@ -45858,7 +46205,7 @@ const ServiceUserCredentialsModifyResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Service component information objects' }),
         connection_info: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service-specific connection information properties' }),
         connection_pools: z
@@ -45903,7 +46250,7 @@ const ServiceUserCredentialsModifyResponseSchema = z
           .min(0)
           .exactOptional()
           .openapi({ description: 'Megabytes of disk space for data storage' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         first_use_time: z
           .string()
           .max(36)
@@ -46092,7 +46439,7 @@ const ServiceUserCredentialsModifyResponseSchema = z
             required: ['dow', 'enabled', 'time', 'updates'],
           }),
         metadata: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service type specific metadata' }),
         node_count: z
@@ -46320,7 +46667,7 @@ const ServiceUserCredentialsModifyResponseSchema = z
                           .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                           .exactOptional()
                           .openapi({ description: 'Most likely cause of the errors' }),
-                        nodes: z.object({}).openapi({ description: 'Nodes' }),
+                        nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                         status: z
                           .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                           .openapi({ description: 'Service integration status' }),
@@ -46355,7 +46702,7 @@ const ServiceUserCredentialsModifyResponseSchema = z
                   .max(64)
                   .openapi({ description: 'Service type code' }),
                 user_config: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'Service integration settings' }),
               })
@@ -46435,13 +46782,13 @@ const ServiceUserCredentialsModifyResponseSchema = z
           .string()
           .openapi({ description: 'URI for connecting to the service (may be null)' }),
         service_uri_params: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'service_uri parameterized into key-value pairs' }),
         state: z
           .enum(['POWEROFF', 'REBALANCING', 'REBUILDING', 'RUNNING'])
           .openapi({ description: 'State of the service' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -46518,7 +46865,7 @@ const ServiceUserCredentialsModifyResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Service last update timestamp (ISO 8601)' }),
-        user_config: z.object({}).openapi({ description: 'Service type-specific settings' }),
+        user_config: z.looseObject({}).openapi({ description: 'Service type-specific settings' }),
         users: z
           .array(
             z
@@ -46834,7 +47181,7 @@ const ServiceUserCredentialsResetResponseSchema = z
           .exactOptional()
           .openapi({ description: 'Service component information objects' }),
         connection_info: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service-specific connection information properties' }),
         connection_pools: z
@@ -46879,7 +47226,7 @@ const ServiceUserCredentialsResetResponseSchema = z
           .min(0)
           .exactOptional()
           .openapi({ description: 'Megabytes of disk space for data storage' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         first_use_time: z
           .string()
           .max(36)
@@ -47068,7 +47415,7 @@ const ServiceUserCredentialsResetResponseSchema = z
             required: ['dow', 'enabled', 'time', 'updates'],
           }),
         metadata: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service type specific metadata' }),
         node_count: z
@@ -47296,7 +47643,7 @@ const ServiceUserCredentialsResetResponseSchema = z
                           .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                           .exactOptional()
                           .openapi({ description: 'Most likely cause of the errors' }),
-                        nodes: z.object({}).openapi({ description: 'Nodes' }),
+                        nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                         status: z
                           .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                           .openapi({ description: 'Service integration status' }),
@@ -47331,7 +47678,7 @@ const ServiceUserCredentialsResetResponseSchema = z
                   .max(64)
                   .openapi({ description: 'Service type code' }),
                 user_config: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'Service integration settings' }),
               })
@@ -47411,13 +47758,13 @@ const ServiceUserCredentialsResetResponseSchema = z
           .string()
           .openapi({ description: 'URI for connecting to the service (may be null)' }),
         service_uri_params: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'service_uri parameterized into key-value pairs' }),
         state: z
           .enum(['POWEROFF', 'REBALANCING', 'REBUILDING', 'RUNNING'])
           .openapi({ description: 'State of the service' }),
-        tags: z.object({}).exactOptional().openapi({ description: 'Set of resource tags' }),
+        tags: z.looseObject({}).exactOptional().openapi({ description: 'Set of resource tags' }),
         tech_emails: z
           .array(
             z
@@ -47494,7 +47841,7 @@ const ServiceUserCredentialsResetResponseSchema = z
           .string()
           .max(36)
           .openapi({ description: 'Service last update timestamp (ISO 8601)' }),
-        user_config: z.object({}).openapi({ description: 'Service type-specific settings' }),
+        user_config: z.looseObject({}).openapi({ description: 'Service type-specific settings' }),
         users: z
           .array(
             z
@@ -47895,7 +48242,7 @@ const ServiceIntegrationCreateRequestBodySchema = z
       .exactOptional()
       .openapi({ description: 'Source service name' }),
     user_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Service type-specific settings' }),
   })
@@ -47948,7 +48295,7 @@ const ServiceIntegrationCreateResponseSchema = z
                   .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                   .exactOptional()
                   .openapi({ description: 'Most likely cause of the errors' }),
-                nodes: z.object({}).openapi({ description: 'Nodes' }),
+                nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                 status: z
                   .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                   .openapi({ description: 'Service integration status' }),
@@ -47975,7 +48322,7 @@ const ServiceIntegrationCreateResponseSchema = z
         source_service: z.string().openapi({ description: 'Source service name' }),
         source_service_type: z.string().max(64).openapi({ description: 'Service type code' }),
         user_config: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service integration settings' }),
       })
@@ -48051,7 +48398,9 @@ const ServiceIntegrationEndpointCreateRequestBodySchema = z
         'rsyslog',
       ])
       .openapi({ description: 'Service integration endpoint type' }),
-    user_config: z.object({}).openapi({ description: 'Service integration endpoint settings' }),
+    user_config: z
+      .looseObject({})
+      .openapi({ description: 'Service integration endpoint settings' }),
   })
   .openapi({
     description: 'ServiceIntegrationEndpointCreateRequestBody',
@@ -48080,7 +48429,7 @@ const ServiceIntegrationEndpointCreateResponseSchema = z
     service_integration_endpoint: z
       .object({
         endpoint_config: z
-          .object({})
+          .looseObject({})
           .openapi({ description: 'Service integration endpoint backend settings' }),
         endpoint_id: z.string().openapi({ description: 'Integration endpoint ID' }),
         endpoint_name: z
@@ -48116,7 +48465,9 @@ const ServiceIntegrationEndpointCreateResponseSchema = z
             'rsyslog',
           ])
           .openapi({ description: 'Integration endpoint type' }),
-        user_config: z.object({}).openapi({ description: 'Service integration endpoint settings' }),
+        user_config: z
+          .looseObject({})
+          .openapi({ description: 'Service integration endpoint settings' }),
       })
       .openapi({
         description: 'Service integration endpoint',
@@ -48178,7 +48529,7 @@ const ServiceIntegrationEndpointGetResponseSchema = z
     service_integration_endpoint: z
       .object({
         endpoint_config: z
-          .object({})
+          .looseObject({})
           .openapi({ description: 'Service integration endpoint backend settings' }),
         endpoint_id: z.string().openapi({ description: 'Integration endpoint ID' }),
         endpoint_name: z
@@ -48214,7 +48565,9 @@ const ServiceIntegrationEndpointGetResponseSchema = z
             'rsyslog',
           ])
           .openapi({ description: 'Integration endpoint type' }),
-        user_config: z.object({}).openapi({ description: 'Service integration endpoint settings' }),
+        user_config: z
+          .looseObject({})
+          .openapi({ description: 'Service integration endpoint settings' }),
       })
       .openapi({
         description: 'Service integration endpoint',
@@ -48256,7 +48609,7 @@ const ServiceIntegrationEndpointListResponseSchema = z
         z
           .object({
             endpoint_config: z
-              .object({})
+              .looseObject({})
               .openapi({ description: 'Service integration endpoint backend settings' }),
             endpoint_id: z.string().openapi({ description: 'Integration endpoint ID' }),
             endpoint_name: z
@@ -48293,7 +48646,7 @@ const ServiceIntegrationEndpointListResponseSchema = z
               ])
               .openapi({ description: 'Integration endpoint type' }),
             user_config: z
-              .object({})
+              .looseObject({})
               .openapi({ description: 'Service integration endpoint settings' }),
           })
           .openapi({
@@ -48324,7 +48677,7 @@ const ServiceIntegrationEndpointTypesResponseSchema = z
             service_types: z.array(z.string()).openapi({ description: 'Supported service types' }),
             title: z.string().openapi({ description: 'Endpoint type description' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .openapi({ required: ['endpoint_type', 'service_types', 'title', 'user_config_schema'] }),
@@ -48352,7 +48705,9 @@ const ServiceIntegrationEndpointTypesResponseSchema = z
 
 const ServiceIntegrationEndpointUpdateRequestBodySchema = z
   .object({
-    user_config: z.object({}).openapi({ description: 'Service integration endpoint settings' }),
+    user_config: z
+      .looseObject({})
+      .openapi({ description: 'Service integration endpoint settings' }),
   })
   .openapi({
     description: 'ServiceIntegrationEndpointUpdateRequestBody',
@@ -48381,7 +48736,7 @@ const ServiceIntegrationEndpointUpdateResponseSchema = z
     service_integration_endpoint: z
       .object({
         endpoint_config: z
-          .object({})
+          .looseObject({})
           .openapi({ description: 'Service integration endpoint backend settings' }),
         endpoint_id: z.string().openapi({ description: 'Integration endpoint ID' }),
         endpoint_name: z
@@ -48417,7 +48772,9 @@ const ServiceIntegrationEndpointUpdateResponseSchema = z
             'rsyslog',
           ])
           .openapi({ description: 'Integration endpoint type' }),
-        user_config: z.object({}).openapi({ description: 'Service integration endpoint settings' }),
+        user_config: z
+          .looseObject({})
+          .openapi({ description: 'Service integration endpoint settings' }),
       })
       .openapi({
         description: 'Service integration endpoint',
@@ -48482,7 +48839,7 @@ const ServiceIntegrationGetResponseSchema = z
                   .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                   .exactOptional()
                   .openapi({ description: 'Most likely cause of the errors' }),
-                nodes: z.object({}).openapi({ description: 'Nodes' }),
+                nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                 status: z
                   .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                   .openapi({ description: 'Service integration status' }),
@@ -48509,7 +48866,7 @@ const ServiceIntegrationGetResponseSchema = z
         source_service: z.string().openapi({ description: 'Source service name' }),
         source_service_type: z.string().max(64).openapi({ description: 'Service type code' }),
         user_config: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service integration settings' }),
       })
@@ -48580,7 +48937,7 @@ const ServiceIntegrationListResponseSchema = z
                       .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                       .exactOptional()
                       .openapi({ description: 'Most likely cause of the errors' }),
-                    nodes: z.object({}).openapi({ description: 'Nodes' }),
+                    nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                     status: z
                       .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                       .openapi({ description: 'Service integration status' }),
@@ -48612,7 +48969,7 @@ const ServiceIntegrationListResponseSchema = z
             source_service: z.string().openapi({ description: 'Source service name' }),
             source_service_type: z.string().max(64).openapi({ description: 'Service type code' }),
             user_config: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Service integration settings' }),
           })
@@ -48674,7 +49031,7 @@ const ServiceIntegrationTypesResponseSchema = z
               .array(z.string())
               .openapi({ description: 'Supported source service types' }),
             user_config_schema: z
-              .object({})
+              .looseObject({})
               .openapi({ description: "JSON-Schema for the 'user_config' properties" }),
           })
           .openapi({
@@ -48696,7 +49053,9 @@ const ServiceIntegrationTypesResponseSchema = z
   .openapi('ServiceIntegrationTypesResponse')
 
 const ServiceIntegrationUpdateRequestBodySchema = z
-  .object({ user_config: z.object({}).openapi({ description: 'Service integration settings' }) })
+  .object({
+    user_config: z.looseObject({}).openapi({ description: 'Service integration settings' }),
+  })
   .openapi({ description: 'ServiceIntegrationUpdateRequestBody', required: ['user_config'] })
   .openapi('ServiceIntegrationUpdateRequestBody')
 
@@ -48746,7 +49105,7 @@ const ServiceIntegrationUpdateResponseSchema = z
                   .enum(['null', 'destination', 'integration', 'source', 'unknown'])
                   .exactOptional()
                   .openapi({ description: 'Most likely cause of the errors' }),
-                nodes: z.object({}).openapi({ description: 'Nodes' }),
+                nodes: z.looseObject({}).openapi({ description: 'Nodes' }),
                 status: z
                   .enum(['failed', 'inactive', 'running', 'starting', 'unknown'])
                   .openapi({ description: 'Service integration status' }),
@@ -48773,7 +49132,7 @@ const ServiceIntegrationUpdateResponseSchema = z
         source_service: z.string().openapi({ description: 'Source service name' }),
         source_service_type: z.string().max(64).openapi({ description: 'Service type code' }),
         user_config: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Service integration settings' }),
       })
@@ -50413,7 +50772,7 @@ const UserAuthLoginOptionsRequestBodySchema = z
 const UserAuthLoginOptionsResponseSchema = z
   .object({
     None: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'List of available login methods' }),
     action: z
@@ -50606,7 +50965,7 @@ const UserInfoResponseSchema = z
           .exactOptional()
           .openapi({ description: 'User registration time' }),
         department: z.string().max(256).exactOptional().openapi({ description: 'Job department' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         invitations: z
           .array(
             z
@@ -50890,7 +51249,7 @@ const UserUpdateResponseSchema = z
           .exactOptional()
           .openapi({ description: 'User registration time' }),
         department: z.string().max(256).exactOptional().openapi({ description: 'Job department' }),
-        features: z.object({}).exactOptional().openapi({ description: 'Feature flags' }),
+        features: z.looseObject({}).exactOptional().openapi({ description: 'Feature flags' }),
         invitations: z
           .array(
             z

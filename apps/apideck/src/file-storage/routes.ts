@@ -1,117 +1,11 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CreatedAtSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'The date and time when the object was created.',
-    example: '2020-09-30T07:43:32.000Z',
-    readOnly: true,
-    title: 'Created at (timestamp)',
-  })
-  .openapi('CreatedAt')
-
-const CreatedBySchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'The user who created the object.',
-    example: '12345',
-    readOnly: true,
-    title: 'Created by',
-  })
-  .openapi('CreatedBy')
-
-const IdSchema = z
-  .string()
-  .openapi({
-    description: 'A unique identifier for an object.',
-    example: '12345',
-    readOnly: true,
-    title: 'ID',
-  })
-  .openapi('Id')
-
-const OwnerSchema = z
-  .object({
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Email of the owner', example: 'hello@apideck.com', readOnly: true }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the owner', example: '12345', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the owner', example: 'Elon Musk', readOnly: true }),
-  })
-  .openapi({
-    readOnly: true,
-    'x-apideck-schema-id': 'Owner',
-    'x-apideck-weights': { id: 'critical' },
-    required: [],
-  })
-  .openapi('Owner')
-
-const LinkedFolderSchema = z
-  .object({
-    id: IdSchema,
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the folder', example: 'Personal' }),
-  })
-  .openapi({
-    required: ['id'],
-    'x-apideck-schema-id': 'LinkedFolder',
-    'x-apideck-weights': { id: 'critical' },
-  })
-  .openapi('LinkedFolder')
-
-const UpdatedAtSchema = z.iso
-  .datetime({ offset: true })
-  .nullable()
-  .openapi({
-    description: 'The date and time when the object was last updated.',
-    example: '2020-09-30T07:43:32.000Z',
-    readOnly: true,
-    title: 'Updated at (timestamp)',
-  })
-  .openapi('UpdatedAt')
-
-const UpdatedBySchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'The user who last updated the object.',
-    example: '12345',
-    readOnly: true,
-    title: 'Updated by',
-  })
-  .openapi('UpdatedBy')
-
-type FolderType = {
-  created_at?: z.infer<typeof CreatedAtSchema>
-  created_by?: z.infer<typeof CreatedBySchema>
-  description?: string
-  id?: z.infer<typeof IdSchema>
-  name: string
-  owner?: z.infer<typeof OwnerSchema>
-  parent_folders: z.infer<typeof LinkedFolderSchema>[]
-  parent_folders_complete?: boolean
-  path?: string
-  size?: number
-  updated_at?: z.infer<typeof UpdatedAtSchema>
-  updated_by?: z.infer<typeof UpdatedBySchema>
-}
-
 const BadRequestResponseSchema = z
   .object({
     detail: z
       .union([
         z.string().openapi({ example: 'Missing property foobar' }),
-        z.object({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
+        z.looseObject({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
       ])
       .exactOptional()
       .openapi({
@@ -151,6 +45,16 @@ const BadRequestResponseSchema = z
   })
   .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
   .openapi('BadRequestResponse')
+
+const IdSchema = z
+  .string()
+  .openapi({
+    description: 'A unique identifier for an object.',
+    example: '12345',
+    readOnly: true,
+    title: 'ID',
+  })
+  .openapi('Id')
 
 const ParentFolderIdSchema = z
   .string()
@@ -360,6 +264,27 @@ const CreateUploadSessionResponseSchema = z
   })
   .openapi('CreateUploadSessionResponse')
 
+const CreatedAtSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'The date and time when the object was created.',
+    example: '2020-09-30T07:43:32.000Z',
+    readOnly: true,
+    title: 'Created at (timestamp)',
+  })
+  .openapi('CreatedAt')
+
+const CreatedBySchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'The user who created the object.',
+    example: '12345',
+    readOnly: true,
+    title: 'Created by',
+  })
+  .openapi('CreatedBy')
+
 const DeleteDriveGroupResponseSchema = z
   .object({
     data: UnifiedIdSchema,
@@ -487,6 +412,28 @@ const DownstreamIdSchema = z
     readOnly: true,
   })
   .openapi('DownstreamId')
+
+const UpdatedAtSchema = z.iso
+  .datetime({ offset: true })
+  .nullable()
+  .openapi({
+    description: 'The date and time when the object was last updated.',
+    example: '2020-09-30T07:43:32.000Z',
+    readOnly: true,
+    title: 'Updated at (timestamp)',
+  })
+  .openapi('UpdatedAt')
+
+const UpdatedBySchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'The user who last updated the object.',
+    example: '12345',
+    readOnly: true,
+    title: 'Updated by',
+  })
+  .openapi('UpdatedBy')
 
 const DriveSchema = z
   .strictObject({
@@ -674,66 +621,101 @@ const FilesSortSchema = z
   })
   .openapi('FilesSort')
 
-const FolderSchema: z.ZodType<FolderType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        created_at: CreatedAtSchema.exactOptional(),
-        created_by: CreatedBySchema.exactOptional(),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Optional description of the folder',
-            example: 'My Personal Documents',
-          }),
-        id: IdSchema.exactOptional(),
-        name: z.string().openapi({ description: 'The name of the folder', example: 'Documents' }),
-        owner: OwnerSchema.exactOptional(),
-        parent_folders: z
-          .array(LinkedFolderSchema)
-          .openapi({ description: 'The parent folders of the file, starting from the root' }),
-        parent_folders_complete: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the list of parent folder is complete. Some connectors only return the direct parent of a folder',
-            readOnly: true,
-          }),
-        path: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The full path of the folder (includes the folder name)',
-            example: '/Personal/Documents',
-            readOnly: true,
-          }),
-        size: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description: 'The size of the folder in bytes',
-            example: 1810673,
-            readOnly: true,
-          }),
-        updated_at: UpdatedAtSchema.exactOptional(),
-        updated_by: UpdatedBySchema.exactOptional(),
-      })
+const OwnerSchema = z
+  .object({
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Email of the owner', example: 'hello@apideck.com', readOnly: true }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the owner', example: '12345', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the owner', example: 'Elon Musk', readOnly: true }),
+  })
+  .openapi({
+    readOnly: true,
+    'x-apideck-schema-id': 'Owner',
+    'x-apideck-weights': { id: 'critical' },
+    required: [],
+  })
+  .openapi('Owner')
+
+const LinkedFolderSchema = z
+  .object({
+    id: IdSchema,
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the folder', example: 'Personal' }),
+  })
+  .openapi({
+    required: ['id'],
+    'x-apideck-schema-id': 'LinkedFolder',
+    'x-apideck-weights': { id: 'critical' },
+  })
+  .openapi('LinkedFolder')
+
+const FolderSchema = z
+  .strictObject({
+    created_at: CreatedAtSchema.exactOptional(),
+    created_by: CreatedBySchema.exactOptional(),
+    description: z
+      .string()
+      .exactOptional()
       .openapi({
-        required: ['name', 'parent_folders'],
-        'x-apideck-schema-id': 'Folder',
-        'x-apideck-weights': {
-          created_at: 'high',
-          id: 'critical',
-          name: 'critical',
-          parent_folders: 'high',
-          parent_folders_complete: 'critical',
-          size: 'low',
-          updated_at: 'critical',
-        },
+        description: 'Optional description of the folder',
+        example: 'My Personal Documents',
       }),
-  )
+    id: IdSchema.exactOptional(),
+    name: z.string().openapi({ description: 'The name of the folder', example: 'Documents' }),
+    owner: OwnerSchema.exactOptional(),
+    parent_folders: z
+      .array(LinkedFolderSchema)
+      .openapi({ description: 'The parent folders of the file, starting from the root' }),
+    parent_folders_complete: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the list of parent folder is complete. Some connectors only return the direct parent of a folder',
+        readOnly: true,
+      }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The full path of the folder (includes the folder name)',
+        example: '/Personal/Documents',
+        readOnly: true,
+      }),
+    size: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The size of the folder in bytes',
+        example: 1810673,
+        readOnly: true,
+      }),
+    updated_at: UpdatedAtSchema.exactOptional(),
+    updated_by: UpdatedBySchema.exactOptional(),
+  })
+  .openapi({
+    required: ['name', 'parent_folders'],
+    'x-apideck-schema-id': 'Folder',
+    'x-apideck-weights': {
+      created_at: 'high',
+      id: 'critical',
+      name: 'critical',
+      parent_folders: 'high',
+      parent_folders_complete: 'critical',
+      size: 'low',
+      updated_at: 'critical',
+    },
+  })
   .openapi('Folder')
 
 const GetDriveGroupResponseSchema = z
@@ -1231,7 +1213,7 @@ const NotFoundResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: "Could not find widget with id: '123'" }),
-        z.object({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
+        z.looseObject({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
       ])
       .exactOptional()
       .openapi({
@@ -1282,7 +1264,7 @@ const NotImplementedResponseSchema = z
             example:
               "Failed to retrieve Widget tokenUrl from 'components.securitySchemes.OAuth2.flows'",
           }),
-        z.object({}),
+        z.looseObject({}),
       ])
       .exactOptional()
       .openapi({
@@ -1469,7 +1451,9 @@ const UnexpectedErrorResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: 'Missing Header: x-apideck-consumer-id' }),
-        z.object({}).openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
+        z
+          .looseObject({})
+          .openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
       ])
       .exactOptional()
       .openapi({

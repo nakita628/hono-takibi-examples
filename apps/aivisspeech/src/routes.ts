@@ -1,70 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const MoraSchema = z
-  .object({
-    text: z
-      .string()
-      .openapi({
-        title: 'Text',
-        description:
-          '子音＋母音に対応する文字。\nVOICEVOX ENGINE と異なり、感嘆符・句読点などの記号もモーラに含まれる。\n記号モーラの場合、`text` には記号がそのまま、`vowel` には "pau" が設定される。',
-      }),
-    consonant: z
-      .string()
-      .exactOptional()
-      .openapi({ title: 'Consonant', description: '子音の音素。' }),
-    consonant_length: z
-      .number()
-      .exactOptional()
-      .openapi({
-        title: 'AivisSpeech Engine ではサポートされていないフィールドです (常に無視されます)',
-        description:
-          '子音の音長。\nAivisSpeech Engine の実装上算出できないため、ダミー値として常に 0.0 が返される。',
-      }),
-    vowel: z.string().openapi({ title: 'Vowel', description: '母音の音素。' }),
-    vowel_length: z
-      .number()
-      .openapi({
-        title: 'AivisSpeech Engine ではサポートされていないフィールドです (常に無視されます)',
-        description:
-          '母音の音長。\nAivisSpeech Engine の実装上算出できないため、ダミー値として常に 0.0 が返される。',
-      }),
-    pitch: z
-      .number()
-      .openapi({
-        title: 'AivisSpeech Engine ではサポートされていないフィールドです (常に無視されます)',
-        description:
-          '音高。\nAivisSpeech Engine の実装上算出できないため、ダミー値として常に 0.0 が返される。',
-      }),
-  })
-  .openapi({
-    required: ['text', 'vowel', 'vowel_length', 'pitch'],
-    title: 'Mora',
-    description: 'モーラ（子音＋母音）ごとの情報。',
-  })
-  .openapi('Mora')
-
-const AccentPhraseSchema = z
-  .object({
-    moras: z.array(MoraSchema).openapi({ title: 'Moras', description: 'モーラのリスト' }),
-    accent: z.int().openapi({ title: 'Accent', description: 'アクセント箇所' }),
-    pause_mora: MoraSchema.exactOptional().openapi({
-      title: 'Pause Mora',
-      description: 'アクセント句の末尾につく無音モーラ。null の場合は無音モーラを付けない。',
-    }),
-    is_interrogative: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ title: 'Is Interrogative', description: '疑問系かどうか' }),
-  })
-  .openapi({
-    required: ['moras', 'accent'],
-    title: 'AccentPhrase',
-    description: 'アクセント句ごとの情報。',
-  })
-  .openapi('AccentPhrase')
-
 const ModelArchitectureSchema = z
   .enum(['Style-Bert-VITS2', 'Style-Bert-VITS2 (JP-Extra)'])
   .openapi({ title: 'ModelArchitecture' })
@@ -316,7 +251,84 @@ const LibrarySpeakerSchema = z
   })
   .openapi('LibrarySpeaker')
 
-const AivmInfoSchema = z
+type AivmInfoType = {
+  is_loaded: boolean
+  is_update_available: boolean
+  is_private_model: boolean
+  is_default_model?: boolean
+  latest_version: string
+  file_path: string
+  file_size: number
+  manifest: z.infer<typeof AivmManifestSchema>
+  speakers: z.infer<typeof LibrarySpeakerSchema>[]
+}
+
+const MoraSchema = z
+  .object({
+    text: z
+      .string()
+      .openapi({
+        title: 'Text',
+        description:
+          '子音＋母音に対応する文字。\nVOICEVOX ENGINE と異なり、感嘆符・句読点などの記号もモーラに含まれる。\n記号モーラの場合、`text` には記号がそのまま、`vowel` には "pau" が設定される。',
+      }),
+    consonant: z
+      .string()
+      .exactOptional()
+      .openapi({ title: 'Consonant', description: '子音の音素。' }),
+    consonant_length: z
+      .number()
+      .exactOptional()
+      .openapi({
+        title: 'AivisSpeech Engine ではサポートされていないフィールドです (常に無視されます)',
+        description:
+          '子音の音長。\nAivisSpeech Engine の実装上算出できないため、ダミー値として常に 0.0 が返される。',
+      }),
+    vowel: z.string().openapi({ title: 'Vowel', description: '母音の音素。' }),
+    vowel_length: z
+      .number()
+      .openapi({
+        title: 'AivisSpeech Engine ではサポートされていないフィールドです (常に無視されます)',
+        description:
+          '母音の音長。\nAivisSpeech Engine の実装上算出できないため、ダミー値として常に 0.0 が返される。',
+      }),
+    pitch: z
+      .number()
+      .openapi({
+        title: 'AivisSpeech Engine ではサポートされていないフィールドです (常に無視されます)',
+        description:
+          '音高。\nAivisSpeech Engine の実装上算出できないため、ダミー値として常に 0.0 が返される。',
+      }),
+  })
+  .openapi({
+    required: ['text', 'vowel', 'vowel_length', 'pitch'],
+    title: 'Mora',
+    description: 'モーラ（子音＋母音）ごとの情報。',
+  })
+  .openapi('Mora')
+
+const AccentPhraseSchema = z
+  .object({
+    moras: z.array(MoraSchema).openapi({ title: 'Moras', description: 'モーラのリスト' }),
+    accent: z.int().openapi({ title: 'Accent', description: 'アクセント箇所' }),
+    pause_mora: MoraSchema.exactOptional().openapi({
+      title: 'Pause Mora',
+      description: 'アクセント句の末尾につく無音モーラ。null の場合は無音モーラを付けない。',
+    }),
+    is_interrogative: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ title: 'Is Interrogative', description: '疑問系かどうか' }),
+  })
+  .openapi({
+    required: ['moras', 'accent'],
+    title: 'AccentPhrase',
+    description: 'アクセント句ごとの情報。',
+  })
+  .openapi('AccentPhrase')
+
+const AivmInfoSchema: z.ZodType<AivmInfoType> = z
   .object({
     is_loaded: z
       .boolean()
@@ -749,7 +761,7 @@ const ValidationErrorSchema = z
     msg: z.string().openapi({ title: 'Message' }),
     type: z.string().openapi({ title: 'Error Type' }),
     input: z.any().exactOptional().openapi({ title: 'Input' }),
-    ctx: z.object({}).exactOptional().openapi({ title: 'Context' }),
+    ctx: z.looseObject({}).exactOptional().openapi({ title: 'Context' }),
   })
   .openapi({ required: ['loc', 'msg', 'type'], title: 'ValidationError' })
   .openapi('ValidationError')

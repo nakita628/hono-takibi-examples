@@ -1,370 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ActiveSchema = z
-  .boolean()
-  .nullable()
-  .openapi({ example: true, title: 'Is active' })
-  .openapi('Active')
-
-const RowVersionSchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description:
-      'A binary value used to detect updates to a object and prevent data conflicts. It is incremented each time an update is made to the object.',
-    example: '1-12345',
-    title: 'Row version',
-  })
-  .openapi('RowVersion')
-
-const AddressSchema = z
-  .strictObject({
-    city: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Name of city.', example: 'San Francisco' }),
-    contact_name: z.string().nullable().exactOptional().openapi({ example: 'Elon Musk' }),
-    country: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'country code according to ISO 3166-1 alpha-2.', example: 'US' }),
-    county: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Address field that holds a sublocality, such as a county',
-        example: 'Santa Clara',
-      }),
-    email: z.string().nullable().exactOptional().openapi({ example: 'elon@musk.com' }),
-    fax: z.string().nullable().exactOptional().openapi({ example: '122-111-1111' }),
-    id: z.string().nullable().exactOptional().openapi({ example: '123' }),
-    latitude: z.string().nullable().exactOptional().openapi({ example: '40.759211' }),
-    line1: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Line 1 of the address e.g. number, street, suite, apt #, etc.',
-        example: 'Main street',
-      }),
-    line2: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Line 2 of the address', example: 'apt #' }),
-    line3: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Line 3 of the address', example: 'Suite #' }),
-    line4: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Line 4 of the address', example: 'delivery instructions' }),
-    longitude: z.string().nullable().exactOptional().openapi({ example: '-73.984638' }),
-    name: z.string().nullable().exactOptional().openapi({ example: 'HQ US' }),
-    phone_number: z.string().nullable().exactOptional().openapi({ example: '111-111-1111' }),
-    postal_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Zip code or equivalent.', example: '94104' }),
-    row_version: RowVersionSchema.exactOptional(),
-    salutation: z.string().nullable().exactOptional().openapi({ example: 'Mr' }),
-    state: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Name of state', example: 'CA' }),
-    street_number: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Street number', example: '25' }),
-    string: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        example: '25 Spring Street, Blackburn, VIC 3130',
-        title: "The address string. Some APIs don't provide structured address data.",
-      }),
-    type: z
-      .enum(['primary', 'secondary', 'home', 'office', 'shipping', 'billing', 'other'])
-      .exactOptional()
-      .openapi({
-        example: 'primary',
-        'x-apideck-enum-id': 'addresses.type',
-        'x-graphql-type-name': 'AddressType',
-      }),
-    website: z.string().nullable().exactOptional().openapi({ example: 'https://elonmusk.com' }),
-  })
-  .openapi({
-    'x-apideck-schema-id': 'Address',
-    'x-apideck-weights': {
-      city: 'high',
-      contact_name: 'edge-case',
-      country: 'high',
-      county: 'edge-case',
-      email: 'edge-case',
-      fax: 'edge-case',
-      id: 'edge-case',
-      latitude: 'low',
-      line1: 'high',
-      line2: 'low',
-      line3: 'edge-case',
-      line4: 'edge-case',
-      longitude: 'low',
-      name: 'edge-case',
-      phone_number: 'edge-case',
-      postal_code: 'high',
-      row_version: 'edge-case',
-      salutation: 'edge-case',
-      state: 'high',
-      street_number: 'low',
-      string: 'low',
-      type: 'critical',
-      website: 'edge-case',
-    },
-    required: [],
-  })
-  .openapi('Address')
-
-const AvailableSchema = z
-  .boolean()
-  .nullable()
-  .openapi({ example: true, title: 'Available' })
-  .openapi('Available')
-
-const BadRequestResponseSchema = z
-  .object({
-    detail: z
-      .union([
-        z.string().openapi({ example: 'Missing property foobar' }),
-        z.object({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains parameter or domain specific information related to the error and why it occurred.',
-      }),
-    error: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains an explanation of the status_code as defined in HTTP/1.1 standard (RFC 7231)',
-        example: 'Bad Request',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A human-readable message providing more details about the error.',
-        example: 'Invalid Params',
-      }),
-    ref: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to documentation of error type',
-        example: 'https://developers.apideck.com/errors#requestvalidationerror',
-      }),
-    status_code: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'HTTP status code', example: 400 }),
-    type_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of error returned', example: 'RequestValidationError' }),
-  })
-  .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
-  .openapi('BadRequestResponse')
-
-const UnifiedIdSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of the resource',
-        example: '12345',
-        readOnly: true,
-        title: 'Id',
-      }),
-  })
-  .openapi({ required: ['id'], title: 'UnifiedId', 'x-apideck-schema-id': 'Id' })
-  .openapi('UnifiedId')
-
-const CreateItemResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Items' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateItemResponse',
-  })
-  .openapi('CreateItemResponse')
-
-const CreateLocationResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Locations' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateLocationResponse',
-  })
-  .openapi('CreateLocationResponse')
-
-const CreateMerchantResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Merchants' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateMerchantResponse',
-  })
-  .openapi('CreateMerchantResponse')
-
-const CreateModifierGroupResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'ModifierGroups' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateModifierGroupResponse',
-  })
-  .openapi('CreateModifierGroupResponse')
-
-const CreateModifierResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Modifiers' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateModifierResponse',
-  })
-  .openapi('CreateModifierResponse')
-
-const CreateOrderResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z.string().openapi({ description: 'Unified API resource name', example: 'orders' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateOrderResponse',
-  })
-  .openapi('CreateOrderResponse')
-
-const CreateOrderTypeResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'OrderTypes' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateOrderTypeResponse',
-  })
-  .openapi('CreateOrderTypeResponse')
-
-const CreatePosPaymentResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'PosPayments' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreatePosPaymentResponse',
-  })
-  .openapi('CreatePosPaymentResponse')
-
-const CreateTenderResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Tenders' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateTenderResponse',
-  })
-  .openapi('CreateTenderResponse')
-
 const CreatedAtSchema = z.iso
   .datetime({ offset: true })
   .openapi({
@@ -767,217 +402,6 @@ const CurrencySchema = z
   })
   .openapi('Currency')
 
-const CustomFieldSchema = z
-  .strictObject({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'More information about the custom field',
-        example: 'Employee Level',
-        title: 'Description',
-      }),
-    id: z.string().openapi({ example: '2389328923893298', title: 'ID' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name of the custom field.',
-        example: 'employee_level',
-        title: 'Name',
-      }),
-    value: z
-      .union([
-        z.string().nullable().openapi({ example: 'Uses Salesforce and Marketo' }),
-        z.number().nullable().openapi({ example: 10 }),
-        z.boolean().nullable().openapi({ example: true }),
-        z.array(z.string()),
-      ])
-      .exactOptional(),
-  })
-  .openapi({
-    required: ['id'],
-    'x-apideck-schema-id': 'CustomField',
-    'x-apideck-weights': {
-      description: 'edge-case',
-      id: 'critical',
-      name: 'medium',
-      value: 'critical',
-    },
-  })
-  .openapi('CustomField')
-
-const DeleteItemResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Items' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteItemResponse',
-  })
-  .openapi('DeleteItemResponse')
-
-const DeleteLocationResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Locations' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteLocationResponse',
-  })
-  .openapi('DeleteLocationResponse')
-
-const DeleteMerchantResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Merchants' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteMerchantResponse',
-  })
-  .openapi('DeleteMerchantResponse')
-
-const DeleteModifierGroupResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'ModifierGroups' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteModifierGroupResponse',
-  })
-  .openapi('DeleteModifierGroupResponse')
-
-const DeleteModifierResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Modifiers' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteModifierResponse',
-  })
-  .openapi('DeleteModifierResponse')
-
-const DeleteOrderResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z.string().openapi({ description: 'Unified API resource name', example: 'orders' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteOrderResponse',
-  })
-  .openapi('DeleteOrderResponse')
-
-const DeleteOrderTypeResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'OrderTypes' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteOrderTypeResponse',
-  })
-  .openapi('DeleteOrderTypeResponse')
-
-const DeletePosPaymentResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'PosPayments' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeletePosPaymentResponse',
-  })
-  .openapi('DeletePosPaymentResponse')
-
-const DeleteTenderResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Tenders' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteTenderResponse',
-  })
-  .openapi('DeleteTenderResponse')
-
-const DeletedSchema = z
-  .boolean()
-  .nullable()
-  .openapi({ example: true, title: 'Deleted' })
-  .openapi('Deleted')
-
 const EmailSchema = z
   .strictObject({
     email: z.email().min(1).openapi({ example: 'elon@musk.com' }),
@@ -997,847 +421,6 @@ const EmailSchema = z
     'x-apideck-weights': { email: 'critical', id: 'edge-case', type: 'critical' },
   })
   .openapi('Email')
-
-const IdSchema = z
-  .string()
-  .openapi({
-    description: 'A unique identifier for an object.',
-    example: '12345',
-    readOnly: true,
-    title: 'ID',
-  })
-  .openapi('Id')
-
-const HiddenSchema = z
-  .boolean()
-  .nullable()
-  .openapi({ example: true, title: 'Hidden' })
-  .openapi('Hidden')
-
-const IdempotencyKeySchema = z
-  .string()
-  .max(45)
-  .openapi({
-    description:
-      'A value you specify that uniquely identifies this request among requests you have sent.',
-    example: 'random_string',
-  })
-  .openapi('IdempotencyKey')
-
-const UpdatedAtSchema = z.iso
-  .datetime({ offset: true })
-  .nullable()
-  .openapi({
-    description: 'The date and time when the object was last updated.',
-    example: '2020-09-30T07:43:32.000Z',
-    readOnly: true,
-    title: 'Updated at (timestamp)',
-  })
-  .openapi('UpdatedAt')
-
-const UpdatedBySchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'The user who last updated the object.',
-    example: '12345',
-    readOnly: true,
-    title: 'Updated by',
-  })
-  .openapi('UpdatedBy')
-
-const SequenceSchema = z
-  .number()
-  .nullable()
-  .openapi({ example: 1, title: 'Sequence' })
-  .openapi('Sequence')
-
-const ItemSchema = z
-  .strictObject({
-    abbreviation: z.string().exactOptional().openapi({ example: 'Ch', title: 'Abbreviation' }),
-    absent_at_location_ids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of locations where the object is not present, even if present_at_all_locations is true. This can include locations that are deactivated.',
-        example: ['12345', '67890'],
-      }),
-    available: AvailableSchema.exactOptional(),
-    available_for_pickup: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        example: false,
-        title: "If true, the item can be added to pickup orders from the merchant's online store.",
-      }),
-    available_online: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        example: false,
-        title:
-          "If true, the item can be added to shipping orders from the merchant's online store.",
-      }),
-    categories: z
-      .array(
-        z
-          .object({
-            id: IdSchema.exactOptional(),
-            image_ids: z.array(IdSchema).exactOptional(),
-            name: z.string().exactOptional(),
-          })
-          .openapi({
-            'x-apideck-weights': { id: 'medium', image_ids: 'medium', name: 'medium' },
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        example: [{ id: '12345', image_ids: ['12345', '67890'], name: 'Food' }],
-        title: 'Categories',
-      }),
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Product code, e.g. UPC or EAN', example: '11910345', title: 'SKU' }),
-    cost: z.number().exactOptional().openapi({ example: 2, title: 'Cost' }),
-    created_at: CreatedAtSchema.exactOptional(),
-    created_by: CreatedBySchema.exactOptional(),
-    deleted: DeletedSchema.exactOptional(),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'Hot Chocolate', title: 'Description' }),
-    hidden: HiddenSchema.exactOptional(),
-    id: z.string().exactOptional().openapi({ example: '#cocoa' }),
-    idempotency_key: IdempotencyKeySchema.exactOptional(),
-    modifier_groups: z
-      .array(
-        z
-          .object({ id: IdSchema.exactOptional() })
-          .openapi({ 'x-apideck-weights': { id: 'medium' }, required: [] }),
-      )
-      .exactOptional()
-      .openapi({ example: [{ id: '12345' }], title: 'Variations' }),
-    name: z.string().openapi({ example: 'Cocoa', title: 'Name' }),
-    options: z
-      .array(
-        z
-          .object({
-            attribute_id: z
-              .string()
-              .exactOptional()
-              .openapi({ example: '12345', title: 'Attribute ID' }),
-            id: z.string().exactOptional().openapi({ example: '12345' }),
-            name: z.string().exactOptional().openapi({ example: 'Option 1', title: 'Name' }),
-          })
-          .openapi({
-            'x-apideck-weights': { attribute_id: 'medium', id: 'medium', name: 'medium' },
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({ description: "List of options pertaining to this item's attribute variation" }),
-    present_at_all_locations: z
-      .boolean()
-      .exactOptional()
-      .openapi({ example: false, title: 'Present at all locations' }),
-    price_amount: z.number().exactOptional().openapi({ example: 10, title: 'Price amount' }),
-    price_currency: CurrencySchema.exactOptional(),
-    pricing_type: z
-      .enum(['fixed', 'variable', 'per_unit', 'other'])
-      .exactOptional()
-      .openapi({
-        example: 'fixed',
-        title: 'Pricing type',
-        'x-apideck-enum-id': 'items.pricing_type',
-      }),
-    product_type: z
-      .enum(['regular', 'other'])
-      .exactOptional()
-      .openapi({
-        example: 'regular',
-        title: 'Product type',
-        'x-apideck-enum-id': 'items.product_type',
-      }),
-    sku: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'SKU of the item', example: '11910345', title: 'SKU' }),
-    tax_ids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of Tax IDs for the product.',
-        example: ['12345', '67890'],
-        title: 'Tax IDs',
-      }),
-    updated_at: UpdatedAtSchema.exactOptional(),
-    updated_by: UpdatedBySchema.exactOptional(),
-    variations: z
-      .array(
-        z
-          .object({
-            created_at: CreatedAtSchema.exactOptional(),
-            id: IdSchema.exactOptional(),
-            item_id: IdSchema.exactOptional(),
-            name: z.string().exactOptional().openapi({ example: 'Variation', title: 'Name' }),
-            present_at_all_locations: z
-              .boolean()
-              .exactOptional()
-              .openapi({ example: false, title: 'Present at all locations' }),
-            price_amount: z
-              .number()
-              .exactOptional()
-              .openapi({ example: 10, title: 'Price amount' }),
-            price_currency: CurrencySchema.exactOptional(),
-            pricing_type: z
-              .enum(['fixed', 'variable', 'other'])
-              .exactOptional()
-              .openapi({
-                example: 'fixed',
-                title: 'Pricing type',
-                'x-apideck-enum-id': 'items.pricing_type',
-              }),
-            sequence: SequenceSchema.exactOptional(),
-            sku: z.string().exactOptional().openapi({ example: '11910345', title: 'SKU' }),
-            stockable: z.boolean().exactOptional().openapi({ example: false, title: 'Stockable' }),
-            updated_at: UpdatedAtSchema.exactOptional(),
-            version: UpdatedBySchema.exactOptional(),
-          })
-          .openapi({
-            'x-apideck-weights': {
-              created_at: 'medium',
-              id: 'medium',
-              item_id: 'medium',
-              name: 'medium',
-              present_at_all_locations: 'medium',
-              price_amount: 'medium',
-              price_currency: 'medium',
-              pricing_type: 'medium',
-              sequence: 'medium',
-              sku: 'medium',
-              stockable: 'medium',
-              updated_at: 'medium',
-              version: 'medium',
-            },
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        example: [
-          {
-            id: '12345',
-            image_ids: ['12345', '67890'],
-            item_id: '12345',
-            name: 'Food',
-            price_amount: 10,
-            price_currency: 'USD',
-            pricing_type: 'fixed',
-            sequence: 0,
-            sku: '11910345',
-          },
-        ],
-        title: 'Variations',
-      }),
-    version: UpdatedBySchema.exactOptional(),
-  })
-  .openapi({
-    required: ['name'],
-    'x-apideck-schema-id': 'Item',
-    'x-apideck-weights': {
-      abbreviation: 'low',
-      absent_at_location_ids: 'edge-case',
-      available: 'high',
-      available_for_pickup: 'edge-case',
-      available_online: 'edge-case',
-      categories: 'low',
-      code: 'high',
-      cost: 'medium',
-      created_at: 'medium',
-      created_by: 'edge-case',
-      deleted: 'medium',
-      description: 'medium',
-      hidden: 'medium',
-      id: 'critical',
-      idempotency_key: 'medium',
-      modifier_groups: 'low',
-      name: 'critical',
-      options: 'low',
-      present_at_all_locations: 'low',
-      price_amount: 'high',
-      price_currency: 'high',
-      pricing_type: 'high',
-      product_type: 'high',
-      sku: 'high',
-      tax_ids: 'medium',
-      updated_at: 'medium',
-      updated_by: 'edge-case',
-      variations: 'low',
-      version: 'medium',
-    },
-  })
-  .openapi('Item')
-
-const GetItemResponseSchema = z
-  .object({
-    data: ItemSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
-    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Items' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetItemResponse',
-    'x-graphql-type-name': 'Item',
-  })
-  .openapi('GetItemResponse')
-
-const LinksSchema = z
-  .object({
-    current: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to navigate to the current page through the API',
-        example: 'https://unify.apideck.com/crm/companies',
-      }),
-    next: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Link to navigate to the previous page through the API',
-        example: 'https://unify.apideck.com/crm/companies?cursor=em9oby1jcm06OnBhZ2U6OjM',
-      }),
-    previous: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Link to navigate to the previous page through the API',
-        example: 'https://unify.apideck.com/crm/companies?cursor=em9oby1jcm06OnBhZ2U6OjE%3D',
-      }),
-  })
-  .openapi({
-    description: 'Links to navigate to previous or next pages through the API',
-    'x-apideck-schema-id': 'Links',
-    required: [],
-  })
-  .openapi('Links')
-
-const MetaSchema = z
-  .object({
-    cursors: z
-      .object({
-        current: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Cursor to navigate to the current page of results through the API',
-            example: 'em9oby1jcm06OnBhZ2U6OjI=',
-          }),
-        next: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Cursor to navigate to the next page of results through the API',
-            example: 'em9oby1jcm06OnBhZ2U6OjM=',
-          }),
-        previous: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Cursor to navigate to the previous page of results through the API',
-            example: 'em9oby1jcm06OnBhZ2U6OjE=',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Cursors to navigate to previous or next pages through the API',
-        required: [],
-      }),
-    items_on_page: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Number of items returned in the data property of the response',
-        example: 50,
-      }),
-  })
-  .openapi({ description: 'Response metadata', 'x-apideck-schema-id': 'Meta', required: [] })
-  .openapi('Meta')
-
-const GetItemsResponseSchema = z
-  .object({
-    data: z.array(ItemSchema),
-    links: LinksSchema.exactOptional(),
-    meta: MetaSchema.exactOptional(),
-    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
-    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Items' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetItemsResponse',
-    'x-graphql-type-name': 'ItemList',
-  })
-  .openapi('GetItemsResponse')
-
-const LocationSchema = z
-  .strictObject({
-    address: AddressSchema.exactOptional(),
-    business_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The business name of the location',
-        example: 'Dunkin Donuts LLC',
-        title: 'name',
-      }),
-    created_at: CreatedAtSchema.exactOptional(),
-    created_by: CreatedBySchema.exactOptional(),
-    currency: CurrencySchema.exactOptional(),
-    id: IdSchema.exactOptional(),
-    merchant_id: z.string().exactOptional().openapi({ example: '12345' }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the location',
-        example: 'Dunkin Donuts',
-        title: 'name',
-      }),
-    status: z
-      .enum(['active', 'inactive', 'other'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Status of this location.',
-        example: 'active',
-        title: 'Status',
-        'x-apideck-enum-id': 'locations.status',
-      }),
-    updated_at: UpdatedAtSchema.exactOptional(),
-    updated_by: UpdatedBySchema.exactOptional(),
-  })
-  .openapi({
-    'x-apideck-schema-id': 'Location',
-    'x-apideck-weights': {
-      address: 'high',
-      business_name: 'high',
-      created_at: 'medium',
-      created_by: 'edge-case',
-      currency: 'high',
-      id: 'critical',
-      merchant_id: 'high',
-      name: 'critical',
-      status: 'high',
-      updated_at: 'medium',
-      updated_by: 'edge-case',
-    },
-    required: [],
-  })
-  .openapi('Location')
-
-const GetLocationResponseSchema = z
-  .object({
-    data: LocationSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Locations' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetLocationResponse',
-    'x-graphql-type-name': 'Location',
-  })
-  .openapi('GetLocationResponse')
-
-const GetLocationsResponseSchema = z
-  .object({
-    data: z.array(LocationSchema),
-    links: LinksSchema.exactOptional(),
-    meta: MetaSchema.exactOptional(),
-    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Locations' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetLocationsResponse',
-    'x-graphql-type-name': 'LocationList',
-  })
-  .openapi('GetLocationsResponse')
-
-const ServiceChargeSchema = z
-  .object({
-    active: ActiveSchema.exactOptional(),
-    amount: z.number().exactOptional().openapi({ example: 27500, title: 'Amount (in cents)' }),
-    currency: CurrencySchema.exactOptional(),
-    id: IdSchema.exactOptional(),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Service charge name', example: 'Charge for delivery' }),
-    percentage: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Service charge percentage. Use this field to calculate the amount of the service charge. Pass a percentage and amount at the same time.',
-        example: 12.5,
-      }),
-    type: z
-      .enum(['auto_gratuity', 'custom'])
-      .exactOptional()
-      .openapi({
-        description: 'The type of the service charge.',
-        'x-apideck-enum-id': 'service-charges.type',
-      }),
-  })
-  .openapi({ 'x-apideck-schema-id': 'ServiceCharge', required: [] })
-  .openapi('ServiceCharge')
-
-const MerchantSchema = z
-  .strictObject({
-    address: AddressSchema.exactOptional(),
-    created_at: CreatedAtSchema.exactOptional(),
-    created_by: CreatedBySchema.exactOptional(),
-    currency: CurrencySchema.exactOptional(),
-    id: IdSchema.exactOptional(),
-    language: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'language code according to ISO 639-1. For the United States - EN',
-        example: 'EN',
-      }),
-    main_location_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The main location ID of the merchant',
-        example: '12345',
-        title: 'Main location ID',
-      }),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the merchant',
-        example: 'Dunkin Donuts',
-        title: 'name',
-      }),
-    owner_id: z.string().exactOptional().openapi({ example: '12345', title: 'Owner ID' }),
-    service_charges: z.array(ServiceChargeSchema).exactOptional(),
-    status: z
-      .enum(['active', 'inactive', 'other'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Status of this merchant.',
-        example: 'active',
-        title: 'Status',
-        'x-apideck-enum-id': 'merchants.status',
-      }),
-    updated_at: UpdatedAtSchema.exactOptional(),
-    updated_by: UpdatedBySchema.exactOptional(),
-  })
-  .openapi({
-    'x-apideck-schema-id': 'Merchant',
-    'x-apideck-weights': {
-      address: 'medium',
-      created_at: 'medium',
-      created_by: 'edge-case',
-      currency: 'medium',
-      id: 'critical',
-      language: 'medium',
-      main_location_id: 'medium',
-      name: 'critical',
-      owner_id: 'medium',
-      status: 'high',
-      updated_at: 'medium',
-      updated_by: 'edge-case',
-    },
-    required: [],
-  })
-  .openapi('Merchant')
-
-const GetMerchantResponseSchema = z
-  .object({
-    data: MerchantSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Merchants' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetMerchantResponse',
-    'x-graphql-type-name': 'Merchant',
-  })
-  .openapi('GetMerchantResponse')
-
-const GetMerchantsResponseSchema = z
-  .object({
-    data: z.array(MerchantSchema),
-    links: LinksSchema.exactOptional(),
-    meta: MetaSchema.exactOptional(),
-    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Merchants' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetMerchantsResponse',
-    'x-graphql-type-name': 'MerchantList',
-  })
-  .openapi('GetMerchantsResponse')
-
-const ModifierGroupSchema = z
-  .strictObject({
-    alternate_name: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'Modifier New', title: 'Alternate name' }),
-    created_at: CreatedAtSchema.exactOptional(),
-    created_by: CreatedBySchema.exactOptional(),
-    deleted: DeletedSchema.exactOptional(),
-    id: IdSchema.exactOptional(),
-    maximum_allowed: z.int().exactOptional().openapi({ example: 5, title: 'Maximum allowed' }),
-    minimum_required: z.int().exactOptional().openapi({ example: 1, title: 'Minimum required' }),
-    modifiers: z
-      .array(
-        z
-          .object({
-            alternate_name: z
-              .string()
-              .exactOptional()
-              .openapi({ example: 'Modifier New', title: 'Alternate name' }),
-            available: AvailableSchema.exactOptional(),
-            currency: CurrencySchema.exactOptional(),
-            id: z.string().exactOptional().openapi({ example: '12345', title: 'ID' }),
-            name: z.string().exactOptional().openapi({ example: 'Modifier', title: 'Name' }),
-            price_amount: z
-              .number()
-              .exactOptional()
-              .openapi({ example: 10, title: 'Price amount' }),
-          })
-          .openapi({
-            'x-apideck-weights': {
-              alternate_name: 'medium',
-              available: 'medium',
-              currency: 'medium',
-              id: 'medium',
-              name: 'medium',
-              price_amount: 'medium',
-            },
-            required: [],
-          }),
-      )
-      .exactOptional(),
-    name: z.string().exactOptional().openapi({ example: 'Modifier', title: 'Name' }),
-    present_at_all_locations: z
-      .boolean()
-      .exactOptional()
-      .openapi({ example: false, title: 'Present at all locations' }),
-    row_version: RowVersionSchema.exactOptional(),
-    selection_type: z
-      .enum(['single', 'multiple'])
-      .exactOptional()
-      .openapi({
-        example: 'single',
-        title:
-          'Indicates whether multiple options from the modifier group can be applied to a single or multiple modifiers',
-        'x-apideck-enum-id': 'modifier-groups.selection_type',
-      }),
-    updated_at: UpdatedAtSchema.exactOptional(),
-    updated_by: UpdatedBySchema.exactOptional(),
-  })
-  .openapi({
-    'x-apideck-schema-id': 'ModifierGroup',
-    'x-apideck-weights': {
-      alternate_name: 'low',
-      created_at: 'medium',
-      created_by: 'edge-case',
-      deleted: 'medium',
-      id: 'critical',
-      maximum_allowed: 'low',
-      minimum_required: 'low',
-      modifiers: 'high',
-      name: 'critical',
-      present_at_all_locations: 'low',
-      row_version: 'edge-case',
-      selection_type: 'medium',
-      updated_at: 'medium',
-      updated_by: 'edge-case',
-    },
-    required: [],
-  })
-  .openapi('ModifierGroup')
-
-const GetModifierGroupResponseSchema = z
-  .object({
-    data: ModifierGroupSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'ModifierGroups' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetModifierGroupResponse',
-    'x-graphql-type-name': 'ModifierGroup',
-  })
-  .openapi('GetModifierGroupResponse')
-
-const GetModifierGroupsResponseSchema = z
-  .object({
-    data: z.array(ModifierGroupSchema),
-    links: LinksSchema.exactOptional(),
-    meta: MetaSchema.exactOptional(),
-    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'ModifierGroups' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetModifierGroupsResponse',
-    'x-graphql-type-name': 'ModifierGroupList',
-  })
-  .openapi('GetModifierGroupsResponse')
-
-const ModifierSchema = z
-  .strictObject({
-    alternate_name: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'Modifier New', title: 'Alternate name' }),
-    available: AvailableSchema.exactOptional(),
-    created_at: CreatedAtSchema.exactOptional(),
-    created_by: CreatedBySchema.exactOptional(),
-    currency: CurrencySchema.exactOptional(),
-    id: IdSchema.exactOptional(),
-    idempotency_key: IdempotencyKeySchema.exactOptional(),
-    modifier_group_id: z.string().openapi({ example: '123', title: 'Modifier group ID' }),
-    name: z.string().openapi({ example: 'Modifier', title: 'Name' }),
-    price_amount: z.number().exactOptional().openapi({ example: 10, title: 'Price amount' }),
-    updated_at: UpdatedAtSchema.exactOptional(),
-    updated_by: UpdatedBySchema.exactOptional(),
-  })
-  .openapi({
-    required: ['name', 'modifier_group_id'],
-    'x-apideck-schema-id': 'Modifier',
-    'x-apideck-weights': {
-      alternate_name: 'edge-case',
-      available: 'high',
-      created_at: 'medium',
-      created_by: 'edge-case',
-      currency: 'high',
-      id: 'critical',
-      modifier_group_id: 'medium',
-      name: 'critical',
-      price_amount: 'high',
-      updated_at: 'medium',
-      updated_by: 'edge-case',
-    },
-  })
-  .openapi('Modifier')
-
-const GetModifierResponseSchema = z
-  .object({
-    data: ModifierSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Modifiers' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetModifierResponse',
-    'x-graphql-type-name': 'Modifier',
-  })
-  .openapi('GetModifierResponse')
-
-const GetModifiersResponseSchema = z
-  .object({
-    data: z.array(ModifierSchema),
-    links: LinksSchema.exactOptional(),
-    meta: MetaSchema.exactOptional(),
-    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Modifiers' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'GetModifiersResponse',
-    'x-graphql-type-name': 'ModifierList',
-  })
-  .openapi('GetModifiersResponse')
 
 const PhoneNumberSchema = z
   .strictObject({
@@ -1893,6 +476,154 @@ const PhoneNumberSchema = z
   })
   .openapi('PhoneNumber')
 
+const IdSchema = z
+  .string()
+  .openapi({
+    description: 'A unique identifier for an object.',
+    example: '12345',
+    readOnly: true,
+    title: 'ID',
+  })
+  .openapi('Id')
+
+const RowVersionSchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description:
+      'A binary value used to detect updates to a object and prevent data conflicts. It is incremented each time an update is made to the object.',
+    example: '1-12345',
+    title: 'Row version',
+  })
+  .openapi('RowVersion')
+
+const AddressSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of city.', example: 'San Francisco' }),
+    contact_name: z.string().nullable().exactOptional().openapi({ example: 'Elon Musk' }),
+    country: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'country code according to ISO 3166-1 alpha-2.', example: 'US' }),
+    county: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Address field that holds a sublocality, such as a county',
+        example: 'Santa Clara',
+      }),
+    email: z.string().nullable().exactOptional().openapi({ example: 'elon@musk.com' }),
+    fax: z.string().nullable().exactOptional().openapi({ example: '122-111-1111' }),
+    id: z.string().nullable().exactOptional().openapi({ example: '123' }),
+    latitude: z.string().nullable().exactOptional().openapi({ example: '40.759211' }),
+    line1: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Line 1 of the address e.g. number, street, suite, apt #, etc.',
+        example: 'Main street',
+      }),
+    line2: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Line 2 of the address', example: 'apt #' }),
+    line3: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Line 3 of the address', example: 'Suite #' }),
+    line4: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Line 4 of the address', example: 'delivery instructions' }),
+    longitude: z.string().nullable().exactOptional().openapi({ example: '-73.984638' }),
+    name: z.string().nullable().exactOptional().openapi({ example: 'HQ US' }),
+    phone_number: z.string().nullable().exactOptional().openapi({ example: '111-111-1111' }),
+    postal_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Zip code or equivalent.', example: '94104' }),
+    row_version: RowVersionSchema.exactOptional(),
+    salutation: z.string().nullable().exactOptional().openapi({ example: 'Mr' }),
+    state: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Name of state', example: 'CA' }),
+    street_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Street number', example: '25' }),
+    string: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: '25 Spring Street, Blackburn, VIC 3130',
+        title: "The address string. Some APIs don't provide structured address data.",
+      }),
+    type: z
+      .enum(['primary', 'secondary', 'home', 'office', 'shipping', 'billing', 'other'])
+      .exactOptional()
+      .openapi({
+        example: 'primary',
+        'x-apideck-enum-id': 'addresses.type',
+        'x-graphql-type-name': 'AddressType',
+      }),
+    website: z.string().nullable().exactOptional().openapi({ example: 'https://elonmusk.com' }),
+  })
+  .openapi({
+    'x-apideck-schema-id': 'Address',
+    'x-apideck-weights': {
+      city: 'high',
+      contact_name: 'edge-case',
+      country: 'high',
+      county: 'edge-case',
+      email: 'edge-case',
+      fax: 'edge-case',
+      id: 'edge-case',
+      latitude: 'low',
+      line1: 'high',
+      line2: 'low',
+      line3: 'edge-case',
+      line4: 'edge-case',
+      longitude: 'low',
+      name: 'edge-case',
+      phone_number: 'edge-case',
+      postal_code: 'high',
+      row_version: 'edge-case',
+      salutation: 'edge-case',
+      state: 'high',
+      street_number: 'low',
+      string: 'low',
+      type: 'critical',
+      website: 'edge-case',
+    },
+    required: [],
+  })
+  .openapi('Address')
+
+const IdempotencyKeySchema = z
+  .string()
+  .max(45)
+  .openapi({
+    description:
+      'A value you specify that uniquely identifies this request among requests you have sent.',
+    example: 'random_string',
+  })
+  .openapi('IdempotencyKey')
+
 const QuantitySchema = z
   .number()
   .nullable()
@@ -1904,6 +635,41 @@ const UnitPriceSchema = z
   .nullable()
   .openapi({ example: 27500.5, title: 'Unit price' })
   .openapi('UnitPrice')
+
+const ActiveSchema = z
+  .boolean()
+  .nullable()
+  .openapi({ example: true, title: 'Is active' })
+  .openapi('Active')
+
+const ServiceChargeSchema = z
+  .object({
+    active: ActiveSchema.exactOptional(),
+    amount: z.number().exactOptional().openapi({ example: 27500, title: 'Amount (in cents)' }),
+    currency: CurrencySchema.exactOptional(),
+    id: IdSchema.exactOptional(),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Service charge name', example: 'Charge for delivery' }),
+    percentage: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Service charge percentage. Use this field to calculate the amount of the service charge. Pass a percentage and amount at the same time.',
+        example: 12.5,
+      }),
+    type: z
+      .enum(['auto_gratuity', 'custom'])
+      .exactOptional()
+      .openapi({
+        description: 'The type of the service charge.',
+        'x-apideck-enum-id': 'service-charges.type',
+      }),
+  })
+  .openapi({ 'x-apideck-schema-id': 'ServiceCharge', required: [] })
+  .openapi('ServiceCharge')
 
 const ServiceChargesSchema = z
   .array(ServiceChargeSchema)
@@ -2039,6 +805,28 @@ const PaymentCardSchema = z
     required: [],
   })
   .openapi('PaymentCard')
+
+const UpdatedAtSchema = z.iso
+  .datetime({ offset: true })
+  .nullable()
+  .openapi({
+    description: 'The date and time when the object was last updated.',
+    example: '2020-09-30T07:43:32.000Z',
+    readOnly: true,
+    title: 'Updated at (timestamp)',
+  })
+  .openapi('UpdatedAt')
+
+const UpdatedBySchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'The user who last updated the object.',
+    example: '12345',
+    readOnly: true,
+    title: 'Updated by',
+  })
+  .openapi('UpdatedBy')
 
 const OrderSchema = z
   .strictObject({
@@ -2310,7 +1098,10 @@ const OrderSchema = z
                 },
                 required: [],
               }),
-            shipment_details: z.object({}).exactOptional().openapi({ 'x-apideck-weights': {} }),
+            shipment_details: z
+              .looseObject({})
+              .exactOptional()
+              .openapi({ 'x-apideck-weights': {} }),
             status: z
               .enum([
                 'proposed',
@@ -2858,6 +1649,1229 @@ const OrderSchema = z
   })
   .openapi('Order')
 
+const LinksSchema = z
+  .object({
+    current: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to navigate to the current page through the API',
+        example: 'https://unify.apideck.com/crm/companies',
+      }),
+    next: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Link to navigate to the previous page through the API',
+        example: 'https://unify.apideck.com/crm/companies?cursor=em9oby1jcm06OnBhZ2U6OjM',
+      }),
+    previous: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Link to navigate to the previous page through the API',
+        example: 'https://unify.apideck.com/crm/companies?cursor=em9oby1jcm06OnBhZ2U6OjE%3D',
+      }),
+  })
+  .openapi({
+    description: 'Links to navigate to previous or next pages through the API',
+    'x-apideck-schema-id': 'Links',
+    required: [],
+  })
+  .openapi('Links')
+
+const MetaSchema = z
+  .object({
+    cursors: z
+      .object({
+        current: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Cursor to navigate to the current page of results through the API',
+            example: 'em9oby1jcm06OnBhZ2U6OjI=',
+          }),
+        next: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Cursor to navigate to the next page of results through the API',
+            example: 'em9oby1jcm06OnBhZ2U6OjM=',
+          }),
+        previous: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Cursor to navigate to the previous page of results through the API',
+            example: 'em9oby1jcm06OnBhZ2U6OjE=',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Cursors to navigate to previous or next pages through the API',
+        required: [],
+      }),
+    items_on_page: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Number of items returned in the data property of the response',
+        example: 50,
+      }),
+  })
+  .openapi({ description: 'Response metadata', 'x-apideck-schema-id': 'Meta', required: [] })
+  .openapi('Meta')
+
+type GetOrdersResponseType = {
+  data: z.infer<typeof OrderSchema>[]
+  links?: z.infer<typeof LinksSchema>
+  meta?: z.infer<typeof MetaSchema>
+  operation: string
+  resource: string
+  service: string
+  status: string
+  status_code: number
+}
+
+const AvailableSchema = z
+  .boolean()
+  .nullable()
+  .openapi({ example: true, title: 'Available' })
+  .openapi('Available')
+
+const BadRequestResponseSchema = z
+  .object({
+    detail: z
+      .union([
+        z.string().openapi({ example: 'Missing property foobar' }),
+        z.looseObject({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains parameter or domain specific information related to the error and why it occurred.',
+      }),
+    error: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains an explanation of the status_code as defined in HTTP/1.1 standard (RFC 7231)',
+        example: 'Bad Request',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A human-readable message providing more details about the error.',
+        example: 'Invalid Params',
+      }),
+    ref: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to documentation of error type',
+        example: 'https://developers.apideck.com/errors#requestvalidationerror',
+      }),
+    status_code: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'HTTP status code', example: 400 }),
+    type_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of error returned', example: 'RequestValidationError' }),
+  })
+  .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
+  .openapi('BadRequestResponse')
+
+const UnifiedIdSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of the resource',
+        example: '12345',
+        readOnly: true,
+        title: 'Id',
+      }),
+  })
+  .openapi({ required: ['id'], title: 'UnifiedId', 'x-apideck-schema-id': 'Id' })
+  .openapi('UnifiedId')
+
+const CreateItemResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Items' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateItemResponse',
+  })
+  .openapi('CreateItemResponse')
+
+const CreateLocationResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Locations' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateLocationResponse',
+  })
+  .openapi('CreateLocationResponse')
+
+const CreateMerchantResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Merchants' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateMerchantResponse',
+  })
+  .openapi('CreateMerchantResponse')
+
+const CreateModifierGroupResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'ModifierGroups' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateModifierGroupResponse',
+  })
+  .openapi('CreateModifierGroupResponse')
+
+const CreateModifierResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Modifiers' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateModifierResponse',
+  })
+  .openapi('CreateModifierResponse')
+
+const CreateOrderResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z.string().openapi({ description: 'Unified API resource name', example: 'orders' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateOrderResponse',
+  })
+  .openapi('CreateOrderResponse')
+
+const CreateOrderTypeResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'OrderTypes' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateOrderTypeResponse',
+  })
+  .openapi('CreateOrderTypeResponse')
+
+const CreatePosPaymentResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'PosPayments' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreatePosPaymentResponse',
+  })
+  .openapi('CreatePosPaymentResponse')
+
+const CreateTenderResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Tenders' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateTenderResponse',
+  })
+  .openapi('CreateTenderResponse')
+
+const CustomFieldSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'More information about the custom field',
+        example: 'Employee Level',
+        title: 'Description',
+      }),
+    id: z.string().openapi({ example: '2389328923893298', title: 'ID' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the custom field.',
+        example: 'employee_level',
+        title: 'Name',
+      }),
+    value: z
+      .union([
+        z.string().nullable().openapi({ example: 'Uses Salesforce and Marketo' }),
+        z.number().nullable().openapi({ example: 10 }),
+        z.boolean().nullable().openapi({ example: true }),
+        z.array(z.string()),
+      ])
+      .exactOptional(),
+  })
+  .openapi({
+    required: ['id'],
+    'x-apideck-schema-id': 'CustomField',
+    'x-apideck-weights': {
+      description: 'edge-case',
+      id: 'critical',
+      name: 'medium',
+      value: 'critical',
+    },
+  })
+  .openapi('CustomField')
+
+const DeleteItemResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Items' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteItemResponse',
+  })
+  .openapi('DeleteItemResponse')
+
+const DeleteLocationResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Locations' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteLocationResponse',
+  })
+  .openapi('DeleteLocationResponse')
+
+const DeleteMerchantResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Merchants' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteMerchantResponse',
+  })
+  .openapi('DeleteMerchantResponse')
+
+const DeleteModifierGroupResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'ModifierGroups' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteModifierGroupResponse',
+  })
+  .openapi('DeleteModifierGroupResponse')
+
+const DeleteModifierResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Modifiers' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteModifierResponse',
+  })
+  .openapi('DeleteModifierResponse')
+
+const DeleteOrderResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z.string().openapi({ description: 'Unified API resource name', example: 'orders' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteOrderResponse',
+  })
+  .openapi('DeleteOrderResponse')
+
+const DeleteOrderTypeResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'OrderTypes' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteOrderTypeResponse',
+  })
+  .openapi('DeleteOrderTypeResponse')
+
+const DeletePosPaymentResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'PosPayments' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeletePosPaymentResponse',
+  })
+  .openapi('DeletePosPaymentResponse')
+
+const DeleteTenderResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Tenders' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'clover' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteTenderResponse',
+  })
+  .openapi('DeleteTenderResponse')
+
+const DeletedSchema = z
+  .boolean()
+  .nullable()
+  .openapi({ example: true, title: 'Deleted' })
+  .openapi('Deleted')
+
+const HiddenSchema = z
+  .boolean()
+  .nullable()
+  .openapi({ example: true, title: 'Hidden' })
+  .openapi('Hidden')
+
+const SequenceSchema = z
+  .number()
+  .nullable()
+  .openapi({ example: 1, title: 'Sequence' })
+  .openapi('Sequence')
+
+const ItemSchema = z
+  .strictObject({
+    abbreviation: z.string().exactOptional().openapi({ example: 'Ch', title: 'Abbreviation' }),
+    absent_at_location_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of locations where the object is not present, even if present_at_all_locations is true. This can include locations that are deactivated.',
+        example: ['12345', '67890'],
+      }),
+    available: AvailableSchema.exactOptional(),
+    available_for_pickup: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        example: false,
+        title: "If true, the item can be added to pickup orders from the merchant's online store.",
+      }),
+    available_online: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        example: false,
+        title:
+          "If true, the item can be added to shipping orders from the merchant's online store.",
+      }),
+    categories: z
+      .array(
+        z
+          .object({
+            id: IdSchema.exactOptional(),
+            image_ids: z.array(IdSchema).exactOptional(),
+            name: z.string().exactOptional(),
+          })
+          .openapi({
+            'x-apideck-weights': { id: 'medium', image_ids: 'medium', name: 'medium' },
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        example: [{ id: '12345', image_ids: ['12345', '67890'], name: 'Food' }],
+        title: 'Categories',
+      }),
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Product code, e.g. UPC or EAN', example: '11910345', title: 'SKU' }),
+    cost: z.number().exactOptional().openapi({ example: 2, title: 'Cost' }),
+    created_at: CreatedAtSchema.exactOptional(),
+    created_by: CreatedBySchema.exactOptional(),
+    deleted: DeletedSchema.exactOptional(),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'Hot Chocolate', title: 'Description' }),
+    hidden: HiddenSchema.exactOptional(),
+    id: z.string().exactOptional().openapi({ example: '#cocoa' }),
+    idempotency_key: IdempotencyKeySchema.exactOptional(),
+    modifier_groups: z
+      .array(
+        z
+          .object({ id: IdSchema.exactOptional() })
+          .openapi({ 'x-apideck-weights': { id: 'medium' }, required: [] }),
+      )
+      .exactOptional()
+      .openapi({ example: [{ id: '12345' }], title: 'Variations' }),
+    name: z.string().openapi({ example: 'Cocoa', title: 'Name' }),
+    options: z
+      .array(
+        z
+          .object({
+            attribute_id: z
+              .string()
+              .exactOptional()
+              .openapi({ example: '12345', title: 'Attribute ID' }),
+            id: z.string().exactOptional().openapi({ example: '12345' }),
+            name: z.string().exactOptional().openapi({ example: 'Option 1', title: 'Name' }),
+          })
+          .openapi({
+            'x-apideck-weights': { attribute_id: 'medium', id: 'medium', name: 'medium' },
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: "List of options pertaining to this item's attribute variation" }),
+    present_at_all_locations: z
+      .boolean()
+      .exactOptional()
+      .openapi({ example: false, title: 'Present at all locations' }),
+    price_amount: z.number().exactOptional().openapi({ example: 10, title: 'Price amount' }),
+    price_currency: CurrencySchema.exactOptional(),
+    pricing_type: z
+      .enum(['fixed', 'variable', 'per_unit', 'other'])
+      .exactOptional()
+      .openapi({
+        example: 'fixed',
+        title: 'Pricing type',
+        'x-apideck-enum-id': 'items.pricing_type',
+      }),
+    product_type: z
+      .enum(['regular', 'other'])
+      .exactOptional()
+      .openapi({
+        example: 'regular',
+        title: 'Product type',
+        'x-apideck-enum-id': 'items.product_type',
+      }),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'SKU of the item', example: '11910345', title: 'SKU' }),
+    tax_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of Tax IDs for the product.',
+        example: ['12345', '67890'],
+        title: 'Tax IDs',
+      }),
+    updated_at: UpdatedAtSchema.exactOptional(),
+    updated_by: UpdatedBySchema.exactOptional(),
+    variations: z
+      .array(
+        z
+          .object({
+            created_at: CreatedAtSchema.exactOptional(),
+            id: IdSchema.exactOptional(),
+            item_id: IdSchema.exactOptional(),
+            name: z.string().exactOptional().openapi({ example: 'Variation', title: 'Name' }),
+            present_at_all_locations: z
+              .boolean()
+              .exactOptional()
+              .openapi({ example: false, title: 'Present at all locations' }),
+            price_amount: z
+              .number()
+              .exactOptional()
+              .openapi({ example: 10, title: 'Price amount' }),
+            price_currency: CurrencySchema.exactOptional(),
+            pricing_type: z
+              .enum(['fixed', 'variable', 'other'])
+              .exactOptional()
+              .openapi({
+                example: 'fixed',
+                title: 'Pricing type',
+                'x-apideck-enum-id': 'items.pricing_type',
+              }),
+            sequence: SequenceSchema.exactOptional(),
+            sku: z.string().exactOptional().openapi({ example: '11910345', title: 'SKU' }),
+            stockable: z.boolean().exactOptional().openapi({ example: false, title: 'Stockable' }),
+            updated_at: UpdatedAtSchema.exactOptional(),
+            version: UpdatedBySchema.exactOptional(),
+          })
+          .openapi({
+            'x-apideck-weights': {
+              created_at: 'medium',
+              id: 'medium',
+              item_id: 'medium',
+              name: 'medium',
+              present_at_all_locations: 'medium',
+              price_amount: 'medium',
+              price_currency: 'medium',
+              pricing_type: 'medium',
+              sequence: 'medium',
+              sku: 'medium',
+              stockable: 'medium',
+              updated_at: 'medium',
+              version: 'medium',
+            },
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        example: [
+          {
+            id: '12345',
+            image_ids: ['12345', '67890'],
+            item_id: '12345',
+            name: 'Food',
+            price_amount: 10,
+            price_currency: 'USD',
+            pricing_type: 'fixed',
+            sequence: 0,
+            sku: '11910345',
+          },
+        ],
+        title: 'Variations',
+      }),
+    version: UpdatedBySchema.exactOptional(),
+  })
+  .openapi({
+    required: ['name'],
+    'x-apideck-schema-id': 'Item',
+    'x-apideck-weights': {
+      abbreviation: 'low',
+      absent_at_location_ids: 'edge-case',
+      available: 'high',
+      available_for_pickup: 'edge-case',
+      available_online: 'edge-case',
+      categories: 'low',
+      code: 'high',
+      cost: 'medium',
+      created_at: 'medium',
+      created_by: 'edge-case',
+      deleted: 'medium',
+      description: 'medium',
+      hidden: 'medium',
+      id: 'critical',
+      idempotency_key: 'medium',
+      modifier_groups: 'low',
+      name: 'critical',
+      options: 'low',
+      present_at_all_locations: 'low',
+      price_amount: 'high',
+      price_currency: 'high',
+      pricing_type: 'high',
+      product_type: 'high',
+      sku: 'high',
+      tax_ids: 'medium',
+      updated_at: 'medium',
+      updated_by: 'edge-case',
+      variations: 'low',
+      version: 'medium',
+    },
+  })
+  .openapi('Item')
+
+const GetItemResponseSchema = z
+  .object({
+    data: ItemSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
+    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Items' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetItemResponse',
+    'x-graphql-type-name': 'Item',
+  })
+  .openapi('GetItemResponse')
+
+const GetItemsResponseSchema = z
+  .object({
+    data: z.array(ItemSchema),
+    links: LinksSchema.exactOptional(),
+    meta: MetaSchema.exactOptional(),
+    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
+    resource: z.string().openapi({ description: 'Unified API resource name', example: 'Items' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetItemsResponse',
+    'x-graphql-type-name': 'ItemList',
+  })
+  .openapi('GetItemsResponse')
+
+const LocationSchema = z
+  .strictObject({
+    address: AddressSchema.exactOptional(),
+    business_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The business name of the location',
+        example: 'Dunkin Donuts LLC',
+        title: 'name',
+      }),
+    created_at: CreatedAtSchema.exactOptional(),
+    created_by: CreatedBySchema.exactOptional(),
+    currency: CurrencySchema.exactOptional(),
+    id: IdSchema.exactOptional(),
+    merchant_id: z.string().exactOptional().openapi({ example: '12345' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the location',
+        example: 'Dunkin Donuts',
+        title: 'name',
+      }),
+    status: z
+      .enum(['active', 'inactive', 'other'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Status of this location.',
+        example: 'active',
+        title: 'Status',
+        'x-apideck-enum-id': 'locations.status',
+      }),
+    updated_at: UpdatedAtSchema.exactOptional(),
+    updated_by: UpdatedBySchema.exactOptional(),
+  })
+  .openapi({
+    'x-apideck-schema-id': 'Location',
+    'x-apideck-weights': {
+      address: 'high',
+      business_name: 'high',
+      created_at: 'medium',
+      created_by: 'edge-case',
+      currency: 'high',
+      id: 'critical',
+      merchant_id: 'high',
+      name: 'critical',
+      status: 'high',
+      updated_at: 'medium',
+      updated_by: 'edge-case',
+    },
+    required: [],
+  })
+  .openapi('Location')
+
+const GetLocationResponseSchema = z
+  .object({
+    data: LocationSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Locations' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetLocationResponse',
+    'x-graphql-type-name': 'Location',
+  })
+  .openapi('GetLocationResponse')
+
+const GetLocationsResponseSchema = z
+  .object({
+    data: z.array(LocationSchema),
+    links: LinksSchema.exactOptional(),
+    meta: MetaSchema.exactOptional(),
+    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Locations' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetLocationsResponse',
+    'x-graphql-type-name': 'LocationList',
+  })
+  .openapi('GetLocationsResponse')
+
+const MerchantSchema = z
+  .strictObject({
+    address: AddressSchema.exactOptional(),
+    created_at: CreatedAtSchema.exactOptional(),
+    created_by: CreatedBySchema.exactOptional(),
+    currency: CurrencySchema.exactOptional(),
+    id: IdSchema.exactOptional(),
+    language: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'language code according to ISO 639-1. For the United States - EN',
+        example: 'EN',
+      }),
+    main_location_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The main location ID of the merchant',
+        example: '12345',
+        title: 'Main location ID',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the merchant',
+        example: 'Dunkin Donuts',
+        title: 'name',
+      }),
+    owner_id: z.string().exactOptional().openapi({ example: '12345', title: 'Owner ID' }),
+    service_charges: z.array(ServiceChargeSchema).exactOptional(),
+    status: z
+      .enum(['active', 'inactive', 'other'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Status of this merchant.',
+        example: 'active',
+        title: 'Status',
+        'x-apideck-enum-id': 'merchants.status',
+      }),
+    updated_at: UpdatedAtSchema.exactOptional(),
+    updated_by: UpdatedBySchema.exactOptional(),
+  })
+  .openapi({
+    'x-apideck-schema-id': 'Merchant',
+    'x-apideck-weights': {
+      address: 'medium',
+      created_at: 'medium',
+      created_by: 'edge-case',
+      currency: 'medium',
+      id: 'critical',
+      language: 'medium',
+      main_location_id: 'medium',
+      name: 'critical',
+      owner_id: 'medium',
+      status: 'high',
+      updated_at: 'medium',
+      updated_by: 'edge-case',
+    },
+    required: [],
+  })
+  .openapi('Merchant')
+
+const GetMerchantResponseSchema = z
+  .object({
+    data: MerchantSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Merchants' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetMerchantResponse',
+    'x-graphql-type-name': 'Merchant',
+  })
+  .openapi('GetMerchantResponse')
+
+const GetMerchantsResponseSchema = z
+  .object({
+    data: z.array(MerchantSchema),
+    links: LinksSchema.exactOptional(),
+    meta: MetaSchema.exactOptional(),
+    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Merchants' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetMerchantsResponse',
+    'x-graphql-type-name': 'MerchantList',
+  })
+  .openapi('GetMerchantsResponse')
+
+const ModifierGroupSchema = z
+  .strictObject({
+    alternate_name: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'Modifier New', title: 'Alternate name' }),
+    created_at: CreatedAtSchema.exactOptional(),
+    created_by: CreatedBySchema.exactOptional(),
+    deleted: DeletedSchema.exactOptional(),
+    id: IdSchema.exactOptional(),
+    maximum_allowed: z.int().exactOptional().openapi({ example: 5, title: 'Maximum allowed' }),
+    minimum_required: z.int().exactOptional().openapi({ example: 1, title: 'Minimum required' }),
+    modifiers: z
+      .array(
+        z
+          .object({
+            alternate_name: z
+              .string()
+              .exactOptional()
+              .openapi({ example: 'Modifier New', title: 'Alternate name' }),
+            available: AvailableSchema.exactOptional(),
+            currency: CurrencySchema.exactOptional(),
+            id: z.string().exactOptional().openapi({ example: '12345', title: 'ID' }),
+            name: z.string().exactOptional().openapi({ example: 'Modifier', title: 'Name' }),
+            price_amount: z
+              .number()
+              .exactOptional()
+              .openapi({ example: 10, title: 'Price amount' }),
+          })
+          .openapi({
+            'x-apideck-weights': {
+              alternate_name: 'medium',
+              available: 'medium',
+              currency: 'medium',
+              id: 'medium',
+              name: 'medium',
+              price_amount: 'medium',
+            },
+            required: [],
+          }),
+      )
+      .exactOptional(),
+    name: z.string().exactOptional().openapi({ example: 'Modifier', title: 'Name' }),
+    present_at_all_locations: z
+      .boolean()
+      .exactOptional()
+      .openapi({ example: false, title: 'Present at all locations' }),
+    row_version: RowVersionSchema.exactOptional(),
+    selection_type: z
+      .enum(['single', 'multiple'])
+      .exactOptional()
+      .openapi({
+        example: 'single',
+        title:
+          'Indicates whether multiple options from the modifier group can be applied to a single or multiple modifiers',
+        'x-apideck-enum-id': 'modifier-groups.selection_type',
+      }),
+    updated_at: UpdatedAtSchema.exactOptional(),
+    updated_by: UpdatedBySchema.exactOptional(),
+  })
+  .openapi({
+    'x-apideck-schema-id': 'ModifierGroup',
+    'x-apideck-weights': {
+      alternate_name: 'low',
+      created_at: 'medium',
+      created_by: 'edge-case',
+      deleted: 'medium',
+      id: 'critical',
+      maximum_allowed: 'low',
+      minimum_required: 'low',
+      modifiers: 'high',
+      name: 'critical',
+      present_at_all_locations: 'low',
+      row_version: 'edge-case',
+      selection_type: 'medium',
+      updated_at: 'medium',
+      updated_by: 'edge-case',
+    },
+    required: [],
+  })
+  .openapi('ModifierGroup')
+
+const GetModifierGroupResponseSchema = z
+  .object({
+    data: ModifierGroupSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'ModifierGroups' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetModifierGroupResponse',
+    'x-graphql-type-name': 'ModifierGroup',
+  })
+  .openapi('GetModifierGroupResponse')
+
+const GetModifierGroupsResponseSchema = z
+  .object({
+    data: z.array(ModifierGroupSchema),
+    links: LinksSchema.exactOptional(),
+    meta: MetaSchema.exactOptional(),
+    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'ModifierGroups' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetModifierGroupsResponse',
+    'x-graphql-type-name': 'ModifierGroupList',
+  })
+  .openapi('GetModifierGroupsResponse')
+
+const ModifierSchema = z
+  .strictObject({
+    alternate_name: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'Modifier New', title: 'Alternate name' }),
+    available: AvailableSchema.exactOptional(),
+    created_at: CreatedAtSchema.exactOptional(),
+    created_by: CreatedBySchema.exactOptional(),
+    currency: CurrencySchema.exactOptional(),
+    id: IdSchema.exactOptional(),
+    idempotency_key: IdempotencyKeySchema.exactOptional(),
+    modifier_group_id: z.string().openapi({ example: '123', title: 'Modifier group ID' }),
+    name: z.string().openapi({ example: 'Modifier', title: 'Name' }),
+    price_amount: z.number().exactOptional().openapi({ example: 10, title: 'Price amount' }),
+    updated_at: UpdatedAtSchema.exactOptional(),
+    updated_by: UpdatedBySchema.exactOptional(),
+  })
+  .openapi({
+    required: ['name', 'modifier_group_id'],
+    'x-apideck-schema-id': 'Modifier',
+    'x-apideck-weights': {
+      alternate_name: 'edge-case',
+      available: 'high',
+      created_at: 'medium',
+      created_by: 'edge-case',
+      currency: 'high',
+      id: 'critical',
+      modifier_group_id: 'medium',
+      name: 'critical',
+      price_amount: 'high',
+      updated_at: 'medium',
+      updated_by: 'edge-case',
+    },
+  })
+  .openapi('Modifier')
+
+const GetModifierResponseSchema = z
+  .object({
+    data: ModifierSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'one' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Modifiers' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetModifierResponse',
+    'x-graphql-type-name': 'Modifier',
+  })
+  .openapi('GetModifierResponse')
+
+const GetModifiersResponseSchema = z
+  .object({
+    data: z.array(ModifierSchema),
+    links: LinksSchema.exactOptional(),
+    meta: MetaSchema.exactOptional(),
+    operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Modifiers' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'square' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'GetModifiersResponse',
+    'x-graphql-type-name': 'ModifierList',
+  })
+  .openapi('GetModifiersResponse')
+
 const GetOrderResponseSchema = z
   .object({
     data: OrderSchema,
@@ -2946,7 +2960,7 @@ const GetOrderTypesResponseSchema = z
   })
   .openapi('GetOrderTypesResponse')
 
-const GetOrdersResponseSchema = z
+const GetOrdersResponseSchema: z.ZodType<GetOrdersResponseType> = z
   .object({
     data: z.array(OrderSchema),
     links: LinksSchema.exactOptional(),
@@ -3391,7 +3405,7 @@ const NotFoundResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: "Could not find widget with id: '123'" }),
-        z.object({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
+        z.looseObject({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
       ])
       .exactOptional()
       .openapi({
@@ -3442,7 +3456,7 @@ const NotImplementedResponseSchema = z
             example:
               "Failed to retrieve Widget tokenUrl from 'components.securitySchemes.OAuth2.flows'",
           }),
-        z.object({}),
+        z.looseObject({}),
       ])
       .exactOptional()
       .openapi({
@@ -3716,7 +3730,9 @@ const UnexpectedErrorResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: 'Missing Header: x-apideck-consumer-id' }),
-        z.object({}).openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
+        z
+          .looseObject({})
+          .openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
       ])
       .exactOptional()
       .openapi({

@@ -533,17 +533,14 @@ export const getAccountVerificationReportsCodeRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-State': {
-          style: 'simple',
-          schema: z
-            .any()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'The state provided in the routes generation request.',
-              example: '123A-456B-789C-10D',
-            }),
-        },
+        'X-State': z
+          .any()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'The state provided in the routes generation request.',
+            example: '123A-456B-789C-10D',
+          }),
       }),
     },
     400: {

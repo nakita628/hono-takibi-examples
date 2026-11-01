@@ -1,64 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const RepaymentTermSchema = z
-  .object({
-    estimatedDays: z
-      .int32()
-      .openapi({ description: 'The estimated duration of the repayment term, in days.' }),
-    maximumDays: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum duration of the repayment term, in days. Only applies when `contractType` is **loan**.',
-      }),
-  })
-  .openapi({ required: ['estimatedDays'] })
-  .openapi('RepaymentTerm')
-
-const AmountSchema = z
-  .object({
-    currency: z
-      .string()
-      .openapi({
-        description:
-          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount.',
-      }),
-    value: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).',
-      }),
-  })
-  .openapi({ required: ['currency', 'value'] })
-  .openapi('Amount')
-
-const ThresholdRepaymentSchema = z
-  .object({
-    amount: AmountSchema.openapi({
-      description: 'The minimum threshold amount that your user must repay on every 30-day period.',
-    }),
-  })
-  .openapi({ required: ['amount'] })
-  .openapi('ThresholdRepayment')
-
-type RepaymentType = {
-  basisPoints: number
-  term?: z.infer<typeof RepaymentTermSchema>
-  threshold?: z.infer<typeof ThresholdRepaymentSchema>
-}
-
 const BankAccountIdentificationSchema = z
   .object({
     type: z
@@ -147,6 +88,34 @@ const AdditionalBankIdentificationSchema = z
   })
   .openapi({ required: [] })
   .openapi('AdditionalBankIdentification')
+
+const AmountSchema = z
+  .object({
+    currency: z
+      .string()
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount.',
+      }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).',
+      }),
+  })
+  .openapi({ required: ['currency', 'value'] })
+  .openapi('Amount')
 
 const BRLocalAccountIdentificationSchema = BankAccountIdentificationSchema.and(
   z
@@ -326,27 +295,49 @@ const GrantOfferFeeSchema = z
   .openapi({ required: ['amount'] })
   .openapi('GrantOfferFee')
 
-const RepaymentSchema: z.ZodType<RepaymentType> = z
-  .lazy(() =>
-    z
-      .object({
-        basisPoints: z
-          .int32()
-          .openapi({
-            description:
-              "The percentage of your user's incoming net volume that is deducted for repaying the grant. The percentage expressed in [basis points](https://www.investopedia.com/terms/b/basispoint.asp).",
-          }),
-        term: RepaymentTermSchema.exactOptional().openapi({
-          description:
-            'Contains information about the time period in which your user must repay the total amount of the grant.',
-        }),
-        threshold: ThresholdRepaymentSchema.exactOptional().openapi({
-          description:
-            'Contains the minimum threshold amount that your user must repay every 30-day period.',
-        }),
-      })
-      .openapi({ required: ['basisPoints'] }),
-  )
+const RepaymentTermSchema = z
+  .object({
+    estimatedDays: z
+      .int32()
+      .openapi({ description: 'The estimated duration of the repayment term, in days.' }),
+    maximumDays: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum duration of the repayment term, in days. Only applies when `contractType` is **loan**.',
+      }),
+  })
+  .openapi({ required: ['estimatedDays'] })
+  .openapi('RepaymentTerm')
+
+const ThresholdRepaymentSchema = z
+  .object({
+    amount: AmountSchema.openapi({
+      description: 'The minimum threshold amount that your user must repay on every 30-day period.',
+    }),
+  })
+  .openapi({ required: ['amount'] })
+  .openapi('ThresholdRepayment')
+
+const RepaymentSchema = z
+  .object({
+    basisPoints: z
+      .int32()
+      .openapi({
+        description:
+          "The percentage of your user's incoming net volume that is deducted for repaying the grant. The percentage expressed in [basis points](https://www.investopedia.com/terms/b/basispoint.asp).",
+      }),
+    term: RepaymentTermSchema.exactOptional().openapi({
+      description:
+        'Contains information about the time period in which your user must repay the total amount of the grant.',
+    }),
+    threshold: ThresholdRepaymentSchema.exactOptional().openapi({
+      description:
+        'Contains the minimum threshold amount that your user must repay every 30-day period.',
+    }),
+  })
+  .openapi({ required: ['basisPoints'] })
   .openapi('Repayment')
 
 const CalculatedGrantOfferSchema = z

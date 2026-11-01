@@ -48,6 +48,48 @@ const AddressSchema = z
   .openapi({ description: 'Address information', title: 'address', required: [] })
   .openapi('Address')
 
+const EndSchema = z
+  .object({
+    address: AddressSchema.exactOptional(),
+    iataCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'IATA location code', example: 'PAR' }),
+    localDateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Local Date/Time of the itinerary end in format ISO 8601 (YYYY-MM-DDTHH:MM:SS)',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Label associated to the location (e.g. Eiffel Tower, Madison Square)',
+        example: 'Eiffel Tower',
+      }),
+  })
+  .openapi({
+    description: 'Description of a particular point or place in physical space',
+    title: 'end',
+    required: [],
+  })
+  .openapi('End')
+
+const PriceSchema = z
+  .object({
+    base: z.string().exactOptional(),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'currency Code apply to all elements of the price' }),
+    total: z.string().exactOptional().openapi({ description: 'Total = base + totalTaxes +' }),
+    totalTaxes: z.string().exactOptional(),
+  })
+  .openapi({ description: 'Price valuation information', title: 'price', required: [] })
+  .openapi('Price')
+
 const AircraftSchema = z
   .object({
     aircraftDescription: z
@@ -282,49 +324,10 @@ const AirSchema = z
   .openapi({ title: 'air', required: [] })
   .openapi('Air')
 
-const ArrivalSchema = z
-  .object({
-    iataCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'IATA location code', example: 'PAR' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Label associated to the location (e.g. Eiffel Tower, Madison Square)',
-        example: 'Eiffel Tower',
-      }),
-    subtype: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Location sub-type (e.g. airport, port, rail-station, restaurant, atm...)',
-        example: 'Eiffel Tower',
-      }),
-  })
-  .openapi({
-    description: '\t\nDescription of a particular point or place in physical space',
-    title: 'arrival',
-    required: [],
-  })
-  .openapi('Arrival')
-
-const AssociatedEquipmentsSchema = z
-  .object({
-    name: z
-      .string()
-      .regex(/[a-zA-Z]{1-70}/)
-      .exactOptional()
-      .openapi({ description: 'Equipment name' }),
-  })
-  .openapi({
-    description:
-      'Used to convey information about special equipments (GPS, Baby seat, ...) associated to the car booking.',
-    title: 'associatedEquipments',
-    required: [],
-  })
-  .openapi('AssociatedEquipments')
+const ContactHotelSchema = z
+  .object({ phone: z.string().exactOptional().openapi({ description: 'phome number' }) })
+  .openapi({ title: 'contactHotel', required: [] })
+  .openapi('ContactHotel')
 
 const DescriptionSchema = z
   .object({
@@ -341,10 +344,129 @@ const DescriptionSchema = z
   })
   .openapi('Description')
 
+const GuestsSchema = z
+  .object({
+    adults: z
+      .int()
+      .min(1)
+      .multipleOf(9)
+      .exactOptional()
+      .openapi({ description: 'number of adult guests (1-9) per room', example: '2' }),
+    childAge: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({
+        description:
+          'Comma separated list of ages of each child at the time of check-out from the hotel. If several children have the same age, the ages will be repeated.',
+      }),
+  })
+  .openapi({ title: 'guests', required: [] })
+  .openapi('Guests')
+
 const CancellationSchema = z
   .object({ description: DescriptionSchema.exactOptional() })
   .openapi({ title: 'cancellation', required: [] })
   .openapi('Cancellation')
+
+const PoliciesSchema = z
+  .object({ cancellation: CancellationSchema.exactOptional() })
+  .openapi({ description: 'Booking Rules', title: 'policies', required: [] })
+  .openapi('Policies')
+
+const TypeEstimatedSchema = z
+  .object({
+    bedType: z.string().exactOptional().openapi({ description: 'Type of the bed' }),
+    beds: z.int().exactOptional().openapi({ description: 'Number of beds in the room (1-9)' }),
+    category: z.string().exactOptional().openapi({ description: 'Category code' }),
+  })
+  .openapi({
+    description:
+      '\t\nestimated room category, bed type and number of beds in the room. This information has been parsed from the room description, and is thus only provided for informational purposes',
+    title: 'typeEstimated',
+    required: [],
+  })
+  .openapi('TypeEstimated')
+
+const RoomSchema = z
+  .object({
+    type: z
+      .string()
+      .regex(/^[A-Z0-9*]{3}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Room type code, 3 character identifier of the room. The first character identifies the room type category. The second numeric character identifies the number of beds. The third character identifies the bed type. There is a special case where ROH is returned, this value stands for Run Of House.',
+      }),
+    typeEstimated: TypeEstimatedSchema.exactOptional(),
+  })
+  .openapi({ title: 'room', required: [] })
+  .openapi('Room')
+
+const HotelDataSchema = z
+  .object({
+    address: AddressSchema.exactOptional(),
+    amenities: z.array(z.string()).exactOptional().openapi({ description: 'amenities (list)' }),
+    checkInDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'heck-in date of the stay (hotel local date). Format YYYY-MM-DD The lowest accepted value is today date (no dates in the past).',
+        example: ' 2020-12-30',
+      }),
+    checkOutDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'check-out date of the stay (hotel local date). Format YYYY-MM-DD The lowest accepted value is checkInDate+1.',
+        example: '2020-12-31',
+      }),
+    confirmationNumber: z
+      .string()
+      .min(1)
+      .max(20)
+      .exactOptional()
+      .openapi({ description: 'Confirmation number' }),
+    contact: ContactHotelSchema.exactOptional(),
+    description: DescriptionSchema.exactOptional(),
+    guests: GuestsSchema.exactOptional(),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Hotel Name', example: 'Hotel de Paris' }),
+    policies: PoliciesSchema.exactOptional(),
+    room: RoomSchema.exactOptional(),
+    roomQuantity: z
+      .int()
+      .min(1)
+      .multipleOf(9)
+      .exactOptional()
+      .openapi({ description: 'number of rooms (1-9)', example: '1' }),
+  })
+  .openapi({ description: '\t\nHotel product', title: 'hotel', required: [] })
+  .openapi('HotelData')
+
+const HotelSchema = z
+  .object({ hotel: HotelDataSchema.exactOptional() })
+  .openapi({ title: 'hotel', required: [] })
+  .openapi('Hotel')
+
+const AssociatedEquipmentsSchema = z
+  .object({
+    name: z
+      .string()
+      .regex(/[a-zA-Z]{1-70}/)
+      .exactOptional()
+      .openapi({ description: 'Equipment name' }),
+  })
+  .openapi({
+    description:
+      'Used to convey information about special equipments (GPS, Baby seat, ...) associated to the car booking.',
+    title: 'associatedEquipments',
+    required: [],
+  })
+  .openapi('AssociatedEquipments')
 
 const PhoneSchema = z
   .object({
@@ -472,10 +594,33 @@ const CarSchema = z
   .openapi({ title: 'car', required: [] })
   .openapi('Car')
 
-const ContactHotelSchema = z
-  .object({ phone: z.string().exactOptional().openapi({ description: 'phome number' }) })
-  .openapi({ title: 'contactHotel', required: [] })
-  .openapi('ContactHotel')
+const ArrivalSchema = z
+  .object({
+    iataCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'IATA location code', example: 'PAR' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Label associated to the location (e.g. Eiffel Tower, Madison Square)',
+        example: 'Eiffel Tower',
+      }),
+    subtype: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Location sub-type (e.g. airport, port, rail-station, restaurant, atm...)',
+        example: 'Eiffel Tower',
+      }),
+  })
+  .openapi({
+    description: '\t\nDescription of a particular point or place in physical space',
+    title: 'arrival',
+    required: [],
+  })
+  .openapi('Arrival')
 
 const DepartureSchema = z
   .object({
@@ -503,330 +648,6 @@ const DepartureSchema = z
     required: [],
   })
   .openapi('Departure')
-
-const EmailSchema = z
-  .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Email address (e.g. john@smith.com)' }),
-    category: z
-      .enum(['BUSINESS', 'PERSONAL', 'OTHER'])
-      .exactOptional()
-      .openapi({ description: 'Category of the contact element' }),
-  })
-  .openapi({ description: 'Email information.', title: 'email', required: [] })
-  .openapi('Email')
-
-const EndSchema = z
-  .object({
-    address: AddressSchema.exactOptional(),
-    iataCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'IATA location code', example: 'PAR' }),
-    localDateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Local Date/Time of the itinerary end in format ISO 8601 (YYYY-MM-DDTHH:MM:SS)',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Label associated to the location (e.g. Eiffel Tower, Madison Square)',
-        example: 'Eiffel Tower',
-      }),
-  })
-  .openapi({
-    description: 'Description of a particular point or place in physical space',
-    title: 'end',
-    required: [],
-  })
-  .openapi('End')
-
-const IssueSchema = z
-  .object({
-    code: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'A machine-readable error code from the Amadeus Canned Messages table, that will enable the API Consumers code to handle this type of error',
-      }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An easy-to-read explanation specific to this occurrence of the problem. It should give the API consumer an idea of what went wrong and how to recover from it. Like the title, this field’s value can be localized.',
-      }),
-    source: z
-      .object({
-        example: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A sample input to guide the user when resolving this issue' }),
-        parameter: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The key of the URI path or query parameter that caused the error',
-          }),
-        pointer: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A JSON Pointer RFC6901 to the associated entity in the request body that caused this error',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    status: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The HTTP status code of this response. This is present only in terminal errors which cause an unsuccessful response. In the case of multiple errors, they must all have the same status.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An error title from the Canned Messages table with a 1:1 correspondence to the error code. This may be localized',
-      }),
-  })
-  .openapi({ description: 'The Error Definition', title: 'errors', required: [] })
-  .openapi('Issue')
-
-const Error_400Schema = z
-  .object({ errors: z.array(IssueSchema).exactOptional() })
-  .openapi({ title: 'error_400', required: [] })
-  .openapi('Error_400')
-
-const Error_500Schema = z
-  .object({ errors: z.array(IssueSchema).exactOptional() })
-  .openapi({ title: 'error_500', required: [] })
-  .openapi('Error_500')
-
-const Error_501Schema = z
-  .object({ errors: z.array(IssueSchema).exactOptional() })
-  .openapi({ title: 'error_501', required: [] })
-  .openapi('Error_501')
-
-const GuestsSchema = z
-  .object({
-    adults: z
-      .int()
-      .min(1)
-      .multipleOf(9)
-      .exactOptional()
-      .openapi({ description: 'number of adult guests (1-9) per room', example: '2' }),
-    childAge: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({
-        description:
-          'Comma separated list of ages of each child at the time of check-out from the hotel. If several children have the same age, the ages will be repeated.',
-      }),
-  })
-  .openapi({ title: 'guests', required: [] })
-  .openapi('Guests')
-
-const PoliciesSchema = z
-  .object({ cancellation: CancellationSchema.exactOptional() })
-  .openapi({ description: 'Booking Rules', title: 'policies', required: [] })
-  .openapi('Policies')
-
-const TypeEstimatedSchema = z
-  .object({
-    bedType: z.string().exactOptional().openapi({ description: 'Type of the bed' }),
-    beds: z.int().exactOptional().openapi({ description: 'Number of beds in the room (1-9)' }),
-    category: z.string().exactOptional().openapi({ description: 'Category code' }),
-  })
-  .openapi({
-    description:
-      '\t\nestimated room category, bed type and number of beds in the room. This information has been parsed from the room description, and is thus only provided for informational purposes',
-    title: 'typeEstimated',
-    required: [],
-  })
-  .openapi('TypeEstimated')
-
-const RoomSchema = z
-  .object({
-    type: z
-      .string()
-      .regex(/^[A-Z0-9*]{3}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Room type code, 3 character identifier of the room. The first character identifies the room type category. The second numeric character identifies the number of beds. The third character identifies the bed type. There is a special case where ROH is returned, this value stands for Run Of House.',
-      }),
-    typeEstimated: TypeEstimatedSchema.exactOptional(),
-  })
-  .openapi({ title: 'room', required: [] })
-  .openapi('Room')
-
-const HotelDataSchema = z
-  .object({
-    address: AddressSchema.exactOptional(),
-    amenities: z.array(z.string()).exactOptional().openapi({ description: 'amenities (list)' }),
-    checkInDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'heck-in date of the stay (hotel local date). Format YYYY-MM-DD The lowest accepted value is today date (no dates in the past).',
-        example: ' 2020-12-30',
-      }),
-    checkOutDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'check-out date of the stay (hotel local date). Format YYYY-MM-DD The lowest accepted value is checkInDate+1.',
-        example: '2020-12-31',
-      }),
-    confirmationNumber: z
-      .string()
-      .min(1)
-      .max(20)
-      .exactOptional()
-      .openapi({ description: 'Confirmation number' }),
-    contact: ContactHotelSchema.exactOptional(),
-    description: DescriptionSchema.exactOptional(),
-    guests: GuestsSchema.exactOptional(),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Hotel Name', example: 'Hotel de Paris' }),
-    policies: PoliciesSchema.exactOptional(),
-    room: RoomSchema.exactOptional(),
-    roomQuantity: z
-      .int()
-      .min(1)
-      .multipleOf(9)
-      .exactOptional()
-      .openapi({ description: 'number of rooms (1-9)', example: '1' }),
-  })
-  .openapi({ description: '\t\nHotel product', title: 'hotel', required: [] })
-  .openapi('HotelData')
-
-const HotelSchema = z
-  .object({ hotel: HotelDataSchema.exactOptional() })
-  .openapi({ title: 'hotel', required: [] })
-  .openapi('Hotel')
-
-const NameSchema = z
-  .object({
-    firstName: z.string().exactOptional().openapi({ description: 'First name.' }),
-    lastName: z.string().exactOptional().openapi({ description: 'Last name.' }),
-    middleName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Middle name(s), for example "Lee" in "John Lee Smith".' }),
-    prefix: z.string().exactOptional().openapi({ description: 'Name prefix (e.g. Doctor)' }),
-    suffix: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name suffix (e.g. Junior, III, etc).' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains all the suffixes and prefixes that can be appended to a name - Mr, Miss, Pr. - E.g. " Mr".',
-      }),
-  })
-  .openapi({
-    description: 'Description of the name of a physical person',
-    title: 'name',
-    required: [],
-  })
-  .openapi('Name')
-
-const PriceSchema = z
-  .object({
-    base: z.string().exactOptional(),
-    currency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'currency Code apply to all elements of the price' }),
-    total: z.string().exactOptional().openapi({ description: 'Total = base + totalTaxes +' }),
-    totalTaxes: z.string().exactOptional(),
-  })
-  .openapi({ description: 'Price valuation information', title: 'price', required: [] })
-  .openapi('Price')
-
-const StakeholderSchema = z
-  .object({
-    age: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Current age of the individual.', example: '40' }),
-    dateOfBirth: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The individual's date of birth.", example: '1978-10-05' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'item identifier', example: 'ABCDEF-2019-10-05-PT-1' }),
-    name: NameSchema.exactOptional(),
-    nationality: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Nationality of the Stakeholder' }),
-    passangerTypeCode: z
-      .string()
-      .max(3)
-      .exactOptional()
-      .openapi({
-        description:
-          '3-characters code defining the passenger type - possible values: ADT, CHD, INS, INF, UNA',
-        example: 'ADT',
-      }),
-  })
-  .openapi({
-    description:
-      'Definition of PNR travelers. Fields gender, nationality, placeOfBirth, countryOfResidence are only populated for passengerDelivery resources.',
-    title: 'stakeholder',
-    required: [],
-  })
-  .openapi('Stakeholder')
-
-const StartSchema = z
-  .object({
-    address: AddressSchema.exactOptional(),
-    iataCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'IATA location code', example: 'PAR' }),
-    localDateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Local Date/Time of the itinerary end in format ISO 8601 (YYYY-MM-DDTHH:MM:SS)',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Label associated to the location (e.g. Eiffel Tower, Madison Square)',
-        example: 'Eiffel Tower',
-      }),
-  })
-  .openapi({
-    description: 'Description of a particular point or place in physical space',
-    title: 'start',
-    required: [],
-  })
-  .openapi('Start')
 
 const VehicleSchema = z
   .object({
@@ -900,6 +721,114 @@ const TrainSchema = z
   .openapi({ title: 'train', required: [] })
   .openapi('Train')
 
+const NameSchema = z
+  .object({
+    firstName: z.string().exactOptional().openapi({ description: 'First name.' }),
+    lastName: z.string().exactOptional().openapi({ description: 'Last name.' }),
+    middleName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Middle name(s), for example "Lee" in "John Lee Smith".' }),
+    prefix: z.string().exactOptional().openapi({ description: 'Name prefix (e.g. Doctor)' }),
+    suffix: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name suffix (e.g. Junior, III, etc).' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains all the suffixes and prefixes that can be appended to a name - Mr, Miss, Pr. - E.g. " Mr".',
+      }),
+  })
+  .openapi({
+    description: 'Description of the name of a physical person',
+    title: 'name',
+    required: [],
+  })
+  .openapi('Name')
+
+const StakeholderSchema = z
+  .object({
+    age: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Current age of the individual.', example: '40' }),
+    dateOfBirth: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The individual's date of birth.", example: '1978-10-05' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'item identifier', example: 'ABCDEF-2019-10-05-PT-1' }),
+    name: NameSchema.exactOptional(),
+    nationality: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Nationality of the Stakeholder' }),
+    passangerTypeCode: z
+      .string()
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description:
+          '3-characters code defining the passenger type - possible values: ADT, CHD, INS, INF, UNA',
+        example: 'ADT',
+      }),
+  })
+  .openapi({
+    description:
+      'Definition of PNR travelers. Fields gender, nationality, placeOfBirth, countryOfResidence are only populated for passengerDelivery resources.',
+    title: 'stakeholder',
+    required: [],
+  })
+  .openapi('Stakeholder')
+
+const StartSchema = z
+  .object({
+    address: AddressSchema.exactOptional(),
+    iataCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'IATA location code', example: 'PAR' }),
+    localDateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Local Date/Time of the itinerary end in format ISO 8601 (YYYY-MM-DDTHH:MM:SS)',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Label associated to the location (e.g. Eiffel Tower, Madison Square)',
+        example: 'Eiffel Tower',
+      }),
+  })
+  .openapi({
+    description: 'Description of a particular point or place in physical space',
+    title: 'start',
+    required: [],
+  })
+  .openapi('Start')
+
+const EmailSchema = z
+  .object({
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Email address (e.g. john@smith.com)' }),
+    category: z
+      .enum(['BUSINESS', 'PERSONAL', 'OTHER'])
+      .exactOptional()
+      .openapi({ description: 'Category of the contact element' }),
+  })
+  .openapi({ description: 'Email information.', title: 'email', required: [] })
+  .openapi('Email')
+
 const TravelAgencySchema = z
   .object({
     address: AddressSchema.exactOptional(),
@@ -917,7 +846,100 @@ const TravelAgencySchema = z
   })
   .openapi('TravelAgency')
 
-const TripSchema = z
+type TripType = {
+  bookingDate?: string
+  bookingNumber?: string
+  creationDateTime?: string
+  description?: string
+  end?: z.infer<typeof EndSchema>
+  price?: z.infer<typeof PriceSchema>
+  products?: (
+    | z.infer<typeof AirSchema>
+    | z.infer<typeof HotelSchema>
+    | z.infer<typeof CarSchema>
+    | z.infer<typeof TrainSchema>
+  )[]
+  provider?: string
+  reference?: string
+  stakeholders?: z.infer<typeof StakeholderSchema>[]
+  start?: z.infer<typeof StartSchema>
+  title?: string
+  travelAgency?: z.infer<typeof TravelAgencySchema>
+  type?: string
+}
+
+const IssueSchema = z
+  .object({
+    code: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'A machine-readable error code from the Amadeus Canned Messages table, that will enable the API Consumers code to handle this type of error',
+      }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An easy-to-read explanation specific to this occurrence of the problem. It should give the API consumer an idea of what went wrong and how to recover from it. Like the title, this field’s value can be localized.',
+      }),
+    source: z
+      .object({
+        example: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'A sample input to guide the user when resolving this issue' }),
+        parameter: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The key of the URI path or query parameter that caused the error',
+          }),
+        pointer: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A JSON Pointer RFC6901 to the associated entity in the request body that caused this error',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    status: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The HTTP status code of this response. This is present only in terminal errors which cause an unsuccessful response. In the case of multiple errors, they must all have the same status.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An error title from the Canned Messages table with a 1:1 correspondence to the error code. This may be localized',
+      }),
+  })
+  .openapi({ description: 'The Error Definition', title: 'errors', required: [] })
+  .openapi('Issue')
+
+const Error_400Schema = z
+  .object({ errors: z.array(IssueSchema).exactOptional() })
+  .openapi({ title: 'error_400', required: [] })
+  .openapi('Error_400')
+
+const Error_500Schema = z
+  .object({ errors: z.array(IssueSchema).exactOptional() })
+  .openapi({ title: 'error_500', required: [] })
+  .openapi('Error_500')
+
+const Error_501Schema = z
+  .object({ errors: z.array(IssueSchema).exactOptional() })
+  .openapi({ title: 'error_501', required: [] })
+  .openapi('Error_501')
+
+const TripSchema: z.ZodType<TripType> = z
   .object({
     bookingDate: z.string().exactOptional().openapi({ description: 'itinerary booking date' }),
     bookingNumber: z

@@ -1,51 +1,48 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const OriginalFlightEndPointSchema = z
-  .object({
-    iataCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[IATA airline codes](http://www.iata.org/publications/Pages/code-search.aspx)',
-        example: 'JFK',
-      }),
-    terminal: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'terminal name / number', example: 'T2' }),
-  })
-  .openapi({ description: 'departure or arrival information', required: [] })
-  .openapi('OriginalFlightEndPoint')
+const AdditionalServiceTypeSchema = z
+  .enum(['CHECKED_BAGS', 'MEALS', 'SEATS', 'OTHER_SERVICES'])
+  .openapi({ description: 'additional service type', example: 'CHECKED_BAGS' })
+  .openapi('AdditionalServiceType')
 
-type FlightEndPointType = z.infer<typeof OriginalFlightEndPointSchema> & { at?: string }
+const AircraftEntrySchema = z
+  .object({ key: z.string().exactOptional() })
+  .catchall(z.string().openapi({ description: 'the manufacturer/model of aircraft' }))
+  .openapi('AircraftEntry')
 
-const OriginalFlightStopSchema = z
+const AircraftEquipmentSchema = z
   .object({
-    duration: z
+    code: z
       .string()
+      .regex(/[a-zA-Z0-9]{3}/)
       .exactOptional()
       .openapi({
-        description:
-          'stop duration in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) PnYnMnDTnHnMnS format, e.g. PT2H10M',
-        example: 'PT2H10M',
-      }),
-    iataCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[IATA airline codes](http://www.iata.org/publications/Pages/code-search.aspx)',
-        example: 'JFK',
+        description: 'IATA aircraft code (http://www.flugzeuginfo.net/table_accodes_iata_en.php)\n',
+        example: '318',
       }),
   })
-  .openapi({ description: 'details of stops for direct or change of gauge flights', required: [] })
-  .openapi('OriginalFlightStop')
+  .openapi({ description: 'information related to the aircraft', required: [] })
+  .openapi('AircraftEquipment')
 
-type FlightStopType = z.infer<typeof OriginalFlightStopSchema> & {
-  arrivalAt?: string
-  departureAt?: string
-}
+const BaggageAllowanceSchema = z
+  .object({
+    quantity: z.int().exactOptional().openapi({ description: 'Total number of units', example: 1 }),
+    weight: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Weight of the baggage allowance', example: 20 }),
+    weightUnit: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Code to qualify unit as pounds or kilos', example: 'KG' }),
+  })
+  .openapi({ description: 'baggageAllowance', required: [] })
+  .openapi('BaggageAllowance')
+
+const CarrierEntrySchema = z
+  .object({ key: z.string().exactOptional() })
+  .catchall(z.string().openapi({ description: 'the carrier name' }))
+  .openapi('CarrierEntry')
 
 const TravelClassSchema = z
   .enum(['ECONOMY', 'PREMIUM_ECONOMY', 'BUSINESS', 'FIRST'])
@@ -70,159 +67,6 @@ const Co2EmissionSchema = z
   })
   .openapi({ required: [] })
   .openapi('Co2Emission')
-
-const AircraftEquipmentSchema = z
-  .object({
-    code: z
-      .string()
-      .regex(/[a-zA-Z0-9]{3}/)
-      .exactOptional()
-      .openapi({
-        description: 'IATA aircraft code (http://www.flugzeuginfo.net/table_accodes_iata_en.php)\n',
-        example: '318',
-      }),
-  })
-  .openapi({ description: 'information related to the aircraft', required: [] })
-  .openapi('AircraftEquipment')
-
-const FlightEndPointSchema: z.ZodType<FlightEndPointType> = z
-  .lazy(() =>
-    OriginalFlightEndPointSchema.and(
-      z
-        .object({
-          at: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description:
-                'local date and time in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) YYYY-MM-ddThh:mm:ss format, e.g. 2017-02-10T20:40:00',
-              example: '2017-10-23T20:00:00',
-            }),
-        })
-        .openapi({ required: [] }),
-    ).openapi({ description: 'departure or arrival information', title: 'FlightEndPoint' }),
-  )
-  .openapi('FlightEndPoint')
-
-const OperatingFlightSchema = z
-  .object({
-    carrierCode: z
-      .string()
-      .min(1)
-      .max(2)
-      .exactOptional()
-      .openapi({ description: 'providing the airline / carrier code', example: 'DL' }),
-  })
-  .openapi({ description: 'information about the operating flight', required: [] })
-  .openapi('OperatingFlight')
-
-const FlightStopSchema: z.ZodType<FlightStopType> = z
-  .lazy(() =>
-    OriginalFlightStopSchema.and(
-      z
-        .object({
-          arrivalAt: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description:
-                'arrival at the stop in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) YYYY-MM-ddThh:mm:ss format, e.g. 2017-02-10T20:40:00',
-              example: '2017-10-23T20:00:00',
-            }),
-          departureAt: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({
-              description:
-                'departure from the stop in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) YYYY-MM-ddThh:mm:ss format, e.g. 2017-02-10T20:40:00',
-              example: '2017-10-23T20:00:00',
-            }),
-        })
-        .openapi({ required: [] }),
-    ).openapi({
-      description: 'details of stops for direct or change of gauge flights',
-      title: 'FlightStop',
-    }),
-  )
-  .openapi('FlightStop')
-
-const FlightSegmentSchema = z
-  .object({
-    aircraft: AircraftEquipmentSchema.exactOptional(),
-    arrival: FlightEndPointSchema.exactOptional(),
-    carrierCode: z
-      .string()
-      .min(1)
-      .max(2)
-      .exactOptional()
-      .openapi({ description: 'providing the airline / carrier code', example: 'DL' }),
-    departure: FlightEndPointSchema.exactOptional(),
-    duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'stop duration in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) PnYnMnDTnHnMnS format, e.g. PT2H10M',
-        example: 'PT2H10M',
-      }),
-    number: z
-      .string()
-      .min(1)
-      .max(4)
-      .exactOptional()
-      .openapi({ description: 'the flight number as assigned by the carrier', example: '212' }),
-    operating: OperatingFlightSchema.exactOptional(),
-    stops: z
-      .array(FlightStopSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'information regarding the different stops composing the flight segment. E.g. technical stop, change of gauge...',
-      }),
-  })
-  .openapi({
-    description:
-      'defining a flight segment; including both operating and marketing details when applicable',
-    required: [],
-  })
-  .openapi('FlightSegment')
-
-type SegmentType = {
-  blacklistedInEU?: boolean
-  co2Emissions?: z.infer<typeof Co2EmissionSchema>[]
-  id?: string
-  numberOfStops?: number
-} & z.infer<typeof FlightSegmentSchema>
-
-const AdditionalServiceTypeSchema = z
-  .enum(['CHECKED_BAGS', 'MEALS', 'SEATS', 'OTHER_SERVICES'])
-  .openapi({ description: 'additional service type', example: 'CHECKED_BAGS' })
-  .openapi('AdditionalServiceType')
-
-const AircraftEntrySchema = z
-  .object({ key: z.string().exactOptional() })
-  .catchall(z.string().openapi({ description: 'the manufacturer/model of aircraft' }))
-  .openapi('AircraftEntry')
-
-const BaggageAllowanceSchema = z
-  .object({
-    quantity: z.int().exactOptional().openapi({ description: 'Total number of units', example: 1 }),
-    weight: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Weight of the baggage allowance', example: 20 }),
-    weightUnit: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Code to qualify unit as pounds or kilos', example: 'KG' }),
-  })
-  .openapi({ description: 'baggageAllowance', required: [] })
-  .openapi('BaggageAllowance')
-
-const CarrierEntrySchema = z
-  .object({ key: z.string().exactOptional() })
-  .catchall(z.string().openapi({ description: 'the carrier name' }))
-  .openapi('CarrierEntry')
 
 const CollectionMetaSchema = z
   .object({
@@ -539,32 +383,164 @@ const ExtendedPriceSchema = z
   .openapi({ description: 'price information', title: 'Price' })
   .openapi('ExtendedPrice')
 
-const SegmentSchema: z.ZodType<SegmentType> = z
-  .lazy(() =>
-    z
-      .object({
-        blacklistedInEU: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'When the flight has a marketing or/and operating airline that is identified as blacklisted by the European Commission. \n\nTo improve travel safety, the European Commission regularly updates the list of the banned carriers from operating in Europe. It allows any Travel Agency located in the European Union to easily identify and hide any travel recommendation based on some unsafe airlines. \nThe [list of the banned airlines](https://ec.europa.eu/transport/sites/transport/files/air-safety-list_en.pdf) is published in the Official Journal of the European Union, where they are included as annexes A and B to the Commission Regulation. The blacklist of an airline can concern all its flights or some specific aircraft types pertaining to the airline   \n',
-            example: false,
-          }),
-        co2Emissions: z
-          .array(Co2EmissionSchema)
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'Co2 informations' }),
-        id: z.string().exactOptional().openapi({ description: 'Id of the segment', example: 1 }),
-        numberOfStops: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Number of stops', example: 0 }),
-      })
-      .openapi({ required: [] })
-      .and(FlightSegmentSchema),
-  )
+const OriginalFlightEndPointSchema = z
+  .object({
+    iataCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[IATA airline codes](http://www.iata.org/publications/Pages/code-search.aspx)',
+        example: 'JFK',
+      }),
+    terminal: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'terminal name / number', example: 'T2' }),
+  })
+  .openapi({ description: 'departure or arrival information', required: [] })
+  .openapi('OriginalFlightEndPoint')
+
+const FlightEndPointSchema = OriginalFlightEndPointSchema.and(
+  z
+    .object({
+      at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'local date and time in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) YYYY-MM-ddThh:mm:ss format, e.g. 2017-02-10T20:40:00',
+          example: '2017-10-23T20:00:00',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ description: 'departure or arrival information', title: 'FlightEndPoint' })
+  .openapi('FlightEndPoint')
+
+const OperatingFlightSchema = z
+  .object({
+    carrierCode: z
+      .string()
+      .min(1)
+      .max(2)
+      .exactOptional()
+      .openapi({ description: 'providing the airline / carrier code', example: 'DL' }),
+  })
+  .openapi({ description: 'information about the operating flight', required: [] })
+  .openapi('OperatingFlight')
+
+const OriginalFlightStopSchema = z
+  .object({
+    duration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'stop duration in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) PnYnMnDTnHnMnS format, e.g. PT2H10M',
+        example: 'PT2H10M',
+      }),
+    iataCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[IATA airline codes](http://www.iata.org/publications/Pages/code-search.aspx)',
+        example: 'JFK',
+      }),
+  })
+  .openapi({ description: 'details of stops for direct or change of gauge flights', required: [] })
+  .openapi('OriginalFlightStop')
+
+const FlightStopSchema = OriginalFlightStopSchema.and(
+  z
+    .object({
+      arrivalAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'arrival at the stop in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) YYYY-MM-ddThh:mm:ss format, e.g. 2017-02-10T20:40:00',
+          example: '2017-10-23T20:00:00',
+        }),
+      departureAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'departure from the stop in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) YYYY-MM-ddThh:mm:ss format, e.g. 2017-02-10T20:40:00',
+          example: '2017-10-23T20:00:00',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description: 'details of stops for direct or change of gauge flights',
+    title: 'FlightStop',
+  })
+  .openapi('FlightStop')
+
+const FlightSegmentSchema = z
+  .object({
+    aircraft: AircraftEquipmentSchema.exactOptional(),
+    arrival: FlightEndPointSchema.exactOptional(),
+    carrierCode: z
+      .string()
+      .min(1)
+      .max(2)
+      .exactOptional()
+      .openapi({ description: 'providing the airline / carrier code', example: 'DL' }),
+    departure: FlightEndPointSchema.exactOptional(),
+    duration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'stop duration in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) PnYnMnDTnHnMnS format, e.g. PT2H10M',
+        example: 'PT2H10M',
+      }),
+    number: z
+      .string()
+      .min(1)
+      .max(4)
+      .exactOptional()
+      .openapi({ description: 'the flight number as assigned by the carrier', example: '212' }),
+    operating: OperatingFlightSchema.exactOptional(),
+    stops: z
+      .array(FlightStopSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'information regarding the different stops composing the flight segment. E.g. technical stop, change of gauge...',
+      }),
+  })
+  .openapi({
+    description:
+      'defining a flight segment; including both operating and marketing details when applicable',
+    required: [],
+  })
+  .openapi('FlightSegment')
+
+const SegmentSchema = z
+  .object({
+    blacklistedInEU: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When the flight has a marketing or/and operating airline that is identified as blacklisted by the European Commission. \n\nTo improve travel safety, the European Commission regularly updates the list of the banned carriers from operating in Europe. It allows any Travel Agency located in the European Union to easily identify and hide any travel recommendation based on some unsafe airlines. \nThe [list of the banned airlines](https://ec.europa.eu/transport/sites/transport/files/air-safety-list_en.pdf) is published in the Official Journal of the European Union, where they are included as annexes A and B to the Commission Regulation. The blacklist of an airline can concern all its flights or some specific aircraft types pertaining to the airline   \n',
+        example: false,
+      }),
+    co2Emissions: z
+      .array(Co2EmissionSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'Co2 informations' }),
+    id: z.string().exactOptional().openapi({ description: 'Id of the segment', example: 1 }),
+    numberOfStops: z.int().exactOptional().openapi({ description: 'Number of stops', example: 0 }),
+  })
+  .openapi({ required: [] })
+  .and(FlightSegmentSchema)
   .openapi('Segment')
 
 const PricingOptionsFareTypeSchema = z

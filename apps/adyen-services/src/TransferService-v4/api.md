@@ -84,7 +84,7 @@ This endpoint supports cursor-based pagination. The response returns the first p
 |balanceAccountId|query|string|false|The unique identifier of the [balance account](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/get/balanceAccounts/{id}__queryParam_id).<br><br>Required if you don't provide an `accountHolderId` or `balancePlatform`.<br><br>If you provide an `accountHolderId`, the `balanceAccountId` must be related to the `accountHolderId`.|
 |paymentInstrumentId|query|string|false|The unique identifier of the [payment instrument](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/paymentInstruments/_id_).<br><br>To use this parameter, you must also provide a `balanceAccountId`, `accountHolderId`, or `balancePlatform`.<br><br>The `paymentInstrumentId` must be related to the `balanceAccountId` or `accountHolderId` that you provide.|
 |reference|query|string|false|The reference you provided in the POST [/transfers](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers) request|
-|category|query|string|false|The category of the transfer.<br><br>Possible values:<br><br> - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.<br><br>- **card**: A transfer involving a third-party card.<br><br>- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.<br><br>- **issuedCard**: A transfer initiated by an Adyen-issued card.<br><br>- **platformPayment**: Funds movements related to payments that are acquired for your users.<br><br>- **topUp**: An incoming transfer initiated by your user to top up their balance account.|
+|category|query|string|false|The category of the transfer.<br><br>Possible values:<br><br> - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.<br><br>- **card**: A transfer involving a third-party card.<br><br>- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.<br><br>- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.<br><br>- **issuedCard**: A transfer initiated by an Adyen-issued card.<br><br>- **platformPayment**: Funds movements related to payments that are acquired for your users.<br><br>- **topUp**: An incoming transfer initiated by your user to top up their balance account.|
 |createdSince|query|string(date-time)|true|Only include transfers that have been created on or after this point in time. The value must be in ISO 8601 format and not earlier than 6 months before the `createdUntil` date. For example, **2021-05-30T15:07:40Z**.|
 |createdUntil|query|string(date-time)|true|Only include transfers that have been created on or before this point in time. The value must be in ISO 8601 format and not later than 6 months after the `createdSince` date. For example, **2021-05-30T15:07:40Z**.|
 |sortOrder|query|string|false|Determines the sort order of the returned transfers. The sort order is based on the creation date of the transfers.<br><br>Possible values:<br><br> - **asc**: Ascending order, from oldest to most recent.<br><br>- **desc**: Descending order, from most recent to oldest.<br><br>Default value: **asc**.|
@@ -6242,7 +6242,7 @@ This operation does not require authentication
 |accountHolder|[ResourceReference](#schemaresourcereference)|false|none|The account holder associated with the balance account involved in the transfer.|
 |amount|[Amount](#schemaamount)|true|none|The amount of the transfer.|
 |balanceAccount|[ResourceReference](#schemaresourcereference)|false|none|Contains information about the balance account involved in the transfer.|
-|category|string|true|none|The category of the transfer.<br><br>Possible values:<br><br> - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.<br><br>- **card**: A transfer involving a third-party card.<br><br>- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.<br><br>- **issuedCard**: A transfer initiated by an Adyen-issued card.<br><br>- **platformPayment**: Funds movements related to payments that are acquired for your users.<br><br>- **topUp**: An incoming transfer initiated by your user to top up their balance account.|
+|category|string|true|none|The category of the transfer.<br><br>Possible values:<br><br> - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.<br><br>- **card**: A transfer involving a third-party card.<br><br>- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.<br><br>- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.<br><br>- **issuedCard**: A transfer initiated by an Adyen-issued card.<br><br>- **platformPayment**: Funds movements related to payments that are acquired for your users.<br><br>- **topUp**: An incoming transfer initiated by your user to top up their balance account.|
 |categoryData|[BankCategoryData](#schemabankcategorydata) \| [InternalCategoryData](#schemainternalcategorydata) \| [IssuedCard](#schemaissuedcard) \| [PlatformPayment](#schemaplatformpayment)|false|none|The relevant data according to the transfer category.|
 |counterparty|[CounterpartyV3](#schemacounterpartyv3)|true|none|The other party in the transfer.|
 |createdAt|string(date-time)|false|none|The date and time when the transfer was created, in ISO 8601 extended format. For example, **2020-12-18T10:15:30+01:00**.|
@@ -6267,6 +6267,7 @@ This operation does not require authentication
 |---|---|
 |category|bank|
 |category|card|
+|category|interest|
 |category|internal|
 |category|issuedCard|
 |category|platformPayment|
@@ -6467,6 +6468,7 @@ This operation does not require authentication
 |type|balanceAdjustment|
 |type|balanceRollover|
 |type|balanceMigration|
+|type|interestPayout|
 |type|fxSell|
 |type|fxBuy|
 
@@ -6762,7 +6764,7 @@ This operation does not require authentication
 |balanceAccount|[ResourceReference](#schemaresourcereference)|false|none|Contains information about the balance account involved in the transfer.|
 |balancePlatform|string|false|none|The unique identifier of the balance platform.|
 |balances|[[BalanceMutation](#schemabalancemutation)]|false|none|The list of the latest balance statuses in the transfer.|
-|category|string|true|none|The category of the transfer.<br><br>Possible values:<br><br> - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.<br><br>- **card**: A transfer involving a third-party card.<br><br>- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.<br><br>- **issuedCard**: A transfer initiated by an Adyen-issued card.<br><br>- **platformPayment**: Funds movements related to payments that are acquired for your users.<br><br>- **topUp**: An incoming transfer initiated by your user to top up their balance account.|
+|category|string|true|none|The category of the transfer.<br><br>Possible values:<br><br> - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.<br><br>- **card**: A transfer involving a third-party card.<br><br>- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.<br><br>- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.<br><br>- **issuedCard**: A transfer initiated by an Adyen-issued card.<br><br>- **platformPayment**: Funds movements related to payments that are acquired for your users.<br><br>- **topUp**: An incoming transfer initiated by your user to top up their balance account.|
 |categoryData|[BankCategoryData](#schemabankcategorydata) \| [InternalCategoryData](#schemainternalcategorydata) \| [IssuedCard](#schemaissuedcard) \| [PlatformPayment](#schemaplatformpayment)|false|none|The relevant data according to the transfer category.|
 |counterparty|[TransferNotificationCounterParty](#schematransfernotificationcounterparty)|false|none|The other party in the transfer.|
 |createdAt|string(date-time)|false|none|The date and time when the transfer was created, in ISO 8601 extended format. For example, **2020-12-18T10:15:30+01:00**.|
@@ -6796,6 +6798,7 @@ This operation does not require authentication
 |---|---|
 |category|bank|
 |category|card|
+|category|interest|
 |category|internal|
 |category|issuedCard|
 |category|platformPayment|
@@ -6996,6 +6999,7 @@ This operation does not require authentication
 |type|balanceAdjustment|
 |type|balanceRollover|
 |type|balanceMigration|
+|type|interestPayout|
 |type|fxSell|
 |type|fxBuy|
 

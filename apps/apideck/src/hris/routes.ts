@@ -128,78 +128,6 @@ const AddressSchema = z
   })
   .openapi('Address')
 
-const BadRequestResponseSchema = z
-  .object({
-    detail: z
-      .union([
-        z.string().openapi({ example: 'Missing property foobar' }),
-        z.object({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains parameter or domain specific information related to the error and why it occurred.',
-      }),
-    error: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains an explanation of the status_code as defined in HTTP/1.1 standard (RFC 7231)',
-        example: 'Bad Request',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A human-readable message providing more details about the error.',
-        example: 'Invalid Params',
-      }),
-    ref: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to documentation of error type',
-        example: 'https://developers.apideck.com/errors#requestvalidationerror',
-      }),
-    status_code: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'HTTP status code', example: 400 }),
-    type_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of error returned', example: 'RequestValidationError' }),
-  })
-  .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
-  .openapi('BadRequestResponse')
-
-const BenefitSchema = z
-  .object({
-    employee_deduction: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The amount deducted for benefit.', example: 142.94 }),
-    employer_contribution: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The amount of employer contribution.', example: 141.14 }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the benefit.', example: 'Health Insurance' }),
-  })
-  .openapi({
-    'x-apideck-schema-id': 'Benefit',
-    'x-apideck-weights': {
-      employee_deduction: 'high',
-      employer_contribution: 'high',
-      name: 'critical',
-    },
-    required: [],
-  })
-  .openapi('Benefit')
-
 const CompanyIdSchema = z
   .string()
   .nullable()
@@ -215,208 +143,6 @@ const CompanyNameSchema = z
   .nullable()
   .openapi({ description: 'The name of the company.', example: 'SpaceX', title: 'Company name' })
   .openapi('CompanyName')
-
-const DeductionSchema = z
-  .object({
-    amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The amount deducted.', example: 10.97 }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the deduction.', example: 'Company Car' }),
-  })
-  .openapi({
-    'x-apideck-schema-id': 'Deduction',
-    'x-apideck-weights': { amount: 'critical', name: 'critical' },
-    required: [],
-  })
-  .openapi('Deduction')
-
-const IdSchema = z
-  .string()
-  .openapi({
-    description: 'A unique identifier for an object.',
-    example: '12345',
-    readOnly: true,
-    title: 'ID',
-  })
-  .openapi('Id')
-
-const TaxSchema = z
-  .object({
-    amount: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The amount of the tax.', example: 1.97 }),
-    employer: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Paid by employer.', example: false }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the tax.', example: 'CA State Income Tax' }),
-  })
-  .openapi({
-    'x-apideck-schema-id': 'Tax',
-    'x-apideck-weights': { amount: 'high', employer: 'high', name: 'high' },
-    required: [],
-  })
-  .openapi('Tax')
-
-const CompensationSchema = z
-  .strictObject({
-    benefits: z
-      .array(BenefitSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of employee benefits for the pay period.' }),
-    deductions: z
-      .array(DeductionSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of employee deductions for the pay period.' }),
-    employee_id: IdSchema,
-    gross_pay: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: "The employee's gross pay. Only available when payroll has been processed",
-        example: 3000,
-      }),
-    net_pay: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: "The employee's net pay. Only available when payroll has been processed",
-        example: 2199.93,
-      }),
-    taxes: z
-      .array(TaxSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of employer and employee taxes for the pay period.' }),
-  })
-  .openapi({
-    required: ['employee_id'],
-    'x-apideck-schema-id': 'Compensation',
-    'x-apideck-weights': {
-      benefits: 'high',
-      deductions: 'high',
-      employee_id: 'critical',
-      gross_pay: 'critical',
-      net_pay: 'high',
-      taxes: 'high',
-    },
-  })
-  .openapi('Compensation')
-
-const UnifiedIdSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'The unique identifier of the resource',
-        example: '12345',
-        readOnly: true,
-        title: 'Id',
-      }),
-  })
-  .openapi({ required: ['id'], title: 'UnifiedId', 'x-apideck-schema-id': 'Id' })
-  .openapi('UnifiedId')
-
-const CreateDepartmentResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Departments' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'workday' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateDepartmentResponse',
-  })
-  .openapi('CreateDepartmentResponse')
-
-const CreateEmployeeResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Employees' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'sage-hr' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateEmployeeResponse',
-  })
-  .openapi('CreateEmployeeResponse')
-
-const CreateHrisCompanyResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Companies' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'undefined' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'CreateHrisCompanyResponse',
-  })
-  .openapi('CreateHrisCompanyResponse')
-
-const CreateTimeOffRequestResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'time-off-requests' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'bamboohr' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({ required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'] })
-  .openapi('CreateTimeOffRequestResponse')
-
-const CreatedAtSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'The date and time when the object was created.',
-    example: '2020-09-30T07:43:32.000Z',
-    readOnly: true,
-    title: 'Created at (timestamp)',
-  })
-  .openapi('CreatedAt')
-
-const CreatedBySchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'The user who created the object.',
-    example: '12345',
-    readOnly: true,
-    title: 'Created by',
-  })
-  .openapi('CreatedBy')
 
 const CurrencySchema = z
   .enum([
@@ -799,6 +525,47 @@ const CurrencySchema = z
   })
   .openapi('Currency')
 
+const IdSchema = z
+  .string()
+  .openapi({
+    description: 'A unique identifier for an object.',
+    example: '12345',
+    readOnly: true,
+    title: 'ID',
+  })
+  .openapi('Id')
+
+const PaymentUnitSchema = z
+  .enum(['hour', 'week', 'month', 'year', 'paycheck'])
+  .openapi({
+    description: 'Unit of measurement for employee compensation.',
+    example: 'year',
+    title: 'Payment Unit',
+    'x-apideck-enum-id': 'payment_unit',
+  })
+  .openapi('PaymentUnit')
+
+const CreatedAtSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'The date and time when the object was created.',
+    example: '2020-09-30T07:43:32.000Z',
+    readOnly: true,
+    title: 'Created at (timestamp)',
+  })
+  .openapi('CreatedAt')
+
+const CreatedBySchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'The user who created the object.',
+    example: '12345',
+    readOnly: true,
+    title: 'Created by',
+  })
+  .openapi('CreatedBy')
+
 const CustomFieldSchema = z
   .strictObject({
     description: z
@@ -838,140 +605,6 @@ const CustomFieldSchema = z
     },
   })
   .openapi('CustomField')
-
-const DeleteDepartmentResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Departments' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'workday' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteDepartmentResponse',
-  })
-  .openapi('DeleteDepartmentResponse')
-
-const DeleteEmployeeResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Employees' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'sage-hr' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteEmployeeResponse',
-  })
-  .openapi('DeleteEmployeeResponse')
-
-const DeleteHrisCompanyResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'Companies' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'undefined' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({
-    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
-    'x-apideck-schema-id': 'DeleteHrisCompanyResponse',
-  })
-  .openapi('DeleteHrisCompanyResponse')
-
-const DeleteTimeOffRequestResponseSchema = z
-  .object({
-    data: UnifiedIdSchema,
-    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
-    resource: z
-      .string()
-      .openapi({ description: 'Unified API resource name', example: 'time-off-requests' }),
-    service: z
-      .string()
-      .openapi({ description: 'Apideck ID of service provider', example: 'bamboohr' }),
-    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
-    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
-  })
-  .openapi({ required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'] })
-  .openapi('DeleteTimeOffRequestResponse')
-
-const UpdatedAtSchema = z.iso
-  .datetime({ offset: true })
-  .nullable()
-  .openapi({
-    description: 'The date and time when the object was last updated.',
-    example: '2020-09-30T07:43:32.000Z',
-    readOnly: true,
-    title: 'Updated at (timestamp)',
-  })
-  .openapi('UpdatedAt')
-
-const UpdatedBySchema = z
-  .string()
-  .nullable()
-  .openapi({
-    description: 'The user who last updated the object.',
-    example: '12345',
-    readOnly: true,
-    title: 'Updated by',
-  })
-  .openapi('UpdatedBy')
-
-const DepartmentSchema = z
-  .strictObject({
-    code: z.string().nullable().exactOptional().openapi({ example: '2', title: 'Code' }),
-    created_at: CreatedAtSchema.exactOptional(),
-    created_by: CreatedBySchema.exactOptional(),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ example: 'R&D', title: 'Description' }),
-    id: IdSchema.exactOptional(),
-    name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Department name', example: 'R&D', title: 'Name' }),
-    parent_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Parent ID', example: '22345', readOnly: true }),
-    updated_at: UpdatedAtSchema.exactOptional(),
-    updated_by: UpdatedBySchema.exactOptional(),
-  })
-  .openapi({
-    'x-apideck-schema-id': 'Department',
-    'x-apideck-weights': {
-      code: 'medium',
-      created_at: 'medium',
-      created_by: 'edge-case',
-      description: 'low',
-      id: 'critical',
-      name: 'critical',
-      updated_at: 'medium',
-      updated_by: 'edge-case',
-    },
-    required: [],
-  })
-  .openapi('Department')
 
 const DescriptionSchema = z
   .string()
@@ -1013,16 +646,6 @@ const EmailSchema = z
     'x-apideck-weights': { email: 'critical', id: 'edge-case', type: 'critical' },
   })
   .openapi('Email')
-
-const PaymentUnitSchema = z
-  .enum(['hour', 'week', 'month', 'year', 'paycheck'])
-  .openapi({
-    description: 'Unit of measurement for employee compensation.',
-    example: 'year',
-    title: 'Payment Unit',
-    'x-apideck-enum-id': 'payment_unit',
-  })
-  .openapi('PaymentUnit')
 
 const EmployeeNumberSchema = z
   .string()
@@ -1155,6 +778,28 @@ const PhotoUrlSchema = z
     title: 'Photo URL',
   })
   .openapi('PhotoUrl')
+
+const UpdatedAtSchema = z.iso
+  .datetime({ offset: true })
+  .nullable()
+  .openapi({
+    description: 'The date and time when the object was last updated.',
+    example: '2020-09-30T07:43:32.000Z',
+    readOnly: true,
+    title: 'Updated at (timestamp)',
+  })
+  .openapi('UpdatedAt')
+
+const UpdatedBySchema = z
+  .string()
+  .nullable()
+  .openapi({
+    description: 'The user who last updated the object.',
+    example: '12345',
+    readOnly: true,
+    title: 'Updated by',
+  })
+  .openapi('UpdatedBy')
 
 const EmployeeSchema = z
   .strictObject({
@@ -1780,6 +1425,116 @@ const EmployeeSchema = z
   })
   .openapi('Employee')
 
+const BenefitSchema = z
+  .object({
+    employee_deduction: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The amount deducted for benefit.', example: 142.94 }),
+    employer_contribution: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The amount of employer contribution.', example: 141.14 }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the benefit.', example: 'Health Insurance' }),
+  })
+  .openapi({
+    'x-apideck-schema-id': 'Benefit',
+    'x-apideck-weights': {
+      employee_deduction: 'high',
+      employer_contribution: 'high',
+      name: 'critical',
+    },
+    required: [],
+  })
+  .openapi('Benefit')
+
+const DeductionSchema = z
+  .object({
+    amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The amount deducted.', example: 10.97 }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the deduction.', example: 'Company Car' }),
+  })
+  .openapi({
+    'x-apideck-schema-id': 'Deduction',
+    'x-apideck-weights': { amount: 'critical', name: 'critical' },
+    required: [],
+  })
+  .openapi('Deduction')
+
+const TaxSchema = z
+  .object({
+    amount: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The amount of the tax.', example: 1.97 }),
+    employer: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Paid by employer.', example: false }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the tax.', example: 'CA State Income Tax' }),
+  })
+  .openapi({
+    'x-apideck-schema-id': 'Tax',
+    'x-apideck-weights': { amount: 'high', employer: 'high', name: 'high' },
+    required: [],
+  })
+  .openapi('Tax')
+
+const CompensationSchema = z
+  .strictObject({
+    benefits: z
+      .array(BenefitSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of employee benefits for the pay period.' }),
+    deductions: z
+      .array(DeductionSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of employee deductions for the pay period.' }),
+    employee_id: IdSchema,
+    gross_pay: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: "The employee's gross pay. Only available when payroll has been processed",
+        example: 3000,
+      }),
+    net_pay: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: "The employee's net pay. Only available when payroll has been processed",
+        example: 2199.93,
+      }),
+    taxes: z
+      .array(TaxSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of employer and employee taxes for the pay period.' }),
+  })
+  .openapi({
+    required: ['employee_id'],
+    'x-apideck-schema-id': 'Compensation',
+    'x-apideck-weights': {
+      benefits: 'high',
+      deductions: 'high',
+      employee_id: 'critical',
+      gross_pay: 'critical',
+      net_pay: 'high',
+      taxes: 'high',
+    },
+  })
+  .openapi('Compensation')
+
 const PayrollTotalsSchema = z
   .object({
     check_amount: z
@@ -1897,15 +1652,6 @@ const PayrollSchema = z
   })
   .openapi('Payroll')
 
-const EmployeePayrollSchema = z
-  .object({ employee: EmployeeSchema.exactOptional(), payroll: PayrollSchema.exactOptional() })
-  .openapi({
-    'x-apideck-schema-id': 'EmployeePayroll',
-    'x-apideck-weights': { employee: 'critical', payroll: 'critical' },
-    required: [],
-  })
-  .openapi('EmployeePayroll')
-
 const EmployeePayrollsSchema = z
   .object({
     employee: EmployeeSchema.exactOptional(),
@@ -1917,6 +1663,269 @@ const EmployeePayrollsSchema = z
     required: [],
   })
   .openapi('EmployeePayrolls')
+
+type GetEmployeePayrollsResponseType = {
+  data: z.infer<typeof EmployeePayrollsSchema>
+  operation: string
+  resource: string
+  service: string
+  status: string
+  status_code: number
+}
+
+const BadRequestResponseSchema = z
+  .object({
+    detail: z
+      .union([
+        z.string().openapi({ example: 'Missing property foobar' }),
+        z.looseObject({}).openapi({ example: { missing: [{ foobar: 'required' }] } }),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains parameter or domain specific information related to the error and why it occurred.',
+      }),
+    error: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains an explanation of the status_code as defined in HTTP/1.1 standard (RFC 7231)',
+        example: 'Bad Request',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A human-readable message providing more details about the error.',
+        example: 'Invalid Params',
+      }),
+    ref: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to documentation of error type',
+        example: 'https://developers.apideck.com/errors#requestvalidationerror',
+      }),
+    status_code: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'HTTP status code', example: 400 }),
+    type_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of error returned', example: 'RequestValidationError' }),
+  })
+  .openapi({ 'x-apideck-schema-id': 'BadRequest', required: [] })
+  .openapi('BadRequestResponse')
+
+const UnifiedIdSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique identifier of the resource',
+        example: '12345',
+        readOnly: true,
+        title: 'Id',
+      }),
+  })
+  .openapi({ required: ['id'], title: 'UnifiedId', 'x-apideck-schema-id': 'Id' })
+  .openapi('UnifiedId')
+
+const CreateDepartmentResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Departments' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'workday' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateDepartmentResponse',
+  })
+  .openapi('CreateDepartmentResponse')
+
+const CreateEmployeeResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Employees' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'sage-hr' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateEmployeeResponse',
+  })
+  .openapi('CreateEmployeeResponse')
+
+const CreateHrisCompanyResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Companies' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'undefined' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'CreateHrisCompanyResponse',
+  })
+  .openapi('CreateHrisCompanyResponse')
+
+const CreateTimeOffRequestResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'add' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'time-off-requests' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'bamboohr' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({ required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'] })
+  .openapi('CreateTimeOffRequestResponse')
+
+const DeleteDepartmentResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Departments' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'workday' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteDepartmentResponse',
+  })
+  .openapi('DeleteDepartmentResponse')
+
+const DeleteEmployeeResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Employees' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'sage-hr' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteEmployeeResponse',
+  })
+  .openapi('DeleteEmployeeResponse')
+
+const DeleteHrisCompanyResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'Companies' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'undefined' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({
+    required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'],
+    'x-apideck-schema-id': 'DeleteHrisCompanyResponse',
+  })
+  .openapi('DeleteHrisCompanyResponse')
+
+const DeleteTimeOffRequestResponseSchema = z
+  .object({
+    data: UnifiedIdSchema,
+    operation: z.string().openapi({ description: 'Operation performed', example: 'delete' }),
+    resource: z
+      .string()
+      .openapi({ description: 'Unified API resource name', example: 'time-off-requests' }),
+    service: z
+      .string()
+      .openapi({ description: 'Apideck ID of service provider', example: 'bamboohr' }),
+    status: z.string().openapi({ description: 'HTTP Response Status', example: 'OK' }),
+    status_code: z.int().openapi({ description: 'HTTP Response Status Code', example: 200 }),
+  })
+  .openapi({ required: ['status_code', 'status', 'service', 'resource', 'operation', 'data'] })
+  .openapi('DeleteTimeOffRequestResponse')
+
+const DepartmentSchema = z
+  .strictObject({
+    code: z.string().nullable().exactOptional().openapi({ example: '2', title: 'Code' }),
+    created_at: CreatedAtSchema.exactOptional(),
+    created_by: CreatedBySchema.exactOptional(),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ example: 'R&D', title: 'Description' }),
+    id: IdSchema.exactOptional(),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Department name', example: 'R&D', title: 'Name' }),
+    parent_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Parent ID', example: '22345', readOnly: true }),
+    updated_at: UpdatedAtSchema.exactOptional(),
+    updated_by: UpdatedBySchema.exactOptional(),
+  })
+  .openapi({
+    'x-apideck-schema-id': 'Department',
+    'x-apideck-weights': {
+      code: 'medium',
+      created_at: 'medium',
+      created_by: 'edge-case',
+      description: 'low',
+      id: 'critical',
+      name: 'critical',
+      updated_at: 'medium',
+      updated_by: 'edge-case',
+    },
+    required: [],
+  })
+  .openapi('Department')
+
+const EmployeePayrollSchema = z
+  .object({ employee: EmployeeSchema.exactOptional(), payroll: PayrollSchema.exactOptional() })
+  .openapi({
+    'x-apideck-schema-id': 'EmployeePayroll',
+    'x-apideck-weights': { employee: 'critical', payroll: 'critical' },
+    required: [],
+  })
+  .openapi('EmployeePayroll')
 
 const ScheduleSchema = z
   .strictObject({
@@ -2287,7 +2296,7 @@ const GetEmployeePayrollResponseSchema = z
   })
   .openapi('GetEmployeePayrollResponse')
 
-const GetEmployeePayrollsResponseSchema = z
+const GetEmployeePayrollsResponseSchema: z.ZodType<GetEmployeePayrollsResponseType> = z
   .object({
     data: EmployeePayrollsSchema,
     operation: z.string().openapi({ description: 'Operation performed', example: 'all' }),
@@ -2777,7 +2786,7 @@ const NotFoundResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: "Could not find widget with id: '123'" }),
-        z.object({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
+        z.looseObject({}).openapi({ example: { not_found: { entity: 'widget', id: '123' } } }),
       ])
       .exactOptional()
       .openapi({
@@ -2828,7 +2837,7 @@ const NotImplementedResponseSchema = z
             example:
               "Failed to retrieve Widget tokenUrl from 'components.securitySchemes.OAuth2.flows'",
           }),
-        z.object({}),
+        z.looseObject({}),
       ])
       .exactOptional()
       .openapi({
@@ -3066,7 +3075,9 @@ const UnexpectedErrorResponseSchema = z
     detail: z
       .union([
         z.string().openapi({ example: 'Missing Header: x-apideck-consumer-id' }),
-        z.object({}).openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
+        z
+          .looseObject({})
+          .openapi({ example: { missing: [{ 'x-apideck-consumer-id': 'required' }] } }),
       ])
       .exactOptional()
       .openapi({

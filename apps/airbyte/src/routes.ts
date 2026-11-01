@@ -1,89 +1,99 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const EndpointPrivateLinkServiceConfigSchema = z
-  .object({
-    type: z.literal('endpoint'),
-    name: z
-      .string()
-      .regex(/^com\.amazonaws\.vpce\.[a-z0-9-]+\.vpce-svc-[a-z0-9]+$/)
-      .max(255),
-    region: z
-      .string()
-      .regex(/^[a-z]{2,3}-[a-z]+(-[a-z]+)?-\d+$/)
-      .max(30),
-  })
-  .openapi({ required: ['type', 'name', 'region'] })
-  .openapi('EndpointPrivateLinkServiceConfig')
-
-const StoragePrivateLinkServiceConfigSchema = z
-  .object({
-    type: z.literal('storage'),
-    region: z
-      .string()
-      .regex(/^[a-z]{2,3}-[a-z]+(-[a-z]+)?-\d+$/)
-      .max(30),
-    bucket: z
-      .string()
-      .regex(/^(?!.*\.\.)(?!\d+\.\d+\.\d+\.\d+$)[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/)
-      .min(3)
-      .max(63),
-  })
-  .openapi({ required: ['type', 'region', 'bucket'] })
-  .openapi('StoragePrivateLinkServiceConfig')
-
-type PrivateLinkServiceConfigType =
-  | z.infer<typeof EndpointPrivateLinkServiceConfigSchema>
-  | z.infer<typeof StoragePrivateLinkServiceConfigSchema>
-
-const ConnectionEventIdSchema = z.uuid().openapi('ConnectionEventId')
-
 const ConnectionIdSchema = z.uuid().openapi('ConnectionId')
 
-const ConnectionEventTypeSchema = z
-  .enum([
-    'SYNC_STARTED',
-    'SYNC_SUCCEEDED',
-    'SYNC_INCOMPLETE',
-    'SYNC_FAILED',
-    'SYNC_CANCELLED',
-    'REFRESH_STARTED',
-    'REFRESH_SUCCEEDED',
-    'REFRESH_INCOMPLETE',
-    'REFRESH_FAILED',
-    'REFRESH_CANCELLED',
-    'CLEAR_STARTED',
-    'CLEAR_SUCCEEDED',
-    'CLEAR_INCOMPLETE',
-    'CLEAR_FAILED',
-    'CLEAR_CANCELLED',
-    'CONNECTION_SETTINGS_UPDATE',
-    'CONNECTION_ENABLED',
-    'CONNECTION_DISABLED',
-    'SCHEMA_UPDATE',
-    'SCHEMA_CONFIG_UPDATE',
-    'CONNECTOR_UPDATE',
-    'UNKNOWN',
-  ])
-  .openapi('ConnectionEventType')
-
-const UserReadInConnectionEventSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    email: z.email().exactOptional(),
-    name: z.string().exactOptional(),
-    isDeleted: z.boolean().default(false),
+const NamespaceDefinitionTypeSchema = z
+  .enum(['source', 'destination', 'customformat'])
+  .openapi({
+    description: 'Method used for computing final namespace in destination',
+    'x-sdk-component': true,
   })
-  .openapi({ required: ['isDeleted'] })
-  .openapi('UserReadInConnectionEvent')
+  .openapi('NamespaceDefinitionType')
 
-type ConnectionEventType = {
-  id: z.infer<typeof ConnectionEventIdSchema>
-  connectionId: z.infer<typeof ConnectionIdSchema>
-  eventType: z.infer<typeof ConnectionEventTypeSchema>
-  summary: { [key: string]: unknown }
-  createdAt?: bigint
-  user?: z.infer<typeof UserReadInConnectionEventSchema>
-}
+const SourceIdSchema = z.uuid().openapi('SourceId')
+
+const DestinationIdSchema = z.uuid().openapi('DestinationId')
+
+const OperationIdSchema = z.uuid().openapi('OperationId')
+
+const StreamJsonSchemaSchema = z
+  .looseObject({})
+  .openapi({ description: 'Stream schema using Json Schema specs.' })
+  .openapi('StreamJsonSchema')
+
+const SyncModeSchema = z.enum(['full_refresh', 'incremental']).openapi('SyncMode')
+
+const AirbyteStreamSchema = z
+  .strictObject({
+    name: z.string().openapi({ description: "Stream's name." }),
+    jsonSchema: StreamJsonSchemaSchema.exactOptional(),
+    supportedSyncModes: z.array(SyncModeSchema).exactOptional(),
+    sourceDefinedCursor: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the source defines the cursor field, then any other cursor field inputs will be ignored. If it does not, either the user_provided one is used, or the default one is used as a backup.',
+      }),
+    defaultCursorField: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Path to the field that will be used to determine if a record is new or modified since the last sync. If not provided by the source, the end user will have to specify the comparable themselves.',
+      }),
+    sourceDefinedPrimaryKey: z
+      .array(z.array(z.string()))
+      .exactOptional()
+      .openapi({
+        description:
+          'If the source defines the primary key, paths to the fields that will be used as a primary key. If not provided by the source, the end user will have to specify the primary key themselves.',
+      }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional Source-defined namespace. Airbyte streams from the same sources should have the same namespace. Currently only used by JDBC destinations to determine what schema to write to.',
+      }),
+    isResumable: z.boolean().exactOptional(),
+    isFileBased: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If the stream supports FileReference.' }),
+  })
+  .openapi({
+    description: 'the immutable schema defined by the source',
+    required: ['name', 'json_schema'],
+  })
+  .openapi('AirbyteStream')
+
+const DestinationSyncModeSchema = z
+  .enum(['append', 'overwrite', 'append_dedup', 'overwrite_dedup', 'update', 'soft_delete'])
+  .openapi('DestinationSyncMode')
+
+const SelectedFieldInfoSchema = z
+  .object({ fieldPath: z.array(z.string()).exactOptional() })
+  .openapi({
+    description:
+      'Path to a field/column/property in a stream to be selected. For example, if the field to be selected is a database column called "foo", this will be ["foo"]. Use multiple path elements for nested schemas.',
+    'x-sdk-component': true,
+    required: [],
+  })
+  .openapi('SelectedFieldInfo')
+
+const SelectedFieldsSchema = z
+  .array(SelectedFieldInfoSchema)
+  .openapi({
+    description: 'Paths to the fields that will be included in the configured catalog.',
+    'x-sdk-component': true,
+  })
+  .openapi('SelectedFields')
+
+const StreamMapperTypeSchema = z
+  .enum(['hashing', 'field-renaming', 'row-filtering', 'encryption', 'field-filtering'])
+  .openapi({ 'x-sdk-component': true })
+  .openapi('StreamMapperType')
 
 const HashingMapperConfigurationSchema = z
   .object({
@@ -214,12 +224,1549 @@ const EncryptionMapperConfigurationSchema = z
   })
   .openapi('EncryptionMapperConfiguration')
 
-type MapperConfigurationType =
-  | z.infer<typeof HashingMapperConfigurationSchema>
-  | z.infer<typeof FieldFilteringMapperConfigurationSchema>
-  | z.infer<typeof FieldRenamingMapperConfigurationSchema>
-  | z.infer<typeof RowFilteringMapperConfigurationSchema>
-  | z.infer<typeof EncryptionMapperConfigurationSchema>
+const MapperConfigurationSchema = z
+  .xor([
+    HashingMapperConfigurationSchema,
+    FieldFilteringMapperConfigurationSchema,
+    FieldRenamingMapperConfigurationSchema,
+    RowFilteringMapperConfigurationSchema,
+    EncryptionMapperConfigurationSchema,
+  ])
+  .openapi({ description: 'The values required to configure the mapper.', 'x-sdk-component': true })
+  .openapi('MapperConfiguration')
+
+const ConfiguredStreamMapperSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    type: StreamMapperTypeSchema,
+    mapperConfiguration: MapperConfigurationSchema,
+  })
+  .openapi({ required: ['type', 'mapperConfiguration'], 'x-sdk-component': true })
+  .openapi('ConfiguredStreamMapper')
+
+const AirbyteStreamConfigurationSchema = z
+  .strictObject({
+    syncMode: SyncModeSchema,
+    cursorField: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Path to the field that will be used to determine if a record is new or modified since the last sync. This field is REQUIRED if `sync_mode` is `incremental`. Otherwise it is ignored.',
+      }),
+    destinationSyncMode: DestinationSyncModeSchema,
+    namespace: z.string().exactOptional().openapi({ description: 'Namespace of the stream.' }),
+    primaryKey: z
+      .array(z.array(z.string()))
+      .exactOptional()
+      .openapi({
+        description:
+          'Paths to the fields that will be used as primary key. This field is REQUIRED if `destination_sync_mode` is `*_dedup`. Otherwise it is ignored.',
+      }),
+    aliasName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Alias name to the stream to be used in the destination' }),
+    selected: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If this is true, the stream is selected with all of its properties. For new connections, this considers if the stream is suggested or not',
+      }),
+    suggested: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Does the connector suggest that this stream be enabled by default?',
+      }),
+    destinationObjectName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the destination object that this stream will be written to. This is used for data activation destinations.',
+      }),
+    includeFiles: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Should the sync move raw files from the source to the destination?',
+      }),
+    fieldSelectionEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether field selection should be enabled. If this is true, only the properties in `selectedFields` will be included.',
+      }),
+    selectedFields: SelectedFieldsSchema.exactOptional().openapi({
+      description:
+        'This must be set if `fieldSelectedEnabled` is set. An empty list indicates that no properties will be included.',
+    }),
+    hashedFields: SelectedFieldsSchema.exactOptional().openapi({
+      description:
+        'Fields that should be hashed before being written to the destination. Deprecated, use `mappers` instead.',
+    }),
+    mappers: z
+      .array(ConfiguredStreamMapperSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Mappers that should be applied to the stream before writing to the destination.',
+      }),
+    minimumGenerationId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The minimum generation Id of the stream',
+      }),
+    generationId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Generation Id of the stream' }),
+    syncId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'Sync id of the stream.' }),
+  })
+  .openapi({
+    description: 'the mutable part of the stream to configure the destination',
+    required: ['syncMode', 'destinationSyncMode'],
+  })
+  .openapi('AirbyteStreamConfiguration')
+
+const AirbyteStreamAndConfigurationSchema = z
+  .strictObject({
+    stream: AirbyteStreamSchema.exactOptional(),
+    config: AirbyteStreamConfigurationSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'each stream is split in two parts; the immutable schema from source and mutable configuration for destination',
+    required: [],
+  })
+  .openapi('AirbyteStreamAndConfiguration')
+
+type AirbyteCatalogType = { streams: z.infer<typeof AirbyteStreamAndConfigurationSchema>[] }
+
+const AirbyteCatalogSchema: z.ZodType<AirbyteCatalogType> = z
+  .object({ streams: z.array(AirbyteStreamAndConfigurationSchema) })
+  .openapi({ description: 'describes the available schema (catalog).', required: ['streams'] })
+  .openapi('AirbyteCatalog')
+
+const ConnectionScheduleSchema = z
+  .object({
+    units: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    timeUnit: z.enum(['minutes', 'hours', 'days', 'weeks', 'months']),
+  })
+  .openapi({ description: 'if null, then no schedule is set.', required: ['units', 'timeUnit'] })
+  .openapi('ConnectionSchedule')
+
+const ConnectionScheduleTypeSchema = z
+  .enum(['manual', 'basic', 'cron'])
+  .openapi({ description: 'determine how the schedule data should be interpreted' })
+  .openapi('ConnectionScheduleType')
+
+const ConnectionScheduleDataSchema = z
+  .object({
+    basicSchedule: z
+      .object({
+        timeUnit: z.enum(['minutes', 'hours', 'days', 'weeks', 'months']),
+        units: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      })
+      .exactOptional()
+      .openapi({ required: ['timeUnit', 'units'] }),
+    cron: z
+      .object({ cronExpression: z.string(), cronTimeZone: z.string() })
+      .exactOptional()
+      .openapi({ required: ['cronExpression', 'cronTimeZone'] }),
+  })
+  .openapi({
+    description: 'schedule for when the the connection should run, per the schedule type',
+    required: [],
+  })
+  .openapi('ConnectionScheduleData')
+
+const ConnectionStatusSchema = z
+  .enum(['active', 'inactive', 'deprecated', 'locked'])
+  .openapi({
+    description:
+      'Active means that data is flowing through the connection. Inactive means it is not. Deprecated means the connection is off and cannot be re-activated. Locked means the connection is temporarily disabled due to external factors (e.g., payment issues). The schema field describes the elements of the schema that will be synced.',
+  })
+  .openapi('ConnectionStatus')
+
+const ResourceRequirementsSchema = z
+  .object({
+    cpu_request: z.string().exactOptional(),
+    cpu_limit: z.string().exactOptional(),
+    memory_request: z.string().exactOptional(),
+    memory_limit: z.string().exactOptional(),
+    ephemeral_storage_request: z.string().exactOptional(),
+    ephemeral_storage_limit: z.string().exactOptional(),
+  })
+  .openapi({
+    'x-sdk-component': true,
+    description: 'optional resource requirements to run workers (blank for unbounded allocations)',
+    required: [],
+  })
+  .openapi('ResourceRequirements')
+
+const NonBreakingChangesPreferenceSchema = z
+  .enum(['ignore', 'disable', 'propagate_columns', 'propagate_fully'])
+  .openapi({ 'x-sdk-component': true })
+  .openapi('NonBreakingChangesPreference')
+
+const SchemaChangeBackfillPreferenceSchema = z
+  .enum(['enabled', 'disabled'])
+  .openapi('SchemaChangeBackfillPreference')
+
+const WorkspaceIdSchema = z.uuid().openapi({ 'x-sdk-component': true }).openapi('WorkspaceId')
+
+const TagIdSchema = z.uuid().openapi({ 'x-sdk-component': true }).openapi('TagId')
+
+const TagSchema = z
+  .object({
+    tagId: TagIdSchema,
+    workspaceId: WorkspaceIdSchema,
+    name: z.string(),
+    color: z.string(),
+  })
+  .openapi({
+    description:
+      'A tag that can be associated with a connection. Useful for grouping and organizing connections in a workspace.',
+    'x-sdk-component': true,
+    required: ['tagId', 'workspaceId', 'name', 'color'],
+  })
+  .openapi('Tag')
+
+type ConnectionReadType = {
+  connectionId: z.infer<typeof ConnectionIdSchema>
+  name: string
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionTypeSchema>
+  namespaceFormat?: string | null
+  prefix?: string
+  sourceId: z.infer<typeof SourceIdSchema>
+  destinationId: z.infer<typeof DestinationIdSchema>
+  operationIds?: z.infer<typeof OperationIdSchema>[]
+  syncCatalog: z.infer<typeof AirbyteCatalogSchema>
+  schedule?: z.infer<typeof ConnectionScheduleSchema>
+  scheduleType?: z.infer<typeof ConnectionScheduleTypeSchema>
+  scheduleData?: z.infer<typeof ConnectionScheduleDataSchema>
+  status: z.infer<typeof ConnectionStatusSchema>
+  statusReason?: string | null
+  resourceRequirements?: z.infer<typeof ResourceRequirementsSchema>
+  sourceCatalogId?: string
+  destinationCatalogId?: string
+  breakingChange: boolean
+  notifySchemaChanges?: boolean
+  notifySchemaChangesByEmail?: boolean
+  nonBreakingChangesPreference?: z.infer<typeof NonBreakingChangesPreferenceSchema>
+  created_at?: bigint
+  backfillPreference?: z.infer<typeof SchemaChangeBackfillPreferenceSchema>
+  workspaceId?: z.infer<typeof WorkspaceIdSchema>
+  dataplaneGroupId?: string
+  tags?: z.infer<typeof TagSchema>[]
+  onDemandEnabled?: boolean
+  enableIndexing?: boolean
+}
+
+const ConnectionReadSchema: z.ZodType<ConnectionReadType> = z
+  .object({
+    connectionId: ConnectionIdSchema,
+    name: z.string(),
+    namespaceDefinition: NamespaceDefinitionTypeSchema.exactOptional(),
+    namespaceFormat: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({
+        description:
+          "Used when namespaceDefinition is 'customformat'. If blank then behaves like namespaceDefinition = 'destination'. If \"${SOURCE_NAMESPACE}\" then behaves like namespaceDefinition = 'source'.",
+        example: '${SOURCE_NAMESPACE}',
+      }),
+    prefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Prefix that will be prepended to the name of each stream when it is written to the destination.',
+      }),
+    sourceId: SourceIdSchema,
+    destinationId: DestinationIdSchema,
+    operationIds: z.array(OperationIdSchema).exactOptional(),
+    syncCatalog: AirbyteCatalogSchema,
+    schedule: ConnectionScheduleSchema.exactOptional(),
+    scheduleType: ConnectionScheduleTypeSchema.exactOptional(),
+    scheduleData: ConnectionScheduleDataSchema.exactOptional(),
+    status: ConnectionStatusSchema,
+    statusReason: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Optional reason explaining the current status of the connection' }),
+    resourceRequirements: ResourceRequirementsSchema.exactOptional(),
+    sourceCatalogId: z.uuid().exactOptional(),
+    destinationCatalogId: z.uuid().exactOptional(),
+    breakingChange: z.boolean(),
+    notifySchemaChanges: z.boolean().exactOptional(),
+    notifySchemaChangesByEmail: z.boolean().exactOptional(),
+    nonBreakingChangesPreference: NonBreakingChangesPreferenceSchema.exactOptional(),
+    created_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    backfillPreference: SchemaChangeBackfillPreferenceSchema.exactOptional(),
+    workspaceId: WorkspaceIdSchema.exactOptional(),
+    dataplaneGroupId: z.uuid().exactOptional(),
+    tags: z.array(TagSchema).exactOptional(),
+    onDemandEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When enabled, this connection will use on-demand capacity if committed capacity is exhausted',
+      }),
+    enableIndexing: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether Fusion indexing is enabled for this connection.' }),
+  })
+  .openapi({
+    required: [
+      'connectionId',
+      'name',
+      'sourceId',
+      'destinationId',
+      'syncCatalog',
+      'status',
+      'breakingChange',
+    ],
+  })
+  .openapi('ConnectionRead')
+
+const SourceDefinitionIdSchema = z.uuid().openapi('SourceDefinitionId')
+
+const SourceConfigurationSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'The values required to configure the source. The schema for this must match the schema return by source_definition_specifications/get for the source.',
+    example: { user: 'charles' },
+    'x-sdk-component': true,
+  })
+  .openapi('SourceConfiguration')
+
+const DeadlineActionSchema = z.enum(['auto_upgrade', 'disable']).openapi('DeadlineAction')
+
+const ActorDefinitionBreakingChangeSchema = z
+  .object({
+    version: z.string(),
+    message: z.string(),
+    upgradeDeadline: z.iso
+      .date()
+      .openapi({
+        'x-field-extra-annotation':
+          '@com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd")',
+      }),
+    migrationDocumentationUrl: z.string(),
+    deadlineAction: DeadlineActionSchema.exactOptional(),
+  })
+  .openapi({ required: ['version', 'upgradeDeadline', 'message', 'migrationDocumentationUrl'] })
+  .openapi('ActorDefinitionBreakingChange')
+
+const ActorDefinitionVersionBreakingChangesSchema = z
+  .object({
+    upcomingBreakingChanges: z.array(ActorDefinitionBreakingChangeSchema),
+    minUpgradeDeadline: z.iso
+      .date()
+      .openapi({
+        'x-field-extra-annotation':
+          '@com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd")',
+      }),
+    deadlineAction: DeadlineActionSchema.exactOptional(),
+  })
+  .openapi({ required: ['upcomingBreakingChanges', 'minUpgradeDeadline'] })
+  .openapi('ActorDefinitionVersionBreakingChanges')
+
+const SupportStateSchema = z
+  .enum(['supported', 'unsupported', 'deprecated'])
+  .openapi('SupportState')
+
+const ActorStatusSchema = z
+  .enum(['active', 'inactive'])
+  .openapi({
+    description:
+      'An actor(source/destination) is active if it has at least one active or manual connection.',
+  })
+  .openapi('ActorStatus')
+
+const JobTypeSchema = z
+  .enum([
+    'get_spec',
+    'check_connection',
+    'discover_schema',
+    'sync',
+    'reset_connection',
+    'connection_updater',
+    'replicate',
+  ])
+  .openapi({
+    'x-sdk-component': true,
+    description: 'enum that describes the different types of jobs that the platform runs.',
+  })
+  .openapi('JobType')
+
+const JobTypeResourceLimitSchema = z
+  .strictObject({ jobType: JobTypeSchema, resourceRequirements: ResourceRequirementsSchema })
+  .openapi({
+    'x-sdk-component': true,
+    description:
+      'sets resource requirements for a specific job type for an actor or actor definition. these values override the default, if both are set.',
+    required: ['jobType', 'resourceRequirements'],
+  })
+  .openapi('JobTypeResourceLimit')
+
+const ScopedResourceRequirementsSchema = z
+  .strictObject({
+    default: ResourceRequirementsSchema.exactOptional(),
+    jobSpecific: z.array(JobTypeResourceLimitSchema).exactOptional(),
+  })
+  .openapi({
+    'x-sdk-component': true,
+    description:
+      'actor or actor definition specific resource requirements. if default is set, these are the requirements that should be set for ALL jobs run for this actor definition. it is overriden by the job type specific configurations. if not set, the platform will use defaults. these values will be overriden by configuration at the connection level.',
+    required: [],
+  })
+  .openapi('ScopedResourceRequirements')
+
+const SourceReadSchema = z
+  .object({
+    sourceDefinitionId: SourceDefinitionIdSchema,
+    sourceId: SourceIdSchema,
+    workspaceId: WorkspaceIdSchema,
+    connectionConfiguration: SourceConfigurationSchema,
+    name: z.string(),
+    sourceName: z.string(),
+    icon: z.string().exactOptional(),
+    isVersionOverrideApplied: z.boolean().exactOptional(),
+    isEntitled: z.boolean().exactOptional(),
+    breakingChanges: ActorDefinitionVersionBreakingChangesSchema.exactOptional(),
+    supportState: SupportStateSchema.exactOptional(),
+    status: ActorStatusSchema.exactOptional(),
+    createdAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    isDraft: z.boolean().exactOptional(),
+    resourceAllocation: ScopedResourceRequirementsSchema.exactOptional(),
+    numConnections: z.int().exactOptional(),
+    lastSync: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    connectionJobStatuses: z
+      .record(z.string(), z.int())
+      .exactOptional()
+      .openapi({
+        description: 'Map of job status to count of connections whose latest job has that status',
+      }),
+  })
+  .openapi({
+    required: [
+      'sourceDefinitionId',
+      'sourceId',
+      'workspaceId',
+      'connectionConfiguration',
+      'name',
+      'sourceName',
+      'createdAt',
+    ],
+  })
+  .openapi('SourceRead')
+
+const SupportLevelSchema = z
+  .enum(['community', 'certified', 'archived', 'none'])
+  .openapi('SupportLevel')
+
+const ReleaseStageSchema = z
+  .enum(['alpha', 'beta', 'generally_available', 'custom'])
+  .openapi('ReleaseStage')
+
+const ISO8601DateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    'x-field-extra-annotation':
+      '@com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd\'T\'HH:mm:ss.SSSZ")',
+  })
+  .openapi('ISO8601DateTime')
+
+const SourceDefinitionReadSchema = z
+  .object({
+    sourceDefinitionId: SourceDefinitionIdSchema,
+    name: z.string(),
+    dockerRepository: z.string(),
+    dockerImageTag: z.string(),
+    documentationUrl: z.url().exactOptional(),
+    icon: z.string().exactOptional(),
+    protocolVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Airbyte Protocol version supported by the connector' }),
+    custom: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Whether the connector is custom or not' }),
+    enterprise: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Whether the connector is an enterprise connector' }),
+    supportLevel: SupportLevelSchema.exactOptional(),
+    releaseStage: ReleaseStageSchema.exactOptional(),
+    releaseDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description: 'The date when this connector was first released, in yyyy-mm-dd format.',
+        'x-field-extra-annotation':
+          '@com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd")',
+      }),
+    sourceType: z.enum(['api', 'file', 'database', 'custom']).exactOptional(),
+    resourceRequirements: ScopedResourceRequirementsSchema.exactOptional(),
+    maxSecondsBetweenMessages: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Number of seconds allowed between 2 airbyte protocol messages. The source will timeout if this delay is reach',
+      }),
+    lastPublished: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'The time the connector was modified in the codebase.',
+    }),
+    cdkVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version of the CDK that the connector was built with. e.g. python:0.1.0, java:0.1.0',
+      }),
+    metrics: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Public metrics for the connector' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The language the connector is written in' }),
+  })
+  .openapi({ required: ['sourceDefinitionId', 'name', 'dockerRepository', 'dockerImageTag'] })
+  .openapi('SourceDefinitionRead')
+
+const DestinationDefinitionIdSchema = z.uuid().openapi('DestinationDefinitionId')
+
+const DestinationConfigurationSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'The values required to configure the destination. The schema for this must match the schema return by destination_definition_specifications/get for the destinationDefinition.',
+    example: { user: 'charles' },
+    'x-sdk-component': true,
+  })
+  .openapi('DestinationConfiguration')
+
+const DestinationReadSchema = z
+  .object({
+    destinationDefinitionId: DestinationDefinitionIdSchema,
+    destinationId: DestinationIdSchema,
+    workspaceId: WorkspaceIdSchema,
+    connectionConfiguration: DestinationConfigurationSchema,
+    name: z.string(),
+    destinationName: z.string(),
+    icon: z.string().exactOptional(),
+    isVersionOverrideApplied: z.boolean().exactOptional(),
+    isEntitled: z.boolean().exactOptional(),
+    breakingChanges: ActorDefinitionVersionBreakingChangesSchema.exactOptional(),
+    supportState: SupportStateSchema.exactOptional(),
+    status: ActorStatusSchema.exactOptional(),
+    createdAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    isDraft: z.boolean().exactOptional(),
+    resourceAllocation: ScopedResourceRequirementsSchema.exactOptional(),
+    numConnections: z.int().exactOptional(),
+    lastSync: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    connectionJobStatuses: z
+      .record(z.string(), z.int())
+      .exactOptional()
+      .openapi({
+        description: 'Map of job status to count of connections whose latest job has that status',
+      }),
+  })
+  .openapi({
+    required: [
+      'destinationDefinitionId',
+      'destinationId',
+      'workspaceId',
+      'connectionConfiguration',
+      'name',
+      'destinationName',
+      'createdAt',
+    ],
+  })
+  .openapi('DestinationRead')
+
+const DestinationDefinitionReadSchema = z
+  .object({
+    destinationDefinitionId: DestinationDefinitionIdSchema,
+    name: z.string(),
+    dockerRepository: z.string(),
+    dockerImageTag: z.string(),
+    documentationUrl: z.url(),
+    icon: z.string().exactOptional(),
+    protocolVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Airbyte Protocol version supported by the connector' }),
+    custom: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Whether the connector is custom or not' }),
+    enterprise: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Whether the connector is an enterprise connector' }),
+    supportLevel: SupportLevelSchema.exactOptional(),
+    releaseStage: ReleaseStageSchema.exactOptional(),
+    releaseDate: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description: 'The date when this connector was first released, in yyyy-mm-dd format.',
+      }),
+    resourceRequirements: ScopedResourceRequirementsSchema.exactOptional(),
+    lastPublished: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'The time the connector was modified in the codebase.',
+    }),
+    cdkVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version of the CDK that the connector was built with. e.g. python:0.1.0, java:0.1.0',
+      }),
+    metrics: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Public metrics for the connector' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The language the connector is written in' }),
+    supportsDataActivation: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the connector supports data activation' }),
+  })
+  .openapi({
+    required: [
+      'destinationDefinitionId',
+      'name',
+      'dockerRepository',
+      'dockerImageTag',
+      'documentationUrl',
+    ],
+  })
+  .openapi('DestinationDefinitionRead')
+
+const TimeframeUsageSchema = z
+  .object({ timeframeStart: z.string(), timeframeEnd: z.string(), quantity: z.float64() })
+  .openapi({ required: ['timeframeStart', 'timeframeEnd', 'quantity'] })
+  .openapi('TimeframeUsage')
+
+const UsageBucketSchema = z
+  .object({
+    free: z.array(TimeframeUsageSchema),
+    regular: z.array(TimeframeUsageSchema),
+    internal: z.array(TimeframeUsageSchema),
+  })
+  .openapi({ required: ['free', 'regular', 'internal'] })
+  .openapi('UsageBucket')
+
+type ConnectionUsageReadType = {
+  connection: z.infer<typeof ConnectionReadSchema>
+  source: z.infer<typeof SourceReadSchema>
+  sourceDefinition: z.infer<typeof SourceDefinitionReadSchema>
+  destination: z.infer<typeof DestinationReadSchema>
+  destinationDefinition: z.infer<typeof DestinationDefinitionReadSchema>
+  usage: z.infer<typeof UsageBucketSchema>
+}
+
+const ConnectionUsageReadSchema: z.ZodType<ConnectionUsageReadType> = z
+  .object({
+    connection: ConnectionReadSchema,
+    source: SourceReadSchema,
+    sourceDefinition: SourceDefinitionReadSchema,
+    destination: DestinationReadSchema,
+    destinationDefinition: DestinationDefinitionReadSchema,
+    usage: UsageBucketSchema,
+  })
+  .openapi({
+    required: [
+      'connection',
+      'source',
+      'sourceDefinition',
+      'destination',
+      'destinationDefinition',
+      'usage',
+    ],
+  })
+  .openapi('ConnectionUsageRead')
+
+type WorkspaceUsageReadType = { data: z.infer<typeof ConnectionUsageReadSchema>[] }
+
+const PrivateSourceDefinitionReadSchema = z
+  .object({ sourceDefinition: SourceDefinitionReadSchema, granted: z.boolean() })
+  .openapi({ required: ['sourceDefinition', 'granted'] })
+  .openapi('PrivateSourceDefinitionRead')
+
+type PrivateSourceDefinitionReadListType = {
+  sourceDefinitions: z.infer<typeof PrivateSourceDefinitionReadSchema>[]
+}
+
+const StreamDescriptorSchema = z
+  .object({ name: z.string(), namespace: z.string().exactOptional() })
+  .openapi({ required: ['name'] })
+  .openapi('StreamDescriptor')
+
+const FieldNameSchema = z
+  .array(z.string())
+  .openapi({ description: 'A field name is a list of strings that form the path to the field.' })
+  .openapi('FieldName')
+
+const FieldSchemaSchema = z
+  .looseObject({})
+  .openapi({ description: 'JSONSchema representation of the field' })
+  .openapi('FieldSchema')
+
+const FieldAddSchema = z
+  .object({ schema: FieldSchemaSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('FieldAdd')
+
+const FieldRemoveSchema = z
+  .object({ schema: FieldSchemaSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('FieldRemove')
+
+const FieldSchemaUpdateSchema = z
+  .object({ oldSchema: FieldSchemaSchema, newSchema: FieldSchemaSchema })
+  .openapi({ required: ['oldSchema', 'newSchema'] })
+  .openapi('FieldSchemaUpdate')
+
+const FieldTransformSchema = z
+  .object({
+    transformType: z.enum(['add_field', 'remove_field', 'update_field_schema']),
+    fieldName: FieldNameSchema,
+    breaking: z.boolean(),
+    addField: FieldAddSchema.exactOptional(),
+    removeField: FieldRemoveSchema.exactOptional(),
+    updateFieldSchema: FieldSchemaUpdateSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Describes the difference in a field between two Streams.',
+    required: ['transformType', 'fieldName', 'breaking'],
+  })
+  .openapi('FieldTransform')
+
+const StreamAttributePrimaryKeyUpdateSchema = z
+  .object({
+    oldPrimaryKey: z.array(FieldNameSchema).exactOptional(),
+    newPrimaryKey: z.array(FieldNameSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('StreamAttributePrimaryKeyUpdate')
+
+const StreamAttributeTransformSchema = z
+  .object({
+    transformType: z.literal('update_primary_key'),
+    breaking: z.boolean(),
+    updatePrimaryKey: StreamAttributePrimaryKeyUpdateSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Describes the difference in an attribute between two Streams.',
+    required: ['transformType', 'breaking'],
+  })
+  .openapi('StreamAttributeTransform')
+
+const StreamTransformSchema = z
+  .object({
+    transformType: z.enum(['add_stream', 'remove_stream', 'update_stream']),
+    streamDescriptor: StreamDescriptorSchema,
+    updateStream: z
+      .object({
+        fieldTransforms: z
+          .array(FieldTransformSchema)
+          .openapi({ description: 'list of field transformations. order does not matter.' }),
+        streamAttributeTransforms: z
+          .array(StreamAttributeTransformSchema)
+          .openapi({
+            description: 'list of stream attribute transformations. order does not matter.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: ['fieldTransforms', 'streamAttributeTransforms'] }),
+  })
+  .openapi({ required: ['transformType', 'streamDescriptor'] })
+  .openapi('StreamTransform')
+
+type CatalogDiffType = { transforms: z.infer<typeof StreamTransformSchema>[] }
+
+const CatalogDiffSchema: z.ZodType<CatalogDiffType> = z
+  .object({
+    transforms: z
+      .array(StreamTransformSchema)
+      .openapi({ description: 'list of stream transformations. order does not matter.' }),
+  })
+  .openapi({
+    description: 'Describes the difference between two Airbyte catalogs.',
+    required: ['transforms'],
+  })
+  .openapi('CatalogDiff')
+
+type PostprocessDiscoveredCatalogResultType = { appliedDiff?: z.infer<typeof CatalogDiffSchema> }
+
+type SourceDiscoverSchemaWriteRequestBodyType = {
+  catalog: z.infer<typeof AirbyteCatalogSchema>
+  sourceId?: z.infer<typeof SourceIdSchema>
+  connectorVersion?: string
+  configurationHash?: string
+}
+
+const JobConfigTypeSchema = z
+  .enum([
+    'check_connection_source',
+    'check_connection_destination',
+    'discover_schema',
+    'get_spec',
+    'sync',
+    'reset_connection',
+    'refresh',
+    'clear',
+  ])
+  .openapi('JobConfigType')
+
+const LogFormatTypeSchema = z.enum(['formatted', 'structured']).openapi('LogFormatType')
+
+const LogLevelSchema = z.enum(['debug', 'error', 'info', 'trace', 'warn']).openapi('LogLevel')
+
+const LogSourceSchema = z
+  .enum(['destination', 'source', 'platform', 'replication-orchestrator'])
+  .openapi('LogSource')
+
+const LogCallerSchema = z
+  .object({
+    className: z.string().exactOptional(),
+    methodName: z.string().exactOptional(),
+    lineNumber: z.int().exactOptional(),
+    threadName: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('LogCaller')
+
+const LogEventSchema = z
+  .object({
+    timestamp: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    message: z.string(),
+    level: LogLevelSchema,
+    logSource: LogSourceSchema,
+    caller: LogCallerSchema.exactOptional(),
+    stackTrace: z.string().exactOptional(),
+  })
+  .openapi({ required: ['timestamp', 'message', 'level', 'logSource'] })
+  .openapi('LogEvent')
+
+const LogEventsSchema = z
+  .object({ events: z.array(LogEventSchema), version: z.string().exactOptional() })
+  .openapi({ required: ['events'] })
+  .openapi('LogEvents')
+
+const LogReadSchema = z
+  .object({ logLines: z.array(z.string()) })
+  .openapi({ required: ['logLines'] })
+  .openapi('LogRead')
+
+const FailureOriginSchema = z
+  .enum([
+    'source',
+    'destination',
+    'replication',
+    'persistence',
+    'airbyte_platform',
+    'normalization',
+    'dbt',
+    'unknown',
+  ])
+  .openapi({
+    description:
+      'Indicates where the error originated. If not set, the origin of error is not well known.',
+  })
+  .openapi('FailureOrigin')
+
+const FailureTypeSchema = z
+  .enum([
+    'config_error',
+    'system_error',
+    'manual_cancellation',
+    'refresh_schema',
+    'heartbeat_timeout',
+    'destination_timeout',
+    'transient_error',
+  ])
+  .openapi({
+    description:
+      'Categorizes well known errors into types for programmatic handling. If not set, the type of error is not well known.',
+  })
+  .openapi('FailureType')
+
+const FailureReasonSchema = z
+  .object({
+    failureOrigin: FailureOriginSchema.exactOptional(),
+    failureType: FailureTypeSchema.exactOptional(),
+    externalMessage: z.string().exactOptional(),
+    internalMessage: z.string().exactOptional(),
+    stacktrace: z.string().exactOptional(),
+    retryable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if it is known that retrying may succeed, e.g. for a transient failure. False if it is known that a retry will not succeed, e.g. for a configuration issue. If not set, retryable status is not well known.',
+      }),
+    timestamp: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    fromTraceMessage: z.boolean().exactOptional(),
+    streamDescriptor: StreamDescriptorSchema.exactOptional(),
+  })
+  .openapi({ required: ['timestamp'] })
+  .openapi('FailureReason')
+
+const SynchronousJobReadSchema = z
+  .object({
+    id: z.uuid(),
+    configType: JobConfigTypeSchema,
+    configId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'only present if a config id was provided.' }),
+    createdAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    endedAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    succeeded: z.boolean(),
+    connectorConfigurationUpdated: z.boolean().default(false).exactOptional(),
+    logType: LogFormatTypeSchema.exactOptional(),
+    logs: z.xor([LogEventsSchema, LogReadSchema]).exactOptional(),
+    failureReason: FailureReasonSchema.exactOptional(),
+  })
+  .openapi({ required: ['id', 'configType', 'createdAt', 'endedAt', 'succeeded'] })
+  .openapi('SynchronousJobRead')
+
+type SourceDiscoverSchemaReadType = {
+  catalog?: z.infer<typeof AirbyteCatalogSchema>
+  jobInfo?: z.infer<typeof SynchronousJobReadSchema>
+  catalogId?: string
+  catalogDiff?: z.infer<typeof CatalogDiffSchema>
+  breakingChange?: boolean
+  connectionStatus?: z.infer<typeof ConnectionStatusSchema>
+}
+
+type SourceAutoPropagateChangeType = {
+  catalog: z.infer<typeof AirbyteCatalogSchema>
+  catalogId: string
+  sourceId: string
+  workspaceId: string
+}
+
+const PrivateDestinationDefinitionReadSchema = z
+  .object({ destinationDefinition: DestinationDefinitionReadSchema, granted: z.boolean() })
+  .openapi({ required: ['destinationDefinition', 'granted'] })
+  .openapi('PrivateDestinationDefinitionRead')
+
+type PrivateDestinationDefinitionReadListType = {
+  destinationDefinitions: z.infer<typeof PrivateDestinationDefinitionReadSchema>[]
+}
+
+type ConnectionCreateType = {
+  name?: string
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionTypeSchema>
+  namespaceFormat?: string | null
+  prefix?: string
+  sourceId: z.infer<typeof SourceIdSchema>
+  destinationId: z.infer<typeof DestinationIdSchema>
+  operationIds?: z.infer<typeof OperationIdSchema>[]
+  syncCatalog?: z.infer<typeof AirbyteCatalogSchema>
+  schedule?: z.infer<typeof ConnectionScheduleSchema>
+  scheduleType?: z.infer<typeof ConnectionScheduleTypeSchema>
+  scheduleData?: z.infer<typeof ConnectionScheduleDataSchema>
+  status: z.infer<typeof ConnectionStatusSchema>
+  resourceRequirements?: z.infer<typeof ResourceRequirementsSchema>
+  sourceCatalogId?: string
+  destinationCatalogId?: string
+  dataplaneGroupId?: string
+  notifySchemaChanges?: boolean
+  notifySchemaChangesByEmail?: boolean
+  nonBreakingChangesPreference?: z.infer<typeof NonBreakingChangesPreferenceSchema>
+  backfillPreference?: z.infer<typeof SchemaChangeBackfillPreferenceSchema>
+  tags?: z.infer<typeof TagSchema>[]
+  onDemandEnabled?: boolean
+  enableIndexing?: boolean
+}
+
+const OperatorTypeSchema = z.enum(['normalization', 'dbt', 'webhook']).openapi('OperatorType')
+
+const OperatorWebhookSchema = z
+  .object({
+    webhookConfigId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'The id of the webhook configs to use from the workspace.' }),
+    webhookType: z.literal('dbtCloud').exactOptional(),
+    dbtCloud: z
+      .object({
+        accountId: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The account id associated with the job',
+          }),
+        jobId: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description: 'The job id associated with the job',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: ['accountId', 'jobId'] }),
+    executionUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED. Populate dbtCloud instead.', deprecated: true }),
+    executionBody: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED. Populate dbtCloud instead.', deprecated: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('OperatorWebhook')
+
+const OperatorConfigurationSchema = z
+  .object({ operatorType: OperatorTypeSchema, webhook: OperatorWebhookSchema.exactOptional() })
+  .openapi({ required: ['operatorType'] })
+  .openapi('OperatorConfiguration')
+
+const OperationCreateSchema = z
+  .object({
+    workspaceId: WorkspaceIdSchema,
+    name: z.string(),
+    operatorConfiguration: OperatorConfigurationSchema,
+  })
+  .openapi({ required: ['name', 'operatorConfiguration', 'workspaceId'] })
+  .openapi('OperationCreate')
+
+type WebBackendConnectionCreateType = {
+  name?: string
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionTypeSchema>
+  namespaceFormat?: string | null
+  prefix?: string
+  sourceId: z.infer<typeof SourceIdSchema>
+  destinationId: z.infer<typeof DestinationIdSchema>
+  operationIds?: z.infer<typeof OperationIdSchema>[]
+  syncCatalog?: z.infer<typeof AirbyteCatalogSchema>
+  schedule?: z.infer<typeof ConnectionScheduleSchema>
+  scheduleType?: z.infer<typeof ConnectionScheduleTypeSchema>
+  scheduleData?: z.infer<typeof ConnectionScheduleDataSchema>
+  status: z.infer<typeof ConnectionStatusSchema>
+  resourceRequirements?: z.infer<typeof ResourceRequirementsSchema>
+  operations?: z.infer<typeof OperationCreateSchema>[]
+  sourceCatalogId?: string
+  destinationCatalogId?: string
+  dataplaneGroupId?: string
+  notifySchemaChanges?: boolean
+  nonBreakingChangesPreference?: z.infer<typeof NonBreakingChangesPreferenceSchema>
+  backfillPreference?: z.infer<typeof SchemaChangeBackfillPreferenceSchema>
+  tags?: z.infer<typeof TagSchema>[]
+  onDemandEnabled?: boolean
+}
+
+type ConnectionUpdateType = {
+  connectionId: z.infer<typeof ConnectionIdSchema>
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionTypeSchema>
+  namespaceFormat?: string | null
+  name?: string
+  prefix?: string
+  operationIds?: z.infer<typeof OperationIdSchema>[] | null
+  syncCatalog?: z.infer<typeof AirbyteCatalogSchema>
+  schedule?: z.infer<typeof ConnectionScheduleSchema>
+  scheduleType?: z.infer<typeof ConnectionScheduleTypeSchema>
+  scheduleData?: z.infer<typeof ConnectionScheduleDataSchema>
+  status?: z.infer<typeof ConnectionStatusSchema>
+  resourceRequirements?: z.infer<typeof ResourceRequirementsSchema>
+  sourceCatalogId?: string
+  destinationCatalogId?: string
+  dataplaneGroupId?: string
+  notifySchemaChanges?: boolean
+  notifySchemaChangesByEmail?: boolean
+  nonBreakingChangesPreference?: z.infer<typeof NonBreakingChangesPreferenceSchema>
+  backfillPreference?: z.infer<typeof SchemaChangeBackfillPreferenceSchema>
+  breakingChange?: boolean
+  tags?: z.infer<typeof TagSchema>[] | null
+  onDemandEnabled?: boolean
+  enableIndexing?: boolean
+}
+
+const ConnectionUpdateSchema: z.ZodType<ConnectionUpdateType> = z
+  .object({
+    connectionId: ConnectionIdSchema,
+    namespaceDefinition: NamespaceDefinitionTypeSchema.exactOptional(),
+    namespaceFormat: z
+      .string()
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({
+        description:
+          "Used when namespaceDefinition is 'customformat'. If blank then behaves like namespaceDefinition = 'destination'. If \"${SOURCE_NAMESPACE}\" then behaves like namespaceDefinition = 'source'.",
+        example: '${SOURCE_NAMESPACE}',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name that will be set to this connection' }),
+    prefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Prefix that will be prepended to the name of each stream when it is written to the destination.',
+      }),
+    operationIds: z.array(OperationIdSchema).nullable().exactOptional(),
+    syncCatalog: AirbyteCatalogSchema.exactOptional(),
+    schedule: ConnectionScheduleSchema.exactOptional(),
+    scheduleType: ConnectionScheduleTypeSchema.exactOptional(),
+    scheduleData: ConnectionScheduleDataSchema.exactOptional(),
+    status: ConnectionStatusSchema.exactOptional(),
+    resourceRequirements: ResourceRequirementsSchema.exactOptional(),
+    sourceCatalogId: z.uuid().exactOptional(),
+    destinationCatalogId: z.uuid().exactOptional(),
+    dataplaneGroupId: z.uuid().exactOptional(),
+    notifySchemaChanges: z.boolean().exactOptional(),
+    notifySchemaChangesByEmail: z.boolean().exactOptional(),
+    nonBreakingChangesPreference: NonBreakingChangesPreferenceSchema.exactOptional(),
+    backfillPreference: SchemaChangeBackfillPreferenceSchema.exactOptional(),
+    breakingChange: z.boolean().exactOptional(),
+    tags: z.array(TagSchema).nullable().exactOptional(),
+    onDemandEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When enabled, this connection will use on-demand capacity if committed capacity is exhausted',
+      }),
+    enableIndexing: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Enables or disables Fusion indexing for this connection. Omitted or null leaves the current value unchanged. A value that differs from the current one is validated and applied the same way as PUT /v1/connections/{connectionId}/enablement (organization eligibility, synced to Sonar/Agents); the rest of the update is applied first and stays applied even if this validation or sync then fails, in which case this field's error is returned instead of the update's.",
+      }),
+  })
+  .openapi({
+    description:
+      'Used to apply a patch-style update to a connection, which means that null properties remain unchanged',
+    required: ['connectionId'],
+  })
+  .openapi('ConnectionUpdate')
+
+type ConnectionUpdateWithReasonType = {
+  connectionUpdate: z.infer<typeof ConnectionUpdateSchema>
+  updateReason?: string
+  autoUpdate?: boolean
+}
+
+const WebBackendOperationCreateOrUpdateSchema = z
+  .object({
+    operationId: OperationIdSchema.exactOptional(),
+    workspaceId: WorkspaceIdSchema,
+    name: z.string(),
+    operatorConfiguration: OperatorConfigurationSchema,
+  })
+  .openapi({ required: ['name', 'operatorConfiguration', 'workspaceId'] })
+  .openapi('WebBackendOperationCreateOrUpdate')
+
+type WebBackendConnectionUpdateType = {
+  name?: string
+  connectionId: z.infer<typeof ConnectionIdSchema>
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionTypeSchema>
+  namespaceFormat?: string | null
+  prefix?: string
+  syncCatalog?: z.infer<typeof AirbyteCatalogSchema>
+  schedule?: z.infer<typeof ConnectionScheduleSchema>
+  scheduleType?: z.infer<typeof ConnectionScheduleTypeSchema>
+  scheduleData?: z.infer<typeof ConnectionScheduleDataSchema>
+  status?: z.infer<typeof ConnectionStatusSchema>
+  resourceRequirements?: z.infer<typeof ResourceRequirementsSchema>
+  skipReset?: boolean
+  operations?: z.infer<typeof WebBackendOperationCreateOrUpdateSchema>[] | null
+  sourceCatalogId?: string
+  destinationCatalogId?: string
+  dataplaneGroupId?: string
+  notifySchemaChanges?: boolean
+  notifySchemaChangesByEmail?: boolean
+  nonBreakingChangesPreference?: z.infer<typeof NonBreakingChangesPreferenceSchema>
+  backfillPreference?: z.infer<typeof SchemaChangeBackfillPreferenceSchema>
+  tags?: z.infer<typeof TagSchema>[] | null
+  onDemandEnabled?: boolean
+}
+
+type ConnectionReadListType = { connections: z.infer<typeof ConnectionReadSchema>[] }
+
+type ConnectionAutoPropagateSchemaChangeType = {
+  catalog: z.infer<typeof AirbyteCatalogSchema>
+  catalogId: string
+  connectionId: string
+  workspaceId: string
+}
+
+type ConnectionAutoPropagateResultType = { propagatedDiff?: z.infer<typeof CatalogDiffSchema> }
+
+const LimitSchema = z
+  .object({
+    current: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    max: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Absent when the dimension has no limit.',
+      }),
+  })
+  .openapi({ required: ['current'] })
+  .openapi('Limit')
+
+const OrganizationLimitsSchema = z
+  .object({ users: LimitSchema.exactOptional(), workspaces: LimitSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('OrganizationLimits')
+
+const OrganizationReadSchema = z
+  .object({
+    organizationId: z.uuid(),
+    organizationName: z.string(),
+    email: z.string(),
+    ssoRealm: z.string().exactOptional(),
+    isAgentic: z.boolean().exactOptional(),
+    organizationLimits: OrganizationLimitsSchema.exactOptional(),
+  })
+  .openapi({ required: ['organizationId', 'organizationName', 'email'] })
+  .openapi('OrganizationRead')
+
+const CustomerIdSchema = z.uuid().openapi('CustomerId')
+
+const NotificationTypeSchema = z.enum(['slack', 'customerio']).openapi('NotificationType')
+
+const SlackNotificationConfigurationSchema = z
+  .object({ webhook: z.string() })
+  .openapi({ required: ['webhook'] })
+  .openapi('SlackNotificationConfiguration')
+
+const CustomerioNotificationConfigurationSchema = z
+  .looseObject({})
+  .openapi('CustomerioNotificationConfiguration')
+
+const NotificationSchema = z
+  .object({
+    notificationType: NotificationTypeSchema,
+    sendOnSuccess: z.boolean().default(false),
+    sendOnFailure: z.boolean().default(true),
+    slackConfiguration: SlackNotificationConfigurationSchema.exactOptional(),
+    customerioConfiguration: CustomerioNotificationConfigurationSchema.exactOptional(),
+  })
+  .openapi({ required: ['notificationType', 'sendOnSuccess', 'sendOnFailure'] })
+  .openapi('Notification')
+
+const NotificationItemSchema = z
+  .object({
+    notificationType: z.array(NotificationTypeSchema).exactOptional(),
+    slackConfiguration: SlackNotificationConfigurationSchema.exactOptional(),
+    customerioConfiguration: CustomerioNotificationConfigurationSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NotificationItem')
+
+const NotificationSettingsSchema = z
+  .object({
+    sendOnSuccess: NotificationItemSchema.exactOptional(),
+    sendOnFailure: NotificationItemSchema.exactOptional(),
+    sendOnSyncDisabled: NotificationItemSchema.exactOptional(),
+    sendOnSyncDisabledWarning: NotificationItemSchema.exactOptional(),
+    sendOnConnectionUpdate: NotificationItemSchema.exactOptional(),
+    sendOnConnectionUpdateActionRequired: NotificationItemSchema.exactOptional(),
+    sendOnBreakingChangeWarning: NotificationItemSchema.exactOptional(),
+    sendOnBreakingChangeSyncsDisabled: NotificationItemSchema.exactOptional(),
+    sendOnConnectionSyncQueued: NotificationItemSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('NotificationSettings')
+
+const WebhookConfigReadSchema = z
+  .object({
+    id: z.uuid(),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'human-readable name e.g. for display in UI' }),
+    customDbtHost: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'If this is a dbt Cloud webhook, this is the custom host' }),
+  })
+  .openapi({
+    description: 'the readable info for a webhook config; omits sensitive info e.g. auth token',
+    required: ['id'],
+  })
+  .openapi('WebhookConfigRead')
+
+const OrganizationIdSchema = z.uuid().openapi({ 'x-sdk-component': true }).openapi('OrganizationId')
+
+const WorkspaceLimitsSchema = z
+  .object({ sources: LimitSchema, destinations: LimitSchema, activeConnections: LimitSchema })
+  .openapi({ required: ['sources', 'destinations', 'activeConnections'] })
+  .openapi('WorkspaceLimits')
+
+const WorkspaceReadSchema = z
+  .object({
+    workspaceId: WorkspaceIdSchema,
+    customerId: CustomerIdSchema,
+    email: z.email().exactOptional(),
+    name: z.string(),
+    slug: z.string(),
+    initialSetupComplete: z.boolean(),
+    displaySetupWizard: z.boolean().exactOptional(),
+    anonymousDataCollection: z.boolean().exactOptional(),
+    news: z.boolean().exactOptional(),
+    securityUpdates: z.boolean().exactOptional(),
+    notifications: z.array(NotificationSchema).exactOptional(),
+    notificationSettings: NotificationSettingsSchema.exactOptional(),
+    firstCompletedSync: z.boolean().exactOptional(),
+    feedbackDone: z.boolean().exactOptional(),
+    dataplaneGroupId: z.uuid().exactOptional(),
+    webhookConfigs: z.array(WebhookConfigReadSchema).exactOptional(),
+    organizationId: OrganizationIdSchema,
+    tombstone: z.boolean().exactOptional(),
+    workspaceLimits: WorkspaceLimitsSchema.exactOptional(),
+  })
+  .openapi({
+    required: [
+      'workspaceId',
+      'organizationId',
+      'customerId',
+      'name',
+      'slug',
+      'initialSetupComplete',
+    ],
+  })
+  .openapi('WorkspaceRead')
+
+const OrganizationSummarySchema = z
+  .object({
+    organization: OrganizationReadSchema,
+    workspaces: z.array(WorkspaceReadSchema),
+    memberCount: z.int(),
+  })
+  .openapi({ required: ['organization', 'workspaces', 'memberCount'] })
+  .openapi('OrganizationSummary')
+
+type ListOrganizationSummariesResponseType = {
+  organizationSummaries?: z.infer<typeof OrganizationSummarySchema>[]
+}
 
 type RowFilteringOperationTypeType = 'EQUAL' | 'NOT'
 
@@ -283,31 +1830,1278 @@ type RowFilteringOperationType =
   | z.infer<typeof RowFilteringOperationEqualSchema>
   | z.infer<typeof RowFilteringOperationNotSchema>
 
-const EmailNotificationConfigSchema = z
-  .object({ enabled: z.boolean().exactOptional() })
+const JobIdSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({ type: 'integer', format: 'int64' })
+  .openapi('JobId')
+
+const JobStatusSchema = z
+  .enum(['pending', 'queued', 'running', 'incomplete', 'failed', 'succeeded', 'cancelled'])
+  .openapi('JobStatus')
+
+const ResetConfigSchema = z
+  .object({ streamsToReset: z.array(StreamDescriptorSchema).exactOptional() })
   .openapi({
-    description: 'Configures an email notification.',
-    'x-sdk-entity': 'Workspace',
-    'x-sdk-param-suppress-computed-diff': true,
+    description:
+      'contains information about how a reset was configured. only populated if the job was a reset.',
+    required: [],
+  })
+  .openapi('ResetConfig')
+
+const JobRefreshConfigSchema = z
+  .object({ streamsToRefresh: z.array(StreamDescriptorSchema).exactOptional() })
+  .openapi({
+    description:
+      'contains information about how a refresh was configured. only populated if the job was a refresh.',
+    required: [],
+  })
+  .openapi('JobRefreshConfig')
+
+const JobAggregatedStatsSchema = z
+  .object({
+    recordsEmitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    bytesEmitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    recordsCommitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    bytesCommitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    recordsRejected: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({
+    required: [
+      'recordsEmitted',
+      'bytesEmitted',
+      'recordsCommitted',
+      'bytesCommitted',
+      'recordsRejected',
+    ],
+  })
+  .openapi('JobAggregatedStats')
+
+const StreamStatsSchema = z
+  .object({
+    streamName: z.string(),
+    streamNamespace: z.string().exactOptional(),
+    recordsEmitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    bytesEmitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    recordsCommitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    bytesCommitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    recordsRejected: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    wasBackfilled: z.boolean().exactOptional(),
+    wasResumed: z.boolean().exactOptional(),
+  })
+  .openapi({
+    required: [
+      'streamName',
+      'recordsEmitted',
+      'bytesEmitted',
+      'recordsCommitted',
+      'bytesCommitted',
+      'recordsRejected',
+    ],
+  })
+  .openapi('StreamStats')
+
+const StreamAggregatedStatsSchema = z.array(StreamStatsSchema).openapi('StreamAggregatedStats')
+
+const JobReadSchema = z
+  .object({
+    id: JobIdSchema,
+    configType: JobConfigTypeSchema,
+    configId: z.string(),
+    enabledStreams: z.array(StreamDescriptorSchema).exactOptional(),
+    createdAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    updatedAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    startedAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    status: JobStatusSchema,
+    resetConfig: ResetConfigSchema.exactOptional(),
+    refreshConfig: JobRefreshConfigSchema.exactOptional(),
+    aggregatedStats: JobAggregatedStatsSchema.exactOptional(),
+    streamAggregatedStats: StreamAggregatedStatsSchema.exactOptional(),
+  })
+  .openapi({ required: ['id', 'configType', 'configId', 'createdAt', 'updatedAt', 'status'] })
+  .openapi('JobRead')
+
+const AttemptStatusSchema = z.enum(['running', 'failed', 'succeeded']).openapi('AttemptStatus')
+
+const AttemptStatsSchema = z
+  .object({
+    recordsEmitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    bytesEmitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    stateMessagesEmitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    bytesCommitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    recordsCommitted: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    recordsRejected: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    estimatedRecords: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    estimatedBytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    additionalStats: z.record(z.string(), z.number()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AttemptStats')
+
+const AttemptStreamStatsSchema = z
+  .object({
+    streamName: z.string(),
+    streamNamespace: z.string().exactOptional(),
+    stats: AttemptStatsSchema,
+  })
+  .openapi({ required: ['streamName', 'stats'] })
+  .openapi('AttemptStreamStats')
+
+const AttemptFailureSummarySchema = z
+  .object({
+    failures: z.array(FailureReasonSchema),
+    partialSuccess: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the number of committed records for this attempt was greater than 0. False if 0 records were committed. If not set, the number of committed records is unknown.',
+      }),
+  })
+  .openapi({ required: ['failures'] })
+  .openapi('AttemptFailureSummary')
+
+const AttemptReadSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    status: AttemptStatusSchema,
+    createdAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    updatedAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    endedAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    bytesSynced: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    recordsSynced: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    totalStats: AttemptStatsSchema.exactOptional(),
+    streamStats: z.array(AttemptStreamStatsSchema).exactOptional(),
+    failureSummary: AttemptFailureSummarySchema.exactOptional(),
+  })
+  .openapi({ required: ['id', 'status', 'createdAt', 'updatedAt'] })
+  .openapi('AttemptRead')
+
+const JobWithAttemptsReadSchema = z
+  .object({
+    job: JobReadSchema.exactOptional(),
+    attempts: z.array(AttemptReadSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('JobWithAttemptsRead')
+
+type JobReadListType = { jobs: z.infer<typeof JobWithAttemptsReadSchema>[]; totalJobCount: bigint }
+
+const AttemptInfoReadSchema = z
+  .object({
+    attempt: AttemptReadSchema,
+    logType: LogFormatTypeSchema.exactOptional(),
+    logs: z.xor([LogEventsSchema, LogReadSchema]).exactOptional(),
+  })
+  .openapi({ required: ['attempt'] })
+  .openapi('AttemptInfoRead')
+
+type JobInfoReadType = {
+  job: z.infer<typeof JobReadSchema>
+  attempts: z.infer<typeof AttemptInfoReadSchema>[]
+}
+
+const JobDebugReadSchema = z
+  .object({
+    id: JobIdSchema,
+    configType: JobConfigTypeSchema,
+    configId: z.string(),
+    status: JobStatusSchema,
+    airbyteVersion: z.string(),
+    sourceDefinition: SourceDefinitionReadSchema,
+    destinationDefinition: DestinationDefinitionReadSchema,
+  })
+  .openapi({
+    required: [
+      'id',
+      'configType',
+      'configId',
+      'status',
+      'airbyteVersion',
+      'sourceDefinition',
+      'destinationDefinition',
+    ],
+  })
+  .openapi('JobDebugRead')
+
+const WorkflowStateReadSchema = z
+  .object({ running: z.boolean() })
+  .openapi({ required: ['running'] })
+  .openapi('WorkflowStateRead')
+
+type JobDebugInfoReadType = {
+  job: z.infer<typeof JobDebugReadSchema>
+  attempts: z.infer<typeof AttemptInfoReadSchema>[]
+  workflowState?: z.infer<typeof WorkflowStateReadSchema>
+}
+
+const StreamFieldStatusChangedSchema = z
+  .object({
+    streamName: z.string().exactOptional(),
+    streamNamespace: z.string().exactOptional(),
+    status: z.enum(['enabled', 'disabled']).exactOptional(),
+    fields: z.array(z.string()).exactOptional(),
+  })
+  .openapi({
+    description: 'Describes the fields newly enabled or disabled in a stream.',
+    required: [],
+  })
+  .openapi('StreamFieldStatusChanged')
+
+const StreamPrimaryKeyDiffSchema = z
+  .object({
+    streamName: z.string().exactOptional(),
+    streamNamespace: z.string().exactOptional(),
+    prev: z.array(FieldNameSchema).exactOptional(),
+    current: z.array(FieldNameSchema).exactOptional(),
+  })
+  .openapi({ description: 'Primary key changed', required: [] })
+  .openapi('StreamPrimaryKeyDiff')
+
+const StreamCursorFieldDiffSchema = z
+  .object({
+    streamName: z.string().exactOptional(),
+    streamNamespace: z.string().exactOptional(),
+    prev: z.array(z.string()).exactOptional(),
+    current: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ description: 'Cursor field changed', required: [] })
+  .openapi('StreamCursorFieldDiff')
+
+const StreamSyncModeDiffSchema = z
+  .object({
+    streamName: z.string().exactOptional(),
+    streamNamespace: z.string().exactOptional(),
+    prevSourceSyncMode: SyncModeSchema.exactOptional(),
+    prevDestinationSyncMode: DestinationSyncModeSchema.exactOptional(),
+    currentSourceSyncMode: SyncModeSchema.exactOptional(),
+    currentDestinationSyncMode: DestinationSyncModeSchema.exactOptional(),
+  })
+  .openapi({ description: 'Sync mode changed', required: [] })
+  .openapi('StreamSyncModeDiff')
+
+const CatalogConfigDiffSchema = z
+  .object({
+    streamsEnabled: z
+      .array(StreamFieldStatusChangedSchema)
+      .exactOptional()
+      .openapi({ description: 'list of new streams enabled. Order does not matter.' }),
+    streamsDisabled: z
+      .array(StreamFieldStatusChangedSchema)
+      .exactOptional()
+      .openapi({ description: 'list of streams disabled. Order does not matter.' }),
+    fieldsEnabled: z
+      .array(StreamFieldStatusChangedSchema)
+      .exactOptional()
+      .openapi({ description: 'list of new fields enabled. Order does not matter.' }),
+    fieldsDisabled: z
+      .array(StreamFieldStatusChangedSchema)
+      .exactOptional()
+      .openapi({ description: 'list of fields disabled. Order does not matter.' }),
+    primaryKeysChanged: z
+      .array(StreamPrimaryKeyDiffSchema)
+      .exactOptional()
+      .openapi({ description: 'list of changes for primary keys. Order does not matter.' }),
+    cursorFieldsChanged: z
+      .array(StreamCursorFieldDiffSchema)
+      .exactOptional()
+      .openapi({ description: 'list of changes for cursor fields. Order does not matter.' }),
+    syncModesChanged: z
+      .array(StreamSyncModeDiffSchema)
+      .exactOptional()
+      .openapi({ description: 'list of changes for sync mode. Order does not matter.' }),
+  })
+  .openapi({
+    description: 'Describes the difference between two configured catalogs.',
+    required: [],
+  })
+  .openapi('CatalogConfigDiff')
+
+type AirbyteCatalogDiffType = {
+  catalogDiff?: z.infer<typeof CatalogDiffSchema>
+  catalogConfigDiff?: z.infer<typeof CatalogConfigDiffSchema>
+}
+
+const OperationReadSchema = z
+  .object({
+    workspaceId: WorkspaceIdSchema,
+    operationId: OperationIdSchema,
+    name: z.string(),
+    operatorConfiguration: OperatorConfigurationSchema,
+  })
+  .openapi({ required: ['operationId', 'name', 'operatorConfiguration', 'workspaceId'] })
+  .openapi('OperationRead')
+
+const JobCreatedAtSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({
+    type: 'integer',
+    format: 'int64',
+    description: 'epoch time of the latest sync job. null if no sync job has taken place.',
+  })
+  .openapi('JobCreatedAt')
+
+const SchemaChangeSchema = z.enum(['no_change', 'non_breaking', 'breaking']).openapi('SchemaChange')
+
+const ConnectorIPCOptionsSchema = z
+  .looseObject({})
+  .openapi({ description: 'Connector IPC Options.' })
+  .openapi('ConnectorIPCOptions')
+
+const ActorDefinitionVersionReadSchema = z
+  .object({
+    dockerRepository: z.string(),
+    dockerImageTag: z.string(),
+    supportsRefreshes: z.boolean(),
+    isVersionOverrideApplied: z.boolean(),
+    supportLevel: SupportLevelSchema.exactOptional(),
+    supportState: SupportStateSchema,
+    breakingChanges: ActorDefinitionVersionBreakingChangesSchema.exactOptional(),
+    lastPublished: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'The time the connector was modified in the codebase.',
+    }),
+    cdkVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version of the CDK that the connector was built with. e.g. python:0.1.0, java:0.1.0',
+      }),
+    supportsFileTransfer: z.boolean(),
+    supportsDataActivation: z.boolean(),
+    connectorIPCOptions: ConnectorIPCOptionsSchema.exactOptional(),
+  })
+  .openapi({
+    required: [
+      'dockerRepository',
+      'dockerImageTag',
+      'supportsRefreshes',
+      'supportState',
+      'isVersionOverrideApplied',
+      'supportsFileTransfer',
+      'supportsDataActivation',
+    ],
+  })
+  .openapi('ActorDefinitionVersionRead')
+
+type WebBackendConnectionReadType = {
+  connectionId: z.infer<typeof ConnectionIdSchema>
+  name: string
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionTypeSchema>
+  namespaceFormat?: string | null
+  prefix?: string
+  sourceId: z.infer<typeof SourceIdSchema>
+  destinationId: z.infer<typeof DestinationIdSchema>
+  syncCatalog: z.infer<typeof AirbyteCatalogSchema>
+  schedule?: z.infer<typeof ConnectionScheduleSchema>
+  scheduleType?: z.infer<typeof ConnectionScheduleTypeSchema>
+  scheduleData?: z.infer<typeof ConnectionScheduleDataSchema>
+  status: z.infer<typeof ConnectionStatusSchema>
+  statusReason?: string | null
+  operationIds?: z.infer<typeof OperationIdSchema>[]
+  source: z.infer<typeof SourceReadSchema>
+  destination: z.infer<typeof DestinationReadSchema>
+  operations?: z.infer<typeof OperationReadSchema>[]
+  latestSyncJobCreatedAt?: z.infer<typeof JobCreatedAtSchema>
+  latestSyncJobStatus?: z.infer<typeof JobStatusSchema>
+  isSyncing: boolean
+  resourceRequirements?: z.infer<typeof ResourceRequirementsSchema>
+  catalogId?: string
+  destinationCatalogId?: string
+  catalogDiff?: z.infer<typeof CatalogDiffSchema>
+  dataplaneGroupId?: string
+  schemaChange: z.infer<typeof SchemaChangeSchema>
+  notifySchemaChanges: boolean
+  notifySchemaChangesByEmail: boolean
+  nonBreakingChangesPreference: z.infer<typeof NonBreakingChangesPreferenceSchema>
+  createdAt?: bigint
+  backfillPreference?: z.infer<typeof SchemaChangeBackfillPreferenceSchema>
+  sourceActorDefinitionVersion: z.infer<typeof ActorDefinitionVersionReadSchema>
+  destinationActorDefinitionVersion: z.infer<typeof ActorDefinitionVersionReadSchema>
+  tags: z.infer<typeof TagSchema>[]
+  onDemandEnabled: boolean
+}
+
+const ConnectionSyncModeEnumSchema = z
+  .enum([
+    'full_refresh_overwrite',
+    'full_refresh_overwrite_deduped',
+    'full_refresh_append',
+    'full_refresh_update',
+    'full_refresh_soft_delete',
+    'incremental_append',
+    'incremental_deduped_history',
+    'incremental_update',
+    'incremental_soft_delete',
+  ])
+  .openapi({ 'x-sdk-component': true })
+  .openapi('ConnectionSyncModeEnum')
+
+const StreamConfigurationSchema = z
+  .object({
+    name: z.string(),
+    namespace: z.string().exactOptional().openapi({ description: 'Namespace of the stream.' }),
+    syncMode: ConnectionSyncModeEnumSchema.exactOptional(),
+    cursorField: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Path to the field that will be used to determine if a record is new or modified since the last sync. This field is REQUIRED if `sync_mode` is `incremental` unless there is a default.',
+      }),
+    primaryKey: z
+      .array(z.array(z.string()))
+      .exactOptional()
+      .openapi({
+        description:
+          'Paths to the fields that will be used as primary key. This field is REQUIRED if `destination_sync_mode` is `*_dedup` unless it is already supplied by the source schema.',
+      }),
+    includeFiles: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to move raw files from the source to the destination during the sync.',
+      }),
+    destinationObjectName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the destination object that this stream will be written to, used for data activation destinations.',
+      }),
+    selectedFields: SelectedFieldsSchema.exactOptional().openapi({
+      description:
+        'By default (if not provided in the request) all fields will be synced. Otherwise, only the fields in this list will be synced.',
+    }),
+    mappers: z
+      .array(ConfiguredStreamMapperSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Mappers that should be applied to the stream before writing to the destination.',
+      }),
+  })
+  .openapi({
+    description: 'Configurations for a single stream.',
+    required: ['name'],
+    'x-sdk-component': true,
+  })
+  .openapi('StreamConfiguration')
+
+type StreamConfigurationsType = { streams?: z.infer<typeof StreamConfigurationSchema>[] }
+
+const StreamConfigurationsSchema: z.ZodType<StreamConfigurationsType> = z
+  .object({ streams: z.array(StreamConfigurationSchema).exactOptional() })
+  .openapi({
+    description: 'A list of configured stream options for a connection.',
     'x-sdk-component': true,
     required: [],
   })
-  .openapi('EmailNotificationConfig')
+  .openapi('StreamConfigurations')
 
-const WebhookNotificationConfigSchema = z
-  .object({ enabled: z.boolean().exactOptional(), url: z.string().exactOptional() })
+const ScheduleTypeEnumSchema = z
+  .enum(['manual', 'cron'])
+  .openapi({ 'x-sdk-component': true })
+  .openapi('ScheduleTypeEnum')
+
+const AirbyteApiConnectionScheduleSchema = z
+  .object({
+    scheduleType: ScheduleTypeEnumSchema,
+    cronExpression: z.string().exactOptional(),
+    cronTimeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Supported timezone ID or fixed offset for the cron schedule; defaults to UTC and cannot start with Etc.',
+      }),
+  })
   .openapi({
-    description: 'Configures a webhook notification.',
-    'x-sdk-entity': 'Workspace',
+    description: 'schedule for when the the connection should run, per the schedule type',
+    required: ['scheduleType'],
+    'x-sdk-component': true,
+  })
+  .openapi('AirbyteApiConnectionSchedule')
+
+const NamespaceDefinitionEnumSchema = z
+  .enum(['source', 'destination', 'custom_format'])
+  .default('destination')
+  .openapi({
+    description: 'Define the location where the data will be stored in the destination',
+    'x-sdk-component': true,
+  })
+  .openapi('NamespaceDefinitionEnum')
+
+const NonBreakingSchemaUpdatesBehaviorEnumSchema = z
+  .enum(['ignore', 'disable_connection', 'propagate_columns', 'propagate_fully'])
+  .default('ignore')
+  .openapi({
+    description:
+      'Set how Airbyte handles syncs when it detects a non-breaking schema change in the source',
+    'x-sdk-component': true,
+  })
+  .openapi('NonBreakingSchemaUpdatesBehaviorEnum')
+
+const ConnectionStatusEnumSchema = z
+  .enum(['active', 'inactive', 'deprecated', 'locked'])
+  .openapi({ 'x-sdk-component': true })
+  .openapi('ConnectionStatusEnum')
+
+type ConnectionCreateRequestType = {
+  name?: string
+  sourceId: string
+  destinationId: string
+  configurations?: z.infer<typeof StreamConfigurationsSchema>
+  schedule?: z.infer<typeof AirbyteApiConnectionScheduleSchema>
+  dataResidency?: string
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionEnumSchema>
+  namespaceFormat?: string | null
+  prefix?: string
+  nonBreakingSchemaUpdatesBehavior?: z.infer<typeof NonBreakingSchemaUpdatesBehaviorEnumSchema>
+  status?: z.infer<typeof ConnectionStatusEnumSchema>
+  tags?: z.infer<typeof TagSchema>[]
+}
+
+const NamespaceDefinitionEnumNoDefaultSchema = z
+  .enum(['source', 'destination', 'custom_format'])
+  .openapi({
+    description: 'Define the location where the data will be stored in the destination',
+    'x-sdk-component': true,
+  })
+  .openapi('NamespaceDefinitionEnumNoDefault')
+
+const NonBreakingSchemaUpdatesBehaviorEnumNoDefaultSchema = z
+  .enum(['ignore', 'disable_connection', 'propagate_columns', 'propagate_fully'])
+  .openapi({
+    description:
+      'Set how Airbyte handles syncs when it detects a non-breaking schema change in the source',
+    'x-sdk-component': true,
+  })
+  .openapi('NonBreakingSchemaUpdatesBehaviorEnumNoDefault')
+
+type ConnectionPatchRequestType = {
+  name?: string
+  configurations?: z.infer<typeof StreamConfigurationsSchema>
+  schedule?: z.infer<typeof AirbyteApiConnectionScheduleSchema>
+  dataResidency?: string
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionEnumNoDefaultSchema>
+  namespaceFormat?: string | null
+  prefix?: string
+  nonBreakingSchemaUpdatesBehavior?: z.infer<
+    typeof NonBreakingSchemaUpdatesBehaviorEnumNoDefaultSchema
+  >
+  status?: z.infer<typeof ConnectionStatusEnumSchema>
+  tags?: z.infer<typeof TagSchema>[]
+}
+
+const FusionSearchStatusBackfillSchema = z
+  .object({
+    backfill_start_time: z.iso.datetime({ offset: true }).nullable(),
+    expected_total_records: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    collected_records: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    indexed_records: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    started_at: z.iso.datetime({ offset: true }).nullable(),
+    completed_at: z.iso.datetime({ offset: true }).nullable(),
+    failed_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    cancelled_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    status: z.enum(['starting', 'running', 'finalizing', 'complete', 'failed', 'cancelled']),
+    error_code: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Why a failed run failed: a destination cause such as `nothing_to_backfill`, otherwise `system_error`; null unless failed.',
+      }),
+    error: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The failure's code with a fixed explanation. Warehouse error text is never included; null unless failed.",
+      }),
+  })
+  .openapi({
+    required: [
+      'backfill_start_time',
+      'expected_total_records',
+      'collected_records',
+      'indexed_records',
+      'started_at',
+      'completed_at',
+      'status',
+    ],
+  })
+  .openapi('FusionSearchStatusBackfill')
+
+const FusionSearchSegmentVersionSchema = z
+  .object({
+    segment_id: z.uuid(),
+    serving_version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Published version of this active segment, or null before publication.',
+      }),
+  })
+  .openapi({ required: ['segment_id', 'serving_version'] })
+  .openapi('FusionSearchSegmentVersion')
+
+const FusionSearchStatusGapsSchema = z
+  .object({
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Minibatches of synced input whose records have not reached the searchable index version.',
+      }),
+    stuck: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Gaps the backend no longer retries on its own; they need an operator replay or a backfill.',
+      }),
+    oldest_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description: "When the oldest gap's input first arrived for indexing; null without gaps.",
+      }),
+  })
+  .openapi({ required: ['count', 'stuck', 'oldest_at'] })
+  .openapi('FusionSearchStatusGaps')
+
+const FusionSearchStatusPublicationHoldSchema = z
+  .object({
+    since: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'When search started serving an older version while a newer one waits for optimization.',
+      }),
+    reason: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Why the newer version waits, e.g. `fts_unindexed` or `vector_unindexed`.',
+      }),
+  })
+  .openapi({ required: ['since', 'reason'] })
+  .openapi('FusionSearchStatusPublicationHold')
+
+const FusionSearchStatusIndexSchema = z
+  .object({
+    index_id: z.uuid().exactOptional(),
+    segment_versions: z.array(FusionSearchSegmentVersionSchema).exactOptional(),
+    type: z.enum(['keyword', 'semantic']),
+    name: z.string().nullable(),
+    indexed_records: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    physical_rows: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    optimized_physical_rows: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    updated_at: z.iso.datetime({ offset: true }).nullable(),
+    status: z.enum(['backfilling', 'updating', 'optimizing', 'truncating', 'idle']),
+    storage_size_mb: z.float64(),
+    stats_error: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Set when the counts are approximate: `stored_totals_missing` when the index has no complete stored totals (counts are zeros), or, with live stats, the executor's error for the index (counts fall back to the stored totals, or zeros).",
+      }),
+    gaps: FusionSearchStatusGapsSchema.exactOptional(),
+    publication_held: FusionSearchStatusPublicationHoldSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set while newly synced records are indexed but not yet searchable, until optimization finishes or a time cap passes. With several segments, the earliest of their holds.',
+      }),
+    held_records: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Records written to a held (not yet searchable) version beyond the published one, summed over segments; 0 when nothing is held. A segment whose held or published count is not measured yet adds 0.',
+      }),
+    segments: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: "The index's active hash segments; each is a dataset the totals above add up.",
+      }),
+  })
+  .openapi({
+    required: [
+      'type',
+      'name',
+      'indexed_records',
+      'physical_rows',
+      'optimized_physical_rows',
+      'updated_at',
+      'status',
+      'storage_size_mb',
+    ],
+  })
+  .openapi('FusionSearchStatusIndex')
+
+const FusionSearchStatusStreamSchema = z
+  .object({
+    namespace: z.string().nullable().exactOptional(),
+    name: z.string(),
+    needs_backfill: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "The destination warehouse already held this stream's table when indexing was enabled on its connection, and that history is not indexed yet: set until a backfill run of the stream completes. Turning indexing on does not start one; `backfill` tells a requested or running backfill from none. A flagged stream is listed even before it has an index.",
+      }),
+    backfill: FusionSearchStatusBackfillSchema.nullable().openapi({
+      description: 'Null when backfill is disabled.',
+    }),
+    indexes: z.array(FusionSearchStatusIndexSchema),
+    gaps: FusionSearchStatusGapsSchema.exactOptional().openapi({
+      description: 'The gaps of every index of the stream.',
+    }),
+  })
+  .openapi({ required: ['name', 'backfill', 'indexes'] })
+  .openapi('FusionSearchStatusStream')
+
+const FusionSearchStatusSourceSchema = z
+  .object({
+    source_id: z.uuid(),
+    destination_id: z.uuid(),
+    connection_id: z.uuid(),
+    needs_backfill: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "At least one of the connection's streams needs a backfill (see each stream's needs_backfill): history found when indexing was enabled on the connection that no completed backfill run has indexed yet.",
+      }),
+    streams: z.array(FusionSearchStatusStreamSchema),
+    gaps: FusionSearchStatusGapsSchema.exactOptional().openapi({
+      description: "The gaps of every index of the connection's streams.",
+    }),
+  })
+  .openapi({ required: ['source_id', 'destination_id', 'connection_id', 'streams'] })
+  .openapi('FusionSearchStatusSource')
+
+const FusionSearchStatusDestinationSchema = z
+  .object({
+    destination_id: z.uuid(),
+    needs_backfill: z
+      .boolean()
+      .openapi({
+        description:
+          'Existing destination tables were found when indexing was enabled; request a backfill to index that history. Turning indexing on does not start one. Set while any indexing-enabled connection to the destination has a stream that needs a backfill.',
+      }),
+  })
+  .openapi({ required: ['destination_id', 'needs_backfill'] })
+  .openapi('FusionSearchStatusDestination')
+
+type FusionSearchStatusResponseType = {
+  sources: z.infer<typeof FusionSearchStatusSourceSchema>[]
+  destinations?: z.infer<typeof FusionSearchStatusDestinationSchema>[]
+}
+
+const ScheduleTypeWithBasicEnumSchema = z
+  .enum(['manual', 'cron', 'basic'])
+  .openapi({ 'x-sdk-component': true })
+  .openapi('ScheduleTypeWithBasicEnum')
+
+const ConnectionScheduleResponseSchema = z
+  .object({
+    scheduleType: ScheduleTypeWithBasicEnumSchema,
+    cronExpression: z.string().exactOptional(),
+    basicTiming: z.string().exactOptional(),
+  })
+  .openapi({
+    description: 'schedule for when the the connection should run, per the schedule type',
+    required: ['scheduleType'],
+    'x-sdk-component': true,
+  })
+  .openapi('ConnectionScheduleResponse')
+
+type ConnectionResponseType = {
+  connectionId: string
+  name: string
+  sourceId: string
+  destinationId: string
+  workspaceId: string
+  status: z.infer<typeof ConnectionStatusEnumSchema>
+  schedule: z.infer<typeof ConnectionScheduleResponseSchema>
+  nonBreakingSchemaUpdatesBehavior?: z.infer<typeof NonBreakingSchemaUpdatesBehaviorEnumSchema>
+  namespaceDefinition?: z.infer<typeof NamespaceDefinitionEnumSchema>
+  namespaceFormat?: string
+  prefix?: string
+  configurations: z.infer<typeof StreamConfigurationsSchema>
+  createdAt: bigint
+  tags: z.infer<typeof TagSchema>[]
+  statusReason?: string
+}
+
+const ConnectionResponseSchema: z.ZodType<ConnectionResponseType> = z
+  .object({
+    connectionId: z.string(),
+    name: z.string(),
+    sourceId: z.string(),
+    destinationId: z.string(),
+    workspaceId: z.string(),
+    status: ConnectionStatusEnumSchema,
+    schedule: ConnectionScheduleResponseSchema,
+    nonBreakingSchemaUpdatesBehavior: NonBreakingSchemaUpdatesBehaviorEnumSchema.exactOptional(),
+    namespaceDefinition: NamespaceDefinitionEnumSchema.exactOptional(),
+    namespaceFormat: z.string().exactOptional(),
+    prefix: z.string().exactOptional(),
+    configurations: StreamConfigurationsSchema,
+    createdAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64' }),
+    tags: z.array(TagSchema),
+    statusReason: z.string().exactOptional(),
+  })
+  .openapi({
+    title: 'Root Type for ConnectionResponse',
+    description: 'Provides details of a single connection.',
+    required: [
+      'connectionId',
+      'name',
+      'sourceId',
+      'destinationId',
+      'workspaceId',
+      'status',
+      'schedule',
+      'configurations',
+      'createdAt',
+      'tags',
+    ],
+    'x-sdk-entity': 'Connection',
     'x-sdk-param-suppress-computed-diff': true,
     'x-sdk-component': true,
-    required: [],
   })
-  .openapi('WebhookNotificationConfig')
+  .openapi('ConnectionResponse')
 
-type NotificationConfigType = {
-  email?: z.infer<typeof EmailNotificationConfigSchema>
-  webhook?: z.infer<typeof WebhookNotificationConfigSchema>
+type ConnectionsResponseType = {
+  previous?: string
+  next?: string
+  data: z.infer<typeof ConnectionResponseSchema>[]
 }
 
 const FusionUsageWindowSchema = z
@@ -573,16 +3367,40 @@ const PrivateLinkServiceTypeSchema = z
   .enum(['endpoint', 'storage'])
   .openapi('PrivateLinkServiceType')
 
-const WorkspaceIdSchema = z.uuid().openapi({ 'x-sdk-component': true }).openapi('WorkspaceId')
+const EndpointPrivateLinkServiceConfigSchema = z
+  .object({
+    type: z.literal('endpoint'),
+    name: z
+      .string()
+      .regex(/^com\.amazonaws\.vpce\.[a-z0-9-]+\.vpce-svc-[a-z0-9]+$/)
+      .max(255),
+    region: z
+      .string()
+      .regex(/^[a-z]{2,3}-[a-z]+(-[a-z]+)?-\d+$/)
+      .max(30),
+  })
+  .openapi({ required: ['type', 'name', 'region'] })
+  .openapi('EndpointPrivateLinkServiceConfig')
 
-const PrivateLinkServiceConfigSchema: z.ZodType<PrivateLinkServiceConfigType> = z
-  .lazy(() =>
-    z
-      .xor([EndpointPrivateLinkServiceConfigSchema, StoragePrivateLinkServiceConfigSchema])
-      .openapi({
-        description: 'Variant config selected by the `type` field (endpoint or storage).',
-      }),
-  )
+const StoragePrivateLinkServiceConfigSchema = z
+  .object({
+    type: z.literal('storage'),
+    region: z
+      .string()
+      .regex(/^[a-z]{2,3}-[a-z]+(-[a-z]+)?-\d+$/)
+      .max(30),
+    bucket: z
+      .string()
+      .regex(/^(?!.*\.\.)(?!\d+\.\d+\.\d+\.\d+$)[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/)
+      .min(3)
+      .max(63),
+  })
+  .openapi({ required: ['type', 'region', 'bucket'] })
+  .openapi('StoragePrivateLinkServiceConfig')
+
+const PrivateLinkServiceConfigSchema = z
+  .xor([EndpointPrivateLinkServiceConfigSchema, StoragePrivateLinkServiceConfigSchema])
+  .openapi({ description: 'Variant config selected by the `type` field (endpoint or storage).' })
   .openapi('PrivateLinkServiceConfig')
 
 const PrivateLinkCreateRequestBodySchema = z
@@ -1267,54 +4085,6 @@ const DomainVerificationListResponseSchema = z
   .openapi({ required: ['domainVerifications'] })
   .openapi('DomainVerificationListResponse')
 
-const CustomerIdSchema = z.uuid().openapi('CustomerId')
-
-const NotificationTypeSchema = z.enum(['slack', 'customerio']).openapi('NotificationType')
-
-const SlackNotificationConfigurationSchema = z
-  .object({ webhook: z.string() })
-  .openapi({ required: ['webhook'] })
-  .openapi('SlackNotificationConfiguration')
-
-const CustomerioNotificationConfigurationSchema = z
-  .object({})
-  .openapi('CustomerioNotificationConfiguration')
-
-const NotificationSchema = z
-  .object({
-    notificationType: NotificationTypeSchema,
-    sendOnSuccess: z.boolean().default(false),
-    sendOnFailure: z.boolean().default(true),
-    slackConfiguration: SlackNotificationConfigurationSchema.exactOptional(),
-    customerioConfiguration: CustomerioNotificationConfigurationSchema.exactOptional(),
-  })
-  .openapi({ required: ['notificationType', 'sendOnSuccess', 'sendOnFailure'] })
-  .openapi('Notification')
-
-const NotificationItemSchema = z
-  .object({
-    notificationType: z.array(NotificationTypeSchema).exactOptional(),
-    slackConfiguration: SlackNotificationConfigurationSchema.exactOptional(),
-    customerioConfiguration: CustomerioNotificationConfigurationSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NotificationItem')
-
-const NotificationSettingsSchema = z
-  .object({
-    sendOnSuccess: NotificationItemSchema.exactOptional(),
-    sendOnFailure: NotificationItemSchema.exactOptional(),
-    sendOnSyncDisabled: NotificationItemSchema.exactOptional(),
-    sendOnSyncDisabledWarning: NotificationItemSchema.exactOptional(),
-    sendOnConnectionUpdate: NotificationItemSchema.exactOptional(),
-    sendOnConnectionUpdateActionRequired: NotificationItemSchema.exactOptional(),
-    sendOnBreakingChangeWarning: NotificationItemSchema.exactOptional(),
-    sendOnBreakingChangeSyncsDisabled: NotificationItemSchema.exactOptional(),
-    sendOnConnectionSyncQueued: NotificationItemSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('NotificationSettings')
-
 const WebhookConfigWriteSchema = z
   .object({
     name: z
@@ -1344,8 +4114,6 @@ const WebhookConfigWriteSchema = z
   })
   .openapi({ required: [] })
   .openapi('WebhookConfigWrite')
-
-const OrganizationIdSchema = z.uuid().openapi({ 'x-sdk-component': true }).openapi('OrganizationId')
 
 const WorkspaceCreateSchema = z
   .object({
@@ -1423,8 +4191,6 @@ const PaginationSchema = z
   .openapi({ required: [] })
   .openapi('Pagination')
 
-const TagIdSchema = z.uuid().openapi({ 'x-sdk-component': true }).openapi('TagId')
-
 const ListConnectionsForWorkspacesRequestBodySchema = z
   .object({
     workspaceIds: z.array(WorkspaceIdSchema),
@@ -1445,96 +4211,6 @@ const ListResourcesForWorkspacesRequestBodySchema = z
   })
   .openapi({ required: ['workspaceIds', 'pagination'] })
   .openapi('ListResourcesForWorkspacesRequestBody')
-
-const WebhookConfigReadSchema = z
-  .object({
-    id: z.uuid(),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'human-readable name e.g. for display in UI' }),
-    customDbtHost: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'If this is a dbt Cloud webhook, this is the custom host' }),
-  })
-  .openapi({
-    description: 'the readable info for a webhook config; omits sensitive info e.g. auth token',
-    required: ['id'],
-  })
-  .openapi('WebhookConfigRead')
-
-const LimitSchema = z
-  .object({
-    current: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    max: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Absent when the dimension has no limit.',
-      }),
-  })
-  .openapi({ required: ['current'] })
-  .openapi('Limit')
-
-const WorkspaceLimitsSchema = z
-  .object({ sources: LimitSchema, destinations: LimitSchema, activeConnections: LimitSchema })
-  .openapi({ required: ['sources', 'destinations', 'activeConnections'] })
-  .openapi('WorkspaceLimits')
-
-const WorkspaceReadSchema = z
-  .object({
-    workspaceId: WorkspaceIdSchema,
-    customerId: CustomerIdSchema,
-    email: z.email().exactOptional(),
-    name: z.string(),
-    slug: z.string(),
-    initialSetupComplete: z.boolean(),
-    displaySetupWizard: z.boolean().exactOptional(),
-    anonymousDataCollection: z.boolean().exactOptional(),
-    news: z.boolean().exactOptional(),
-    securityUpdates: z.boolean().exactOptional(),
-    notifications: z.array(NotificationSchema).exactOptional(),
-    notificationSettings: NotificationSettingsSchema.exactOptional(),
-    firstCompletedSync: z.boolean().exactOptional(),
-    feedbackDone: z.boolean().exactOptional(),
-    dataplaneGroupId: z.uuid().exactOptional(),
-    webhookConfigs: z.array(WebhookConfigReadSchema).exactOptional(),
-    organizationId: OrganizationIdSchema,
-    tombstone: z.boolean().exactOptional(),
-    workspaceLimits: WorkspaceLimitsSchema.exactOptional(),
-  })
-  .openapi({
-    required: [
-      'workspaceId',
-      'organizationId',
-      'customerId',
-      'name',
-      'slug',
-      'initialSetupComplete',
-    ],
-  })
-  .openapi('WorkspaceRead')
 
 const WorkspaceReadListSchema = z
   .object({
@@ -1586,21 +4262,40 @@ const WorkspaceUpdateOrganizationSchema = z
   .openapi({ required: ['workspaceId', 'organizationId'] })
   .openapi('WorkspaceUpdateOrganization')
 
-const NotificationConfigSchema: z.ZodType<NotificationConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        email: EmailNotificationConfigSchema.exactOptional(),
-        webhook: WebhookNotificationConfigSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'Configures a notification.',
-        'x-sdk-entity': 'Workspace',
-        'x-sdk-param-suppress-computed-diff': true,
-        'x-sdk-component': true,
-        required: [],
-      }),
-  )
+const EmailNotificationConfigSchema = z
+  .object({ enabled: z.boolean().exactOptional() })
+  .openapi({
+    description: 'Configures an email notification.',
+    'x-sdk-entity': 'Workspace',
+    'x-sdk-param-suppress-computed-diff': true,
+    'x-sdk-component': true,
+    required: [],
+  })
+  .openapi('EmailNotificationConfig')
+
+const WebhookNotificationConfigSchema = z
+  .object({ enabled: z.boolean().exactOptional(), url: z.string().exactOptional() })
+  .openapi({
+    description: 'Configures a webhook notification.',
+    'x-sdk-entity': 'Workspace',
+    'x-sdk-param-suppress-computed-diff': true,
+    'x-sdk-component': true,
+    required: [],
+  })
+  .openapi('WebhookNotificationConfig')
+
+const NotificationConfigSchema = z
+  .object({
+    email: EmailNotificationConfigSchema.exactOptional(),
+    webhook: WebhookNotificationConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Configures a notification.',
+    'x-sdk-entity': 'Workspace',
+    'x-sdk-param-suppress-computed-diff': true,
+    'x-sdk-component': true,
+    required: [],
+  })
   .openapi('NotificationConfig')
 
 const NotificationsConfigSchema = z
@@ -1717,861 +4412,7 @@ const WorkspaceUsageRequestBodySchema = z
   .openapi({ required: ['workspaceId', 'timeWindow'] })
   .openapi('WorkspaceUsageRequestBody')
 
-const NamespaceDefinitionTypeSchema = z
-  .enum(['source', 'destination', 'customformat'])
-  .openapi({
-    description: 'Method used for computing final namespace in destination',
-    'x-sdk-component': true,
-  })
-  .openapi('NamespaceDefinitionType')
-
-const SourceIdSchema = z.uuid().openapi('SourceId')
-
-const DestinationIdSchema = z.uuid().openapi('DestinationId')
-
-const OperationIdSchema = z.uuid().openapi('OperationId')
-
-const StreamJsonSchemaSchema = z
-  .object({})
-  .openapi({ description: 'Stream schema using Json Schema specs.' })
-  .openapi('StreamJsonSchema')
-
-const SyncModeSchema = z.enum(['full_refresh', 'incremental']).openapi('SyncMode')
-
-const AirbyteStreamSchema = z
-  .strictObject({
-    name: z.string().openapi({ description: "Stream's name." }),
-    jsonSchema: StreamJsonSchemaSchema.exactOptional(),
-    supportedSyncModes: z.array(SyncModeSchema).exactOptional(),
-    sourceDefinedCursor: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the source defines the cursor field, then any other cursor field inputs will be ignored. If it does not, either the user_provided one is used, or the default one is used as a backup.',
-      }),
-    defaultCursorField: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Path to the field that will be used to determine if a record is new or modified since the last sync. If not provided by the source, the end user will have to specify the comparable themselves.',
-      }),
-    sourceDefinedPrimaryKey: z
-      .array(z.array(z.string()))
-      .exactOptional()
-      .openapi({
-        description:
-          'If the source defines the primary key, paths to the fields that will be used as a primary key. If not provided by the source, the end user will have to specify the primary key themselves.',
-      }),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional Source-defined namespace. Airbyte streams from the same sources should have the same namespace. Currently only used by JDBC destinations to determine what schema to write to.',
-      }),
-    isResumable: z.boolean().exactOptional(),
-    isFileBased: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If the stream supports FileReference.' }),
-  })
-  .openapi({
-    description: 'the immutable schema defined by the source',
-    required: ['name', 'json_schema'],
-  })
-  .openapi('AirbyteStream')
-
-const DestinationSyncModeSchema = z
-  .enum(['append', 'overwrite', 'append_dedup', 'overwrite_dedup', 'update', 'soft_delete'])
-  .openapi('DestinationSyncMode')
-
-const SelectedFieldInfoSchema = z
-  .object({ fieldPath: z.array(z.string()).exactOptional() })
-  .openapi({
-    description:
-      'Path to a field/column/property in a stream to be selected. For example, if the field to be selected is a database column called "foo", this will be ["foo"]. Use multiple path elements for nested schemas.',
-    'x-sdk-component': true,
-    required: [],
-  })
-  .openapi('SelectedFieldInfo')
-
-const SelectedFieldsSchema = z
-  .array(SelectedFieldInfoSchema)
-  .openapi({
-    description: 'Paths to the fields that will be included in the configured catalog.',
-    'x-sdk-component': true,
-  })
-  .openapi('SelectedFields')
-
-const StreamMapperTypeSchema = z
-  .enum(['hashing', 'field-renaming', 'row-filtering', 'encryption', 'field-filtering'])
-  .openapi({ 'x-sdk-component': true })
-  .openapi('StreamMapperType')
-
-const MapperConfigurationSchema: z.ZodType<MapperConfigurationType> = z
-  .lazy(() =>
-    z
-      .xor([
-        HashingMapperConfigurationSchema,
-        FieldFilteringMapperConfigurationSchema,
-        FieldRenamingMapperConfigurationSchema,
-        RowFilteringMapperConfigurationSchema,
-        EncryptionMapperConfigurationSchema,
-      ])
-      .openapi({
-        description: 'The values required to configure the mapper.',
-        'x-sdk-component': true,
-      }),
-  )
-  .openapi('MapperConfiguration')
-
-const ConfiguredStreamMapperSchema = z
-  .object({
-    id: z.uuid().exactOptional(),
-    type: StreamMapperTypeSchema,
-    mapperConfiguration: MapperConfigurationSchema,
-  })
-  .openapi({ required: ['type', 'mapperConfiguration'], 'x-sdk-component': true })
-  .openapi('ConfiguredStreamMapper')
-
-const AirbyteStreamConfigurationSchema = z
-  .strictObject({
-    syncMode: SyncModeSchema,
-    cursorField: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Path to the field that will be used to determine if a record is new or modified since the last sync. This field is REQUIRED if `sync_mode` is `incremental`. Otherwise it is ignored.',
-      }),
-    destinationSyncMode: DestinationSyncModeSchema,
-    namespace: z.string().exactOptional().openapi({ description: 'Namespace of the stream.' }),
-    primaryKey: z
-      .array(z.array(z.string()))
-      .exactOptional()
-      .openapi({
-        description:
-          'Paths to the fields that will be used as primary key. This field is REQUIRED if `destination_sync_mode` is `*_dedup`. Otherwise it is ignored.',
-      }),
-    aliasName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Alias name to the stream to be used in the destination' }),
-    selected: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If this is true, the stream is selected with all of its properties. For new connections, this considers if the stream is suggested or not',
-      }),
-    suggested: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Does the connector suggest that this stream be enabled by default?',
-      }),
-    destinationObjectName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the destination object that this stream will be written to. This is used for data activation destinations.',
-      }),
-    includeFiles: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Should the sync move raw files from the source to the destination?',
-      }),
-    fieldSelectionEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether field selection should be enabled. If this is true, only the properties in `selectedFields` will be included.',
-      }),
-    selectedFields: SelectedFieldsSchema.exactOptional().openapi({
-      description:
-        'This must be set if `fieldSelectedEnabled` is set. An empty list indicates that no properties will be included.',
-    }),
-    hashedFields: SelectedFieldsSchema.exactOptional().openapi({
-      description:
-        'Fields that should be hashed before being written to the destination. Deprecated, use `mappers` instead.',
-    }),
-    mappers: z
-      .array(ConfiguredStreamMapperSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Mappers that should be applied to the stream before writing to the destination.',
-      }),
-    minimumGenerationId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The minimum generation Id of the stream',
-      }),
-    generationId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Generation Id of the stream' }),
-    syncId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'Sync id of the stream.' }),
-  })
-  .openapi({
-    description: 'the mutable part of the stream to configure the destination',
-    required: ['syncMode', 'destinationSyncMode'],
-  })
-  .openapi('AirbyteStreamConfiguration')
-
-const AirbyteStreamAndConfigurationSchema = z
-  .strictObject({
-    stream: AirbyteStreamSchema.exactOptional(),
-    config: AirbyteStreamConfigurationSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'each stream is split in two parts; the immutable schema from source and mutable configuration for destination',
-    required: [],
-  })
-  .openapi('AirbyteStreamAndConfiguration')
-
-const AirbyteCatalogSchema = z
-  .object({ streams: z.array(AirbyteStreamAndConfigurationSchema) })
-  .openapi({ description: 'describes the available schema (catalog).', required: ['streams'] })
-  .openapi('AirbyteCatalog')
-
-const ConnectionScheduleSchema = z
-  .object({
-    units: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    timeUnit: z.enum(['minutes', 'hours', 'days', 'weeks', 'months']),
-  })
-  .openapi({ description: 'if null, then no schedule is set.', required: ['units', 'timeUnit'] })
-  .openapi('ConnectionSchedule')
-
-const ConnectionScheduleTypeSchema = z
-  .enum(['manual', 'basic', 'cron'])
-  .openapi({ description: 'determine how the schedule data should be interpreted' })
-  .openapi('ConnectionScheduleType')
-
-const ConnectionScheduleDataSchema = z
-  .object({
-    basicSchedule: z
-      .object({
-        timeUnit: z.enum(['minutes', 'hours', 'days', 'weeks', 'months']),
-        units: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      })
-      .exactOptional()
-      .openapi({ required: ['timeUnit', 'units'] }),
-    cron: z
-      .object({ cronExpression: z.string(), cronTimeZone: z.string() })
-      .exactOptional()
-      .openapi({ required: ['cronExpression', 'cronTimeZone'] }),
-  })
-  .openapi({
-    description: 'schedule for when the the connection should run, per the schedule type',
-    required: [],
-  })
-  .openapi('ConnectionScheduleData')
-
-const ConnectionStatusSchema = z
-  .enum(['active', 'inactive', 'deprecated', 'locked'])
-  .openapi({
-    description:
-      'Active means that data is flowing through the connection. Inactive means it is not. Deprecated means the connection is off and cannot be re-activated. Locked means the connection is temporarily disabled due to external factors (e.g., payment issues). The schema field describes the elements of the schema that will be synced.',
-  })
-  .openapi('ConnectionStatus')
-
-const ResourceRequirementsSchema = z
-  .object({
-    cpu_request: z.string().exactOptional(),
-    cpu_limit: z.string().exactOptional(),
-    memory_request: z.string().exactOptional(),
-    memory_limit: z.string().exactOptional(),
-    ephemeral_storage_request: z.string().exactOptional(),
-    ephemeral_storage_limit: z.string().exactOptional(),
-  })
-  .openapi({
-    'x-sdk-component': true,
-    description: 'optional resource requirements to run workers (blank for unbounded allocations)',
-    required: [],
-  })
-  .openapi('ResourceRequirements')
-
-const NonBreakingChangesPreferenceSchema = z
-  .enum(['ignore', 'disable', 'propagate_columns', 'propagate_fully'])
-  .openapi({ 'x-sdk-component': true })
-  .openapi('NonBreakingChangesPreference')
-
-const SchemaChangeBackfillPreferenceSchema = z
-  .enum(['enabled', 'disabled'])
-  .openapi('SchemaChangeBackfillPreference')
-
-const TagSchema = z
-  .object({
-    tagId: TagIdSchema,
-    workspaceId: WorkspaceIdSchema,
-    name: z.string(),
-    color: z.string(),
-  })
-  .openapi({
-    description:
-      'A tag that can be associated with a connection. Useful for grouping and organizing connections in a workspace.',
-    'x-sdk-component': true,
-    required: ['tagId', 'workspaceId', 'name', 'color'],
-  })
-  .openapi('Tag')
-
-const ConnectionReadSchema = z
-  .object({
-    connectionId: ConnectionIdSchema,
-    name: z.string(),
-    namespaceDefinition: NamespaceDefinitionTypeSchema.exactOptional(),
-    namespaceFormat: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({
-        description:
-          "Used when namespaceDefinition is 'customformat'. If blank then behaves like namespaceDefinition = 'destination'. If \"${SOURCE_NAMESPACE}\" then behaves like namespaceDefinition = 'source'.",
-        example: '${SOURCE_NAMESPACE}',
-      }),
-    prefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Prefix that will be prepended to the name of each stream when it is written to the destination.',
-      }),
-    sourceId: SourceIdSchema,
-    destinationId: DestinationIdSchema,
-    operationIds: z.array(OperationIdSchema).exactOptional(),
-    syncCatalog: AirbyteCatalogSchema,
-    schedule: ConnectionScheduleSchema.exactOptional(),
-    scheduleType: ConnectionScheduleTypeSchema.exactOptional(),
-    scheduleData: ConnectionScheduleDataSchema.exactOptional(),
-    status: ConnectionStatusSchema,
-    statusReason: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Optional reason explaining the current status of the connection' }),
-    resourceRequirements: ResourceRequirementsSchema.exactOptional(),
-    sourceCatalogId: z.uuid().exactOptional(),
-    destinationCatalogId: z.uuid().exactOptional(),
-    breakingChange: z.boolean(),
-    notifySchemaChanges: z.boolean().exactOptional(),
-    notifySchemaChangesByEmail: z.boolean().exactOptional(),
-    nonBreakingChangesPreference: NonBreakingChangesPreferenceSchema.exactOptional(),
-    created_at: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    backfillPreference: SchemaChangeBackfillPreferenceSchema.exactOptional(),
-    workspaceId: WorkspaceIdSchema.exactOptional(),
-    dataplaneGroupId: z.uuid().exactOptional(),
-    tags: z.array(TagSchema).exactOptional(),
-    onDemandEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When enabled, this connection will use on-demand capacity if committed capacity is exhausted',
-      }),
-    enableIndexing: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether Fusion indexing is enabled for this connection.' }),
-  })
-  .openapi({
-    required: [
-      'connectionId',
-      'name',
-      'sourceId',
-      'destinationId',
-      'syncCatalog',
-      'status',
-      'breakingChange',
-    ],
-  })
-  .openapi('ConnectionRead')
-
-const SourceDefinitionIdSchema = z.uuid().openapi('SourceDefinitionId')
-
-const SourceConfigurationSchema = z
-  .object({})
-  .openapi({
-    description:
-      'The values required to configure the source. The schema for this must match the schema return by source_definition_specifications/get for the source.',
-    example: { user: 'charles' },
-    'x-sdk-component': true,
-  })
-  .openapi('SourceConfiguration')
-
-const DeadlineActionSchema = z.enum(['auto_upgrade', 'disable']).openapi('DeadlineAction')
-
-const ActorDefinitionBreakingChangeSchema = z
-  .object({
-    version: z.string(),
-    message: z.string(),
-    upgradeDeadline: z.iso
-      .date()
-      .openapi({
-        'x-field-extra-annotation':
-          '@com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd")',
-      }),
-    migrationDocumentationUrl: z.string(),
-    deadlineAction: DeadlineActionSchema.exactOptional(),
-  })
-  .openapi({ required: ['version', 'upgradeDeadline', 'message', 'migrationDocumentationUrl'] })
-  .openapi('ActorDefinitionBreakingChange')
-
-const ActorDefinitionVersionBreakingChangesSchema = z
-  .object({
-    upcomingBreakingChanges: z.array(ActorDefinitionBreakingChangeSchema),
-    minUpgradeDeadline: z.iso
-      .date()
-      .openapi({
-        'x-field-extra-annotation':
-          '@com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd")',
-      }),
-    deadlineAction: DeadlineActionSchema.exactOptional(),
-  })
-  .openapi({ required: ['upcomingBreakingChanges', 'minUpgradeDeadline'] })
-  .openapi('ActorDefinitionVersionBreakingChanges')
-
-const SupportStateSchema = z
-  .enum(['supported', 'unsupported', 'deprecated'])
-  .openapi('SupportState')
-
-const ActorStatusSchema = z
-  .enum(['active', 'inactive'])
-  .openapi({
-    description:
-      'An actor(source/destination) is active if it has at least one active or manual connection.',
-  })
-  .openapi('ActorStatus')
-
-const JobTypeSchema = z
-  .enum([
-    'get_spec',
-    'check_connection',
-    'discover_schema',
-    'sync',
-    'reset_connection',
-    'connection_updater',
-    'replicate',
-  ])
-  .openapi({
-    'x-sdk-component': true,
-    description: 'enum that describes the different types of jobs that the platform runs.',
-  })
-  .openapi('JobType')
-
-const JobTypeResourceLimitSchema = z
-  .strictObject({ jobType: JobTypeSchema, resourceRequirements: ResourceRequirementsSchema })
-  .openapi({
-    'x-sdk-component': true,
-    description:
-      'sets resource requirements for a specific job type for an actor or actor definition. these values override the default, if both are set.',
-    required: ['jobType', 'resourceRequirements'],
-  })
-  .openapi('JobTypeResourceLimit')
-
-const ScopedResourceRequirementsSchema = z
-  .strictObject({
-    default: ResourceRequirementsSchema.exactOptional(),
-    jobSpecific: z.array(JobTypeResourceLimitSchema).exactOptional(),
-  })
-  .openapi({
-    'x-sdk-component': true,
-    description:
-      'actor or actor definition specific resource requirements. if default is set, these are the requirements that should be set for ALL jobs run for this actor definition. it is overriden by the job type specific configurations. if not set, the platform will use defaults. these values will be overriden by configuration at the connection level.',
-    required: [],
-  })
-  .openapi('ScopedResourceRequirements')
-
-const SourceReadSchema = z
-  .object({
-    sourceDefinitionId: SourceDefinitionIdSchema,
-    sourceId: SourceIdSchema,
-    workspaceId: WorkspaceIdSchema,
-    connectionConfiguration: SourceConfigurationSchema,
-    name: z.string(),
-    sourceName: z.string(),
-    icon: z.string().exactOptional(),
-    isVersionOverrideApplied: z.boolean().exactOptional(),
-    isEntitled: z.boolean().exactOptional(),
-    breakingChanges: ActorDefinitionVersionBreakingChangesSchema.exactOptional(),
-    supportState: SupportStateSchema.exactOptional(),
-    status: ActorStatusSchema.exactOptional(),
-    createdAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    isDraft: z.boolean().exactOptional(),
-    resourceAllocation: ScopedResourceRequirementsSchema.exactOptional(),
-    numConnections: z.int().exactOptional(),
-    lastSync: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    connectionJobStatuses: z
-      .record(z.string(), z.int())
-      .exactOptional()
-      .openapi({
-        description: 'Map of job status to count of connections whose latest job has that status',
-      }),
-  })
-  .openapi({
-    required: [
-      'sourceDefinitionId',
-      'sourceId',
-      'workspaceId',
-      'connectionConfiguration',
-      'name',
-      'sourceName',
-      'createdAt',
-    ],
-  })
-  .openapi('SourceRead')
-
-const SupportLevelSchema = z
-  .enum(['community', 'certified', 'archived', 'none'])
-  .openapi('SupportLevel')
-
-const ReleaseStageSchema = z
-  .enum(['alpha', 'beta', 'generally_available', 'custom'])
-  .openapi('ReleaseStage')
-
-const ISO8601DateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    'x-field-extra-annotation':
-      '@com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd\'T\'HH:mm:ss.SSSZ")',
-  })
-  .openapi('ISO8601DateTime')
-
-const SourceDefinitionReadSchema = z
-  .object({
-    sourceDefinitionId: SourceDefinitionIdSchema,
-    name: z.string(),
-    dockerRepository: z.string(),
-    dockerImageTag: z.string(),
-    documentationUrl: z.url().exactOptional(),
-    icon: z.string().exactOptional(),
-    protocolVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Airbyte Protocol version supported by the connector' }),
-    custom: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Whether the connector is custom or not' }),
-    enterprise: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Whether the connector is an enterprise connector' }),
-    supportLevel: SupportLevelSchema.exactOptional(),
-    releaseStage: ReleaseStageSchema.exactOptional(),
-    releaseDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description: 'The date when this connector was first released, in yyyy-mm-dd format.',
-        'x-field-extra-annotation':
-          '@com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd")',
-      }),
-    sourceType: z.enum(['api', 'file', 'database', 'custom']).exactOptional(),
-    resourceRequirements: ScopedResourceRequirementsSchema.exactOptional(),
-    maxSecondsBetweenMessages: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Number of seconds allowed between 2 airbyte protocol messages. The source will timeout if this delay is reach',
-      }),
-    lastPublished: ISO8601DateTimeSchema.exactOptional().openapi({
-      description: 'The time the connector was modified in the codebase.',
-    }),
-    cdkVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The version of the CDK that the connector was built with. e.g. python:0.1.0, java:0.1.0',
-      }),
-    metrics: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Public metrics for the connector' }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The language the connector is written in' }),
-  })
-  .openapi({ required: ['sourceDefinitionId', 'name', 'dockerRepository', 'dockerImageTag'] })
-  .openapi('SourceDefinitionRead')
-
-const DestinationDefinitionIdSchema = z.uuid().openapi('DestinationDefinitionId')
-
-const DestinationConfigurationSchema = z
-  .object({})
-  .openapi({
-    description:
-      'The values required to configure the destination. The schema for this must match the schema return by destination_definition_specifications/get for the destinationDefinition.',
-    example: { user: 'charles' },
-    'x-sdk-component': true,
-  })
-  .openapi('DestinationConfiguration')
-
-const DestinationReadSchema = z
-  .object({
-    destinationDefinitionId: DestinationDefinitionIdSchema,
-    destinationId: DestinationIdSchema,
-    workspaceId: WorkspaceIdSchema,
-    connectionConfiguration: DestinationConfigurationSchema,
-    name: z.string(),
-    destinationName: z.string(),
-    icon: z.string().exactOptional(),
-    isVersionOverrideApplied: z.boolean().exactOptional(),
-    isEntitled: z.boolean().exactOptional(),
-    breakingChanges: ActorDefinitionVersionBreakingChangesSchema.exactOptional(),
-    supportState: SupportStateSchema.exactOptional(),
-    status: ActorStatusSchema.exactOptional(),
-    createdAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    isDraft: z.boolean().exactOptional(),
-    resourceAllocation: ScopedResourceRequirementsSchema.exactOptional(),
-    numConnections: z.int().exactOptional(),
-    lastSync: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    connectionJobStatuses: z
-      .record(z.string(), z.int())
-      .exactOptional()
-      .openapi({
-        description: 'Map of job status to count of connections whose latest job has that status',
-      }),
-  })
-  .openapi({
-    required: [
-      'destinationDefinitionId',
-      'destinationId',
-      'workspaceId',
-      'connectionConfiguration',
-      'name',
-      'destinationName',
-      'createdAt',
-    ],
-  })
-  .openapi('DestinationRead')
-
-const DestinationDefinitionReadSchema = z
-  .object({
-    destinationDefinitionId: DestinationDefinitionIdSchema,
-    name: z.string(),
-    dockerRepository: z.string(),
-    dockerImageTag: z.string(),
-    documentationUrl: z.url(),
-    icon: z.string().exactOptional(),
-    protocolVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Airbyte Protocol version supported by the connector' }),
-    custom: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Whether the connector is custom or not' }),
-    enterprise: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Whether the connector is an enterprise connector' }),
-    supportLevel: SupportLevelSchema.exactOptional(),
-    releaseStage: ReleaseStageSchema.exactOptional(),
-    releaseDate: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description: 'The date when this connector was first released, in yyyy-mm-dd format.',
-      }),
-    resourceRequirements: ScopedResourceRequirementsSchema.exactOptional(),
-    lastPublished: ISO8601DateTimeSchema.exactOptional().openapi({
-      description: 'The time the connector was modified in the codebase.',
-    }),
-    cdkVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The version of the CDK that the connector was built with. e.g. python:0.1.0, java:0.1.0',
-      }),
-    metrics: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Public metrics for the connector' }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The language the connector is written in' }),
-    supportsDataActivation: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the connector supports data activation' }),
-  })
-  .openapi({
-    required: [
-      'destinationDefinitionId',
-      'name',
-      'dockerRepository',
-      'dockerImageTag',
-      'documentationUrl',
-    ],
-  })
-  .openapi('DestinationDefinitionRead')
-
-const TimeframeUsageSchema = z
-  .object({ timeframeStart: z.string(), timeframeEnd: z.string(), quantity: z.float64() })
-  .openapi({ required: ['timeframeStart', 'timeframeEnd', 'quantity'] })
-  .openapi('TimeframeUsage')
-
-const UsageBucketSchema = z
-  .object({
-    free: z.array(TimeframeUsageSchema),
-    regular: z.array(TimeframeUsageSchema),
-    internal: z.array(TimeframeUsageSchema),
-  })
-  .openapi({ required: ['free', 'regular', 'internal'] })
-  .openapi('UsageBucket')
-
-const ConnectionUsageReadSchema = z
-  .object({
-    connection: ConnectionReadSchema,
-    source: SourceReadSchema,
-    sourceDefinition: SourceDefinitionReadSchema,
-    destination: DestinationReadSchema,
-    destinationDefinition: DestinationDefinitionReadSchema,
-    usage: UsageBucketSchema,
-  })
-  .openapi({
-    required: [
-      'connection',
-      'source',
-      'sourceDefinition',
-      'destination',
-      'destinationDefinition',
-      'usage',
-    ],
-  })
-  .openapi('ConnectionUsageRead')
-
-const WorkspaceUsageReadSchema = z
+const WorkspaceUsageReadSchema: z.ZodType<WorkspaceUsageReadType> = z
   .object({ data: z.array(ConnectionUsageReadSchema) })
   .openapi({ required: ['data'] })
   .openapi('WorkspaceUsageRead')
@@ -2654,7 +4495,7 @@ const SlugRequestBodySchema = z
 const ConnectorBuilderProjectIdSchema = z.uuid().openapi('ConnectorBuilderProjectId')
 
 const DeclarativeManifestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     'x-sdk-component': true,
     'x-speakeasy-type-override': 'any',
@@ -2812,7 +4653,7 @@ const BuilderProjectForDefinitionResponseSchema = z
   .openapi('BuilderProjectForDefinitionResponse')
 
 const ConnectorBuilderProjectTestingValuesSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The config blob containing the user inputs for testing' })
   .openapi('ConnectorBuilderProjectTestingValues')
 
@@ -2831,7 +4672,7 @@ const ConnectorBuilderProjectReadListSchema = z
   .openapi('ConnectorBuilderProjectReadList')
 
 const SourceDefinitionSpecificationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'The specification for what values are required to configure the sourceDefinition.',
@@ -2922,7 +4763,7 @@ const ConnectorBuilderProjectStreamReadRequestBodySchema = z
     state: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'The AirbyteStateMessage object to use as the starting state for this read',
@@ -2937,7 +4778,7 @@ const ConnectorBuilderHttpRequestSchema = z
   .object({
     url: z.string().openapi({ description: 'URL that the request was sent to' }),
     parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The request parameters that were set on the HTTP request, if any' }),
     body: z
@@ -2945,7 +4786,7 @@ const ConnectorBuilderHttpRequestSchema = z
       .exactOptional()
       .openapi({ description: 'The body of the HTTP request, if present' }),
     headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The headers of the HTTP request, if any' }),
     http_method: z
@@ -2965,7 +4806,7 @@ const ConnectorBuilderHttpResponseSchema = z
       .exactOptional()
       .openapi({ description: 'The body of the HTTP response, if present' }),
     headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The headers of the HTTP response, if any' }),
   })
@@ -3016,7 +4857,7 @@ const ConnectorBuilderProjectStreamReadSchema = z
                 z
                   .object({
                     records: z
-                      .array(z.object({}))
+                      .array(z.looseObject({}))
                       .openapi({
                         description:
                           'The RECORD AirbyteMessages coming from the read operation for this page',
@@ -3031,7 +4872,7 @@ const ConnectorBuilderProjectStreamReadSchema = z
                   'The pages returned from the read command. If no pagination is configured, this should contain a single item containing all of the results.',
               }),
             slice_descriptor: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -3040,7 +4881,7 @@ const ConnectorBuilderProjectStreamReadSchema = z
             state: z
               .array(
                 z
-                  .object({})
+                  .looseObject({})
                   .openapi({
                     description:
                       'The STATE AirbyteMessage emitted at the end of this slice. This can be omitted if a stream slicer is not configured.',
@@ -3069,14 +4910,14 @@ const ConnectorBuilderProjectStreamReadSchema = z
       }),
     auxiliary_requests: z.array(ConnectorBuilderAuxiliaryRequestSchema).exactOptional(),
     inferred_schema: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'The narrowest JSON Schema against which every AirbyteRecord in the slices can validate successfully. This is inferred from reading every record in the output slices.',
       }),
     inferred_datetime_formats: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3112,7 +4953,7 @@ const ConnectorBuilderProjectFullResolveRequestBodySchema = z
 const ConnectorBuilderResolvedManifestSchema = z
   .object({
     manifest: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'The config-based connector manifest contents with $refs and $parameters resolved',
@@ -3484,12 +5325,7 @@ const UpdateActiveManifestRequestBodySchema = z
   .openapi({ required: ['workspaceId', 'sourceDefinitionId', 'version'] })
   .openapi('UpdateActiveManifestRequestBody')
 
-const PrivateSourceDefinitionReadSchema = z
-  .object({ sourceDefinition: SourceDefinitionReadSchema, granted: z.boolean() })
-  .openapi({ required: ['sourceDefinition', 'granted'] })
-  .openapi('PrivateSourceDefinitionRead')
-
-const PrivateSourceDefinitionReadListSchema = z
+const PrivateSourceDefinitionReadListSchema: z.ZodType<PrivateSourceDefinitionReadListType> = z
   .object({ sourceDefinitions: z.array(PrivateSourceDefinitionReadSchema) })
   .openapi({ required: ['sourceDefinitions'] })
   .openapi('PrivateSourceDefinitionReadList')
@@ -3546,177 +5382,6 @@ const AdvancedAuthSchema = z
   })
   .openapi({ required: [] })
   .openapi('AdvancedAuth')
-
-const JobConfigTypeSchema = z
-  .enum([
-    'check_connection_source',
-    'check_connection_destination',
-    'discover_schema',
-    'get_spec',
-    'sync',
-    'reset_connection',
-    'refresh',
-    'clear',
-  ])
-  .openapi('JobConfigType')
-
-const LogFormatTypeSchema = z.enum(['formatted', 'structured']).openapi('LogFormatType')
-
-const LogLevelSchema = z.enum(['debug', 'error', 'info', 'trace', 'warn']).openapi('LogLevel')
-
-const LogSourceSchema = z
-  .enum(['destination', 'source', 'platform', 'replication-orchestrator'])
-  .openapi('LogSource')
-
-const LogCallerSchema = z
-  .object({
-    className: z.string().exactOptional(),
-    methodName: z.string().exactOptional(),
-    lineNumber: z.int().exactOptional(),
-    threadName: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('LogCaller')
-
-const LogEventSchema = z
-  .object({
-    timestamp: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    message: z.string(),
-    level: LogLevelSchema,
-    logSource: LogSourceSchema,
-    caller: LogCallerSchema.exactOptional(),
-    stackTrace: z.string().exactOptional(),
-  })
-  .openapi({ required: ['timestamp', 'message', 'level', 'logSource'] })
-  .openapi('LogEvent')
-
-const LogEventsSchema = z
-  .object({ events: z.array(LogEventSchema), version: z.string().exactOptional() })
-  .openapi({ required: ['events'] })
-  .openapi('LogEvents')
-
-const LogReadSchema = z
-  .object({ logLines: z.array(z.string()) })
-  .openapi({ required: ['logLines'] })
-  .openapi('LogRead')
-
-const FailureOriginSchema = z
-  .enum([
-    'source',
-    'destination',
-    'replication',
-    'persistence',
-    'airbyte_platform',
-    'normalization',
-    'dbt',
-    'unknown',
-  ])
-  .openapi({
-    description:
-      'Indicates where the error originated. If not set, the origin of error is not well known.',
-  })
-  .openapi('FailureOrigin')
-
-const FailureTypeSchema = z
-  .enum([
-    'config_error',
-    'system_error',
-    'manual_cancellation',
-    'refresh_schema',
-    'heartbeat_timeout',
-    'destination_timeout',
-    'transient_error',
-  ])
-  .openapi({
-    description:
-      'Categorizes well known errors into types for programmatic handling. If not set, the type of error is not well known.',
-  })
-  .openapi('FailureType')
-
-const StreamDescriptorSchema = z
-  .object({ name: z.string(), namespace: z.string().exactOptional() })
-  .openapi({ required: ['name'] })
-  .openapi('StreamDescriptor')
-
-const FailureReasonSchema = z
-  .object({
-    failureOrigin: FailureOriginSchema.exactOptional(),
-    failureType: FailureTypeSchema.exactOptional(),
-    externalMessage: z.string().exactOptional(),
-    internalMessage: z.string().exactOptional(),
-    stacktrace: z.string().exactOptional(),
-    retryable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if it is known that retrying may succeed, e.g. for a transient failure. False if it is known that a retry will not succeed, e.g. for a configuration issue. If not set, retryable status is not well known.',
-      }),
-    timestamp: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    fromTraceMessage: z.boolean().exactOptional(),
-    streamDescriptor: StreamDescriptorSchema.exactOptional(),
-  })
-  .openapi({ required: ['timestamp'] })
-  .openapi('FailureReason')
-
-const SynchronousJobReadSchema = z
-  .object({
-    id: z.uuid(),
-    configType: JobConfigTypeSchema,
-    configId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'only present if a config id was provided.' }),
-    createdAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    endedAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    succeeded: z.boolean(),
-    connectorConfigurationUpdated: z.boolean().default(false).exactOptional(),
-    logType: LogFormatTypeSchema.exactOptional(),
-    logs: z.xor([LogEventsSchema, LogReadSchema]).exactOptional(),
-    failureReason: FailureReasonSchema.exactOptional(),
-  })
-  .openapi({ required: ['id', 'configType', 'createdAt', 'endedAt', 'succeeded'] })
-  .openapi('SynchronousJobRead')
 
 const SourceDefinitionSpecificationReadSchema = z
   .object({
@@ -3821,103 +5486,11 @@ const PostprocessDiscoveredCatalogRequestBodySchema = z
   .openapi({ required: ['catalogId', 'connectionId'] })
   .openapi('PostprocessDiscoveredCatalogRequestBody')
 
-const FieldNameSchema = z
-  .array(z.string())
-  .openapi({ description: 'A field name is a list of strings that form the path to the field.' })
-  .openapi('FieldName')
-
-const FieldSchemaSchema = z
-  .object({})
-  .openapi({ description: 'JSONSchema representation of the field' })
-  .openapi('FieldSchema')
-
-const FieldAddSchema = z
-  .object({ schema: FieldSchemaSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('FieldAdd')
-
-const FieldRemoveSchema = z
-  .object({ schema: FieldSchemaSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('FieldRemove')
-
-const FieldSchemaUpdateSchema = z
-  .object({ oldSchema: FieldSchemaSchema, newSchema: FieldSchemaSchema })
-  .openapi({ required: ['oldSchema', 'newSchema'] })
-  .openapi('FieldSchemaUpdate')
-
-const FieldTransformSchema = z
-  .object({
-    transformType: z.enum(['add_field', 'remove_field', 'update_field_schema']),
-    fieldName: FieldNameSchema,
-    breaking: z.boolean(),
-    addField: FieldAddSchema.exactOptional(),
-    removeField: FieldRemoveSchema.exactOptional(),
-    updateFieldSchema: FieldSchemaUpdateSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the difference in a field between two Streams.',
-    required: ['transformType', 'fieldName', 'breaking'],
-  })
-  .openapi('FieldTransform')
-
-const StreamAttributePrimaryKeyUpdateSchema = z
-  .object({
-    oldPrimaryKey: z.array(FieldNameSchema).exactOptional(),
-    newPrimaryKey: z.array(FieldNameSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('StreamAttributePrimaryKeyUpdate')
-
-const StreamAttributeTransformSchema = z
-  .object({
-    transformType: z.literal('update_primary_key'),
-    breaking: z.boolean(),
-    updatePrimaryKey: StreamAttributePrimaryKeyUpdateSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the difference in an attribute between two Streams.',
-    required: ['transformType', 'breaking'],
-  })
-  .openapi('StreamAttributeTransform')
-
-const StreamTransformSchema = z
-  .object({
-    transformType: z.enum(['add_stream', 'remove_stream', 'update_stream']),
-    streamDescriptor: StreamDescriptorSchema,
-    updateStream: z
-      .object({
-        fieldTransforms: z
-          .array(FieldTransformSchema)
-          .openapi({ description: 'list of field transformations. order does not matter.' }),
-        streamAttributeTransforms: z
-          .array(StreamAttributeTransformSchema)
-          .openapi({
-            description: 'list of stream attribute transformations. order does not matter.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: ['fieldTransforms', 'streamAttributeTransforms'] }),
-  })
-  .openapi({ required: ['transformType', 'streamDescriptor'] })
-  .openapi('StreamTransform')
-
-const CatalogDiffSchema = z
-  .object({
-    transforms: z
-      .array(StreamTransformSchema)
-      .openapi({ description: 'list of stream transformations. order does not matter.' }),
-  })
-  .openapi({
-    description: 'Describes the difference between two Airbyte catalogs.',
-    required: ['transforms'],
-  })
-  .openapi('CatalogDiff')
-
-const PostprocessDiscoveredCatalogResultSchema = z
-  .object({ appliedDiff: CatalogDiffSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('PostprocessDiscoveredCatalogResult')
+const PostprocessDiscoveredCatalogResultSchema: z.ZodType<PostprocessDiscoveredCatalogResultType> =
+  z
+    .object({ appliedDiff: CatalogDiffSchema.exactOptional() })
+    .openapi({ required: [] })
+    .openapi('PostprocessDiscoveredCatalogResult')
 
 const PartialSourceUpdateSchema = z
   .object({
@@ -4029,15 +5602,16 @@ const SourceReadListSchema = z
   .openapi({ required: ['sources'] })
   .openapi('SourceReadList')
 
-const SourceDiscoverSchemaWriteRequestBodySchema = z
-  .object({
-    catalog: AirbyteCatalogSchema,
-    sourceId: SourceIdSchema.exactOptional(),
-    connectorVersion: z.string().exactOptional(),
-    configurationHash: z.string().exactOptional(),
-  })
-  .openapi({ description: 'to write this requested object to database.', required: ['catalog'] })
-  .openapi('SourceDiscoverSchemaWriteRequestBody')
+const SourceDiscoverSchemaWriteRequestBodySchema: z.ZodType<SourceDiscoverSchemaWriteRequestBodyType> =
+  z
+    .object({
+      catalog: AirbyteCatalogSchema,
+      sourceId: SourceIdSchema.exactOptional(),
+      connectorVersion: z.string().exactOptional(),
+      configurationHash: z.string().exactOptional(),
+    })
+    .openapi({ description: 'to write this requested object to database.', required: ['catalog'] })
+    .openapi('SourceDiscoverSchemaWriteRequestBody')
 
 const DestinationOperationSchema = z
   .object({
@@ -4064,7 +5638,7 @@ const DestinationDiscoverSchemaWriteRequestBodySchema = z
   .openapi({ description: 'write this requested object to the database', required: ['catalog'] })
   .openapi('DestinationDiscoverSchemaWriteRequestBody')
 
-const SourceDiscoverSchemaReadSchema = z
+const SourceDiscoverSchemaReadSchema: z.ZodType<SourceDiscoverSchemaReadType> = z
   .object({
     catalog: AirbyteCatalogSchema.exactOptional(),
     jobInfo: SynchronousJobReadSchema.exactOptional(),
@@ -4085,7 +5659,7 @@ const DestinationDiscoverReadSchema = z
   .openapi({ required: ['catalog', 'catalogId'] })
   .openapi('DestinationDiscoverRead')
 
-const SourceAutoPropagateChangeSchema = z
+const SourceAutoPropagateChangeSchema: z.ZodType<SourceAutoPropagateChangeType> = z
   .object({
     catalog: AirbyteCatalogSchema,
     catalogId: z.uuid(),
@@ -4117,7 +5691,7 @@ const DestinationDefinitionIdRequestBodySchema = z
   .openapi('DestinationDefinitionIdRequestBody')
 
 const DestinationDefinitionSpecificationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'The specification for what values are required to configure the destinationDefinition.',
@@ -4175,15 +5749,11 @@ const DestinationDefinitionIdWithWorkspaceIdSchema = z
   .openapi({ required: ['destinationDefinitionId', 'workspaceId'] })
   .openapi('DestinationDefinitionIdWithWorkspaceId')
 
-const PrivateDestinationDefinitionReadSchema = z
-  .object({ destinationDefinition: DestinationDefinitionReadSchema, granted: z.boolean() })
-  .openapi({ required: ['destinationDefinition', 'granted'] })
-  .openapi('PrivateDestinationDefinitionRead')
-
-const PrivateDestinationDefinitionReadListSchema = z
-  .object({ destinationDefinitions: z.array(PrivateDestinationDefinitionReadSchema) })
-  .openapi({ required: ['destinationDefinitions'] })
-  .openapi('PrivateDestinationDefinitionReadList')
+const PrivateDestinationDefinitionReadListSchema: z.ZodType<PrivateDestinationDefinitionReadListType> =
+  z
+    .object({ destinationDefinitions: z.array(PrivateDestinationDefinitionReadSchema) })
+    .openapi({ required: ['destinationDefinitions'] })
+    .openapi('PrivateDestinationDefinitionReadList')
 
 const DestinationDefinitionSpecificationReadSchema = z
   .object({
@@ -4301,47 +5871,6 @@ const DestinationSearchSchema = z
 
 const ActorDefinitionVersionIdSchema = z.uuid().openapi('ActorDefinitionVersionId')
 
-const ConnectorIPCOptionsSchema = z
-  .object({})
-  .openapi({ description: 'Connector IPC Options.' })
-  .openapi('ConnectorIPCOptions')
-
-const ActorDefinitionVersionReadSchema = z
-  .object({
-    dockerRepository: z.string(),
-    dockerImageTag: z.string(),
-    supportsRefreshes: z.boolean(),
-    isVersionOverrideApplied: z.boolean(),
-    supportLevel: SupportLevelSchema.exactOptional(),
-    supportState: SupportStateSchema,
-    breakingChanges: ActorDefinitionVersionBreakingChangesSchema.exactOptional(),
-    lastPublished: ISO8601DateTimeSchema.exactOptional().openapi({
-      description: 'The time the connector was modified in the codebase.',
-    }),
-    cdkVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The version of the CDK that the connector was built with. e.g. python:0.1.0, java:0.1.0',
-      }),
-    supportsFileTransfer: z.boolean(),
-    supportsDataActivation: z.boolean(),
-    connectorIPCOptions: ConnectorIPCOptionsSchema.exactOptional(),
-  })
-  .openapi({
-    required: [
-      'dockerRepository',
-      'dockerImageTag',
-      'supportsRefreshes',
-      'supportState',
-      'isVersionOverrideApplied',
-      'supportsFileTransfer',
-      'supportsDataActivation',
-    ],
-  })
-  .openapi('ActorDefinitionVersionRead')
-
 const ResolveActorDefinitionVersionResponseSchema = z
   .object({
     versionId: ActorDefinitionVersionIdSchema,
@@ -4368,19 +5897,6 @@ const ConnectionIdRequestBodySchema = z
   .object({ connectionId: ConnectionIdSchema })
   .openapi({ required: ['connectionId'] })
   .openapi('ConnectionIdRequestBody')
-
-const JobIdSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({ type: 'integer', format: 'int64' })
-  .openapi('JobId')
 
 const ConnectionAndJobIdRequestBodySchema = z
   .object({ connectionId: ConnectionIdSchema, jobId: JobIdSchema })
@@ -4438,7 +5954,7 @@ const WebBackendConnectionRequestBodySchema = z
   .openapi({ required: ['connectionId'] })
   .openapi('WebBackendConnectionRequestBody')
 
-const ConnectionCreateSchema = z
+const ConnectionCreateSchema: z.ZodType<ConnectionCreateType> = z
   .object({
     name: z.string().exactOptional().openapi({ description: 'Optional name of the connection' }),
     namespaceDefinition: NamespaceDefinitionTypeSchema.exactOptional(),
@@ -4496,77 +6012,7 @@ const ConnectionCreateSchema = z
   .openapi({ required: ['sourceId', 'destinationId', 'status'] })
   .openapi('ConnectionCreate')
 
-const OperatorTypeSchema = z.enum(['normalization', 'dbt', 'webhook']).openapi('OperatorType')
-
-const OperatorWebhookSchema = z
-  .object({
-    webhookConfigId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'The id of the webhook configs to use from the workspace.' }),
-    webhookType: z.literal('dbtCloud').exactOptional(),
-    dbtCloud: z
-      .object({
-        accountId: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The account id associated with the job',
-          }),
-        jobId: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The job id associated with the job',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: ['accountId', 'jobId'] }),
-    executionUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED. Populate dbtCloud instead.', deprecated: true }),
-    executionBody: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED. Populate dbtCloud instead.', deprecated: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('OperatorWebhook')
-
-const OperatorConfigurationSchema = z
-  .object({ operatorType: OperatorTypeSchema, webhook: OperatorWebhookSchema.exactOptional() })
-  .openapi({ required: ['operatorType'] })
-  .openapi('OperatorConfiguration')
-
-const OperationCreateSchema = z
-  .object({
-    workspaceId: WorkspaceIdSchema,
-    name: z.string(),
-    operatorConfiguration: OperatorConfigurationSchema,
-  })
-  .openapi({ required: ['name', 'operatorConfiguration', 'workspaceId'] })
-  .openapi('OperationCreate')
-
-const WebBackendConnectionCreateSchema = z
+const WebBackendConnectionCreateSchema: z.ZodType<WebBackendConnectionCreateType> = z
   .object({
     name: z.string().exactOptional().openapi({ description: 'Optional name of the connection' }),
     namespaceDefinition: NamespaceDefinitionTypeSchema.exactOptional(),
@@ -4620,7 +6066,7 @@ const ConnectionStateTypeSchema = z
   .enum(['global', 'stream', 'legacy', 'not_set'])
   .openapi('ConnectionStateType')
 
-const StateBlobSchema = z.object({}).openapi('StateBlob')
+const StateBlobSchema = z.looseObject({}).openapi('StateBlob')
 
 const StreamStateSchema = z
   .object({
@@ -4658,70 +6104,7 @@ const ConnectionStateCreateOrUpdateSchema = z
   .openapi({ required: ['connectionId', 'connectionState'] })
   .openapi('ConnectionStateCreateOrUpdate')
 
-const ConnectionUpdateSchema = z
-  .object({
-    connectionId: ConnectionIdSchema,
-    namespaceDefinition: NamespaceDefinitionTypeSchema.exactOptional(),
-    namespaceFormat: z
-      .string()
-      .nullable()
-      .default(null)
-      .exactOptional()
-      .openapi({
-        description:
-          "Used when namespaceDefinition is 'customformat'. If blank then behaves like namespaceDefinition = 'destination'. If \"${SOURCE_NAMESPACE}\" then behaves like namespaceDefinition = 'source'.",
-        example: '${SOURCE_NAMESPACE}',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name that will be set to this connection' }),
-    prefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Prefix that will be prepended to the name of each stream when it is written to the destination.',
-      }),
-    operationIds: z.array(OperationIdSchema).nullable().exactOptional(),
-    syncCatalog: AirbyteCatalogSchema.exactOptional(),
-    schedule: ConnectionScheduleSchema.exactOptional(),
-    scheduleType: ConnectionScheduleTypeSchema.exactOptional(),
-    scheduleData: ConnectionScheduleDataSchema.exactOptional(),
-    status: ConnectionStatusSchema.exactOptional(),
-    resourceRequirements: ResourceRequirementsSchema.exactOptional(),
-    sourceCatalogId: z.uuid().exactOptional(),
-    destinationCatalogId: z.uuid().exactOptional(),
-    dataplaneGroupId: z.uuid().exactOptional(),
-    notifySchemaChanges: z.boolean().exactOptional(),
-    notifySchemaChangesByEmail: z.boolean().exactOptional(),
-    nonBreakingChangesPreference: NonBreakingChangesPreferenceSchema.exactOptional(),
-    backfillPreference: SchemaChangeBackfillPreferenceSchema.exactOptional(),
-    breakingChange: z.boolean().exactOptional(),
-    tags: z.array(TagSchema).nullable().exactOptional(),
-    onDemandEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When enabled, this connection will use on-demand capacity if committed capacity is exhausted',
-      }),
-    enableIndexing: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Enables or disables Fusion indexing for this connection. Omitted or null leaves the current value unchanged. A value that differs from the current one is validated and applied the same way as PUT /v1/connections/{connectionId}/enablement (organization eligibility, synced to Sonar/Agents); the rest of the update is applied first and stays applied even if this validation or sync then fails, in which case this field's error is returned instead of the update's.",
-      }),
-  })
-  .openapi({
-    description:
-      'Used to apply a patch-style update to a connection, which means that null properties remain unchanged',
-    required: ['connectionId'],
-  })
-  .openapi('ConnectionUpdate')
-
-const ConnectionUpdateWithReasonSchema = z
+const ConnectionUpdateWithReasonSchema: z.ZodType<ConnectionUpdateWithReasonType> = z
   .object({
     connectionUpdate: ConnectionUpdateSchema,
     updateReason: z.string().exactOptional(),
@@ -4730,17 +6113,7 @@ const ConnectionUpdateWithReasonSchema = z
   .openapi({ required: ['connectionUpdate'] })
   .openapi('ConnectionUpdateWithReason')
 
-const WebBackendOperationCreateOrUpdateSchema = z
-  .object({
-    operationId: OperationIdSchema.exactOptional(),
-    workspaceId: WorkspaceIdSchema,
-    name: z.string(),
-    operatorConfiguration: OperatorConfigurationSchema,
-  })
-  .openapi({ required: ['name', 'operatorConfiguration', 'workspaceId'] })
-  .openapi('WebBackendOperationCreateOrUpdate')
-
-const WebBackendConnectionUpdateSchema = z
+const WebBackendConnectionUpdateSchema: z.ZodType<WebBackendConnectionUpdateType> = z
   .object({
     name: z
       .string()
@@ -4808,222 +6181,6 @@ const ConnectionSyncStatusSchema = z
       "The first of the following that matches for a given connection:\n  * `RUNNING` - a job is currently running\n  * `QUEUED` - a job is currently queued and waiting to start\n  * `FAILED` - user action is required due to a breaking change or config error\n  * `PAUSED` - connection is not active (inactive or deprecated)\n  * `PENDING` - there is no previous sync job or the last completed job was a reset\n  * `INCOMPLETE` - the last sync job's status is `failed`, user is not expected to be able to fix the issue\n  * `SYNCED` - connection did not meet any of the above conditions, it has synced and is currently at rest\n",
   })
   .openapi('ConnectionSyncStatus')
-
-const JobStatusSchema = z
-  .enum(['pending', 'queued', 'running', 'incomplete', 'failed', 'succeeded', 'cancelled'])
-  .openapi('JobStatus')
-
-const ResetConfigSchema = z
-  .object({ streamsToReset: z.array(StreamDescriptorSchema).exactOptional() })
-  .openapi({
-    description:
-      'contains information about how a reset was configured. only populated if the job was a reset.',
-    required: [],
-  })
-  .openapi('ResetConfig')
-
-const JobRefreshConfigSchema = z
-  .object({ streamsToRefresh: z.array(StreamDescriptorSchema).exactOptional() })
-  .openapi({
-    description:
-      'contains information about how a refresh was configured. only populated if the job was a refresh.',
-    required: [],
-  })
-  .openapi('JobRefreshConfig')
-
-const JobAggregatedStatsSchema = z
-  .object({
-    recordsEmitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    bytesEmitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    recordsCommitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    bytesCommitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    recordsRejected: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({
-    required: [
-      'recordsEmitted',
-      'bytesEmitted',
-      'recordsCommitted',
-      'bytesCommitted',
-      'recordsRejected',
-    ],
-  })
-  .openapi('JobAggregatedStats')
-
-const StreamStatsSchema = z
-  .object({
-    streamName: z.string(),
-    streamNamespace: z.string().exactOptional(),
-    recordsEmitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    bytesEmitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    recordsCommitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    bytesCommitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    recordsRejected: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    wasBackfilled: z.boolean().exactOptional(),
-    wasResumed: z.boolean().exactOptional(),
-  })
-  .openapi({
-    required: [
-      'streamName',
-      'recordsEmitted',
-      'bytesEmitted',
-      'recordsCommitted',
-      'bytesCommitted',
-      'recordsRejected',
-    ],
-  })
-  .openapi('StreamStats')
-
-const StreamAggregatedStatsSchema = z.array(StreamStatsSchema).openapi('StreamAggregatedStats')
-
-const JobReadSchema = z
-  .object({
-    id: JobIdSchema,
-    configType: JobConfigTypeSchema,
-    configId: z.string(),
-    enabledStreams: z.array(StreamDescriptorSchema).exactOptional(),
-    createdAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    updatedAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    startedAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    status: JobStatusSchema,
-    resetConfig: ResetConfigSchema.exactOptional(),
-    refreshConfig: JobRefreshConfigSchema.exactOptional(),
-    aggregatedStats: JobAggregatedStatsSchema.exactOptional(),
-    streamAggregatedStats: StreamAggregatedStatsSchema.exactOptional(),
-  })
-  .openapi({ required: ['id', 'configType', 'configId', 'createdAt', 'updatedAt', 'status'] })
-  .openapi('JobRead')
 
 const AttemptNumberSchema = z.int32().openapi('AttemptNumber')
 
@@ -5449,35 +6606,71 @@ const ConnectionStreamHistoryReadSchema = z
   .array(ConnectionStreamHistoryReadItemSchema)
   .openapi('ConnectionStreamHistoryRead')
 
+const ConnectionEventIdSchema = z.uuid().openapi('ConnectionEventId')
+
 const ConnectionEventIdRequestBodySchema = z
   .object({ connectionEventId: ConnectionEventIdSchema, connectionId: ConnectionIdSchema })
   .openapi({ required: ['connectionEventId', 'connectionId'] })
   .openapi('ConnectionEventIdRequestBody')
 
-const ConnectionEventSchema: z.ZodType<ConnectionEventType> = z
-  .lazy(() =>
-    z
-      .object({
-        id: ConnectionEventIdSchema,
-        connectionId: ConnectionIdSchema,
-        eventType: ConnectionEventTypeSchema,
-        summary: z.object({}).openapi({ description: 'JSON object without event details' }),
-        createdAt: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        user: UserReadInConnectionEventSchema.exactOptional(),
-      })
-      .openapi({ required: ['id', 'connectionId', 'eventType', 'summary', 'created_at'] }),
-  )
+const ConnectionEventTypeSchema = z
+  .enum([
+    'SYNC_STARTED',
+    'SYNC_SUCCEEDED',
+    'SYNC_INCOMPLETE',
+    'SYNC_FAILED',
+    'SYNC_CANCELLED',
+    'REFRESH_STARTED',
+    'REFRESH_SUCCEEDED',
+    'REFRESH_INCOMPLETE',
+    'REFRESH_FAILED',
+    'REFRESH_CANCELLED',
+    'CLEAR_STARTED',
+    'CLEAR_SUCCEEDED',
+    'CLEAR_INCOMPLETE',
+    'CLEAR_FAILED',
+    'CLEAR_CANCELLED',
+    'CONNECTION_SETTINGS_UPDATE',
+    'CONNECTION_ENABLED',
+    'CONNECTION_DISABLED',
+    'SCHEMA_UPDATE',
+    'SCHEMA_CONFIG_UPDATE',
+    'CONNECTOR_UPDATE',
+    'UNKNOWN',
+  ])
+  .openapi('ConnectionEventType')
+
+const UserReadInConnectionEventSchema = z
+  .object({
+    id: z.uuid().exactOptional(),
+    email: z.email().exactOptional(),
+    name: z.string().exactOptional(),
+    isDeleted: z.boolean().default(false),
+  })
+  .openapi({ required: ['isDeleted'] })
+  .openapi('UserReadInConnectionEvent')
+
+const ConnectionEventSchema = z
+  .object({
+    id: ConnectionEventIdSchema,
+    connectionId: ConnectionIdSchema,
+    eventType: ConnectionEventTypeSchema,
+    summary: z.looseObject({}).openapi({ description: 'JSON object without event details' }),
+    createdAt: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    user: UserReadInConnectionEventSchema.exactOptional(),
+  })
+  .openapi({ required: ['id', 'connectionId', 'eventType', 'summary', 'created_at'] })
   .openapi('ConnectionEvent')
 
 const ConnectionEventMinimalSchema = z
@@ -5496,9 +6689,9 @@ const ConnectionEventWithDetailsSchema = z
     id: ConnectionEventIdSchema,
     connectionId: ConnectionIdSchema,
     eventType: ConnectionEventTypeSchema,
-    summary: z.object({}).openapi({ description: 'JSON object without event details' }),
+    summary: z.looseObject({}).openapi({ description: 'JSON object without event details' }),
     details: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'JSON object with event details. Not populated yet.' }),
     createdAt: z
@@ -5654,8 +6847,6 @@ const ConnectionLastJobPerStreamReadSchema = z
   .array(ConnectionLastJobPerStreamReadItemSchema)
   .openapi('ConnectionLastJobPerStreamRead')
 
-const SchemaChangeSchema = z.enum(['no_change', 'non_breaking', 'breaking']).openapi('SchemaChange')
-
 const ConnectionSearchSchema = z
   .object({
     connectionId: ConnectionIdSchema.exactOptional(),
@@ -5690,26 +6881,27 @@ const ConnectionSearchSchema = z
   .openapi({ required: [] })
   .openapi('ConnectionSearch')
 
-const ConnectionReadListSchema = z
+const ConnectionReadListSchema: z.ZodType<ConnectionReadListType> = z
   .object({ connections: z.array(ConnectionReadSchema) })
   .openapi({ required: ['connections'] })
   .openapi('ConnectionReadList')
 
-const ConnectionAutoPropagateSchemaChangeSchema = z
-  .object({
-    catalog: AirbyteCatalogSchema,
-    catalogId: z.uuid(),
-    connectionId: z.uuid(),
-    workspaceId: z.uuid(),
-  })
-  .openapi({
-    description:
-      'Input of the schema propagation, with the catalog to be propagated and the connection to propagate to',
-    required: ['catalog', 'catalogId', 'connectionId', 'workspaceId'],
-  })
-  .openapi('ConnectionAutoPropagateSchemaChange')
+const ConnectionAutoPropagateSchemaChangeSchema: z.ZodType<ConnectionAutoPropagateSchemaChangeType> =
+  z
+    .object({
+      catalog: AirbyteCatalogSchema,
+      catalogId: z.uuid(),
+      connectionId: z.uuid(),
+      workspaceId: z.uuid(),
+    })
+    .openapi({
+      description:
+        'Input of the schema propagation, with the catalog to be propagated and the connection to propagate to',
+      required: ['catalog', 'catalogId', 'connectionId', 'workspaceId'],
+    })
+    .openapi('ConnectionAutoPropagateSchemaChange')
 
-const ConnectionAutoPropagateResultSchema = z
+const ConnectionAutoPropagateResultSchema: z.ZodType<ConnectionAutoPropagateResultType> = z
   .object({ propagatedDiff: CatalogDiffSchema.exactOptional() })
   .openapi({
     description:
@@ -5731,16 +6923,6 @@ const OperationUpdateSchema = z
   })
   .openapi({ required: ['operationId', 'name', 'operatorConfiguration'] })
   .openapi('OperationUpdate')
-
-const OperationReadSchema = z
-  .object({
-    workspaceId: WorkspaceIdSchema,
-    operationId: OperationIdSchema,
-    name: z.string(),
-    operatorConfiguration: OperatorConfigurationSchema,
-  })
-  .openapi({ required: ['operationId', 'name', 'operatorConfiguration', 'workspaceId'] })
-  .openapi('OperationRead')
 
 const OperationReadListSchema = z
   .object({ operations: z.array(OperationReadSchema) })
@@ -6183,7 +7365,7 @@ const AuditLogActorSchema = z
   .openapi('AuditLogActor')
 
 const AuditLogDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "Free-form JSON summary of an audit log entry's request or response, as produced by the audited operation's provider with sensitive fields redacted.",
@@ -6272,23 +7454,6 @@ const OrganizationCreateRequestBodySchema = z
   })
   .openapi({ required: ['userId', 'organizationName'] })
   .openapi('OrganizationCreateRequestBody')
-
-const OrganizationLimitsSchema = z
-  .object({ users: LimitSchema.exactOptional(), workspaces: LimitSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('OrganizationLimits')
-
-const OrganizationReadSchema = z
-  .object({
-    organizationId: z.uuid(),
-    organizationName: z.string(),
-    email: z.string(),
-    ssoRealm: z.string().exactOptional(),
-    isAgentic: z.boolean().exactOptional(),
-    organizationLimits: OrganizationLimitsSchema.exactOptional(),
-  })
-  .openapi({ required: ['organizationId', 'organizationName', 'email'] })
-  .openapi('OrganizationRead')
 
 const OrganizationInfoReadSchema = z
   .object({
@@ -6464,16 +7629,7 @@ const ListOrganizationSummariesRequestBodySchema = z
   .openapi({ required: ['userId', 'nameContains', 'pagination'] })
   .openapi('ListOrganizationSummariesRequestBody')
 
-const OrganizationSummarySchema = z
-  .object({
-    organization: OrganizationReadSchema,
-    workspaces: z.array(WorkspaceReadSchema),
-    memberCount: z.int(),
-  })
-  .openapi({ required: ['organization', 'workspaces', 'memberCount'] })
-  .openapi('OrganizationSummary')
-
-const ListOrganizationSummariesResponseSchema = z
+const ListOrganizationSummariesResponseSchema: z.ZodType<ListOrganizationSummariesResponseType> = z
   .object({ organizationSummaries: z.array(OrganizationSummarySchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('ListOrganizationSummariesResponse')
@@ -6622,7 +7778,7 @@ const UserReadSchema = z
     companyName: z.string().exactOptional(),
     email: z.email(),
     news: z.boolean().exactOptional(),
-    metadata: z.object({}).openapi({ description: 'UI metadata required by frontend' }),
+    metadata: z.looseObject({}).openapi({ description: 'UI metadata required by frontend' }),
     agenticEnabledAt: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -6642,7 +7798,10 @@ const UserUpdateSchema = z
     status: UserStatusSchema.exactOptional(),
     companyName: z.string().exactOptional(),
     news: z.boolean().exactOptional(),
-    metadata: z.object({}).exactOptional().openapi({ description: 'UI metadata used in frontend' }),
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'UI metadata used in frontend' }),
   })
   .openapi({ required: ['userId'] })
   .openapi('UserUpdate')
@@ -6700,7 +7859,7 @@ const ActorCatalogWithUpdatedAtSchema = z
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
-    catalog: z.object({}).exactOptional(),
+    catalog: z.looseObject({}).exactOptional(),
   })
   .openapi({
     description: 'A source actor catalog with the timestamp it was mostly recently updated',
@@ -6819,267 +7978,7 @@ const SyncJobInputReadSchema = z
   })
   .openapi('SyncJobInputRead')
 
-const JobDebugReadSchema = z
-  .object({
-    id: JobIdSchema,
-    configType: JobConfigTypeSchema,
-    configId: z.string(),
-    status: JobStatusSchema,
-    airbyteVersion: z.string(),
-    sourceDefinition: SourceDefinitionReadSchema,
-    destinationDefinition: DestinationDefinitionReadSchema,
-  })
-  .openapi({
-    required: [
-      'id',
-      'configType',
-      'configId',
-      'status',
-      'airbyteVersion',
-      'sourceDefinition',
-      'destinationDefinition',
-    ],
-  })
-  .openapi('JobDebugRead')
-
-const WorkflowStateReadSchema = z
-  .object({ running: z.boolean() })
-  .openapi({ required: ['running'] })
-  .openapi('WorkflowStateRead')
-
-const AttemptStatusSchema = z.enum(['running', 'failed', 'succeeded']).openapi('AttemptStatus')
-
-const AttemptStatsSchema = z
-  .object({
-    recordsEmitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    bytesEmitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    stateMessagesEmitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    bytesCommitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    recordsCommitted: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    recordsRejected: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    estimatedRecords: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    estimatedBytes: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    additionalStats: z.record(z.string(), z.number()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AttemptStats')
-
-const AttemptStreamStatsSchema = z
-  .object({
-    streamName: z.string(),
-    streamNamespace: z.string().exactOptional(),
-    stats: AttemptStatsSchema,
-  })
-  .openapi({ required: ['streamName', 'stats'] })
-  .openapi('AttemptStreamStats')
-
-const AttemptFailureSummarySchema = z
-  .object({
-    failures: z.array(FailureReasonSchema),
-    partialSuccess: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the number of committed records for this attempt was greater than 0. False if 0 records were committed. If not set, the number of committed records is unknown.',
-      }),
-  })
-  .openapi({ required: ['failures'] })
-  .openapi('AttemptFailureSummary')
-
-const AttemptReadSchema = z
-  .object({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    status: AttemptStatusSchema,
-    createdAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    updatedAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    endedAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    bytesSynced: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    recordsSynced: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    totalStats: AttemptStatsSchema.exactOptional(),
-    streamStats: z.array(AttemptStreamStatsSchema).exactOptional(),
-    failureSummary: AttemptFailureSummarySchema.exactOptional(),
-  })
-  .openapi({ required: ['id', 'status', 'createdAt', 'updatedAt'] })
-  .openapi('AttemptRead')
-
-const JobWithAttemptsReadSchema = z
-  .object({
-    job: JobReadSchema.exactOptional(),
-    attempts: z.array(AttemptReadSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('JobWithAttemptsRead')
-
-const JobCreatedAtSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({
-    type: 'integer',
-    format: 'int64',
-    description: 'epoch time of the latest sync job. null if no sync job has taken place.',
-  })
-  .openapi('JobCreatedAt')
-
-const JobReadListSchema = z
+const JobReadListSchema: z.ZodType<JobReadListType> = z
   .object({
     jobs: z.array(JobWithAttemptsReadSchema),
     totalJobCount: z
@@ -7101,16 +8000,7 @@ const JobReadListSchema = z
   .openapi({ required: ['jobs', 'totalJobCount'] })
   .openapi('JobReadList')
 
-const AttemptInfoReadSchema = z
-  .object({
-    attempt: AttemptReadSchema,
-    logType: LogFormatTypeSchema.exactOptional(),
-    logs: z.xor([LogEventsSchema, LogReadSchema]).exactOptional(),
-  })
-  .openapi({ required: ['attempt'] })
-  .openapi('AttemptInfoRead')
-
-const JobInfoReadSchema = z
+const JobInfoReadSchema: z.ZodType<JobInfoReadType> = z
   .object({ job: JobReadSchema, attempts: z.array(AttemptInfoReadSchema) })
   .openapi({ required: ['job', 'attempts'] })
   .openapi('JobInfoRead')
@@ -7130,7 +8020,7 @@ const JobOptionalReadSchema = z
   .openapi({ required: [] })
   .openapi('JobOptionalRead')
 
-const JobDebugInfoReadSchema = z
+const JobDebugInfoReadSchema: z.ZodType<JobDebugInfoReadType> = z
   .object({
     job: JobDebugReadSchema,
     attempts: z.array(AttemptInfoReadSchema),
@@ -7167,89 +8057,7 @@ const CheckConnectionReadSchema = z
   .openapi({ required: ['jobInfo'] })
   .openapi('CheckConnectionRead')
 
-const StreamFieldStatusChangedSchema = z
-  .object({
-    streamName: z.string().exactOptional(),
-    streamNamespace: z.string().exactOptional(),
-    status: z.enum(['enabled', 'disabled']).exactOptional(),
-    fields: z.array(z.string()).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the fields newly enabled or disabled in a stream.',
-    required: [],
-  })
-  .openapi('StreamFieldStatusChanged')
-
-const StreamPrimaryKeyDiffSchema = z
-  .object({
-    streamName: z.string().exactOptional(),
-    streamNamespace: z.string().exactOptional(),
-    prev: z.array(FieldNameSchema).exactOptional(),
-    current: z.array(FieldNameSchema).exactOptional(),
-  })
-  .openapi({ description: 'Primary key changed', required: [] })
-  .openapi('StreamPrimaryKeyDiff')
-
-const StreamCursorFieldDiffSchema = z
-  .object({
-    streamName: z.string().exactOptional(),
-    streamNamespace: z.string().exactOptional(),
-    prev: z.array(z.string()).exactOptional(),
-    current: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ description: 'Cursor field changed', required: [] })
-  .openapi('StreamCursorFieldDiff')
-
-const StreamSyncModeDiffSchema = z
-  .object({
-    streamName: z.string().exactOptional(),
-    streamNamespace: z.string().exactOptional(),
-    prevSourceSyncMode: SyncModeSchema.exactOptional(),
-    prevDestinationSyncMode: DestinationSyncModeSchema.exactOptional(),
-    currentSourceSyncMode: SyncModeSchema.exactOptional(),
-    currentDestinationSyncMode: DestinationSyncModeSchema.exactOptional(),
-  })
-  .openapi({ description: 'Sync mode changed', required: [] })
-  .openapi('StreamSyncModeDiff')
-
-const CatalogConfigDiffSchema = z
-  .object({
-    streamsEnabled: z
-      .array(StreamFieldStatusChangedSchema)
-      .exactOptional()
-      .openapi({ description: 'list of new streams enabled. Order does not matter.' }),
-    streamsDisabled: z
-      .array(StreamFieldStatusChangedSchema)
-      .exactOptional()
-      .openapi({ description: 'list of streams disabled. Order does not matter.' }),
-    fieldsEnabled: z
-      .array(StreamFieldStatusChangedSchema)
-      .exactOptional()
-      .openapi({ description: 'list of new fields enabled. Order does not matter.' }),
-    fieldsDisabled: z
-      .array(StreamFieldStatusChangedSchema)
-      .exactOptional()
-      .openapi({ description: 'list of fields disabled. Order does not matter.' }),
-    primaryKeysChanged: z
-      .array(StreamPrimaryKeyDiffSchema)
-      .exactOptional()
-      .openapi({ description: 'list of changes for primary keys. Order does not matter.' }),
-    cursorFieldsChanged: z
-      .array(StreamCursorFieldDiffSchema)
-      .exactOptional()
-      .openapi({ description: 'list of changes for cursor fields. Order does not matter.' }),
-    syncModesChanged: z
-      .array(StreamSyncModeDiffSchema)
-      .exactOptional()
-      .openapi({ description: 'list of changes for sync mode. Order does not matter.' }),
-  })
-  .openapi({
-    description: 'Describes the difference between two configured catalogs.',
-    required: [],
-  })
-  .openapi('CatalogConfigDiff')
-
-const AirbyteCatalogDiffSchema = z
+const AirbyteCatalogDiffSchema: z.ZodType<AirbyteCatalogDiffType> = z
   .object({
     catalogDiff: CatalogDiffSchema.exactOptional(),
     catalogConfigDiff: CatalogConfigDiffSchema.exactOptional(),
@@ -7747,7 +8555,7 @@ const WebBackendConnectionListItemSchema = z
   })
   .openapi('WebBackendConnectionListItem')
 
-const WebBackendConnectionReadSchema = z
+const WebBackendConnectionReadSchema: z.ZodType<WebBackendConnectionReadType> = z
   .object({
     connectionId: ConnectionIdSchema,
     name: z.string(),
@@ -8389,7 +9197,7 @@ const KnownExceptionInfoSchema = z
     exceptionStack: z.array(z.string()).exactOptional(),
     rootCauseExceptionClassName: z.string().exactOptional(),
     rootCauseExceptionStack: z.array(z.string()).exactOptional(),
-    details: z.object({}).exactOptional(),
+    details: z.looseObject({}).exactOptional(),
     errorId: z.uuid().exactOptional(),
   })
   .openapi({ required: [] })
@@ -8413,7 +9221,7 @@ const ConnectionJobRequestBodySchema = z
 const PersistCancelJobRequestBodySchema = z
   .object({
     attemptFailureSummary: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Attempt failure summary serialized as a raw object' }),
     attemptNumber: AttemptNumberSchema,
     connectionId: ConnectionIdSchema,
@@ -8438,7 +9246,7 @@ const SecretStorageTypeSchema = z
   .openapi('SecretStorageType')
 
 const SecretPersistenceConfigurationJsonSchema = z
-  .object({})
+  .looseObject({})
   .openapi('SecretPersistenceConfigurationJson')
 
 const SecretStorageCreateRequestBodySchema = z
@@ -8471,7 +9279,7 @@ const SecretPersistenceTypeSchema = z
 const CreateOrUpdateSecretsPersistenceConfigRequestBodySchema = z
   .object({
     secretPersistenceType: SecretPersistenceTypeSchema,
-    configuration: z.object({}),
+    configuration: z.looseObject({}),
     scope: ScopeTypeSchema,
     scopeId: z.uuid(),
   })
@@ -8879,131 +9687,7 @@ const JobsResponseSchema = z
   })
   .openapi('JobsResponse')
 
-const ConnectionSyncModeEnumSchema = z
-  .enum([
-    'full_refresh_overwrite',
-    'full_refresh_overwrite_deduped',
-    'full_refresh_append',
-    'full_refresh_update',
-    'full_refresh_soft_delete',
-    'incremental_append',
-    'incremental_deduped_history',
-    'incremental_update',
-    'incremental_soft_delete',
-  ])
-  .openapi({ 'x-sdk-component': true })
-  .openapi('ConnectionSyncModeEnum')
-
-const StreamConfigurationSchema = z
-  .object({
-    name: z.string(),
-    namespace: z.string().exactOptional().openapi({ description: 'Namespace of the stream.' }),
-    syncMode: ConnectionSyncModeEnumSchema.exactOptional(),
-    cursorField: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Path to the field that will be used to determine if a record is new or modified since the last sync. This field is REQUIRED if `sync_mode` is `incremental` unless there is a default.',
-      }),
-    primaryKey: z
-      .array(z.array(z.string()))
-      .exactOptional()
-      .openapi({
-        description:
-          'Paths to the fields that will be used as primary key. This field is REQUIRED if `destination_sync_mode` is `*_dedup` unless it is already supplied by the source schema.',
-      }),
-    includeFiles: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to move raw files from the source to the destination during the sync.',
-      }),
-    destinationObjectName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the destination object that this stream will be written to, used for data activation destinations.',
-      }),
-    selectedFields: SelectedFieldsSchema.exactOptional().openapi({
-      description:
-        'By default (if not provided in the request) all fields will be synced. Otherwise, only the fields in this list will be synced.',
-    }),
-    mappers: z
-      .array(ConfiguredStreamMapperSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Mappers that should be applied to the stream before writing to the destination.',
-      }),
-  })
-  .openapi({
-    description: 'Configurations for a single stream.',
-    required: ['name'],
-    'x-sdk-component': true,
-  })
-  .openapi('StreamConfiguration')
-
-const StreamConfigurationsSchema = z
-  .object({ streams: z.array(StreamConfigurationSchema).exactOptional() })
-  .openapi({
-    description: 'A list of configured stream options for a connection.',
-    'x-sdk-component': true,
-    required: [],
-  })
-  .openapi('StreamConfigurations')
-
-const ScheduleTypeEnumSchema = z
-  .enum(['manual', 'cron'])
-  .openapi({ 'x-sdk-component': true })
-  .openapi('ScheduleTypeEnum')
-
-const AirbyteApiConnectionScheduleSchema = z
-  .object({
-    scheduleType: ScheduleTypeEnumSchema,
-    cronExpression: z.string().exactOptional(),
-    cronTimeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Supported timezone ID or fixed offset for the cron schedule; defaults to UTC and cannot start with Etc.',
-      }),
-  })
-  .openapi({
-    description: 'schedule for when the the connection should run, per the schedule type',
-    required: ['scheduleType'],
-    'x-sdk-component': true,
-  })
-  .openapi('AirbyteApiConnectionSchedule')
-
-const NamespaceDefinitionEnumSchema = z
-  .enum(['source', 'destination', 'custom_format'])
-  .default('destination')
-  .openapi({
-    description: 'Define the location where the data will be stored in the destination',
-    'x-sdk-component': true,
-  })
-  .openapi('NamespaceDefinitionEnum')
-
-const NonBreakingSchemaUpdatesBehaviorEnumSchema = z
-  .enum(['ignore', 'disable_connection', 'propagate_columns', 'propagate_fully'])
-  .default('ignore')
-  .openapi({
-    description:
-      'Set how Airbyte handles syncs when it detects a non-breaking schema change in the source',
-    'x-sdk-component': true,
-  })
-  .openapi('NonBreakingSchemaUpdatesBehaviorEnum')
-
-const ConnectionStatusEnumSchema = z
-  .enum(['active', 'inactive', 'deprecated', 'locked'])
-  .openapi({ 'x-sdk-component': true })
-  .openapi('ConnectionStatusEnum')
-
-const ConnectionCreateRequestSchema = z
+const ConnectionCreateRequestSchema: z.ZodType<ConnectionCreateRequestType> = z
   .object({
     name: z.string().exactOptional().openapi({ description: 'Optional name of the connection' }),
     sourceId: z.uuid(),
@@ -9049,24 +9733,7 @@ const ConnectionCreateRequestSchema = z
   })
   .openapi('ConnectionCreateRequest')
 
-const NamespaceDefinitionEnumNoDefaultSchema = z
-  .enum(['source', 'destination', 'custom_format'])
-  .openapi({
-    description: 'Define the location where the data will be stored in the destination',
-    'x-sdk-component': true,
-  })
-  .openapi('NamespaceDefinitionEnumNoDefault')
-
-const NonBreakingSchemaUpdatesBehaviorEnumNoDefaultSchema = z
-  .enum(['ignore', 'disable_connection', 'propagate_columns', 'propagate_fully'])
-  .openapi({
-    description:
-      'Set how Airbyte handles syncs when it detects a non-breaking schema change in the source',
-    'x-sdk-component': true,
-  })
-  .openapi('NonBreakingSchemaUpdatesBehaviorEnumNoDefault')
-
-const ConnectionPatchRequestSchema = z
+const ConnectionPatchRequestSchema: z.ZodType<ConnectionPatchRequestType> = z
   .object({
     name: z.string().exactOptional().openapi({ description: 'Optional name of the connection' }),
     configurations: StreamConfigurationsSchema.exactOptional(),
@@ -9187,29 +9854,6 @@ const FusionSearchHitSchema = z
   })
   .openapi('FusionSearchHit')
 
-const FusionSearchSegmentVersionSchema = z
-  .object({
-    segment_id: z.uuid(),
-    serving_version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Published version of this active segment, or null before publication.',
-      }),
-  })
-  .openapi({ required: ['segment_id', 'serving_version'] })
-  .openapi('FusionSearchSegmentVersion')
-
 const FusionSearchIndexMetadataSchema = z
   .object({
     index_id: z.uuid().exactOptional(),
@@ -9270,300 +9914,7 @@ const FusionSearchResponseSchema = z
   .openapi({ required: ['hits', 'metadata', 'response_time_ms'] })
   .openapi('FusionSearchResponse')
 
-const FusionSearchStatusBackfillSchema = z
-  .object({
-    backfill_start_time: z.iso.datetime({ offset: true }).nullable(),
-    expected_total_records: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    collected_records: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    indexed_records: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    started_at: z.iso.datetime({ offset: true }).nullable(),
-    completed_at: z.iso.datetime({ offset: true }).nullable(),
-    failed_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    cancelled_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    status: z.enum(['starting', 'running', 'finalizing', 'complete', 'failed', 'cancelled']),
-    error_code: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Why a failed run failed: a destination cause such as `nothing_to_backfill`, otherwise `system_error`; null unless failed.',
-      }),
-    error: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The failure's code with a fixed explanation. Warehouse error text is never included; null unless failed.",
-      }),
-  })
-  .openapi({
-    required: [
-      'backfill_start_time',
-      'expected_total_records',
-      'collected_records',
-      'indexed_records',
-      'started_at',
-      'completed_at',
-      'status',
-    ],
-  })
-  .openapi('FusionSearchStatusBackfill')
-
-const FusionSearchStatusGapsSchema = z
-  .object({
-    count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Minibatches of synced input whose records have not reached the searchable index version.',
-      }),
-    stuck: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Gaps the backend no longer retries on its own; they need an operator replay or a backfill.',
-      }),
-    oldest_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({
-        description: "When the oldest gap's input first arrived for indexing; null without gaps.",
-      }),
-  })
-  .openapi({ required: ['count', 'stuck', 'oldest_at'] })
-  .openapi('FusionSearchStatusGaps')
-
-const FusionSearchStatusPublicationHoldSchema = z
-  .object({
-    since: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'When search started serving an older version while a newer one waits for optimization.',
-      }),
-    reason: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'Why the newer version waits, e.g. `fts_unindexed` or `vector_unindexed`.',
-      }),
-  })
-  .openapi({ required: ['since', 'reason'] })
-  .openapi('FusionSearchStatusPublicationHold')
-
-const FusionSearchStatusIndexSchema = z
-  .object({
-    index_id: z.uuid().exactOptional(),
-    segment_versions: z.array(FusionSearchSegmentVersionSchema).exactOptional(),
-    type: z.enum(['keyword', 'semantic']),
-    name: z.string().nullable(),
-    indexed_records: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    physical_rows: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    optimized_physical_rows: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    updated_at: z.iso.datetime({ offset: true }).nullable(),
-    status: z.enum(['backfilling', 'updating', 'optimizing', 'truncating', 'idle']),
-    storage_size_mb: z.float64(),
-    stats_error: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Set when the counts are approximate: `stored_totals_missing` when the index has no complete stored totals (counts are zeros), or, with live stats, the executor's error for the index (counts fall back to the stored totals, or zeros).",
-      }),
-    gaps: FusionSearchStatusGapsSchema.exactOptional(),
-    publication_held: FusionSearchStatusPublicationHoldSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set while newly synced records are indexed but not yet searchable, until optimization finishes or a time cap passes. With several segments, the earliest of their holds.',
-      }),
-    held_records: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Records written to a held (not yet searchable) version beyond the published one, summed over segments; 0 when nothing is held. A segment whose held or published count is not measured yet adds 0.',
-      }),
-    segments: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: "The index's active hash segments; each is a dataset the totals above add up.",
-      }),
-  })
-  .openapi({
-    required: [
-      'type',
-      'name',
-      'indexed_records',
-      'physical_rows',
-      'optimized_physical_rows',
-      'updated_at',
-      'status',
-      'storage_size_mb',
-    ],
-  })
-  .openapi('FusionSearchStatusIndex')
-
-const FusionSearchStatusStreamSchema = z
-  .object({
-    namespace: z.string().nullable().exactOptional(),
-    name: z.string(),
-    needs_backfill: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "The destination warehouse already held this stream's table when indexing was enabled on its connection, and that history is not indexed yet: set until a backfill run of the stream completes. Turning indexing on does not start one; `backfill` tells a requested or running backfill from none. A flagged stream is listed even before it has an index.",
-      }),
-    backfill: FusionSearchStatusBackfillSchema.nullable().openapi({
-      description: 'Null when backfill is disabled.',
-    }),
-    indexes: z.array(FusionSearchStatusIndexSchema),
-    gaps: FusionSearchStatusGapsSchema.exactOptional().openapi({
-      description: 'The gaps of every index of the stream.',
-    }),
-  })
-  .openapi({ required: ['name', 'backfill', 'indexes'] })
-  .openapi('FusionSearchStatusStream')
-
-const FusionSearchStatusSourceSchema = z
-  .object({
-    source_id: z.uuid(),
-    destination_id: z.uuid(),
-    connection_id: z.uuid(),
-    needs_backfill: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "At least one of the connection's streams needs a backfill (see each stream's needs_backfill): history found when indexing was enabled on the connection that no completed backfill run has indexed yet.",
-      }),
-    streams: z.array(FusionSearchStatusStreamSchema),
-    gaps: FusionSearchStatusGapsSchema.exactOptional().openapi({
-      description: "The gaps of every index of the connection's streams.",
-    }),
-  })
-  .openapi({ required: ['source_id', 'destination_id', 'connection_id', 'streams'] })
-  .openapi('FusionSearchStatusSource')
-
-const FusionSearchStatusDestinationSchema = z
-  .object({
-    destination_id: z.uuid(),
-    needs_backfill: z
-      .boolean()
-      .openapi({
-        description:
-          'Existing destination tables were found when indexing was enabled; request a backfill to index that history. Turning indexing on does not start one. Set while any indexing-enabled connection to the destination has a stream that needs a backfill.',
-      }),
-  })
-  .openapi({ required: ['destination_id', 'needs_backfill'] })
-  .openapi('FusionSearchStatusDestination')
-
-const FusionSearchStatusResponseSchema = z
+const FusionSearchStatusResponseSchema: z.ZodType<FusionSearchStatusResponseType> = z
   .object({
     sources: z.array(FusionSearchStatusSourceSchema),
     destinations: z
@@ -9655,7 +10006,7 @@ const FusionConnectionBackfillResponseSchema = z
   .openapi('FusionConnectionBackfillResponse')
 
 const SourceExecuteParamsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Connector-specific JSON parameters, preserving nested nulls. Defaults to an empty object when omitted.',
@@ -9710,7 +10061,7 @@ const SourceExecuteDataSchema = z
   .openapi('SourceExecuteData')
 
 const SourceExecuteMetaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Opaque connector metadata, including pagination cursors when supplied by the connector. Nested values and null-valued properties are preserved.',
@@ -9723,7 +10074,7 @@ const SourceExecuteResponseSchema = z
   .openapi('SourceExecuteResponse')
 
 const DestinationExecuteParamsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Connector-specific JSON parameters, preserving nested nulls. Defaults to an empty object when omitted.',
@@ -9773,7 +10124,7 @@ const DestinationExecuteDataSchema = z
   .openapi('DestinationExecuteData')
 
 const DestinationExecuteMetaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Opaque connector metadata, including pagination cursors when supplied by the connector. Nested values and null-valued properties are preserved.',
@@ -9948,7 +10299,7 @@ const ActorTypeEnumSchema = z
   .openapi('ActorTypeEnum')
 
 const OAuthCredentialsConfigurationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'The configuration for this source/destination based on the OAuth section of the relevant specification.',
@@ -9986,73 +10337,6 @@ const OrganizationOAuthCredentialsRequestSchema = z
     'x-sdk-component': true,
   })
   .openapi('OrganizationOAuthCredentialsRequest')
-
-const ScheduleTypeWithBasicEnumSchema = z
-  .enum(['manual', 'cron', 'basic'])
-  .openapi({ 'x-sdk-component': true })
-  .openapi('ScheduleTypeWithBasicEnum')
-
-const ConnectionScheduleResponseSchema = z
-  .object({
-    scheduleType: ScheduleTypeWithBasicEnumSchema,
-    cronExpression: z.string().exactOptional(),
-    basicTiming: z.string().exactOptional(),
-  })
-  .openapi({
-    description: 'schedule for when the the connection should run, per the schedule type',
-    required: ['scheduleType'],
-    'x-sdk-component': true,
-  })
-  .openapi('ConnectionScheduleResponse')
-
-const ConnectionResponseSchema = z
-  .object({
-    connectionId: z.string(),
-    name: z.string(),
-    sourceId: z.string(),
-    destinationId: z.string(),
-    workspaceId: z.string(),
-    status: ConnectionStatusEnumSchema,
-    schedule: ConnectionScheduleResponseSchema,
-    nonBreakingSchemaUpdatesBehavior: NonBreakingSchemaUpdatesBehaviorEnumSchema.exactOptional(),
-    namespaceDefinition: NamespaceDefinitionEnumSchema.exactOptional(),
-    namespaceFormat: z.string().exactOptional(),
-    prefix: z.string().exactOptional(),
-    configurations: StreamConfigurationsSchema,
-    createdAt: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64' }),
-    tags: z.array(TagSchema),
-    statusReason: z.string().exactOptional(),
-  })
-  .openapi({
-    title: 'Root Type for ConnectionResponse',
-    description: 'Provides details of a single connection.',
-    required: [
-      'connectionId',
-      'name',
-      'sourceId',
-      'destinationId',
-      'workspaceId',
-      'status',
-      'schedule',
-      'configurations',
-      'createdAt',
-      'tags',
-    ],
-    'x-sdk-entity': 'Connection',
-    'x-sdk-param-suppress-computed-diff': true,
-    'x-sdk-component': true,
-  })
-  .openapi('ConnectionResponse')
 
 const DestinationResponseSchema = z
   .object({
@@ -10744,7 +11028,7 @@ const OrganizationsResponseSchema = z
   })
   .openapi('OrganizationsResponse')
 
-const ConnectionsResponseSchema = z
+const ConnectionsResponseSchema: z.ZodType<ConnectionsResponseType> = z
   .object({
     previous: z.string().exactOptional(),
     next: z.string().exactOptional(),
@@ -16216,7 +16500,7 @@ export const postV1JobsJobSuccessWithAttemptNumberRoute = createRoute({
               attemptNumber: AttemptNumberSchema,
               connectionId: ConnectionIdSchema,
               standardSyncOutput: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -17324,11 +17608,11 @@ export const postV1AttemptFailRoute = createRoute({
               jobId: JobIdSchema,
               attemptNumber: AttemptNumberSchema,
               failureSummary: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Attempt failure summary serialized as a raw object' }),
               standardSyncOutput: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Sync output serialized as a raw object' }),
             })
@@ -19212,7 +19496,7 @@ export const postV1CommandsRunCheckRoute = createRoute({
               workspace_id: z.uuid().exactOptional(),
               actor_id: z.uuid().exactOptional(),
               actor_definition_id: z.uuid().exactOptional(),
-              config: z.object({}).exactOptional(),
+              config: z.looseObject({}).exactOptional(),
               job_id: z.string().exactOptional().openapi({ description: 'internal usage' }),
               attempt_number: AttemptNumberSchema.exactOptional(),
               priority: z.string().exactOptional().openapi({ description: 'internal usage' }),
@@ -19590,7 +19874,7 @@ export const postV1CommandsOutputReplicateRoute = createRoute({
           schema: z
             .object({
               id: z.string(),
-              attempt_summary: z.object({}).exactOptional(),
+              attempt_summary: z.looseObject({}).exactOptional(),
               failures: z.array(FailureReasonSchema).exactOptional(),
               catalog: AirbyteCatalogSchema.exactOptional(),
             })
@@ -19627,7 +19911,7 @@ export const postV1CommandsOutputSpecRoute = createRoute({
             .object({
               id: z.string(),
               status: z.enum(['succeeded', 'failed']).exactOptional(),
-              spec: z.object({}).exactOptional(),
+              spec: z.looseObject({}).exactOptional(),
               failureReason: FailureReasonSchema.exactOptional(),
               logs: JobLogsSchema.exactOptional(),
             })
