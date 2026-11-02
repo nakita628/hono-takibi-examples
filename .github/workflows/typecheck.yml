@@ -1,0 +1,61 @@
+name: typecheck
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: typecheck-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - run: bun install --frozen-lockfile
+
+      # PR では変更のあった app だけをチェックする。
+      # ルートの package.json / bun.lock / packages/ が変わった場合や main への push では全 app をチェックする。
+      - name: Select apps
+        id: apps
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+            if echo "$changed" | grep -qE '^(package\.json|bun\.lock|packages/|\.github/workflows/typecheck\.yml)'; then
+              apps=$(ls -d apps/*/)
+            else
+              apps=$(echo "$changed" | grep -oE '^apps/[^/]+/' | sort -u || true)
+            fi
+          else
+            apps=$(ls -d apps/*/)
+          fi
+          echo "list<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$apps" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Typecheck
+        env:
+          APPS: ${{ steps.apps.outputs.list }}
+        run: |
+          failed=()
+          for dir in $APPS; do
+            [ -f "$dir/package.json" ] || continue
+            echo "::group::$dir"
+            if ! (cd "$dir" && bun run typecheck); then
+              failed+=("$dir")
+            fi
+            echo "::endgroup::"
+          done
+          if [ ${#failed[@]} -gt 0 ]; then
+            printf '::error::typecheck failed: %s\n' "${failed[@]}"
+            exit 1
+          fi
