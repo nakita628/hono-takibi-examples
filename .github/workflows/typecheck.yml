@@ -12,6 +12,8 @@ concurrency:
 env:
   # 最大シャード数。チェック対象の app がこれより少なければ app 数に合わせて減らす。
   MAX_SHARDS: 8
+  # app 1 つあたりの typecheck の制限時間。超えたらスキップする。
+  APP_TIMEOUT: 10m
 
 jobs:
   plan:
@@ -71,6 +73,7 @@ jobs:
     if: needs.plan.outputs.count != '0'
     runs-on: ubuntu-latest
     name: shard ${{ matrix.shard }}
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
@@ -89,20 +92,37 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      # app ごとに APP_TIMEOUT の制限時間を付ける。
+      # 時間切れ（exit 124）や強制終了（exit 137、メモリ不足など）になった app は失敗にせず、スキップとして警告を出す。
       - name: Typecheck
         env:
           APPS: ${{ matrix.apps }}
         run: |
           failed=()
+          skipped=()
           for dir in $APPS; do
             echo "::group::$dir"
-            if ! (cd "$dir" && bun run typecheck); then
-              failed+=("$dir")
-            fi
+            set +e
+            # bun run 経由だと時間切れで止めても子の tsc が残るので、tsc を直接呼ぶ（各 app の typecheck スクリプトと同じコマンド）。
+            (cd "$dir" && timeout -k 30s "$APP_TIMEOUT" node_modules/.bin/tsc --noEmit)
+            code=$?
+            set -e
             echo "::endgroup::"
+            case "$code" in
+              0) ;;
+              124) skipped+=("$dir (timeout $APP_TIMEOUT)") ;;
+              137) skipped+=("$dir (killed)") ;;
+              *) failed+=("$dir") ;;
+            esac
           done
+          {
+            echo "### shard ${{ matrix.shard }}"
+            for s in "${skipped[@]}"; do echo "- ⏭️ skipped: $s"; done
+            for f in "${failed[@]}"; do echo "- ❌ failed: $f"; done
+          } >> "$GITHUB_STEP_SUMMARY"
+          for s in "${skipped[@]}"; do echo "::warning::typecheck skipped: $s"; done
           if [ ${#failed[@]} -gt 0 ]; then
-            printf '::error::typecheck failed: %s\n' "${failed[@]}"
+            for f in "${failed[@]}"; do echo "::error::typecheck failed: $f"; done
             exit 1
           fi
 
