@@ -9,24 +9,26 @@ concurrency:
   group: typecheck-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # 最大シャード数。チェック対象の app がこれより少なければ app 数に合わせて減らす。
+  MAX_SHARDS: 8
+
 jobs:
-  typecheck:
+  plan:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      count: ${{ steps.plan.outputs.count }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: package.json
-
-      - run: bun install --frozen-lockfile
-
       # PR では変更のあった app だけをチェックする。
-      # ルートの package.json / bun.lock / packages/ が変わった場合や main への push では全 app をチェックする。
-      - name: Select apps
-        id: apps
+      # ルートの package.json / bun.lock / packages/ / この workflow が変わった場合や main への push では全 app をチェックする。
+      # 各 app の src のサイズを重みにして、合計が均等になるようにシャードへ振り分ける（大きい順に一番軽いシャードへ入れる）。
+      - name: Plan shards
+        id: plan
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
@@ -38,17 +40,61 @@ jobs:
           else
             apps=$(ls -d apps/*/)
           fi
-          echo "list<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$apps" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+
+          weighted=""
+          for dir in $apps; do
+            [ -f "$dir/package.json" ] || continue
+            size=$(du -sb "$dir/src" 2>/dev/null | cut -f1)
+            weighted+="${size:-0} $dir"$'\n'
+          done
+
+          count=$(printf '%s' "$weighted" | grep -c . || true)
+          n=$(( count < MAX_SHARDS ? count : MAX_SHARDS ))
+          if [ "$n" -eq 0 ]; then
+            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+          else
+            matrix=$(printf '%s' "$weighted" | jq -Rnc --argjson n "$n" '
+              [inputs | select(length > 0) | split(" ") | {size: (.[0] | tonumber), dir: .[1]}]
+              | sort_by(-.size)
+              | reduce .[] as $a ([range($n)] | map({apps: [], size: 0});
+                  (to_entries | min_by(.value.size) | .key) as $i
+                  | .[$i].apps += [$a.dir] | .[$i].size += $a.size)
+              | to_entries | map({shard: (.key + 1), apps: (.value.apps | join(" "))})
+              | {include: .}')
+            echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          fi
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "$count apps -> $n shards"
+
+  shard:
+    needs: plan
+    if: needs.plan.outputs.count != '0'
+    runs-on: ubuntu-latest
+    name: shard ${{ matrix.shard }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
+      - run: bun install --frozen-lockfile
 
       - name: Typecheck
         env:
-          APPS: ${{ steps.apps.outputs.list }}
+          APPS: ${{ matrix.apps }}
         run: |
           failed=()
           for dir in $APPS; do
-            [ -f "$dir/package.json" ] || continue
             echo "::group::$dir"
             if ! (cd "$dir" && bun run typecheck); then
               failed+=("$dir")
@@ -59,3 +105,17 @@ jobs:
             printf '::error::typecheck failed: %s\n' "${failed[@]}"
             exit 1
           fi
+
+  # ブランチ保護の必須チェックにはこのジョブ（typecheck）を指定する。
+  # シャード数が変わってもジョブ名が変わらないようにするため。
+  typecheck:
+    needs: [plan, shard]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if [ "${{ needs.plan.result }}" != "success" ]; then exit 1; fi
+          case "${{ needs.shard.result }}" in
+            success|skipped) ;;
+            *) exit 1 ;;
+          esac
