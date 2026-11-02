@@ -803,6 +803,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/dropbox-sign": {
+      "name": "@apps/dropbox-sign",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/e-gov-law": {
       "name": "@apps/e-gov-law",
       "dependencies": {
@@ -3545,6 +3559,8 @@
     "@apps/discourse": ["@apps/discourse@workspace:apps/discourse"],
 
     "@apps/docker-hub": ["@apps/docker-hub@workspace:apps/docker-hub"],
+
+    "@apps/dropbox-sign": ["@apps/dropbox-sign@workspace:apps/dropbox-sign"],
 
     "@apps/e-gov-law": ["@apps/e-gov-law@workspace:apps/e-gov-law"],
 
