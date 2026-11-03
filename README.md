@@ -2000,3 +2000,4 @@ Generation examples for [hono-takibi](https://github.com/nakita628/hono-takibi).
 | [dropbox-sign](./apps/dropbox-sign) | [openapi-fern.yaml](https://raw.githubusercontent.com/hellosign/hellosign-openapi/main/openapi-fern.yaml) | [routes.ts](./apps/dropbox-sign/src/routes.ts) · [api.md](./apps/dropbox-sign/src/api.md) |
 | [gitea](./apps/gitea) | [v1-openapi3.generated.json](https://raw.githubusercontent.com/go-gitea/gitea/main/templates/swagger/v1-openapi3.generated.json) | [routes.ts](./apps/gitea/src/routes.ts) · [api.md](./apps/gitea/src/api.md) |
 | [deepl](./apps/deepl) | [openapi.yaml](https://raw.githubusercontent.com/DeepL/openapi/main/openapi.yaml) | [routes.ts](./apps/deepl/src/routes.ts) · [api.md](./apps/deepl/src/api.md) |
+| [algolia](./apps/algolia) | [search.yml](https://raw.githubusercontent.com/algolia/api-clients-automation/main/specs/bundled/search.yml) | [routes.ts](./apps/algolia/src/routes.ts) · [api.md](./apps/algolia/src/api.md) |
