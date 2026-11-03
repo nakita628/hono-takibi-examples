@@ -1055,6 +1055,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/gitea": {
+      "name": "@apps/gitea",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/github": {
       "name": "@apps/github",
       "dependencies": {
@@ -3595,6 +3609,8 @@
     "@apps/fusionauth": ["@apps/fusionauth@workspace:apps/fusionauth"],
 
     "@apps/getbible": ["@apps/getbible@workspace:apps/getbible"],
+
+    "@apps/gitea": ["@apps/gitea@workspace:apps/gitea"],
 
     "@apps/github": ["@apps/github@workspace:apps/github"],
 
