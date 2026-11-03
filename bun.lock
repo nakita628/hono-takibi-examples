@@ -719,6 +719,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/deepl": {
+      "name": "@apps/deepl",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/deutschebahn": {
       "name": "@apps/deutschebahn",
       "dependencies": {
@@ -3561,6 +3575,8 @@
     "@apps/datadog": ["@apps/datadog@workspace:apps/datadog"],
 
     "@apps/deepgram": ["@apps/deepgram@workspace:apps/deepgram"],
+
+    "@apps/deepl": ["@apps/deepl@workspace:apps/deepl"],
 
     "@apps/deutschebahn": ["@apps/deutschebahn@workspace:apps/deutschebahn"],
 
