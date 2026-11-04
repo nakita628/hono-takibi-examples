@@ -15,11 +15,7 @@ const MyPathItemPathItem = {
               arr: z.array(z.any()).exactOptional(),
               either: z.string().nullable().exactOptional(),
             })
-            .openapi({
-              discriminator: { propertyName: 'type', 'x-extension': true },
-              myArbitraryKeyword: true,
-              required: [],
-            }),
+            .openapi({ discriminator: { propertyName: 'type' }, required: [] }),
         },
       },
       required: true,

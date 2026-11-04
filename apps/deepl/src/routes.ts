@@ -1365,6 +1365,60 @@ const CreateGlossaryParametersSchema = z
   .openapi({ required: ['name', 'source_lang', 'target_lang', 'entries', 'entries_format'] })
   .openapi('CreateGlossaryParameters')
 
+const MultilingualGlossaryTargetLanguageSchema = z
+  .enum([
+    'ar',
+    'bg',
+    'cs',
+    'da',
+    'de',
+    'de-CH',
+    'de-DE',
+    'el',
+    'en',
+    'en-GB',
+    'en-US',
+    'es',
+    'es-419',
+    'es-ES',
+    'et',
+    'fi',
+    'fr',
+    'fr-CA',
+    'fr-FR',
+    'he',
+    'hu',
+    'id',
+    'it',
+    'ja',
+    'ko',
+    'lt',
+    'lv',
+    'nb',
+    'nl',
+    'pl',
+    'pt',
+    'pt-BR',
+    'pt-PT',
+    'ro',
+    'ru',
+    'sk',
+    'sl',
+    'sv',
+    'tr',
+    'uk',
+    'vi',
+    'zh',
+    'zh-Hans',
+    'zh-Hant',
+  ])
+  .openapi({
+    description:
+      'The language in which the target texts in the dictionary are specified. Besides the base languages, the\ntarget can be one of these variants: `de-CH`, `de-DE`, `en-GB`, `en-US`, `es-419`, `es-ES`, `fr-CA`,\n`fr-FR`, `pt-BR`, `pt-PT`, `zh-Hans`, or `zh-Hant`. Source languages are always base languages. The current\nlist is returned by `GET /v3/languages?resource=glossary`.\n\nA dictionary with a base target, such as `de`, applies when translating into that language and any of its\nvariants. A dictionary with a variant target, such as `de-CH`, applies only when translating into that\nexact variant.\n\nWithin one glossary, each language family uses either the base language or its variants as targets, not\nboth. For example, `de-CH` and `de-DE` can be combined, but `de` and `de-DE` cannot. Adding a dictionary\nthat breaks this rule returns a 400 error.',
+    example: 'de',
+  })
+  .openapi('MultilingualGlossaryTargetLanguage')
+
 const GlossaryEntriesSchema = z
   .string()
   .openapi({
@@ -1392,7 +1446,7 @@ const GlossaryEntryCountSchema = z
 const GlossaryDictionarySchema = z
   .object({
     source_lang: GlossarySourceLanguageSchema.exactOptional(),
-    target_lang: GlossaryTargetLanguageSchema.exactOptional(),
+    target_lang: MultilingualGlossaryTargetLanguageSchema.exactOptional(),
     entries: GlossaryEntriesSchema.exactOptional(),
     entries_format: GlossaryEntriesFormatSchema.exactOptional(),
     entry_count: GlossaryEntryCountSchema.exactOptional().openapi({ readOnly: true }),
@@ -1770,7 +1824,7 @@ const MultilingualGlossarySchema = z
 const MultilingualGlossaryEntriesSchema = z
   .object({
     source_lang: GlossarySourceLanguageSchema.exactOptional(),
-    target_lang: GlossaryTargetLanguageSchema.exactOptional(),
+    target_lang: MultilingualGlossaryTargetLanguageSchema.exactOptional(),
     entries: GlossaryEntriesSchema.exactOptional(),
     entries_format: GlossaryEntriesFormatSchema.exactOptional(),
   })
@@ -1780,7 +1834,7 @@ const MultilingualGlossaryEntriesSchema = z
 const MultilingualGlossaryEntriesInformationSchema = z
   .object({
     source_lang: GlossarySourceLanguageSchema.exactOptional(),
-    target_lang: GlossaryTargetLanguageSchema.exactOptional(),
+    target_lang: MultilingualGlossaryTargetLanguageSchema.exactOptional(),
     entry_count: GlossaryEntryCountSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -3444,23 +3498,19 @@ const VoiceTranslateJobTargetOutputTypeSchema = z
 
 const VoiceTranslateJobParametersRequestSchema = z
   .object({
-    source_language: SourceLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Language of the source audio. If omitted, the language is detected automatically.',
-        }),
-    ).exactOptional(),
+    source_language: SourceLanguageSchema.exactOptional().openapi({
+      description:
+        'Language of the source audio. If omitted, the language is detected automatically.',
+    }),
   })
   .openapi({ description: 'Processing parameters for the voice translation job.', required: [] })
   .openapi('VoiceTranslateJobParametersRequest')
 
 const VoiceTranslateJobParametersResponseSchema = z
   .object({
-    source_language: SourceLanguageSchema.and(
-      z.any().openapi({ description: 'Language of the source audio.' }),
-    ).exactOptional(),
+    source_language: SourceLanguageSchema.exactOptional().openapi({
+      description: 'Language of the source audio.',
+    }),
   })
   .openapi({
     description: 'Processing parameters as applied to the voice translation job.',
@@ -5567,7 +5617,7 @@ export const postV3GlossariesRoute = createRoute({
                     z
                       .object({
                         source_lang: GlossarySourceLanguageSchema.exactOptional(),
-                        target_lang: GlossaryTargetLanguageSchema.exactOptional(),
+                        target_lang: MultilingualGlossaryTargetLanguageSchema.exactOptional(),
                         entries: GlossaryEntriesSchema.exactOptional(),
                         entries_format: GlossaryEntriesFormatSchema.exactOptional(),
                         entry_count: z
@@ -5728,7 +5778,7 @@ export const patchV3GlossariesGlossaryIdRoute = createRoute({
                     z
                       .object({
                         source_lang: GlossarySourceLanguageSchema.exactOptional(),
-                        target_lang: GlossaryTargetLanguageSchema.exactOptional(),
+                        target_lang: MultilingualGlossaryTargetLanguageSchema.exactOptional(),
                         entries: GlossaryEntriesSchema.exactOptional(),
                         entries_format: GlossaryEntriesFormatSchema.exactOptional(),
                         entry_count: z
@@ -5824,12 +5874,12 @@ export const getV3GlossariesGlossaryIdEntriesRoute = createRoute({
           schema: { $ref: '#/components/schemas/GlossarySourceLanguage' },
         },
       }),
-      target_lang: GlossaryTargetLanguageSchema.openapi({
+      target_lang: MultilingualGlossaryTargetLanguageSchema.openapi({
         param: {
           name: 'target_lang',
           in: 'query',
           required: true,
-          schema: { $ref: '#/components/schemas/GlossaryTargetLanguage' },
+          schema: { $ref: '#/components/schemas/MultilingualGlossaryTargetLanguage' },
         },
       }),
     }),
@@ -5930,12 +5980,12 @@ export const deleteV3GlossariesGlossaryIdDictionariesRoute = createRoute({
           schema: { $ref: '#/components/schemas/GlossarySourceLanguage' },
         },
       }),
-      target_lang: GlossaryTargetLanguageSchema.openapi({
+      target_lang: MultilingualGlossaryTargetLanguageSchema.openapi({
         param: {
           name: 'target_lang',
           in: 'query',
           required: true,
-          schema: { $ref: '#/components/schemas/GlossaryTargetLanguage' },
+          schema: { $ref: '#/components/schemas/MultilingualGlossaryTargetLanguage' },
         },
       }),
     }),

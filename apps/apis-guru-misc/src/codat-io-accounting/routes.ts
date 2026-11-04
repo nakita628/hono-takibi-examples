@@ -629,22 +629,18 @@ const BillSchema = z
           'Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.\n\nCurrency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  \n\nWhere the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). \n\nFor accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.\n\n## Examples with base currency of GBP\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **USD**          | $20            | 0.781         | £15.62                     |\n| **EUR**          | €20            | 0.885         | £17.70                     |\n| **RUB**          | ₽20            | 0.011         | £0.22                      |\n\n## Examples with base currency of USD\n\n| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |\n| :--------------- | :------------- | :------------ | :------------------------- |\n| **GBP**          | £20            | 1.277         | $25.54                     |\n| **EUR**          | €20            | 1.134         | $22.68                     |\n| **RUB**          | ₽20            | 0.015         | $0.30                      |',
         title: 'Currency rate',
       }),
-    dueDate: z
-      .any()
-      .openapi({ description: 'Date the supplier is due to be paid.' })
-      .and(DateTimeSchema)
-      .exactOptional(),
+    dueDate: DateTimeSchema.exactOptional().openapi({
+      description: 'Date the supplier is due to be paid.',
+    }),
     id: z
       .string()
       .exactOptional()
       .openapi({
         description: 'Identifier for the bill, unique for the company in the accounting platform.',
       }),
-    issueDate: z
-      .any()
-      .openapi({ description: 'Date of the bill as recorded in the accounting platform.' })
-      .and(DateTimeSchema)
-      .exactOptional(),
+    issueDate: DateTimeSchema.exactOptional().openapi({
+      description: 'Date of the bill as recorded in the accounting platform.',
+    }),
     lineItems: z
       .array(
         z

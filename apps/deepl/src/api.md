@@ -3356,7 +3356,7 @@ List the entries of a single glossary in tsv format.
 |---|---|---|---|---|
 |glossary_id|path|string|true|A unique ID assigned to the glossary.|
 |source_lang|query|[GlossarySourceLanguage](#schemaglossarysourcelanguage)|true|none|
-|target_lang|query|[GlossaryTargetLanguage](#schemaglossarytargetlanguage)|true|none|
+|target_lang|query|[MultilingualGlossaryTargetLanguage](#schemamultilingualglossarytargetlanguage)|true|none|
 
 #### Enumerated Values
 
@@ -3399,12 +3399,20 @@ List the entries of a single glossary in tsv format.
 |target_lang|cs|
 |target_lang|da|
 |target_lang|de|
+|target_lang|de-CH|
+|target_lang|de-DE|
 |target_lang|el|
 |target_lang|en|
+|target_lang|en-GB|
+|target_lang|en-US|
 |target_lang|es|
+|target_lang|es-419|
+|target_lang|es-ES|
 |target_lang|et|
 |target_lang|fi|
 |target_lang|fr|
+|target_lang|fr-CA|
+|target_lang|fr-FR|
 |target_lang|he|
 |target_lang|hu|
 |target_lang|id|
@@ -3417,6 +3425,8 @@ List the entries of a single glossary in tsv format.
 |target_lang|nl|
 |target_lang|pl|
 |target_lang|pt|
+|target_lang|pt-BR|
+|target_lang|pt-PT|
 |target_lang|ro|
 |target_lang|ru|
 |target_lang|sk|
@@ -3426,6 +3436,8 @@ List the entries of a single glossary in tsv format.
 |target_lang|uk|
 |target_lang|vi|
 |target_lang|zh|
+|target_lang|zh-Hans|
+|target_lang|zh-Hant|
 
 > Example responses
 
@@ -3643,7 +3655,7 @@ the dictionary if it does not exist yet. Entries not included in the request are
 |glossary_id|path|string|true|A unique ID assigned to the glossary.|
 |body|body|[MultilingualGlossaryEntries](#schemamultilingualglossaryentries)|false|The dictionary to insert into (or overwrite in) the multilingual glossary.|
 |» source_lang|body|[GlossarySourceLanguage](#schemaglossarysourcelanguage)|false|The language in which the source texts in the glossary are specified.|
-|» target_lang|body|[GlossaryTargetLanguage](#schemaglossarytargetlanguage)|false|The language in which the target texts in the glossary are specified.|
+|» target_lang|body|[MultilingualGlossaryTargetLanguage](#schemamultilingualglossarytargetlanguage)|false|The language in which the target texts in the dictionary are specified. Besides the base languages, the<br>target can be one of these variants: `de-CH`, `de-DE`, `en-GB`, `en-US`, `es-419`, `es-ES`, `fr-CA`,<br>`fr-FR`, `pt-BR`, `pt-PT`, `zh-Hans`, or `zh-Hant`. Source languages are always base languages. The current<br>list is returned by `GET /v3/languages?resource=glossary`.<br><br>A dictionary with a base target, such as `de`, applies when translating into that language and any of its<br>variants. A dictionary with a variant target, such as `de-CH`, applies only when translating into that<br>exact variant.<br><br>Within one glossary, each language family uses either the base language or its variants as targets, not<br>both. For example, `de-CH` and `de-DE` can be combined, but `de` and `de-DE` cannot. Adding a dictionary<br>that breaks this rule returns a 400 error.|
 |» entries|body|[GlossaryEntries](#schemaglossaryentries)|false|The entries of the glossary. The entries have to be specified in the format provided by the `entries_format` parameter.|
 |» entries_format|body|[GlossaryEntriesFormat](#schemaglossaryentriesformat)|false|The format in which the glossary entries are provided. Formats currently available:<br>- `tsv` (default) - tab-separated values<br>- `csv` - comma-separated values<br><br>See [Supported Glossary Formats](/docs/customize/managing-glossaries#entry-formats) for details about each format.|
 
@@ -3688,12 +3700,20 @@ the dictionary if it does not exist yet. Entries not included in the request are
 |» target_lang|cs|
 |» target_lang|da|
 |» target_lang|de|
+|» target_lang|de-CH|
+|» target_lang|de-DE|
 |» target_lang|el|
 |» target_lang|en|
+|» target_lang|en-GB|
+|» target_lang|en-US|
 |» target_lang|es|
+|» target_lang|es-419|
+|» target_lang|es-ES|
 |» target_lang|et|
 |» target_lang|fi|
 |» target_lang|fr|
+|» target_lang|fr-CA|
+|» target_lang|fr-FR|
 |» target_lang|he|
 |» target_lang|hu|
 |» target_lang|id|
@@ -3706,6 +3726,8 @@ the dictionary if it does not exist yet. Entries not included in the request are
 |» target_lang|nl|
 |» target_lang|pl|
 |» target_lang|pt|
+|» target_lang|pt-BR|
+|» target_lang|pt-PT|
 |» target_lang|ro|
 |» target_lang|ru|
 |» target_lang|sk|
@@ -3715,6 +3737,8 @@ the dictionary if it does not exist yet. Entries not included in the request are
 |» target_lang|uk|
 |» target_lang|vi|
 |» target_lang|zh|
+|» target_lang|zh-Hans|
+|» target_lang|zh-Hant|
 |» entries_format|tsv|
 |» entries_format|csv|
 
@@ -3904,7 +3928,7 @@ leaving the glossary and its other dictionaries in place.
 |---|---|---|---|---|
 |glossary_id|path|string|true|A unique ID assigned to the glossary.|
 |source_lang|query|[GlossarySourceLanguage](#schemaglossarysourcelanguage)|true|none|
-|target_lang|query|[GlossaryTargetLanguage](#schemaglossarytargetlanguage)|true|none|
+|target_lang|query|[MultilingualGlossaryTargetLanguage](#schemamultilingualglossarytargetlanguage)|true|none|
 
 #### Enumerated Values
 
@@ -3947,12 +3971,20 @@ leaving the glossary and its other dictionaries in place.
 |target_lang|cs|
 |target_lang|da|
 |target_lang|de|
+|target_lang|de-CH|
+|target_lang|de-DE|
 |target_lang|el|
 |target_lang|en|
+|target_lang|en-GB|
+|target_lang|en-US|
 |target_lang|es|
+|target_lang|es-419|
+|target_lang|es-ES|
 |target_lang|et|
 |target_lang|fi|
 |target_lang|fr|
+|target_lang|fr-CA|
+|target_lang|fr-FR|
 |target_lang|he|
 |target_lang|hu|
 |target_lang|id|
@@ -3965,6 +3997,8 @@ leaving the glossary and its other dictionaries in place.
 |target_lang|nl|
 |target_lang|pl|
 |target_lang|pt|
+|target_lang|pt-BR|
+|target_lang|pt-PT|
 |target_lang|ro|
 |target_lang|ru|
 |target_lang|sk|
@@ -3974,6 +4008,8 @@ leaving the glossary and its other dictionaries in place.
 |target_lang|uk|
 |target_lang|vi|
 |target_lang|zh|
+|target_lang|zh-Hans|
+|target_lang|zh-Hant|
 
 > Example responses
 
@@ -13026,7 +13062,7 @@ A dictionary contained in a multilingual glossary. Each dictionary contains the 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |source_lang|[GlossarySourceLanguage](#schemaglossarysourcelanguage)|false|none|The language in which the source texts in the glossary are specified.|
-|target_lang|[GlossaryTargetLanguage](#schemaglossarytargetlanguage)|false|none|The language in which the target texts in the glossary are specified.|
+|target_lang|[MultilingualGlossaryTargetLanguage](#schemamultilingualglossarytargetlanguage)|false|none|The language in which the target texts in the dictionary are specified. Besides the base languages, the<br>target can be one of these variants: `de-CH`, `de-DE`, `en-GB`, `en-US`, `es-419`, `es-ES`, `fr-CA`,<br>`fr-FR`, `pt-BR`, `pt-PT`, `zh-Hans`, or `zh-Hant`. Source languages are always base languages. The current<br>list is returned by `GET /v3/languages?resource=glossary`.<br><br>A dictionary with a base target, such as `de`, applies when translating into that language and any of its<br>variants. A dictionary with a variant target, such as `de-CH`, applies only when translating into that<br>exact variant.<br><br>Within one glossary, each language family uses either the base language or its variants as targets, not<br>both. For example, `de-CH` and `de-DE` can be combined, but `de` and `de-DE` cannot. Adding a dictionary<br>that breaks this rule returns a 400 error.|
 |entries|[GlossaryEntries](#schemaglossaryentries)|false|none|The entries of the glossary. The entries have to be specified in the format provided by the `entries_format` parameter.|
 |entries_format|[GlossaryEntriesFormat](#schemaglossaryentriesformat)|false|none|The format in which the glossary entries are provided. Formats currently available:<br>- `tsv` (default) - tab-separated values<br>- `csv` - comma-separated values<br><br>See [Supported Glossary Formats](/docs/customize/managing-glossaries#entry-formats) for details about each format.|
 |entry_count|object|false|read-only|none|
@@ -13072,12 +13108,20 @@ A dictionary contained in a multilingual glossary. Each dictionary contains the 
 |target_lang|cs|
 |target_lang|da|
 |target_lang|de|
+|target_lang|de-CH|
+|target_lang|de-DE|
 |target_lang|el|
 |target_lang|en|
+|target_lang|en-GB|
+|target_lang|en-US|
 |target_lang|es|
+|target_lang|es-419|
+|target_lang|es-ES|
 |target_lang|et|
 |target_lang|fi|
 |target_lang|fr|
+|target_lang|fr-CA|
+|target_lang|fr-FR|
 |target_lang|he|
 |target_lang|hu|
 |target_lang|id|
@@ -13090,6 +13134,8 @@ A dictionary contained in a multilingual glossary. Each dictionary contains the 
 |target_lang|nl|
 |target_lang|pl|
 |target_lang|pt|
+|target_lang|pt-BR|
+|target_lang|pt-PT|
 |target_lang|ro|
 |target_lang|ru|
 |target_lang|sk|
@@ -13099,6 +13145,8 @@ A dictionary contained in a multilingual glossary. Each dictionary contains the 
 |target_lang|uk|
 |target_lang|vi|
 |target_lang|zh|
+|target_lang|zh-Hans|
+|target_lang|zh-Hant|
 |entries_format|tsv|
 |entries_format|csv|
 
@@ -13196,6 +13244,30 @@ The language in which the source texts in the glossary are specified.
 ```
 
 The language in which the target texts in the glossary are specified.
+
+<h2 id="tocS_MultilingualGlossaryTargetLanguage">MultilingualGlossaryTargetLanguage</h2>
+<!-- backwards compatibility -->
+<a id="schemamultilingualglossarytargetlanguage"></a>
+<a id="schema_MultilingualGlossaryTargetLanguage"></a>
+<a id="tocSmultilingualglossarytargetlanguage"></a>
+<a id="tocsmultilingualglossarytargetlanguage"></a>
+
+```json
+"de"
+```
+
+The language in which the target texts in the dictionary are specified. Besides the base languages, the
+target can be one of these variants: `de-CH`, `de-DE`, `en-GB`, `en-US`, `es-419`, `es-ES`, `fr-CA`,
+`fr-FR`, `pt-BR`, `pt-PT`, `zh-Hans`, or `zh-Hant`. Source languages are always base languages. The current
+list is returned by `GET /v3/languages?resource=glossary`.
+
+A dictionary with a base target, such as `de`, applies when translating into that language and any of its
+variants. A dictionary with a variant target, such as `de-CH`, applies only when translating into that
+exact variant.
+
+Within one glossary, each language family uses either the base language or its variants as targets, not
+both. For example, `de-CH` and `de-DE` can be combined, but `de` and `de-DE` cannot. Adding a dictionary
+that breaks this rule returns a 400 error.
 
 <h2 id="tocS_SpokenTermsId">SpokenTermsId</h2>
 <!-- backwards compatibility -->
@@ -13375,7 +13447,7 @@ Specifies which DeepL model should be used for translation.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |source_lang|[GlossarySourceLanguage](#schemaglossarysourcelanguage)|false|none|The language in which the source texts in the glossary are specified.|
-|target_lang|[GlossaryTargetLanguage](#schemaglossarytargetlanguage)|false|none|The language in which the target texts in the glossary are specified.|
+|target_lang|[MultilingualGlossaryTargetLanguage](#schemamultilingualglossarytargetlanguage)|false|none|The language in which the target texts in the dictionary are specified. Besides the base languages, the<br>target can be one of these variants: `de-CH`, `de-DE`, `en-GB`, `en-US`, `es-419`, `es-ES`, `fr-CA`,<br>`fr-FR`, `pt-BR`, `pt-PT`, `zh-Hans`, or `zh-Hant`. Source languages are always base languages. The current<br>list is returned by `GET /v3/languages?resource=glossary`.<br><br>A dictionary with a base target, such as `de`, applies when translating into that language and any of its<br>variants. A dictionary with a variant target, such as `de-CH`, applies only when translating into that<br>exact variant.<br><br>Within one glossary, each language family uses either the base language or its variants as targets, not<br>both. For example, `de-CH` and `de-DE` can be combined, but `de` and `de-DE` cannot. Adding a dictionary<br>that breaks this rule returns a 400 error.|
 |entries|[GlossaryEntries](#schemaglossaryentries)|false|none|The entries of the glossary. The entries have to be specified in the format provided by the `entries_format` parameter.|
 |entries_format|[GlossaryEntriesFormat](#schemaglossaryentriesformat)|false|none|The format in which the glossary entries are provided. Formats currently available:<br>- `tsv` (default) - tab-separated values<br>- `csv` - comma-separated values<br><br>See [Supported Glossary Formats](/docs/customize/managing-glossaries#entry-formats) for details about each format.|
 
@@ -13420,12 +13492,20 @@ Specifies which DeepL model should be used for translation.
 |target_lang|cs|
 |target_lang|da|
 |target_lang|de|
+|target_lang|de-CH|
+|target_lang|de-DE|
 |target_lang|el|
 |target_lang|en|
+|target_lang|en-GB|
+|target_lang|en-US|
 |target_lang|es|
+|target_lang|es-419|
+|target_lang|es-ES|
 |target_lang|et|
 |target_lang|fi|
 |target_lang|fr|
+|target_lang|fr-CA|
+|target_lang|fr-FR|
 |target_lang|he|
 |target_lang|hu|
 |target_lang|id|
@@ -13438,6 +13518,8 @@ Specifies which DeepL model should be used for translation.
 |target_lang|nl|
 |target_lang|pl|
 |target_lang|pt|
+|target_lang|pt-BR|
+|target_lang|pt-PT|
 |target_lang|ro|
 |target_lang|ru|
 |target_lang|sk|
@@ -13447,6 +13529,8 @@ Specifies which DeepL model should be used for translation.
 |target_lang|uk|
 |target_lang|vi|
 |target_lang|zh|
+|target_lang|zh-Hans|
+|target_lang|zh-Hant|
 |entries_format|tsv|
 |entries_format|csv|
 
@@ -13495,7 +13579,7 @@ Specifies which DeepL model should be used for translation.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |source_lang|[GlossarySourceLanguage](#schemaglossarysourcelanguage)|false|none|The language in which the source texts in the glossary are specified.|
-|target_lang|[GlossaryTargetLanguage](#schemaglossarytargetlanguage)|false|none|The language in which the target texts in the glossary are specified.|
+|target_lang|[MultilingualGlossaryTargetLanguage](#schemamultilingualglossarytargetlanguage)|false|none|The language in which the target texts in the dictionary are specified. Besides the base languages, the<br>target can be one of these variants: `de-CH`, `de-DE`, `en-GB`, `en-US`, `es-419`, `es-ES`, `fr-CA`,<br>`fr-FR`, `pt-BR`, `pt-PT`, `zh-Hans`, or `zh-Hant`. Source languages are always base languages. The current<br>list is returned by `GET /v3/languages?resource=glossary`.<br><br>A dictionary with a base target, such as `de`, applies when translating into that language and any of its<br>variants. A dictionary with a variant target, such as `de-CH`, applies only when translating into that<br>exact variant.<br><br>Within one glossary, each language family uses either the base language or its variants as targets, not<br>both. For example, `de-CH` and `de-DE` can be combined, but `de` and `de-DE` cannot. Adding a dictionary<br>that breaks this rule returns a 400 error.|
 |entry_count|[GlossaryEntryCount](#schemaglossaryentrycount)|false|none|The number of entries in the glossary.|
 
 #### Enumerated Values
@@ -13539,12 +13623,20 @@ Specifies which DeepL model should be used for translation.
 |target_lang|cs|
 |target_lang|da|
 |target_lang|de|
+|target_lang|de-CH|
+|target_lang|de-DE|
 |target_lang|el|
 |target_lang|en|
+|target_lang|en-GB|
+|target_lang|en-US|
 |target_lang|es|
+|target_lang|es-419|
+|target_lang|es-ES|
 |target_lang|et|
 |target_lang|fi|
 |target_lang|fr|
+|target_lang|fr-CA|
+|target_lang|fr-FR|
 |target_lang|he|
 |target_lang|hu|
 |target_lang|id|
@@ -13557,6 +13649,8 @@ Specifies which DeepL model should be used for translation.
 |target_lang|nl|
 |target_lang|pl|
 |target_lang|pt|
+|target_lang|pt-BR|
+|target_lang|pt-PT|
 |target_lang|ro|
 |target_lang|ru|
 |target_lang|sk|
@@ -13566,6 +13660,8 @@ Specifies which DeepL model should be used for translation.
 |target_lang|uk|
 |target_lang|vi|
 |target_lang|zh|
+|target_lang|zh-Hans|
+|target_lang|zh-Hant|
 
 <h2 id="tocS_OutlineDetectionOption">OutlineDetectionOption</h2>
 <!-- backwards compatibility -->

@@ -1,0 +1,1567 @@
+import { createRoute, z } from '@hono/zod-openapi'
+
+const AddressSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .max(3000)
+      .openapi({ description: 'The name of the city. Maximum length: 3000 characters.' }),
+    country: z
+      .string()
+      .openapi({
+        description:
+          "The two-character ISO-3166-1 alpha-2 country code. For example, **US**.\n> If you don't know the country or are not collecting the country from the shopper, provide `country` as `ZZ`.",
+      }),
+    houseNumberOrName: z
+      .string()
+      .max(3000)
+      .openapi({
+        description: 'The number or name of the house. Maximum length: 3000 characters.',
+      }),
+    postalCode: z
+      .string()
+      .openapi({
+        description:
+          'A maximum of five digits for an address in the US, or a maximum of ten characters for an address in all other countries.',
+      }),
+    stateOrProvince: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The two-character ISO 3166-2 state or province code. For example, **CA** in the US or **ON** in Canada.\n> Required for the US and Canada.',
+      }),
+    street: z
+      .string()
+      .max(3000)
+      .openapi({
+        description:
+          'The name of the street. Maximum length: 3000 characters.\n> The house number should not be included in this field; it should be separately provided via `houseNumberOrName`.',
+      }),
+  })
+  .openapi({ required: ['city', 'country', 'houseNumberOrName', 'postalCode', 'street'] })
+  .openapi('Address')
+
+const AmountSchema = z
+  .strictObject({
+    currency: z
+      .string()
+      .length(3)
+      .openapi({
+        description:
+          'The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount.',
+      }),
+    value: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).',
+      }),
+  })
+  .openapi({ required: ['currency', 'value'] })
+  .openapi('Amount')
+
+const BalancePlatformNotificationResponseSchema = z
+  .strictObject({
+    notificationResponse: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BalancePlatformNotificationResponse')
+
+const NameSchema = z
+  .strictObject({
+    firstName: z.string().exactOptional().openapi({ description: 'The first name.' }),
+    fullName: z.string().exactOptional().openapi({ description: 'The full name.' }),
+    infix: z.string().exactOptional().openapi({ description: 'The infix in the name, if any.' }),
+    lastName: z.string().exactOptional().openapi({ description: 'The last name.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Name')
+
+const BankAccountInfoSchema = z
+  .strictObject({
+    address: AddressSchema.exactOptional().openapi({
+      description: 'The address of the bank account owner.',
+    }),
+    iban: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The international bank account number as defined in the [ISO-13616](https://www.iso.org/standard/81090.html) standard.',
+      }),
+    ownerName: NameSchema.exactOptional().openapi({
+      description: 'The name of the bank account owner.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BankAccountInfo')
+
+const NameLocationSchema = z
+  .strictObject({
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The city where the merchant is located.' }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country where the merchant is located in [three-letter country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) format.',
+      }),
+    countryOfOrigin: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The home country in [three-digit country code](https://en.wikipedia.org/wiki/ISO_3166-1_numeric) format, used for government-controlled merchants such as embassies.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The name of the merchant's shop or service." }),
+    rawData: z.string().exactOptional().openapi({ description: 'The raw data.' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The state where the merchant is located.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('NameLocation')
+
+const MerchantDataSchema = z
+  .strictObject({
+    acquirerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The unique identifier of the merchant's acquirer." }),
+    mcc: z.string().exactOptional().openapi({ description: 'The merchant category code.' }),
+    merchantId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the merchant.' }),
+    nameLocation: NameLocationSchema.exactOptional().openapi({
+      description: 'Contains the name and location of the merchant.',
+    }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The postal code of the merchant.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MerchantData')
+
+const CounterpartySchema = z
+  .strictObject({
+    balanceAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the [balance account](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/post/balanceAccounts__resParam_id).',
+      }),
+    bankAccount: BankAccountInfoSchema.exactOptional().openapi({
+      description: 'Contains information about the bank account.',
+    }),
+    merchant: MerchantDataSchema.exactOptional().openapi({
+      description: 'Contains information about the merchant.',
+    }),
+    transferInstrumentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the [transfer instrument](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/post/transferInstruments__resParam_id).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Counterparty')
+
+const ResourceReferenceSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the resource.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the resource.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference for the resource.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ResourceReference')
+
+const NotificationModificationDataSchema = z
+  .strictObject({
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        "The amount of the modification converted to the balance account's currency, in case the original transaction currency is different. For example, if a part of an authorised amount was cancelled, the value shows the amount that was cancelled.\n\n * A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ",
+    }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of modification.\n\nPossible values: **Authorised**, **Cancelled**, **Captured**, **Error**, **Expired**, **OutgoingTransfer**, **PendingIncomingTransfer**, **PendingRefund**, **IncomingTransfer**, **Refunded**, **Refused**, **AuthAdjustmentAuthorised**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('NotificationModificationData')
+
+const PlatformPaymentSchema = z
+  .strictObject({
+    account: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The account given in the related split.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the related split.' }),
+    modificationMerchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant reference of the modification.' }),
+    modificationPspReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The pspReference of the modification.' }),
+    paymentMerchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The merchant reference of the payment.' }),
+    paymentPspReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The pspReference of the payment.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference of the related split.' }),
+    type: z
+      .enum([
+        'AcquiringFees',
+        'AdyenCommission',
+        'AdyenFees',
+        'AdyenMarkup',
+        'BalanceAccount',
+        'ChargebackRemainder',
+        'Commission',
+        'DCCMarkup',
+        'DCCPlatformCommission',
+        'Default',
+        'Interchange',
+        'PaymentFee',
+        'Remainder',
+        'SchemeFee',
+        'Surcharge',
+        'Tip',
+        'TopUp',
+        'VAT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the related split.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PlatformPayment')
+
+const ThreeDSecureSchema = z
+  .strictObject({
+    acsTransactionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The transaction identifier for the Access Control Server' }),
+    authenticationResult: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The result from the performed authentication' }),
+    authenticationType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the performed authentication' }),
+    dsTransactionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The transaction identifier for the Directory server' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ThreeDSecure')
+
+const IncomingTransferNotificationDataSchema = z
+  .strictObject({
+    accountHolder: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the account holder.',
+    }),
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        "The amount converted to the balance account's currency, in case the original transaction currency is different.\n\n* A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ",
+    }),
+    balanceAccount: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the balance account.',
+    }),
+    balancePlatform: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the balance platform.' }),
+    counterparty: CounterpartySchema.exactOptional().openapi({
+      description: 'Contains information about the other party in the transaction.',
+    }),
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the event was triggered, in ISO 8601 extended format. For example, **2025-03-19T10:15:30+01:00**.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your description for the transfer. If you send a description longer than 140 characters, the text is truncated.',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the resource.' }),
+    modification: NotificationModificationDataSchema.exactOptional().openapi({
+      description:
+        'Contains the amount and type of modification that triggered the notification. For example, this object contains the amount of a partial cancellation or partial expired authorisation.',
+    }),
+    originalAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'The amount in the original currency of the transaction.\n\n* A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ',
+    }),
+    paymentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the original payment authorisation, refund, or funds transfer request. Use this to trace the original request from the `balancePlatform.payment.created` webhook.',
+      }),
+    paymentInstrument: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the payment instrument.',
+    }),
+    platformPayment: PlatformPaymentSchema.exactOptional().openapi({
+      description: 'Contains information about the related platform payment.',
+    }),
+    reference: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({ description: 'An Adyen-generated unique reference for the transfer.' }),
+    referenceForBeneficiary: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference sent to or received from the counterparty.\n\n* For outgoing funds, this is the [`referenceForBeneficiary`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers__resParam_referenceForBeneficiary) from the  [`/transfers`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers) request.\n\n * For incoming funds, this is the reference from the sender.',
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The event status. The possible values depend on the `type`.\n\n* **Authorised**, **Refused**, or **Error** for type `balancePlatform.payment.created`\n\n * **Expired** or **Cancelled** or **AuthAdjustmentAuthorised** or **AuthAdjustmentRefused** for type `balancePlatform.payment.updated`\n\n* **PendingIncomingTransfer** for type `balancePlatform.incomingTransfer.created` \n\n* **Refunded** or **IncomingTransfer** for type `balancePlatform.incomingTransfer.updated`\n\n * **Captured** or **OutgoingTransfer** for type `balancePlatform.outgoingTransfer.created`\n\n* **TransferConfirmed**, **TransferSentOut**, or **TransferFailed** for type `balancePlatform.outgoingTransfer.updated`\n\n  ',
+      }),
+    threeDSecure: ThreeDSecureSchema.exactOptional().openapi({
+      description: 'The data of the result from the 3DS authentication.',
+    }),
+    valueDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the expected settlement date of this transaction, in ISO 8601 extended format. For example, **2021-08-17T15:34:37+02:00**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('IncomingTransferNotificationData')
+
+const IncomingTransferNotificationRequestSchema = z
+  .strictObject({
+    data: IncomingTransferNotificationDataSchema.openapi({
+      description: 'Contains event details.',
+    }),
+    environment: z
+      .string()
+      .openapi({
+        description:
+          'The environment from which the webhook originated.\n\nPossible values: **test**, **live**.',
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When the event was queued.' }),
+    type: z
+      .enum([
+        'balancePlatform.incomingTransfer.updated',
+        'balancePlatform.incomingTransfer.created',
+      ])
+      .openapi({ description: 'Type of webhook.' }),
+  })
+  .openapi({ required: ['data', 'environment', 'type'] })
+  .openapi('IncomingTransferNotificationRequest')
+
+const RelayedAuthorisationDataSchema = z
+  .strictObject({
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The `metadata` object from the relayed authorisation response from your server.',
+      }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `reference` from the relayed authorisation response from your server.',
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value can be **Authorised** or **Refused**, based on the `authorisationDecision.status` in the relayed authorisation response from your server.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RelayedAuthorisationData')
+
+const TransactionRuleReferenceSchema = z
+  .strictObject({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the resource.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the resource.' }),
+    reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The reference for the resource.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TransactionRuleReference')
+
+const TransactionRuleSourceSchema = z
+  .strictObject({
+    id: z.string().exactOptional().openapi({ description: 'ID of the resource, when applicable.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the type of resource for which the transaction rule is defined.\n\nPossible values:\n\n * **PaymentInstrumentGroup**\n\n* **PaymentInstrument**\n\n* **BalancePlatform**\n\n* **EntityUsageConfiguration**\n\n* **PlatformRule**: The transaction rule is a platform-wide rule imposed by Adyen.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TransactionRuleSource')
+
+const TransactionEventViolationSchema = z
+  .strictObject({
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An explanation about why the transaction rule failed.' }),
+    transactionRule: TransactionRuleReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the transaction rule.',
+    }),
+    transactionRuleSource: TransactionRuleSourceSchema.exactOptional().openapi({
+      description: 'Contains information about the resource to which the transaction rule applies.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('TransactionEventViolation')
+
+const TransactionRulesResultSchema = z
+  .strictObject({
+    advice: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The advice given by the Risk analysis.' }),
+    allRulesPassed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the transaction passed the evaluation for all transaction rules.',
+      }),
+    failedTransactionRules: z
+      .array(TransactionEventViolationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array containing all the transaction rules that the transaction violated. This list is only sent when `allRulesPassed` is **false**.',
+      }),
+    score: z.int32().exactOptional().openapi({ description: 'The score of the Risk analysis.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TransactionRulesResult')
+
+const OutgoingTransferNotificationDataSchema = z
+  .strictObject({
+    accountHolder: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the account holder.',
+    }),
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        "The amount converted to the balance account's currency, in case the original transaction currency is different.\n\n* A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ",
+    }),
+    balanceAccount: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the balance account.',
+    }),
+    balancePlatform: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the balance platform.' }),
+    counterparty: CounterpartySchema.openapi({
+      description: 'Contains information about the other party in the transaction.',
+    }),
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the event was triggered, in ISO 8601 extended format. For example, **2025-03-19T10:15:30+01:00**.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your description for the transfer. If you send a description longer than 140 characters, the text is truncated.',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the resource.' }),
+    merchantData: MerchantDataSchema.exactOptional().openapi({
+      description:
+        'Contains information about the merchant that processed the payment. This object is only included for payment authorisation requests and captures.',
+    }),
+    modification: NotificationModificationDataSchema.exactOptional().openapi({
+      description:
+        'Contains the amount and type of modification that triggered the notification. For example, this object contains the amount of a partial cancellation or partial expired authorisation.',
+    }),
+    originalAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'The amount in the original currency of the transaction.\n\n* A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ',
+    }),
+    paymentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the original payment authorisation, refund, or funds transfer request. Use this to trace the original request from the `balancePlatform.payment.created` webhook.',
+      }),
+    paymentInstrument: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the payment instrument.',
+    }),
+    platformPayment: PlatformPaymentSchema.exactOptional().openapi({
+      description: 'Contains information about the related platform payment.',
+    }),
+    processingType: z
+      .enum([
+        'atmWithdraw',
+        'balanceInquiry',
+        'ecommerce',
+        'moto',
+        'pos',
+        'purchaseWithCashback',
+        'recurring',
+        'token',
+        'unknown',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains information about how the payment was processed. Possible values: **atmWithdraw**, **balanceInquiry**, **ecommerce**, **moto**, **pos**, **purchaseWithCashback**, **recurring**, **token**, **unknown**.',
+      }),
+    purposeCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the purpose of the outgoing transfer. Adyen sets this to:\n\n* **payoutManual** when the transfer was triggered by a one-off payout using the [`/transfers`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers) endpoint.\n\n * **payoutSweep** when the transfer was triggered by a scheduled payout using [`sweepConfigurations`](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/post/balanceAccounts__resParam_sweepConfigurations).',
+      }),
+    reference: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          "The [`reference`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers__reqParam_reference) from the `/transfers` request. If you haven't provided any, Adyen generates a unique reference.",
+      }),
+    referenceForBeneficiary: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference sent to or received from the counterparty.\n\n* For outgoing funds, this is the [`referenceForBeneficiary`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers__resParam_referenceForBeneficiary) from the  [`/transfers`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers) request.\n\n * For incoming funds, this is the reference from the sender.',
+      }),
+    relayedAuthorisationData: RelayedAuthorisationDataSchema.exactOptional().openapi({
+      description:
+        "If you're using [relayed authorisation](https://docs.adyen.com/issuing/processing-payments-for-cards#relayed-authorisation), this object contains information from the relayed authorisation response from your server.",
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The event status. The possible values depend on the `type`.\n\n* **Authorised**, **Refused**, or **Error** for type `balancePlatform.payment.created`\n\n * **Expired** or **Cancelled** or **AuthAdjustmentAuthorised** or **AuthAdjustmentRefused** for type `balancePlatform.payment.updated`\n\n* **PendingIncomingTransfer** for type `balancePlatform.incomingTransfer.created` \n\n* **Refunded** or **IncomingTransfer** for type `balancePlatform.incomingTransfer.updated`\n\n * **Captured** or **OutgoingTransfer** for type `balancePlatform.outgoingTransfer.created`\n\n* **TransferConfirmed**, **TransferSentOut**, or **TransferFailed** for type `balancePlatform.outgoingTransfer.updated`\n\n  ',
+      }),
+    threeDSecure: ThreeDSecureSchema.exactOptional().openapi({
+      description: 'The data of the result from the 3DS authentication.',
+    }),
+    transactionRulesResult: TransactionRulesResultSchema.exactOptional().openapi({
+      description:
+        'Contains results from the evaluation of [transaction rules](https://docs.adyen.com/issuing/transaction-rules).',
+    }),
+    valueDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the expected settlement date of this transaction, in ISO 8601 extended format. For example, **2021-08-17T15:34:37+02:00**.',
+      }),
+  })
+  .openapi({ required: ['counterparty'] })
+  .openapi('OutgoingTransferNotificationData')
+
+const OutgoingTransferNotificationRequestSchema = z
+  .strictObject({
+    data: OutgoingTransferNotificationDataSchema.openapi({
+      description: 'Contains details about the event.',
+    }),
+    environment: z
+      .string()
+      .openapi({
+        description:
+          'The environment from which the webhook originated.\n\nPossible values: **test**, **live**.',
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When the event was queued.' }),
+    type: z
+      .enum([
+        'balancePlatform.outgoingTransfer.created',
+        'balancePlatform.outgoingTransfer.updated',
+      ])
+      .openapi({ description: 'Type of webhook.' }),
+  })
+  .openapi({ required: ['data', 'environment', 'type'] })
+  .openapi('OutgoingTransferNotificationRequest')
+
+const ValidationResultSchema = z
+  .strictObject({
+    result: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The result of the check.\n\nPossible values:\n\n- **valid**: The validation was successful.\n\n- **invalid**: The validation failed.\n\n- **notValidated**: The validation was not performed because some services were unreachable or Adyen does not have the information needed to perform the check.\n\n- **notApplicable**: The validation is not applicable.',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'Type of check.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ValidationResult')
+
+const PaymentNotificationDataSchema = z
+  .strictObject({
+    accountHolder: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the account holder.',
+    }),
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        "The amount converted to the balance account's currency, in case the original transaction currency is different.\n\n* A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ",
+    }),
+    authCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The authorisation code for the payment.' }),
+    balanceAccount: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the balance account.',
+    }),
+    balancePlatform: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the balance platform.' }),
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the event was triggered, in ISO 8601 extended format. For example, **2025-03-19T10:15:30+01:00**.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your description for the transfer. If you send a description longer than 140 characters, the text is truncated.',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the resource.' }),
+    merchantData: MerchantDataSchema.exactOptional().openapi({
+      description:
+        'Contains information about the merchant that processed the payment. This object is only included for payment authorisation requests and captures.',
+    }),
+    modification: NotificationModificationDataSchema.exactOptional().openapi({
+      description:
+        'Contains the amount and type of modification that triggered the notification. For example, this object contains the amount of a partial cancellation or partial expired authorisation.',
+    }),
+    originalAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'The amount in the original currency of the transaction.\n\n* A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ',
+    }),
+    paymentInstrument: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the payment instrument.',
+    }),
+    platformPayment: PlatformPaymentSchema.exactOptional().openapi({
+      description: 'Contains information about the related platform payment.',
+    }),
+    processingType: z
+      .enum([
+        'atmWithdraw',
+        'balanceInquiry',
+        'ecommerce',
+        'moto',
+        'pos',
+        'purchaseWithCashback',
+        'recurring',
+        'token',
+        'unknown',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains information about how the payment was processed. Possible values: **atmWithdraw**, **balanceInquiry**, **ecommerce**, **moto**, **pos**, **purchaseWithCashback**, **recurring**, **token**, **unknown**.',
+      }),
+    reference: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          "The [`reference`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers__reqParam_reference) from the `/transfers` request. If you haven't provided any, Adyen generates a unique reference.",
+      }),
+    referenceForBeneficiary: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference sent to or received from the counterparty.\n\n* For outgoing funds, this is the [`referenceForBeneficiary`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers__resParam_referenceForBeneficiary) from the  [`/transfers`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers) request.\n\n * For incoming funds, this is the reference from the sender.',
+      }),
+    relayedAuthorisationData: RelayedAuthorisationDataSchema.exactOptional().openapi({
+      description:
+        "If you're using [relayed authorisation](https://docs.adyen.com/issuing/processing-payments-for-cards#relayed-authorisation), this object contains information from the relayed authorisation response from your server.",
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The event status. The possible values depend on the `type`.\n\n* **Authorised**, **Refused**, or **Error** for type `balancePlatform.payment.created`\n\n * **Expired** or **Cancelled** or **AuthAdjustmentAuthorised** or **AuthAdjustmentRefused** for type `balancePlatform.payment.updated`\n\n* **PendingIncomingTransfer** for type `balancePlatform.incomingTransfer.created` \n\n* **Refunded** or **IncomingTransfer** for type `balancePlatform.incomingTransfer.updated`\n\n * **Captured** or **OutgoingTransfer** for type `balancePlatform.outgoingTransfer.created`\n\n* **TransferConfirmed**, **TransferSentOut**, or **TransferFailed** for type `balancePlatform.outgoingTransfer.updated`\n\n  ',
+      }),
+    threeDSecure: ThreeDSecureSchema.exactOptional().openapi({
+      description: 'The data of the result from the 3DS authentication.',
+    }),
+    transactionRulesResult: TransactionRulesResultSchema.exactOptional().openapi({
+      description:
+        'Contains results from the evaluation of [transaction rules](https://docs.adyen.com/issuing/transaction-rules).',
+    }),
+    validationResult: z
+      .array(ValidationResultSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of checks that Adyen performed to validate the payment and the result of each.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaymentNotificationData')
+
+const PaymentNotificationRequestSchema = z
+  .strictObject({
+    data: PaymentNotificationDataSchema.openapi({ description: 'Contains event details.' }),
+    environment: z
+      .string()
+      .openapi({
+        description:
+          'The environment from which the webhook originated.\n\nPossible values: **test**, **live**.',
+      }),
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When the event was queued.' }),
+    type: z
+      .enum(['balancePlatform.payment.created', 'balancePlatform.payment.updated'])
+      .openapi({ description: 'Type of webhook.' }),
+  })
+  .openapi({ required: ['data', 'environment', 'type'] })
+  .openapi('PaymentNotificationRequest')
+
+const ResourceSchema = z
+  .strictObject({
+    balancePlatform: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the balance platform.' }),
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the event was triggered, in ISO 8601 extended format. For example, **2025-03-19T10:15:30+01:00**.',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the resource.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Resource')
+
+const TransactionNotificationDataSchema = z
+  .strictObject({
+    accountHolder: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the account holder.',
+    }),
+    amount: AmountSchema.exactOptional().openapi({
+      description:
+        "The amount converted to the balance account's currency, in case the original transaction currency is different.\n\n* A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ",
+    }),
+    authCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The authorisation code for the payment.' }),
+    balanceAccount: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the balance account.',
+    }),
+    balancePlatform: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the balance platform.' }),
+    counterparty: CounterpartySchema.openapi({
+      description: 'Contains information about the other party in the transaction.',
+    }),
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the event was triggered, in ISO 8601 extended format. For example, **2025-03-19T10:15:30+01:00**.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your description for the transfer. If you send a description longer than 140 characters, the text is truncated.',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the resource.' }),
+    merchantData: MerchantDataSchema.exactOptional().openapi({
+      description:
+        'Contains information about the merchant that processed the payment. This object is only included for payment authorisation requests and captures.',
+    }),
+    modification: NotificationModificationDataSchema.exactOptional().openapi({
+      description:
+        'Contains the amount and type of modification that triggered the notification. For example, this object contains the amount of a partial cancellation or partial expired authorisation.',
+    }),
+    originalAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'The amount in the original currency of the transaction.\n\n* A _positive_ value means the amount is added to the balance account.\n\n * A _negative_ value means the amount is deducted from the balance account. ',
+    }),
+    paymentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the original payment authorisation, refund, or funds transfer request. Use this to trace the original request from the `balancePlatform.payment.created` webhook.',
+      }),
+    paymentInstrument: ResourceReferenceSchema.exactOptional().openapi({
+      description: 'Contains information about the payment instrument.',
+    }),
+    platformPayment: PlatformPaymentSchema.exactOptional().openapi({
+      description: 'Contains information about the related platform payment.',
+    }),
+    processingType: z
+      .enum([
+        'atmWithdraw',
+        'balanceInquiry',
+        'ecommerce',
+        'moto',
+        'pos',
+        'purchaseWithCashback',
+        'recurring',
+        'token',
+        'unknown',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains information about how the payment was processed. Possible values: **atmWithdraw**, **balanceInquiry**, **ecommerce**, **moto**, **pos**, **purchaseWithCashback**, **recurring**, **token**, **unknown**.',
+      }),
+    purposeCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the purpose of the outgoing transfer. Adyen sets this to:\n\n* **payoutManual** when the transfer was triggered by a one-off payout using the [`/transfers`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers) endpoint.\n\n * **payoutSweep** when the transfer was triggered by a scheduled payout using [`sweepConfigurations`](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/post/balanceAccounts__resParam_sweepConfigurations).',
+      }),
+    reference: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          "The [`reference`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers__reqParam_reference) from the `/transfers` request. If you haven't provided any, Adyen generates a unique reference.",
+      }),
+    referenceForBeneficiary: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description:
+          'The reference sent to or received from the counterparty.\n\n* For outgoing funds, this is the [`referenceForBeneficiary`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers__resParam_referenceForBeneficiary) from the  [`/transfers`](https://docs.adyen.com/api-explorer/#/transfers/latest/post/transfers) request.\n\n * For incoming funds, this is the reference from the sender.',
+      }),
+    relayedAuthorisationData: RelayedAuthorisationDataSchema.exactOptional().openapi({
+      description:
+        "If you're using [relayed authorisation](https://docs.adyen.com/issuing/processing-payments-for-cards#relayed-authorisation), this object contains information from the relayed authorisation response from your server.",
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The event status. The possible values depend on the `type`.\n\n* **Authorised**, **Refused**, or **Error** for type `balancePlatform.payment.created`\n\n * **Expired** or **Cancelled** or **AuthAdjustmentAuthorised** or **AuthAdjustmentRefused** for type `balancePlatform.payment.updated`\n\n* **PendingIncomingTransfer** for type `balancePlatform.incomingTransfer.created` \n\n* **Refunded** or **IncomingTransfer** for type `balancePlatform.incomingTransfer.updated`\n\n * **Captured** or **OutgoingTransfer** for type `balancePlatform.outgoingTransfer.created`\n\n* **TransferConfirmed**, **TransferSentOut**, or **TransferFailed** for type `balancePlatform.outgoingTransfer.updated`\n\n  ',
+      }),
+    threeDSecure: ThreeDSecureSchema.exactOptional().openapi({
+      description: 'The data of the result from the 3DS authentication.',
+    }),
+    transactionRulesResult: TransactionRulesResultSchema.exactOptional().openapi({
+      description:
+        'Contains results from the evaluation of [transaction rules](https://docs.adyen.com/issuing/transaction-rules).',
+    }),
+    validationResult: z
+      .array(ValidationResultSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Array of checks that Adyen performed to validate the payment and the result of each.',
+      }),
+    valueDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the expected settlement date of this transaction, in ISO 8601 extended format. For example, **2021-08-17T15:34:37+02:00**.',
+      }),
+  })
+  .openapi({ required: ['counterparty'] })
+  .openapi('TransactionNotificationData')
+
+const PostBalancePlatformIncomingTransferCreatedBalancePlatformIncomingTransferCreatedExample = {
+  summary: 'Pending incoming transfer',
+  description: 'Example webhook when there is an incoming transfer',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-05-03T15:20:14+02:00',
+      id: 'IZL6685QQEBKFOOY',
+      accountHolder: { description: 'S. Eller', id: 'AH32272223222B5BBXP2Z8ZWS' },
+      amount: { currency: 'EUR', value: 15000 },
+      balanceAccount: { description: 'S. Eller - Main account', id: 'BA32272223222B5BQ3KWP86MW' },
+      modification: { amount: { currency: 'EUR', value: 15000 }, type: 'PendingIncomingTransfer' },
+      originalAmount: { currency: 'EUR', value: 15000 },
+      counterparty: { balanceAccountId: 'BA00000000000000000000001' },
+      paymentId: 'IZL6685QQEBKFON0',
+      status: 'PendingIncomingTransfer',
+    },
+    environment: 'test',
+    timestamp: '2021-05-03T15:16:14+02:00',
+    type: 'balancePlatform.incomingTransfer.created',
+  },
+}
+
+const PostBalancePlatformIncomingTransferUpdatedBalancePlatformIncomingTransferUpdatedExample = {
+  summary: 'Completed incoming transfer',
+  description: 'Example webhook when an incoming transfer was completed and funds were settled',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-05-03T15:20:14+02:00',
+      id: 'IZL6685QQEBKFOOY',
+      accountHolder: { description: 'Liable account holder', id: 'AH32272223222B5BBXP2Z8ZWS' },
+      amount: { currency: 'EUR', value: 1500 },
+      balanceAccount: { description: 'second-account', id: 'BA32272223222B5BQ3KWP86MW' },
+      modification: { amount: { currency: 'EUR', value: 1500 }, type: 'IncomingTransfer' },
+      originalAmount: { currency: 'EUR', value: 1500 },
+      counterparty: { balanceAccountId: 'BA00000000000000000000001' },
+      paymentId: 'IZL6685QQEBKFON0',
+      status: 'IncomingTransfer',
+    },
+    environment: 'test',
+    timestamp: '2021-05-03T15:16:14+02:00',
+    type: 'balancePlatform.incomingTransfer.updated',
+  },
+}
+
+const PostBalancePlatformOutgoingTransferCreatedBalancePlatformOutgoingTransferCreatedExample = {
+  summary: 'Completed outgoing funds transfer',
+  description: 'Example webhook when an outgoing funds transfer was completed',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-05-03T15:20:06+02:00',
+      id: '1W1UG35QQEBJLHZ8',
+      accountHolder: { description: 'S. Eller - Staff 123', id: 'AH32272223222B5CZW6QZ2V34' },
+      amount: { currency: 'EUR', value: -1500 },
+      balanceAccount: { description: 'My Balance Account', id: 'BA3227C223222B5B9SCR82TMV' },
+      originalAmount: { currency: 'EUR', value: -1500 },
+      modification: { amount: { currency: 'EUR', value: -1500 }, type: 'OutgoingTransfer' },
+      counterparty: { balanceAccountId: 'BA00000000000000000000001' },
+      paymentId: '1W1UG35QQEBJLHZ8',
+      status: 'OutgoingTransfer',
+      valueDate: '2021-08-10T14:57:01+02:00',
+    },
+    environment: 'test',
+    timestamp: '2021-05-03T15:16:14+02:00',
+    type: 'balancePlatform.outgoingTransfer.created',
+  },
+}
+
+const PostBalancePlatformOutgoingTransferUpdatedBalancePlatformOutgoingTransferUpdatedExample = {
+  summary: 'Outgoing funds transfer failed',
+  description: 'Example webhook if an outgoing funds transfer failed',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-05-03T15:20:06+02:00',
+      id: '1W1UG35QQEBJLHZ8',
+      accountHolder: { description: 'S. Eller - Staff 123', id: 'AH32272223222B5CZW6QZ2V34' },
+      amount: { currency: 'EUR', value: -1500 },
+      balanceAccount: { description: 'My Balance Account', id: 'BA3227C223222B5B9SCR82TMV' },
+      originalAmount: { currency: 'EUR', value: -1500 },
+      modification: { amount: { currency: 'EUR', value: -1500 }, type: 'OutgoingTransfer' },
+      counterparty: { balanceAccountId: 'BA00000000000000000000001' },
+      paymentId: '1W1UG35QQEBJLHZ8',
+      status: 'TransferFailed',
+      valueDate: '2021-08-10T14:57:01+02:00',
+    },
+    environment: 'test',
+    timestamp: '2021-05-03T15:16:14+02:00',
+    type: 'balancePlatform.outgoingTransfer.updated',
+  },
+}
+
+const PostBalancePlatformPaymentCreatedBalancePlatformPaymentCreatedAuthorizedExample = {
+  summary: 'Payment authorized',
+  description: 'Example webhook when a payment made with an Adyen-issued card was authorized',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-04-01T12:56:38+02:00',
+      id: '1W1UG35QDNNE694X',
+      accountHolder: { description: 'S. Eller - Staff 123', id: 'AH32272223222B5CZW6QZ2V34' },
+      amount: { currency: 'EUR', value: -2000 },
+      authCode: '397402',
+      balanceAccount: { description: 'My Balance Account', id: 'BA3227C223222B5B9SCR82TMV' },
+      merchantData: {
+        mcc: '7999',
+        merchantId: '526567789012346',
+        nameLocation: {
+          city: 'Amsterdam',
+          country: 'NLD',
+          name: 'Store-ecom',
+          rawData: 'Store-ecom        Amsterdam     NLD',
+        },
+      },
+      modification: { amount: { currency: 'EUR', value: -2000 }, type: 'Authorised' },
+      originalAmount: { currency: 'EUR', value: -2000 },
+      paymentInstrument: { description: 'C. Holden - card', id: 'PI32272223222B5CZW7BQ2V3T' },
+      processingType: 'ecommerce',
+      relayedAuthorisationData: { metadata: { key1: 'value1', key2: 'value2', key3: 'value3' } },
+      status: 'Authorised',
+      transactionRulesResult: { allRulesPassed: true },
+      validationResult: [
+        { result: 'valid', type: 'BalanceCheck' },
+        { result: 'valid', type: 'AccountLookup' },
+        { result: 'valid', type: 'RelayedAuthorisation' },
+        { result: 'valid', type: 'Screening' },
+        { result: 'valid', type: 'TransactionRules' },
+        { result: 'valid', type: 'TransactionValidation' },
+        { result: 'valid', type: 'PaymentInstrumentExpirationCheck' },
+        { result: 'valid', type: 'MaxAuthAmount' },
+        { result: 'valid', type: 'CVC2' },
+      ],
+    },
+    environment: 'test',
+    timestamp: '2021-04-01T12:52:38+02:00',
+    type: 'balancePlatform.payment.created',
+  },
+}
+
+const PostBalancePlatformPaymentCreatedBalancePlatformPaymentCreatedFundsTransferExample = {
+  summary: 'Outgoing transfer requested',
+  description: 'Example webhook when an outgoing transfer was requested',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-05-03T15:20:06+02:00',
+      id: '1W1UG35QQEBJLHZ8',
+      accountHolder: {
+        description: 'Liable account holder',
+        id: 'AH32272223222B59MTF7458DP',
+        reference: 'Liable account holder',
+      },
+      amount: { currency: 'EUR', value: -15000 },
+      balanceAccount: { description: 'Liable balance account', id: 'BA3227C223222B5B9SCR82TMV' },
+      modification: { amount: { currency: 'EUR', value: -15000 }, type: 'Authorised' },
+      originalAmount: { currency: 'EUR', value: -15000 },
+      status: 'Authorised',
+    },
+    environment: 'test',
+    timestamp: '2021-05-03T15:16:14+02:00',
+    type: 'balancePlatform.payment.created',
+  },
+}
+
+const PostBalancePlatformPaymentCreatedBalancePlatformPaymentCreatedRefundRequestedExample = {
+  summary: 'Refund requested',
+  description: 'Example webhook when your user requests a refund',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-04-13T13:35:17+02:00',
+      id: 'IZMP115QIFI1EXZK',
+      accountHolder: { description: 'S. Eller', id: 'AH32272223222B59MTF7458DP' },
+      amount: { currency: 'EUR', value: 2000 },
+      balanceAccount: { description: 'My Balance Account', id: 'BA3227C223222B5B9SCR82TMV' },
+      originalAmount: { currency: 'EUR', value: 2000 },
+      modification: { amount: { currency: 'EUR', value: 2000 }, type: 'Authorised' },
+      paymentInstrument: { description: 'Test card', id: 'PI3227C223222B5BKTS5RC3D3' },
+      status: 'Authorised',
+    },
+    environment: 'test',
+    timestamp: '2021-04-13T13:31:17+02:00',
+    type: 'balancePlatform.payment.created',
+  },
+}
+
+const PostBalancePlatformPaymentCreatedBalancePlatformPaymentCreatedRejectedExample = {
+  summary: 'Payment declined',
+  description: 'Example webhook when a payment made with an Adyen-issued card was declined',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-03-15T10:30:43+01:00',
+      id: '2L470J5Q6VVUAWGT',
+      accountHolder: { description: 'S. Eller - Staff 123', id: 'AH32272223222B5CZW6QZ2V34' },
+      amount: { currency: 'EUR', value: -1000 },
+      balanceAccount: { description: 'My Balance Account', id: 'BA3227C223222B5B9SCR82TMV' },
+      merchantData: {
+        mcc: '7999',
+        merchantId: '526567789012346',
+        nameLocation: {
+          city: 'Amsterdam',
+          country: 'NLD',
+          name: 'Store-ecom',
+          rawData: 'Store-ecom        Amsterdam     NLD',
+        },
+      },
+      modification: { amount: { currency: 'EUR', value: -1000 }, type: 'Refused' },
+      originalAmount: { currency: 'EUR', value: -1000 },
+      paymentInstrument: { description: 'C. Holden - card', id: 'PI32272223222B5CZW7BQ2V3T' },
+      processingType: 'ecommerce',
+      status: 'Refused',
+      transactionRulesResult: {
+        allRulesPassed: false,
+        failedTransactionRules: [
+          {
+            reason:
+              'This event exceeds the maximum allowed number of transactions (1) in interval monthly',
+            transactionRule: {
+              description: 'Allow 1 transactions per month',
+              id: 'TR32272223222B5CSZ666CTKF',
+              reference: 'myRule12345',
+            },
+            transactionRuleSource: { id: 'PI3227C223222B5BKTS5RC3D3', type: 'PaymentInstrument' },
+          },
+        ],
+      },
+      validationResult: [
+        { result: 'valid', type: 'MaxAuthAmount' },
+        { result: 'valid', type: 'CVC2' },
+        { result: 'valid', type: 'BalanceCheck' },
+        { result: 'valid', type: 'AccountLookup' },
+        { result: 'invalid', type: 'TransactionRules' },
+        { result: 'valid', type: 'TransactionValidation' },
+        { result: 'notApplicable', type: 'RelayedAuthorisation' },
+        { result: 'valid', type: 'PaymentInstrumentExpirationCheck' },
+        { result: 'valid', type: 'Screening' },
+      ],
+    },
+    environment: 'test',
+    timestamp: '2021-03-15T10:27:43+01:00',
+    type: 'balancePlatform.payment.created',
+  },
+}
+
+const PostBalancePlatformPaymentUpdatedBalancePlatformPaymentUpdatedExpiredExample = {
+  summary: 'Payment authorization expired',
+  description: 'Example webhook when a payment authorization expired',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-03-25T11:42:05+01:00',
+      id: '2L470J5QAVHDDZTW',
+      accountHolder: { description: 'S.Hopper - Staff 123', id: 'AH32272223222B5CZW6QZ2V34' },
+      amount: { currency: 'EUR', value: -2500 },
+      authCode: '995167',
+      balanceAccount: { description: 'My Balance Account', id: 'BA3227C223222B5B9SCR82TMV' },
+      merchantData: {
+        mcc: '7999',
+        merchantId: '526567789012346',
+        nameLocation: {
+          city: 'Amsterdam',
+          country: 'NLD',
+          name: 'Store-ecom',
+          rawData: 'Store-ecom        Amsterdam     NLD',
+        },
+      },
+      modification: { amount: { currency: 'EUR', value: 2500 }, type: 'Expired' },
+      originalAmount: { currency: 'EUR', value: -2500 },
+      paymentInstrument: { description: 'S.Hopper - card', id: 'PI32272223222B5CZW7BQ2V3T' },
+      processingType: 'ecommerce',
+      relayedAuthorisationData: { metadata: { key1: 'value1', key2: 'value2', key3: 'value3' } },
+      status: 'Expired',
+      transactionRulesResult: { allRulesPassed: true },
+      validationResult: [
+        { result: 'valid', type: 'AccountLookup' },
+        { result: 'valid', type: 'PaymentInstrumentExpirationCheck' },
+        { result: 'valid', type: 'Screening' },
+        { result: 'valid', type: 'TransactionValidation' },
+        { result: 'valid', type: 'RelayedAuthorisation' },
+        { result: 'valid', type: 'BalanceCheck' },
+        { result: 'valid', type: 'CVC2' },
+        { result: 'valid', type: 'MaxAuthAmount' },
+        { result: 'valid', type: 'TransactionRules' },
+      ],
+    },
+    environment: 'test',
+    timestamp: '2021-03-25T11:40:05+01:00',
+    type: 'balancePlatform.payment.updated',
+  },
+}
+
+const PostBalancePlatformPaymentUpdatedBalancePlatformPaymentUpdatedPartiallyCancelledExample = {
+  summary: 'Part of payment authorization cancelled',
+  description: 'Example webhook when a part of the authorization was cancelled',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-03-25T11:42:05+01:00',
+      id: '2L470J5QAVHDDZTW',
+      accountHolder: { description: 'S.Hopper - Staff 123', id: 'AH32272223222B5CZW6QZ2V34' },
+      amount: { currency: 'EUR', value: -2500 },
+      authCode: '995167',
+      balanceAccount: { description: 'My Balance Account', id: 'BA3227C223222B5B9SCR82TMV' },
+      merchantData: {
+        mcc: '7999',
+        merchantId: '526567789012346',
+        nameLocation: {
+          city: 'Amsterdam',
+          country: 'NLD',
+          name: 'Store-ecom',
+          rawData: 'Store-ecom        Amsterdam     NLD',
+        },
+      },
+      modification: { amount: { currency: 'EUR', value: 1200 }, type: 'Expired' },
+      originalAmount: { currency: 'EUR', value: -2500 },
+      paymentInstrument: { description: 'S.Hopper - card', id: 'PI32272223222B5CZW7BQ2V3T' },
+      processingType: 'ecommerce',
+      relayedAuthorisationData: { metadata: { key1: 'value1', key2: 'value2', key3: 'value3' } },
+      status: 'Expired',
+      transactionRulesResult: { allRulesPassed: true },
+      validationResult: [
+        { result: 'valid', type: 'AccountLookup' },
+        { result: 'valid', type: 'PaymentInstrumentExpirationCheck' },
+        { result: 'valid', type: 'Screening' },
+        { result: 'valid', type: 'TransactionValidation' },
+        { result: 'valid', type: 'RelayedAuthorisation' },
+        { result: 'valid', type: 'BalanceCheck' },
+        { result: 'valid', type: 'CVC2' },
+        { result: 'valid', type: 'MaxAuthAmount' },
+        { result: 'valid', type: 'TransactionRules' },
+      ],
+    },
+    environment: 'test',
+    timestamp: '2021-03-25T11:40:05+01:00',
+    type: 'balancePlatform.payment.updated',
+  },
+}
+
+const PostBalancePlatformPaymentUpdatedBalancePlatformPaymentUpdatedPartiallyExpiredExample = {
+  summary: 'Part of payment authorization expired',
+  description: 'Example webhook when a part of the authorization expired',
+  value: {
+    data: {
+      balancePlatform: 'YOUR_BALANCE_PLATFORM',
+      creationDate: '2021-03-25T11:42:05+01:00',
+      id: '2L470J5QAVHDDZTW',
+      accountHolder: { description: 'S.Hopper - Staff 123', id: 'AH32272223222B5CZW6QZ2V34' },
+      amount: { currency: 'EUR', value: -2500 },
+      authCode: '995167',
+      balanceAccount: { description: 'My Balance Account', id: 'BA3227C223222B5B9SCR82TMV' },
+      merchantData: {
+        mcc: '7999',
+        merchantId: '526567789012346',
+        nameLocation: {
+          city: 'Amsterdam',
+          country: 'NLD',
+          name: 'Store-ecom',
+          rawData: 'Store-ecom        Amsterdam     NLD',
+        },
+      },
+      modification: { amount: { currency: 'EUR', value: 1200 }, type: 'Expired' },
+      originalAmount: { currency: 'EUR', value: -2500 },
+      paymentInstrument: { description: 'S.Hopper - card', id: 'PI32272223222B5CZW7BQ2V3T' },
+      processingType: 'ecommerce',
+      relayedAuthorisationData: { metadata: { key1: 'value1', key2: 'value2', key3: 'value3' } },
+      status: 'Expired',
+      transactionRulesResult: { allRulesPassed: true },
+      validationResult: [
+        { result: 'valid', type: 'AccountLookup' },
+        { result: 'valid', type: 'PaymentInstrumentExpirationCheck' },
+        { result: 'valid', type: 'Screening' },
+        { result: 'valid', type: 'TransactionValidation' },
+        { result: 'valid', type: 'RelayedAuthorisation' },
+        { result: 'valid', type: 'BalanceCheck' },
+        { result: 'valid', type: 'CVC2' },
+        { result: 'valid', type: 'MaxAuthAmount' },
+        { result: 'valid', type: 'TransactionRules' },
+      ],
+    },
+    environment: 'test',
+    timestamp: '2021-03-25T11:40:05+01:00',
+    type: 'balancePlatform.payment.updated',
+  },
+}
+
+const BasicAuthSecurityScheme = { type: 'http', scheme: 'basic' }
+
+export const balancePlatformIncomingTransferCreatedPostWebhook = {
+  method: 'post',
+  path: '/balancePlatform.incomingTransfer.created',
+  tags: ['Fund movements'],
+  summary: 'Incoming transfer created',
+  description:
+    'Adyen sends this webhook when there are incoming funds due to a refund or a fund transfer. Use the `paymentId` to link to the original refund request or funds transfer request. Check the content of the webhook to differentiate the events.\n\n* For refunds, the webhook includes the payment instrument to which funds will be refunded.\n\n* For incoming fund transfers, the webhook only includes information about the balance account.',
+  operationId: 'post-balancePlatform.incomingTransfer.created',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: IncomingTransferNotificationRequestSchema,
+          examples: {
+            'balancePlatform-incomingTransfer-created':
+              PostBalancePlatformIncomingTransferCreatedBalancePlatformIncomingTransferCreatedExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: BalancePlatformNotificationResponseSchema } },
+    },
+  },
+  deprecated: true,
+  security: [{ BasicAuth: [] }],
+}
+
+export const balancePlatformIncomingTransferUpdatedPostWebhook = {
+  method: 'post',
+  path: '/balancePlatform.incomingTransfer.updated',
+  tags: ['Fund movements'],
+  summary: 'Incoming transfer updated',
+  description:
+    'Adyen sends this webhook when funds were added to the balance account. This could be due to a refund or a funds transfer. Use the `data.id` to track the original incoming transfer resource in the `balancePlatform.incomingTransfer.created` webhook.\n\nThe `status` field indicates the event that triggered the webhook. \n\n* For refunds, the `status` is **Refunded**. \n\n* For incoming fund transfers, the `status` is **IncomingTransfer**.',
+  operationId: 'post-balancePlatform.incomingTransfer.updated',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: IncomingTransferNotificationRequestSchema,
+          examples: {
+            'balancePlatform-incomingTransfer-updated':
+              PostBalancePlatformIncomingTransferUpdatedBalancePlatformIncomingTransferUpdatedExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: BalancePlatformNotificationResponseSchema } },
+    },
+  },
+  deprecated: true,
+  security: [{ BasicAuth: [] }],
+}
+
+export const balancePlatformOutgoingTransferCreatedPostWebhook = {
+  method: 'post',
+  path: '/balancePlatform.outgoingTransfer.created',
+  tags: ['Fund movements'],
+  summary: 'Outgoing transfer created',
+  description:
+    'Adyen sends this webhook when funds were deducted from a balance account due to a capture or a funds transfer. Use the `paymentId` to link to the original payment authorisation or funds transfer request.\n\nThe `status` field indicates the event that triggered the webhook. \n\n* For captures, the `status` will be **Captured**. \n\n* For outgoing fund transfers, the `status` will be **OutgoingTransfer**.',
+  operationId: 'post-balancePlatform.outgoingTransfer.created',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: OutgoingTransferNotificationRequestSchema,
+          examples: {
+            'balancePlatform-outgoingTransfer-created':
+              PostBalancePlatformOutgoingTransferCreatedBalancePlatformOutgoingTransferCreatedExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: BalancePlatformNotificationResponseSchema } },
+    },
+  },
+  deprecated: true,
+  security: [{ BasicAuth: [] }],
+}
+
+export const balancePlatformOutgoingTransferUpdatedPostWebhook = {
+  method: 'post',
+  path: '/balancePlatform.outgoingTransfer.updated',
+  tags: ['Fund movements'],
+  summary: 'Outgoing transfer updated',
+  description:
+    'Adyen sends this webhook when there is updated information after funds have been deducted from a balance account. For example, if the fund transfer failed.\n\nUse the `data.id` to track the original outgoing transfer resource from the `balancePlatform.outgoingTransfer.created` webhook.',
+  operationId: 'post-balancePlatform.outgoingTransfer.updated',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: OutgoingTransferNotificationRequestSchema,
+          examples: {
+            'balancePlatform-outgoingTransfer-updated':
+              PostBalancePlatformOutgoingTransferUpdatedBalancePlatformOutgoingTransferUpdatedExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: BalancePlatformNotificationResponseSchema } },
+    },
+  },
+  deprecated: true,
+  security: [{ BasicAuth: [] }],
+}
+
+export const balancePlatformPaymentCreatedPostWebhook = {
+  method: 'post',
+  path: '/balancePlatform.payment.created',
+  tags: ['Payment authorisation, refund, or funds transfer initiated'],
+  summary: 'Payment authorisation, refund, or funds transfer initiated',
+  description:
+    "Adyen sends this webhook when a payment authorisation, a refund, or a funds transfer has been initiated. This webhook only informs your server of requests. For the actual fund movements, you'll get the information from the subsequent outgoing or incoming transfer webhooks.\n\n To differentiate the requests, check the content of the webhook.\n\n* For payments, the webhook contains the authorisation result, information about the processing merchant, and shows a negative amount.\n\n * For refunds, the webhook contains to which payment instrument the funds will be refunded, and shows a positive amount.\n\n* For outgoing or incoming fund transfers, the webhook shows a positive or negative amount depending on the direction of the transfer, and only includes information about the balance account.",
+  operationId: 'post-balancePlatform.payment.created',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentNotificationRequestSchema,
+          examples: {
+            'balancePlatform-payment-created-authorized':
+              PostBalancePlatformPaymentCreatedBalancePlatformPaymentCreatedAuthorizedExample,
+            'balancePlatform-payment-created-funds-transfer':
+              PostBalancePlatformPaymentCreatedBalancePlatformPaymentCreatedFundsTransferExample,
+            'balancePlatform-payment-created-refund-requested':
+              PostBalancePlatformPaymentCreatedBalancePlatformPaymentCreatedRefundRequestedExample,
+            'balancePlatform-payment-created-rejected':
+              PostBalancePlatformPaymentCreatedBalancePlatformPaymentCreatedRejectedExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: BalancePlatformNotificationResponseSchema } },
+    },
+  },
+  deprecated: true,
+  security: [{ BasicAuth: [] }],
+}
+
+export const balancePlatformPaymentUpdatedPostWebhook = {
+  method: 'post',
+  path: '/balancePlatform.payment.updated',
+  tags: ['Payment authorisation, refund, or funds transfer initiated'],
+  summary: 'Payment authorisation expired or cancelled',
+  description:
+    'Adyen sends this webhook when a payment authorisation has expired or has been cancelled. Use the `data.id` to track the original payment authorisation from the `balancePlatform.payment.created` webhook.',
+  operationId: 'post-balancePlatform.payment.updated',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: PaymentNotificationRequestSchema,
+          examples: {
+            'balancePlatform-payment-updated-expired':
+              PostBalancePlatformPaymentUpdatedBalancePlatformPaymentUpdatedExpiredExample,
+            'balancePlatform-payment-updated-partially-cancelled':
+              PostBalancePlatformPaymentUpdatedBalancePlatformPaymentUpdatedPartiallyCancelledExample,
+            'balancePlatform-payment-updated-partially-expired':
+              PostBalancePlatformPaymentUpdatedBalancePlatformPaymentUpdatedPartiallyExpiredExample,
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK - the request has succeeded.',
+      content: { 'application/json': { schema: BalancePlatformNotificationResponseSchema } },
+    },
+  },
+  deprecated: true,
+  security: [{ BasicAuth: [] }],
+}

@@ -3588,19 +3588,7 @@ const AccountNameValidationIdSchema = z
   })
   .openapi('AccountNameValidationId')
 
-const ValidateAccountNameRequestSchema = z
-  .any()
-  .openapi({
-    discriminator: {
-      mapping: {
-        UK: '#/components/schemas/ValidateAccountNameRequestUK',
-        AU: '#/components/schemas/ValidateAccountNameRequestAU',
-        RO: '#/components/schemas/ValidateAccountNameRequestRO',
-        EUR: '#/components/schemas/ValidateAccountNameRequestEUR',
-      },
-    },
-  })
-  .openapi('ValidateAccountNameRequest')
+const ValidateAccountNameRequestSchema = z.any().openapi('ValidateAccountNameRequest')
 
 const ValidateAccountNameRequestUKSchema = z
   .object({
@@ -3763,19 +3751,7 @@ const ValidateAccountNameRequestEURSchema = z
   .openapi({ title: 'EUR', required: ['iban', 'recipient_country', 'recipient_currency'] })
   .openapi('ValidateAccountNameRequestEUR')
 
-const ValidateAccountNameResponseSchema = z
-  .any()
-  .openapi({
-    discriminator: {
-      mapping: {
-        UK: '#/components/schemas/ValidateAccountNameResponseUK',
-        AU: '#/components/schemas/ValidateAccountNameResponseAU',
-        RO: '#/components/schemas/ValidateAccountNameResponseRO',
-        EUR: '#/components/schemas/ValidateAccountNameResponseEUR',
-      },
-    },
-  })
-  .openapi('ValidateAccountNameResponse')
+const ValidateAccountNameResponseSchema = z.any().openapi('ValidateAccountNameResponse')
 
 const ValidateAccountNameResponseUKSchema = z
   .object({
@@ -17203,7 +17179,6 @@ export const getWebhooksWebhookIdFailedEventsRoute = createRoute({
             schema: {
               type: 'string',
               format: 'date-time or date',
-              minimum: "'created_at' - 21 days",
               default: 'the date-time at which the request is made',
             },
             required: false,
