@@ -509,6 +509,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/chargebee": {
+      "name": "@apps/chargebee",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/chatwoot": {
       "name": "@apps/chatwoot",
       "dependencies": {
@@ -3085,6 +3099,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/telnyx": {
+      "name": "@apps/telnyx",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/temporal": {
       "name": "@apps/temporal",
       "dependencies": {
@@ -3407,6 +3435,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/workos": {
+      "name": "@apps/workos",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/wukongim": {
       "name": "@apps/wukongim",
       "dependencies": {
@@ -3559,6 +3601,8 @@
     "@apps/calcom": ["@apps/calcom@workspace:apps/calcom"],
 
     "@apps/canva": ["@apps/canva@workspace:apps/canva"],
+
+    "@apps/chargebee": ["@apps/chargebee@workspace:apps/chargebee"],
 
     "@apps/chatwoot": ["@apps/chatwoot@workspace:apps/chatwoot"],
 
@@ -3928,6 +3972,8 @@
 
     "@apps/teampass": ["@apps/teampass@workspace:apps/teampass"],
 
+    "@apps/telnyx": ["@apps/telnyx@workspace:apps/telnyx"],
+
     "@apps/temporal": ["@apps/temporal@workspace:apps/temporal"],
 
     "@apps/tmdb": ["@apps/tmdb@workspace:apps/tmdb"],
@@ -3973,6 +4019,8 @@
     "@apps/whatsapp-business": ["@apps/whatsapp-business@workspace:apps/whatsapp-business"],
 
     "@apps/windmill": ["@apps/windmill@workspace:apps/windmill"],
+
+    "@apps/workos": ["@apps/workos@workspace:apps/workos"],
 
     "@apps/wukongim": ["@apps/wukongim@workspace:apps/wukongim"],
 
