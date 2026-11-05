@@ -5,6 +5,20 @@
     "": {
       "name": "hono-takibi-examples",
     },
+    "apps/ably": {
+      "name": "@apps/ably",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/adguard-home": {
       "name": "@apps/adguard-home",
       "dependencies": {
@@ -1909,6 +1923,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/meraki": {
+      "name": "@apps/meraki",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/mermade-openapi3-examples": {
       "name": "@apps/mermade-openapi3-examples",
       "dependencies": {
@@ -3351,6 +3379,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/vimeo": {
+      "name": "@apps/vimeo",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/vonage": {
       "name": "@apps/vonage",
       "dependencies": {
@@ -3529,6 +3571,8 @@
     "@apidevtools/swagger-methods": ["@apidevtools/swagger-methods@3.0.2", "", {}, "sha512-QAkD5kK2b1WfjDS/UQn/qQkbwF31uqRjPTrsCs5ZG9BQGAkjwvqGFjjPqAuzac/IYzpPtRzjCP1WrTuAIjMrXg=="],
 
     "@apidevtools/swagger-parser": ["@apidevtools/swagger-parser@13.1.0", "", { "dependencies": { "@apidevtools/json-schema-ref-parser": "^16.0.3", "@apidevtools/openapi-schemas": "^2.1.0", "@apidevtools/swagger-methods": "^3.0.2", "@types/json-schema": "^7.0.15", "ajv": "^8.20.0", "ajv-draft-04": "^1.0.0", "call-me-maybe": "^1.0.2" }, "peerDependencies": { "openapi-types": ">=7" } }, "sha512-dkCuqCWh5U7u0aurmmc/qvel2KeKDxHTwVtUdYonndIpD7mXV6AVaWNdvaja2HAy628z7FT/Qdz8sCgzwhgwKg=="],
+
+    "@apps/ably": ["@apps/ably@workspace:apps/ably"],
 
     "@apps/adguard-home": ["@apps/adguard-home@workspace:apps/adguard-home"],
 
@@ -3802,6 +3846,8 @@
 
     "@apps/meilisearch": ["@apps/meilisearch@workspace:apps/meilisearch"],
 
+    "@apps/meraki": ["@apps/meraki@workspace:apps/meraki"],
+
     "@apps/mermade-openapi3-examples": ["@apps/mermade-openapi3-examples@workspace:apps/mermade-openapi3-examples"],
 
     "@apps/microsoft-ccf": ["@apps/microsoft-ccf@workspace:apps/microsoft-ccf"],
@@ -4007,6 +4053,8 @@
     "@apps/vault": ["@apps/vault@workspace:apps/vault"],
 
     "@apps/vercel": ["@apps/vercel@workspace:apps/vercel"],
+
+    "@apps/vimeo": ["@apps/vimeo@workspace:apps/vimeo"],
 
     "@apps/vonage": ["@apps/vonage@workspace:apps/vonage"],
 
