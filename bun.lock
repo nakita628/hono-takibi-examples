@@ -1685,6 +1685,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/kong": {
+      "name": "@apps/kong",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/kuberhealthy": {
       "name": "@apps/kuberhealthy",
       "dependencies": {
@@ -2217,6 +2231,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/nomad": {
+      "name": "@apps/nomad",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/novu": {
       "name": "@apps/novu",
       "dependencies": {
@@ -2695,6 +2723,20 @@
     },
     "apps/polygon": {
       "name": "@apps/polygon",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/portainer": {
+      "name": "@apps/portainer",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -3812,6 +3854,8 @@
 
     "@apps/komga": ["@apps/komga@workspace:apps/komga"],
 
+    "@apps/kong": ["@apps/kong@workspace:apps/kong"],
+
     "@apps/kuberhealthy": ["@apps/kuberhealthy@workspace:apps/kuberhealthy"],
 
     "@apps/kubernetes": ["@apps/kubernetes@workspace:apps/kubernetes"],
@@ -3888,6 +3932,8 @@
 
     "@apps/nocodb": ["@apps/nocodb@workspace:apps/nocodb"],
 
+    "@apps/nomad": ["@apps/nomad@workspace:apps/nomad"],
+
     "@apps/novu": ["@apps/novu@workspace:apps/novu"],
 
     "@apps/nytimes": ["@apps/nytimes@workspace:apps/nytimes"],
@@ -3957,6 +4003,8 @@
     "@apps/pokeapi": ["@apps/pokeapi@workspace:apps/pokeapi"],
 
     "@apps/polygon": ["@apps/polygon@workspace:apps/polygon"],
+
+    "@apps/portainer": ["@apps/portainer@workspace:apps/portainer"],
 
     "@apps/profilarr": ["@apps/profilarr@workspace:apps/profilarr"],
 
