@@ -747,6 +747,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/daytona": {
+      "name": "@apps/daytona",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/deepgram": {
       "name": "@apps/deepgram",
       "dependencies": {
@@ -1055,6 +1069,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/fly-machines": {
+      "name": "@apps/fly-machines",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/freee": {
       "name": "@apps/freee",
       "dependencies": {
@@ -1295,6 +1323,20 @@
     },
     "apps/growthbook": {
       "name": "@apps/growthbook",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/haproxy-dataplane": {
+      "name": "@apps/haproxy-dataplane",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -3720,6 +3762,8 @@
 
     "@apps/datadog": ["@apps/datadog@workspace:apps/datadog"],
 
+    "@apps/daytona": ["@apps/daytona@workspace:apps/daytona"],
+
     "@apps/deepgram": ["@apps/deepgram@workspace:apps/deepgram"],
 
     "@apps/deepl": ["@apps/deepl@workspace:apps/deepl"],
@@ -3764,6 +3808,8 @@
 
     "@apps/fluss-gateway": ["@apps/fluss-gateway@workspace:apps/fluss-gateway"],
 
+    "@apps/fly-machines": ["@apps/fly-machines@workspace:apps/fly-machines"],
+
     "@apps/freee": ["@apps/freee@workspace:apps/freee"],
 
     "@apps/frigate": ["@apps/frigate@workspace:apps/frigate"],
@@ -3799,6 +3845,8 @@
     "@apps/grocy": ["@apps/grocy@workspace:apps/grocy"],
 
     "@apps/growthbook": ["@apps/growthbook@workspace:apps/growthbook"],
+
+    "@apps/haproxy-dataplane": ["@apps/haproxy-dataplane@workspace:apps/haproxy-dataplane"],
 
     "@apps/hetzner": ["@apps/hetzner@workspace:apps/hetzner"],
 
