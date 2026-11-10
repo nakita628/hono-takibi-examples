@@ -201,6 +201,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/apify": {
+      "name": "@apps/apify",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/apis-guru-misc": {
       "name": "@apps/apis-guru-misc",
       "dependencies": {
@@ -749,6 +763,20 @@
     },
     "apps/daytona": {
       "name": "@apps/daytona",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/dbt-cloud": {
+      "name": "@apps/dbt-cloud",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -2051,6 +2079,20 @@
     },
     "apps/mistral": {
       "name": "@apps/mistral",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/mollie": {
+      "name": "@apps/mollie",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -3684,6 +3726,8 @@
 
     "@apps/apideck": ["@apps/apideck@workspace:apps/apideck"],
 
+    "@apps/apify": ["@apps/apify@workspace:apps/apify"],
+
     "@apps/apis-guru-misc": ["@apps/apis-guru-misc@workspace:apps/apis-guru-misc"],
 
     "@apps/apisetu-gov-in": ["@apps/apisetu-gov-in@workspace:apps/apisetu-gov-in"],
@@ -3763,6 +3807,8 @@
     "@apps/datadog": ["@apps/datadog@workspace:apps/datadog"],
 
     "@apps/daytona": ["@apps/daytona@workspace:apps/daytona"],
+
+    "@apps/dbt-cloud": ["@apps/dbt-cloud@workspace:apps/dbt-cloud"],
 
     "@apps/deepgram": ["@apps/deepgram@workspace:apps/deepgram"],
 
@@ -3949,6 +3995,8 @@
     "@apps/misp": ["@apps/misp@workspace:apps/misp"],
 
     "@apps/mistral": ["@apps/mistral@workspace:apps/mistral"],
+
+    "@apps/mollie": ["@apps/mollie@workspace:apps/mollie"],
 
     "@apps/mongodb-atlas": ["@apps/mongodb-atlas@workspace:apps/mongodb-atlas"],
 
