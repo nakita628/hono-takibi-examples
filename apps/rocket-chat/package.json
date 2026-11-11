@@ -1,0 +1,20 @@
+{
+  "name": "@apps/rocket-chat",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi -c configs/authentication.config.ts && hono-takibi -c configs/content-management.config.ts && hono-takibi -c configs/integrations.config.ts && hono-takibi -c configs/marketplace-apps.config.ts && hono-takibi -c configs/messaging.config.ts && hono-takibi -c configs/miscellaneous.config.ts && hono-takibi -c configs/notifications.config.ts && hono-takibi -c configs/omnichannel.config.ts && hono-takibi -c configs/rooms.config.ts && hono-takibi -c configs/settings.config.ts && hono-takibi -c configs/statistics.config.ts && hono-takibi -c configs/user-management.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}
