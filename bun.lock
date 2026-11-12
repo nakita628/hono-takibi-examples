@@ -1097,6 +1097,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/firezone": {
+      "name": "@apps/firezone",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/fluss-gateway": {
       "name": "@apps/fluss-gateway",
       "dependencies": {
@@ -1559,6 +1573,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/inngest": {
+      "name": "@apps/inngest",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/intercom": {
       "name": "@apps/intercom",
       "dependencies": {
@@ -1743,6 +1771,20 @@
     },
     "apps/kintone": {
       "name": "@apps/kintone",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/knock": {
+      "name": "@apps/knock",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -3896,6 +3938,8 @@
 
     "@apps/firecrawl": ["@apps/firecrawl@workspace:apps/firecrawl"],
 
+    "@apps/firezone": ["@apps/firezone@workspace:apps/firezone"],
+
     "@apps/fluss-gateway": ["@apps/fluss-gateway@workspace:apps/fluss-gateway"],
 
     "@apps/fly-machines": ["@apps/fly-machines@workspace:apps/fly-machines"],
@@ -3962,6 +4006,8 @@
 
     "@apps/influxdb-oss": ["@apps/influxdb-oss@workspace:apps/influxdb-oss"],
 
+    "@apps/inngest": ["@apps/inngest@workspace:apps/inngest"],
+
     "@apps/intercom": ["@apps/intercom@workspace:apps/intercom"],
 
     "@apps/interzoid": ["@apps/interzoid@workspace:apps/interzoid"],
@@ -3989,6 +4035,8 @@
     "@apps/keycloak": ["@apps/keycloak@workspace:apps/keycloak"],
 
     "@apps/kintone": ["@apps/kintone@workspace:apps/kintone"],
+
+    "@apps/knock": ["@apps/knock@workspace:apps/knock"],
 
     "@apps/komga": ["@apps/komga@workspace:apps/komga"],
 
