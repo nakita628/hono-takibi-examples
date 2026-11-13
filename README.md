@@ -2052,3 +2052,6 @@ Generation examples for [hono-takibi](https://github.com/nakita628/hono-takibi).
 | [knock](./apps/knock) · mapi | [openapi.yml](https://raw.githubusercontent.com/knocklabs/docs/main/data/specs/mapi/openapi.yml) | [routes.ts](./apps/knock/src/mapi/routes.ts) · [api.md](./apps/knock/src/mapi/api.md) |
 | [firezone](./apps/firezone) | [openapi.json](https://raw.githubusercontent.com/firezone/firezone/main/elixir/priv/static/openapi.json) | [routes.ts](./apps/firezone/src/routes.ts) · [api.md](./apps/firezone/src/api.md) |
 | [inngest](./apps/inngest) | [spec.yaml](https://raw.githubusercontent.com/inngest/inngest/main/docs/openapi/v3/api/v1/spec.yaml) | [routes.ts](./apps/inngest/src/routes.ts) · [api.md](./apps/inngest/src/api.md) |
+| [hookdeck](./apps/hookdeck) | [openapi.json](https://raw.githubusercontent.com/hookdeck/hookdeck-api-schema/main/openapi.json) | [routes.ts](./apps/hookdeck/src/routes.ts) · [api.md](./apps/hookdeck/src/api.md) |
+| [nango](./apps/nango) | [spec.yaml](https://raw.githubusercontent.com/NangoHQ/nango/master/docs/spec.yaml) | [routes.ts](./apps/nango/src/routes.ts) · [api.md](./apps/nango/src/api.md) |
+| [stytch](./apps/stytch) | [openapi.yml](https://raw.githubusercontent.com/stytchauth/stytch-openapi/main/openapi.yml) | [routes.ts](./apps/stytch/src/routes.ts) · [api.md](./apps/stytch/src/api.md) |
