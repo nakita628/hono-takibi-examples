@@ -2175,6 +2175,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/modern-treasury": {
+      "name": "@apps/modern-treasury",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/mollie": {
       "name": "@apps/mollie",
       "dependencies": {
@@ -2849,6 +2863,20 @@
     },
     "apps/pinecone": {
       "name": "@apps/pinecone",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/pinterest": {
+      "name": "@apps/pinterest",
       "dependencies": {
         "@hono/zod-openapi": "catalog:",
         "hono": "catalog:",
@@ -3589,6 +3617,20 @@
         "typescript": "catalog:",
       },
     },
+    "apps/upstash-workflow": {
+      "name": "@apps/upstash-workflow",
+      "dependencies": {
+        "@hono/zod-openapi": "catalog:",
+        "hono": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/vapi": {
       "name": "@apps/vapi",
       "dependencies": {
@@ -4134,6 +4176,8 @@
 
     "@apps/mistral": ["@apps/mistral@workspace:apps/mistral"],
 
+    "@apps/modern-treasury": ["@apps/modern-treasury@workspace:apps/modern-treasury"],
+
     "@apps/mollie": ["@apps/mollie@workspace:apps/mollie"],
 
     "@apps/mongodb-atlas": ["@apps/mongodb-atlas@workspace:apps/mongodb-atlas"],
@@ -4231,6 +4275,8 @@
     "@apps/pihole": ["@apps/pihole@workspace:apps/pihole"],
 
     "@apps/pinecone": ["@apps/pinecone@workspace:apps/pinecone"],
+
+    "@apps/pinterest": ["@apps/pinterest@workspace:apps/pinterest"],
 
     "@apps/plaid": ["@apps/plaid@workspace:apps/plaid"],
 
@@ -4335,6 +4381,8 @@
     "@apps/typesense": ["@apps/typesense@workspace:apps/typesense"],
 
     "@apps/unleash": ["@apps/unleash@workspace:apps/unleash"],
+
+    "@apps/upstash-workflow": ["@apps/upstash-workflow@workspace:apps/upstash-workflow"],
 
     "@apps/vapi": ["@apps/vapi@workspace:apps/vapi"],
 
